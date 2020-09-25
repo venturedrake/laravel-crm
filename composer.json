@@ -1,0 +1,18 @@
+{
+    "name": "venturedrake/laravel-crm",
+    "description": "A free open source CRM built as a package for laravel projects",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Drake",
+            "email": "andrew@venturedrake.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "VentureDrake\\LaravelCRM\\" : "src/"
+        }
+    }
+}
