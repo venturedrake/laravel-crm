@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="11f4ad53-b3f9-4919-9bcb-79b2b0e1d98d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/laravel-crm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/laravel-crm.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +47,8 @@
       <workItem from="1599791535104" duration="4651000" />
       <workItem from="1600218542419" duration="1800000" />
       <workItem from="1600323662051" duration="4219000" />
-      <workItem from="1601032849204" duration="721000" />
+      <workItem from="1601032849204" duration="1774000" />
+      <workItem from="1601154479176" duration="1877000" />
     </task>
     <servers />
   </component>

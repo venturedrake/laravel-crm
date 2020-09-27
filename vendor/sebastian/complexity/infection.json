@@ -1,0 +1,17 @@
+{
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "mutators": {
+        "@default": true,
+        "TrueValue": {
+            "ignore": [
+                "SebastianBergmann\\Complexity\\Calculator::calculateForAbstractSyntaxTree"
+            ]
+        }
+    },
+    "minMsi": 100,
+    "minCoveredMsi": 100
+}
