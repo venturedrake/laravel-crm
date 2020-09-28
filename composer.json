@@ -11,7 +11,7 @@
     "minimum-stability": "dev",
     "require": {},
     "require-dev": {
-        "phpunit/phpunit": "^9.4@dev"
+        "phpunit/phpunit": "^8.0" 
     },
     "autoload": {
         "psr-4": {
