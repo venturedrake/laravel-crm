@@ -23,8 +23,6 @@ composer require venturedrake/laravel-crm
 
 ## Testing
 
-## Changelog
-
 ## Roadmap
 
  - Standalone version with complete front end
