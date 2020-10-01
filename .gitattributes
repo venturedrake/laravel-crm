@@ -4,3 +4,4 @@
 /tests export-ignore
 /phpunit.xml.dist export-ignore
 /.gitattributes export-ignore
+/.github export-ignore
