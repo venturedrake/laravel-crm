@@ -1,6 +1,6 @@
 {
     "name": "venturedrake/laravel-crm",
-    "description": "A free open source CRM built as a package for laravel projects",
+    "description": "test",
     "keywords": [
         "venturedrake",
         "laravel-crm"
@@ -15,28 +15,28 @@
             "role": "Developer"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "php": ">=7.2",
+        "php": "^7.1",
         "illuminate/support": "^6.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0" ,
-        "orchestra/testbench": "^4.0"
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "psr-4": {
-            "VentureDrake\\LaravelCRM\\" : "src/"
+            "Venturedrake\\LaravelCrm\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VentureDrake\\LaravelCRM\\Tests\\" : "tests"
+            "Venturedrake\\LaravelCrm\\Tests\\": "tests"
         }
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
     },
     "config": {
         "sort-packages": true
