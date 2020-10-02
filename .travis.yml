@@ -8,30 +8,21 @@ php:
   
 env:
   - LARAVEL_VERSION=6.0.*
-  - matrix:
+
+matrix:
     - COMPOSER_FLAGS="--prefer-lowest"
     - COMPOSER_FLAGS=""
-    include:
+    - include:
       - php: 7.2
-        env: 
-        - LARAVEL_VERSION=7.0.*
-        - ORCHESTRA_VERSION=5.0.*
+        env: LARAVEL_VERSION=7.0.*, ORCHESTRA_VERSION=5.0.*
       - php: 7.3
-        env: 
-        - LARAVEL_VERSION=7.0.*
-        - ORCHESTRA_VERSION=5.0.*
+        env: LARAVEL_VERSION=7.0.*, ORCHESTRA_VERSION=5.0.*
       - php: 7.3
-        env: 
-        - LARAVEL_VERSION=8.0.*
-        - ORCHESTRA_VERSION=6.0.*
+        env: LARAVEL_VERSION=8.0.*, ORCHESTRA_VERSION=6.0.*
       - php: 7.4
-        env: 
-        - LARAVEL_VERSION=7.0.*
-        - ORCHESTRA_VERSION=5.0.*
+        env: LARAVEL_VERSION=7.0.*, ORCHESTRA_VERSION=5.0.*
       - php: 7.4
-        env: 
-        - LARAVEL_VERSION=8.0.*
-        - ORCHESTRA_VERSION=6.0.*
+        env: LARAVEL_VERSION=8.0.*, ORCHESTRA_VERSION=6.0.*
 
 before_script:
   - travis_retry composer self-update
