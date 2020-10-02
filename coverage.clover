@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1601605686">
+  <project timestamp="1601605686">
+    <package name="VentureDrake\LaravelCrm\Facades">
+      <file name="/Users/andrewdrake/Sites/laravel-crm/src/Facades/LaravelCrmFacade.php">
+        <class name="VentureDrake\LaravelCrm\Facades\LaravelCrmFacade" namespace="VentureDrake\LaravelCrm\Facades">
+          <metrics complexity="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="4" coveredelements="0"/>
+        </class>
+        <line num="17" type="method" name="getFacadeAccessor" visibility="protected" complexity="1" crap="2" count="0"/>
+        <line num="18" type="stmt" count="0"/>
+        <line num="19" type="stmt" count="0"/>
+        <line num="20" type="stmt" count="0"/>
+        <metrics loc="21" ncloc="13" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="4" coveredelements="0"/>
+      </file>
+    </package>
+    <file name="/Users/andrewdrake/Sites/laravel-crm/src/Http/routes.php">
+      <line num="6" type="stmt" count="1"/>
+      <line num="7" type="stmt" count="1"/>
+      <line num="8" type="stmt" count="1"/>
+      <metrics loc="8" ncloc="8" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="3" coveredelements="3"/>
+    </file>
+    <package name="VentureDrake\LaravelCrm">
+      <file name="/Users/andrewdrake/Sites/laravel-crm/src/LaravelCrm.php">
+        <class name="VentureDrake\LaravelCrm\LaravelCrm" namespace="VentureDrake\LaravelCrm">
+          <metrics complexity="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        </class>
+        <metrics loc="8" ncloc="6" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      </file>
+      <file name="/Users/andrewdrake/Sites/laravel-crm/src/LaravelCrmServiceProvider.php">
+        <class name="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" namespace="VentureDrake\LaravelCrm">
+          <metrics complexity="3" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="9" elements="12" coveredelements="10"/>
+        </class>
+        <line num="13" type="method" name="boot" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="21" type="stmt" count="1"/>
+        <line num="23" type="stmt" count="1"/>
+        <line num="24" type="stmt" count="1"/>
+        <line num="25" type="stmt" count="1"/>
+        <line num="26" type="stmt" count="1"/>
+        <line num="46" type="stmt" count="1"/>
+        <line num="51" type="method" name="register" visibility="public" complexity="1" crap="1.02" count="1"/>
+        <line num="54" type="stmt" count="1"/>
+        <line num="58" type="stmt" count="0"/>
+        <line num="59" type="stmt" count="1"/>
+        <line num="60" type="stmt" count="1"/>
+        <metrics loc="61" ncloc="23" classes="1" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="9" elements="12" coveredelements="10"/>
+      </file>
+    </package>
+    <file name="/Users/andrewdrake/Sites/laravel-crm/src/Lead.php">
+      <metrics loc="1" ncloc="1" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/Users/andrewdrake/Sites/laravel-crm/src/Organisation.php">
+      <metrics loc="1" ncloc="1" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/Users/andrewdrake/Sites/laravel-crm/src/Person.php">
+      <metrics loc="1" ncloc="1" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <metrics files="7" loc="101" ncloc="53" classes="2" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="12" elements="19" coveredelements="13"/>
+  </project>
+</coverage>
