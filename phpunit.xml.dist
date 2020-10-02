@@ -8,6 +8,7 @@
   <filter>
     <whitelist processUncoveredFilesFromWhitelist="true">
       <directory suffix=".php">./src</directory>
+      <file>./src/Http/routes.php</file>
     </whitelist>
   </filter>
   <logging>
