@@ -12,15 +12,30 @@ env:
 matrix:
   include:
     - php: 7.2
-      env: ILLUMINATE_VERSION=7.0.*
+      env:
+        global:
+        - ILLUMINATE_VERSION=7.0.*
+        - ORCHESTRA_VERSION=5.0.*
     - php: 7.3
-      env: ILLUMINATE_VERSION=7.0.*      
+      env:
+        global:
+        - ILLUMINATE_VERSION=7.0.*   
+        - ORCHESTRA_VERSION=5.0.*
     - php: 7.4
-      env: ILLUMINATE_VERSION=7.0.*
+      env:
+        global:
+        - ILLUMINATE_VERSION=7.0.*
+        - ORCHESTRA_VERSION=5.0.*
     - php: 7.3
-      env: ILLUMINATE_VERSION=8.0.*
+      env:
+        global:
+        - ILLUMINATE_VERSION=8.0.*
+        - ORCHESTRA_VERSION=6.0.*
     - php: 7.4
-      env: ILLUMINATE_VERSION=8.0.*   
+      env:
+        global:
+        - ILLUMINATE_VERSION=8.0.*  
+        - ORCHESTRA_VERSION=6.0.*
       
 before_script:
   - travis_retry composer self-update
