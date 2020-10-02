@@ -6,8 +6,8 @@ use Orchestra\Testbench\TestCase;
 use VentureDrake\LaravelCrm\LaravelCrmFacade;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
 
-class RouteTest extends TestCase{
-
+class RouteTest extends TestCase
+{
     protected function getPackageProviders($app)
     {
         return [
@@ -28,5 +28,4 @@ class RouteTest extends TestCase{
         $this->get('/crm')
             ->assertStatus(200);
     }
-    
 }
