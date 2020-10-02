@@ -1,6 +1,6 @@
 <?php
 
-namespace VentureDrake\LaravelCRM\Tests;
+namespace VentureDrake\LaravelCrm\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\TestCase;

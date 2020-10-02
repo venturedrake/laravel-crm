@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "VentureDrake\\LaravelCRM\\" : "src/"
+            "VentureDrake\\LaravelCrm\\" : "src/"
         }
     },
     "autoload-dev": {
@@ -44,10 +44,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Venturedrake\\LaravelCrm\\LaravelCrmServiceProvider"
+                "VentureDrake\\LaravelCrm\\LaravelCrmServiceProvider"
             ],
             "aliases": {
-                "LaravelCrm": "Venturedrake\\LaravelCrm\\LaravelCrmFacade"
+                "LaravelCrm": "VentureDrake\\LaravelCrm\\Facades\\LaravelCrmFacade"
             }
         }
     }

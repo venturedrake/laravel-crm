@@ -1,11 +1,11 @@
 <?php
 
-namespace Venturedrake\LaravelCrm;
+namespace VentureDrake\LaravelCrm\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Venturedrake\LaravelCrm\Skeleton\SkeletonClass
+ * @see \VentureDrake\LaravelCrm\Skeleton\SkeletonClass
  */
 class LaravelCrmFacade extends Facade
 {

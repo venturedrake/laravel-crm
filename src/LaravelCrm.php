@@ -1,6 +1,6 @@
 <?php
 
-namespace Venturedrake\LaravelCrm;
+namespace VentureDrake\LaravelCrm;
 
 class LaravelCrm
 {
