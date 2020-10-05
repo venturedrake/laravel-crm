@@ -16,7 +16,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
          * Optional methods to load your package assets
          */
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel-crm');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-crm');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-crm');
         // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
 
@@ -26,9 +26,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
             ], 'config');
 
             // Publishing the views.
-            /*$this->publishes([
+            $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-crm'),
-            ], 'views');*/
+            ], 'views');
 
             // Publishing assets.
             /*$this->publishes([

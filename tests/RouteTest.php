@@ -25,7 +25,8 @@ class RouteTest extends TestCase
     /** @test */
     public function the_crm_route_can_be_accessed()
     {
-        $this->get('/crm')
+        $this->get('/laravel-crm')
+            ->assertViewIs('laravel-crm::index')
             ->assertStatus(200);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 
-Route::get('crm', function () {
-    return response('crm route reserved for Laravel CRM', 200)
-    ->header('Content-Type', 'text/plain');
-})->name('laravelcrm.index');
+Route::get(config('laravel-crm.route'), function () {
+    return View::make('laravel-crm::index');
+})->name('laravel-crm.index');
