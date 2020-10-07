@@ -13,16 +13,20 @@ class CreateLaravelCrmTables extends Migration
      */
     public function up()
     {
-        Schema::create('crm_leads', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'leads', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name');
             $table->timestamps();
         });
-        Schema::create('crm_people', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'people', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
             $table->timestamps();
         });
-        Schema::create('crm_organisations', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -34,8 +38,8 @@ class CreateLaravelCrmTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('crm_leads');
-        Schema::dropIfExists('crm_people');
-        Schema::dropIfExists('crm_organisations');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'leads');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'people');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'organisations');
     }
 }
