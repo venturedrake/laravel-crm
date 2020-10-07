@@ -7,7 +7,9 @@ php:
   
 env:
   - LARAVEL_VERSION=6.0.*
-    
+  - COMPOSER_FLAGS="--prefer-lowest"
+  - COMPOSER_FLAGS=""
+  
 matrix:
   include:
     - php: 7.2
