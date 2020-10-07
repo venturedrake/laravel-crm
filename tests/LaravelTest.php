@@ -41,7 +41,6 @@ class LaravelTest extends TestCase
     /** @test */
     public function it_can_access_the_database()
     {
-        
         $lead = new Lead();
         $lead->name = 'Tim Drake';
         $lead->save();
@@ -49,7 +48,5 @@ class LaravelTest extends TestCase
         $newLead = Lead::find($lead->id);
         
         $this->assertSame($newLead->name, 'Tim Drake');
-        
     }
-    
 }
