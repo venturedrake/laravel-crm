@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelCrmServiceProvider extends ServiceProvider
@@ -41,7 +40,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             ], 'lang');*/
 
             // Publishing the migrations.
-            if (!class_exists('CreateLaravelCrmTables')) {
+            if (! class_exists('CreateLaravelCrmTables')) {
                 $this->publishes([
                     __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => database_path(
                         'migrations/'.date(

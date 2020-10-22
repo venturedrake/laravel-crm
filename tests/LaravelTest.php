@@ -12,20 +12,20 @@ class LaravelTest extends TestCase
     protected function getPackageProviders($app)
     {
         return [
-            LaravelCrmServiceProvider::class
+            LaravelCrmServiceProvider::class,
         ];
     }
 
     protected function getPackageAliases($app)
     {
         return [
-            'LaravelCrm' => LaravelCrmFacade::class
+            'LaravelCrm' => LaravelCrmFacade::class,
         ];
     }
     
     protected function getEnvironmentSetUp($app)
     {
-        include_once(__DIR__.'/../database/migrations/create_laravel_crm_tables.php.stub');
+        include_once(__DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub');
         
         (new \CreateLaravelCrmTables)->up();
     }
