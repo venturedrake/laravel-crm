@@ -42,7 +42,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             // Publishing the migrations.
             if (! class_exists('CreateLaravelCrmTables')) {
                 $this->publishes([
-                    __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => database_path(
+                    __DIR__ . '/../database/migrations/create_laravel_crm_tables.php' => database_path(
                         'migrations/'.date(
                             'y_m_d_His',
                             time().'_create_laravel_crm_tables.php'
