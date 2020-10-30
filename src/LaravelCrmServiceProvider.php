@@ -22,12 +22,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/config.php' => config_path('laravel-crm.php'),
-            ], 'config');
+            ], 'laravel-crm-config');
 
             // Publishing the views.
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-crm'),
-            ], 'views');
+            ], 'laravel-crm-views');
 
             // Publishing assets.
             /*$this->publishes([
@@ -42,13 +42,21 @@ class LaravelCrmServiceProvider extends ServiceProvider
             // Publishing the migrations.
             if (! class_exists('CreateLaravelCrmTables')) {
                 $this->publishes([
-                    __DIR__ . '/../database/migrations/create_laravel_crm_tables.php' => database_path(
+                    __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => database_path(
                         'migrations/'.date(
                             'y_m_d_His',
                             time().'_create_laravel_crm_tables.php'
                         )
                     ),
-                ], 'migrations');
+                ], 'laravel-crm-migrations');
+            }
+
+            if (! class_exists('LaravelCrmLeadStatusesTableSeeder')) {
+                $this->publishes([
+                    __DIR__ . '/../database/seeds/LaravelCrmLeadStatusesTableSeeder.php' => database_path(
+                        'seeds/LaravelCrmLeadStatusesTableSeeder.php'
+                    ),
+                ], 'laravel-crm-seeds');
             }
             
 

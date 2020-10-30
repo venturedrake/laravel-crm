@@ -5,7 +5,7 @@ namespace VentureDrake\LaravelCrm\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \VentureDrake\LaravelCrm\Skeleton\SkeletonClass
+ * @see \VentureDrake\LaravelCrm\LaravelCrm
  */
 class LaravelCrmFacade extends Facade
 {
