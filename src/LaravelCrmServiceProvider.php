@@ -45,8 +45,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => database_path(
                         'migrations/'.date(
                             'y_m_d_His',
-                            time().'_create_laravel_crm_tables.php'
-                        )
+                            time()).'_create_laravel_crm_tables.php'
                     ),
                 ], 'laravel-crm-migrations');
             }
