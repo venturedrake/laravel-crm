@@ -7,7 +7,6 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Person extends Model
 {
-    
     use LaravelEncryptableTrait;
     
     protected $table = 'crm_people';
@@ -23,5 +22,4 @@ class Person extends Model
         'birthday',
         'gender',
     ];
-    
 }

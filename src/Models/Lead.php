@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
-    
     use LaravelEncryptableTrait;
     
     protected $table = 'crm_leads';
@@ -25,5 +24,4 @@ class Lead extends Model
         'facebook_profile_pic',
         'twitter_profile_pic',
     ];
-    
 }
