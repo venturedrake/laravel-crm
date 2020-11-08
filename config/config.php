@@ -7,6 +7,8 @@ return [
     
     'route' => '/laravel-crm',
     
-    'db_table_prefix' => 'crm_'
+    'db_table_prefix' => 'crm_',
+    
+    'encrypt_db_fields' => true,
     
 ];
