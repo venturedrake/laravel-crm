@@ -8,17 +8,16 @@ class LaravelCrm
 {
     public function searchLeads()
     {
-
         //
     }
     
     public function getLeads()
     {
-        return Lead::all();
+        // return Lead::all();
     }
 
     public function getLead($id)
     {
-        return Lead::find($id);
+        // return Lead::find($id);
     }
 }
