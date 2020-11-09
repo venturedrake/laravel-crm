@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Lead extends Model
+class Meta extends Model
 {
     protected $table = 'crm_metas';
     
