@@ -16,6 +16,7 @@
         }
     ],
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=7.2",
         "illuminate/support": "^6.0",
