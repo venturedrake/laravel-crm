@@ -44,7 +44,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 $this->publishes([
                     __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => database_path(
                         'migrations/'.date(
-                            'y_m_d_His',
+                            'Y_m_d_His',
                             time()
                         ).'_create_laravel_crm_tables.php'
                     ),
