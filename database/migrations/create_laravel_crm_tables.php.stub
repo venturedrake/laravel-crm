@@ -146,7 +146,23 @@ class CreateLaravelCrmTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-    }
+        Schema::create(config('laravel-crm.db_table_prefix').'metas', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('key');
+            $table->string('model');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create(config('laravel-crm.db_table_prefix').'meta_values', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('meta_id')->unsigned()->index();
+            $table->foreign('meta_id')->references('id')->on('metas');
+            $table->morphs('meta_valueable')->unsigned(); 
+            $table->text('value');
+            $table->timestamps();
+        });
+}
 
     /**
      * Reverse the migrations.
@@ -162,5 +178,6 @@ class CreateLaravelCrmTables extends Migration
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'emails');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'phones');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'addresses');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'metas');
     }
 }
