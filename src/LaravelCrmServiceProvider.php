@@ -21,7 +21,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/config.php' => config_path('laravel-crm.php'),
+                __DIR__ . '/../config/laravel-crm.php' => config_path('laravel-crm.php'),
             ], 'laravel-crm-config');
 
             // Publishing the views.
@@ -71,7 +71,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'laravel-crm');
+        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-crm.php', 'laravel-crm');
 
         // Register the main class to use with the facade
         $this->app->singleton('laravel-crm', function () {
