@@ -17,9 +17,9 @@ class CreateLaravelCrmTables extends Migration
             $table->bigIncrements('id');
             $table->string('external_id');
             $table->bigInteger('person_id')->index()->nullable();
-            $table->foreign('person_id')->references('id')->on('people');
+            // $table->foreign('person_id')->references('id')->on('people');
             $table->bigInteger('organisation_id')->index()->nullable();
-            $table->foreign('organisation_id')->references('id')->on('organisations');
+            // $table->foreign('organisation_id')->references('id')->on('organisations');
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('amount')->default(0);
@@ -27,7 +27,7 @@ class CreateLaravelCrmTables extends Migration
             $table->smallInteger('lead_status_id')->index()->nullable();
             $table->boolean("qualified")->default(false);
             $table->datetime('expected_close')->nullable();
-            $table->foreign('lead_status_id')->references('id')->on('lead_statuses');
+            // $table->foreign('lead_status_id')->references('id')->on('lead_statuses');
             $table->integer('user_created_id')->unsigned();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->integer('user_updated_id')->unsigned();
@@ -146,7 +146,7 @@ class CreateLaravelCrmTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create(config('laravel-crm.db_table_prefix').'metas', function (Blueprint $table) {
+      /*  Schema::create(config('laravel-crm.db_table_prefix').'metas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('key');
@@ -161,8 +161,8 @@ class CreateLaravelCrmTables extends Migration
             $table->morphs('meta_valueable')->unsigned(); 
             $table->text('value');
             $table->timestamps();
-        });
-}
+        }); */
+    }
 
     /**
      * Reverse the migrations.
