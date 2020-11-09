@@ -7,7 +7,6 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Address extends Model
 {
-    
     use LaravelEncryptableTrait;
     
     protected $table = 'crm_addresses';
@@ -24,5 +23,4 @@ class Address extends Model
         'state',
         'country',
     ];
-    
 }

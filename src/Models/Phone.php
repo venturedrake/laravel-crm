@@ -7,7 +7,6 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Phone extends Model
 {
-    
     use LaravelEncryptableTrait;
     
     protected $table = 'crm_phones';
@@ -17,5 +16,4 @@ class Phone extends Model
     protected $encryptable = [
         'number',
     ];
-    
 }

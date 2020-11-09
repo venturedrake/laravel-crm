@@ -7,7 +7,6 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Email extends Model
 {
-    
     use LaravelEncryptableTrait;
     
     protected $table = 'crm_emails';
@@ -17,5 +16,4 @@ class Email extends Model
     protected $encryptable = [
         'address',
     ];
-    
 }
