@@ -2,16 +2,24 @@
 
 namespace VentureDrake\LaravelCrm\Http\Helpers;
 
-function phoneTypes(){
-    return [
+function phoneTypes($null = true){
+    $array = [];
+    
+    if ($null) {
+        $array[''] = '';
+    }
+    
+    array_merge($array,[
         'work',
         'home',
         'mobile',
         'other',
-    ];
+    ]);
+    
+    return $array;
 }
 
-function emailTypes(){
+function emailTypes($null = true){
     return [
         'work',
         'home',
@@ -19,7 +27,7 @@ function emailTypes(){
     ];
 }
 
-function optionsFromModel($model, $null = true, $default = null, $append = null){
+function optionsFromModel($model, $null = true){
     $array = [];
 
     if ($null) {
@@ -30,10 +38,6 @@ function optionsFromModel($model, $null = true, $default = null, $append = null)
         foreach ($model as $item) {
             $array[$item->id] = $item->name;
         }
-    }
-
-    if ($append) {
-        $array += $append;
     }
 
     return $array;
