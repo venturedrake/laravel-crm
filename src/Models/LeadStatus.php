@@ -8,5 +8,10 @@ class LeadStatus extends Model
 {
     protected $table = 'crm_lead_statuses';
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
+
+    public function leads()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Lead::class, 'lead_status_id');
+    }
 }

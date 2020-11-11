@@ -11,7 +11,7 @@ class Address extends Model
     
     protected $table = 'crm_addresses';
 
-    protected $guarded = [];
+    protected $guarded = ['id','external_id'];
 
     protected $encryptable = [
         'address',
@@ -23,4 +23,13 @@ class Address extends Model
         'state',
         'country',
     ];
+
+    /**
+     * Get all of the owning addressable models.
+     */
+    public function addressable()
+    {
+        return $this->morphTo();
+    }
+    
 }

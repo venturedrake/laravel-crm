@@ -11,9 +11,18 @@ class Phone extends Model
     
     protected $table = 'crm_phones';
 
-    protected $guarded = [];
+    protected $guarded = ['id','external_id'];
 
     protected $encryptable = [
         'number',
     ];
+
+    /**
+     * Get all of the owning phoneable models.
+     */
+    public function phoneable()
+    {
+        return $this->morphTo();
+    }
+    
 }

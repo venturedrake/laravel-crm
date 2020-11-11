@@ -11,9 +11,18 @@ class Email extends Model
     
     protected $table = 'crm_emails';
 
-    protected $guarded = [];
+    protected $guarded = ['id','external_id'];
 
     protected $encryptable = [
         'address',
     ];
+
+    /**
+     * Get all of the owning emailable models.
+     */
+    public function emailable()
+    {
+        return $this->morphTo();
+    }
+    
 }
