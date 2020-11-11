@@ -30,7 +30,11 @@
     "autoload": {
         "psr-4": {
             "VentureDrake\\LaravelCrm\\" : "src/"
-        }
+        },
+        "files": [
+            "src/Http/Helpers/SelectOptions.php",
+            "src/Http/Helpers/PersonName.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
