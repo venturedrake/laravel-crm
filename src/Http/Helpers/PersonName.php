@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Helpers;
+namespace VentureDrake\LaravelCrm\Http\Helpers;
 
 function firstLastFromName($name)
 {
