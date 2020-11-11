@@ -8,8 +8,8 @@ function phoneTypes($null = true){
     if ($null) {
         $array[''] = '';
     }
-    
-    array_merge($array,[
+
+    $array = array_merge($array,[
         'work',
         'home',
         'mobile',
@@ -20,11 +20,19 @@ function phoneTypes($null = true){
 }
 
 function emailTypes($null = true){
-    return [
+    $array = [];
+
+    if ($null) {
+        $array[''] = '';
+    }
+
+    $array = array_merge($array,[
         'work',
         'home',
         'other',
-    ];
+    ]);
+
+    return $array;
 }
 
 function optionsFromModel($model, $null = true){

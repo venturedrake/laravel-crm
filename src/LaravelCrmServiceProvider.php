@@ -3,6 +3,16 @@
 namespace VentureDrake\LaravelCrm;
 
 use Illuminate\Support\ServiceProvider;
+use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Phone;
+use VentureDrake\LaravelCrm\Observers\EmailObserver;
+use VentureDrake\LaravelCrm\Observers\LeadObserver;
+use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
+use VentureDrake\LaravelCrm\Observers\PersonObserver;
+use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -62,6 +72,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
             // Registering package commands.
             // $this->commands([]);
+            
+            // Register Observers
+            Lead::observe(LeadObserver::class);
+            Person::observe(PersonObserver::class);
+            Organisation::observe(OrganisationObserver::class);
+            Phone::observe(PhoneObserver::class);
+            Email::observe(EmailObserver::class);
+            
         }
     }
 
