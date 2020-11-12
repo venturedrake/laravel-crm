@@ -2,9 +2,9 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
-use App\Traits\HasCustomFields;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use VentureDrake\LaravelCrm\Traits\HasCustomFields;
 
 class Lead extends Model
 {

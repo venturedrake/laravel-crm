@@ -169,7 +169,7 @@ class CreateLaravelCrmTables extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('custom_field_id')->unsigned()->index();
             $table->foreign('custom_field_id')->references('id')->on('custom_fields');
-            $table->morphs('custom_field_valueable')->unsigned(); 
+            $table->morphs('custom_field_valueable'); 
             $table->text('value');
             $table->timestamps();
         }); 
