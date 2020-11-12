@@ -26,5 +26,4 @@ class Phone extends Model
     {
         return $this->morphTo();
     }
-    
 }

@@ -6,7 +6,6 @@ use VentureDrake\LaravelCrm\Models\Email;
 
 class EmailObserver
 {
-
     /**
      * Handle the email "creating" event.
      *

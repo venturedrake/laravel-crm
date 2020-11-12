@@ -25,7 +25,7 @@ class Lead extends Model
     
     public function getPrimaryEmail()
     {
-        return $this->emails()->where('primary',1)->first();
+        return $this->emails()->where('primary', 1)->first();
     }
 
     /**
@@ -38,7 +38,7 @@ class Lead extends Model
 
     public function getPrimaryPhone()
     {
-        return $this->phones()->where('primary',1)->first();
+        return $this->phones()->where('primary', 1)->first();
     }
 
     /**

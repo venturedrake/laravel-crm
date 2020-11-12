@@ -6,7 +6,6 @@ use VentureDrake\LaravelCrm\Models\Organisation;
 
 class OrganisationObserver
 {
-
     /**
      * Handle the organisation "creating" event.
      *

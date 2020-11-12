@@ -6,7 +6,6 @@ use VentureDrake\LaravelCrm\Models\Phone;
 
 class PhoneObserver
 {
-
     /**
      * Handle the phone "creating" event.
      *

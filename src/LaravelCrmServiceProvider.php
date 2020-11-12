@@ -79,7 +79,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
             Organisation::observe(OrganisationObserver::class);
             Phone::observe(PhoneObserver::class);
             Email::observe(EmailObserver::class);
-            
         }
     }
 

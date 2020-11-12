@@ -9,7 +9,7 @@ class LaravelCrm
     public function searchLeads()
     {
         //
-    } 
+    }
     
     public function getLeads()
     {

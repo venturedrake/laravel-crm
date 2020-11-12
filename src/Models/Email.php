@@ -26,5 +26,4 @@ class Email extends Model
     {
         return $this->morphTo();
     }
-    
 }

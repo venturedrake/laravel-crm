@@ -6,7 +6,6 @@ use VentureDrake\LaravelCrm\Models\Person;
 
 class PersonObserver
 {
-
     /**
      * Handle the person "creating" event.
      *

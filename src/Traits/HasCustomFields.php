@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Traits;
 
 use VentureDrake\LaravelCrm\Models\CustomField;
-use VentureDrake\LaravelCrm\Models\CustomFieldValue;
 
 trait HasCustomFields
 {
