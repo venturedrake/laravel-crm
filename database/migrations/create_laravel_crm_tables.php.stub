@@ -28,6 +28,7 @@ class CreateLaravelCrmTables extends Migration
             $table->string("currency", 3)->default("USD");
             $table->smallInteger('lead_status_id')->index()->nullable();
              // $table->foreign('lead_status_id')->references('id')->on('lead_statuses');
+            $table->integer('lead_source_id')->index()->nullable();
             $table->boolean("qualified")->default(false);
             $table->datetime('expected_close')->nullable();
             $table->integer('user_created_id')->unsigned()->nullable();
@@ -49,6 +50,14 @@ class CreateLaravelCrmTables extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->smallInteger('order')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create(config('laravel-crm.db_table_prefix').'lead_sources', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id');
+            $table->string('name');
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
