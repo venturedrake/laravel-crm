@@ -15,6 +15,6 @@ class LeadSource extends Model
 
     public function leads()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Lead::class, 'lead_status_id');
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Lead::class, 'lead_source_id');
     }
 }

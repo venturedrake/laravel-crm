@@ -54,6 +54,11 @@ class Lead extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\LeadStatus::class, 'lead_status_id');
     }
 
+    public function leadSource()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\LeadSource::class, 'lead_source_id');
+    }
+
     /**
      * Get all of the lead's custom field values.
      */

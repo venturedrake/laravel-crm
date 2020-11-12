@@ -159,6 +159,7 @@ class CreateLaravelCrmTables extends Migration
         });
         Schema::create(config('laravel-crm.db_table_prefix').'custom_fields', function (Blueprint $table) {
             $table->bigIncrements('id');
+             $table->string('external_id');
             $table->string('name');
             $table->string('key');
             $table->string('model');
@@ -167,6 +168,7 @@ class CreateLaravelCrmTables extends Migration
         });
         Schema::create(config('laravel-crm.db_table_prefix').'custom_field_values', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('external_id');
             $table->bigInteger('custom_field_id')->unsigned()->index();
             $table->foreign('custom_field_id')->references('id')->on(config('laravel-crm.db_table_prefix').'custom_fields');
             $table->morphs('custom_field_valueable'); 
