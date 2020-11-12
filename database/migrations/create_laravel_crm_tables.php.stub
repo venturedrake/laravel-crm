@@ -157,7 +157,7 @@ class CreateLaravelCrmTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-      /*  Schema::create(config('laravel-crm.db_table_prefix').'metas', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'custom_fields', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('key');
@@ -165,14 +165,14 @@ class CreateLaravelCrmTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create(config('laravel-crm.db_table_prefix').'meta_values', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'custom_field_values', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('meta_id')->unsigned()->index();
-            $table->foreign('meta_id')->references('id')->on('metas');
-            $table->morphs('meta_valueable')->unsigned(); 
+            $table->bigInteger('custom_field_id')->unsigned()->index();
+            $table->foreign('custom_field_id')->references('id')->on('custom_fields');
+            $table->morphs('custom_field_valueable')->unsigned(); 
             $table->text('value');
             $table->timestamps();
-        }); */
+        }); 
     }
 
     /**

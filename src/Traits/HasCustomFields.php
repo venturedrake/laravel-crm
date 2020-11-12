@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Traits;
+namespace VentureDrake\LaravelCrm\Traits;
 
-use VentureDrake\LaravelCrm\Models\Meta;
+use VentureDrake\LaravelCrm\Models\CustomField;
+use VentureDrake\LaravelCrm\Models\CustomFieldValue;
 
-trait HasMetaTrait
+trait HasCustomFields
 {
-    public function metas()
+    /*public function metas()
     {
-        return $this->hasMany(Meta::class, 'model_id');
+        return $this->hasMany(CustomField::class, 'model_id');
     }
 
     public function getMeta($key)
     {
-        $meta = Meta::where(['key' => $key, 'model_id' => $this->id])
+        $meta = CustomField::where(['key' => $key, 'model_id' => $this->id])
             ->first();
 
         if (empty($meta->value)) {
@@ -44,13 +45,13 @@ trait HasMetaTrait
 
     public function updateMeta($key, $value)
     {
-        $meta = Meta::where(['key' => $key, 'model_id' => $this->id]);
+        $meta = CustomField::where(['key' => $key, 'model_id' => $this->id]);
 
         if ($meta->exists()) {
             return $meta->first()->update(['value' => $value]);
         }
 
-        return Meta::create([
+        return CustomField::create([
             'key' => $key,
             'value' => $this->encodeMetaValue($value),
             'model_type' => get_class($this),
@@ -60,6 +61,6 @@ trait HasMetaTrait
 
     public function deleteMeta($key)
     {
-        return Meta::where(['key' => $key, 'model_id' => $this->id])->delete();
-    }
+        return CustomField::where(['key' => $key, 'model_id' => $this->id])->delete();
+    }*/
 }

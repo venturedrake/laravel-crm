@@ -2,12 +2,14 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use App\Traits\HasCustomFields;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lead extends Model
 {
     use SoftDeletes;
+    use HasCustomFields;
     
     protected $table = 'crm_leads';
     
@@ -50,5 +52,13 @@ class Lead extends Model
     public function leadStatus()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\LeadStatus::class, 'lead_status_id');
+    }
+
+    /**
+     * Get all of the lead's custom field values.
+     */
+    public function customFieldValues()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\CustomFieldValue::class, 'custom_field_valueable');
     }
 }
