@@ -3,10 +3,12 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Address extends Model
 {
+    use SoftDeletes;
     use LaravelEncryptableTrait;
     
     protected $table = 'crm_addresses';

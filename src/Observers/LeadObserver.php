@@ -2,7 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
-use VentureDrake\LaravelCrm\Lead;
+use VentureDrake\LaravelCrm\Models\Lead;
 
 class LeadObserver
 {

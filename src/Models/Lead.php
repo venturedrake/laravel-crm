@@ -3,9 +3,12 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lead extends Model
 {
+    use SoftDeletes;
+    
     protected $table = 'crm_leads';
     
     protected $guarded = ['id','external_id'];
@@ -17,6 +20,11 @@ class Lead extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Email::class, 'emailable');
     }
+    
+    public function getPrimaryEmail()
+    {
+        return $this->emails()->where('primary',1)->first();
+    }
 
     /**
      * Get all of the lead's phone numbers.
@@ -24,6 +32,11 @@ class Lead extends Model
     public function phones()
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Phone::class, 'phoneable');
+    }
+
+    public function getPrimaryPhone()
+    {
+        return $this->phones()->where('primary',1)->first();
     }
 
     /**

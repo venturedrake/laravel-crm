@@ -2,7 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
-use VentureDrake\LaravelCrm\Person;
+use VentureDrake\LaravelCrm\Models\Person;
 
 class PersonObserver
 {

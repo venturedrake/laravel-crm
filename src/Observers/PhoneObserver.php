@@ -2,7 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
-use VentureDrake\LaravelCrm\Phone;
+use VentureDrake\LaravelCrm\Models\Phone;
 
 class PhoneObserver
 {

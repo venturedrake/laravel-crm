@@ -2,7 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
-use VentureDrake\LaravelCrm\Organisation;
+use VentureDrake\LaravelCrm\Models\Organisation;
 
 class OrganisationObserver
 {
