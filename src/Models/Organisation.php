@@ -13,7 +13,7 @@ class Organisation extends Model
     
     protected $table = 'crm_organisations';
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $encryptable = [
         'name',

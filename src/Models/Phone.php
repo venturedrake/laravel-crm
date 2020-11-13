@@ -13,7 +13,7 @@ class Phone extends Model
     
     protected $table = 'crm_phones';
 
-    protected $guarded = ['id','external_id'];
+    protected $guarded = ['id'];
 
     protected $encryptable = [
         'number',

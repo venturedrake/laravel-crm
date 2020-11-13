@@ -13,7 +13,7 @@ class Lead extends Model
     
     protected $table = 'crm_leads';
     
-    protected $guarded = ['id','external_id'];
+    protected $guarded = ['id'];
 
     /**
      * Get all of the lead's emails.

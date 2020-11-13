@@ -13,7 +13,7 @@ class Email extends Model
     
     protected $table = 'crm_emails';
 
-    protected $guarded = ['id','external_id'];
+    protected $guarded = ['id'];
 
     protected $encryptable = [
         'address',

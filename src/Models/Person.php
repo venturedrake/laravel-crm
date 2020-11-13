@@ -13,7 +13,7 @@ class Person extends Model
     
     protected $table = 'crm_people';
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $encryptable = [
         'title',

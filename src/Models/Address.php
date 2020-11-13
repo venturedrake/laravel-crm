@@ -13,7 +13,7 @@ class Address extends Model
     
     protected $table = 'crm_addresses';
 
-    protected $guarded = ['id','external_id'];
+    protected $guarded = ['id'];
 
     protected $encryptable = [
         'address',
