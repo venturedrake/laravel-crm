@@ -11,10 +11,10 @@ function phoneTypes($null = true)
     }
 
     $array = array_merge($array, [
-        'work',
-        'home',
-        'mobile',
-        'other',
+        'work' => 'work',
+        'home' => 'home',
+        'mobile' => 'mobile',
+        'other' => "other",
     ]);
     
     return $array;
@@ -29,9 +29,9 @@ function emailTypes($null = true)
     }
 
     $array = array_merge($array, [
-        'work',
-        'home',
-        'other',
+        'work' => 'work',
+        'home' => 'home',
+        'other' => "other",
     ]);
 
     return $array;
