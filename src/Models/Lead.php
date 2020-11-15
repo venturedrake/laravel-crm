@@ -66,4 +66,30 @@ class Lead extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\CustomFieldValue::class, 'custom_field_valueable');
     }
+
+    public function createdByUser()
+    {
+        return $this->belongsTo(\App\User::class, 'user_created_id');
+    }
+
+    public function updatedByUser()
+    {
+        return $this->belongsTo(\App\User::class, 'user_updated_id');
+    }
+
+    public function deletedByUser()
+    {
+        return $this->belongsTo(\App\User::class, 'user_deleted_id');
+    }
+
+    public function restoredByUser()
+    {
+        return $this->belongsTo(\App\User::class, 'user_restored_id');
+    }
+
+    public function assignedToUser()
+    {
+        return $this->belongsTo(\App\User::class, 'user_assigned_id');
+    }
+    
 }
