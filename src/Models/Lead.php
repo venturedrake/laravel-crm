@@ -91,5 +91,4 @@ class Lead extends Model
     {
         return $this->belongsTo(\App\User::class, 'user_assigned_id');
     }
-    
 }
