@@ -16,7 +16,7 @@ class CustomFieldValue extends Model
     /**
      * Get all of the owning custom_field_values models.
      */
-    public function custom_field_valueable()
+    public function customFieldValueable()
     {
         return $this->morphTo();
     }

@@ -31,7 +31,7 @@ class LaravelCrmLeadStatusesTableSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            \VentureDrake\LaravelCrm\LeadStatus::firstOrCreate($item[0], $item[1]);
+            \VentureDrake\LaravelCrm\Models\LeadStatus::firstOrCreate($item[0], $item[1]);
         }
     }
 }
