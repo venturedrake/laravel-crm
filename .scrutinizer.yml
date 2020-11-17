@@ -1,3 +1,27 @@
-# language: php
+build:
+  nodes:
+    analysis:
+      project_setup:
+        override:
+          - 'true'
+      tests:
+        override:
+          - php-scrutinizer-run
+          -
+            command: phpcs-run
+            use_website_config: true
 
-# tests: true
+    tests: true
+filter:
+  paths: ["config/*","database/*","resources/*","src/*"]
+  excluded_paths:
+    - 'tests/*'
+  dependency_paths:
+    - "vendor/"
+checks:
+  php: true
+coding_style:
+  php:
+    spaces:
+      around_operators:
+        concatenation: true
