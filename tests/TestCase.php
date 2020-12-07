@@ -2,12 +2,12 @@
 
 namespace VentureDrake\LaravelCrm\Tests;
 
-use Orchestra\Testbench\TestCase;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use VentureDrake\LaravelCrm\LaravelCrmFacade;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
 use VentureDrake\LaravelCrm\Models\Lead;
 
-class LaravelTest extends TestCase
+class TestCase extends OrchestraTestCase
 {
     protected function getPackageProviders($app)
     {

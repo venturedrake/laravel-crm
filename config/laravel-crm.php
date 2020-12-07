@@ -5,7 +5,7 @@
  */
 return [
     
-    'route' => '/laravel-crm',
+    'route' => 'laravel-crm',
     
     'db_table_prefix' => 'crm_',
     

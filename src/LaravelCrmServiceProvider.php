@@ -24,7 +24,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         /*
          * Optional methods to load your package assets
          */
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel-crm');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel-crm');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-crm');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
@@ -32,22 +32,22 @@ class LaravelCrmServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/laravel-crm.php' => config_path('laravel-crm.php'),
-            ], 'laravel-crm-config');
+            ], 'config');
 
             // Publishing the views.
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-crm'),
-            ], 'laravel-crm-views');
+            ], 'views');
 
             // Publishing assets.
-            /*$this->publishes([
+            $this->publishes([
                 __DIR__.'/../resources/assets' => public_path('vendor/laravel-crm'),
-            ], 'assets');*/
+            ], 'assets');
 
             // Publishing the translation files.
-            /*$this->publishes([
+            $this->publishes([
                 __DIR__.'/../resources/lang' => resource_path('lang/vendor/laravel-crm'),
-            ], 'lang');*/
+            ], 'lang');
 
             // Publishing the migrations.
             if (! class_exists('CreateLaravelCrmTables')) {
@@ -58,7 +58,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                             time()
                         ).'_create_laravel_crm_tables.php'
                     ),
-                ], 'laravel-crm-migrations');
+                ], 'migrations');
             }
 
             if (! class_exists('LaravelCrmLeadStatusesTableSeeder')) {
@@ -66,7 +66,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     __DIR__ . '/../database/seeds/LaravelCrmLeadStatusesTableSeeder.php' => database_path(
                         'seeds/LaravelCrmLeadStatusesTableSeeder.php'
                     ),
-                ], 'laravel-crm-seeds');
+                ], 'seeders');
             }
             
 
