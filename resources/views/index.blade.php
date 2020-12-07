@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('laravel-crm::layouts.app')
 
 @section('content')
 <div class="container">

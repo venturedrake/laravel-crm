@@ -5,7 +5,8 @@
  */
 return [
     
-    'route' => 'laravel-crm',
+    'route_prefix' => 'laravel-crm',
+    'route_middleware' => ['web'],
     
     'db_table_prefix' => 'crm_',
     

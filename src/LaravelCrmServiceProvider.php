@@ -2,7 +2,10 @@
 
 namespace VentureDrake\LaravelCrm;
 
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -19,7 +22,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot()
+    public function boot(Router $router)
     {
         /*
          * Optional methods to load your package assets
@@ -27,7 +30,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel-crm');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-crm');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+
+        // Middleware
+        $router->aliasMiddleware('auth.laravel-crm', Authenticate::class);
+        
+        $this->registerRoutes();
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -68,7 +75,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ),
                 ], 'seeders');
             }
-            
 
             // Registering package commands.
             // $this->commands([]);
@@ -94,5 +100,20 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $this->app->singleton('laravel-crm', function () {
             return new LaravelCrm;
         });
+    }
+    
+    protected function registerRoutes()
+    {
+        Route::group($this->routeConfiguration(), function () {
+            $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+        });
+    }
+    
+    protected function routeConfiguration()
+    {
+        return [
+            'prefix' => config('laravel-crm.route_prefix'),
+            'middleware' => config('laravel-crm.route_middleware'),
+        ];
     }
 }

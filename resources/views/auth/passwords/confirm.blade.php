@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('laravel-crm::layouts.app')
 
 @section('content')
 <div class="container">
@@ -10,7 +10,7 @@
                 <div class="card-body">
                     {{ __('Please confirm your password before continuing.') }}
 
-                    <form method="POST" action="{{ route('password.confirm') }}">
+                    <form method="POST" action="{{ route('laravel-crm.password.confirm') }}">
                         @csrf
 
                         <div class="form-group row">
@@ -34,7 +34,7 @@
                                 </button>
 
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    <a class="btn btn-link" href="{{ route('laravel-crm.password.request') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif
