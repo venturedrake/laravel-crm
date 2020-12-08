@@ -14,3 +14,5 @@
 /.scrutinizer.yml export-ignore
 /.phpcs.xml.dist export-ignore
 /.php_cs.dist export-ignore
+
+resources/assets/* linguist-vendored
