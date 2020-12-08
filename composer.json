@@ -19,7 +19,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.2",
-        "illuminate/support": "^6.0",
+        "illuminate/support": "^6.0|^7.0|^8.0",
         "venturedrake/laravel-encryptable": "dev-master"
     },
     "require-dev": {
