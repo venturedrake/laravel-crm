@@ -71,7 +71,27 @@
         </nav>
 
         <main class="py-4">
-            @yield('content')
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') == 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}">Dashboard</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.leads') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.leads')) }}">Leads</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deals') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deals')) }}">Deals</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.activities') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.activities')) }}">Activities</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.contacts') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.contacts')) }}">Contacts</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        @yield('content')
+                    </div>
+                </div>
+            </div>
+           =
         </main>
     </div>
 </body>

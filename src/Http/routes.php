@@ -54,3 +54,19 @@ Route::get('password/confirm', function () {
 Route::get('/', function () {
     return View::make('laravel-crm::index');
 })->middleware('auth.laravel-crm')->name('laravel-crm.dashboard');
+
+Route::get('leads', function () {
+    return View::make('laravel-crm::leads.index');
+})->middleware('auth.laravel-crm')->name('laravel-crm.leads');
+
+Route::get('deals', function () {
+    return View::make('laravel-crm::deals.index');
+})->middleware('auth.laravel-crm')->name('laravel-crm.deals');
+
+Route::get('activities', function () {
+    return View::make('laravel-crm::activities.index');
+})->middleware('auth.laravel-crm')->name('laravel-crm.activities');
+
+Route::get('contacts', function () {
+    return View::make('laravel-crm::contacts.index');
+})->middleware('auth.laravel-crm')->name('laravel-crm.contacts');

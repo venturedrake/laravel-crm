@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header">Create Lead</div>
+        <div class="card-header">Activity</div>
         <div class="card-body">
         </div>
     </div>
