@@ -2,8 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use VentureDrake\LaravelCrm\Models\Lead;
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Models\Lead;
 
 class LeadController extends Controller
 {

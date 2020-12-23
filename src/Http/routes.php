@@ -59,7 +59,6 @@ Route::get('/', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@in
 /* Leads */
 
 Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function () {
-
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@index')
         ->name('laravel-crm.leads.index');
 
@@ -80,7 +79,6 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
 
     Route::delete('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@destroy')
         ->name('laravel-crm.leads.destroy');
-    
 });
 
 /* Deals */
