@@ -51,22 +51,52 @@ Route::get('password/confirm', function () {
 
 /* Private Routes */
 
-Route::get('/', function () {
-    return View::make('laravel-crm::index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.dashboard');
+/* Dashboarh */
+Route::get('/', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
+    ->middleware('auth.laravel-crm')
+    ->name('laravel-crm.dashboard');
 
-Route::get('leads', function () {
-    return View::make('laravel-crm::leads.index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.leads');
+/* Leads */
+
+Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function () {
+
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@index')
+        ->name('laravel-crm.leads.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@create')
+        ->name('laravel-crm.leads.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@store')
+        ->name('laravel-crm.leads.store');
+
+    Route::get('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@show')
+        ->name('laravel-crm.leads.show');
+
+    Route::get('{lead}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@edit')
+        ->name('laravel-crm.leads.edit');
+
+    Route::put('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@update')
+        ->name('laravel-crm.leads.update');
+
+    Route::delete('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@destroy')
+        ->name('laravel-crm.leads.destroy');
+    
+});
+
+/* Deals */
 
 Route::get('deals', function () {
     return View::make('laravel-crm::deals.index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.deals');
+})->middleware('auth.laravel-crm')->name('laravel-crm.deals.index');
+
+/* Activities */
 
 Route::get('activities', function () {
     return View::make('laravel-crm::activities.index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.activities');
+})->middleware('auth.laravel-crm')->name('laravel-crm.activities.index');
+
+/* Contacts */
 
 Route::get('contacts', function () {
     return View::make('laravel-crm::contacts.index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.contacts');
+})->middleware('auth.laravel-crm')->name('laravel-crm.contacts.index');
