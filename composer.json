@@ -20,11 +20,13 @@
     "require": {
         "php": ">=7.2",
         "illuminate/support": "^6.0|^7.0|^8.0",
-        "venturedrake/laravel-encryptable": "dev-master"
+        "spatie/laravel-permission": "^3.0",
+        "venturedrake/laravel-encryptable": "^0.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.17@dev",
         "orchestra/testbench": "^4.0",
+        "phpstan/phpstan": "^0.12.65",
         "phpunit/phpunit": "^8.0"
     },
     "autoload": {
@@ -42,9 +44,10 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit",
+        "test": "vendor/bin/phpunit --colors=always",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
-        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=no",
+        "analyse": "vendor/bin/phpstan analyse -c phpstan.neon"
     },
     "config": {
         "sort-packages": true
