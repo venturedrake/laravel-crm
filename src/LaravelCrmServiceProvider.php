@@ -2,7 +2,9 @@
 
 namespace VentureDrake\LaravelCrm;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
@@ -22,7 +24,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot(Router $router)
+    public function boot(Router $router, Filesystem $filesystem)
     {
         /*
          * Optional methods to load your package assets
@@ -57,17 +59,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
             ], 'lang');
 
             // Publishing the migrations.
-            if (! class_exists('CreateLaravelCrmTables')) {
-                $this->publishes([
-                    __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => database_path(
-                        'migrations/'.date(
-                            'Y_m_d_His',
-                            time()
-                        ).'_create_laravel_crm_tables.php'
-                    ),
-                ], 'migrations');
-            }
+            $this->publishes([
+                __DIR__.'/../database/migrations/create_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem),
+            ], 'migrations');
 
+            // Publishing the seeders.
             if (! class_exists('LaravelCrmLeadStatusesTableSeeder')) {
                 $this->publishes([
                     __DIR__ . '/../database/seeds/LaravelCrmLeadStatusesTableSeeder.php' => database_path(
@@ -115,5 +111,22 @@ class LaravelCrmServiceProvider extends ServiceProvider
             'prefix' => config('laravel-crm.route_prefix'),
             'middleware' => config('laravel-crm.route_middleware'),
         ];
+    }
+
+    /**
+     * Returns existing migration file if found, else uses the current timestamp.
+     *
+     * @param Filesystem $filesystem
+     * @return string
+     */
+    protected function getMigrationFileName(Filesystem $filesystem): string
+    {
+        $timestamp = date('Y_m_d_His');
+
+        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+            ->flatMap(function ($path) use ($filesystem) {
+                return $filesystem->glob($path.'*_create_laravel_crm_tables.php');
+            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_laravel_crm_tables.php")
+            ->first();
     }
 }
