@@ -7,12 +7,90 @@
         <div class="card">
             <div class="card-header"><h3 class="card-title float-left m-0">Create lead</h3> <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.leads.index')) }}"><span class="fa fa-angle-double-left"></span> Back to leads</a></span></div>
             <div class="card-body">
-                
-                    @include('laravel-crm::partials.form.text',['name' => 'person_name', 'title' => 'Contact person'])
-                    @include('laravel-crm::partials.form.text',['name' => 'organisation_name', 'title' => 'Organisation'])
-                    @include('laravel-crm::partials.form.text',['name' => 'title', 'title' => 'Title'])
-                    @include('laravel-crm::partials.form.textarea',['name' => 'title', 'title' => 'Description', 'rows' => 5])
-                
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        @include('laravel-crm::partials.form.text',[
+                           'name' => 'person_name',
+                           'title' => 'Contact person',
+                           'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>'
+                       ])
+                        @include('laravel-crm::partials.form.text',[
+                            'name' => 'organisation_name',
+                            'title' => 'Organisation',
+                             'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>'
+                        ])
+                        @include('laravel-crm::partials.form.text',[
+                            'name' => 'title',
+                            'title' => 'Title'
+                        ])
+                        @include('laravel-crm::partials.form.textarea',[
+                             'name' => 'title',
+                             'title' => 'Description',
+                             'rows' => 5
+                        ])
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                @include('laravel-crm::partials.form.text',[
+                                      'name' => 'amount',
+                                      'title' => 'Value',
+                                      'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>'
+                                  ])
+                            </div>
+                            <div class="col-sm-6">
+                                @include('laravel-crm::partials.form.select',[
+                                    'name' => 'currency',
+                                    'title' => 'Currency',
+                                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
+                                    'selected' => old('currency') ?? 'USD'
+                                ])
+                            </div>
+                        </div>
+                        @include('laravel-crm::partials.form.select',[
+                                 'name' => 'user_assigned_id',
+                                 'title' => 'Owner',
+                                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+                                 'selected' => old('user_assigned_id') ?? auth()->user()->id
+                              ])
+                    </div>
+                    <div class="col-sm-6">
+                        <h6><span class="fa fa-user" aria-hidden="true"></span> Person</h6>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                @include('laravel-crm::partials.form.text',[
+                                 'name' => 'phone',
+                                 'title' => 'Phone'
+                              ])
+                            </div>
+                            <div class="col-sm-6">
+                                @include('laravel-crm::partials.form.select',[
+                                 'name' => 'phone_type',
+                                 'title' => 'Type',
+                                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
+                                 'selected' => old('phone_type') ?? 'work'
+                              ])
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                @include('laravel-crm::partials.form.text',[
+                                 'name' => 'email',
+                                 'title' => 'Email'
+                              ])
+                            </div>
+                            <div class="col-sm-6">
+                                @include('laravel-crm::partials.form.select',[
+                                 'name' => 'email_type',
+                                 'title' => 'Type',
+                                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
+                                 'selected' => old('email_type') ?? 'work'
+                              ])
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <a href="{{ url(route('laravel-crm.leads.index')) }}" class="btn btn-outline-secondary">Cancel</a>

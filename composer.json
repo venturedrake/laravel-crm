@@ -20,6 +20,8 @@
     "require": {
         "php": ">=7.2",
         "illuminate/support": "^6.0|^7.0|^8.0",
+        "livewire/livewire": "^1.0",
+        "pragmarx/countries": "^0.7.2",
         "spatie/laravel-permission": "^3.0",
         "venturedrake/laravel-encryptable": "^0.1"
     },

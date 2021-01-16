@@ -5,8 +5,12 @@
     <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroupPrepend">{!! $prepend !!}</span>
     </div>
-    @endisset    
-    <input id="input_{{ $name }}" type="text" name="{{ $name }}" class="form-control @error($name) is-invalid @enderror">
+    @endisset
+        <select id="select_{{ $name }}" name="{{ $name }}" class="form-control @error($name) is-invalid @enderror">
+            @foreach($options as $optionKey => $optionName)
+                <option value="{{ $optionKey }}" {{ (isset($selected) && $selected == $optionKey) ? 'selected' : null }}>{{ $optionName }}</option>
+            @endforeach    
+        </select>
     @error($name)
     <div class="text-danger">{{ $message }}</div>
     @enderror
