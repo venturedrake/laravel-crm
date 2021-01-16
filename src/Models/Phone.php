@@ -10,14 +10,17 @@ class Phone extends Model
 {
     use SoftDeletes;
     use LaravelEncryptableTrait;
-    
-    protected $table = 'crm_phones';
 
     protected $guarded = ['id'];
 
     protected $encryptable = [
         'number',
     ];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 
     /**
      * Get all of the owning phoneable models.

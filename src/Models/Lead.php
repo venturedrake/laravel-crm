@@ -11,9 +11,12 @@ class Lead extends Model
     use SoftDeletes;
     use HasCustomFields;
     
-    protected $table = 'crm_leads';
-    
     protected $guarded = ['id'];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 
     /**
      * Get all of the lead's emails.

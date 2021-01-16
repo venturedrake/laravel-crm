@@ -10,14 +10,17 @@ class Email extends Model
 {
     use SoftDeletes;
     use LaravelEncryptableTrait;
-    
-    protected $table = 'crm_emails';
 
     protected $guarded = ['id'];
 
     protected $encryptable = [
         'address',
     ];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 
     /**
      * Get all of the owning emailable models.

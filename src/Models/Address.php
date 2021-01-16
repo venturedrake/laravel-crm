@@ -10,8 +10,6 @@ class Address extends Model
 {
     use SoftDeletes;
     use LaravelEncryptableTrait;
-    
-    protected $table = 'crm_addresses';
 
     protected $guarded = ['id'];
 
@@ -25,6 +23,11 @@ class Address extends Model
         'state',
         'country',
     ];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 
     /**
      * Get all of the owning addressable models.

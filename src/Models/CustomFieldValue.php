@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CustomFieldValue extends Model
 {
     use SoftDeletes;
-    
-    protected $table = 'crm_custom_field_values';
 
     protected $guarded = ['id'];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 
     /**
      * Get all of the owning custom_field_values models.

@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeadStatus extends Model
 {
-    protected $table = 'crm_lead_statuses';
-
     protected $guarded = ['id'];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 
     public function leads()
     {

@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CustomField extends Model
 {
     use SoftDeletes;
-    
-    protected $table = 'crm_custom_fields';
 
     protected $guarded = ['id'];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 }

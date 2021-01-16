@@ -10,8 +10,6 @@ class Person extends Model
 {
     use SoftDeletes;
     use LaravelEncryptableTrait;
-    
-    protected $table = 'crm_people';
 
     protected $guarded = ['id'];
 
@@ -24,4 +22,9 @@ class Person extends Model
         'birthday',
         'gender',
     ];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 }

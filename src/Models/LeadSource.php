@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class LeadSource extends Model
 {
     use SoftDeletes;
-    
-    protected $table = 'crm_lead_sources';
 
     protected $guarded = ['id'];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 
     public function leads()
     {

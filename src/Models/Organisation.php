@@ -10,12 +10,15 @@ class Organisation extends Model
 {
     use SoftDeletes;
     use LaravelEncryptableTrait;
-    
-    protected $table = 'crm_organisations';
 
     protected $guarded = ['id'];
 
     protected $encryptable = [
         'name',
     ];
+
+    public function getTable()
+    {
+        return config('laravel-crm.db_table_prefix').parent::getTable();
+    }
 }
