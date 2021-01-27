@@ -12,21 +12,21 @@
                     <div class="col-sm-6">
                         @include('laravel-crm::partials.form.text',[
                            'name' => 'person_name',
-                           'title' => 'Contact person',
+                           'label' => 'Contact person',
                            'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
                        ])
                         @include('laravel-crm::partials.form.text',[
                             'name' => 'organisation_name',
-                            'title' => 'Organisation',
+                            'label' => 'Organisation',
                             'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>'
                         ])
                         @include('laravel-crm::partials.form.text',[
                             'name' => 'title',
-                            'title' => 'Title'
+                            'label' => 'Title'
                         ])
                         @include('laravel-crm::partials.form.textarea',[
                              'name' => 'description',
-                             'title' => 'Description',
+                             'label' => 'Description',
                              'rows' => 5
                         ])
 
@@ -34,14 +34,14 @@
                             <div class="col-sm-6">
                                 @include('laravel-crm::partials.form.text',[
                                       'name' => 'amount',
-                                      'title' => 'Value',
+                                      'label' => 'Value',
                                       'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>'
                                   ])
                             </div>
                             <div class="col-sm-6">
                                 @include('laravel-crm::partials.form.select',[
                                     'name' => 'currency',
-                                    'title' => 'Currency',
+                                    'label' => 'Currency',
                                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
                                     'default' => 'USD'
                                 ])
@@ -49,7 +49,7 @@
                         </div>
                         @include('laravel-crm::partials.form.select',[
                                  'name' => 'user_assigned_id',
-                                 'title' => 'Owner',
+                                 'label' => 'Owner',
                                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
                                  'selected' => old('user_assigned_id') ?? auth()->user()->id
                               ])
@@ -61,13 +61,13 @@
                             <div class="col-sm-6">
                                 @include('laravel-crm::partials.form.text',[
                                  'name' => 'phone',
-                                 'title' => 'Phone'
+                                 'label' => 'Phone'
                               ])
                             </div>
                             <div class="col-sm-6">
                                 @include('laravel-crm::partials.form.select',[
                                  'name' => 'phone_type',
-                                 'title' => 'Type',
+                                 'label' => 'Type',
                                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
                                  'selected' => old('phone_type') ?? 'work'
                               ])
@@ -77,13 +77,13 @@
                             <div class="col-sm-6">
                                 @include('laravel-crm::partials.form.text',[
                                  'name' => 'email',
-                                 'title' => 'Email'
+                                 'label' => 'Email'
                               ])
                             </div>
                             <div class="col-sm-6">
                                 @include('laravel-crm::partials.form.select',[
                                  'name' => 'email_type',
-                                 'title' => 'Type',
+                                 'label' => 'Type',
                                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
                                  'selected' => old('email_type') ?? 'work'
                               ])

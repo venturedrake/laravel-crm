@@ -87,7 +87,9 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
-        return view('laravel-crm::leads.show');
+        return view('laravel-crm::leads.show', [
+            'lead' => $lead
+        ]);
     }
 
     /**
@@ -98,7 +100,9 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead)
     {
-        return view('laravel-crm::leads.edit');
+        return view('laravel-crm::leads.edit', [
+            'lead' => $lead
+        ]);
     }
 
     /**

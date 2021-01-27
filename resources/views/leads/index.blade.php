@@ -21,14 +21,14 @@
                 </thead>
                 <tbody>
                 @foreach($leads as $lead)
-                    <tr>
+                    <tr class="has-link" data-url="{{ url(route('laravel-crm.leads.show',$lead)) }}">
                         <td>{{ $lead->title }}</td>
                         <td>{{ $lead->person_name }}</td>
                         <td>{{ $lead->organisation_name }}</td>
                         <td>{{ $lead->amount }}</td>
                         <td>{{ $lead->created_at->diffForHumans() }}</td>
                         <td>{{ $lead->assignedToUser->name }}</td>
-                        <td>
+                        <td class="disable-link">
                             <a href="#" class="btn btn-success btn-sm">Convert</a>
                             <a href="#" class="btn btn-danger btn-sm"><span class="fa fa-trash-o" aria-hidden="true"></span></a>
                         </td>

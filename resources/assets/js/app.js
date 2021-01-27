@@ -37272,7 +37272,32 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // Little bit of Jquery
+
+
+var appJquery = function () {
+  return {
+    init: function init() {
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+      $("tr.has-link > td:not('.disable-link')").on({
+        click: function click() {
+          window.location = $(this).closest('tr').data('url');
+        },
+        mouseover: function mouseover() {
+          $(this).css('cursor', 'pointer');
+        }
+      });
+    }
+  };
+}();
+
+$(document).ready(function () {
+  appJquery.init();
+});
 
 /***/ }),
 

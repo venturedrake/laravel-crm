@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -10,7 +11,7 @@
     <title>Laravel CRM</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}" defer></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?c=789789" defer></script>
 
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
@@ -77,12 +78,12 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-body">
-                                <ul class="nav flex-column">
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') == 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}">Dashboard</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.leads') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.leads.index')) }}">Leads</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deals') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deals.index')) }}">Deals</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.activities') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.activities.index')) }}">Activities</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.contacts') == 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.contacts.index')) }}">Contacts</a></li>
+                                <ul class="nav nav-pills flex-column">
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') === 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}">Dashboard</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.leads') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.leads.index')) }}">Leads</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deals') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deals.index')) }}">Deals</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.activities') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.activities.index')) }}">Activities</a></li>
+                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.contacts') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.contacts.index')) }}">Contacts</a></li>
                                 </ul>
                             </div>
                         </div>
