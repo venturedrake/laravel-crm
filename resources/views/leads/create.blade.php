@@ -13,19 +13,19 @@
                         @include('laravel-crm::partials.form.text',[
                            'name' => 'person_name',
                            'title' => 'Contact person',
-                           'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>'
+                           'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
                        ])
                         @include('laravel-crm::partials.form.text',[
                             'name' => 'organisation_name',
                             'title' => 'Organisation',
-                             'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>'
+                            'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>'
                         ])
                         @include('laravel-crm::partials.form.text',[
                             'name' => 'title',
                             'title' => 'Title'
                         ])
                         @include('laravel-crm::partials.form.textarea',[
-                             'name' => 'title',
+                             'name' => 'description',
                              'title' => 'Description',
                              'rows' => 5
                         ])
@@ -43,7 +43,7 @@
                                     'name' => 'currency',
                                     'title' => 'Currency',
                                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-                                    'selected' => old('currency') ?? 'USD'
+                                    'default' => 'USD'
                                 ])
                             </div>
                         </div>

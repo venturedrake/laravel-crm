@@ -8,7 +8,7 @@
     @endisset
         <select id="select_{{ $name }}" name="{{ $name }}" class="form-control @error($name) is-invalid @enderror">
             @foreach($options as $optionKey => $optionName)
-                <option value="{{ $optionKey }}" {{ (isset($selected) && $selected == $optionKey) ? 'selected' : null }}>{{ $optionName }}</option>
+                <option value="{{ $optionKey }}" {{ ((old($name) && old($name) == $optionKey) || (isset(${$name}) && ${$name} == $optionKey) || (isset($default) && $default == $optionKey)) ? 'selected' : null }}>{{ $optionName }}</option>
             @endforeach    
         </select>
     @error($name)

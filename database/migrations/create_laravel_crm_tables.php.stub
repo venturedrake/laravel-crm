@@ -185,6 +185,7 @@ class CreateLaravelCrmTables extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'leads');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'lead_statuses');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'people');

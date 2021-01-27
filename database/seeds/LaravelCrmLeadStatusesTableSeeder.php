@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Ramsey\Uuid\Uuid;
 
 class LaravelCrmLeadStatusesTableSeeder extends Seeder
 {
@@ -18,6 +19,7 @@ class LaravelCrmLeadStatusesTableSeeder extends Seeder
                 ],
                 [
                     'name' => 'Lead In',
+                    'external_id' => Uuid::uuid4()->toString(),
                 ]
             ],
             [
@@ -26,6 +28,7 @@ class LaravelCrmLeadStatusesTableSeeder extends Seeder
                 ],
                 [
                     'name' => 'Contacted',
+                    'external_id' => Uuid::uuid4()->toString(),
                 ]
             ],
         ];

@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Lead;
 
 class LeadController extends Controller
@@ -14,7 +15,15 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        return view('laravel-crm::leads.index');
+        if (Lead::all()->count() < 5) {
+            $leads = Lead::latest()->get();
+        } else {
+            $leads = Lead::latest()->paginate(5);
+        }
+        
+        return view('laravel-crm::leads.index', [
+            'leads' => $leads,
+        ]);
     }
 
     /**
@@ -33,8 +42,40 @@ class LeadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest $request)
     {
+        $lead = Lead::create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'person_name' => $request->person_name,
+            'organisation_name' => $request->organisation_name,
+            'title' => $request->title,
+            'description' => $request->description,
+            'amount' => $request->amount,
+            'currency' => $request->currency,
+            'lead_status_id' => 1,
+            'user_assigned_id' => $request->user_assigned_id,
+        ]);
+        
+        if ($request->phone) {
+            $lead->phones()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'number' => $request->phone,
+                'type' => $request->phone_type,
+                'primary' => 1,
+            ]);
+        }
+
+        if ($request->email) {
+            $lead->emails()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'address' => $request->email,
+                'type' => $request->email_type,
+                'primary' => 1,
+            ]);
+        }
+
+        flash('Lead stored')->success();
+        
         return redirect(route('laravel-crm.leads.index'));
     }
 

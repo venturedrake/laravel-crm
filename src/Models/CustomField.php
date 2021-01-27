@@ -13,6 +13,6 @@ class CustomField extends Model
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix').parent::getTable();
+        return config('laravel-crm.db_table_prefix').'custom_fields';
     }
 }
