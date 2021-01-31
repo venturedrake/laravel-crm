@@ -2,12 +2,10 @@
 
 @section('content')
 
-    @include('flash::message')
-
     <div class="card">
         <div class="card-header"><h3 class="card-title float-left m-0">Leads</h3> <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.leads.create')) }}"><span class="fa fa-plus"></span>  Add lead</a></span></div>
         <div class="card-body p-0 table-responsive">
-            <table class="table mb-0">
+            <table class="table mb-0 card-table table-hover">
                 <thead>
                 <tr>
                     <th scope="col">Title</th>
@@ -28,7 +26,7 @@
                         <td>{{ $lead->amount }}</td>
                         <td>{{ $lead->created_at->diffForHumans() }}</td>
                         <td>{{ $lead->assignedToUser->name }}</td>
-                        <td class="disable-link">
+                        <td class="disable-link text-right">
                             <a href="#" class="btn btn-success btn-sm">Convert</a>
                             <a href="#" class="btn btn-danger btn-sm"><span class="fa fa-trash-o" aria-hidden="true"></span></a>
                         </td>

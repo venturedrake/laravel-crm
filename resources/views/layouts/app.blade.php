@@ -11,7 +11,7 @@
     <title>Laravel CRM</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?c=789789" defer></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?c=87856736" defer></script>
 
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
@@ -19,12 +19,12 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?c=87856736" rel="stylesheet">
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url(route('laravel-crm.dashboard')) }}">Laravel CRM</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -73,22 +73,13 @@
         </nav>
 
         <main class="py-4">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <ul class="nav nav-pills flex-column">
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') === 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}">Dashboard</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.leads') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.leads.index')) }}">Leads</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deals') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deals.index')) }}">Deals</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.activities') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.activities.index')) }}">Activities</a></li>
-                                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.contacts') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.contacts.index')) }}">Contacts</a></li>
-                                </ul>
-                            </div>
-                        </div>
+                    <div class="col col-md-2">
+                       @include('laravel-crm::layouts.partials.nav')
                     </div>
-                    <div class="col-md-9">
+                    <div class="col">
+                        @include('flash::message')
                         @yield('content')
                     </div>
                 </div>

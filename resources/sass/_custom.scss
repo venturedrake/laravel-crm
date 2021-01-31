@@ -5,3 +5,18 @@
 .card-footer ul.pagination{
   margin: 0;
 }
+
+.table.card-table td,
+.table.card-table th{
+  padding: 0.75rem 1.25rem
+}
+
+/*
+ * Forms
+ */
+
+.invalid-feedback-custom{
+  margin-top: .25rem;
+  font-size: 80%;
+  width: 100%;
+}

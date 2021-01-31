@@ -4,6 +4,8 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
 use VentureDrake\LaravelCrm\Models\Lead;
 
 class LeadController extends Controller
@@ -42,7 +44,7 @@ class LeadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(\VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest $request)
+    public function store(StoreLeadRequest $request)
     {
         $lead = Lead::create([
             'external_id' => Uuid::uuid4()->toString(),
@@ -74,7 +76,7 @@ class LeadController extends Controller
             ]);
         }
 
-        flash('Lead stored')->success();
+        flash('Lead stored')->success()->important();
         
         return redirect(route('laravel-crm.leads.index'));
     }
@@ -100,8 +102,13 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead)
     {
+        $email = $lead->getPrimaryEmail();
+        $phone = $lead->getPrimaryPhone();
+        
         return view('laravel-crm::leads.edit', [
             'lead' => $lead,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
         ]);
     }
 
@@ -112,9 +119,56 @@ class LeadController extends Controller
      * @param  \App\Lead  $lead
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Lead $lead)
+    public function update(UpdateLeadRequest $request, Lead $lead)
     {
-        return redirect(route('laravel-crm.leads.index'));
+        $lead->update([
+            'person_name' => $request->person_name,
+            'organisation_name' => $request->organisation_name,
+            'title' => $request->title,
+            'description' => $request->description,
+            'amount' => $request->amount,
+            'currency' => $request->currency,
+            'user_assigned_id' => $request->user_assigned_id,
+        ]);
+
+        $email = $lead->getPrimaryEmail();
+        $phone = $lead->getPrimaryPhone();
+
+        if ($request->phone && $phone) {
+            $phone->update([
+                'number' => $request->phone,
+                'type' => $request->phone_type,
+            ]);
+        } elseif ($request->phone) {
+            $lead->phones()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'number' => $request->phone,
+                'type' => $request->phone_type,
+                'primary' => 1,
+            ]);
+        } elseif ($phone) {
+            $phone->delete();
+        }
+
+        if ($request->email && $email) {
+            $email->update([
+                'address' => $request->email,
+                'type' => $request->email_type,
+            ]);
+        } elseif ($request->email) {
+            $lead->emails()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'address' => $request->email,
+                'type' => $request->email_type,
+                'primary' => 1,
+            ]);
+        } elseif ($email) {
+            $email->delete();
+        }
+
+        flash('Lead updated')->success()->important();
+        
+        return redirect(route('laravel-crm.leads.show', $lead));
     }
 
     /**
