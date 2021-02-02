@@ -17,10 +17,10 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        if (Lead::all()->count() < 5) {
+        if (Lead::all()->count() < 30) {
             $leads = Lead::latest()->get();
         } else {
-            $leads = Lead::latest()->paginate(5);
+            $leads = Lead::latest()->paginate(30);
         }
         
         return view('laravel-crm::leads.index', [
@@ -89,8 +89,14 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
+        $email = $lead->getPrimaryEmail();
+        $phone = $lead->getPrimaryPhone();
+
+
         return view('laravel-crm::leads.show', [
             'lead' => $lead,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
         ]);
     }
 
@@ -179,6 +185,10 @@ class LeadController extends Controller
      */
     public function destroy(Lead $lead)
     {
+        $lead->delete();
+        
+        flash('Lead deleted')->success()->important();
+        
         return redirect(route('laravel-crm.leads.index'));
     }
 }

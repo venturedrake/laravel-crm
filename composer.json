@@ -19,6 +19,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.2",
+        "cknow/laravel-money": "^4.0",
         "illuminate/support": "^6.0|^7.0|^8.0",
         "laracasts/flash": "^3.2",
         "livewire/livewire": "^1.0",

@@ -9,21 +9,30 @@
                 <a href="{{ url(route('laravel-crm.leads.edit', $lead)) }}" type="button" class="btn btn-outline-secondary btn-sm">Edit</a>
             </span>
         </div>
-        <div class="card-body">
+        <div class="card-body card-show">
             <div class="row">
                 <div class="col-sm-6">
-                    <h6><span class="fa fa-dollar" aria-hidden="true"></span> Details</h6>
+                    <h6 class="text-uppercase">Details</h6>
                     <hr />
-                    {{ $lead->amount }}
-                    <h6 class="mt-4"><span class="fa fa-user" aria-hidden="true"></span> Person</h6>
+                    <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($lead->amount, $lead->currency) }}</p>
+                    <p><span class="fa fa-info" aria-hidden="true"></span> {{ $lead->description }}</p>
+                    <p><span class="fa fa-user-circle" aria-hidden="true"></span> {{ $lead->assignedToUser->name }}</p>
+                    <h6 class="mt-4 text-uppercase"> Person</h6>
                     <hr />
-                    {{ $lead->person_name }}
-                    <h6 class="mt-4"><span class="fa fa-building" aria-hidden="true"></span> Organisation</h6>
+                    <p><span class="fa fa-user" aria-hidden="true"></span> {{ $lead->person_name }} </p>
+                    @if($email)
+                        <p><span class="fa fa-envelope" aria-hidden="true"></span> <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})</p>
+                    @endif
+                    @if($phone)
+                        <p><span class="fa fa-phone" aria-hidden="true"></span> <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})</p>
+                    @endif
+                    <h6 class="mt-4 text-uppercase"> Organisation</h6>
                     <hr />
-                    {{ $lead->organisation_name }}
+                    <p><span class="fa fa-building" aria-hidden="true"></span> {{ $lead->organisation_name }}</p>
+                    <p><span class="fa fa-map-marker" aria-hidden="true"></span> -- Address Here -- </p>
                 </div>
                 <div class="col-sm-6">
-                    <h6><span class="fa fa-info" aria-hidden="true"></span> Activities</h6>
+                    <h6 class="text-uppercase">Activities</h6>
                     <hr />
                     ...
                 </div>

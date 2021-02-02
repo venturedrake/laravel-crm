@@ -23,12 +23,16 @@
                         <td>{{ $lead->title }}</td>
                         <td>{{ $lead->person_name }}</td>
                         <td>{{ $lead->organisation_name }}</td>
-                        <td>{{ $lead->amount }}</td>
+                        <td>{{ money($lead->amount, $lead->currency) }}</td>
                         <td>{{ $lead->created_at->diffForHumans() }}</td>
                         <td>{{ $lead->assignedToUser->name }}</td>
                         <td class="disable-link text-right">
                             <a href="#" class="btn btn-success btn-sm">Convert</a>
-                            <a href="#" class="btn btn-danger btn-sm"><span class="fa fa-trash-o" aria-hidden="true"></span></a>
+                            <form action="{{ route('laravel-crm.leads.destroy',$lead) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                                {{ method_field('DELETE') }}
+                                {{ csrf_field() }}
+                                <button class="btn btn-danger btn-sm" type="submit" data-model="lead"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach

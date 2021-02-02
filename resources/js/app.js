@@ -1,5 +1,7 @@
 require('./bootstrap');
 
+const Swal = require('sweetalert2')
+
 // Little bit of Jquery
 const appJquery = function() {
     return {
@@ -19,8 +21,33 @@ const appJquery = function() {
                     $(this).css( 'cursor', 'pointer' );
                 }
             });
+
+            $('form.form-delete-button > button[type="submit"]').on('click', function (e) {
+                
+                Swal.fire({
+                    customClass: {
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-outline-secondary'
+                    },
+                    buttonsStyling: false,
+                    title: 'Are you sure you want to delete this ' + $(this).data('model') + '?',
+                    showCancelButton: true,
+                    focusConfirm: true,
+                    confirmButtonText:
+                        'Yes, Delete',
+                    confirmButtonAriaLabel: 'Yes, Delete',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(this).closest('form').submit()
+                    }
+                })
+
+                e.preventDefault();
+            })
             
-        }
+        },
+        
     }
 }();
 

@@ -137,7 +137,7 @@ class CreateLaravelCrmTables extends Migration
             $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->integer('amount')->default(0);
+            $table->integer('amount')->nullable();
             $table->string("currency", 3)->default("USD");
             $table->unsignedSmallInteger('lead_status_id')->index()->nullable();
             $table->foreign('lead_status_id')->references('id')->on(config('laravel-crm.db_table_prefix').'lead_statuses');

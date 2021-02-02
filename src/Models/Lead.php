@@ -18,6 +18,15 @@ class Lead extends Model
         return config('laravel-crm.db_table_prefix').'leads';
     }
 
+    public function setAmountAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['amount'] = $value * 100;
+        } else {
+            $this->attributes['amount'] = null;
+        }
+    }
+
     /**
      * Get all of the lead's emails.
      */
