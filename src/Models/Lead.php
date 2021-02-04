@@ -61,6 +61,11 @@ class Lead extends Model
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
     }
 
+    public function getPrimaryAddress()
+    {
+        return $this->addresses()->where('primary', 1)->first();
+    }
+
     public function leadStatus()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\LeadStatus::class, 'lead_status_id');

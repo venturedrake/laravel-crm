@@ -91,12 +91,13 @@ class LeadController extends Controller
     {
         $email = $lead->getPrimaryEmail();
         $phone = $lead->getPrimaryPhone();
-
-
+        $address = $lead->getPrimaryAddress();
+        
         return view('laravel-crm::leads.show', [
             'lead' => $lead,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
+            'address' => $address ?? null
         ]);
     }
 
@@ -139,6 +140,7 @@ class LeadController extends Controller
 
         $email = $lead->getPrimaryEmail();
         $phone = $lead->getPrimaryPhone();
+        $address = $lead->getPrimaryAddress();
 
         if ($request->phone && $phone) {
             $phone->update([
@@ -170,6 +172,30 @@ class LeadController extends Controller
             ]);
         } elseif ($email) {
             $email->delete();
+        }
+
+        if ($address) {
+            $address->update([
+                'line1' => $request->line1,
+                'line2' => $request->line2,
+                'line3' => $request->line3,
+                'suburb' => $request->suburb,
+                'state' => $request->state,
+                'code' => $request->code,
+                'country' => $request->country,
+            ]);
+        } elseif ($request->email) {
+            $lead->addresses()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'line1' => $request->line1,
+                'line2' => $request->line2,
+                'line3' => $request->line3,
+                'suburb' => $request->suburb,
+                'state' => $request->state,
+                'code' => $request->code,
+                'country' => $request->country,
+                'primary' => 1,
+            ]);
         }
 
         flash('Lead updated')->success()->important();

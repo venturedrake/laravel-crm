@@ -29,7 +29,7 @@
                     <h6 class="mt-4 text-uppercase"> Organisation</h6>
                     <hr />
                     <p><span class="fa fa-building" aria-hidden="true"></span> {{ $lead->organisation_name }}</p>
-                    <p><span class="fa fa-map-marker" aria-hidden="true"></span> -- Address Here -- </p>
+                    <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }} </p>
                 </div>
                 <div class="col-sm-6">
                     <h6 class="text-uppercase">Activities</h6>

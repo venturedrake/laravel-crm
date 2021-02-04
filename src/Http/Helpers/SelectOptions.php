@@ -81,3 +81,15 @@ function currencies()
 
     return $items;
 }
+
+function countries()
+{
+    $countries = new Countries();
+    $items = [];
+    
+    foreach ($countries->all()->pluck('name.common')->toArray() as $country) {
+        $items[$country] = $country;
+    }
+
+    return $items;
+}

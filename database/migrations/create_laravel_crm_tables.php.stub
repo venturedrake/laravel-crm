@@ -98,6 +98,7 @@ class CreateLaravelCrmTables extends Migration
             $table->string('state')->nullable();
             $table->string('country')->nullable();
             $table->morphs('addressable');
+            $table->boolean('primary')->default(false);
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_updated_id')->nullable();

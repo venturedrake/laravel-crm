@@ -39,7 +39,8 @@
         },
         "files": [
             "src/Http/Helpers/SelectOptions.php",
-            "src/Http/Helpers/PersonName.php"
+            "src/Http/Helpers/PersonName.php",
+            "src/Http/Helpers/AddressLine.php"
         ]
     },
     "autoload-dev": {
