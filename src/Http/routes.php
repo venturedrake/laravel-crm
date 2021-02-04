@@ -98,3 +98,53 @@ Route::get('activities', function () {
 Route::get('contacts', function () {
     return View::make('laravel-crm::contacts.index');
 })->middleware('auth.laravel-crm')->name('laravel-crm.contacts.index');
+
+/* People */
+
+Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@index')
+        ->name('laravel-crm.people.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@create')
+        ->name('laravel-crm.people.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@store')
+        ->name('laravel-crm.people.store');
+
+    Route::get('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@show')
+        ->name('laravel-crm.people.show');
+
+    Route::get('{person}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@edit')
+        ->name('laravel-crm.people.edit');
+
+    Route::put('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@update')
+        ->name('laravel-crm.people.update');
+
+    Route::delete('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@destroy')
+        ->name('laravel-crm.people.destroy');
+});
+
+/* Organisations */
+
+Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@index')
+        ->name('laravel-crm.organisations.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@create')
+        ->name('laravel-crm.organisations.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@store')
+        ->name('laravel-crm.organisations.store');
+
+    Route::get('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@show')
+        ->name('laravel-crm.organisations.show');
+
+    Route::get('{organisation}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@edit')
+        ->name('laravel-crm.organisations.edit');
+
+    Route::put('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@update')
+        ->name('laravel-crm.organisations.update');
+
+    Route::delete('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@destroy')
+        ->name('laravel-crm.organisations.destroy');
+});

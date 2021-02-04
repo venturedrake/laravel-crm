@@ -97,7 +97,7 @@ class LeadController extends Controller
             'lead' => $lead,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'address' => $address ?? null
+            'address' => $address ?? null,
         ]);
     }
 
