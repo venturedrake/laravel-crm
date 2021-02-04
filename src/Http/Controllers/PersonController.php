@@ -2,6 +2,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Models\Person;
 
 class PersonController extends Controller
 {
@@ -24,7 +25,7 @@ class PersonController extends Controller
      */
     public function create()
     {
-        //
+        return view('laravel-crm::people.create');
     }
 
     /**
@@ -35,7 +36,9 @@ class PersonController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        flash('Person stored')->success()->important();
+
+        return redirect(route('laravel-crm.people.index'));
     }
 
     /**
@@ -44,9 +47,11 @@ class PersonController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Person $person)
     {
-        //
+        return view('laravel-crm::people.show', [
+            'person' => $person,
+        ]);
     }
 
     /**
@@ -55,9 +60,11 @@ class PersonController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Person $person)
     {
-        //
+        return view('laravel-crm::people.edit', [
+            'person' => $person,
+        ]);
     }
 
     /**
@@ -67,9 +74,11 @@ class PersonController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Person $person)
     {
-        //
+        flash('Person updated')->success()->important();
+
+        return redirect(route('laravel-crm.people.show', $person));
     }
 
     /**
@@ -78,8 +87,12 @@ class PersonController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Person $person)
     {
-        //
+        $person->delete();
+
+        flash('Person deleted')->success()->important();
+
+        return redirect(route('laravel-crm.people.index'));
     }
 }

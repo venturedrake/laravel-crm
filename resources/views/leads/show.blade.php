@@ -11,7 +11,7 @@
         </div>
         <div class="card-body card-show">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6 border-right">
                     <h6 class="text-uppercase">Details</h6>
                     <hr />
                     <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($lead->amount, $lead->currency) }}</p>

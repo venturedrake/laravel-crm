@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Models\Organisation;
 
 class OrganisationController extends Controller
 {
@@ -25,7 +26,7 @@ class OrganisationController extends Controller
      */
     public function create()
     {
-        //
+        return view('laravel-crm::organisations.create');
     }
 
     /**
@@ -36,7 +37,9 @@ class OrganisationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        flash('Organisation stored')->success()->important();
+
+        return redirect(route('laravel-crm.organisations.index'));
     }
 
     /**
@@ -45,9 +48,11 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Organisation $organisation)
     {
-        //
+        return view('laravel-crm::organisations.show', [
+            'organisation' => $organisation,
+        ]);
     }
 
     /**
@@ -56,9 +61,11 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Organisation $organisation)
     {
-        //
+        return view('laravel-crm::organisations.edit', [
+            'organisation' => $organisation,
+        ]);
     }
 
     /**
@@ -68,9 +75,11 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Organisation $organisation)
     {
-        //
+        flash('Organisation updated')->success()->important();
+
+        return redirect(route('laravel-crm.organisations.show', $organisation));
     }
 
     /**
@@ -79,8 +88,12 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Organisation $organisation)
     {
-        //
+        $organisation->delete();
+
+        flash('Organisation deleted')->success()->important();
+
+        return redirect(route('laravel-crm.organisations.index'));
     }
 }
