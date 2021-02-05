@@ -173,3 +173,28 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function
     Route::delete('{user}', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@destroy')
         ->name('laravel-crm.users.destroy');
 });
+
+/* Products */
+
+Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@index')
+        ->name('laravel-crm.products.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@create')
+        ->name('laravel-crm.products.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@store')
+        ->name('laravel-crm.products.store');
+
+    Route::get('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@show')
+        ->name('laravel-crm.products.show');
+
+    Route::get('{product}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@edit')
+        ->name('laravel-crm.products.edit');
+
+    Route::put('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@update')
+        ->name('laravel-crm.products.update');
+
+    Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@destroy')
+        ->name('laravel-crm.products.destroy');
+});
