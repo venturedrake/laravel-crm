@@ -148,3 +148,28 @@ Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], 
     Route::delete('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@destroy')
         ->name('laravel-crm.organisations.destroy');
 });
+
+/* Users */
+
+Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@index')
+        ->name('laravel-crm.users.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@create')
+        ->name('laravel-crm.users.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@store')
+        ->name('laravel-crm.users.store');
+
+    Route::get('{user}', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@show')
+        ->name('laravel-crm.users.show');
+
+    Route::get('{user}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@edit')
+        ->name('laravel-crm.users.edit');
+
+    Route::put('{user}', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@update')
+        ->name('laravel-crm.users.update');
+
+    Route::delete('{user}', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@destroy')
+        ->name('laravel-crm.users.destroy');
+});
