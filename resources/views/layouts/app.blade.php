@@ -75,9 +75,11 @@
         <main class="py-4">
             <div class="container-fluid">
                 <div class="row">
+                    @auth
                     <div class="col col-md-2">
                        @include('laravel-crm::layouts.partials.nav')
                     </div>
+                    @endauth
                     <div class="col">
                         @include('flash::message')
                         @yield('content')

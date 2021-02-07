@@ -176,6 +176,31 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function
 
 /* Products */
 
+Route::group(['prefix' => 'teams', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@index')
+        ->name('laravel-crm.teams.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@create')
+        ->name('laravel-crm.teams.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@store')
+        ->name('laravel-crm.teams.store');
+
+    Route::get('{team}', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@show')
+        ->name('laravel-crm.teams.show');
+
+    Route::get('{team}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@edit')
+        ->name('laravel-crm.teams.edit');
+
+    Route::put('{team}', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@update')
+        ->name('laravel-crm.teams.update');
+
+    Route::delete('{team}', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@destroy')
+        ->name('laravel-crm.teams.destroy');
+});
+
+/* Products */
+
 Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@index')
         ->name('laravel-crm.products.index');
