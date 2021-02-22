@@ -31,6 +31,19 @@ class LeadObserver
     }
 
     /**
+     * Handle the lead "updating" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
+     * @return void
+     */
+    public function updating(Lead $lead)
+    {
+        if (! app()->runningInConsole()) {
+            $lead->user_updated_id = auth()->user()->id ?? null;
+        }
+    }
+
+    /**
      * Handle the lead "updated" event.
      *
      * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead

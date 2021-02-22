@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
@@ -15,7 +14,7 @@ class LeadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         if (Lead::all()->count() < 30) {
             $leads = Lead::latest()->get();

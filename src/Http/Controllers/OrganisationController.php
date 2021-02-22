@@ -12,10 +12,16 @@ class OrganisationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
+        if (Organisation::all()->count() < 30) {
+            $organisations = Organisation::latest()->get();
+        } else {
+            $organisations = Organisation::latest()->paginate(30);
+        }
+        
         return view('laravel-crm::organisations.index', [
-            'organisations' => [],
+            'organisations' => $organisations,
         ]);
     }
 

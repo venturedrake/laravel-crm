@@ -8,26 +8,33 @@
             <table class="table mb-0 card-table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">Contact</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Label</th>
                     <th scope="col">Organisation</th>
-                    <th scope="col">Value</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Assigned To</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Closed Deals</th>
+                    <th scope="col">Open Deals</th>
+                    <th scope="col">Next Activity</th>
+                    <th scope="col">Owner</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($people as $person)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.people.show',$person)) }}">
-                        <td>{{ $person->title }}</td>
-                        <td>{{ $person->person_name }}</td>
-                        <td>{{ $person->person_name }}</td>
-                        <td>{{ money($person->amount, $person->currency) }}</td>
-                        <td>{{ $person->created_at->diffForHumans() }}</td>
-                        <td>{{ $person->assignedToUser->name }}</td>
+                        <td>{{ $person->name }}</td>
+                        <td></td>
+                        <td>{{ $person->organisation->name ?? null }}</td>
+                        <td>{{ $person->getPrimaryEmail()->address ?? null }}</td>
+                        <td>{{ $person->getPrimaryPhone()->number ?? null }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ $person->ownerUser->name ?? null }}</td>
                         <td class="disable-link text-right">
-                            <a href="#" class="btn btn-success btn-sm">Convert</a>
+                            <a href="{{  route('laravel-crm.people.show',$person) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                            <a href="{{  route('laravel-crm.people.edit',$person) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             <form action="{{ route('laravel-crm.people.destroy',$person) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}

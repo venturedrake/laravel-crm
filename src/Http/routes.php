@@ -93,12 +93,6 @@ Route::get('activities', function () {
     return View::make('laravel-crm::activities.index');
 })->middleware('auth.laravel-crm')->name('laravel-crm.activities.index');
 
-/* Contacts */
-
-Route::get('contacts', function () {
-    return View::make('laravel-crm::contacts.index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.contacts.index');
-
 /* People */
 
 Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {

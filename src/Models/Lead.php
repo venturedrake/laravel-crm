@@ -104,6 +104,11 @@ class Lead extends Model
         return $this->belongsTo(\App\User::class, 'user_restored_id');
     }
 
+    public function ownerUser()
+    {
+        return $this->belongsTo(\App\User::class, 'user_owner_id');
+    }
+
     public function assignedToUser()
     {
         return $this->belongsTo(\App\User::class, 'user_assigned_id');

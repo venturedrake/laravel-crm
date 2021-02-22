@@ -31,6 +31,19 @@ class PersonObserver
     }
 
     /**
+     * Handle the person "updating" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Person  $person
+     * @return void
+     */
+    public function updating(Person $person)
+    {
+        if (! app()->runningInConsole()) {
+            $person->user_updated_id = auth()->user()->id ?? null;
+        }
+    }
+
+    /**
      * Handle the person "updated" event.
      *
      * @param  \VentureDrake\LaravelCrm\Person  $person

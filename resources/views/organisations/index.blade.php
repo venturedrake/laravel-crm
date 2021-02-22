@@ -8,26 +8,23 @@
             <table class="table mb-0 card-table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Title</th>
+                    <th scope="col">Name</th>
                     <th scope="col">Contact</th>
-                    <th scope="col">Organisation</th>
-                    <th scope="col">Value</th>
                     <th scope="col">Created</th>
-                    <th scope="col">Assigned To</th>
+                    <th scope="col">Owner</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($organisations as $organisation)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.organisations.show',$organisation)) }}">
-                        <td>{{ $organisation->title }}</td>
-                        <td>{{ $organisation->person_name }}</td>
-                        <td>{{ $organisation->organisation_name }}</td>
-                        <td>{{ money($organisation->amount, $organisation->currency) }}</td>
+                        <td>{{ $organisation->name }}</td>
+                        <td></td>
                         <td>{{ $organisation->created_at->diffForHumans() }}</td>
-                        <td>{{ $organisation->assignedToUser->name }}</td>
+                        <td>{{ $organisation->ownerUser->name ?? null }}</td>
                         <td class="disable-link text-right">
-                            <a href="#" class="btn btn-success btn-sm">Convert</a>
+                            <a href="{{  route('laravel-crm.organisations.show',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                            <a href="{{  route('laravel-crm.organisations.edit',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             <form action="{{ route('laravel-crm.organisations.destroy',$organisation) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}

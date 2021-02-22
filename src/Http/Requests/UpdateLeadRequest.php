@@ -28,6 +28,7 @@ class UpdateLeadRequest extends FormRequest
             'organisation_name' => 'required_without:person_name|max:255',
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
+            'user_assigned_id' => 'required',
         ];
     }
 }

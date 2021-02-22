@@ -13,27 +13,6 @@ class CreateLaravelCrmTables extends Migration
      */
     public function up()
     {
-        Schema::create(config('laravel-crm.db_table_prefix').'people', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('external_id');
-            $table->string('title')->nullable();
-            $table->string('first_name');
-            $table->string('middle_name')->nullable();
-            $table->string('last_name')->nullable();
-            $table->string('maiden_name')->nullable();
-            $table->date('birthday')->nullable();
-            $table->enum('gender', ['male','female'])->nullable();
-            $table->unsignedBigInteger('user_created_id')->nullable();
-            $table->foreign('user_created_id')->references('id')->on('users');
-            $table->unsignedBigInteger('user_updated_id')->nullable();
-            $table->foreign('user_updated_id')->references('id')->on('users');
-            $table->unsignedBigInteger('user_deleted_id')->nullable();
-            $table->foreign('user_deleted_id')->references('id')->on('users');
-            $table->unsignedBigInteger('user_restored_id')->nullable();
-            $table->foreign('user_restored_id')->references('id')->on('users');
-            $table->timestamps();
-            $table->softDeletes();
-        });
         Schema::create(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id');
@@ -47,6 +26,33 @@ class CreateLaravelCrmTables extends Migration
             $table->foreign('user_deleted_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_restored_id')->nullable();
             $table->foreign('user_restored_id')->references('id')->on('users');
+            $table->foreign('user_owner_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        Schema::create(config('laravel-crm.db_table_prefix').'people', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id');
+            $table->string('title')->nullable();
+            $table->string('first_name');
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('maiden_name')->nullable();
+            $table->date('birthday')->nullable();
+            $table->enum('gender', ['male','female'])->nullable();
+            $table->unsignedBigInteger('organisation_id')->nullable();
+            $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->foreign('user_created_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->foreign('user_updated_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->foreign('user_deleted_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->foreign('user_restored_id')->references('id')->on('users');
+            $table->foreign('user_owner_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_owner_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -154,6 +160,8 @@ class CreateLaravelCrmTables extends Migration
             $table->foreign('user_deleted_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_restored_id')->nullable();
             $table->foreign('user_restored_id')->references('id')->on('users');
+            $table->foreign('user_owner_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_owner_id')->nullable();
             $table->unsignedBigInteger('user_assigned_id')->nullable();
             $table->foreign('user_assigned_id')->references('id')->on('users');
             $table->timestamps();
@@ -189,6 +197,7 @@ class CreateLaravelCrmTables extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'leads');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'lead_statuses');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'lead_sources');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'people');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'organisations');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'emails');
