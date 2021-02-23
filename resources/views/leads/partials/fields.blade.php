@@ -65,7 +65,7 @@
                  'name' => 'phone_type',
                  'label' => 'Type',
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
-                 'value' => old('phone_type', $phone->type ??  'work')
+                 'value' => old('phone_type', $phone->type ??  'mobile')
               ])
             </div>
         </div>
