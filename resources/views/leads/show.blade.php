@@ -15,7 +15,7 @@
                 </form>
 </span>
         </div>
-        <div class="card-body card-show">
+        <div class="card-body card-show card-fa-w30">
             <div class="row">
                 <div class="col-sm-6 border-right">
                     <h6 class="text-uppercase">Details</h6>

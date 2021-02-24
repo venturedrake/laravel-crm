@@ -31,6 +31,8 @@
                         <dd class="col-sm-9"><a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})</dd>
                         <dt class="col-sm-3 text-right">Phone</dt>
                         <dd class="col-sm-9"><a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})</dd>
+                        <dt class="col-sm-3 text-right">Description</dt>
+                        <dd class="col-sm-9">{{ $person->description }}</dd>
                     </dl>
                     <h6 class="mt-4 text-uppercase"> Organisation</h6>
                     <hr />
@@ -38,7 +40,7 @@
                         <dt class="col-sm-3 text-right"><span class="fa fa-building" aria-hidden="true"></span></dt>
                         <dd class="col-sm-9">{{ $organisation->name ?? null }}</dd>
                         <dt class="col-sm-3 text-right">Address</dt>
-                        <dd class="col-sm-9">{{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }}</dd>
+                        <dd class="col-sm-9">{{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }}</dd>
                     </dl>
                     <h6 class="text-uppercase mt-4">Deals</h6>
                     <hr />

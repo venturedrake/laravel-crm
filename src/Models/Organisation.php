@@ -27,6 +27,16 @@ class Organisation extends Model
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Person::class);
     }
 
+    public function addresses()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+    }
+
+    public function getPrimaryAddress()
+    {
+        return $this->addresses()->where('primary', 1)->first();
+    }
+
     public function createdByUser()
     {
         return $this->belongsTo(\App\User::class, 'user_created_id');

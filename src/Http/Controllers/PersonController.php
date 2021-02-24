@@ -117,6 +117,10 @@ class PersonController extends Controller
         $email = $person->getPrimaryEmail();
         $phone = $person->getPrimaryPhone();
         $address = $person->getPrimaryAddress();
+        $organisation = $person->organisation;
+        if ($organisation) {
+            $organisationAddress = $organisation->getPrimaryAddress();
+        }
         
         return view('laravel-crm::people.show', [
             'person' => $person,
@@ -124,7 +128,7 @@ class PersonController extends Controller
             'phone' => $phone ?? null,
             'address' => $address ?? null,
             'organisation' => $organisation ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'organisation_address' => $organisationAddress ?? null,
         ]);
     }
 
@@ -214,7 +218,7 @@ class PersonController extends Controller
                 'code' => $request->code,
                 'country' => $request->country,
             ]);
-        } elseif ($request->email) {
+        } else {
             $person->addresses()->create([
                 'external_id' => Uuid::uuid4()->toString(),
                 'line1' => $request->line1,

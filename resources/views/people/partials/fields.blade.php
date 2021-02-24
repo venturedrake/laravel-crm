@@ -72,7 +72,7 @@
                  'name' => 'user_owner_id',
                  'label' => 'Owner',
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                 'value' =>  old('user_owner_id', $person->assigned_user_id ?? auth()->user()->id),
+                 'value' =>  old('user_owner_id', $person->user_owner_id ?? auth()->user()->id),
               ])
     </div>
     <div class="col-sm-6">

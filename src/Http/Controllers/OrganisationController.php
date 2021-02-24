@@ -2,7 +2,9 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Http\Requests\StoreOrganisationRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateOrganisationRequest;
 use VentureDrake\LaravelCrm\Models\Organisation;
 
 class OrganisationController extends Controller
@@ -41,7 +43,7 @@ class OrganisationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreOrganisationRequest $request)
     {
         flash('Organisation stored')->success()->important();
 
@@ -56,8 +58,11 @@ class OrganisationController extends Controller
      */
     public function show(Organisation $organisation)
     {
+        $address = $organisation->getPrimaryAddress();
+        
         return view('laravel-crm::organisations.show', [
             'organisation' => $organisation,
+            'address' => $address,
         ]);
     }
 
@@ -69,8 +74,11 @@ class OrganisationController extends Controller
      */
     public function edit(Organisation $organisation)
     {
+        $address = $organisation->getPrimaryAddress();
+        
         return view('laravel-crm::organisations.edit', [
             'organisation' => $organisation,
+            'address' => $address
         ]);
     }
 
@@ -81,8 +89,40 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Organisation $organisation)
+    public function update(UpdateOrganisationRequest $request, Organisation $organisation)
     {
+        $organisation->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'user_owner_id' => $request->user_owner_id,
+        ]);
+
+        $address = $organisation->getPrimaryAddress();
+
+        if ($address) {
+            $address->update([
+                'line1' => $request->line1,
+                'line2' => $request->line2,
+                'line3' => $request->line3,
+                'suburb' => $request->suburb,
+                'state' => $request->state,
+                'code' => $request->code,
+                'country' => $request->country,
+            ]);
+        } else {
+            $organisation->addresses()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'line1' => $request->line1,
+                'line2' => $request->line2,
+                'line3' => $request->line3,
+                'suburb' => $request->suburb,
+                'state' => $request->state,
+                'code' => $request->code,
+                'country' => $request->country,
+                'primary' => 1,
+            ]);
+        }
+        
         flash('Organisation updated')->success()->important();
 
         return redirect(route('laravel-crm.organisations.show', $organisation));
