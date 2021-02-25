@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
+use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -35,6 +36,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Middleware
         $router->aliasMiddleware('auth.laravel-crm', Authenticate::class);
+        $router->pushMiddlewareToGroup('web', LastOnlineAt::class);
         
         $this->registerRoutes();
 

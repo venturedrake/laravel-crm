@@ -78,7 +78,7 @@ class OrganisationController extends Controller
         
         return view('laravel-crm::organisations.edit', [
             'organisation' => $organisation,
-            'address' => $address
+            'address' => $address,
         ]);
     }
 

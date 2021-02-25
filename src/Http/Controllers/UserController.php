@@ -2,8 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Illuminate\Http\Request;
-use VentureDrake\LaravelCrm\Models\User;
+use App\User;
+use Illuminate\Support\Facades\Hash;
+use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
+use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -12,11 +15,40 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
+        if (User::all()->count() < 30) {
+            $users = User::latest()->get();
+        } else {
+            $users = User::latest()->paginate(30);
+        }
+        
         return view('laravel-crm::users.index', [
-            'users' => [],
+            'users' => $users,
         ]);
+    }
+
+    /**
+     * Show the form for inviting a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function invite()
+    {
+        return view('laravel-crm::users.invite');
+    }
+
+    /**
+     * Send invite
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sendInvite(InviteUserRequest $request)
+    {
+        flash('User invitation sent')->success()->important();
+
+        return redirect(route('laravel-crm.users.index'));
     }
 
     /**
@@ -35,8 +67,14 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        
         flash('User stored')->success()->important();
 
         return redirect(route('laravel-crm.users.index'));
@@ -75,8 +113,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+        
         flash('User updated')->success()->important();
 
         return redirect(route('laravel-crm.users.show', $user));

@@ -149,6 +149,12 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@index')
         ->name('laravel-crm.users.index');
 
+    Route::get('invite', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@invite')
+        ->name('laravel-crm.users.invite');
+
+    Route::post('invite', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@sendInvite')
+        ->name('laravel-crm.users.sendinvite');
+
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@create')
         ->name('laravel-crm.users.create');
 
