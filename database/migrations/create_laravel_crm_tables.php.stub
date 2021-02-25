@@ -185,9 +185,12 @@ class CreateLaravelCrmTables extends Migration
             $table->text('value');
             $table->timestamps();
         });
-        Schema::table('users', function (Blueprint $table) {
-            $table->timestamp("last_online_at")->nullable();
-        });
+        if (! Schema::hasColumn('users', 'last_online_at'))
+        {
+            Schema::table('users', function (Blueprint $table) {
+                $table->timestamp("last_online_at")->nullable();
+            });
+        }   
     }
 
     /**
@@ -208,10 +211,5 @@ class CreateLaravelCrmTables extends Migration
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'addresses');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'fields');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'field_values');
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'last_online_at'
-            ]);
-        });
     }
 }
