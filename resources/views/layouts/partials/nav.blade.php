@@ -11,7 +11,7 @@
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.organisations') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.organisations.index')) }}">Organisations</a></li>
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.users') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.users.index')) }}">Users</a></li>
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.teams') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.teams.index')) }}">Teams</a></li>
-            <li class="dropdown-divider"></li>
+           {{-- <li class="dropdown-divider"></li>
             <li class="nav-item"><a class="nav-link" href="#">Email</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Documents</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>
@@ -19,7 +19,7 @@
             <li class="nav-item"><a class="nav-link" href="#">Subscriptions</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Invoices</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Payments</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Reports</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Reports</a></li>--}}
         </ul>
     </div>
 </div>
