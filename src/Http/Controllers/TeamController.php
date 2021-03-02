@@ -32,7 +32,9 @@ class TeamController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::teams.create');
+        return view('laravel-crm::teams.create', [
+            'users' => \App\User::all()
+        ]);
     }
 
     /**
@@ -77,6 +79,7 @@ class TeamController extends Controller
     {
         return view('laravel-crm::teams.edit', [
             'team' => $team,
+            'users' => \App\User::all()
         ]);
     }
 
