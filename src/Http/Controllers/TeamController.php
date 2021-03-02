@@ -14,8 +14,14 @@ class TeamController extends Controller
      */
     public function index(Request $request)
     {
+        if (Team::all()->count() < 30) {
+            $teams = Team::latest()->get();
+        } else {
+            $teams = Team::latest()->paginate(30);
+        }
+        
         return view('laravel-crm::teams.index', [
-            'teams' => [],
+            'teams' => $teams,
         ]);
     }
 
@@ -37,6 +43,12 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
+        $team = Team::create([
+            'name' => $request->name,
+            'user_id' => auth()->user()->id,
+            'personal_team' => false,
+        ]);
+        
         flash('Team stored')->success()->important();
 
         return redirect(route('laravel-crm.teams.index'));
@@ -77,6 +89,10 @@ class TeamController extends Controller
      */
     public function update(Request $request, Team $team)
     {
+        $team->update([
+            'name' => $request->name,
+        ]);
+        
         flash('Team updated')->success()->important();
 
         return redirect(route('laravel-crm.teams.show', $team));

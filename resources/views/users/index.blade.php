@@ -33,6 +33,7 @@
                         <td>{{ $user->updated_at->toFormattedDateString() }}</td>
                         <td>{{ ($user->last_online_at) ?  \Carbon\Carbon::parse($user->last_online_at)->diffForHumans() :  'Never' }}</td>
                         <td class="disable-link text-right">
+                            <a href="{{  route('laravel-crm.users.show',$user) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                             <a href="{{  route('laravel-crm.users.edit',$user) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             <form action="{{ route('laravel-crm.users.destroy',$user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                 {{ method_field('DELETE') }}

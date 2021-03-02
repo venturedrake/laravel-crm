@@ -185,12 +185,52 @@ class CreateLaravelCrmTables extends Migration
             $table->text('value');
             $table->timestamps();
         });
+        if (!Schema::hasTable('teams')) {
+            Schema::create('teams', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->unsignedBigInteger('user_id');
+                $table->foreign('user_id')->references('id')->on('users');
+                $table->string('name');
+                $table->boolean('personal_team');
+                $table->timestamps();
+            });
+        }
+        if (!Schema::hasTable('team_user')) {
+            Schema::create('team_user', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->unsignedBigInteger('team_id');
+                $table->foreign('team_id')->references('id')->on('teams');
+                $table->unsignedBigInteger('user_id');
+                $table->foreign('user_id')->references('id')->on('users');
+                $table->string('role')->nullable();
+                $table->timestamps();
+                $table->unique(['team_id', 'user_id']);
+            });
+        }
+        if (!Schema::hasTable('team_invitations')) {
+            Schema::create('team_invitations', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->unsignedBigInteger('team_id');
+                $table->foreign('team_id')->references('id')->on('teams');
+                $table->string('email');
+                $table->string('role')->nullable();
+                $table->timestamps();
+                $table->unique(['team_id', 'email']);
+            }); 
+        }
         if (! Schema::hasColumn('users', 'last_online_at'))
         {
             Schema::table('users', function (Blueprint $table) {
                 $table->timestamp("last_online_at")->nullable();
             });
-        }   
+        }  
+        if (! Schema::hasColumn('users', 'current_team_id'))
+        {
+           Schema::table('users', function (Blueprint $table) {
+                $table->unsignedBigInteger('current_team_id')->nullable()->index();
+                $table->foreign('current_team_id')->references('id')->on('teams');
+           });
+        } 
     }
 
     /**

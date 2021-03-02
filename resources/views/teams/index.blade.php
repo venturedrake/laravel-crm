@@ -8,26 +8,21 @@
             <table class="table mb-0 card-table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">Contact</th>
-                    <th scope="col">Organisation</th>
-                    <th scope="col">Value</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Created by</th>
                     <th scope="col">Created</th>
-                    <th scope="col">Assigned To</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($teams as $team)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.teams.show',$team)) }}">
-                        <td>{{ $team->title }}</td>
-                        <td>{{ $team->team_name }}</td>
-                        <td>{{ $team->team_name }}</td>
-                        <td>{{ money($team->amount, $team->currency) }}</td>
+                        <td>{{ $team->name }}</td>
+                        <td>{{ $team->userCreated->name }}</td>
                         <td>{{ $team->created_at->diffForHumans() }}</td>
-                        <td>{{ $team->assignedToUser->name }}</td>
                         <td class="disable-link text-right">
-                            <a href="#" class="btn btn-success btn-sm">Convert</a>
+                            <a href="{{  route('laravel-crm.teams.show',$team) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                            <a href="{{  route('laravel-crm.teams.edit',$team) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             <form action="{{ route('laravel-crm.teams.destroy',$team) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}
