@@ -25,6 +25,11 @@
                         <dt class="col-sm-3 text-right">Email</dt>
                         <dd class="col-sm-9">{{ $user->email }}</dd>
                     </dl>
+                    <h6 class="text-uppercase mt-4">Team</h6>
+                    <hr />
+                    @foreach($user->teams as $team)
+                        <p><span class="fa fa-users" aria-hidden="true"></span> {{ $team->name }}</p>
+                    @endforeach
                 </div>
                 <div class="col-sm-6">
                     <h6 class="text-uppercase">Activities</h6>

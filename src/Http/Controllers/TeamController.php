@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Models\Team;
+use VentureDrake\LaravelCrm\Models\User;
 
 class TeamController extends Controller
 {
@@ -33,7 +34,7 @@ class TeamController extends Controller
     public function create()
     {
         return view('laravel-crm::teams.create', [
-            'users' => \App\User::all()
+            'users' => User::all(),
         ]);
     }
 
@@ -50,6 +51,12 @@ class TeamController extends Controller
             'user_id' => auth()->user()->id,
             'personal_team' => false,
         ]);
+
+        if ($request->user) {
+            $team->users()->sync(array_keys($request->user));
+        } else {
+            $team->users()->sync([]);
+        }
         
         flash('Team stored')->success()->important();
 
@@ -79,7 +86,7 @@ class TeamController extends Controller
     {
         return view('laravel-crm::teams.edit', [
             'team' => $team,
-            'users' => \App\User::all()
+            'users' => User::all(),
         ]);
     }
 
@@ -95,6 +102,12 @@ class TeamController extends Controller
         $team->update([
             'name' => $request->name,
         ]);
+        
+        if ($request->user) {
+            $team->users()->sync(array_keys($request->user));
+        } else {
+            $team->users()->sync([]);
+        }
         
         flash('Team updated')->success()->important();
 

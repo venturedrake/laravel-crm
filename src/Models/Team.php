@@ -19,4 +19,14 @@ class Team extends Model
     {
         return $this->belongsTo(\App\User::class, 'user_id');
     }
+
+    /**
+     * Get all of the users the team belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users()
+    {
+        return $this->belongsToMany(\VentureDrake\LaravelCrm\Models\User::class);
+    }
 }

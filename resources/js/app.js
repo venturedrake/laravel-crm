@@ -1,6 +1,8 @@
 require('./bootstrap');
+require('bootstrap4-toggle/js/bootstrap4-toggle.min');
 
 const Swal = require('sweetalert2')
+
 
 // Little bit of Jquery
 const appJquery = function() {

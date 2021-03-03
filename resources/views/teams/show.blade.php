@@ -25,7 +25,9 @@
                     </dl>
                     <h6 class="text-uppercase mt-4">Users</h6>
                     <hr />
-                    ...
+                    @foreach($team->users as $user)
+                        <p><span class="fa fa-user" aria-hidden="true"></span> {{ $user->name }}</p>
+                    @endforeach
                 </div>
                 <div class="col-sm-6">
                     <h6 class="text-uppercase">Activities</h6>

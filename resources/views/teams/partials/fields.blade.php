@@ -12,7 +12,7 @@
             <thead>
             <tr>
                 <th scope="col">Name</th>
-                <th scope="col"></th>
+                <th scope="col" class="text-right">On Team</th>
             </tr>
             </thead>
             <tbody>
@@ -20,7 +20,7 @@
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.users.show',$user)) }}">
                     <td>{{ $user->name }}</td>
                     <td class="disable-link text-right">
-                        <a href="#" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span>Add</a>
+                        <input id="user_{{ $user->id }}" type="checkbox" name="user[{{ $user->id }}]" {{ (isset($team) && $user->belongsToTeam($team)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                     </td>
                 </tr>
             @endforeach

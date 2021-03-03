@@ -23,6 +23,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "bootstrap4-toggle": "^3.6.1",
         "sweetalert2": "^10.14.0"
     },
     "name": "laravel-crm"
