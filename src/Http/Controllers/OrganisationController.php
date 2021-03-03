@@ -45,6 +45,25 @@ class OrganisationController extends Controller
      */
     public function store(StoreOrganisationRequest $request)
     {
+        $organisation = Organisation::create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'name' => $request->name,
+            'description' => $request->description,
+            'user_owner_id' => $request->user_owner_id,
+        ]);
+
+        $organisation->addresses()->create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'line1' => $request->line1,
+            'line2' => $request->line2,
+            'line3' => $request->line3,
+            'suburb' => $request->suburb,
+            'state' => $request->state,
+            'code' => $request->code,
+            'country' => $request->country,
+            'primary' => 1,
+        ]);
+        
         flash('Organisation stored')->success()->important();
 
         return redirect(route('laravel-crm.organisations.index'));
