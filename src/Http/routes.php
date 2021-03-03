@@ -83,9 +83,28 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
 
 /* Deals */
 
-Route::get('deals', function () {
-    return View::make('laravel-crm::deals.index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.deals.index');
+Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@index')
+        ->name('laravel-crm.deals.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@create')
+        ->name('laravel-crm.deals.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@store')
+        ->name('laravel-crm.deals.store');
+
+    Route::get('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@show')
+        ->name('laravel-crm.deals.show');
+
+    Route::get('{deal}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@edit')
+        ->name('laravel-crm.deals.edit');
+
+    Route::put('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@update')
+        ->name('laravel-crm.deals.update');
+
+    Route::delete('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@destroy')
+        ->name('laravel-crm.deals.destroy');
+});
 
 /* Activities */
 

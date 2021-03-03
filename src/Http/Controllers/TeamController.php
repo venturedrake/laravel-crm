@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Http\Requests\StoreTeamRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateTeamRequest;
 use VentureDrake\LaravelCrm\Models\Team;
 use VentureDrake\LaravelCrm\Models\User;
 
@@ -44,7 +46,7 @@ class TeamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTeamRequest $request)
     {
         $team = Team::create([
             'name' => $request->name,
@@ -97,7 +99,7 @@ class TeamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Team $team)
+    public function update(UpdateTeamRequest $request, Team $team)
     {
         $team->update([
             'name' => $request->name,
