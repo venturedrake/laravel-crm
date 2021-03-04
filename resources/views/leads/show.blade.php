@@ -5,8 +5,9 @@
     <div class="card">
         <div class="card-header"><h3 class="card-title float-left m-0">{{ $lead->title }}</h3>
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.leads.index')) }}"><span class="fa fa-angle-double-left"></span> Back to leads</a>
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.leads.index')) }}"><span class="fa fa-angle-double-left"></span> Back to leads</a> | 
                 <a href="#" class="btn btn-success btn-sm">Convert</a>
+                @include('laravel-crm::partials.navs.activities') |
                 <a href="{{ url(route('laravel-crm.leads.edit', $lead)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 <form action="{{ route('laravel-crm.leads.destroy',$lead) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
@@ -38,7 +39,13 @@
                     <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }} </p>
                 </div>
                 <div class="col-sm-6">
-                    <h6 class="text-uppercase">Activities</h6>
+                    <h6 class="text-uppercase">Notes</h6>
+                    <hr />
+                    ...
+                    <h6 class="text-uppercase mt-4">Files</h6>
+                    <hr />
+                    ...
+                    <h6 class="text-uppercase mt-4">Activities</h6>
                     <hr />
                     ...
                 </div>

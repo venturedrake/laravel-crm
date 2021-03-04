@@ -5,8 +5,9 @@
     <div class="card">
         <div class="card-header"><h3 class="card-title float-left m-0">{{ $person->name }}</h3>
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.people.index')) }}"><span class="fa fa-angle-double-left"></span> Back to people</a>
-                <a href="#" class="btn btn-success btn-sm"><span class="fa fa-plus" aria-hidden="true"></span> Add new deal</a>
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.people.index')) }}"><span class="fa fa-angle-double-left"></span> Back to people</a> | 
+                <a href="#" alt="Add deal" class="btn btn-success btn-sm"><span class="fa fa-plus" aria-hidden="true"></span> Add new deal</a>
+                @include('laravel-crm::partials.navs.activities') |
                 <a href="{{ url(route('laravel-crm.people.edit', $person)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 <form action="{{ route('laravel-crm.people.destroy',$person) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
@@ -50,7 +51,7 @@
                         <dt class="col-sm-3 text-right">Address</dt>
                         <dd class="col-sm-9">{{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }}</dd>
                     </dl>
-                    <h6 class="text-uppercase mt-4">Deals</h6>
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>Deals ({{ $person->deals->count() }})</span><span class="float-right"><a href="#" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
                     <hr />
                     @foreach($person->deals as $deal)
                         <p>{{ $deal->title }}<br />
@@ -64,7 +65,13 @@
                     </dl>
                 </div>
                 <div class="col-sm-6">
-                    <h6 class="text-uppercase">Activities</h6>
+                    <h6 class="text-uppercase">Notes</h6>
+                    <hr />
+                    ...
+                    <h6 class="text-uppercase mt-4">Files</h6>
+                    <hr />
+                    ...
+                    <h6 class="text-uppercase mt-4">Activities</h6>
                     <hr />
                     ...
                 </div>
