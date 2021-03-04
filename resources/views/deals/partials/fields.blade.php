@@ -56,6 +56,15 @@
                 ])
             </div>
         </div>
+        @include('laravel-crm::partials.form.text',[
+             'name' => 'expected_close',
+             'label' => 'Expected close date',
+             'value' => old('expected_close', (isset($deal->expected_close)) ? \Carbon\Carbon::parse($deal->expected_close)->format('Y/m/d') : null),
+             'attributes' => [
+                 'autocomplete' => 'off'
+              ]
+         ]) 
+
         @include('laravel-crm::partials.form.select',[
                  'name' => 'user_assigned_id',
                  'label' => 'Assigned to',

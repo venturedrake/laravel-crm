@@ -16,8 +16,9 @@ const appJquery = function() {
                 }
             });
             
-            $('input[name="birthday"]').datetimepicker({
-                timepicker:false
+            $('input[name="birthday"], input[name="expected"]').datetimepicker({
+                timepicker:false,
+                format: 'Y/m/d',
             });
 
             $( "tr.has-link > td:not('.disable-link')" ).on({

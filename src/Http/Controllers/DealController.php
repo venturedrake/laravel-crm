@@ -6,6 +6,8 @@ use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDealRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
@@ -79,6 +81,7 @@ class DealController extends Controller
             'description' => $request->description,
             'amount' => $request->amount,
             'currency' => $request->currency,
+            'expected_close' => $request->expected_close,
             'user_owner_id' => $request->user_assigned_id,
             'user_assigned_id' => $request->user_assigned_id,
         ]);
@@ -96,13 +99,13 @@ class DealController extends Controller
      */
     public function show(Deal $deal)
     {
-        if($deal->person){
+        if ($deal->person) {
             $email = $deal->person->getPrimaryEmail();
             $phone = $deal->person->getPrimaryPhone();
             $address = $deal->person->getPrimaryAddress();
         }
         
-        if($deal->organisation){
+        if ($deal->organisation) {
             $organisation_address = $deal->organisation->getPrimaryAddress();
         }
         
@@ -111,7 +114,7 @@ class DealController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null
+            'organisation_address' => $organisation_address ?? null,
         ]);
     }
 
@@ -137,6 +140,30 @@ class DealController extends Controller
      */
     public function update(UpdateDealRequest $request, Deal $deal)
     {
+        if ($request->person_name && ! $request->person_id) {
+            $person = $this->personService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $person = Person::find($request->person_id);
+        }
+
+        if ($request->organisation_name && ! $request->organisation_id) {
+            $organisation = $this->organisationService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $organisation = Organisation::find($request->organisation_id);
+        }
+        
+        $deal->update([
+            'person_id' => $person->id ?? null,
+            'organisation_id' => $organisation->id ?? null,
+            'title' => $request->title,
+            'description' => $request->description,
+            'amount' => $request->amount,
+            'currency' => $request->currency,
+            'expected_close' => $request->expected_close,
+            'user_owner_id' => $request->user_assigned_id,
+            'user_assigned_id' => $request->user_assigned_id,
+        ]);
+        
         flash('Deal updated')->success()->important();
 
         return redirect(route('laravel-crm.deals.show', $deal));

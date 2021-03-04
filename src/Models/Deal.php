@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\HasCustomFields;
@@ -31,6 +32,13 @@ class Deal extends Model
         }
     }
 
+    public function setExpectedCloseAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['expected_close'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+    
     public function person()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);

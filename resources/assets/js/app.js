@@ -44152,8 +44152,9 @@ var appJquery = function () {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
       });
-      $('input[name="birthday"]').datetimepicker({
-        timepicker: false
+      $('input[name="birthday"], input[name="expected_close"]').datetimepicker({
+        timepicker: false,
+        format: 'Y/m/d'
       });
       $("tr.has-link > td:not('.disable-link')").on({
         click: function click() {
