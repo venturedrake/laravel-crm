@@ -77,6 +77,11 @@ class Person extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
     }
 
+    public function deals()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);
+    }
+
     public function createdByUser()
     {
         return $this->belongsTo(\App\User::class, 'user_created_id');

@@ -24,25 +24,25 @@
                     <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($deal->amount, $deal->currency) }}</p>
                     <p><span class="fa fa-info" aria-hidden="true"></span> {{ $deal->description }}</p>
                     <p><span class="fa fa-user-circle" aria-hidden="true"></span> {{ $deal->assignedToUser->name }}</p>
-                    <h6 class="mt-4 text-uppercase"> Person</h6>
+                    <h6 class="mt-4 text-uppercase"> Contact Person</h6>
                     <hr />
                     <p><span class="fa fa-user" aria-hidden="true"></span> {{ $deal->person->name ?? null }} </p>
-                    @if($email)
+                    @isset($email)
                         <p><span class="fa fa-envelope" aria-hidden="true"></span> <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})</p>
-                    @endif
-                    @if($phone)
+                    @endisset
+                    @isset($phone)
                         <p><span class="fa fa-phone" aria-hidden="true"></span> <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})</p>
-                    @endif
+                    @endisset
                     <h6 class="mt-4 text-uppercase"> Organisation</h6>
                     <hr />
                     <p><span class="fa fa-building" aria-hidden="true"></span> {{ $deal->organisation->name ?? null }}</p>
-                    <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }} </p>
+                    <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
+
                     <h6 class="mt-4 text-uppercase"> Products</h6>
                     <hr />
                     ...
                 </div>
                 <div class="col-sm-6">
-                    
                     <h6 class="text-uppercase">Activities</h6>
                     <hr />
                     ...

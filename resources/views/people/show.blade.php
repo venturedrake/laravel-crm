@@ -28,9 +28,17 @@
                         <dt class="col-sm-3 text-right">Last name</dt>
                         <dd class="col-sm-9">{{ $person->last_name }}</dd>
                         <dt class="col-sm-3 text-right">Email</dt>
-                        <dd class="col-sm-9"><a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})</dd>
+                        <dd class="col-sm-9">
+                            @isset($email)
+                            <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})
+                            @endisset    
+                        </dd>
                         <dt class="col-sm-3 text-right">Phone</dt>
-                        <dd class="col-sm-9"><a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})</dd>
+                        <dd class="col-sm-9">
+                            @isset($phone)
+                            <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})
+                            @endisset    
+                        </dd>
                         <dt class="col-sm-3 text-right">Description</dt>
                         <dd class="col-sm-9">{{ $person->description }}</dd>
                     </dl>
@@ -44,7 +52,16 @@
                     </dl>
                     <h6 class="text-uppercase mt-4">Deals</h6>
                     <hr />
-                    ...
+                    @foreach($person->deals as $deal)
+                        <p>{{ $deal->title }}<br />
+                            <small>{{ money($deal->amount, $deal->currency) }}</small></p>
+                    @endforeach
+                    <h6 class="text-uppercase mt-4">Owner</h6>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-3 text-right">Name</dt>
+                        <dd class="col-sm-9">{{ $person->ownerUser->name }}</dd>
+                    </dl>
                 </div>
                 <div class="col-sm-6">
                     <h6 class="text-uppercase">Activities</h6>

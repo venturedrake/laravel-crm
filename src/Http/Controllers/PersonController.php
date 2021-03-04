@@ -6,9 +6,20 @@ use VentureDrake\LaravelCrm\Http\Requests\StorePersonRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePersonRequest;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\PersonService;
 
 class PersonController extends Controller
 {
+    /**
+     * @var PersonService
+     */
+    private $personService;
+
+    public function __construct(PersonService $personService)
+    {
+        $this->personService = $personService;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -45,47 +56,7 @@ class PersonController extends Controller
      */
     public function store(StorePersonRequest $request)
     {
-        $person = Person::create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'title' => $request->title,
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'gender' => $request->gender,
-            'birthday' => $request->birthday,
-            'description' => $request->description,
-            'user_owner_id' => $request->user_owner_id,
-        ]);
-
-        if ($request->phone) {
-            $person->phones()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-                'primary' => 1,
-            ]);
-        }
-
-        if ($request->email) {
-            $person->emails()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address' => $request->email,
-                'type' => $request->email_type,
-                'primary' => 1,
-            ]);
-        }
-
-        $person->addresses()->create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'line1' => $request->line1,
-            'line2' => $request->line2,
-            'line3' => $request->line3,
-            'suburb' => $request->suburb,
-            'state' => $request->state,
-            'code' => $request->code,
-            'country' => $request->country,
-            'primary' => 1,
-        ]);
+        $person = $this->personService->create($request);
         
         if ($request->organisation_name) {
             if (! $request->organisation_id) {
@@ -161,76 +132,7 @@ class PersonController extends Controller
      */
     public function update(UpdatePersonRequest $request, Person $person)
     {
-        $person->update([
-            'title' => $request->title,
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'gender' => $request->gender,
-            'birthday' => $request->birthday,
-            'description' => $request->description,
-            'user_owner_id' => $request->user_owner_id,
-        ]);
-
-        $email = $person->getPrimaryEmail();
-        $phone = $person->getPrimaryPhone();
-        $address = $person->getPrimaryAddress();
-
-        if ($request->phone && $phone) {
-            $phone->update([
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-            ]);
-        } elseif ($request->phone) {
-            $person->phones()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-                'primary' => 1,
-            ]);
-        } elseif ($phone) {
-            $phone->delete();
-        }
-
-        if ($request->email && $email) {
-            $email->update([
-                'address' => $request->email,
-                'type' => $request->email_type,
-            ]);
-        } elseif ($request->email) {
-            $person->emails()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address' => $request->email,
-                'type' => $request->email_type,
-                'primary' => 1,
-            ]);
-        } elseif ($email) {
-            $email->delete();
-        }
-
-        if ($address) {
-            $address->update([
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'suburb' => $request->suburb,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-            ]);
-        } else {
-            $person->addresses()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'suburb' => $request->suburb,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-                'primary' => 1,
-            ]);
-        }
+        $person = $this->personService->update($person, $request);
 
         if ($request->organisation_name) {
             if (! $request->organisation_id) {

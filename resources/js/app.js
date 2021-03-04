@@ -1,5 +1,6 @@
 require('./bootstrap');
 require('bootstrap4-toggle/js/bootstrap4-toggle.min');
+require('jquery-datetimepicker/build/jquery.datetimepicker.full')
 
 const Swal = require('sweetalert2')
 
@@ -13,6 +14,10 @@ const appJquery = function() {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+            
+            $('input[name="birthday"]').datetimepicker({
+                timepicker:false
             });
 
             $( "tr.has-link > td:not('.disable-link')" ).on({

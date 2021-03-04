@@ -35,7 +35,10 @@
                     @endforeach     
                     <h6 class="text-uppercase mt-4">Deals</h6>
                     <hr />
-                    ...
+                    @foreach($organisation->deals as $deal)
+                        <p>{{ $deal->title }}<br />
+                        <small>{{ money($deal->amount, $deal->currency) }}</small></p>
+                    @endforeach
                     <h6 class="text-uppercase mt-4">Owner</h6>
                     <hr />
                     <dl class="row">

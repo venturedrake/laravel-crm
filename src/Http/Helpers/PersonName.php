@@ -16,7 +16,7 @@ function firstLastFromName($name)
 
 function firstNameFromName($name)
 {
-    $nameArray = \App\Http\Helpers\firstLastFromName($name);
+    $nameArray = \VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstLastFromName($name);
 
     if ($nameArray['first_name']) {
         return $nameArray['first_name'];

@@ -27,6 +27,16 @@ class Lead extends Model
         }
     }
 
+    public function organisation()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
+    }
+
+    public function person()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
+    }
+
     /**
      * Get all of the lead's emails.
      */

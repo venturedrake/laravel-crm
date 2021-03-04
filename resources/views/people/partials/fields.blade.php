@@ -47,7 +47,10 @@
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'birthday',
                       'label' => 'Birthday',
-                      'value' => old('birthday', $person->birthday ?? null)
+                      'value' => old('birthday', $person->birthday ?? null),
+                      'attributes' => [
+                          'autocomplete' => 'off'
+                       ]
                   ])
             </div>
         </div>

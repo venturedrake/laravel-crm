@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "bootstrap4-toggle": "^3.6.1",
+        "jquery-datetimepicker": "^2.5.21",
         "sweetalert2": "^10.14.0"
     },
     "name": "laravel-crm"

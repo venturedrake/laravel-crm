@@ -37,6 +37,11 @@ class Organisation extends Model
         return $this->addresses()->where('primary', 1)->first();
     }
 
+    public function deals()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);
+    }
+
     public function createdByUser()
     {
         return $this->belongsTo(\App\User::class, 'user_created_id');

@@ -2,13 +2,23 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrganisationRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrganisationRequest;
 use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Services\OrganisationService;
 
 class OrganisationController extends Controller
 {
+    /**
+     * @var OrganisationService
+     */
+    private $organisationService;
+
+    public function __construct(OrganisationService $organisationService)
+    {
+        $this->organisationService = $organisationService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,24 +55,7 @@ class OrganisationController extends Controller
      */
     public function store(StoreOrganisationRequest $request)
     {
-        $organisation = Organisation::create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'name' => $request->name,
-            'description' => $request->description,
-            'user_owner_id' => $request->user_owner_id,
-        ]);
-
-        $organisation->addresses()->create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'line1' => $request->line1,
-            'line2' => $request->line2,
-            'line3' => $request->line3,
-            'suburb' => $request->suburb,
-            'state' => $request->state,
-            'code' => $request->code,
-            'country' => $request->country,
-            'primary' => 1,
-        ]);
+        $this->organisationService->create($request);
         
         flash('Organisation stored')->success()->important();
 
@@ -110,37 +103,7 @@ class OrganisationController extends Controller
      */
     public function update(UpdateOrganisationRequest $request, Organisation $organisation)
     {
-        $organisation->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'user_owner_id' => $request->user_owner_id,
-        ]);
-
-        $address = $organisation->getPrimaryAddress();
-
-        if ($address) {
-            $address->update([
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'suburb' => $request->suburb,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-            ]);
-        } else {
-            $organisation->addresses()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'suburb' => $request->suburb,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-                'primary' => 1,
-            ]);
-        }
+        $this->organisationService->update($organisation, $request);
         
         flash('Organisation updated')->success()->important();
 
