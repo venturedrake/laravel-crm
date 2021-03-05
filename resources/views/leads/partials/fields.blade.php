@@ -1,31 +1,41 @@
 <div class="row">
     <div class="col-sm-6 border-right">
-        @include('laravel-crm::partials.form.hidden',[
-           'name' => 'person_id',
-           'value' => old('person_id', $lead->person->id ?? null),
-        ])
-        @include('laravel-crm::partials.form.text',[
-           'name' => 'person_name',
-           'label' => 'Contact person',
-           'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-           'value' => old('person_name', $lead->person->name ?? null),
-           'attributes' => [
-              'autocomplete' => \Illuminate\Support\Str::random()
-           ]
-       ])
-        @include('laravel-crm::partials.form.hidden',[
-         'name' => 'organisation_id',
-         'value' => old('organisation_id', $lead->organisation->id ?? null),
-       ])
-        @include('laravel-crm::partials.form.text',[
-            'name' => 'organisation_name',
-            'label' => 'Organisation',
-            'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-            'value' => old('organisation_name',$lead->organisation->name ?? null),
-            'attributes' => [
-             'autocomplete' => \Illuminate\Support\Str::random()
-           ]
-        ])
+         <span class="autocomplete">
+               @include('laravel-crm::partials.form.hidden',[
+                   'name' => 'person_id',
+                   'value' => old('person_id', $lead->person->id ?? null),
+                ])
+               <script type="text/javascript">
+                let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
+               </script>
+                 @include('laravel-crm::partials.form.text',[
+                    'name' => 'person_name',
+                    'label' => 'Contact person',
+                    'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
+                    'value' => old('person_name', $lead->person->name ?? null),
+                    'attributes' => [
+                       'autocomplete' => \Illuminate\Support\Str::random()
+                    ]
+                ])
+         </span>
+        <span class="autocomplete">
+            @include('laravel-crm::partials.form.hidden',[
+             'name' => 'organisation_id',
+             'value' => old('organisation_id', $lead->organisation->id ?? null),
+            ])
+            <script type="text/javascript">
+                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
+            </script>
+            @include('laravel-crm::partials.form.text',[
+                'name' => 'organisation_name',
+                'label' => 'Organisation',
+                'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
+                'value' => old('organisation_name',$lead->organisation->name ?? null),
+                'attributes' => [
+                 'autocomplete' => \Illuminate\Support\Str::random()
+               ]
+            ])  
+        </span>
         @include('laravel-crm::partials.form.text',[
             'name' => 'title',
             'label' => 'Title',
