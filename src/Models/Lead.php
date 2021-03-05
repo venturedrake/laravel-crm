@@ -123,4 +123,12 @@ class Lead extends Model
     {
         return $this->belongsTo(\App\User::class, 'user_assigned_id');
     }
+
+    /**
+     * Get all of the labels for the lead.
+     */
+    public function labels()
+    {
+        return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, 'labelable');
+    }
 }

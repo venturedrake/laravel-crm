@@ -121,4 +121,12 @@ class Person extends Model
     {
         return $this->belongsTo(\App\User::class, 'user_owner_id');
     }
+
+    /**
+     * Get all of the labels for the person.
+     */
+    public function labels()
+    {
+        return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, 'labelable');
+    }
 }
