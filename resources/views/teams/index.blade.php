@@ -11,6 +11,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Created by</th>
                     <th scope="col">Created</th>
+                    <th scope="col">Updated</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -19,7 +20,8 @@
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.teams.show',$team)) }}">
                         <td>{{ $team->name }}</td>
                         <td>{{ $team->userCreated->name }}</td>
-                        <td>{{ $team->created_at->diffForHumans() }}</td>
+                        <td>{{ $team->created_at->toFormattedDateString() }}</td>
+                        <td>{{ $team->updated_at->toFormattedDateString() }}</td>
                         <td class="disable-link text-right">
                             <a href="{{  route('laravel-crm.teams.show',$team) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                             <a href="{{  route('laravel-crm.teams.edit',$team) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>

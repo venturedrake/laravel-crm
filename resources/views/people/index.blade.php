@@ -29,7 +29,7 @@
                         <td>{{ $person->getPrimaryEmail()->address ?? null }}</td>
                         <td>{{ $person->getPrimaryPhone()->number ?? null }}</td>
                         <td></td>
-                        <td></td>
+                        <td>{{ $person->deals->count() }}</td>
                         <td></td>
                         <td>{{ $person->ownerUser->name ?? null }}</td>
                         <td class="disable-link text-right">

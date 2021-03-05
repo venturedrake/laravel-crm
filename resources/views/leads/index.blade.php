@@ -9,8 +9,9 @@
                 <thead>
                 <tr>
                     <th scope="col">Title</th>
-                    <th scope="col">Contact</th>
+                    <th scope="col">Labels</th>
                     <th scope="col">Organisation</th>
+                    <th scope="col">Contact person</th>
                     <th scope="col">Value</th>
                     <th scope="col">Created</th>
                     <th scope="col">Assigned To</th>
@@ -21,8 +22,9 @@
                 @foreach($leads as $lead)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.leads.show',$lead)) }}">
                         <td>{{ $lead->title }}</td>
-                        <td>{{ $lead->person_name }}</td>
+                        <td></td>
                         <td>{{ $lead->organisation_name }}</td>
+                        <td>{{ $lead->person_name }}</td>
                         <td>{{ money($lead->amount, $lead->currency) }}</td>
                         <td>{{ $lead->created_at->diffForHumans() }}</td>
                         <td>{{ $lead->assignedToUser->name }}</td>

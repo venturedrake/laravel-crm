@@ -10,7 +10,7 @@
            'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
            'value' => old('person_name', $lead->person->name ?? null),
            'attributes' => [
-              'autocomplete' => 'off'
+              'autocomplete' => \Illuminate\Support\Str::random()
            ]
        ])
         @include('laravel-crm::partials.form.hidden',[
@@ -23,7 +23,7 @@
             'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
             'value' => old('organisation_name',$lead->organisation->name ?? null),
             'attributes' => [
-              'autocomplete' => 'off'
+             'autocomplete' => \Illuminate\Support\Str::random()
            ]
         ])
         @include('laravel-crm::partials.form.text',[

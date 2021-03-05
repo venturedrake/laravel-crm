@@ -9,8 +9,11 @@
                 <thead>
                 <tr>
                     <th scope="col">Name</th>
+                    <th scope="col">Label</th>
                     <th scope="col">Contact</th>
-                    <th scope="col">Created</th>
+                    <th scope="col">Closed Deals</th>
+                    <th scope="col">Open Deals</th>
+                    <th scope="col">Next Activity</th>
                     <th scope="col">Owner</th>
                     <th scope="col"></th>
                 </tr>
@@ -20,7 +23,10 @@
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.organisations.show',$organisation)) }}">
                         <td>{{ $organisation->name }}</td>
                         <td></td>
-                        <td>{{ $organisation->created_at->diffForHumans() }}</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ $organisation->deals->count() }}</td>
+                        <td></td>
                         <td>{{ $organisation->ownerUser->name ?? null }}</td>
                         <td class="disable-link text-right">
                             <a href="{{  route('laravel-crm.organisations.show',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

@@ -49,7 +49,7 @@
                       'label' => 'Birthday',
                       'value' => old('birthday', $person->birthday ?? null),
                       'attributes' => [
-                          'autocomplete' => 'off'
+                          'autocomplete' => \Illuminate\Support\Str::random()
                        ]
                   ])
             </div>

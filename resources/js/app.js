@@ -1,9 +1,9 @@
 require('./bootstrap');
 require('bootstrap4-toggle/js/bootstrap4-toggle.min');
 require('jquery-datetimepicker/build/jquery.datetimepicker.full')
+require('bootstrap-4-autocomplete/dist/bootstrap-4-autocomplete')
 
 const Swal = require('sweetalert2')
-
 
 // Little bit of Jquery
 const appJquery = function() {
@@ -53,8 +53,30 @@ const appJquery = function() {
 
                 e.preventDefault();
             })
+
+            if (typeof people !== 'undefined') {
+                $('input[name="person_name"]').autocomplete({
+                    source: people,
+                    onSelectItem: appJquery.onSelectItem,
+                    highlightClass: 'text-danger',
+                    treshold: 2,
+                });
+            }
+            
+            if (typeof organisations !== 'undefined') {
+                $('input[name="organisation_name"]').autocomplete({
+                    source: organisations,
+                    onSelectItem: appJquery.onSelectItem,
+                    highlightClass: 'text-danger',
+                    treshold: 2,
+                });
+            }
             
         },
+
+        onSelectItem: function (item, element) {
+            $(element).closest('.autocomplete').find('input[name="person_id"],input[name="organisation_id"]').val(item.value);
+        }
         
     }
 }();
