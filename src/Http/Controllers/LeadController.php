@@ -56,6 +56,8 @@ class LeadController extends Controller
             'lead_status_id' => 1,
             'user_assigned_id' => $request->user_assigned_id,
         ]);
+
+        $lead->labels()->sync($request->labels ?? []);
         
         if ($request->phone) {
             $lead->phones()->create([
@@ -136,7 +138,9 @@ class LeadController extends Controller
             'currency' => $request->currency,
             'user_assigned_id' => $request->user_assigned_id,
         ]);
-
+        
+        $lead->labels()->sync($request->labels ?? []);
+        
         $email = $lead->getPrimaryEmail();
         $phone = $lead->getPrimaryPhone();
         $address = $lead->getPrimaryAddress();

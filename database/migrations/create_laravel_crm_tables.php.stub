@@ -226,8 +226,8 @@ class CreateLaravelCrmTables extends Migration
         });
         Schema::create(config('laravel-crm.db_table_prefix').'labelables', function (Blueprint $table) {
             $table->bigInteger('label_id');
-            $table->bigInteger('labelable_id');
-            $table->string('labelable_type');
+            $table->bigInteger(config('laravel-crm.db_table_prefix').'labelable_id');
+            $table->string(config('laravel-crm.db_table_prefix').'labelable_type');
         });
         if (!Schema::hasTable('teams')) {
             Schema::create('teams', function (Blueprint $table) {
@@ -295,5 +295,8 @@ class CreateLaravelCrmTables extends Migration
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'addresses');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'fields');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'field_values');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'deals');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'labels');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'labelables');
     }
 }

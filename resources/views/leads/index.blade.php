@@ -22,7 +22,9 @@
                 @foreach($leads as $lead)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.leads.show',$lead)) }}">
                         <td>{{ $lead->title }}</td>
-                        <td></td>
+                        <td>@include('laravel-crm::partials.labels',[
+                            'labels' => $lead->labels
+                        ])</td>
                         <td>{{ $lead->organisation_name }}</td>
                         <td>{{ $lead->person_name }}</td>
                         <td>{{ money($lead->amount, $lead->currency) }}</td>

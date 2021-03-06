@@ -74,6 +74,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 ], 'seeders');
             }
 
+            if (! class_exists('LaravelCrmLabelsTableSeeder')) {
+                $this->publishes([
+                    __DIR__ . '/../database/seeds/LaravelCrmLabelsTableSeeder.php' => database_path(
+                        'seeds/LaravelCrmLabelsTableSeeder.php'
+                    ),
+                ], 'seeders');
+            }
+
             // Registering package commands.
             // $this->commands([]);
             
