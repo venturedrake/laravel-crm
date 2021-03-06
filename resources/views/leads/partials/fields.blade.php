@@ -70,7 +70,7 @@
                     'name' => 'labels',
                     'label' => 'Labels',
                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all()),      
-                    'value' =>  old('labels', $lead->labels->pluck('id')->toArray() ?? null)
+                    'value' =>  old('labels', (isset($lead)) ? $lead->labels->pluck('id')->toArray() : null)
                 ])
         
         @include('laravel-crm::partials.form.select',[

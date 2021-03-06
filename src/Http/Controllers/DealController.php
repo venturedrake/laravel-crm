@@ -85,6 +85,8 @@ class DealController extends Controller
             'user_owner_id' => $request->user_assigned_id,
             'user_assigned_id' => $request->user_assigned_id,
         ]);
+
+        $deal->labels()->sync($request->labels ?? []);
         
         flash('Deal stored')->success()->important();
 
@@ -163,6 +165,8 @@ class DealController extends Controller
             'user_owner_id' => $request->user_assigned_id,
             'user_assigned_id' => $request->user_assigned_id,
         ]);
+
+        $deal->labels()->sync($request->labels ?? []);
         
         flash('Deal updated')->success()->important();
 

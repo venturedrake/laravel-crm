@@ -9,6 +9,7 @@
                 <thead>
                 <tr>
                     <th scope="col">Title</th>
+                    <th scope="col">Labels</th>
                     <th scope="col">Value</th>
                     <th scope="col">Organisation</th>
                     <th scope="col">Contact person</th>
@@ -21,6 +22,10 @@
                 @foreach($deals as $deal)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.deals.show',$deal)) }}">
                         <td>{{ $deal->title }}</td>
+                        <td>@include('laravel-crm::partials.labels',[
+                            'labels' => $deal->labels,
+                            'limit' => 3
+                        ])</td>
                         <td>{{ money($deal->amount, $deal->currency) }}</td>
                         <td>{{ $deal->person->name ?? null }}</td>
                         <td>{{ $deal->organisation->name ?? null }}</td>

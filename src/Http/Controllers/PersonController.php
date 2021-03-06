@@ -57,6 +57,8 @@ class PersonController extends Controller
     public function store(StorePersonRequest $request)
     {
         $person = $this->personService->create($request);
+
+        $person->labels()->sync($request->labels ?? []);
         
         if ($request->organisation_name) {
             if (! $request->organisation_id) {
@@ -133,6 +135,8 @@ class PersonController extends Controller
     public function update(UpdatePersonRequest $request, Person $person)
     {
         $person = $this->personService->update($person, $request);
+
+        $person->labels()->sync($request->labels ?? []);
 
         if ($request->organisation_name) {
             if (! $request->organisation_id) {

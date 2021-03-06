@@ -9,13 +9,19 @@
            'name' => 'description',
            'label' => 'Description',
            'rows' => 5,
-           'value' => old('description', $person->description ?? null) 
+           'value' => old('description', $organisation->description ?? null) 
+        ])
+        @include('laravel-crm::partials.form.multiselect',[
+            'name' => 'labels',
+            'label' => 'Labels',
+            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all()),      
+            'value' =>  old('labels', (isset($organisation)) ? $organisation->labels->pluck('id')->toArray() : null)
         ])
         @include('laravel-crm::partials.form.select',[
              'name' => 'user_owner_id',
              'label' => 'Owner',
              'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-             'value' =>  old('user_owner_id', $person->user_owner_id ?? auth()->user()->id),
+             'value' =>  old('user_owner_id', $organisation->user_owner_id ?? auth()->user()->id),
         ])
     </div>
     <div class="col-sm-6">

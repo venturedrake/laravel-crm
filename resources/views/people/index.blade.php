@@ -24,7 +24,10 @@
                 @foreach($people as $person)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.people.show',$person)) }}">
                         <td>{{ $person->name }}</td>
-                        <td></td>
+                        <td>@include('laravel-crm::partials.labels',[
+                            'labels' => $person->labels,
+                            'limit' => 3
+                        ])</td>
                         <td>{{ $person->organisation->name ?? null }}</td>
                         <td>{{ $person->getPrimaryEmail()->address ?? null }}</td>
                         <td>{{ $person->getPrimaryPhone()->number ?? null }}</td>

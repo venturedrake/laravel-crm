@@ -22,7 +22,10 @@
                 @foreach($organisations as $organisation)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.organisations.show',$organisation)) }}">
                         <td>{{ $organisation->name }}</td>
-                        <td></td>
+                        <td>@include('laravel-crm::partials.labels',[
+                            'labels' => $organisation->labels,
+                            'limit' => 3
+                        ])</td>
                         <td></td>
                         <td></td>
                         <td>{{ $organisation->deals->count() }}</td>

@@ -22,6 +22,14 @@ class Label extends Model
     }
 
     /**
+     * Get all of the deals that are assigned this labels.
+     */
+    public function deals()
+    {
+        return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Deal::class, config('laravel-crm.db_table_prefix').'labelable');
+    }
+
+    /**
      * Get all of the people that are assigned this labels.
      */
     public function people()

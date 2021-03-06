@@ -3,7 +3,9 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header"><h3 class="card-title float-left m-0">{{ $person->name }}</h3>
+        <div class="card-header"><h3 class="card-title float-left m-0">{{ $person->name }} <small>@include('laravel-crm::partials.labels',[
+                            'labels' => $person->labels
+                    ])</small></h3>
             <span class="float-right">
                 <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.people.index')) }}"><span class="fa fa-angle-double-left"></span> Back to people</a> | 
                 <a href="#" alt="Add deal" class="btn btn-success btn-sm"><span class="fa fa-plus" aria-hidden="true"></span> Add new deal</a>

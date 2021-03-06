@@ -22,6 +22,9 @@
                 <div class="col-sm-6 border-right">
                     <h6 class="text-uppercase">Details</h6>
                     <hr />
+                    <p><span class="fa fa-tag" aria-hidden="true"></span>@include('laravel-crm::partials.labels',[
+                            'labels' => $deal->labels
+                    ])</p>
                     <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($deal->amount, $deal->currency) }}</p>
                     <p><span class="fa fa-info" aria-hidden="true"></span> {{ $deal->description }}</p>
                     <p><span class="fa fa-user-circle" aria-hidden="true"></span> {{ $deal->assignedToUser->name }}</p>

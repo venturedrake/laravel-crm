@@ -73,7 +73,14 @@
              'attributes' => [
                  'autocomplete' => \Illuminate\Support\Str::random()
               ]
-         ]) 
+         ])
+
+        @include('laravel-crm::partials.form.multiselect',[
+            'name' => 'labels',
+            'label' => 'Labels',
+            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all()),      
+            'value' =>  old('labels', (isset($deal)) ? $deal->labels->pluck('id')->toArray() : null)
+        ])
 
         @include('laravel-crm::partials.form.select',[
                  'name' => 'user_assigned_id',

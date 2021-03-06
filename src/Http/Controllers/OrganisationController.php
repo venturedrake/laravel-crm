@@ -55,7 +55,9 @@ class OrganisationController extends Controller
      */
     public function store(StoreOrganisationRequest $request)
     {
-        $this->organisationService->create($request);
+        $organisation = $this->organisationService->create($request);
+
+        $organisation->labels()->sync($request->labels ?? []);
         
         flash('Organisation stored')->success()->important();
 
@@ -104,6 +106,8 @@ class OrganisationController extends Controller
     public function update(UpdateOrganisationRequest $request, Organisation $organisation)
     {
         $this->organisationService->update($organisation, $request);
+
+        $organisation->labels()->sync($request->labels ?? []);
         
         flash('Organisation updated')->success()->important();
 
