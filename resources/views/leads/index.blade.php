@@ -23,7 +23,8 @@
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.leads.show',$lead)) }}">
                         <td>{{ $lead->title }}</td>
                         <td>@include('laravel-crm::partials.labels',[
-                            'labels' => $lead->labels
+                            'labels' => $lead->labels,
+                            'limit' => 3
                         ])</td>
                         <td>{{ $lead->organisation_name }}</td>
                         <td>{{ $lead->person_name }}</td>
