@@ -258,11 +258,11 @@ class CreateLaravelCrmTables extends Migration
             $table->bigIncrements('id');
             $table->string('external_id'); 
             $table->string('log_name')->default('default');
-            $table->string('description')-nullable();
+            $table->string('description')->nullable();
             $table->nullableMorphs('causeable')->nullable();
             $table->nullableMorphs('timelineable')->nullable();
             $table->nullableMorphs('recordable')->nullable(); 
-            $table->string('event')-nullable();        
+            $table->string('event')->nullable();        
             $table->json('properties')->nullable();
             $table->json('modified')->nullable();
             $table->string('ip_address', 64)->nullable();  
