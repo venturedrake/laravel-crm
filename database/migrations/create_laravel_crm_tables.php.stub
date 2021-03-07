@@ -259,9 +259,9 @@ class CreateLaravelCrmTables extends Migration
             $table->string('external_id'); 
             $table->string('log_name')->default('default');
             $table->string('description')->nullable();
-            $table->nullableMorphs('causeable')->nullable();
-            $table->nullableMorphs('timelineable')->nullable();
-            $table->nullableMorphs('recordable')->nullable(); 
+            $table->nullableMorphs('causeable');
+            $table->nullableMorphs('timelineable');
+            $table->nullableMorphs('recordable'); 
             $table->string('event')->nullable();        
             $table->json('properties')->nullable();
             $table->json('modified')->nullable();

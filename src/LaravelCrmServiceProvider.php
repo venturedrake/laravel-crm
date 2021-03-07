@@ -7,6 +7,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Models\Email;
@@ -65,25 +66,21 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem),
             ], 'migrations');
 
-            // Publishing the seeders.
-            if (! class_exists('LaravelCrmLeadStatusesTableSeeder')) {
+            // Publishing the seeders
+            if (! class_exists('LaravelCrmTablesSeeder')) {
                 $this->publishes([
-                    __DIR__ . '/../database/seeds/LaravelCrmLeadStatusesTableSeeder.php' => database_path(
-                        'seeds/LaravelCrmLeadStatusesTableSeeder.php'
-                    ),
-                ], 'seeders');
-            }
-
-            if (! class_exists('LaravelCrmLabelsTableSeeder')) {
-                $this->publishes([
-                    __DIR__ . '/../database/seeds/LaravelCrmLabelsTableSeeder.php' => database_path(
-                        'seeds/LaravelCrmLabelsTableSeeder.php'
+                    __DIR__ . '/../database/seeds/LaravelCrmTablesSeeder.php' => database_path(
+                        'seeds/LaravelCrmTablesSeeder.php'
                     ),
                 ], 'seeders');
             }
 
             // Registering package commands.
-            // $this->commands([]);
+            if ($this->app->runningInConsole()) {
+                $this->commands([
+                    LaravelCrmInstall::class,
+                ]);
+            }
             
             // Register Observers
             Lead::observe(LeadObserver::class);

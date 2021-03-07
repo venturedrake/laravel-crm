@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
 
-class LaravelCrmLabelsTableSeeder extends Seeder
+class LaravelCrmTablesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -48,5 +48,31 @@ class LaravelCrmLabelsTableSeeder extends Seeder
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\Label::firstOrCreate($item[0], $item[1]);
         }
+
+        $items = [
+            [
+                [
+                    'id' => 1
+                ],
+                [
+                    'name' => 'Lead In',
+                    'external_id' => Uuid::uuid4()->toString(),
+                ]
+            ],
+            [
+                [
+                    'id' => 2
+                ],
+                [
+                    'name' => 'Contacted',
+                    'external_id' => Uuid::uuid4()->toString(),
+                ]
+            ],
+        ];
+
+        foreach ($items as $item) {
+            \VentureDrake\LaravelCrm\Models\LeadStatus::firstOrCreate($item[0], $item[1]);
+        }
+        
     }
 }
