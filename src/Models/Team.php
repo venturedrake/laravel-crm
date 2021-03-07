@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Team extends Model
 {
     /**
+     * The table associated with the team model.
+     *
+     * @var string
+     */
+    protected $table = 'crm_teams';
+    
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

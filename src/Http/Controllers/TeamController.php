@@ -50,8 +50,7 @@ class TeamController extends Controller
     {
         $team = Team::create([
             'name' => $request->name,
-            'user_id' => auth()->user()->id,
-            'personal_team' => false,
+            'user_id' => auth()->user()->id
         ]);
 
         if ($request->user) {

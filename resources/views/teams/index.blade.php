@@ -12,6 +12,7 @@
                     <th scope="col">Created by</th>
                     <th scope="col">Created</th>
                     <th scope="col">Updated</th>
+                    <th scope="col">Users</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -22,6 +23,7 @@
                         <td>{{ $team->userCreated->name }}</td>
                         <td>{{ $team->created_at->toFormattedDateString() }}</td>
                         <td>{{ $team->updated_at->toFormattedDateString() }}</td>
+                        <td>{{ $team->users->count() }}</td>
                         <td class="disable-link text-right">
                             <a href="{{  route('laravel-crm.teams.show',$team) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                             <a href="{{  route('laravel-crm.teams.edit',$team) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>

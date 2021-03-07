@@ -9,7 +9,8 @@
         "customer management",
         "customer relationship management",
         "lead management",
-        "laravel crm package"
+        "laravel crm package",
+        "laravel crm"
     ],
     "homepage": "https://github.com/venturedrake/laravel-crm",
     "license": "MIT",
