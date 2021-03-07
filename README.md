@@ -20,6 +20,18 @@ Require the package using composer:
 composer require venturedrake/laravel-crm
 ```
 
+Run the package install command:
+
+```bash
+php artisan laravelcrm:install
+```
+
+Run migrations:
+
+```bash
+php artisan migrate
+```
+
 ## Usage
 
 ```php
