@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Models\Activity;
 
 class ActivityController extends Controller
 {
@@ -13,7 +14,15 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        //
+        /*if (Activity::all()->count() < 30) {
+            $activities = Activity::latest()->get();
+        } else {
+            $activities = Activity::latest()->paginate(30);
+        }*/
+
+        return view('laravel-crm::activities.index', [
+            'activities' => $activities ?? [],
+        ]);
     }
 
     /**
@@ -23,7 +32,7 @@ class ActivityController extends Controller
      */
     public function create()
     {
-        //
+        return view('laravel-crm::activities.create');
     }
 
     /**
@@ -34,7 +43,9 @@ class ActivityController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        flash('Activity stored')->success()->important();
+
+        return redirect(route('laravel-crm.activities.index'));
     }
 
     /**
@@ -43,9 +54,11 @@ class ActivityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Activity $activity)
     {
-        //
+        return view('laravel-crm::activities.show', [
+            'activity' => $activity,
+        ]);
     }
 
     /**
@@ -54,9 +67,11 @@ class ActivityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Activity $activity)
     {
-        //
+        return view('laravel-crm::activities.edit', [
+            'activity' => $activity,
+        ]);
     }
 
     /**
@@ -66,9 +81,11 @@ class ActivityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Activity $activity)
     {
-        //
+        flash('Activity updated')->success()->important();
+
+        return redirect(route('laravel-crm.activities.show', $activity));
     }
 
     /**
@@ -77,8 +94,12 @@ class ActivityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Activity $activity)
     {
-        //
+        $activity->delete();
+
+        flash('Activity deleted')->success()->important();
+
+        return redirect(route('laravel-crm.activities.index'));
     }
 }

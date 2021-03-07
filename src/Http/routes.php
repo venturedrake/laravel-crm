@@ -108,9 +108,28 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 
 /* Activities */
 
-Route::get('activities', function () {
-    return View::make('laravel-crm::activities.index');
-})->middleware('auth.laravel-crm')->name('laravel-crm.activities.index');
+Route::group(['prefix' => 'activities', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ActivityController@index')
+        ->name('laravel-crm.activities.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\ActivityController@create')
+        ->name('laravel-crm.activities.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\ActivityController@store')
+        ->name('laravel-crm.activities.store');
+
+    Route::get('{activity}', 'VentureDrake\LaravelCrm\Http\Controllers\ActivityController@show')
+        ->name('laravel-crm.activities.show');
+
+    Route::get('{activity}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\ActivityController@edit')
+        ->name('laravel-crm.activities.edit');
+
+    Route::put('{activity}', 'VentureDrake\LaravelCrm\Http\Controllers\ActivityController@update')
+        ->name('laravel-crm.activities.update');
+
+    Route::delete('{activity}', 'VentureDrake\LaravelCrm\Http\Controllers\ActivityController@destroy')
+        ->name('laravel-crm.activities.destroy');
+});
 
 /* People */
 

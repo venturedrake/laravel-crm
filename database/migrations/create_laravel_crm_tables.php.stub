@@ -257,12 +257,18 @@ class CreateLaravelCrmTables extends Migration
         Schema::create(config('laravel-crm.db_table_prefix').'activities', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id'); 
-            $table->morphs('activityable');
-            
-            // TBC: Actor, activity, etc
-             
+            $table->string('log_name')->default('default');
+            $table->string('description')-nullable();
+            $table->nullableMorphs('causeable')->nullable();
+            $table->nullableMorphs('timelineable')->nullable();
+            $table->nullableMorphs('recordable')->nullable(); 
+            $table->string('event')-nullable();        
+            $table->json('properties')->nullable();
+            $table->json('modified')->nullable();
+            $table->string('ip_address', 64)->nullable();  
+            $table->string('url')->nullable();
+            $table->string('user_agent')->nullable();  
             $table->timestamps();
-            $table->softDeletes();
         });
         if (! Schema::hasColumn('users', 'last_online_at'))
         {

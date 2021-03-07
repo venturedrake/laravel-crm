@@ -47,7 +47,9 @@ class LeadController extends Controller
     {
         $lead = Lead::create([
             'external_id' => Uuid::uuid4()->toString(),
+            'person_id' => $request->person_id,
             'person_name' => $request->person_name,
+            'organisation_id' => $request->organisation_id,
             'organisation_name' => $request->organisation_name,
             'title' => $request->title,
             'description' => $request->description,
@@ -130,7 +132,9 @@ class LeadController extends Controller
     public function update(UpdateLeadRequest $request, Lead $lead)
     {
         $lead->update([
+            'person_id' => $request->person_id,
             'person_name' => $request->person_name,
+            'organisation_id' => $request->organisation_id,
             'organisation_name' => $request->organisation_name,
             'title' => $request->title,
             'description' => $request->description,
