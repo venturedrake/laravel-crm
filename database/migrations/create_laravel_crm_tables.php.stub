@@ -179,7 +179,7 @@ class CreateLaravelCrmTables extends Migration
             $table->integer('amount')->nullable();
             $table->string("currency", 3)->default("USD");
             
-            // Status, source of business fields here
+            // TBC: Status, source of business fields here
             
             $table->boolean("qualified")->default(false);
             $table->datetime('expected_close')->nullable();
@@ -254,6 +254,16 @@ class CreateLaravelCrmTables extends Migration
             $table->timestamps();
             $table->unique(['crm_team_id', 'email']);
         }); 
+        Schema::create(config('laravel-crm.db_table_prefix').'activities', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id'); 
+            $table->morphs('activityable');
+            
+            // TBC: Actor, activity, etc
+             
+            $table->timestamps();
+            $table->softDeletes();
+        });
         if (! Schema::hasColumn('users', 'last_online_at'))
         {
             Schema::table('users', function (Blueprint $table) {
