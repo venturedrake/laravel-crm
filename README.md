@@ -1,4 +1,4 @@
-# Laravel CRM (Coming Soon!)
+# Laravel CRM
 
 <!--- [![Latest Version on Packagist](https://img.shields.io/packagist/v/venturedrake/laravel-crm.svg?style=flat-square)](https://packagist.org/packages/venturedrake/laravel-crm) --->
 [![Build Status](https://travis-ci.com/venturedrake/laravel-crm.svg?branch=master)](https://travis-ci.com/venturedrake/laravel-crm)
