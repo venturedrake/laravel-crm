@@ -270,6 +270,23 @@ class CreateLaravelCrmTables extends Migration
             $table->string('user_agent')->nullable();  
             $table->timestamps();
         });
+        Schema::create(config('laravel-crm.db_table_prefix').'notes', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id'); 
+            $table->text('content');
+            $table->morphs('noteable');
+            $table->boolean('pinned')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->foreign('user_created_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->foreign('user_updated_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->foreign('user_deleted_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->foreign('user_restored_id')->references('id')->on('users');
+            $table->softDeletes();
+            $table->timestamps();
+        });
         if (! Schema::hasColumn('users', 'last_online_at'))
         {
             Schema::table('users', function (Blueprint $table) {

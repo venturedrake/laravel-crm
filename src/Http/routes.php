@@ -131,6 +131,31 @@ Route::group(['prefix' => 'activities', 'middleware' => 'auth.laravel-crm'], fun
         ->name('laravel-crm.activities.destroy');
 });
 
+/* Notes */
+
+Route::group(['prefix' => 'notes', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@index')
+        ->name('laravel-crm.notes.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@create')
+        ->name('laravel-crm.notes.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@store')
+        ->name('laravel-crm.notes.store');
+
+    Route::get('{note}', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@show')
+        ->name('laravel-crm.notes.show');
+
+    Route::get('{note}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@edit')
+        ->name('laravel-crm.notes.edit');
+
+    Route::put('{note}', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@update')
+        ->name('laravel-crm.notes.update');
+
+    Route::delete('{note}', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@destroy')
+        ->name('laravel-crm.notes.destroy');
+});
+
 /* People */
 
 Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {
@@ -212,7 +237,7 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function
         ->name('laravel-crm.users.destroy');
 });
 
-/* Products */
+/* Teams */
 
 Route::group(['prefix' => 'teams', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@index')
