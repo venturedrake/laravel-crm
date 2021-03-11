@@ -88,7 +88,10 @@
                 @include('laravel-crm::partials.form.text',[
                  'name' => 'phone',
                  'label' => 'Phone',
-                 'value' => old('phone', $phone->number ?? null)
+                 'value' => old('phone', $phone->number ?? null),
+                 'attributes' => [
+                     'disabled' => 'disabled'
+                 ]
               ])
             </div>
             <div class="col-sm-6">
@@ -96,7 +99,10 @@
                  'name' => 'phone_type',
                  'label' => 'Type',
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
-                 'value' => old('phone_type', $phone->type ??  'mobile')
+                 'value' => old('phone_type', $phone->type ??  'mobile'),
+                 'attributes' => [
+                     'disabled' => 'disabled'
+                 ]
               ])
             </div>
         </div>
@@ -106,6 +112,9 @@
                  'name' => 'email',
                  'label' => 'Email',
                  'value' => old('email', $email->address ?? null),
+                 'attributes' => [
+                     'disabled' => 'disabled'
+                 ]
               ])
             </div>
             <div class="col-sm-6">
@@ -113,7 +122,10 @@
                  'name' => 'email_type',
                  'label' => 'Type',
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
-                 'value' => old('email_type', $email->type ?? 'work')
+                 'value' => old('email_type', $email->type ?? 'work'),
+                 'attributes' => [
+                     'disabled' => 'disabled'
+                 ]
               ])
             </div>
         </div>
