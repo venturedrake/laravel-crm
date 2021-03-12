@@ -21,6 +21,21 @@
   width: 100%;
 }
 
+.autocomplete-control{
+  position: relative;
+}
+
+.autocomplete-new {
+  right: 5px !important;
+  top: 5px !important;
+}
+
+.autocomplete-new {
+  display: none;
+  position: absolute !important;
+  z-index: 2;
+}
+
 /*
  * Cards
  */

@@ -43,9 +43,9 @@
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
-                   'name' => 'suburb',
+                   'name' => 'city',
                    'label' => 'Suburb',
-                   'value' => old('suburb', $address->suburb ?? null)
+                   'value' => old('city', $address->city ?? null)
                 ])
             </div>
             <div class="col-sm-6">

@@ -128,4 +128,19 @@ class OrganisationController extends Controller
 
         return redirect(route('laravel-crm.organisations.index'));
     }
+
+    public function autocomplete(Organisation $organisation)
+    {
+        $address = $organisation->getPrimaryAddress();
+        
+        return response()->json([
+            'address_line1' => $address->line1 ?? null,
+            'address_line2' => $address->line2 ?? null,
+            'address_line3' => $address->line3 ?? null,
+            'address_city' => $address->city ?? null,
+            'address_state' => $address->state ?? null,
+            'address_code' => $address->code ?? null,
+            'address_country' => $address->country ?? null,
+        ]);
+    }
 }

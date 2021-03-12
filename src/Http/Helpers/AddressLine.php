@@ -15,8 +15,8 @@ function addressSingleLine($address)
             $line .= ', '.$address->line3;
         }
 
-        if ($address->suburb) {
-            $line .= ', '.$address->suburb;
+        if ($address->city) {
+            $line .= ', '.$address->city;
         }
 
         if ($address->state) {

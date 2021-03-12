@@ -83,106 +83,132 @@
     <div class="col-sm-6">
         <h6 class="text-uppercase"><span class="fa fa-user" aria-hidden="true"></span> Person</h6>
         <hr />
-        <div class="row">
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                 'name' => 'phone',
-                 'label' => 'Phone',
-                 'value' => old('phone', $phone->number ?? null),
-                 'attributes' => [
-                     'disabled' => 'disabled'
-                 ]
-              ])
+        <span class="autocomplete-person">
+            <div class="row">
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.text',[
+                     'name' => 'phone',
+                     'label' => 'Phone',
+                     'value' => old('phone', $phone->number ?? null),
+                     'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+                  ])
+                </div>
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.select',[
+                     'name' => 'phone_type',
+                     'label' => 'Type',
+                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
+                     'value' => old('phone_type', $phone->type ??  'mobile'),
+                     'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+                  ])
+                </div>
             </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
-                 'name' => 'phone_type',
-                 'label' => 'Type',
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
-                 'value' => old('phone_type', $phone->type ??  'mobile'),
-                 'attributes' => [
-                     'disabled' => 'disabled'
-                 ]
-              ])
+            <div class="row">
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.text',[
+                     'name' => 'email',
+                     'label' => 'Email',
+                     'value' => old('email', $email->address ?? null),
+                     'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+                  ])
+                </div>
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.select',[
+                     'name' => 'email_type',
+                     'label' => 'Type',
+                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
+                     'value' => old('email_type', $email->type ?? 'work'),
+                     'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+                  ])
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                 'name' => 'email',
-                 'label' => 'Email',
-                 'value' => old('email', $email->address ?? null),
-                 'attributes' => [
-                     'disabled' => 'disabled'
-                 ]
-              ])
-            </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
-                 'name' => 'email_type',
-                 'label' => 'Type',
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
-                 'value' => old('email_type', $email->type ?? 'work'),
-                 'attributes' => [
-                     'disabled' => 'disabled'
-                 ]
-              ])
-            </div>
-        </div>
+        </span>
         <h6 class="text-uppercase mt-4"><span class="fa fa-building" aria-hidden="true"></span> Organisation</h6>
         <hr />
-        {{--@include('laravel-crm::partials.form.text',[
-            'name' => 'address',
-            'label' => 'Address',
-            'value' => old('address', $address ?? null)
-        ])--}}
-        @include('laravel-crm::partials.form.text',[
-           'name' => 'line1',
-           'label' => 'Address Line 1',
-           'value' => old('line1', $address->line1 ?? null)
-        ])
-        @include('laravel-crm::partials.form.text',[
-           'name' => 'line2',
-           'label' => 'Address Line 2',
-           'value' => old('line2', $address->line2 ?? null)
-        ])
-        @include('laravel-crm::partials.form.text',[
-           'name' => 'line3',
-           'label' => 'Address Line 3',
-           'value' => old('line3', $address->line3 ?? null)
-        ])
-        <div class="row">
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                   'name' => 'suburb',
-                   'label' => 'Suburb',
-                   'value' => old('suburb', $address->suburb ?? null)
-                ])
+        <span class="autocomplete-organisation">
+            {{--@include('laravel-crm::partials.form.text',[
+                'name' => 'address',
+                'label' => 'Address',
+                'value' => old('address', $address ?? null)
+            ])--}}
+            @include('laravel-crm::partials.form.text',[
+               'name' => 'line1',
+               'label' => 'Address Line 1',
+               'value' => old('line1', $address->line1 ?? null),
+               'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+            ])
+            @include('laravel-crm::partials.form.text',[
+               'name' => 'line2',
+               'label' => 'Address Line 2',
+               'value' => old('line2', $address->line2 ?? null),
+               'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+               
+            ])
+            @include('laravel-crm::partials.form.text',[
+               'name' => 'line3',
+               'label' => 'Address Line 3',
+               'value' => old('line3', $address->line3 ?? null),
+               'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+            ])
+            <div class="row">
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.text',[
+                       'name' => 'city',
+                       'label' => 'Suburb',
+                       'value' => old('city', $address->city ?? null),
+                        'attributes' => [
+                            'disabled' => 'disabled'
+                         ]
+                    ])
+                </div>
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.text',[
+                       'name' => 'state',
+                       'label' => 'State',
+                       'value' => old('state', $address->state ?? null),
+                       'attributes' => [
+                                 'disabled' => 'disabled'
+                        ]
+                    ])
+                </div>
             </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                   'name' => 'state',
-                   'label' => 'State',
-                   'value' => old('state', $address->state ?? null)
-                ])
+            <div class="row">
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.text',[
+                       'name' => 'code',
+                       'label' => 'Postcode',
+                       'value' => old('code', $address->code ?? null),
+               'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+                    ])
+                </div>
+                <div class="col-sm-6">
+                    @include('laravel-crm::partials.form.select',[
+                     'name' => 'country',
+                     'label' => 'Country',
+                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries(),
+                     'value' => old('country', $address->country ?? 'United States'),
+               'attributes' => [
+                         'disabled' => 'disabled'
+                     ]
+                  ])
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                   'name' => 'code',
-                   'label' => 'Postcode',
-                   'value' => old('code', $address->code ?? null)
-                ])
-            </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
-                 'name' => 'country',
-                 'label' => 'Country',
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries(),
-                 'value' => old('country', $address->country ?? 'United States')
-              ])
-            </div>
-        </div>
+        </span>
     </div>
 </div>

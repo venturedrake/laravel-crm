@@ -179,6 +179,9 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
 
     Route::delete('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@destroy')
         ->name('laravel-crm.people.destroy');
+
+    Route::get('{person}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@autocomplete')
+        ->name('laravel-crm.people.autocomplete');
 });
 
 /* Organisations */
@@ -204,6 +207,9 @@ Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], 
 
     Route::delete('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@destroy')
         ->name('laravel-crm.organisations.destroy');
+
+    Route::get('{organisation}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@autocomplete')
+        ->name('laravel-crm.organisations.autocomplete');
 });
 
 /* Users */

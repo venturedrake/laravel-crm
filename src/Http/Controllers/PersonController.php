@@ -171,4 +171,17 @@ class PersonController extends Controller
 
         return redirect(route('laravel-crm.people.index'));
     }
+
+    public function autocomplete(Person $person)
+    {
+        $email = $person->getPrimaryEmail();
+        $phone = $person->getPrimaryPhone();
+
+        return response()->json([
+            'email' => $email->address ?? null,
+            'email_type' => $email->type ?? null,
+            'phone' => $phone->number ?? null,
+            'phone_type' => $phone->type ?? null,
+        ]);
+    }
 }
