@@ -75,7 +75,10 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         if (config('app.env') == 'local') {
-            factory(\VentureDrake\LaravelCrm\Models\Lead::class, 50)->create();
+            factory(\VentureDrake\LaravelCrm\Models\Organisation::class, 100)->create();
+            factory(\VentureDrake\LaravelCrm\Models\Person::class, 200)->create();
+            factory(\VentureDrake\LaravelCrm\Models\Lead::class, 100)->create();
+            factory(\VentureDrake\LaravelCrm\Models\Deal::class, 50)->create();
         }
         
     }
