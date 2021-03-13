@@ -17,7 +17,7 @@
                     <th scope="col">Open Deals</th>
                     <th scope="col">Next Activity</th>
                     <th scope="col">Owner</th>
-                    <th scope="col"></th>
+                    <th scope="col" width="150"></th>
                 </tr>
                 </thead>
                 <tbody>

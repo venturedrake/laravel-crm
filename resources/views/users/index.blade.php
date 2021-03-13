@@ -20,7 +20,7 @@
                     <th scope="col">Created</th>
                     <th scope="col">Updated</th>
                     <th scope="col">Last Online</th>
-                    <th scope="col"></th>
+                    <th scope="col" width="150"></th>
                 </tr>
                 </thead>
                 <tbody>

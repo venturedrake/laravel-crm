@@ -15,7 +15,7 @@
                     <th scope="col">Contact person</th>
                     <th scope="col">Expected close</th>
                     <th scope="col">Assigned To</th>
-                    <th scope="col"></th>
+                    <th scope="col" width="240"></th>
                 </tr>
                 </thead>
                 <tbody>
