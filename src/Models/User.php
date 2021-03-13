@@ -13,7 +13,7 @@ class User extends LaravelUser
      */
     public function teams()
     {
-        return $this->belongsToMany(\VentureDrake\LaravelCrm\Models\Team::class);
+        return $this->belongsToMany(\VentureDrake\LaravelCrm\Models\Team::class, 'crm_team_user', 'crm_team_id', 'user_id');
     }
 
     /**
