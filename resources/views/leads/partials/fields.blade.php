@@ -21,7 +21,7 @@
         <span class="autocomplete">
             @include('laravel-crm::partials.form.hidden',[
              'name' => 'organisation_id',
-             'value' => old('organisation_id', $lead->organisation->id ?? $lead->organisation_name ?? null),
+             'value' => old('organisation_id', $lead->organisation->id ?? null),
             ])
             <script type="text/javascript">
                 let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
@@ -30,7 +30,7 @@
                 'name' => 'organisation_name',
                 'label' => 'Organisation',
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$lead->organisation->name ?? null),
+                'value' => old('organisation_name',$lead->organisation->name ?? $lead->organisation_name ?? null),
                 'attributes' => [
                  'autocomplete' => \Illuminate\Support\Str::random()
                ]
