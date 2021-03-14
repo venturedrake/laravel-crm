@@ -20,16 +20,22 @@ Require the package using composer:
 composer require venturedrake/laravel-crm
 ```
 
-Run the package install command:
+Run vendor publish:
 
 ```bash
-php artisan laravelcrm:install
+php artisan vendor:publish --vendor=VentureDrake\LaravelCrm\LaravelCrmServiceProvider
 ```
 
 Run migrations:
 
 ```bash
 php artisan migrate
+```
+
+Run database seeder:
+
+```bash
+php artisan db:seed --class=LaravelCrmTablesSeeder
 ```
 
 ## Usage

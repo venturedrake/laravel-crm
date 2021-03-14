@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Composer;
 
 class LaravelCrmInstall extends Command
 {
@@ -21,13 +22,21 @@ class LaravelCrmInstall extends Command
     protected $description = 'Install Laravel CRM package';
 
     /**
+     * The Composer instance.
+     *
+     * @var \Illuminate\Foundation\Composer
+     */
+    protected $composer;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Composer $composer)
     {
         parent::__construct();
+        $this->composer = $composer;
     }
 
     /**
@@ -39,14 +48,19 @@ class LaravelCrmInstall extends Command
     {
         $this->info('Installing LaravelCRM...');
 
-        $this->call('vendor:publish', [
+        $this->comment('Publishing package assets');
+        $this->callSilent('vendor:publish', [
             '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
         ]);
 
-        $this->call('db:seed', [
-            '--class' => 'LaravelCrmTablesSeeder',
-        ]);
+        $this->comment('Composer dump autoload');
+        $this->composer->dumpAutoloads();
 
+        $this->comment('Seeding database');
+        $this->callSilent('db:seed', [
+             '--class' => 'LaravelCrmTablesSeeder',
+        ]);
+        
         $this->info('Installed LaravelCRM');
     }
 }
