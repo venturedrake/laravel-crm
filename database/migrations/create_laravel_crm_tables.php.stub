@@ -323,9 +323,10 @@ class CreateLaravelCrmTables extends Migration
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'deals');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'labels');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'labelables');
-        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'crm_teams');
-        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'crm_team_user');
-        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'crm_team_invitations');
+        Schema::dropIfExists('crm_teams');
+        Schema::dropIfExists('crm_team_user');
+        Schema::dropIfExists('crm_team_invitations');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'activities');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'notes');
     }
 }
