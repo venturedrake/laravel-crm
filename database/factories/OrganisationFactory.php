@@ -4,8 +4,8 @@ namespace VentureDrake\LaravelCrm\Database\Factories;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use VentureDrake\LaravelCrm\Models\Organisation;
 use Faker\Generator as Faker;
+use VentureDrake\LaravelCrm\Models\Organisation;
 
 $factory->define(Organisation::class, function (Faker $faker) {
     return [
