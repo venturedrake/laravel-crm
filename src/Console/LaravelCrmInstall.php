@@ -56,6 +56,8 @@ class LaravelCrmInstall extends Command
         $this->comment('Composer dump autoload');
         $this->composer->dumpAutoloads();
 
+        $this->call('migrate');
+
         $this->comment('Seeding database');
         $this->callSilent('db:seed', [
              '--class' => 'LaravelCrmTablesSeeder',
