@@ -16,7 +16,7 @@ const appJquery = function() {
                 }
             });
             
-            $('input[name="birthday"], input[name="expected"]').datetimepicker({
+            $('input[name="birthday"], input[name="expected_close"]').datetimepicker({
                 timepicker:false,
                 format: 'Y/m/d',
             });
