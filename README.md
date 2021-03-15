@@ -12,6 +12,13 @@ This package will add CRM functionality to your laravel project.
 
 ## Features
 
+ - Sales leads management
+ - Deal management
+ - Contact database management
+ - Users & Teams
+ - Secure registration & login
+ - Reset forgotten password
+
 ## Installation
 
 Require the package using composer:
@@ -23,7 +30,7 @@ composer require venturedrake/laravel-crm
 Run vendor publish:
 
 ```bash
-php artisan vendor:publish --provider=VentureDrake\LaravelCrm\LaravelCrmServiceProvider
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider"
 ```
 
 Run migrations:
