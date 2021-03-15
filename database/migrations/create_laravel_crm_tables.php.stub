@@ -41,6 +41,7 @@ class CreateLaravelCrmTables extends Migration
             $table->string('maiden_name')->nullable();
             $table->date('birthday')->nullable();
             $table->enum('gender', ['male','female'])->nullable();
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('organisation_id')->nullable();
             $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');
             $table->unsignedBigInteger('user_created_id')->nullable();
