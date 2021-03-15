@@ -13,6 +13,10 @@ class Lead extends Model
     
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'converted_at' => 'datetime',
+    ];
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'leads';
@@ -47,7 +51,11 @@ class Lead extends Model
     
     public function getPrimaryEmail()
     {
-        return $this->emails()->where('primary', 1)->first();
+        if ($this->person) {
+            return $this->person->getPrimaryEmail();
+        } else {
+            return $this->emails()->where('primary', 1)->first();
+        }
     }
 
     /**
@@ -60,7 +68,11 @@ class Lead extends Model
 
     public function getPrimaryPhone()
     {
-        return $this->phones()->where('primary', 1)->first();
+        if ($this->person) {
+            return $this->person->getPrimaryPhone();
+        } else {
+            return $this->phones()->where('primary', 1)->first();
+        }
     }
 
     /**
@@ -73,7 +85,11 @@ class Lead extends Model
 
     public function getPrimaryAddress()
     {
-        return $this->addresses()->where('primary', 1)->first();
+        if ($this->organisation) {
+            return $this->organisation->getPrimaryAddress();
+        } else {
+            return $this->addresses()->where('primary', 1)->first();
+        }
     }
 
     public function leadStatus()

@@ -78,6 +78,10 @@ const appJquery = function() {
                         $('.autocomplete-person').find('input,select').attr('disabled','disabled');
                     }
                 });
+                
+                if($('input[name="person_name"]').closest('.autocomplete').find('input[name="person_id"]').val() == ''){
+                    $('.autocomplete-person').find('input,select').removeAttr('disabled');
+                }
 
             }
             
@@ -104,6 +108,10 @@ const appJquery = function() {
                         $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
                     }
                 });
+
+                if($('input[name="organisation_name"]').closest('.autocomplete').find('input[name="organisation_id"]').val() == ''){
+                    $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+                }
             }
             
         },

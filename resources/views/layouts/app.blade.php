@@ -11,7 +11,7 @@
     <title>Laravel CRM</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=456456345654" defer></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=4356345645" defer></script>
 
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=456456345654" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=4356345645" rel="stylesheet">
 </head>
 <body>
     <div id="app">

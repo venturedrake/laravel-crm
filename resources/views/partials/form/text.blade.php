@@ -11,7 +11,7 @@
         @isset($prepend)
         </div>
         @endisset
-        <span class="badge badge-primary autocomplete-new">New</span>
+        <span class="badge badge-primary autocomplete-new" @if((isset($new) && $new)) style="display: inline" @endif>New</span>
     </div>
     @error($name)
     <div class="text-danger invalid-feedback-custom">{{ $message }}</div>

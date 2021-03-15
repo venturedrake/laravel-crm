@@ -27,8 +27,8 @@
                             'limit' => 3
                         ])</td>
                         <td>{{ money($deal->amount, $deal->currency) }}</td>
-                        <td>{{ $deal->person->name ?? null }}</td>
                         <td>{{ $deal->organisation->name ?? null }}</td>
+                        <td>{{ $deal->person->name ?? null }}</td>
                         <td>{{ ($deal->expected_close) ? $deal->expected_close->toFormattedDateString() : null }}</td>
                         <td>{{ $deal->assignedToUser->name ?? null }}</td>
                         <td class="disable-link text-right">

@@ -15,7 +15,8 @@
                     'value' => old('person_name', $lead->person->name ?? $lead->person_name ?? null),
                     'attributes' => [
                        'autocomplete' => \Illuminate\Support\Str::random()
-                    ]
+                    ],
+                    'new' => ((isset($lead) && !$lead->person_id) ? true : false)
                 ])
          </span>
         <span class="autocomplete">
@@ -33,7 +34,8 @@
                 'value' => old('organisation_name',$lead->organisation->name ?? $lead->organisation_name ?? null),
                 'attributes' => [
                  'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+                'new' => ((isset($lead) && !$lead->person_id) ? true : false)
             ])  
         </span>
         @include('laravel-crm::partials.form.text',[

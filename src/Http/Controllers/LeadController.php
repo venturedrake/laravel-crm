@@ -2,13 +2,41 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\DealService;
+use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\PersonService;
 
 class LeadController extends Controller
 {
+    /**
+     * @var DealService
+     */
+    private $dealService;
+
+    /**
+     * @var PersonService
+     */
+    private $personService;
+
+    /**
+     * @var OrganisationService
+     */
+    private $organisationService;
+    
+    public function __construct(DealService $dealService, PersonService $personService, OrganisationService $organisationService)
+    {
+        $this->dealService = $dealService;
+        $this->personService = $personService;
+        $this->organisationService = $organisationService;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -16,10 +44,10 @@ class LeadController extends Controller
      */
     public function index()
     {
-        if (Lead::all()->count() < 30) {
+        if (Lead::whereNull('converted_at')->get()->count() < 30) {
             $leads = Lead::latest()->get();
         } else {
-            $leads = Lead::latest()->paginate(30);
+            $leads = Lead::whereNull('converted_at')->latest()->paginate(30);
         }
         
         return view('laravel-crm::leads.index', [
@@ -114,11 +142,13 @@ class LeadController extends Controller
     {
         $email = $lead->getPrimaryEmail();
         $phone = $lead->getPrimaryPhone();
+        $address = $lead->getPrimaryAddress();
         
         return view('laravel-crm::leads.edit', [
             'lead' => $lead,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
+            'address' => $address ?? null,
         ]);
     }
 
@@ -161,8 +191,6 @@ class LeadController extends Controller
                 'type' => $request->phone_type,
                 'primary' => 1,
             ]);
-        } elseif ($phone) {
-            $phone->delete();
         }
 
         if ($request->email && $email) {
@@ -177,8 +205,6 @@ class LeadController extends Controller
                 'type' => $request->email_type,
                 'primary' => 1,
             ]);
-        } elseif ($email) {
-            $email->delete();
         }
 
         if ($address) {
@@ -222,6 +248,57 @@ class LeadController extends Controller
         
         flash('Lead deleted')->success()->important();
         
+        return redirect(route('laravel-crm.leads.index'));
+    }
+
+    /**
+     * Show the form for converting the specified resource.
+     *
+     * @param  \App\Lead  $lead
+     * @return \Illuminate\Http\Response
+     */
+    public function convertToDeal(Lead $lead)
+    {
+        $email = $lead->getPrimaryEmail();
+        $phone = $lead->getPrimaryPhone();
+        $address = $lead->getPrimaryAddress();
+
+        return view('laravel-crm::leads.convert', [
+            'lead' => $lead,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeAsDeal(StoreLeadRequest $request, Lead $lead)
+    {
+        if ($request->person_name && ! $request->person_id) {
+            $person = $this->personService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $person = Person::find($request->person_id);
+        }
+
+        if ($request->organisation_name && ! $request->organisation_id) {
+            $organisation = $this->organisationService->createFromRelated($request);
+        } elseif ($request->organisation_id) {
+            $organisation = Organisation::find($request->organisation_id);
+        }
+
+        $this->dealService->create($request, $person ?? null, $organisation ?? null);
+
+        $lead->update([
+            'converted_at' => Carbon::now(),
+        ]);
+        
+        flash('Lead converted to deal')->success()->important();
+
         return redirect(route('laravel-crm.leads.index'));
     }
 }

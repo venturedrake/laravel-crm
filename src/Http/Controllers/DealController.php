@@ -2,17 +2,22 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDealRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
 class DealController extends Controller
 {
+    /**
+     * @var DealService
+     */
+    private $dealService;
+    
     /**
      * @var PersonService
      */
@@ -23,8 +28,9 @@ class DealController extends Controller
      */
     private $organisationService;
 
-    public function __construct(PersonService $personService, OrganisationService $organisationService)
+    public function __construct(DealService $dealService, PersonService $personService, OrganisationService $organisationService)
     {
+        $this->dealService = $dealService;
         $this->personService = $personService;
         $this->organisationService = $organisationService;
     }
@@ -73,20 +79,7 @@ class DealController extends Controller
             $organisation = $this->organisationService->createFromRelated($request);
         }
         
-        $deal = Deal::create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
-            'title' => $request->title,
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'currency' => $request->currency,
-            'expected_close' => $request->expected_close,
-            'user_owner_id' => $request->user_assigned_id,
-            'user_assigned_id' => $request->user_assigned_id,
-        ]);
-
-        $deal->labels()->sync($request->labels ?? []);
+        $this->dealService->create($request, $person, $organisation);
         
         flash('Deal stored')->success()->important();
 
@@ -128,8 +121,20 @@ class DealController extends Controller
      */
     public function edit(Deal $deal)
     {
+        if ($deal->person) {
+            $email = $deal->person->getPrimaryEmail();
+            $phone = $deal->person->getPrimaryPhone();
+        }
+
+        if ($deal->organisation) {
+            $address = $deal->organisation->getPrimaryAddress();
+        }
+        
         return view('laravel-crm::deals.edit', [
             'deal' => $deal,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
         ]);
     }
 
@@ -153,20 +158,8 @@ class DealController extends Controller
         } elseif ($request->person_id) {
             $organisation = Organisation::find($request->organisation_id);
         }
-        
-        $deal->update([
-            'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
-            'title' => $request->title,
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'currency' => $request->currency,
-            'expected_close' => $request->expected_close,
-            'user_owner_id' => $request->user_assigned_id,
-            'user_assigned_id' => $request->user_assigned_id,
-        ]);
 
-        $deal->labels()->sync($request->labels ?? []);
+        $deal = $this->dealService->update($request, $deal, $person, $organisation);
         
         flash('Deal updated')->success()->important();
 

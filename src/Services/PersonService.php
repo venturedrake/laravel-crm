@@ -79,6 +79,24 @@ class PersonService
             'last_name' => $name['last_name'] ?? null,
             'user_owner_id' => $request->user_owner_id ?? $request->user_assigned_id,
         ]);
+
+        if ($request->phone) {
+            $person->phones()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'number' => $request->phone,
+                'type' => $request->phone_type,
+                'primary' => 1,
+            ]);
+        }
+
+        if ($request->email) {
+            $person->emails()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'address' => $request->email,
+                'type' => $request->email_type,
+                'primary' => 1,
+            ]);
+        }
         
         return $person;
     }

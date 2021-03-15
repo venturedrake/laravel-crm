@@ -1,10 +1,14 @@
 <div class="row">
     <div class="col-sm-6 border-right">
+        @include('laravel-crm::partials.form.hidden',[
+             'name' => 'lead_id',
+             'value' => old('lead_id', $deal->lead->id ?? $lead->id ?? null),
+        ])
         <span class="autocomplete">
              @include('laravel-crm::partials.form.hidden',[
                'name' => 'person_id',
                'value' => old('person_id', $deal->person->id ?? null),
-           ])
+            ])
             <script type="text/javascript">
                 let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
             </script>
@@ -12,11 +16,12 @@
                'name' => 'person_name',
                'label' => 'Contact person',
                'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-               'value' => old('person_name', $deal->person->name ?? null),
+               'value' => old('person_name', $deal->person->name ?? $lead->person_name ?? null),
                'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
-       ])
+               ],
+              'new' => ((isset($deal) && !$deal->person_id) || (isset($lead) && !$lead->person_id) ? true : false)
+            ])
         </span>
         <span class="autocomplete">
             @include('laravel-crm::partials.form.hidden',[
@@ -30,10 +35,11 @@
                 'name' => 'organisation_name',
                 'label' => 'Organisation',
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$deal->organisation->name ?? null),
+                'value' => old('organisation_name',$deal->organisation->name ?? $lead->organisation_name ?? null),
                 'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+               'new' => ((isset($deal) && !$deal->organisation_id) || (isset($lead) && !$lead->organisation_id) ? true : false)
             ])
         </span>    
         @include('laravel-crm::partials.form.text',[
@@ -47,7 +53,6 @@
              'rows' => 5,
              'value' => old('description', $deal->description ?? null) 
         ])
-
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
@@ -175,9 +180,9 @@
             <div class="row">
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.text',[
-                       'name' => 'suburb',
+                       'name' => 'city',
                        'label' => 'Suburb',
-                       'value' => old('suburb', $address->suburb ?? null),
+                       'value' => old('city', $address->city ?? null),
                        'attributes' => [
                             'disabled' => 'disabled'
                        ]

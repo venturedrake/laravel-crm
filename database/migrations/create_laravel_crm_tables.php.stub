@@ -152,6 +152,7 @@ class CreateLaravelCrmTables extends Migration
             $table->foreign('lead_source_id')->references('id')->on(config('laravel-crm.db_table_prefix').'lead_sources');
             $table->boolean("qualified")->default(false);
             $table->datetime('expected_close')->nullable();
+            $table->datetime("converted_at")->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_updated_id')->nullable();
@@ -170,6 +171,8 @@ class CreateLaravelCrmTables extends Migration
         Schema::create(config('laravel-crm.db_table_prefix').'deals', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id');
+            $table->unsignedBigInteger('lead_id')->index()->nullable();
+            $table->foreign('lead_id')->references('id')->on(config('laravel-crm.db_table_prefix').'leads');
             $table->unsignedBigInteger('person_id')->index()->nullable();
             $table->foreign('person_id')->references('id')->on(config('laravel-crm.db_table_prefix').'people');
             $table->unsignedBigInteger('organisation_id')->index()->nullable();
