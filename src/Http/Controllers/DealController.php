@@ -80,7 +80,7 @@ class DealController extends Controller
             $organisation = $this->organisationService->createFromRelated($request);
         }
         
-        $this->dealService->create($request, $person, $organisation);
+        $this->dealService->create($request, $person ?? null, $organisation ?? null);
         
         flash('Deal stored')->success()->important();
 
@@ -160,7 +160,7 @@ class DealController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
 
-        $deal = $this->dealService->update($request, $deal, $person, $organisation);
+        $deal = $this->dealService->update($request, $deal, $person ?? null, $organisation ?? null);
         
         flash('Deal updated')->success()->important();
 
