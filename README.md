@@ -23,7 +23,7 @@ composer require venturedrake/laravel-crm
 Run vendor publish:
 
 ```bash
-php artisan vendor:publish --vendor=VentureDrake\LaravelCrm\LaravelCrmServiceProvider
+php artisan vendor:publish --provider=VentureDrake\LaravelCrm\LaravelCrmServiceProvider
 ```
 
 Run migrations:
