@@ -20,7 +20,7 @@
                 </thead>
                 <tbody>
                 @foreach($deals as $deal)
-                    <tr class="has-link" data-url="{{ url(route('laravel-crm.deals.show',$deal)) }}">
+                    <tr class="has-link @if($deal->closed_status == 'won') table-success @elseif($deal->closed_status == 'lost') table-danger @endif" data-url="{{ url(route('laravel-crm.deals.show',$deal)) }}">
                         <td>{{ $deal->title }}</td>
                         <td>@include('laravel-crm::partials.labels',[
                             'labels' => $deal->labels,
@@ -32,8 +32,12 @@
                         <td>{{ ($deal->expected_close) ? $deal->expected_close->toFormattedDateString() : null }}</td>
                         <td>{{ $deal->assignedToUser->name ?? null }}</td>
                         <td class="disable-link text-right">
-                            <a href="#" class="btn btn-success btn-sm">Won</a>
-                            <a href="#" class="btn btn-danger btn-sm">Lost</a>
+                            @if(!$deal->closed_at)
+                            <a href="{{  route('laravel-crm.deals.won',$deal) }}" class="btn btn-success btn-sm">Won</a>
+                            <a href="{{  route('laravel-crm.deals.lost',$deal) }}" class="btn btn-danger btn-sm">Lost</a>
+                            @else
+                                <a href="{{  route('laravel-crm.deals.reopen',$deal) }}" class="btn btn-danger btn-sm">Reopen</a>
+                            @endif    
                             <a href="{{  route('laravel-crm.deals.show',$deal) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                             <a href="{{  route('laravel-crm.deals.edit',$deal) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             <form action="{{ route('laravel-crm.deals.destroy',$deal) }}" method="POST" class="form-check-inline mr-0 form-delete-button">

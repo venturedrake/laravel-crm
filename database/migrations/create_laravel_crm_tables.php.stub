@@ -186,6 +186,8 @@ class CreateLaravelCrmTables extends Migration
             
             $table->boolean("qualified")->default(false);
             $table->datetime('expected_close')->nullable();
+            $table->datetime('closed_at')->nullable();
+            $table->enum('closed_status', ['won','lost'])->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_updated_id')->nullable();

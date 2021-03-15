@@ -180,4 +180,43 @@ class DealController extends Controller
 
         return redirect(route('laravel-crm.deals.index'));
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function won(Deal $deal)
+    {
+        flash('Deal won')->success()->important();
+
+        return redirect(route('laravel-crm.deals.index'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function lost(Deal $deal)
+    {
+        flash('Deal lost')->success()->important();
+
+        return redirect(route('laravel-crm.deals.index'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function reopen(Deal $deal)
+    {
+        flash('Deal reopened')->success()->important();
+
+        return redirect(route('laravel-crm.deals.index'));
+    }
 }

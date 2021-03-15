@@ -110,6 +110,15 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 
     Route::delete('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@destroy')
         ->name('laravel-crm.deals.destroy');
+
+    Route::get('{deal}/won', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@won')
+        ->name('laravel-crm.deals.won');
+
+    Route::get('{deal}/lost', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@lost')
+        ->name('laravel-crm.deals.lost');
+
+    Route::get('{deal}/reopen', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@reopen')
+        ->name('laravel-crm.deals.reopen');
 });
 
 /* Activities */
