@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Carbon\Carbon;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDealRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -189,9 +190,14 @@ class DealController extends Controller
      */
     public function won(Deal $deal)
     {
+        $deal->update([
+            'closed_status' => 'won',
+            'closed_at' => Carbon::now(),
+        ]);
+        
         flash('Deal won')->success()->important();
 
-        return redirect(route('laravel-crm.deals.index'));
+        return back();
     }
 
     /**
@@ -202,9 +208,14 @@ class DealController extends Controller
      */
     public function lost(Deal $deal)
     {
+        $deal->update([
+            'closed_status' => 'lost',
+            'closed_at' => Carbon::now(),
+        ]);
+        
         flash('Deal lost')->success()->important();
 
-        return redirect(route('laravel-crm.deals.index'));
+        return back();
     }
 
     /**
@@ -215,8 +226,13 @@ class DealController extends Controller
      */
     public function reopen(Deal $deal)
     {
+        $deal->update([
+            'closed_status' => null,
+            'closed_at' => null,
+        ]);
+        
         flash('Deal reopened')->success()->important();
 
-        return redirect(route('laravel-crm.deals.index'));
+        return back();
     }
 }

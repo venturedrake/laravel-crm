@@ -11,8 +11,9 @@
                     <th scope="col">Name</th>
                     <th scope="col">Label</th>
                     <th scope="col">Contact</th>
-                    <th scope="col">Closed Deals</th>
                     <th scope="col">Open Deals</th>
+                    <th scope="col">Lost Deals</th>
+                    <th scope="col">Won Deals</th>
                     <th scope="col">Next Activity</th>
                     <th scope="col">Owner</th>
                     <th scope="col" width="150"></th>
@@ -27,8 +28,9 @@
                             'limit' => 3
                         ])</td>
                         <td></td>
-                        <td></td>
-                        <td>{{ $organisation->deals->count() }}</td>
+                        <td>{{ $organisation->deals->whereNull('closed_at')->count() }}</td>
+                        <td>{{ $organisation->deals->where('closed_status', 'lost')->count() }}</td>
+                        <td>{{ $organisation->deals->where('closed_status', 'won')->count() }}</td>
                         <td></td>
                         <td>{{ $organisation->ownerUser->name ?? null }}</td>
                         <td class="disable-link text-right">

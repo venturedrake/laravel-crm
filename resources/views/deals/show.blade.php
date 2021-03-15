@@ -6,8 +6,12 @@
         <div class="card-header"><h3 class="card-title float-left m-0">{{ $deal->title }}</h3>
             <span class="float-right">
                 <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.deals.index')) }}"><span class="fa fa-angle-double-left"></span> Back to deals</a> | 
-                <a href="#" class="btn btn-success btn-sm">Won</a>
-                <a href="#" class="btn btn-danger btn-sm">Lost</a>
+                @if(!$deal->closed_at)
+                    <a href="{{  route('laravel-crm.deals.won',$deal) }}" class="btn btn-success btn-sm">Won</a>
+                    <a href="{{  route('laravel-crm.deals.lost',$deal) }}" class="btn btn-danger btn-sm">Lost</a>
+                @else
+                    <a href="{{  route('laravel-crm.deals.reopen',$deal) }}" class="btn btn-outline-secondary btn-sm">Reopen</a>
+                @endif
                 @include('laravel-crm::partials.navs.activities') |
                 <a href="{{ url(route('laravel-crm.deals.edit', $deal)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 <form action="{{ route('laravel-crm.deals.destroy',$deal) }}" method="POST" class="form-check-inline mr-0 form-delete-button">

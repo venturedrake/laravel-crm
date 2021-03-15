@@ -16,6 +16,7 @@ class Deal extends Model
     
     protected $casts = [
         'expected_close' => 'datetime',
+        'closed_at' => 'datetime',
     ];
 
     public function getTable()

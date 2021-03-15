@@ -13,8 +13,9 @@
                     <th scope="col">Organisation</th>
                     <th scope="col">Email</th>
                     <th scope="col">Phone</th>
-                    <th scope="col">Closed Deals</th>
                     <th scope="col">Open Deals</th>
+                    <th scope="col">Lost Deals</th>
+                    <th scope="col">Won Deals</th>
                     <th scope="col">Next Activity</th>
                     <th scope="col">Owner</th>
                     <th scope="col" width="150"></th>
@@ -31,8 +32,9 @@
                         <td>{{ $person->organisation->name ?? null }}</td>
                         <td>{{ $person->getPrimaryEmail()->address ?? null }}</td>
                         <td>{{ $person->getPrimaryPhone()->number ?? null }}</td>
-                        <td></td>
-                        <td>{{ $person->deals->count() }}</td>
+                        <td>{{ $person->deals->whereNull('closed_at')->count() }}</td>
+                        <td>{{ $person->deals->where('closed_status', 'lost')->count() }}</td>
+                        <td>{{ $person->deals->where('closed_status', 'won')->count() }}</td>
                         <td></td>
                         <td>{{ $person->ownerUser->name ?? null }}</td>
                         <td class="disable-link text-right">
