@@ -34,6 +34,6 @@ class Team extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(\VentureDrake\LaravelCrm\Models\User::class, 'crm_team_user', 'user_id', 'crm_team_id');
+        return $this->belongsToMany(\VentureDrake\LaravelCrm\Models\User::class, 'crm_team_user', 'crm_team_id', 'user_id');
     }
 }

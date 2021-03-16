@@ -13,7 +13,7 @@ class User extends LaravelUser
      */
     public function teams()
     {
-        return $this->belongsToMany(\VentureDrake\LaravelCrm\Models\Team::class, 'crm_team_user', 'crm_team_id', 'user_id');
+        return $this->belongsToMany(\VentureDrake\LaravelCrm\Models\Team::class, 'crm_team_user', 'user_id', 'crm_team_id');
     }
 
     /**
@@ -35,8 +35,6 @@ class User extends LaravelUser
      */
     public function belongsToTeam($team)
     {
-        return $this->teams->contains(function ($t) use ($team) {
-            return $t->id === $team->id;
-        });
+        return $this->teams()->where('crm_team_id', $team->id)->exists();
     }
 }
