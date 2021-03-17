@@ -21,25 +21,29 @@ This package will add CRM functionality to your laravel project.
 
 ## Installation
 
-Require the package using composer:
+Step 1: Make sure you have set up Laravel auth
+
+https://laravel.com/docs/6.x/authentication
+
+Step 2: Require the package using composer:
 
 ```bash
 composer require venturedrake/laravel-crm
 ```
 
-Run vendor publish:
+Step 3: Run vendor publish:
 
 ```bash
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider"
 ```
 
-Run migrations:
+Step 4: Run migrations:
 
 ```bash
 php artisan migrate
 ```
 
-Run database seeder:
+Step 5: Run database seeder:
 
 ```bash
 php artisan db:seed --class=LaravelCrmTablesSeeder
@@ -47,9 +51,7 @@ php artisan db:seed --class=LaravelCrmTablesSeeder
 
 ## Usage
 
-```php
- // Usage description here
-```
+Access the crm at http://your-project-url/crm
 
 ## Testing
 
@@ -63,9 +65,20 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 ## Roadmap
 
- - Standalone version with complete front end
+ - Products
+ - Notes
+ - Tasks
+ - Files / Documents
+ - Calendar (Calls, Meetings, Reminders)
+ - Roles / Permissions
+ - Dashboard
+ - Custom Fields
+ - Activity Feed / Timelines
+ - CSV Import / Export
 
 ## Feedback
+
+Participate in the [discord community](https://discord.gg/rygVyyGSHj)
 
 ## Contributing
 
