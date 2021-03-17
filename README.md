@@ -53,6 +53,28 @@ Step 6: Run database seeder:
 php artisan db:seed --class=LaravelCrmTablesSeeder
 ```
 
+Step 7: Add an email address for the user who will be the crm owner in the config file:
+
+After publishing the package assets a configuration file will be located at <code>config/laravel-crm.php</code>
+
+```php
+
+return [
+    
+    'crm_owner' => 'email@domain.com',
+    
+    'route_prefix' => 'crm',
+    
+    'route_middleware' => ['web'],
+    
+    'db_table_prefix' => 'crm_',
+    
+    'encrypt_db_fields' => true,
+    
+];
+
+```
+
 ## Usage
 
 Access the crm at http://your-project-url/crm
@@ -86,7 +108,7 @@ Participate in the [discord community](https://discord.gg/rygVyyGSHj)
 
 ## Contributing
 
-Please see [CONTRIBUTING](../CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### Security
 
