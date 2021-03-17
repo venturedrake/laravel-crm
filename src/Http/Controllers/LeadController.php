@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
@@ -249,6 +251,23 @@ class LeadController extends Controller
         flash('Lead deleted')->success()->important();
         
         return redirect(route('laravel-crm.leads.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = $request->search;
+
+        $leads = Lead::all()->filter(function ($record) use ($searchValue) {
+            foreach ($record->getSearchable() as $field) {
+                if (Str::contains($record->{$field}, $searchValue)) {
+                    return $record;
+                }
+            }
+        });
+
+        return view('laravel-crm::leads.index', [
+            'leads' => $leads,
+        ]);
     }
 
     /**

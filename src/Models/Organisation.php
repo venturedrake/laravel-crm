@@ -17,6 +17,15 @@ class Organisation extends Model
         'name',
     ];
 
+    protected $searchable = [
+        'name',
+    ];
+
+    public function getSearchable()
+    {
+        return $this->searchable;
+    }
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'organisations';

@@ -24,6 +24,18 @@ class Person extends Model
         'gender',
     ];
 
+    protected $searchable = [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'maiden_name',
+    ];
+    
+    public function getSearchable()
+    {
+        return $this->searchable;
+    }
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'people';

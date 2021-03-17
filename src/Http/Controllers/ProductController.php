@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Product;
 
 class ProductController extends Controller
@@ -95,5 +96,22 @@ class ProductController extends Controller
         flash('Product deleted')->success()->important();
 
         return redirect(route('laravel-crm.products.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = $request->search;
+
+        $products = Product::all()->filter(function ($record) use ($searchValue) {
+            foreach ($record->getSearchable() as $field) {
+                if (Str::contains($record->{$field}, $searchValue)) {
+                    return $record;
+                }
+            }
+        });
+
+        return view('laravel-crm::products.index', [
+            'products' => $products,
+        ]);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrganisationRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrganisationRequest;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -127,6 +129,23 @@ class OrganisationController extends Controller
         flash('Organisation deleted')->success()->important();
 
         return redirect(route('laravel-crm.organisations.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = $request->search;
+
+        $organisations = Organisation::all()->filter(function ($record) use ($searchValue) {
+            foreach ($record->getSearchable() as $field) {
+                if (Str::contains($record->{$field}, $searchValue)) {
+                    return $record;
+                }
+            }
+        });
+
+        return view('laravel-crm::organisations.index', [
+            'organisations' => $organisations,
+        ]);
     }
 
     public function autocomplete(Organisation $organisation)

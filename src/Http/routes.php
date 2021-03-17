@@ -51,7 +51,7 @@ Route::get('password/confirm', function () {
 
 /* Private Routes */
 
-/* Dashboarh */
+/* Dashboard */
 Route::get('/', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
     ->middleware('auth.laravel-crm')
     ->name('laravel-crm.dashboard');
@@ -79,6 +79,9 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
 
     Route::delete('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@destroy')
         ->name('laravel-crm.leads.destroy');
+
+    Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@search')
+        ->name('laravel-crm.leads.search');
 
     Route::get('{lead}/convert', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@convertToDeal')
         ->name('laravel-crm.leads.convert-to-deal');
@@ -110,6 +113,9 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 
     Route::delete('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@destroy')
         ->name('laravel-crm.deals.destroy');
+
+    Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@search')
+        ->name('laravel-crm.deals.search');
 
     Route::get('{deal}/won', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@won')
         ->name('laravel-crm.deals.won');
@@ -195,6 +201,9 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
     Route::delete('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@destroy')
         ->name('laravel-crm.people.destroy');
 
+    Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@search')
+        ->name('laravel-crm.people.search');
+
     Route::get('{person}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@autocomplete')
         ->name('laravel-crm.people.autocomplete');
 });
@@ -222,6 +231,10 @@ Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], 
 
     Route::delete('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@destroy')
         ->name('laravel-crm.organisations.destroy');
+
+
+    Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@search')
+        ->name('laravel-crm.organisations.search');
 
     Route::get('{organisation}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@autocomplete')
         ->name('laravel-crm.organisations.autocomplete');
@@ -306,4 +319,7 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], funct
 
     Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@destroy')
         ->name('laravel-crm.products.destroy');
+
+    Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@search')
+        ->name('laravel-crm.products.search');
 });

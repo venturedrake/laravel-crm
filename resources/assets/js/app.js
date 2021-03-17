@@ -44365,6 +44365,13 @@ var appJquery = function () {
           $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
         }
       }
+
+      $("form[name='formSearch'] div.dropdown-menu > a").on({
+        click: function click() {
+          $(this).closest('form').attr('action', $(this).data('action'));
+          $(this).closest('form').find('.action-current').html($(this).text());
+        }
+      });
     },
     onSelectPerson: function onSelectPerson(item, element) {
       $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');

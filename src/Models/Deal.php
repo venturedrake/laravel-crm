@@ -19,6 +19,16 @@ class Deal extends Model
         'closed_at' => 'datetime',
     ];
 
+    protected $searchable = [
+        'person_name',
+        'organisation_name',
+    ];
+
+    public function getSearchable()
+    {
+        return $this->searchable;
+    }
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'deals';

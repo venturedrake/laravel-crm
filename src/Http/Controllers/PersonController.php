@@ -1,6 +1,8 @@
 <?php
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StorePersonRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePersonRequest;
@@ -170,6 +172,23 @@ class PersonController extends Controller
         flash('Person deleted')->success()->important();
 
         return redirect(route('laravel-crm.people.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = $request->search;
+
+        $people = Person::all()->filter(function ($record) use ($searchValue) {
+            foreach ($record->getSearchable() as $field) {
+                if (Str::contains($record->{$field}, $searchValue)) {
+                    return $record;
+                }
+            }
+        });
+
+        return view('laravel-crm::people.index', [
+            'people' => $people,
+        ]);
     }
 
     public function autocomplete(Person $person)

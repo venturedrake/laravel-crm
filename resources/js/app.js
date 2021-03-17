@@ -113,6 +113,13 @@ const appJquery = function() {
                     $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
                 }
             }
+
+            $( "form[name='formSearch'] div.dropdown-menu > a").on({
+                click: function() {
+                    $(this).closest('form').attr('action', $(this).data('action'))
+                    $(this).closest('form').find('.action-current').html($(this).text());
+                },
+            });
             
         },
 

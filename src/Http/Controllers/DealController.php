@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDealRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -182,6 +184,23 @@ class DealController extends Controller
         return redirect(route('laravel-crm.deals.index'));
     }
 
+    public function search(Request $request)
+    {
+        $searchValue = $request->search;
+
+        $deals = Deal::all()->filter(function ($record) use ($searchValue) {
+            foreach ($record->getSearchable() as $field) {
+                if (Str::contains($record->{$field}, $searchValue)) {
+                    return $record;
+                }
+            }
+        });
+
+        return view('laravel-crm::deals.index', [
+            'deals' => $deals,
+        ]);
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
