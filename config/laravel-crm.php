@@ -1,9 +1,8 @@
 <?php
 
-/*
- * You can place your custom package configuration in here.
- */
 return [
+    
+    'crm_owner' => '',
     
     'route_prefix' => 'crm',
     

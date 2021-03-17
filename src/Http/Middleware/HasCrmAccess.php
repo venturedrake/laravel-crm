@@ -19,7 +19,7 @@ class HasCrmAccess
             return $next($request);
         }
         
-        if (auth()->user()->crm_access != 1) {
+        if (auth()->user()->crm_access != 1 && config('laravel-crm.crm_owner') != auth()->user()->email) {
             abort('403');
         }
         
