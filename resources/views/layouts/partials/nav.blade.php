@@ -15,7 +15,7 @@
            {{-- <li class="nav-item"><a class="nav-link" href="#">Email</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Documents</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>--}}
-            <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.products') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.products.index')) }}">Products</a></li>
+            {{--<li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.products') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.products.index')) }}">Products</a></li>--}}
             {{--<li class="nav-item"><a class="nav-link" href="#">Subscriptions</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Invoices</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Payments</a></li>

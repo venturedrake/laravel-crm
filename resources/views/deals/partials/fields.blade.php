@@ -223,8 +223,8 @@
                 </div>
             </div>
         </span>
-        <h6 class="text-uppercase mt-4"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> Products</h6>
+       {{-- <h6 class="text-uppercase mt-4"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> Products</h6>
         <hr />
-        ...
+        ...--}}
     </div>
 </div>
