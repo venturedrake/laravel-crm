@@ -11,6 +11,12 @@
   padding: 0.75rem 1.25rem
 }
 
+tr.table-success .btn-outline-secondary,
+tr.table-danger .btn-outline-secondary,
+.table-hover .btn-outline-secondary{
+  background-color: #ffffff;
+}
+
 /*
  * Forms
  */
