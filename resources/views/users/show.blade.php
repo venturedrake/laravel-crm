@@ -10,7 +10,7 @@
                  <form action="{{ route('laravel-crm.users.destroy',$user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                      {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="person"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="person" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
             </span>
         </div>
