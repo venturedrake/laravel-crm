@@ -63,14 +63,15 @@ class DealController extends Controller
      */
     public function create(Request $request)
     {
-        switch($request->model)
-        {
+        switch ($request->model) {
             case "person":
                 $person = Person::find($request->id);
+
                 break;
                 
             case "organisation":
                 $organisation = Organisation::find($request->id);
+
                 break;
         }
         
