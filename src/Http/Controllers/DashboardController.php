@@ -11,6 +11,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        return redirect(route('laravel-crm.leads.index'));
+        
         return view('laravel-crm::index');
     }
 }
