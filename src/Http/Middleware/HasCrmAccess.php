@@ -15,6 +15,10 @@ class HasCrmAccess
      */
     public function handle($request, Closure $next)
     {
+        if (auth()->guest()) {
+            return $next($request);
+        }
+        
         if (auth()->user()->crm_access != 1) {
             abort('403');
         }

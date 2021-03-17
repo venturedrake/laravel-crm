@@ -23,6 +23,7 @@
 </head>
 <body>
     <div id="app">
+        @auth
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url(route('laravel-crm.dashboard')) }}">Laravel CRM</a>
@@ -59,7 +60,7 @@
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('laravel-crm.logout') }}" method="POST" style="display: none;">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
                                 </div>
@@ -69,6 +70,7 @@
                 </div>
             </div>
         </nav>
+        @endauth
 
         <main class="py-4">
             <div class="container-fluid">

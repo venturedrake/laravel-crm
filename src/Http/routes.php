@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\View;
 /* Public Routes */
 
 Route::get('login', function () {
+    return redirect(route('login'));
     return View::make('laravel-crm::auth.login');
 })->name('laravel-crm.login');
 
@@ -18,7 +19,7 @@ Route::post('logout', function () {
 })->name('laravel-crm.logout');
 
 Route::get('register', function () {
-    //
+    return redirect(route('register'));
 })->name('laravel-crm.register');
 
 Route::post('register', function () {
