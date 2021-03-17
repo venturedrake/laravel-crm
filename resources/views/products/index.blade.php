@@ -9,7 +9,7 @@
                 <thead>
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Code</th>
+                    <th scope="col">SKU</th>
                     <th scope="col">Category</th>
                     <th scope="col">Price</th>
                     <th scope="col">Tax</th>
