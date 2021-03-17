@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 
 Route::get('login', function () {
     return redirect(route('login'));
+
     return View::make('laravel-crm::auth.login');
 })->name('laravel-crm.login');
 
