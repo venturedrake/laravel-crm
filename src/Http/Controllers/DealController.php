@@ -75,7 +75,6 @@ class DealController extends Controller
                 break;
         }
         
-        
         return view('laravel-crm::deals.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,

@@ -31,7 +31,7 @@
                         <dt class="col-sm-3 text-right">Description</dt>
                         <dd class="col-sm-9">{{ $organisation->description }}</dd>
                     </dl>
-                    <h6 class="text-uppercase mt-4 section-h6-title"><span>People ({{ $organisation->people->count() }})</span><span class="float-right"><a href="#" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>People ({{ $organisation->people->count() }})</span><span class="float-right"><a href="{{ url(route('laravel-crm.people.create',['model' => 'organisation', 'id' => $organisation->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
                     <hr />
                     @foreach($organisation->people as $person)
                         <p><span class="fa fa-user" aria-hidden="true"></span> {{ $person->name }}</p>

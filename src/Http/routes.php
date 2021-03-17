@@ -183,7 +183,7 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@index')
         ->name('laravel-crm.people.index');
 
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@create')
+    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@create')
         ->name('laravel-crm.people.create');
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@store')

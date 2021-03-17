@@ -45,9 +45,18 @@ class PersonController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('laravel-crm::people.create');
+        switch ($request->model) {
+            case "organisation":
+                $organisation = Organisation::find($request->id);
+
+                break;
+        }
+        
+        return view('laravel-crm::people.create', [
+            'organisation' => $organisation ?? null,
+        ]);
     }
 
     /**
