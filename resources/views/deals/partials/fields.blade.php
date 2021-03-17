@@ -7,7 +7,7 @@
         <span class="autocomplete">
              @include('laravel-crm::partials.form.hidden',[
                'name' => 'person_id',
-               'value' => old('person_id', $deal->person->id ?? null),
+               'value' => old('person_id', $deal->person->id ?? $person->id ?? null),
             ])
             <script type="text/javascript">
                 let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
@@ -16,7 +16,7 @@
                'name' => 'person_name',
                'label' => 'Contact person',
                'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-               'value' => old('person_name', $deal->person->name ?? $lead->person_name ?? null),
+               'value' => old('person_name', $deal->person->name ?? $lead->person_name ?? $person->name ?? null),
                'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
                ],
@@ -26,7 +26,7 @@
         <span class="autocomplete">
             @include('laravel-crm::partials.form.hidden',[
               'name' => 'organisation_id',
-              'value' => old('organisation_id', $deal->organisation->id ?? null),
+              'value' => old('organisation_id', $deal->organisation->id ?? $organisation->id ??  null),
             ])
             <script type="text/javascript">
                 let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
@@ -35,7 +35,7 @@
                 'name' => 'organisation_name',
                 'label' => 'Organisation',
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$deal->organisation->name ?? $lead->organisation_name ?? null),
+                'value' => old('organisation_name',$deal->organisation->name ?? $lead->organisation_name ?? $organisation->name ?? null),
                 'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
                ],

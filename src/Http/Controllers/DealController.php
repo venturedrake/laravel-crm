@@ -61,9 +61,24 @@ class DealController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('laravel-crm::deals.create');
+        switch($request->model)
+        {
+            case "person":
+                $person = Person::find($request->id);
+                break;
+                
+            case "organisation":
+                $organisation = Organisation::find($request->id);
+                break;
+        }
+        
+        
+        return view('laravel-crm::deals.create', [
+            'person' => $person ?? null,
+            'organisation' => $organisation ?? null,
+        ]);
     }
 
     /**
@@ -78,7 +93,7 @@ class DealController extends Controller
             $person = $this->personService->createFromRelated($request);
         }
 
-        if ($request->organisation_name && ! $request->rganisation_id) {
+        if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         }
         

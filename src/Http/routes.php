@@ -96,7 +96,7 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@index')
         ->name('laravel-crm.deals.index');
 
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@create')
+    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@create')
         ->name('laravel-crm.deals.create');
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@store')
