@@ -6,10 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Initial release
+- Products
+- Notes
+- Tasks
+- Files / Documents
+- Calendar (Calls, Meetings, Reminders)
+- Roles / Permissions
+- Dashboard
+- Custom Fields
+- Activity Feed / Timelines
+- CSV Import / Export
 
 <!--- ## 1.0.0 - 2020-XX-XX
 ### Added
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 0.1.0 - 2020-03-18
+### Added
+
+- Leads
+- Deals
+- People
+- Organisations
+- Users
+- Teams
