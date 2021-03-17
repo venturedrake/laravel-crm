@@ -293,6 +293,12 @@ class CreateLaravelCrmTables extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+        if (! Schema::hasColumn('users', 'crm_access'))
+                {
+                    Schema::table('users', function (Blueprint $table) {
+                        $table->boolean("crm_access")->default(false);
+                    });
+                } 
         if (! Schema::hasColumn('users', 'last_online_at'))
         {
             Schema::table('users', function (Blueprint $table) {

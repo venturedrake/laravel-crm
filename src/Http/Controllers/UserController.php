@@ -73,6 +73,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
         
         flash('User stored')->success()->important();
@@ -118,6 +119,7 @@ class UserController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
+            'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
         
         flash('User updated')->success()->important();

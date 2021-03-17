@@ -24,6 +24,8 @@
                         <dd class="col-sm-9">{{ $user->name }}</dd>
                         <dt class="col-sm-3 text-right">Email</dt>
                         <dd class="col-sm-9">{{ $user->email }}</dd>
+                        <dt class="col-sm-3 text-right">CRM Access</dt>
+                        <dd class="col-sm-9">{{ ($user->crm_access) ? 'Yes' : 'No' }}</dd>
                     </dl>
                     <h6 class="text-uppercase mt-4 section-h6-title"><span>Teams ({{ $user->teams->count() }})</span></h6>
                     <hr />

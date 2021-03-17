@@ -7,6 +7,15 @@ use App\User as LaravelUser;
 class User extends LaravelUser
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'email', 'password','crm_access','last_online_at',
+    ];
+    
+    /**
      * Get all of the teams the user belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
