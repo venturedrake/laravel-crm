@@ -8,26 +8,31 @@
             <table class="table mb-0 card-table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">Contact</th>
-                    <th scope="col">Organisation</th>
-                    <th scope="col">Value</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Assigned To</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Tax</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Owner</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($products as $product)
                     <tr class="has-link" data-url="{{ url(route('laravel-crm.products.show',$product)) }}">
-                        <td>{{ $product->title }}</td>
-                        <td>{{ $product->product_name }}</td>
-                        <td>{{ $product->product_name }}</td>
-                        <td>{{ money($product->amount, $product->currency) }}</td>
-                        <td>{{ $product->created_at->diffForHumans() }}</td>
-                        <td>{{ $product->assignedToUser->name }}</td>
+                        <td>{{ $product->name }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td class="disable-link text-right">
-                            <a href="#" class="btn btn-success btn-sm">Convert</a>
+                            <a href="{{  route('laravel-crm.products.show',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                            <a href="{{  route('laravel-crm.products.edit',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             <form action="{{ route('laravel-crm.products.destroy',$product) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}
