@@ -74,11 +74,11 @@ class LaravelCrmTablesSeeder extends Seeder
             \VentureDrake\LaravelCrm\Models\LeadStatus::firstOrCreate($item[0], $item[1]);
         }
 
-        if (config('app.env') == 'local') {
-            factory(\VentureDrake\LaravelCrm\Models\Organisation::class, 100)->create();
-            factory(\VentureDrake\LaravelCrm\Models\Person::class, 200)->create();
-            factory(\VentureDrake\LaravelCrm\Models\Lead::class, 100)->create();
-            factory(\VentureDrake\LaravelCrm\Models\Deal::class, 50)->create();
-        }
+        /*        if (config('app.env') == 'local') {
+                    factory(\VentureDrake\LaravelCrm\Models\Organisation::class, 100)->create();
+                    factory(\VentureDrake\LaravelCrm\Models\Person::class, 200)->create();
+                    factory(\VentureDrake\LaravelCrm\Models\Lead::class, 100)->create();
+                    factory(\VentureDrake\LaravelCrm\Models\Deal::class, 50)->create();
+                }*/
     }
 }
