@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
+use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -38,9 +39,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Middleware
         $router->aliasMiddleware('auth.laravel-crm', Authenticate::class);
-        $router->pushMiddlewareToGroup('web', LastOnlineAt::class);
+        $router->pushMiddlewareToGroup('web', Settings::class);
+        $router->pushMiddlewareToGroup('api', Settings::class);
         $router->pushMiddlewareToGroup('web', HasCrmAccess::class);
         $router->pushMiddlewareToGroup('api', HasCrmAccess::class);
+        $router->pushMiddlewareToGroup('web', LastOnlineAt::class);
         
         $this->registerRoutes();
 
@@ -104,6 +107,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
+        $this->mergeConfigFrom(__DIR__ . '/../config/package.php', 'laravel-crm');
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-crm.php', 'laravel-crm');
 
         // Register the main class to use with the facade

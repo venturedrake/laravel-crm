@@ -13,6 +13,12 @@ class CreateLaravelCrmTables extends Migration
      */
     public function up()
     {
+        Schema::create(config('laravel-crm.db_table_prefix').'settings', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('value');
+            $table->timestamps();
+        });
         Schema::create(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id');
@@ -322,6 +328,7 @@ class CreateLaravelCrmTables extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'settings');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'leads');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'lead_statuses');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'lead_sources');
