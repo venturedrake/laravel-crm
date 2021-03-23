@@ -4,8 +4,8 @@ namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Carbon\Carbon;
 use Closure;
-use VentureDrake\LaravelCrm\Models\Setting;
 use Illuminate\Support\Facades\Schema;
+use VentureDrake\LaravelCrm\Models\Setting;
 
 class Settings
 {
@@ -19,9 +19,9 @@ class Settings
     public function handle($request, Closure $next)
     {
         // TBC: Check if table exists
-        if(Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')){
+        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
             $settingVersion = Setting::where([
-                'name' => 'version'
+                'name' => 'version',
             ])->first();
 
             if (! $settingVersion) {
@@ -81,8 +81,7 @@ class Settings
             }
         }
         
-        if((isset($settingVersion) && $settingVersion->updated_at < Carbon::now()->subDay()) || !isset($settingVersion))
-        {
+        if ((isset($settingVersion) && $settingVersion->updated_at < Carbon::now()->subDay()) || ! isset($settingVersion)) {
             // TBC: Check server for updates, check if can connect first
         }
         
