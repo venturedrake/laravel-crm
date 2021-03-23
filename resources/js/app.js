@@ -15,6 +15,8 @@ const appJquery = function() {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            $('[data-toggle="tooltip"]').tooltip()
             
             $('input[name="birthday"], input[name="expected_close"]').datetimepicker({
                 timepicker:false,

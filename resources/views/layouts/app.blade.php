@@ -11,7 +11,7 @@
     <title>Laravel CRM</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=656465" defer></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=324523534" defer></script>
 
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
@@ -19,14 +19,14 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=656465" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=324523534" rel="stylesheet">
 </head>
 <body>
     <div id="app">
         @auth
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url(route('laravel-crm.dashboard')) }}">Laravel CRM</a>
+                <a class="navbar-brand" href="{{ url(route('laravel-crm.dashboard')) }}" data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}">Laravel CRM</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
