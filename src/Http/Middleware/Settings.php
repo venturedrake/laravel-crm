@@ -53,11 +53,13 @@ class Settings
                     $installIdSetting = Setting::where([
                         'name' => 'install_id',
                     ])->first();
-                    
-                    $userCount = User::where('crm_access', 1)->count();
-                    
-                    if ($userCount == 0) {
-                        $userCount = 1;
+
+                    if (Schema::hasColumn(config('laravel-crm.db_table_prefix').'settings', 'crm_access')) {
+                        $userCount = User::where('crm_access', 1)->count();
+
+                        if ($userCount == 0) {
+                            $userCount = 1;
+                        }
                     }
 
                     $response = $client->request('POST', $url, [
@@ -69,7 +71,7 @@ class Settings
                             'version' => config('laravel-crm.version') ?? null,
                             'server_ip' => request()->server('SERVER_ADDR') ?? null,
                             'user_ip' => request()->ip() ?? null,
-                            'user_count' => $userCount,
+                            'user_count' => $userCount ?? 1,
                         ],
                     ]);
 
