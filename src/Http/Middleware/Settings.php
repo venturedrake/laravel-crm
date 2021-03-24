@@ -4,8 +4,10 @@ namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Carbon\Carbon;
 use Closure;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\User;
 
 class Settings
 {
@@ -18,71 +20,81 @@ class Settings
      */
     public function handle($request, Closure $next)
     {
-        // TBC: Check if table exists
         if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
-            $settingVersion = Setting::where([
-                'name' => 'version',
-            ])->first();
-
-            if (! $settingVersion) {
-                $setting = Setting::create([
-                    'name' => 'version',
-                    'value' => config('laravel-crm.version'),
-                ]);
-            } else {
-                $settingVersion->update([
-                    'value' => config('laravel-crm.version'),
-                ]);
-            }
-
-            $setting = Setting::where([
+            Setting::updateOrCreate([
                 'name' => 'app_name',
-            ])->first();
+            ], [
+                'value' => config('app.name'),
+            ]);
 
-            if (! $setting) {
-                $setting = Setting::create([
-                    'name' => 'app_name',
-                    'value' => config('app.name'),
-                ]);
-            } else {
-                $setting->update([
-                    'value' => config('app.name'),
-                ]);
-            }
-
-            $setting = Setting::where([
+            Setting::updateOrCreate([
                 'name' => 'app_env',
-            ])->first();
+            ], [
+                'value' => config('app.env'),
+            ]);
 
-            if (! $setting) {
-                $setting = Setting::create([
-                    'name' => 'app_env',
-                    'value' => config('app.env'),
-                ]);
-            } else {
-                $setting->update([
-                    'value' => config('app.env'),
-                ]);
-            }
-
-            $setting = Setting::where([
+            Setting::updateOrCreate([
                 'name' => 'app_url',
-            ])->first();
+            ], [
+                'value' => config('app.url'),
+            ]);
 
-            if (! $setting) {
-                $setting = Setting::create([
-                    'name' => 'app_url',
-                    'value' => config('app.url'),
-                ]);
-            } else {
-                $setting->update([
-                    'value' => config('app.url'),
-                ]);
+            $versionSetting = Setting::updateOrCreate([
+                'name' => 'version',
+            ], [
+                'value' => config('laravel-crm.version'),
+            ]);
+            
+            if ($versionSetting && $versionSetting->updated_at < Carbon::now()->subDays(3)) {
+                try {
+                    $client = new Client();
+                    $url = "https://beta.laravelcrm.com/api/public/version";
+
+                    $installIdSetting = Setting::where([
+                        'name' => 'install_id',
+                    ])->first();
+                    
+                    $userCount = User::where('crm_access', 1)->count();
+                    
+                    if ($userCount == 0) {
+                        $userCount = 1;
+                    }
+
+                    $response = $client->request('POST', $url, [
+                        'json' => [
+                            'id' => $installIdSetting->value ?? null,
+                            'name' => config('app.name') ?? null,
+                            'url' => config('app.url') ?? null,
+                            'env' => config('app.env') ?? null,
+                            'version' => config('laravel-crm.version') ?? null,
+                            'server_ip' => request()->server('SERVER_ADDR') ?? null,
+                            'user_ip' => request()->ip() ?? null,
+                            'user_count' => $userCount,
+                        ],
+                    ]);
+
+                    $responseBody = json_decode($response->getBody());
+
+                    if (isset($responseBody->id) && ! $installIdSetting) {
+                        $installIdSetting = Setting::create([
+                            'name' => 'install_id',
+                            'value' => $responseBody->id,
+                        ]);
+                    }
+
+                    Setting::updateOrCreate([
+                        'name' => 'version_latest',
+                    ], [
+                        'value' => $responseBody->version,
+                    ]);
+                } catch (\Exception $e) {
+                    //
+                }
+                
+                if ($versionSetting) {
+                    $versionSetting->touch();
+                }
             }
-        }
-        
-        if ((isset($settingVersion) && $settingVersion->updated_at < Carbon::now()->subDay()) || ! isset($settingVersion)) {
-            // TBC: Check server for updates, check if can connect first
         }
         
         return $next($request);
