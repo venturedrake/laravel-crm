@@ -17,23 +17,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Activity Feed / Timelines
 - CSV Import / Export
 
-<!--- ## 1.0.0 - 2020-XX-XX
+<!--- ## 1.0.0 - 2021-XX-XX
 ### Added
 ### Changed
 ### Fixed
 ### Removed --->
 
-## 0.1.2 - 2020-03-19
+## 0.1.2 - 2021-03-19
 ### Added
 
 - Version checking
 
-## 0.1.1 - 2020-03-19
+## 0.1.1 - 2021-03-19
 ### Removed
 
 - Disabled seeding sample data
 
-## 0.1.0 - 2020-03-18
+## 0.1.0 - 2021-03-18
 ### Added
 
 - Leads
