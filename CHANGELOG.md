@@ -23,10 +23,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.1.4 - 2021-04-01
+### Changed
+
+- Support for Laravel 7/8
+- Livewire support for Laravel 7/8
+
 ## 0.1.3 - 2021-04-01
 ### Removed
 
-- Version checking
+- Livewire dependency
 
 ## 0.1.2 - 2021-03-19
 ### Added

@@ -27,6 +27,7 @@
         {
             "name": "Andrew Drake",
             "email": "andrew@venturedrake.com",
+            "homepage": "https://venturedrake.com",
             "role": "Developer"
         }
     ],
@@ -34,19 +35,20 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.2",
-        "cknow/laravel-money": "^4.0",
+        "cknow/laravel-money": "^4.0|^5.0|^6.0",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/support": "^6.0|^7.0|^8.0",
         "laracasts/flash": "^3.2",
+        "livewire/livewire": "^1.0|^2.0",
         "pragmarx/countries": "^0.7.2",
-        "spatie/laravel-permission": "^3.0",
+        "spatie/laravel-permission": "^4.0",
         "venturedrake/laravel-encryptable": "^0.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.17@dev",
-        "orchestra/testbench": "^4.0",
+        "orchestra/testbench": "^4.0|^5.0|^6.0",
         "phpstan/phpstan": "^0.12.65",
-        "phpunit/phpunit": "^8.0"
+        "phpunit/phpunit": "^8.0|^9.0"
     },
     "autoload": {
         "psr-4": {

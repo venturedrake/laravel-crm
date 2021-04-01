@@ -96,8 +96,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
             Email::observe(EmailObserver::class);
 
             // Register the model factories
-            $this->app->make('Illuminate\Database\Eloquent\Factory')
-                ->load(__DIR__.'/../database/factories');
+            /* $this->app->make('Illuminate\Database\Eloquent\Factory')
+                ->load(__DIR__.'/../database/factories'); */
         }
     }
 
