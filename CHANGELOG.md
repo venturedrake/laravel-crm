@@ -23,6 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.1.5 - 2021-04-01
+### Fixed
+
+- Bug with seeder not working after assets published
+
 ## 0.1.4 - 2021-04-01
 ### Changed
 

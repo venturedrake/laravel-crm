@@ -1,5 +1,7 @@
 <?php
 
+namespace VentureDrake\LaravelCrm\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
 

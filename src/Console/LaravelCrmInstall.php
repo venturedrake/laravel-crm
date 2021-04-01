@@ -60,7 +60,8 @@ class LaravelCrmInstall extends Command
 
         $this->comment('Seeding database');
         $this->callSilent('db:seed', [
-             '--class' => 'LaravelCrmTablesSeeder',
+             '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
+
         ]);
         
         $this->info('Installed LaravelCRM');

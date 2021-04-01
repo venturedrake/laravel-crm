@@ -55,7 +55,8 @@ php artisan migrate
 Step 6: Run database seeder:
 
 ```bash
-php artisan db:seed --class=LaravelCrmTablesSeeder
+php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
+
 ```
 
 Step 7: Add an email address for the user who will be the crm owner in the config file:
