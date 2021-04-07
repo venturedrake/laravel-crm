@@ -39,11 +39,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Middleware
         $router->aliasMiddleware('auth.laravel-crm', Authenticate::class);
-        $router->pushMiddlewareToGroup('web', Settings::class);
+        $router->pushMiddlewareToGroup('crm', Settings::class);
         $router->pushMiddlewareToGroup('api', Settings::class);
-        $router->pushMiddlewareToGroup('web', HasCrmAccess::class);
+        $router->pushMiddlewareToGroup('crm', HasCrmAccess::class);
         $router->pushMiddlewareToGroup('api', HasCrmAccess::class);
-        $router->pushMiddlewareToGroup('web', LastOnlineAt::class);
+        $router->pushMiddlewareToGroup('crm', LastOnlineAt::class);
         
         $this->registerRoutes();
 
@@ -135,7 +135,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     {
         return [
             'prefix' => config('laravel-crm.route_prefix'),
-            'middleware' => config('laravel-crm.route_middleware'),
+            'middleware' => array_unique(array_merge(['web','crm'], config('laravel-crm.route_middleware') ?? [])),
         ];
     }
 

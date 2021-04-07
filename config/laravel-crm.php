@@ -6,7 +6,7 @@ return [
     
     'route_prefix' => 'crm',
     
-    'route_middleware' => ['web'],
+    'route_middleware' => [],
     
     'db_table_prefix' => 'crm_',
     
