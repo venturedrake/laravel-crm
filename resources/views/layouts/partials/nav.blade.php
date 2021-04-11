@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body">
+    <div class="card-body py-3">
         <ul class="nav nav-pills flex-column">
             {{--<li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') === 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}">Dashboard</a></li>--}}
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.leads') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.leads.index')) }}">Leads</a></li>
@@ -20,6 +20,8 @@
             <li class="nav-item"><a class="nav-link" href="#">Invoices</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Payments</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Reports</a></li>--}}
+            <li class="dropdown-divider"></li>
+            <li class="nav-item"><a class="nav-link {{ Str::contains(Route::currentRouteName(),['laravel-crm.settings','laravel-crm.roles']) ? 'active' : '' }}" href="{{ url(route('laravel-crm.settings.edit')) }}">Settings</a></li>
         </ul>
     </div>
 </div>

@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=324523534" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=23423423342" rel="stylesheet">
 </head>
 <body>
     <div id="app">

@@ -3,9 +3,12 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use App\User as LaravelUser;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends LaravelUser
 {
+    use HasRoles;
+    
     /**
      * The attributes that are mass assignable.
      *

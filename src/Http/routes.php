@@ -62,34 +62,44 @@ Route::get('/', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@in
 
 Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@index')
-        ->name('laravel-crm.leads.index');
+        ->name('laravel-crm.leads.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
 
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@create')
-        ->name('laravel-crm.leads.create');
+        ->name('laravel-crm.leads.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Lead']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@store')
-        ->name('laravel-crm.leads.store');
+        ->name('laravel-crm.leads.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Lead']);
 
     Route::get('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@show')
-        ->name('laravel-crm.leads.show');
+        ->name('laravel-crm.leads.show')
+        ->middleware(['can:view,lead']);
 
     Route::get('{lead}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@edit')
-        ->name('laravel-crm.leads.edit');
+        ->name('laravel-crm.leads.edit')
+        ->middleware(['can:update,lead']);
 
     Route::put('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@update')
-        ->name('laravel-crm.leads.update');
+        ->name('laravel-crm.leads.update')
+        ->middleware(['can:update,lead']);
 
     Route::delete('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@destroy')
-        ->name('laravel-crm.leads.destroy');
+        ->name('laravel-crm.leads.destroy')
+        ->middleware(['can:delete,lead']);
 
     Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@search')
-        ->name('laravel-crm.leads.search');
+        ->name('laravel-crm.leads.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
 
     Route::get('{lead}/convert', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@convertToDeal')
-        ->name('laravel-crm.leads.convert-to-deal');
+        ->name('laravel-crm.leads.convert-to-deal')
+        ->middleware(['can:update,lead']);
 
     Route::post('{lead}/convert', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@storeAsDeal')
-        ->name('laravel-crm.leads.store-as-deal');
+        ->name('laravel-crm.leads.store-as-deal')
+        ->middleware(['can:update,lead']);
 });
 
 /* Deals */
@@ -324,4 +334,38 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], funct
 
     Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@search')
         ->name('laravel-crm.products.search');
+});
+
+/* Settings */
+
+Route::group(['prefix' => 'settings', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\SettingController@edit')
+        ->name('laravel-crm.settings.edit');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\SettingController@update')
+        ->name('laravel-crm.settings.update');
+});
+
+/* Roles */
+Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@index')
+        ->name('laravel-crm.roles.index');
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@create')
+        ->name('laravel-crm.roles.create');
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@store')
+        ->name('laravel-crm.roles.store');
+
+    Route::get('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@show')
+        ->name('laravel-crm.roles.show');
+
+    Route::get('{role}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@edit')
+        ->name('laravel-crm.roles.edit');
+
+    Route::put('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@update')
+        ->name('laravel-crm.roles.update');
+
+    Route::delete('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@destroy')
+        ->name('laravel-crm.roles.destroy');
 });

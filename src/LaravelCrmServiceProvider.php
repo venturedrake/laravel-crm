@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
@@ -26,10 +27,21 @@ use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 class LaravelCrmServiceProvider extends ServiceProvider
 {
     /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        'VentureDrake\LaravelCrm\Models\Lead' => \VentureDrake\LaravelCrm\Policies\LeadPolicy::class,
+    ];
+    
+    /**
      * Bootstrap the application services.
      */
     public function boot(Router $router, Filesystem $filesystem)
     {
+        $this->registerPolicies();
+        
         /*
          * Optional methods to load your package assets
          */
@@ -154,5 +166,27 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 return $filesystem->glob($path.'*_create_laravel_crm_tables.php');
             })->push($this->app->databasePath()."/migrations/{$timestamp}_create_laravel_crm_tables.php")
             ->first();
+    }
+
+    /**
+     * Register the application's policies.
+     *
+     * @return void
+     */
+    public function registerPolicies()
+    {
+        foreach ($this->policies() as $key => $value) {
+            Gate::policy($key, $value);
+        }
+    }
+
+    /**
+     * Get the policies defined on the provider.
+     *
+     * @return array
+     */
+    public function policies()
+    {
+        return $this->policies;
     }
 }
