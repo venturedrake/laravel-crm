@@ -1,0 +1,50 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateLaravelCrmSettingsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        if (! Schema::hasColumn('roles', 'description'))
+        {
+            Schema::table('roles', function (Blueprint $table) {
+                $table->string("description")->after('guard_name')->nullable();
+            });
+        }  
+        if (! Schema::hasColumn('permissions', 'description'))
+        {
+            Schema::table('permissions', function (Blueprint $table) {
+                $table->string("description")->after('guard_name')->nullable();
+            });
+        }  
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('roles', function (Blueprint $table) {
+            if (! Schema::hasColumn('roles', 'description'))
+            {
+               $table->dropColumn(['description']);
+            }
+        });
+        Schema::table('permissions', function (Blueprint $table) {
+            if (! Schema::hasColumn('permissions', 'description'))
+            {
+               $table->dropColumn(['description']);
+            }
+        });
+    }
+}
