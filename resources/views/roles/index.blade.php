@@ -28,7 +28,7 @@
                                     <td>{{ $role->created_at->toFormattedDateString() }}</td>
                                     <td>{{ $role->updated_at->toFormattedDateString() }}</td>
                                     <td>{{ $role->users->count() }}</td>
-                                    <td>
+                                    <td class="disable-link text-right">
                                         <a href="{{  route('laravel-crm.roles.show',$role) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                                         <a href="{{  route('laravel-crm.roles.edit',$role) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                                         <form action="{{ route('laravel-crm.roles.destroy',$role) }}" method="POST" class="form-check-inline mr-0 form-delete-button">

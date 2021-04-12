@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Models\Role;
 
 class RoleController extends Controller
 {
@@ -13,7 +14,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = [];
+        $roles = Role::crm()->get();
         
         return view('laravel-crm::roles.index', [
             'roles' => $roles,

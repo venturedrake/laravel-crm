@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
+use VentureDrake\LaravelCrm\Models\Role;
 use VentureDrake\LaravelCrm\Models\User;
 
 class UserController extends Controller
@@ -75,6 +76,15 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
+
+        $roles = [];
+        if ($request->role) {
+            if ($role = Role::find($request->role)) {
+                $roles = [$role->name];
+            }
+        }
+
+        $user->syncRoles($roles);
         
         flash('User stored')->success()->important();
 
@@ -121,6 +131,15 @@ class UserController extends Controller
             'email' => $request->email,
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
+
+        $roles = [];
+        if ($request->role) {
+            if ($role = Role::find($request->role)) {
+                $roles = [$role->name];
+            }
+        }
+
+        $user->syncRoles($roles);
         
         flash('User updated')->success()->important();
 

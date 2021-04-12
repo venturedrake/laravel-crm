@@ -19,12 +19,26 @@ class AddFieldsToRolesPermissionsTables extends Migration
                 $table->string("description")->after('guard_name')->nullable();
             });
         }  
+        if (! Schema::hasColumn('roles', 'crm_role'))
+        {
+            Schema::table('roles', function (Blueprint $table) {
+                $table->boolean('crm_role')->after('description')->default(0);
+            });
+        } 
+                
         if (! Schema::hasColumn('permissions', 'description'))
         {
             Schema::table('permissions', function (Blueprint $table) {
                 $table->string("description")->after('guard_name')->nullable();
             });
         }  
+        if (! Schema::hasColumn('permissions', 'crm_permission'))
+        {
+            Schema::table('permissions', function (Blueprint $table) {
+        
+                $table->boolean('crm_permission')->after('description')->default(0);
+            });
+        } 
     }
 
     /**
@@ -34,17 +48,6 @@ class AddFieldsToRolesPermissionsTables extends Migration
      */
     public function down()
     {
-        Schema::table('roles', function (Blueprint $table) {
-            if (! Schema::hasColumn('roles', 'description'))
-            {
-               $table->dropColumn(['description']);
-            }
-        });
-        Schema::table('permissions', function (Blueprint $table) {
-            if (! Schema::hasColumn('permissions', 'description'))
-            {
-               $table->dropColumn(['description']);
-            }
-        });
+        //
     }
 }

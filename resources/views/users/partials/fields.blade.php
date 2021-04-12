@@ -26,6 +26,12 @@
                  <input id="crm_access" type="checkbox" name="crm_access" {{ ($user->crm_access == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
             </span>
             </div>
+        @include('laravel-crm::partials.form.select',[
+           'name' => 'role',
+           'label' => 'CRM Role',
+           'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->get()),
+           'value' => old('role', $user->role->id ?? null)
+       ])
     </div>
     <div class="col-sm-6">
         ...
