@@ -27,9 +27,9 @@
                         <dt class="col-sm-3 text-right">CRM Access</dt>
                         <dd class="col-sm-9">{{ ($user->crm_access) ? 'Yes' : 'No' }}</dd>
                     </dl>
-                    <h6 class="text-uppercase mt-4 section-h6-title"><span>Teams ({{ $user->teams->count() }})</span></h6>
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>Teams ({{ $user->crmTeams->count() }})</span></h6>
                     <hr />
-                    @foreach($user->teams as $team)
+                    @foreach($user->crmTeams as $team)
                         <p><span class="fa fa-users" aria-hidden="true"></span> {{ $team->name }}</p>
                     @endforeach
                 </div>

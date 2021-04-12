@@ -5,12 +5,12 @@ namespace VentureDrake\LaravelCrm\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use VentureDrake\LaravelCrm\Traits\HasCustomFields;
+use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 
 class Deal extends Model
 {
     use SoftDeletes;
-    use HasCustomFields;
+    use HasCrmFields;
 
     protected $guarded = ['id'];
     

@@ -20,7 +20,7 @@
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.users.show',$user)) }}">
                     <td>{{ $user->name }}</td>
                     <td class="disable-link text-right">
-                        <input id="user_{{ $user->id }}" type="checkbox" name="user[{{ $user->id }}]" {{ (isset($team) && $user->belongsToTeam($team)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+                        <input id="user_{{ $user->id }}" type="checkbox" name="user[{{ $user->id }}]" {{ (isset($team) && $user->belongsToCrmTeam($team)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                     </td>
                 </tr>
             @endforeach

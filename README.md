@@ -40,10 +40,11 @@ Step 3: Require the package using composer:
 composer require venturedrake/laravel-crm
 ```
 
-Step 4: Run vendor publish:
+Step 4: Publish the migrations & config:
 
 ```bash
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations,config"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 ```
 
 Step 5: Run migrations:

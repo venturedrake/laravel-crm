@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Traits;
 
 use VentureDrake\LaravelCrm\Models\CustomField;
 
-trait HasCustomFields
+trait HasCrmFields
 {
     /*public function metas()
     {

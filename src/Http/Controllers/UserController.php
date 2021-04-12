@@ -2,12 +2,12 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use App\User;
 use Illuminate\Support\Facades\Hash;
 use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
 use VentureDrake\LaravelCrm\Models\Role;
-use App\User;
 
 class UserController extends Controller
 {
