@@ -84,7 +84,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
             // Publishing the migrations.
             $this->publishes([
-                __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem),
+                __DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_tables.php'),
+                __DIR__ . '/../database/migrations/create_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_settings_table.php'),
             ], 'migrations');
 
             // Publishing the seeders
@@ -160,14 +161,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
      * @param Filesystem $filesystem
      * @return string
      */
-    protected function getMigrationFileName(Filesystem $filesystem): string
+    protected function getMigrationFileName(Filesystem $filesystem, $filename): string
     {
         $timestamp = date('Y_m_d_His');
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
-            ->flatMap(function ($path) use ($filesystem) {
-                return $filesystem->glob($path.'*_create_laravel_crm_tables.php');
-            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_laravel_crm_tables.php")
+            ->flatMap(function ($path) use ($filesystem, $filename) {
+                return $filesystem->glob($path.'*_'.$filename);
+            })->push($this->app->databasePath()."/migrations/{$timestamp}_".$filename)
             ->first();
     }
 
