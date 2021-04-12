@@ -44,15 +44,15 @@ class Settings
             ], [
                 'value' => config('laravel-crm.version'),
             ]);
+
+            $installIdSetting = Setting::where([
+                'name' => 'install_id',
+            ])->first();
             
-            if ($versionSetting && $versionSetting->updated_at < Carbon::now()->subDays(3)) {
+            if ($versionSetting && ($versionSetting->updated_at < Carbon::now()->subDays(3) || ! $installIdSetting)) {
                 try {
                     $client = new Client();
                     $url = "https://beta.laravelcrm.com/api/public/version";
-
-                    $installIdSetting = Setting::where([
-                        'name' => 'install_id',
-                    ])->first();
 
                     if (Schema::hasColumn(config('laravel-crm.db_table_prefix').'settings', 'crm_access')) {
                         $userCount = User::where('crm_access', 1)->count();
