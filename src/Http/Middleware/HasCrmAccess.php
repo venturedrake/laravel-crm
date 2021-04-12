@@ -22,6 +22,10 @@ class HasCrmAccess
         if (auth()->user()->crm_access != 1 && config('laravel-crm.crm_owner') != auth()->user()->email) {
             abort('403');
         }
+       
+        if( config('laravel-crm.crm_owner') == auth()->user()->email && ! auth()->user()->hasRole('Owner')){
+            auth()->user()->syncRoles(['Owner']);
+        }
         
         return $next($request);
     }

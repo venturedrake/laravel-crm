@@ -7,7 +7,7 @@ use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
 use VentureDrake\LaravelCrm\Models\Role;
-use VentureDrake\LaravelCrm\Models\User;
+use App\User;
 
 class UserController extends Controller
 {

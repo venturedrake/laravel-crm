@@ -17,8 +17,9 @@
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Email Verified</th>
+                    <th scope="col">Role</th>
                     <th scope="col">Created</th>
-                    <th scope="col">Updated</th>
+                   {{-- <th scope="col">Updated</th>--}}
                     <th scope="col">Last Online</th>
                     <th scope="col">CRM Access</th>
                     <th scope="col" width="150"></th>
@@ -30,8 +31,11 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ ($user->email_verified_at) ? $user->email_verified_at->toDayDateTimeString() : null }}</td>
+                        <td>
+                            {{ $user->roles()->first()->name ?? null }}
+                        </td>
                         <td>{{ $user->created_at->toFormattedDateString() }}</td>
-                        <td>{{ $user->updated_at->toFormattedDateString() }}</td>
+                       {{-- <td>{{ $user->updated_at->toFormattedDateString() }}</td>--}}
                         <td>{{ ($user->last_online_at) ?  \Carbon\Carbon::parse($user->last_online_at)->diffForHumans() :  'Never' }}</td>
                         <td>{{ ($user->crm_access) ? 'Yes' : 'No' }}</td>
                         <td class="disable-link text-right">
