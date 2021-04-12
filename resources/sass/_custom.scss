@@ -41,6 +41,12 @@ tr.table-danger .btn-outline-secondary{
   z-index: 2;
 }
 
+.form-control-toggle{
+  display: block;
+  width: 100%;
+  height: calc(1.6em + 0.75rem + 2px);
+}
+
 /*
  * Cards
  */

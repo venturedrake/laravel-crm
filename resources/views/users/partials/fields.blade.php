@@ -20,7 +20,12 @@
           'label' => 'Confirm Password',
           'value' => old('password_confirmation')
         ])
-        <input id="crm_access" type="checkbox" name="crm_access" {{ ($user->crm_access == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+        <div class="form-group">
+            <label for="crm_access">CRM Access</label>
+            <span class="form-control-toggle">
+                 <input id="crm_access" type="checkbox" name="crm_access" {{ ($user->crm_access == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+            </span>
+            </div>
     </div>
     <div class="col-sm-6">
         ...

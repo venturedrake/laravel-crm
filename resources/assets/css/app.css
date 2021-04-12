@@ -10928,8 +10928,7 @@ a.text-dark:focus {
 }
 
 tr.table-success .btn-outline-secondary,
-tr.table-danger .btn-outline-secondary,
-.table-hover .btn-outline-secondary {
+tr.table-danger .btn-outline-secondary {
   background-color: #ffffff;
 }
 
@@ -10956,6 +10955,12 @@ tr.table-danger .btn-outline-secondary,
   display: none;
   position: absolute !important;
   z-index: 2;
+}
+
+.form-control-toggle {
+  display: block;
+  width: 100%;
+  height: calc(1.6em + 0.75rem + 2px);
 }
 
 /*
