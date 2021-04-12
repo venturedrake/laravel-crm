@@ -27,7 +27,7 @@ class HasCrmAccess
             auth()->user()->syncRoles(['Owner']);
 
             auth()->user()->forceFill([
-                'crm_access' => 1
+                'crm_access' => 1,
             ])->save();
         }
         
