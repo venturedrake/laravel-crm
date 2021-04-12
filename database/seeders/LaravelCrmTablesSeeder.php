@@ -110,6 +110,14 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::create(['name' => 'edit crm teams']);
         Permission::create(['name' => 'delete crm teams']);
         
+        Permission::create(['name' => 'view crm settings']);
+        Permission::create(['name' => 'edit crm settings']);
+
+        Permission::create(['name' => 'create crm roles']);
+        Permission::create(['name' => 'view crm roles']);
+        Permission::create(['name' => 'edit crm roles']);
+        Permission::create(['name' => 'delete crm roles']);
+        
         $role = Role::create(['name' => 'CRM Owner'])
             ->givePermissionTo(Permission::all());
         
@@ -136,7 +144,24 @@ class LaravelCrmTablesSeeder extends Seeder
                 'delete crm organisations',
             ]);
         
-        $role = Role::create(['name' => 'CRM Team Leader']);
-        $role = Role::create(['name' => 'CRM Employee']);
+        $role = Role::create(['name' => 'CRM Employee'])
+            ->givePermissionTo([
+                'create crm leads',
+                'view crm leads',
+                'edit crm leads',
+                'delete crm leads',
+                'create crm deals',
+                'view crm leads',
+                'edit crm deals',
+                'delete crm deals',
+                'create crm people',
+                'view crm people',
+                'edit crm people',
+                'delete crm people',
+                'create crm organisations',
+                'view crm organisations',
+                'edit crm organisations',
+                'delete crm organisations',
+            ]);
     }
 }
