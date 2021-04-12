@@ -70,12 +70,12 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create([
+        $user = User::forceCreate([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
-        ]);
+        ])->save();
 
         $roles = [];
         if ($request->role) {
@@ -126,11 +126,11 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->update([
+        $user->forceFill([
             'name' => $request->name,
             'email' => $request->email,
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
-        ]);
+        ])->save();
 
         $roles = [];
         if ($request->role) {

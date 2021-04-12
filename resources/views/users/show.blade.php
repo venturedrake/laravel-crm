@@ -26,6 +26,8 @@
                         <dd class="col-sm-9">{{ $user->email }}</dd>
                         <dt class="col-sm-3 text-right">CRM Access</dt>
                         <dd class="col-sm-9">{{ ($user->crm_access) ? 'Yes' : 'No' }}</dd>
+                        <dt class="col-sm-3 text-right">CRM Role</dt>
+                        <dd class="col-sm-9">{{ $user->roles()->first()->name ?? null }}</dd>
                     </dl>
                     <h6 class="text-uppercase mt-4 section-h6-title"><span>Teams ({{ $user->crmTeams->count() }})</span></h6>
                     <hr />
