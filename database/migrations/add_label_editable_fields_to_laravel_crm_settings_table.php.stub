@@ -14,8 +14,8 @@ class AddLabelEditableFieldsToLaravelCrmSettingsTable extends Migration
     public function up()
     {
         Schema::table(config('laravel-crm.db_table_prefix').'settings', function (Blueprint $table) {
-            $table->string('label')->nullable();
-            $table->boolean('editable')->default(false);
+            $table->string('label')->after('name')->nullable();
+            $table->boolean('editable')->after('value')->default(false);
         });
     }
 
