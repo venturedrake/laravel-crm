@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 use VentureDrake\LaravelCrm\Models\Role;
 
 class RoleController extends Controller
@@ -28,7 +29,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        return view('laravel-crm::roles.create');
     }
 
     /**
@@ -39,7 +40,9 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        flash('Role stored')->success()->important();
+
+        return redirect(route('laravel-crm.roles.index'));
     }
 
     /**
@@ -48,9 +51,11 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Role $role)
     {
-        //
+        return view('laravel-crm::roles.show', [
+            'role' => $role,
+        ]);
     }
 
     /**
@@ -59,9 +64,11 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Role $role)
     {
-        //
+        return view('laravel-crm::roles.edit', [
+            'role' => $role,
+        ]);
     }
 
     /**
@@ -71,9 +78,11 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Role $role)
     {
-        //
+        flash('Role updated')->success()->important();
+
+        return redirect(route('laravel-crm.roles.show', $role));
     }
 
     /**
@@ -82,8 +91,20 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Role $role)
     {
-        //
+        if (! in_array($role->name, ['Owner','Admin']) && $role->users->count() < 1) {
+            foreach (Permission::all() as $permission) {
+                $permission->removeRole($role);
+            }
+
+            $role->delete();
+            
+            flash('Role deleted')->success()->important();
+        } else {
+            flash("Role can't be deleted")->error()->important();
+        }
+
+        return redirect(route('laravel-crm.roles.index'));
     }
 }
