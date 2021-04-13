@@ -82,6 +82,24 @@ return [
 
 ```
 
+Step 8: Add the HasCrmAccess & HasCrmTeams traits to your User model(s):
+
+```php
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+use VentureDrake\LaravelCrm\Traits\HasCrmAccess;
+use VentureDrake\LaravelCrm\Traits\HasCrmTeams;
+
+class User extends Authenticatable
+{
+    use HasRoles;
+    use HasCrmAccess;
+    use HasCrmTeams;
+
+    // ...
+}
+```
+
 ## Usage
 
 Access the crm at http://your-project-url/crm
