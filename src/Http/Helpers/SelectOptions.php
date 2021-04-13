@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Helpers\SelectOptions;
 
 use PragmaRX\Countries\Package\Countries;
+use PragmaRX\Countries\Update\Timezones;
 
 function optionsFromModel($model, $null = true)
 {
@@ -71,6 +72,18 @@ function emailTypes($null = true)
     return $array;
 }
 
+function countries()
+{
+    $countries = new Countries();
+    $items = [];
+    
+    foreach ($countries->all()->pluck('name.common')->toArray() as $country) {
+        $items[$country] = $country;
+    }
+
+    return $items;
+}
+
 function currencies()
 {
     $countries = new Countries();
@@ -82,13 +95,14 @@ function currencies()
     return $items;
 }
 
-function countries()
+
+function timezones()
 {
     $countries = new Countries();
-    $items = [];
+    $collection = $countries->all()->hydrate('timezones')->pluck("timezones");
     
-    foreach ($countries->all()->pluck('name.common')->toArray() as $country) {
-        $items[$country] = $country;
+    foreach ($collection->toArray() as $timezone) {
+        $items[array_key_first($timezone)] = current($timezone)['zone_name'];
     }
 
     return $items;
