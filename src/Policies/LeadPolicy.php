@@ -18,7 +18,9 @@ class LeadPolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        if ($user->hasPermissionTo('view crm leads')) {
+            return true;
+        }
     }
 
     /**
@@ -30,7 +32,9 @@ class LeadPolicy
      */
     public function view(User $user, Lead $lead)
     {
-        return true;
+        if ($user->hasPermissionTo('view crm leads')) {
+            return true;
+        }
     }
 
     /**
@@ -41,7 +45,9 @@ class LeadPolicy
      */
     public function create(User $user)
     {
-        return true;
+        if ($user->hasPermissionTo('create crm leads')) {
+            return true;
+        }
     }
 
     /**
@@ -53,7 +59,9 @@ class LeadPolicy
      */
     public function update(User $user, Lead $lead)
     {
-        return true;
+        if ($user->hasPermissionTo('edit crm leads')) {
+            return true;
+        }
     }
 
     /**
@@ -65,7 +73,9 @@ class LeadPolicy
      */
     public function delete(User $user, Lead $lead)
     {
-        return true;
+        if ($user->hasPermissionTo('delete crm leads')) {
+            return true;
+        }
     }
 
     /**
@@ -77,7 +87,9 @@ class LeadPolicy
      */
     public function restore(User $user, Lead $lead)
     {
-        return true;
+        if ($user->hasPermissionTo('delete crm leads')) {
+            return true;
+        }
     }
 
     /**
