@@ -80,51 +80,51 @@ class LaravelCrmTablesSeeder extends Seeder
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Permission::create(['name' => 'create crm leads']);
-        Permission::create(['name' => 'view crm leads']);
-        Permission::create(['name' => 'edit crm leads']);
-        Permission::create(['name' => 'delete crm leads']);
+        Permission::create(['name' => 'create crm leads', 'crm_permission' => 1]);
+        Permission::create(['name' => 'view crm leads', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm leads', 'crm_permission' => 1]);
+        Permission::create(['name' => 'delete crm leads', 'crm_permission' => 1]);
 
-        Permission::create(['name' => 'create crm deals']);
-        Permission::create(['name' => 'view crm deals']);
-        Permission::create(['name' => 'edit crm deals']);
-        Permission::create(['name' => 'delete crm deals']);
+        Permission::create(['name' => 'create crm deals', 'crm_permission' => 1]);
+        Permission::create(['name' => 'view crm deals', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm deals', 'crm_permission' => 1]);
+        Permission::create(['name' => 'delete crm deals', 'crm_permission' => 1]);
 
-        Permission::create(['name' => 'create crm people']);
-        Permission::create(['name' => 'view crm people']);
-        Permission::create(['name' => 'edit crm people']);
-        Permission::create(['name' => 'delete crm people']);
+        Permission::create(['name' => 'create crm people', 'crm_permission' => 1]);
+        Permission::create(['name' => 'view crm people', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm people', 'crm_permission' => 1]);
+        Permission::create(['name' => 'delete crm people', 'crm_permission' => 1]);
 
-        Permission::create(['name' => 'create crm organisations']);
-        Permission::create(['name' => 'view crm organisations']);
-        Permission::create(['name' => 'edit crm organisations']);
-        Permission::create(['name' => 'delete crm organisations']);
+        Permission::create(['name' => 'create crm organisations', 'crm_permission' => 1]);
+        Permission::create(['name' => 'view crm organisations', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm organisations', 'crm_permission' => 1]);
+        Permission::create(['name' => 'delete crm organisations', 'crm_permission' => 1]);
 
-        Permission::create(['name' => 'create crm users']);
-        Permission::create(['name' => 'view crm users']);
-        Permission::create(['name' => 'edit crm users']);
-        Permission::create(['name' => 'delete crm users']);
+        Permission::create(['name' => 'create crm users', 'crm_permission' => 1]);
+        Permission::create(['name' => 'view crm users', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm users', 'crm_permission' => 1]);
+        Permission::create(['name' => 'delete crm users', 'crm_permission' => 1]);
 
-        Permission::create(['name' => 'create crm teams']);
-        Permission::create(['name' => 'view crm teams']);
-        Permission::create(['name' => 'edit crm teams']);
-        Permission::create(['name' => 'delete crm teams']);
+        Permission::create(['name' => 'create crm teams', 'crm_permission' => 1]);
+        Permission::create(['name' => 'view crm teams', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm teams', 'crm_permission' => 1]);
+        Permission::create(['name' => 'delete crm teams', 'crm_permission' => 1]);
         
-        Permission::create(['name' => 'view crm settings']);
-        Permission::create(['name' => 'edit crm settings']);
+        Permission::create(['name' => 'view crm settings', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm settings', 'crm_permission' => 1]);
 
-        Permission::create(['name' => 'create crm roles']);
-        Permission::create(['name' => 'view crm roles']);
-        Permission::create(['name' => 'edit crm roles']);
-        Permission::create(['name' => 'delete crm roles']);
+        Permission::create(['name' => 'create crm roles', 'crm_permission' => 1]);
+        Permission::create(['name' => 'view crm roles', 'crm_permission' => 1]);
+        Permission::create(['name' => 'edit crm roles', 'crm_permission' => 1]);
+        Permission::create(['name' => 'delete crm roles', 'crm_permission' => 1]);
         
-        $role = Role::create(['name' => 'Owner'])
+        $role = Role::create(['name' => 'Owner', 'crm_role' => 1])
             ->givePermissionTo(Permission::all());
         
-        $role = Role::create(['name' => 'Admin'])
+        $role = Role::create(['name' => 'Admin', 'crm_role' => 1])
             ->givePermissionTo(Permission::all());
         
-        $role = Role::create(['name' => 'Manager'])
+        $role = Role::create(['name' => 'Manager', 'crm_role' => 1])
             ->givePermissionTo([
                 'create crm leads',
                 'view crm leads',
@@ -144,7 +144,7 @@ class LaravelCrmTablesSeeder extends Seeder
                 'delete crm organisations',
             ]);
         
-        $role = Role::create(['name' => 'Employee'])
+        $role = Role::create(['name' => 'Employee', 'crm_role' => 1])
             ->givePermissionTo([
                 'create crm leads',
                 'view crm leads',
