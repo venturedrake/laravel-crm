@@ -5,18 +5,23 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\DealService;
+use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
 class LeadController extends Controller
 {
+    /**
+     * @var LeadService
+     */
+    private $leadService;
+    
     /**
      * @var DealService
      */
@@ -32,8 +37,9 @@ class LeadController extends Controller
      */
     private $organisationService;
     
-    public function __construct(DealService $dealService, PersonService $personService, OrganisationService $organisationService)
+    public function __construct(LeadService $leadService, DealService $dealService, PersonService $personService, OrganisationService $organisationService)
     {
+        $this->leadService = $leadService;
         $this->dealService = $dealService;
         $this->personService = $personService;
         $this->organisationService = $organisationService;
@@ -75,39 +81,19 @@ class LeadController extends Controller
      */
     public function store(StoreLeadRequest $request)
     {
-        $lead = Lead::create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'person_id' => $request->person_id,
-            'person_name' => $request->person_name,
-            'organisation_id' => $request->organisation_id,
-            'organisation_name' => $request->organisation_name,
-            'title' => $request->title,
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'currency' => $request->currency,
-            'lead_status_id' => 1,
-            'user_assigned_id' => $request->user_assigned_id,
-        ]);
-
-        $lead->labels()->sync($request->labels ?? []);
-        
-        if ($request->phone) {
-            $lead->phones()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-                'primary' => 1,
-            ]);
+        if ($request->person_name && ! $request->person_id) {
+            $person = $this->personService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $person = Person::find($request->person_id);
         }
 
-        if ($request->email) {
-            $lead->emails()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address' => $request->email,
-                'type' => $request->email_type,
-                'primary' => 1,
-            ]);
+        if ($request->organisation_name && ! $request->organisation_id) {
+            $organisation = $this->organisationService->createFromRelated($request);
+        } elseif ($request->organisation_id) {
+            $organisation = Organisation::find($request->organisation_id);
         }
+
+        $lead = $this->leadService->create($request, $person ?? null, $organisation ?? null);
 
         flash('Lead stored')->success()->important();
         
@@ -163,75 +149,19 @@ class LeadController extends Controller
      */
     public function update(UpdateLeadRequest $request, Lead $lead)
     {
-        $lead->update([
-            'person_id' => $request->person_id,
-            'person_name' => $request->person_name,
-            'organisation_id' => $request->organisation_id,
-            'organisation_name' => $request->organisation_name,
-            'title' => $request->title,
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'currency' => $request->currency,
-            'user_assigned_id' => $request->user_assigned_id,
-        ]);
-        
-        $lead->labels()->sync($request->labels ?? []);
-        
-        $email = $lead->getPrimaryEmail();
-        $phone = $lead->getPrimaryPhone();
-        $address = $lead->getPrimaryAddress();
-
-        if ($request->phone && $phone) {
-            $phone->update([
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-            ]);
-        } elseif ($request->phone) {
-            $lead->phones()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-                'primary' => 1,
-            ]);
+        if ($request->person_name && ! $request->person_id) {
+            $person = $this->personService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $person = Person::find($request->person_id);
         }
 
-        if ($request->email && $email) {
-            $email->update([
-                'address' => $request->email,
-                'type' => $request->email_type,
-            ]);
-        } elseif ($request->email) {
-            $lead->emails()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address' => $request->email,
-                'type' => $request->email_type,
-                'primary' => 1,
-            ]);
+        if ($request->organisation_name && ! $request->organisation_id) {
+            $organisation = $this->organisationService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $organisation = Organisation::find($request->organisation_id);
         }
 
-        if ($address) {
-            $address->update([
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'suburb' => $request->suburb,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-            ]);
-        } elseif ($request->email) {
-            $lead->addresses()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'suburb' => $request->suburb,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-                'primary' => 1,
-            ]);
-        }
+        $lead = $this->leadService->update($request, $lead, $person ?? null, $organisation ?? null);
 
         flash('Lead updated')->success()->important();
         

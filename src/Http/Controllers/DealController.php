@@ -91,10 +91,14 @@ class DealController extends Controller
     {
         if ($request->person_name && ! $request->person_id) {
             $person = $this->personService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $person = Person::find($request->person_id);
         }
 
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
+        } elseif ($request->organisation_id) {
+            $organisation = Organisation::find($request->organisation_id);
         }
         
         $this->dealService->create($request, $person ?? null, $organisation ?? null);
@@ -173,7 +177,7 @@ class DealController extends Controller
 
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->person_id) {
+        } elseif ($request->organisation_id) {
             $organisation = Organisation::find($request->organisation_id);
         }
 

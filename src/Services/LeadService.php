@@ -3,62 +3,62 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Models\Deal;
-use VentureDrake\LaravelCrm\Repositories\DealRepository;
+use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Repositories\LeadRepository;
 
-class DealService
+class LeadService
 {
     /**
-     * @var DealRepository
+     * @var LeadRepository
      */
-    private $dealRepository;
+    private $leadRepository;
 
     /**
      * LeadService constructor.
-     * @param DealRepository $dealRepository
+     * @param LeadRepository $leadRepository
      */
-    public function __construct(DealRepository $dealRepository)
+    public function __construct(LeadRepository $leadRepository)
     {
-        $this->dealRepository = $dealRepository;
+        $this->leadRepository = $leadRepository;
     }
 
     public function create($request, $person = null, $organisation = null)
     {
-        $deal = Deal::create([
+        $lead = Lead::create([
             'external_id' => Uuid::uuid4()->toString(),
-            'lead_id' => $request->lead_id ?? null,
             'person_id' => $person->id ?? null,
+            'person_name' => $request->person_name,
             'organisation_id' => $organisation->id ?? null,
+            'organisation_name' => $request->organisation_name,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,
             'currency' => $request->currency,
-            'expected_close' => $request->expected_close,
-            'user_owner_id' => $request->user_assigned_id,
+            'lead_status_id' => 1,
             'user_assigned_id' => $request->user_assigned_id,
         ]);
 
-        $deal->labels()->sync($request->labels ?? []);
+        $lead->labels()->sync($request->labels ?? []);
         
-        return $deal;
+        return $lead;
     }
 
-    public function update($request, Deal $deal, $person = null, $organisation = null)
+    public function update($request, Lead $lead, $person = null, $organisation = null)
     {
-        $deal->update([
+        $lead->update([
             'person_id' => $person->id ?? null,
+            'person_name' => $request->person_name,
             'organisation_id' => $organisation->id ?? null,
+            'organisation_name' => $request->organisation_name,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,
             'currency' => $request->currency,
-            'expected_close' => $request->expected_close,
-            'user_owner_id' => $request->user_assigned_id,
             'user_assigned_id' => $request->user_assigned_id,
         ]);
 
-        $deal->labels()->sync($request->labels ?? []);
+        $lead->labels()->sync($request->labels ?? []);
         
-        return $deal;
+        return $lead;
     }
 }
