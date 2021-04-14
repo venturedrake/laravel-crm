@@ -123,11 +123,11 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 
     Route::get('{deal}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@edit')
         ->name('laravel-crm.deals.edit')
-        ->middleware(['can:edit,deal']);
+        ->middleware(['can:update,deal']);
 
     Route::put('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@update')
         ->name('laravel-crm.deals.update')
-        ->middleware(['can:edit,deal']);
+        ->middleware(['can:update,deal']);
 
     Route::delete('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@destroy')
         ->name('laravel-crm.deals.destroy')
@@ -139,15 +139,15 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 
     Route::get('{deal}/won', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@won')
         ->name('laravel-crm.deals.won')
-        ->middleware(['can:edit,deal']);
+        ->middleware(['can:update,deal']);
 
     Route::get('{deal}/lost', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@lost')
         ->name('laravel-crm.deals.lost')
-        ->middleware(['can:edit,deal']);
+        ->middleware(['can:update,deal']);
 
     Route::get('{deal}/reopen', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@reopen')
         ->name('laravel-crm.deals.reopen')
-        ->middleware(['can:edit,deal']);
+        ->middleware(['can:update,deal']);
 });
 
 /* Activities */
@@ -222,11 +222,11 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
 
     Route::get('{person}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@edit')
         ->name('laravel-crm.people.edit')
-        ->middleware(['can:edit,person']);
+        ->middleware(['can:update,person']);
 
     Route::put('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@update')
         ->name('laravel-crm.people.update')
-        ->middleware(['can:edit,person']);
+        ->middleware(['can:update,person']);
 
     Route::delete('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@destroy')
         ->name('laravel-crm.people.destroy')
@@ -262,11 +262,11 @@ Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], 
 
     Route::get('{organisation}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@edit')
         ->name('laravel-crm.organisations.edit')
-        ->middleware(['can:edit,organisation']);
+        ->middleware(['can:update,organisation']);
 
     Route::put('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@update')
         ->name('laravel-crm.organisations.update')
-        ->middleware(['can:edit,organisation']);
+        ->middleware(['can:update,organisation']);
 
     Route::delete('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@destroy')
         ->name('laravel-crm.organisations.destroy')
@@ -285,56 +285,72 @@ Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], 
 
 Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@index')
-        ->name('laravel-crm.users.index');
+        ->name('laravel-crm.users.index')
+        ->middleware(['can:viewAny,App\User']);
 
     Route::get('invite', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@invite')
-        ->name('laravel-crm.users.invite');
+        ->name('laravel-crm.users.invite')
+        ->middleware(['can:create,App\User']);
 
     Route::post('invite', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@sendInvite')
-        ->name('laravel-crm.users.sendinvite');
+        ->name('laravel-crm.users.sendinvite')
+        ->middleware(['can:create,App\User']);
 
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@create')
-        ->name('laravel-crm.users.create');
+        ->name('laravel-crm.users.create')
+        ->middleware(['can:create,App\User']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@store')
-        ->name('laravel-crm.users.store');
+        ->name('laravel-crm.users.store')
+        ->middleware(['can:create,App\User']);
 
     Route::get('{user}', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@show')
-        ->name('laravel-crm.users.show');
+        ->name('laravel-crm.users.show')
+        ->middleware(['can:view,user']);
 
     Route::get('{user}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@edit')
-        ->name('laravel-crm.users.edit');
+        ->name('laravel-crm.users.edit')
+        ->middleware(['can:update,user']);
 
     Route::put('{user}', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@update')
-        ->name('laravel-crm.users.update');
+        ->name('laravel-crm.users.update')
+        ->middleware(['can:update,user']);
 
     Route::delete('{user}', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@destroy')
-        ->name('laravel-crm.users.destroy');
+        ->name('laravel-crm.users.destroy')
+        ->middleware(['can:delete,user']);
 });
 
 /* Teams */
 
 Route::group(['prefix' => 'teams', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@index')
-        ->name('laravel-crm.teams.index');
+        ->name('laravel-crm.teams.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Team']);
 
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@create')
-        ->name('laravel-crm.teams.create');
+        ->name('laravel-crm.teams.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Team']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@store')
-        ->name('laravel-crm.teams.store');
+        ->name('laravel-crm.teams.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Team']);
 
     Route::get('{team}', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@show')
-        ->name('laravel-crm.teams.show');
+        ->name('laravel-crm.teams.show')
+        ->middleware(['can:view,team']);
 
     Route::get('{team}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@edit')
-        ->name('laravel-crm.teams.edit');
+        ->name('laravel-crm.teams.edit')
+        ->middleware(['can:update,team']);
 
     Route::put('{team}', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@update')
-        ->name('laravel-crm.teams.update');
+        ->name('laravel-crm.teams.update')
+        ->middleware(['can:update,team']);
 
     Route::delete('{team}', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@destroy')
-        ->name('laravel-crm.teams.destroy');
+        ->name('laravel-crm.teams.destroy')
+        ->middleware(['can:delete,team']);
 });
 
 /* Products */
@@ -369,32 +385,41 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], funct
 
 Route::group(['prefix' => 'settings', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\SettingController@edit')
-        ->name('laravel-crm.settings.edit');
+        ->name('laravel-crm.settings.edit')
+        ->middleware(['can:update,VentureDrake\LaravelCrm\Models\Setting']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\SettingController@update')
-        ->name('laravel-crm.settings.update');
+        ->name('laravel-crm.settings.update')
+        ->middleware(['can:update,VentureDrake\LaravelCrm\Models\Setting']);
 });
 
 /* Roles */
 Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@index')
-        ->name('laravel-crm.roles.index');
+        ->name('laravel-crm.roles.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Role']);
 
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@create')
-        ->name('laravel-crm.roles.create');
+        ->name('laravel-crm.roles.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Role']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@store')
-        ->name('laravel-crm.roles.store');
+        ->name('laravel-crm.roles.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Role']);
 
     Route::get('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@show')
-        ->name('laravel-crm.roles.show');
+        ->name('laravel-crm.roles.show')
+        ->middleware(['can:view,role']);
 
     Route::get('{role}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@edit')
-        ->name('laravel-crm.roles.edit');
+        ->name('laravel-crm.roles.edit')
+        ->middleware(['can:update,role']);
 
     Route::put('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@update')
-        ->name('laravel-crm.roles.update');
+        ->name('laravel-crm.roles.update')
+        ->middleware(['can:update,role']);
 
     Route::delete('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@destroy')
-        ->name('laravel-crm.roles.destroy');
+        ->name('laravel-crm.roles.destroy')
+        ->middleware(['can:delete,role']);
 });

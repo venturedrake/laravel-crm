@@ -52,10 +52,9 @@ class SettingPolicy
      * Determine whether the user can update the setting.
      *
      * @param  \App\User  $user
-     * @param  \App\Setting  $setting
      * @return mixed
      */
-    public function update(User $user, Setting $setting)
+    public function update(User $user)
     {
         if ($user->hasPermissionTo('edit crm settings')) {
             return true;
