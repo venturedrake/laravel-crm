@@ -18,7 +18,9 @@ class DealPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->hasPermissionTo('view crm deals')) {
+            return true;
+        }
     }
 
     /**
@@ -30,7 +32,9 @@ class DealPolicy
      */
     public function view(User $user, Deal $deal)
     {
-        //
+        if ($user->hasPermissionTo('view crm deals')) {
+            return true;
+        }
     }
 
     /**
@@ -41,7 +45,9 @@ class DealPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->hasPermissionTo('create crm deals')) {
+            return true;
+        }
     }
 
     /**
@@ -53,7 +59,9 @@ class DealPolicy
      */
     public function update(User $user, Deal $deal)
     {
-        //
+        if ($user->hasPermissionTo('edit crm deals')) {
+            return true;
+        }
     }
 
     /**
@@ -65,7 +73,9 @@ class DealPolicy
      */
     public function delete(User $user, Deal $deal)
     {
-        //
+        if ($user->hasPermissionTo('delete crm deals')) {
+            return true;
+        }
     }
 
     /**
@@ -77,7 +87,9 @@ class DealPolicy
      */
     public function restore(User $user, Deal $deal)
     {
-        //
+        if ($user->hasPermissionTo('delete crm deals')) {
+            return true;
+        }
     }
 
     /**
@@ -89,6 +101,6 @@ class DealPolicy
      */
     public function forceDelete(User $user, Deal $deal)
     {
-        //
+        return false;
     }
 }

@@ -18,7 +18,9 @@ class PersonPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->hasPermissionTo('view crm people')) {
+            return true;
+        }
     }
 
     /**
@@ -30,7 +32,9 @@ class PersonPolicy
      */
     public function view(User $user, Person $person)
     {
-        //
+        if ($user->hasPermissionTo('view crm people')) {
+            return true;
+        }
     }
 
     /**
@@ -41,7 +45,9 @@ class PersonPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->hasPermissionTo('create crm people')) {
+            return true;
+        }
     }
 
     /**
@@ -53,7 +59,9 @@ class PersonPolicy
      */
     public function update(User $user, Person $person)
     {
-        //
+        if ($user->hasPermissionTo('edit crm people')) {
+            return true;
+        }
     }
 
     /**
@@ -65,7 +73,9 @@ class PersonPolicy
      */
     public function delete(User $user, Person $person)
     {
-        //
+        if ($user->hasPermissionTo('delete crm people')) {
+            return true;
+        }
     }
 
     /**
@@ -77,7 +87,9 @@ class PersonPolicy
      */
     public function restore(User $user, Person $person)
     {
-        //
+        if ($user->hasPermissionTo('delete crm people')) {
+            return true;
+        }
     }
 
     /**
@@ -89,6 +101,6 @@ class PersonPolicy
      */
     public function forceDelete(User $user, Person $person)
     {
-        //
+        return true;
     }
 }

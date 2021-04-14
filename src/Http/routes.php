@@ -106,37 +106,48 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
 
 Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@index')
-        ->name('laravel-crm.deals.index');
+        ->name('laravel-crm.deals.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
 
     Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@create')
-        ->name('laravel-crm.deals.create');
+        ->name('laravel-crm.deals.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Deal']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@store')
-        ->name('laravel-crm.deals.store');
+        ->name('laravel-crm.deals.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Deal']);
 
     Route::get('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@show')
-        ->name('laravel-crm.deals.show');
+        ->name('laravel-crm.deals.show')
+        ->middleware(['can:view,deal']);
 
     Route::get('{deal}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@edit')
-        ->name('laravel-crm.deals.edit');
+        ->name('laravel-crm.deals.edit')
+        ->middleware(['can:edit,deal']);
 
     Route::put('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@update')
-        ->name('laravel-crm.deals.update');
+        ->name('laravel-crm.deals.update')
+        ->middleware(['can:edit,deal']);
 
     Route::delete('{deal}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@destroy')
-        ->name('laravel-crm.deals.destroy');
+        ->name('laravel-crm.deals.destroy')
+        ->middleware(['can:delete,deal']);
 
     Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@search')
-        ->name('laravel-crm.deals.search');
+        ->name('laravel-crm.deals.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
 
     Route::get('{deal}/won', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@won')
-        ->name('laravel-crm.deals.won');
+        ->name('laravel-crm.deals.won')
+        ->middleware(['can:edit,deal']);
 
     Route::get('{deal}/lost', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@lost')
-        ->name('laravel-crm.deals.lost');
+        ->name('laravel-crm.deals.lost')
+        ->middleware(['can:edit,deal']);
 
     Route::get('{deal}/reopen', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@reopen')
-        ->name('laravel-crm.deals.reopen');
+        ->name('laravel-crm.deals.reopen')
+        ->middleware(['can:edit,deal']);
 });
 
 /* Activities */
@@ -193,63 +204,81 @@ Route::group(['prefix' => 'notes', 'middleware' => 'auth.laravel-crm'], function
 
 Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@index')
-        ->name('laravel-crm.people.index');
+        ->name('laravel-crm.people.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
 
     Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@create')
-        ->name('laravel-crm.people.create');
+        ->name('laravel-crm.people.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Person']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@store')
-        ->name('laravel-crm.people.store');
+        ->name('laravel-crm.people.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Person']);
+    
 
     Route::get('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@show')
-        ->name('laravel-crm.people.show');
+        ->name('laravel-crm.people.show')
+        ->middleware(['can:view,person']);
 
     Route::get('{person}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@edit')
-        ->name('laravel-crm.people.edit');
+        ->name('laravel-crm.people.edit')
+        ->middleware(['can:edit,person']);
 
     Route::put('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@update')
-        ->name('laravel-crm.people.update');
+        ->name('laravel-crm.people.update')
+        ->middleware(['can:edit,person']);
 
     Route::delete('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@destroy')
-        ->name('laravel-crm.people.destroy');
+        ->name('laravel-crm.people.destroy')
+        ->middleware(['can:delete,person']);
 
     Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@search')
-        ->name('laravel-crm.people.search');
+        ->name('laravel-crm.people.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
 
     Route::get('{person}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@autocomplete')
-        ->name('laravel-crm.people.autocomplete');
+        ->name('laravel-crm.people.autocomplete')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
 });
 
 /* Organisations */
 
 Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@index')
-        ->name('laravel-crm.organisations.index');
+        ->name('laravel-crm.organisations.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
 
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@create')
-        ->name('laravel-crm.organisations.create');
+        ->name('laravel-crm.organisations.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organisation']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@store')
-        ->name('laravel-crm.organisations.store');
+        ->name('laravel-crm.organisations.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organisation']);
 
     Route::get('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@show')
-        ->name('laravel-crm.organisations.show');
+        ->name('laravel-crm.organisations.show')
+        ->middleware(['can:view,organisation']);
 
     Route::get('{organisation}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@edit')
-        ->name('laravel-crm.organisations.edit');
+        ->name('laravel-crm.organisations.edit')
+        ->middleware(['can:edit,organisation']);
 
     Route::put('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@update')
-        ->name('laravel-crm.organisations.update');
+        ->name('laravel-crm.organisations.update')
+        ->middleware(['can:edit,organisation']);
 
     Route::delete('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@destroy')
-        ->name('laravel-crm.organisations.destroy');
-
-
+        ->name('laravel-crm.organisations.destroy')
+        ->middleware(['can:delete,organisation']);
+    
     Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@search')
-        ->name('laravel-crm.organisations.search');
+        ->name('laravel-crm.organisations.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
 
     Route::get('{organisation}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@autocomplete')
-        ->name('laravel-crm.organisations.autocomplete');
+        ->name('laravel-crm.organisations.autocomplete')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
 });
 
 /* Users */
