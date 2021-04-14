@@ -54,7 +54,7 @@ class Settings
                     $client = new Client();
                     $url = "https://beta.laravelcrm.com/api/public/version";
 
-                    if (Schema::hasColumn(config('laravel-crm.db_table_prefix').'settings', 'crm_access')) {
+                    if (Schema::hasColumn('users', 'crm_access')) {
                         $userCount = User::where('crm_access', 1)->count();
 
                         if ($userCount == 0) {
