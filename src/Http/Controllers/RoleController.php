@@ -2,8 +2,9 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use VentureDrake\LaravelCrm\Http\Requests\StoreRoleRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateRoleRequest;
 use VentureDrake\LaravelCrm\Models\Role;
 
 class RoleController extends Controller
@@ -29,7 +30,9 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::roles.create');
+        return view('laravel-crm::roles.create', [
+            'permissions' => \VentureDrake\LaravelCrm\Models\Permission::all(),
+        ]);
     }
 
     /**
@@ -38,8 +41,22 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
+        $permissionsArray = [];
+        foreach ($request->permission as $permissionKey => $permissionValue) {
+            $permissionsArray[] = Permission::where('id', $permissionKey)->first()->name;
+        }
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        $role = Role::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'crm_role' => 1,
+        ]);
+
+        $role->syncPermissions($permissionsArray);
+        
         flash('Role stored')->success()->important();
 
         return redirect(route('laravel-crm.roles.index'));
@@ -68,6 +85,7 @@ class RoleController extends Controller
     {
         return view('laravel-crm::roles.edit', [
             'role' => $role,
+            'permissions' => \VentureDrake\LaravelCrm\Models\Permission::all(),
         ]);
     }
 
@@ -78,10 +96,25 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
+    public function update(UpdateRoleRequest $request, Role $role)
     {
-        flash('Role updated')->success()->important();
+        if (! in_array($role->name, ['Owner','Admin']) && $role->users->count() < 1) {
+            $permissionsArray = [];
+            foreach ($request->permission as $permissionKey => $permissionValue) {
+                $permissionsArray[] = Permission::where('id', $permissionKey)->first()->name;
+            }
 
+            app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+            $role->update([
+                'description' => $request->description,
+            ]);
+            $role->syncPermissions($permissionsArray);
+
+            flash('Role updated')->success()->important();
+        } else {
+            flash("Role can't be updated")->error()->important();
+        }
+        
         return redirect(route('laravel-crm.roles.show', $role));
     }
 
