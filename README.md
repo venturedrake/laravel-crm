@@ -34,20 +34,24 @@ Step 2: Make sure you have set up Laravel auth in your project
 
 https://laravel.com/docs/6.x/authentication
 
-Step 3: Require the current package using composer:
+Step 3: Install spatie roles & permissions package
+
+https://spatie.be/docs/laravel-permission/v4/installation-laravel
+
+Step 4: Require the current package using composer:
 
 ```bash
 composer require venturedrake/laravel-crm::^0.2
 ```
 
-Step 4: Publish the migrations & config:
+Step 5: Publish the migrations & config:
 
 ```bash
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 ```
 
-Step 5: Add an email address for the user who will be the crm owner in the config file:
+Step 6: Add an email address for the user who will be the crm owner in the config file:
 
 After publishing the package assets a configuration file will be located at <code>config/laravel-crm.php</code>
 
@@ -67,19 +71,19 @@ return [
 ];
 ```
 
-Step 6: Run migrations:
+Step 7: Run migrations:
 
 ```bash
 php artisan migrate
 ```
 
-Step 7: Run database seeder:
+Step 8: Run database seeder:
 
 ```bash
 php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
 ```
 
-Step 8: Add the HasCrmAccess & HasCrmTeams traits to your User model(s):
+Step 9: Add the HasCrmAccess, HasCrmTeams & HasRoles traits to your User model(s):
 
 ```php
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -96,7 +100,7 @@ class User extends Authenticatable
     // ...
 }
 ```
-Step 9: Register at least one user and log in or if you already have a user login with the crm owner you set in step 5
+Step 10: Register at least one user and log in or if you already have a user login with the crm owner you set in step 5
 
 Access the crm to register/login at http://your-project-url/crm
 
@@ -115,7 +119,9 @@ php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrm
 
 Step 2: Delete previously published package views located in <code>resources/views/vendor/laravel-crm/*</code>
 
-Step 3: Add HasCrmAccess & HasCrmTeams traits to App\User model, see installation Step 8.
+Step 3: Add HasCrmAccess, HasCrmTeams & HasRoles traits to App\User model, see installation Step 8.
+
+Step 4: Install and set up spatie roles & permissions package, see install step 3.
 
 ### Upgrading from 0.1.x to 0.1.2
 
