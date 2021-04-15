@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tasks
 - Files / Documents
 - Calendar (Calls, Meetings, Reminders)
-- Roles / Permissions
 - Dashboard
 - Custom Fields
 - Activity Feed / Timelines
@@ -22,6 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 0.2.0 - 2021-04-XX
+### Added
+- Roles / Permissions
+
+### Changed
+### Fixed
+### Removed
 
 ## 0.1.6 - 2021-04-07
 ### Changed

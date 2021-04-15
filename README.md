@@ -24,7 +24,7 @@ This package will add CRM functionality to your laravel projects.
  - Secure registration & login
  - Reset forgotten password
 
-## Installation
+## Installation (10-15mins)
 
 Step 1: Install a Laravel project if you don't have one already
 
@@ -34,10 +34,10 @@ Step 2: Make sure you have set up Laravel auth in your project
 
 https://laravel.com/docs/6.x/authentication
 
-Step 3: Require the package using composer:
+Step 3: Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm
+composer require venturedrake/laravel-crm::^0.2
 ```
 
 Step 4: Publish the migrations & config:
@@ -47,39 +47,36 @@ php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmService
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 ```
 
-Step 5: Run migrations:
-
-```bash
-php artisan migrate
-```
-
-Step 6: Run database seeder:
-
-```bash
-php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
-
-```
-
-Step 7: Add an email address for the user who will be the crm owner in the config file:
+Step 5: Add an email address for the user who will be the crm owner in the config file:
 
 After publishing the package assets a configuration file will be located at <code>config/laravel-crm.php</code>
 
 ```php
-
 return [
     
     'crm_owner' => 'email@domain.com',
     
     'route_prefix' => 'crm',
     
-    'route_middleware' => ['web'],
+    'route_middleware' => [],
     
     'db_table_prefix' => 'crm_',
     
     'encrypt_db_fields' => true,
     
 ];
+```
 
+Step 6: Run migrations:
+
+```bash
+php artisan migrate
+```
+
+Step 7: Run database seeder:
+
+```bash
+php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
 ```
 
 Step 8: Add the HasCrmAccess & HasCrmTeams traits to your User model(s):
@@ -99,10 +96,38 @@ class User extends Authenticatable
     // ...
 }
 ```
+Step 9: Register at least one user and log in or if you already have a user login with the crm owner you set in step 5
 
-## Usage
+Access the crm to register/login at http://your-project-url/crm
 
-Access the crm at http://your-project-url/crm
+## Upgrade
+
+### Upgrading from 0.1 to 0.2
+
+Step 1: Run the following to the update package, database and add the default roles/permissions:
+
+```bash
+composer require venturedrake/laravel-crm::^0.2
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
+php artisan migrate
+php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
+```
+
+Step 2: Delete previously published package views located in <code>resources/views/vendor/laravel-crm/*</code>
+
+### Upgrading from 0.1.x to 0.1.2
+
+Step 1: Run the following to update the package & database
+
+```bash
+composer require venturedrake/laravel-crm::^0.1
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
+php artisan migrate
+```
+
+Step 2: Delete previously published package views located in folder <code>resources/views/vendor/laravel-crm/*</code>
+
+<!--- ## Usage --->
 
 ## Testing
 
@@ -121,7 +146,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
  - Tasks
  - Files / Documents
  - Calendar (Calls, Meetings, Reminders)
- - Roles / Permissions
  - Dashboard
  - Custom Fields
  - Activity Feed / Timelines

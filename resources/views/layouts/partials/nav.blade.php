@@ -22,6 +22,7 @@
             <li class="nav-item"><a class="nav-link" href="#">Reports</a></li>--}}
             <li class="dropdown-divider"></li>
             <li class="nav-item"><a class="nav-link {{ Str::contains(Route::currentRouteName(),['laravel-crm.settings','laravel-crm.roles']) ? 'active' : '' }}" href="{{ url(route('laravel-crm.settings.edit')) }}">Settings</a></li>
+            <li class="nav-item"><a class="nav-link {{ Str::contains(Route::currentRouteName(),['laravel-crm.updates']) ? 'active' : '' }}" href="{{ url(route('laravel-crm.updates.index')) }}">Updates</a></li>
         </ul>
     </div>
 </div>

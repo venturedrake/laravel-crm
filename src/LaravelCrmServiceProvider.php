@@ -13,6 +13,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
+use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -59,6 +60,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $router->pushMiddlewareToGroup('crm', HasCrmAccess::class);
         $router->pushMiddlewareToGroup('api', HasCrmAccess::class);
         $router->pushMiddlewareToGroup('crm', LastOnlineAt::class);
+        $router->pushMiddlewareToGroup('crm', SystemCheck::class);
         
         $this->registerRoutes();
 
