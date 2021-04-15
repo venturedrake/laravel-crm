@@ -115,6 +115,8 @@ php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrm
 
 Step 2: Delete previously published package views located in <code>resources/views/vendor/laravel-crm/*</code>
 
+Step 3: Add HasCrmAccess & HasCrmTeams traits to App\User model, see installation Step 8.
+
 ### Upgrading from 0.1.x to 0.1.2
 
 Step 1: Run the following to update the package & database
