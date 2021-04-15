@@ -2,12 +2,12 @@
 
 namespace VentureDrake\LaravelCrm\Http\Middleware;
 
+use App\User;
 use Carbon\Carbon;
 use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Models\Setting;
-use App\User;
 
 class Settings
 {
