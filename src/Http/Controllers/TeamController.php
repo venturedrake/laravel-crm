@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StoreTeamRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateTeamRequest;
 use VentureDrake\LaravelCrm\Models\Team;
-use VentureDrake\LaravelCrm\Models\User;
+use App\User;
 
 class TeamController extends Controller
 {

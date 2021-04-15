@@ -7,7 +7,7 @@ use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Models\Setting;
-use VentureDrake\LaravelCrm\Models\User;
+use App\User;
 
 class Settings
 {
