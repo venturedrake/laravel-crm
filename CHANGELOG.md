@@ -22,13 +22,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
-## 0.2.0 - 2021-04-XX
+## 0.2.0 - 2021-04-15
 ### Added
 - Roles / Permissions
+- Traits HasCrmAccess & HasCrmTeams for App\User model
 
 ### Changed
+- Contacts created when adding leads
+- Use the App\User model by default
+
 ### Fixed
+- New contact badge
+- Role not required when editing user
+- Check if settings table exists and create if not
+- Version check bug
+- btn hover style on table rows
+- form group for crm access toggle
+
 ### Removed
+- VentureDrake\LaravelCrm\Models\User model
 
 ## 0.1.6 - 2021-04-07
 ### Changed
