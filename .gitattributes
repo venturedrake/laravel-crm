@@ -17,4 +17,5 @@
 /phpunit.xml.dist   export-ignore
 /webpack.mix.js     export-ignore
 
-resources/assets/* linguist-vendored
+resources/assets/js linguist-vendored
+resources/assets/css linguist-vendored
