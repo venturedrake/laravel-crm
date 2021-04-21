@@ -2,7 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Policies;
 
-use App\Lead;
+use VentureDrake\LaravelCrm\Models\Lead;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
