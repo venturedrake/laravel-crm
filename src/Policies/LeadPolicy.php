@@ -2,9 +2,9 @@
 
 namespace VentureDrake\LaravelCrm\Policies;
 
-use VentureDrake\LaravelCrm\Models\Lead;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use VentureDrake\LaravelCrm\Models\Lead;
 
 class LeadPolicy
 {
