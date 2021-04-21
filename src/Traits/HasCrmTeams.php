@@ -35,6 +35,6 @@ trait HasCrmTeams
      */
     public function belongsToCrmTeam($team)
     {
-        return $this->teams()->where('crm_team_id', $team->id)->exists();
+        return $this->crmTeams()->where('crm_team_id', $team->id)->exists();
     }
 }
