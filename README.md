@@ -41,7 +41,7 @@ https://spatie.be/docs/laravel-permission/v4/installation-laravel
 Step 4: Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.2
+composer require venturedrake/laravel-crm:^0.2
 ```
 
 Step 5: Publish the migrations & config:
