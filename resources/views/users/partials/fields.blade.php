@@ -41,10 +41,9 @@
                 'name' => 'role',
                 'label' => 'CRM Role',
                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->get()),
-                'value' => old('role', $user->roles()->first()->id ?? null),
+                'value' => old('role', ((isset($user)) ? $user->roles()->first()->id : null)),
             ]) 
-        @endif    
-        
+        @endif
     </div>
     <div class="col-sm-6">
         ...
