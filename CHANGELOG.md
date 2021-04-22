@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.2.2 - 2021-04-23
+### Fixed
+ - Typo in readme
+ - Fixed issue with order of published migrations
+
 ## 0.2.1 - 2021-04-22
 ### Changed
  - Moved lead, deal, person, organisation, users & team views to partials & components
