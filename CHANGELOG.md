@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.2.1 - 2021-04-22
+### Changed
+ - Moved lead, deal, person, organisation, users & team views to partials & components
+### Fixed
+ - Bug with LeadPolicy
+ - Bug with checking user on team
+
 ## 0.2.0 - 2021-04-15
 ### Added
 - Roles / Permissions
