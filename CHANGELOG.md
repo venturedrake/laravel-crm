@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.2.3 - 2021-04-23
+### Fixed
+- Fixed issue with migrations being before spatie permissions
+
 ## 0.2.2 - 2021-04-23
 ### Fixed
  - Typo in readme
