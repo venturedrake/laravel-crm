@@ -22,14 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.2.4 - 2021-04-23
+### Fixed
+- Issue with timestamp on published migrations
+
 ## 0.2.3 - 2021-04-23
 ### Fixed
-- Fixed issue with migrations being before spatie permissions
+- Issue with migrations being before spatie permissions
 
 ## 0.2.2 - 2021-04-23
 ### Fixed
  - Typo in readme
- - Fixed issue with order of published migrations
+ - Issue with order of published migrations
 
 ## 0.2.1 - 2021-04-22
 ### Changed
