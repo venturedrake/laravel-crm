@@ -44,11 +44,12 @@ Step 4: Require the current package using composer:
 composer require venturedrake/laravel-crm:^0.2
 ```
 
-Step 5: Publish the migrations & config:
+Step 5: Publish the migrations, config & assets:
 
 ```bash
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets"
 ```
 
 Step 6: Add an email address for the user who will be the crm owner in the config file:
