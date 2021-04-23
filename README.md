@@ -8,6 +8,8 @@
 
 This package will add CRM functionality to your laravel projects.
 
+> ⚠️ Warning: This is a pre-release version that is not yet ready for production use.
+
 ## Use Cases
 
 - Use as a free CRM for your business or your clients
