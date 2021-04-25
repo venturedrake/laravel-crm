@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.2.5 - 2021-04-25
+### Added
+- Support for Laravel 8 App\Models\User
+- Config file comments and updated readme
+### Changed
+### Fixed
+- Conflict with default Laravel auth routes
+### Removed
+
 ## 0.2.4 - 2021-04-23
 ### Fixed
 - Issue with timestamp on published migrations
