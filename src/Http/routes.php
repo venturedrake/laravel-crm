@@ -5,56 +5,56 @@ use Illuminate\Support\Facades\View;
 
 /* Public Routes */
 
-Route::get('login', function () {
+Route::get('crm-login', function () {
     return redirect(route('login'));
 
     return View::make('laravel-crm::auth.login');
 })->name('laravel-crm.login');
 
-Route::post('login', function () {
+Route::post('crm-login', function () {
     //
 });
 
-Route::post('logout', function () {
+Route::post('crm-logout', function () {
     //
 })->name('laravel-crm.logout');
 
-Route::get('register', function () {
+Route::get('crm-register', function () {
     return redirect(route('register'));
 })->name('laravel-crm.register');
 
-Route::post('register', function () {
+Route::post('crm-register', function () {
     //
 });
 
-Route::get('password/reset', function () {
+Route::get('crm-password/reset', function () {
     //
 })->name('laravel-crm.password.request');
 
-Route::post('password/email', function () {
+Route::post('crm-password/email', function () {
     //
 });
 
-Route::get('password/reset/{token}', function () {
+Route::get('crm-password/reset/{token}', function () {
     //
 })->name('laravel-crm.password.reset');
 
-Route::post('password/reset', function () {
+Route::post('crm-password/reset', function () {
     //
 })->name('laravel-crm.password.update');
 
-Route::get('password/confirm', function () {
+Route::get('crm-password/confirm', function () {
     //
 })->name('laravel-crm.password.confirm');
 
-Route::get('password/confirm', function () {
+Route::get('crm-password/confirm', function () {
     //
 });
 
 /* Private Routes */
 
 /* Dashboard */
-Route::get('/', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
+Route::get('/dashboard', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
     ->middleware('auth.laravel-crm')
     ->name('laravel-crm.dashboard');
 
