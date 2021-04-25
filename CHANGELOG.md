@@ -26,10 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for Laravel 8 App\Models\User
 - Config file comments and updated readme
-### Changed
 ### Fixed
 - Conflict with default Laravel auth routes
-### Removed
 
 ## 0.2.4 - 2021-04-23
 ### Fixed
