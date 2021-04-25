@@ -14,7 +14,7 @@ return [
     |
     */
     
-    'crm_owner' => '',
+    'crm_owner' => env('LARAVEL_CRM_OWNER', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ return [
     | subfolder on your domain or just in the main directory. You can change
     | this value to anything you wish or simply set to blank.
     |
-    | eg. https://yourdomainname.com/crm or https://yourdomainnam.com
+    | eg. https://yourdomain.com/crm or https://yourdomain.com
     |
     | Tip: You would use a subfolder if you are using this crm within a
     | current Laravel project that might be an entire application with routes
@@ -33,7 +33,7 @@ return [
     |
     */
     
-    'route_prefix' => 'crm',
+    'route_prefix' => env('LARAVEL_CRM_ROUTE_PREFIX', 'crm'),
 
     /*
     |--------------------------------------------------------------------------
@@ -57,7 +57,7 @@ return [
     |
     */
     
-    'db_table_prefix' => 'crm_',
+    'db_table_prefix' => env('LARAVEL_CRM_DB_TABLE_PREFIX', 'crm_'),
 
     /*
     |--------------------------------------------------------------------------
@@ -69,6 +69,6 @@ return [
     |
     */
     
-    'encrypt_db_fields' => true,
+    'encrypt_db_fields' => env('LARAVEL_CRM_ENCRYPT_DB_FIELDS', true),
     
 ];
