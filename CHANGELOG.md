@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.2.6 - 2021-04-26
+### Fixed
+- Conflict with Laravel 8 default routes
+
 ## 0.2.5 - 2021-04-25
 ### Added
 - Support for Laravel 8 App\Models\User
