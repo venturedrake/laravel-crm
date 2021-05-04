@@ -324,7 +324,7 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function
 
 /* Teams */
 
-Route::group(['prefix' => 'teams', 'middleware' => 'auth.laravel-crm'], function () {
+Route::group(['prefix' => 'crm-teams', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\TeamController@index')
         ->name('laravel-crm.teams.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Team']);
