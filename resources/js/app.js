@@ -125,7 +125,7 @@ const appJquery = function() {
             });
 
            
-            var chart = $('#createdLast14Days');
+            var chart = $('#createdLast14Days').getContext('2d');
             var chartData = chart.data('chart');
             var chartDays = [];
             var chartLeads = [];
@@ -158,16 +158,22 @@ const appJquery = function() {
                 },
                 options: {
                     responsive: false,
+                    legend: {
+                        display: false
+                    },
                     scales: {
+                        xAxes: [{
+                            gridLines: {
+                                display: false
+                            }
+                        }],
                         yAxes: [{
                             ticks: {
-                                min: 0,
-                                stepSize: 1,
-                                max: 4
+                                stepSize: 1
                             },
-                            scaleLabel: {
-                                display: true
-                            },
+                            gridLines: {
+                                display: false
+                            }
                         }]
                     }
                 }
