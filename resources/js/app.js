@@ -2,6 +2,7 @@ require('./bootstrap');
 require('bootstrap4-toggle/js/bootstrap4-toggle.min');
 require('jquery-datetimepicker/build/jquery.datetimepicker.full')
 require('bootstrap-4-autocomplete/dist/bootstrap-4-autocomplete')
+require('chart.js/dist/chart.min')
 
 const Swal = require('sweetalert2')
 
@@ -122,7 +123,55 @@ const appJquery = function() {
                     $(this).closest('form').find('.action-current').html($(this).text());
                 },
             });
+
+           
+            var chart = $('#createdLast14Days');
+            var chartData = chart.data('chart');
+            var chartDays = [];
+            var chartLeads = [];
+            var chartDeals = [];
+            Object.values(chartData).forEach(function (item, index) {
+                console.log(item, index);
+                chartDays.push(item.daily.date);
+                chartLeads.push(item.daily.leads);
+                chartDeals.push(item.daily.deals);
+            });
             
+            var myChart = new Chart(chart, {
+                type: 'bar',
+                data: {
+                    labels: chartDays,
+                    datasets: [{
+                        label: 'Leads',
+                        data: chartLeads,
+                        borderWidth: 1,
+                        backgroundColor: '#6c757d',
+                        borderColor: "#373c40",
+                    },
+                    {
+                        label: 'Deals',
+                        data: chartDeals,
+                        borderWidth: 1,
+                        backgroundColor: '#28a745',
+                        borderColor: "#176529",
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                stepSize: 1,
+                                max: 4
+                            },
+                            scaleLabel: {
+                                display: true
+                            },
+                        }]
+                    }
+                }
+            });
         },
 
         onSelectPerson: function (item, element) {

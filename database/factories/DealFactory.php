@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Database\Factories;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -19,5 +20,6 @@ $factory->define(Deal::class, function (Faker $faker) {
         'currency' => 'USD',
         'user_owner_id' => 1,
         'user_assigned_id' => 1,
+        'created_at' => Carbon::now()->subDays($faker->numberBetween(0,14))
     ];
 });
