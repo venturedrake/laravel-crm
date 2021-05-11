@@ -18,6 +18,6 @@ $factory->define(Lead::class, function (Faker $faker) {
         'currency' => 'USD',
         'lead_status_id' => 1,
         'user_assigned_id' => 1,
-        'created_at' => Carbon::now()->subDays($faker->numberBetween(0,14))
+        'created_at' => Carbon::now()->subDays($faker->numberBetween(0, 14)),
     ];
 });

@@ -20,6 +20,6 @@ $factory->define(Deal::class, function (Faker $faker) {
         'currency' => 'USD',
         'user_owner_id' => 1,
         'user_assigned_id' => 1,
-        'created_at' => Carbon::now()->subDays($faker->numberBetween(0,14))
+        'created_at' => Carbon::now()->subDays($faker->numberBetween(0, 14)),
     ];
 });

@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.3.0 - 2021-05-11
+### Added
+- Dashboard
+- team_id to models
+### Removed
+- User model class
+
 ## 0.2.7 - 2021-04-04
 ### Fixed
 - Conflict with Laravel 8 Jetstream teams route

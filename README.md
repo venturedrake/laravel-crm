@@ -125,6 +125,17 @@ Note if you modified the route_prefix setting from the default the above url wil
 
 ## Upgrade
 
+### Upgrading from 0.2 to 0.3
+
+#### Step 1. Run the following to the update migrations and publish assets:
+
+```bash
+composer require venturedrake/laravel-crm::^0.3
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets --force"
+php artisan migrate
+```
+
 ### Upgrading from 0.1 to 0.2
 
 #### Step 1. Run the following to the update package, database and add the default roles/permissions:
