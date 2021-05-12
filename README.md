@@ -132,7 +132,7 @@ Note if you modified the route_prefix setting from the default the above url wil
 ```bash
 composer require venturedrake/laravel-crm::^0.3
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets --force"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
 php artisan migrate
 ```
 
