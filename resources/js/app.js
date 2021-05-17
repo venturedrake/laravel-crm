@@ -125,7 +125,7 @@ const appJquery = function() {
             });
 
            
-            var chart = $('#createdLast14Days').getContext('2d');
+            var chart = $('#createdLast14Days');
             var chartData = chart.data('chart');
             var chartDays = [];
             var chartLeads = [];
