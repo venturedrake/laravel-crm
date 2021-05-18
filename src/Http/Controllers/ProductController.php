@@ -4,10 +4,23 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use VentureDrake\LaravelCrm\Http\Requests\StoreProductRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateProductRequest;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Services\ProductService;
 
 class ProductController extends Controller
 {
+    /**
+     * @var ProductService
+     */
+    private $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -15,8 +28,14 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        if (Product::all()->count() < 30) {
+            $products = Product::latest()->get();
+        } else {
+            $products = Product::latest()->paginate(30);
+        }
+        
         return view('laravel-crm::products.index', [
-            'products' => [],
+            'products' => $products,
         ]);
     }
 
@@ -36,8 +55,10 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
+        $product = $this->productService->create($request);
+        
         flash('Product stored')->success()->important();
 
         return redirect(route('laravel-crm.products.index'));
@@ -76,8 +97,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
+        $product = $this->productService->update($product, $request);
+        
         flash('Product updated')->success()->important();
 
         return redirect(route('laravel-crm.products.show', $product));
