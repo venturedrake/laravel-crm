@@ -15,4 +15,9 @@ class ProductCategory extends Model
     {
         return config('laravel-crm.db_table_prefix').'product_categories';
     }
+
+    public function products()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Product::class);
+    }
 }
