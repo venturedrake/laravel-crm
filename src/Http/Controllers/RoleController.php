@@ -106,6 +106,7 @@ class RoleController extends Controller
 
             app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
             $role->update([
+                'name' => $request->name,
                 'description' => $request->description,
             ]);
             $role->syncPermissions($permissionsArray);
