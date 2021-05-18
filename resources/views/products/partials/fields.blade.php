@@ -45,6 +45,12 @@
                     'append' => '<span class="fa fa-percent" aria-hidden="true"></span>',
                     'value' => old('tax_rate', $product->tax_rate ?? null)
                 ])
+        @include('laravel-crm::partials.form.textarea',[
+             'name' => 'description',
+             'label' => 'Description',
+             'rows' => 5,
+             'value' => old('description', $product->description ?? null) 
+        ])
         @include('laravel-crm::partials.form.select',[
                  'name' => 'user_owner_id',
                  'label' => 'Owner',

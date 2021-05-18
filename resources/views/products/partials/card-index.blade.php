@@ -20,10 +20,10 @@
                 <th scope="col">Name</th>
                 <th scope="col">Code</th>
                 <th scope="col">Category</th>
-                <th scope="col">Price</th>
-                <th scope="col">Tax</th>
-                <th scope="col">Total</th>
-                <th scope="col">Status</th>
+                <th scope="col">Unit</th>
+                <th scope="col">Price (USD)</th>
+                <th scope="col">Tax %</th>
+                <th scope="col">Active</th>
                 <th scope="col">Owner</th>
                 <th scope="col"></th>
             </tr>
@@ -32,13 +32,13 @@
             @foreach($products as $product)
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.products.show',$product)) }}">
                     <td>{{ $product->name }}</td>
+                    <td>{{ $product->code }}</td>
                     <td></td>
+                    <td>{{ $product->unit }}</td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $product->tax_rate }}</td>
+                    <td>{{ ($product->active == 1) ? 'YES' : 'NO' }}</td>
+                    <td>{{ $product->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         <a href="{{  route('laravel-crm.products.show',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         <a href="{{  route('laravel-crm.products.edit',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>

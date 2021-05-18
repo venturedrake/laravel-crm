@@ -27,6 +27,10 @@ class ProductService
         $product = Product::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
+            'code' => $request->code ?? null,
+            'unit' => $request->unit ?? null,
+            'tax_rate' => $request->tax_rate ?? null,
+            'description' => $request->description ?? null,
             'user_owner_id' => $request->user_owner_id,
         ]);
         
@@ -37,6 +41,10 @@ class ProductService
     {
         $product->update([
             'name' => $request->name,
+            'code' => $request->code ?? null,
+            'unit' => $request->unit ?? null,
+            'tax_rate' => $request->tax_rate ?? null,
+            'description' => $request->description ?? null,
             'user_owner_id' => $request->user_owner_id,
         ]);
         

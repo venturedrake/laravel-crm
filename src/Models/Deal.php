@@ -60,6 +60,11 @@ class Deal extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
     }
 
+    public function dealProducts()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\DealProduct::class);
+    }
+
     /**
      * Get all of the lead's custom field values.
      */
