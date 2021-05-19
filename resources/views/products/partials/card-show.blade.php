@@ -49,11 +49,33 @@
             </div>
             <div class="col-sm-6">
                 <h6 class="text-uppercase">Prices</h6>
-                <hr />
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Unit price</th>
+                       {{-- <th scope="col">Cost per unit</th>
+                        <th scope="col">Direct cost</th>--}}
+                        <th scope="col">Currency</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($product->productPrices as $productPrice)
+                        <tr>
+                            <th scope="row">{{ money($productPrice->unit_price ?? null, $productPrice->currency) }}</th>
+                           {{-- <td>{{ money($productPrice->cost_per_unit ?? null, $productPrice->cost_per_unit) }}</td>
+                            <td>{{ money($productPrice->direct_cost ?? null, $productPrice->direct_cost) }}</td>--}}
+                            <td>{{ $productPrice->currency }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+               
                 <h6 class="text-uppercase mt-4">Variations</h6>
                 <hr />
+                ...
                 <h6 class="text-uppercase mt-4">Deals</h6>
                 <hr />
+                ...
             </div>
         </div>
         

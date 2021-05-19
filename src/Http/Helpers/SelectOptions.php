@@ -88,7 +88,7 @@ function currencies()
 {
     $countries = new Countries();
     $items = [];
-    foreach ($countries->currencies()->toArray() as $currencyCode => $currency) {
+    foreach ($countries->currencies()->sortBy('name')->toArray() as $currencyCode => $currency) {
         $items[$currencyCode] = $currency['name'].(' ('.$currencyCode.')');
     }
 

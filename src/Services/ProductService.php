@@ -28,10 +28,17 @@ class ProductService
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
             'code' => $request->code ?? null,
+            'product_category_id' => $request->product_category,
             'unit' => $request->unit ?? null,
             'tax_rate' => $request->tax_rate ?? null,
             'description' => $request->description ?? null,
             'user_owner_id' => $request->user_owner_id,
+        ]);
+
+        $product->productPrices()->create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'unit_price' => $request->unit_price,
+            'currency' => $request->currency,
         ]);
         
         return $product;
@@ -42,11 +49,26 @@ class ProductService
         $product->update([
             'name' => $request->name,
             'code' => $request->code ?? null,
+            'product_category_id' => $request->product_category,
             'unit' => $request->unit ?? null,
             'tax_rate' => $request->tax_rate ?? null,
             'description' => $request->description ?? null,
             'user_owner_id' => $request->user_owner_id,
         ]);
+
+        $productPrice = $product->getDefaultPrice();
+
+        if ($productPrice) {
+            $productPrice->update([
+                'unit_price' => $request->unit_price,
+            ]);
+        } else {
+            $product->productPrices()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'unit_price' => $request->unit_price,
+                'currency' => $request->currency,
+            ]);
+        }
         
         return $product;
     }

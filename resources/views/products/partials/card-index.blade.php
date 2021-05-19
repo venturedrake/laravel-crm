@@ -21,7 +21,7 @@
                 <th scope="col">Code</th>
                 <th scope="col">Category</th>
                 <th scope="col">Unit</th>
-                <th scope="col">Price (USD)</th>
+                <th scope="col">Price ({{ \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD' }})</th>
                 <th scope="col">Tax %</th>
                 <th scope="col">Active</th>
                 <th scope="col">Owner</th>
@@ -33,9 +33,9 @@
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.products.show',$product)) }}">
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->code }}</td>
-                    <td></td>
+                    <td>{{ $product->productCategory->name ?? null }}</td>
                     <td>{{ $product->unit }}</td>
-                    <td></td>
+                    <td>{{ (isset($product->getDefaultPrice()->unit_price)) ? money($product->getDefaultPrice()->unit_price ?? null, $product->getDefaultPrice()->currency) : null }}</td>
                     <td>{{ $product->tax_rate }}</td>
                     <td>{{ ($product->active == 1) ? 'YES' : 'NO' }}</td>
                     <td>{{ $product->ownerUser->name ?? null }}</td>

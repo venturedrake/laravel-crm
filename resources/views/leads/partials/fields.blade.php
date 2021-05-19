@@ -62,7 +62,7 @@
                     'name' => 'currency',
                     'label' => 'Currency',
                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-                    'value' => old('currency', $lead->currency ?? 'USD')
+                    'value' => old('currency', $lead->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
                 ])
             </div>
         </div>

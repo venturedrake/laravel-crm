@@ -20,7 +20,7 @@ class CreateLaravelCrmProductsTable extends Migration
             $table->string('name');
             $table->string('code')->nullable();
             $table->string('unit')->nullable();
-            $table->decimal('tax_rate')->default(0);
+            $table->decimal('tax_rate')->nullable();
             $table->unsignedBigInteger('product_category_id')->index()->nullable();
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
