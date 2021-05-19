@@ -18,7 +18,7 @@ class CreateLaravelCrmDealProductsTable extends Migration
             $table->string('external_id');
             $table->unsignedBigInteger('team_id')->index()->nullable();
             $table->unsignedBigInteger('deal_id')->index();
-            $table->unsignedBigInteger('product_id')->index();
+            $table->unsignedBigInteger('product_id')->index()->nullable();
             $table->unsignedBigInteger('product_variation_id')->index()->nullable();
             $table->integer('price')->nullable();
             $table->integer('quantity')->nullable();
