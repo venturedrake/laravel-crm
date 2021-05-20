@@ -99,3 +99,7 @@ dt {
 {
   background-color: #f8fafc;
 }
+
+#dealProducts .row:not(:first-child) label{
+  display: none;
+}

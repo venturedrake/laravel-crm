@@ -149,6 +149,31 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
     Route::get('{deal}/reopen', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@reopen')
         ->name('laravel-crm.deals.reopen')
         ->middleware(['can:update,deal']);
+
+    /* Deal Products */
+
+    Route::group(['prefix' => '{deal}/products', 'middleware' => 'auth.laravel-crm'], function () {
+        Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@index')
+            ->name('laravel-crm.deal-products.index');
+
+        Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@create')
+            ->name('laravel-crm.deal-products.create');
+
+        Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@store')
+            ->name('laravel-crm.deal-products.store');
+
+        Route::get('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@show')
+            ->name('laravel-crm.deal-products.show');
+
+        Route::get('{product}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@edit')
+            ->name('laravel-crm.deal-products.edit');
+
+        Route::put('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@update')
+            ->name('laravel-crm.deal-products.update');
+
+        Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@destroy')
+            ->name('laravel-crm.deal-products.destroy');
+    });
 });
 
 /* Activities */
@@ -387,6 +412,10 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], funct
 
     Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@search')
         ->name('laravel-crm.products.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Product']);
+
+    Route::get('{product}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@autocomplete')
+        ->name('laravel-crm.products.autocomplete')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Product']);
 });
 

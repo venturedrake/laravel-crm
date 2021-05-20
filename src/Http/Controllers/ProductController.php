@@ -49,6 +49,11 @@ class ProductController extends Controller
         return view('laravel-crm::products.create');
     }
 
+    public function createProductPrice()
+    {
+        return view('laravel-crm::products.create');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -135,6 +140,15 @@ class ProductController extends Controller
 
         return view('laravel-crm::products.index', [
             'products' => $products,
+        ]);
+    }
+
+    public function autocomplete(Product $product)
+    {
+        $productPrice = $product->getDefaultPrice();
+            
+        return response()->json([
+            'price' => $productPrice->unit_price ?? null,
         ]);
     }
 }

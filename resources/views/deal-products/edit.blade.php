@@ -1,0 +1,1 @@
+@include('laravel-crm::deal-products.partials.fields')

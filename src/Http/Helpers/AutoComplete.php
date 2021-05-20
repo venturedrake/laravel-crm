@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Helpers\AutoComplete;
 
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Product;
 
 function people()
 {
@@ -22,6 +23,17 @@ function organisations()
 
     foreach (Organisation::all() as $organisation) {
         $data[$organisation->name] = $organisation->id;
+    }
+
+    return json_encode($data);
+}
+
+function products()
+{
+    $data = [];
+
+    foreach (Product::all() as $product) {
+        $data[$product->name] = $product->id;
     }
 
     return json_encode($data);

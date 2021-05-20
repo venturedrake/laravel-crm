@@ -117,6 +117,17 @@ const appJquery = function() {
                 }
             }
 
+            $(document).delegate('.autocomplete-product-name .autocomplete-control input', "focus", function() {
+
+                $(this).autocomplete({
+                    source: products,
+                    onSelectItem: appJquery.onSelectProduct,
+                    highlightClass: 'text-danger',
+                    treshold: 2,
+                });
+                
+            })
+
             $( "form[name='formSearch'] div.dropdown-menu > a").on({
                 click: function() {
                     $(this).closest('form').attr('action', $(this).data('action'))
@@ -124,60 +135,68 @@ const appJquery = function() {
                 },
             });
 
-           
-            var chart = $('#createdLast14Days');
-            var chartData = chart.data('chart');
-            var chartDays = [];
-            var chartLeads = [];
-            var chartDeals = [];
-            Object.values(chartData).forEach(function (item, index) {
-                console.log(item, index);
-                chartDays.push(item.daily.date);
-                chartLeads.push(item.daily.leads);
-                chartDeals.push(item.daily.deals);
+            $(document).on('click','.btn-action-add-deal-product', function(e) {
+                $.get($(this).attr('href'), function(data){
+                    $('#dealProducts').append(data);
+                });
+                e.preventDefault();
             });
             
-            var myChart = new Chart(chart, {
-                type: 'bar',
-                data: {
-                    labels: chartDays,
-                    datasets: [{
-                        label: 'Leads',
-                        data: chartLeads,
-                        borderWidth: 1,
-                        backgroundColor: '#6c757d',
-                        borderColor: "#373c40",
+            if($('#createdLast14Days').length > 0){
+                var chart = $('#createdLast14Days');
+                var chartData = chart.data('chart');
+                var chartDays = [];
+                var chartLeads = [];
+                var chartDeals = [];
+                Object.values(chartData).forEach(function (item, index) {
+                    console.log(item, index);
+                    chartDays.push(item.daily.date);
+                    chartLeads.push(item.daily.leads);
+                    chartDeals.push(item.daily.deals);
+                });
+
+                var myChart = new Chart(chart, {
+                    type: 'bar',
+                    data: {
+                        labels: chartDays,
+                        datasets: [{
+                            label: 'Leads',
+                            data: chartLeads,
+                            borderWidth: 1,
+                            backgroundColor: '#6c757d',
+                            borderColor: "#373c40",
+                        },
+                            {
+                                label: 'Deals',
+                                data: chartDeals,
+                                borderWidth: 1,
+                                backgroundColor: '#28a745',
+                                borderColor: "#176529",
+                            }]
                     },
-                    {
-                        label: 'Deals',
-                        data: chartDeals,
-                        borderWidth: 1,
-                        backgroundColor: '#28a745',
-                        borderColor: "#176529",
-                    }]
-                },
-                options: {
-                    responsive: false,
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        xAxes: [{
-                            gridLines: {
-                                display: false
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                stepSize: 1
-                            },
-                            gridLines: {
-                                display: false
-                            }
-                        }]
+                    options: {
+                        responsive: false,
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: false
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    stepSize: 1
+                                },
+                                gridLines: {
+                                    display: false
+                                }
+                            }]
+                        }
                     }
-                }
-            });
+                });
+            }
         },
 
         onSelectPerson: function (item, element) {
@@ -215,7 +234,19 @@ const appJquery = function() {
                 
             });
 
-        }
+        },
+
+        onSelectProduct: function (item, element) {
+            $(element).closest('.autocomplete').find('input[type="hidden"]').val(item.value).trigger('change');
+            var index = $(element).closest('.autocomplete').data('index');
+
+            $.ajax({
+                url: "/crm/products/" +  item.value + "/autocomplete",
+                cache: false
+            }).done(function( data ) {
+              $(element).closest('.autocomplete').find('input[name="item_price[' + index + ']"]').val(data.price);
+            });
+        },
         
     }
 }();
