@@ -106,6 +106,9 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
 /* Deals */
 
 Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('create-product', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@createProduct')
+        ->name('laravel-crm.deal-products.create-product');
+    
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@index')
         ->name('laravel-crm.deals.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
@@ -240,7 +243,6 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@store')
         ->name('laravel-crm.people.store')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Person']);
-    
 
     Route::get('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@show')
         ->name('laravel-crm.people.show')

@@ -221,7 +221,7 @@
                 </div>
             </div>
         </span>
-        <h6 class="text-uppercase mt-4 section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> Products <span class="float-right"><a href="{{ url(route('laravel-crm.deal-products.create', $deal)) }}" class="btn btn-outline-secondary btn-sm btn-action-add-deal-product"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
+        <h6 class="text-uppercase mt-4 section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> Products <span class="float-right"><a href="{{ (isset($deal)) ? url(route('laravel-crm.deal-products.create', $deal)) : url(route('laravel-crm.deal-products.create-product')) }}" class="btn btn-outline-secondary btn-sm btn-action-add-deal-product"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
         <hr />
         <script type="text/javascript">
             let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}

@@ -40,6 +40,18 @@ class DealService
         ]);
 
         $deal->labels()->sync($request->labels ?? []);
+
+        if (isset($request->item_deal_product_id)) {
+            foreach ($request->item_deal_product_id as $dealProductKey => $dealProductValue) {
+                $deal->dealProducts()->create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'product_id' => $request->item_product_id[$dealProductKey],
+                    'price' => $request->item_price[$dealProductKey],
+                    'quantity' => $request->item_quantity[$dealProductKey],
+                    'amount' => $request->item_amount[$dealProductKey],
+                ]);
+            }
+        }
         
         return $deal;
     }

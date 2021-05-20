@@ -37,6 +37,13 @@ class DealProductController extends Controller
         ]);
     }
 
+    public function createProduct()
+    {
+        return view('laravel-crm::deal-products.create-product', [
+            'index' => rand(),
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
