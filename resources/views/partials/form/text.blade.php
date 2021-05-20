@@ -9,7 +9,7 @@
                 </div>
             @endisset
         @endif   
-        <input id="input_{{ $name }}" type="text" name="{{ $name }}" value="{{ $value ?? null }}" class="form-control @error($name) is-invalid @enderror" @include('laravel-crm::partials.form.attributes') >
+        <input id="input_{{ $name }}" type="{{ $type ?? 'text' }}" name="{{ $name }}" value="{{ $value ?? null }}" class="form-control @error($name) is-invalid @enderror" @include('laravel-crm::partials.form.attributes') >
         @if(isset($prepend) || isset($append))
             @isset($append)
                 <div class="input-group-append">

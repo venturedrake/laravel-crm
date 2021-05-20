@@ -468,3 +468,25 @@ Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function
         ->name('laravel-crm.roles.destroy')
         ->middleware(['can:delete,role']);
 });
+
+/* CRM routes (AJAX) */
+Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {
+        Route::get('{person}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@autocomplete')
+            ->name('laravel-crm.people.autocomplete')
+            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
+    });
+
+
+    Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], function () {
+        Route::get('{organisation}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@autocomplete')
+            ->name('laravel-crm.organisations.autocomplete')
+            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
+    });
+
+    Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], function () {
+        Route::get('{product}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@autocomplete')
+            ->name('laravel-crm.products.autocomplete')
+            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Product']);
+    });
+});

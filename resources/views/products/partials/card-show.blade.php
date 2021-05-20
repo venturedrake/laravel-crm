@@ -61,7 +61,7 @@
                     <tbody>
                     @foreach($product->productPrices as $productPrice)
                         <tr>
-                            <th scope="row">{{ money($productPrice->unit_price ?? null, $productPrice->currency) }}</th>
+                            <th>{{ money($productPrice->unit_price ?? null, $productPrice->currency) }}</th>
                            {{-- <td>{{ money($productPrice->cost_per_unit ?? null, $productPrice->cost_per_unit) }}</td>
                             <td>{{ money($productPrice->direct_cost ?? null, $productPrice->direct_cost) }}</td>--}}
                             <td>{{ $productPrice->currency }}</td>

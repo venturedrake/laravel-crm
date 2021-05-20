@@ -53,9 +53,27 @@
                 <p><span class="fa fa-building" aria-hidden="true"></span> {{ $deal->organisation->name ?? null }}</p>
                 <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
 
-                <h6 class="text-uppercase mt-4 section-h6-title"><span>Products ({{ $deal->dealProducts->count() }})</span><span class="float-right"><a href="#" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
-                <hr />
-                ...
+                <h6 class="text-uppercase mt-4 section-h6-title-table"><span>Products ({{ $deal->dealProducts->count() }})</span></h6>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Price</th>
+                         <th scope="col">Quantity</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($deal->dealProducts()->whereNotNull('product_id')->get() as $dealProduct)
+                        <tr>
+                            <td>{{ $dealProduct->product->name }}</td>
+                            <td>{{ money($dealProduct->price ?? null, $dealProduct->currency) }}</td>
+                            <td>{{ $dealProduct->quantity }}</td>
+                            <th>{{ money($dealProduct->amount ?? null, $dealProduct->currency) }}</th>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
             <div class="col-sm-6">
                 <h6 class="text-uppercase">Notes</h6>

@@ -117,7 +117,14 @@ const appJquery = function() {
                 }
             }
 
-            $(document).delegate('.autocomplete-product-name .autocomplete-control input', "focus", function() {
+            $(document).on('click','.btn-action-add-deal-product', function(e) {
+                $.get($(this).attr('href'), function(data){
+                    $('#dealProducts').append(data);
+                });
+                e.preventDefault();
+            });
+
+            $(document).delegate("input[name^='item_name']", "focus", function() {
 
                 $(this).autocomplete({
                     source: products,
@@ -128,18 +135,21 @@ const appJquery = function() {
                 
             })
 
+            $(document).on("change", "input[name^='item_price']", function() {
+                var sum = $(this).closest('.row').find("input[name^='item_quantity']").val() * $(this).val();
+                $(this).closest('.row').find("input[name^='item_amount']").val(sum);
+            });
+
+            $(document).on("change", "input[name^='item_quantity']", function() {
+                var sum = $(this).closest('.row').find("input[name^='item_price']").val() * $(this).val();
+                $(this).closest('.row').find("input[name^='item_amount']").val(sum);
+            });
+
             $( "form[name='formSearch'] div.dropdown-menu > a").on({
                 click: function() {
                     $(this).closest('form').attr('action', $(this).data('action'))
                     $(this).closest('form').find('.action-current').html($(this).text());
                 },
-            });
-
-            $(document).on('click','.btn-action-add-deal-product', function(e) {
-                $.get($(this).attr('href'), function(data){
-                    $('#dealProducts').append(data);
-                });
-                e.preventDefault();
             });
             
             if($('#createdLast14Days').length > 0){
@@ -237,14 +247,15 @@ const appJquery = function() {
         },
 
         onSelectProduct: function (item, element) {
-            $(element).closest('.autocomplete').find('input[type="hidden"]').val(item.value).trigger('change');
-            var index = $(element).closest('.autocomplete').data('index');
-
+            $(element).closest('.autocomplete').find("input[name^='item_product_id']").val(item.value).trigger('change');
+            var dealProduct = $(element).closest('.deal-product-row');
+            
             $.ajax({
                 url: "/crm/products/" +  item.value + "/autocomplete",
                 cache: false
             }).done(function( data ) {
-              $(element).closest('.autocomplete').find('input[name="item_price[' + index + ']"]').val(data.price);
+                $(dealProduct).find("input[name^='item_price']").val(data.price);
+                $(dealProduct).find("input[name^='item_amount']").val(data.price * $(dealProduct).find("input[name^='item_quantity']").val())
             });
         },
         
