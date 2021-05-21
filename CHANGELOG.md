@@ -6,12 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Products
 - Notes
 - Tasks
 - Files / Documents
 - Calendar (Calls, Meetings, Reminders)
-- Dashboard
 - Custom Fields
 - Activity Feed / Timelines
 - CSV Import / Export
