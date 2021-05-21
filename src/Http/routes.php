@@ -421,6 +421,38 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], funct
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Product']);
 });
 
+/* Product Categories */
+
+Route::group(['prefix' => 'product-categories', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@index')
+        ->name('laravel-crm.product-categories.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\ProductCategory']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@create')
+        ->name('laravel-crm.product-categories.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\ProductCategory']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@store')
+        ->name('laravel-crm.product-categories.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\ProductCategory']);
+
+    Route::get('{productCategory}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@show')
+        ->name('laravel-crm.product-categories.show')
+        ->middleware(['can:view,productCategory']);
+
+    Route::get('{productCategory}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@edit')
+        ->name('laravel-crm.product-categories.edit')
+        ->middleware(['can:update,productCategory']);
+
+    Route::put('{productCategory}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@update')
+        ->name('laravel-crm.product-categories.update')
+        ->middleware(['can:update,productCategory']);
+
+    Route::delete('{productCategory}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@destroy')
+        ->name('laravel-crm.product-categories.destroy')
+        ->middleware(['can:delete,productCategory']);
+});
+
 /* Settings */
 
 Route::group(['prefix' => 'settings', 'middleware' => 'auth.laravel-crm'], function () {
