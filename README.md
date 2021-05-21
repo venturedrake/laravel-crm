@@ -6,9 +6,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1946e83f51de4a0eb430a8e0a1aab3cf)](https://app.codacy.com/gh/venturedrake/laravel-crm?utm_source=github.com&utm_medium=referral&utm_content=venturedrake/laravel-crm&utm_campaign=Badge_Grade_Settings)
 [![Total Downloads](https://img.shields.io/packagist/dt/venturedrake/laravel-crm.svg?style=flat-square)](https://packagist.org/packages/venturedrake/laravel-crm)
 
-This package will add CRM functionality to your laravel projects.
+This package will add CRM functionality to your laravel projects
 
-> ⚠️ Warning: This is a pre-release version that is not yet ready for production use.
+> ⚠️ Warning: This is a pre-release version that is not recommended for production use.
 
 ## Use Cases
 
@@ -43,7 +43,7 @@ https://spatie.be/docs/laravel-permission/v4/installation-laravel
 #### Step 4. Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.3
+composer require venturedrake/laravel-crm:^0.4
 ```
 
 #### Step 5. Publish the migrations, config & assets
@@ -51,7 +51,7 @@ composer require venturedrake/laravel-crm:^0.3
 ```bash
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
 ```
 
 #### Step 6. Update the various config settings in the published config file:
@@ -125,7 +125,24 @@ Note if you modified the route_prefix setting from the default the above url wil
 
 ## Upgrade
 
-### Upgrading from 0.2 to 0.3
+### Upgrading from 0.3 to 0.4
+
+#### Step 1. Run the following to the update migrations and publish assets:
+
+```bash
+composer require venturedrake/laravel-crm::^0.4
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
+php artisan migrate
+```
+
+#### Step 2. Run the database seeder
+
+```bash
+php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
+```
+
+### Upgrading from 0.1 to 0.3
 
 #### Step 1. Run the following to the update migrations and publish assets:
 
