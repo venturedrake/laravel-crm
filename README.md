@@ -19,9 +19,11 @@ This package will add CRM functionality to your laravel projects
 
 ## Features
 
+ - Dashboard
  - Sales leads management
  - Deal management
  - Contact database management
+ - Products 
  - Users & Teams
  - Secure registration & login
  - Reset forgotten password
