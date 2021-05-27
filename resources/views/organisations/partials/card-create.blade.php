@@ -5,11 +5,11 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                Create organisation
+                {{ ucfirst(__('laravel-crm::lang.create_organization')) }}
             @endslot
 
             @slot('actions')
-                <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.organisations.index')) }}"><span class="fa fa-angle-double-left"></span> Back to organisations</a></span>
+                <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.organisations.index')) }}"><span class="fa fa-angle-double-left"></span>  {{ ucfirst(__('laravel-crm::lang.back_to_organizations')) }}</a></span>
             @endslot
 
         @endcomponent

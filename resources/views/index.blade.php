@@ -40,11 +40,11 @@
             <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title float-left m-0">Organisations</h4>
+                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.organizations')) }}</h4>
                     </div>
                     <div class="card-body">
                         <h2>{{ $totalOrganisationsCount ?? 0 }}</h2>
-                        <small>Total organisations</small>
+                        <small>{{ ucfirst(__('laravel-crm::lang.total_organizations')) }}</small>
                     </div>
                 </div>
             </div>
