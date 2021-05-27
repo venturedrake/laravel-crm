@@ -1,4 +1,5 @@
 <ruleset>
+    <file>./resources/lang</file>
     <file>./src</file>
     <file>./tests</file>
     <arg name="extensions" value="php" />
