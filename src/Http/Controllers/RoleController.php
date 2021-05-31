@@ -57,7 +57,7 @@ class RoleController extends Controller
 
         $role->syncPermissions($permissionsArray);
         
-        flash('Role stored')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.role_stored')))->success()->important();
 
         return redirect(route('laravel-crm.roles.index'));
     }
@@ -110,10 +110,9 @@ class RoleController extends Controller
                 'description' => $request->description,
             ]);
             $role->syncPermissions($permissionsArray);
-
-            flash('Role updated')->success()->important();
+            flash(ucfirst(trans('laravel-crm::lang.role_updated')))->success()->important();
         } else {
-            flash("Role can't be updated")->error()->important();
+            flash(ucfirst(trans('laravel-crm::lang.role_cant_be_updated')))->error()->important();
         }
         
         return redirect(route('laravel-crm.roles.show', $role));
@@ -134,9 +133,9 @@ class RoleController extends Controller
 
             $role->delete();
             
-            flash('Role deleted')->success()->important();
+            flash(ucfirst(trans('laravel-crm::lang.role_deleted')))->success()->important();
         } else {
-            flash("Role can't be deleted")->error()->important();
+            flash(ucfirst(trans('laravel-crm::lang.role_cant_be_deleted')))->error()->important();
         }
 
         return redirect(route('laravel-crm.roles.index'));

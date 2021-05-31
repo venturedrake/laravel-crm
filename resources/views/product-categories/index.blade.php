@@ -9,15 +9,15 @@
         <div class="card-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="roles" role="tabpanel">
-                    <h3 class="mb-3"> Product categories  <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.product-categories.create')) }}"><span class="fa fa-plus"></span>  Add product category</a></span></h3>
+                    <h3 class="mb-3"> {{ ucfirst(__('laravel-crm::lang.product_categories')) }}  <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.product-categories.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_product_category')) }}</a></span></h3>
                     <div class="table-responsive">
                         <table class="table mb-0 card-table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Created</th>
-                                <th scope="col">Updated</th>
-                                <th scope="col">Products</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.products')) }}</th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -34,7 +34,7 @@
                                         <form action="{{ route('laravel-crm.product-categories.destroy',$productCategory) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                             {{ method_field('DELETE') }}
                                             {{ csrf_field() }}
-                                            <button class="btn btn-danger btn-sm" type="submit" data-model="productCategory"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product_category') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                                         </form>
                                     </td>
                                 </tr>

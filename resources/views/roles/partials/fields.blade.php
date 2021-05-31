@@ -2,12 +2,12 @@
     <div class="col-sm-6 border-right">
         @include('laravel-crm::partials.form.text',[
          'name' => 'name',
-         'label' => 'Name',
+         'label' => ucfirst(__('laravel-crm::lang.name')),
          'value' => old('name', $role->name ?? null)
        ])
         @include('laravel-crm::partials.form.text',[
          'name' => 'description',
-         'label' => 'Description',
+         'label' => ucfirst(__('laravel-crm::lang.description')),
          'value' => old('description', $role->description ?? null)
        ])
     </div>
@@ -15,9 +15,9 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">Permission</th>
-                <th scope="col">Description</th>
-                <th scope="col" class="text-right">Has Permission</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.permission')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.description')) }}</th>
+                <th scope="col" class="text-right">{{ ucwords(__('laravel-crm::lang.has_permission')) }}</th>
             </tr>
             </thead>
             <tbody>

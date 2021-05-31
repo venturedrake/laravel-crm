@@ -51,7 +51,7 @@ class SettingController extends Controller
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
 
-        flash('Settings updated')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.settings_updated')))->success()->important();
 
         return back();
     }

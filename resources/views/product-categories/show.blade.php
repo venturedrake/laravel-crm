@@ -8,34 +8,34 @@
         </div>
         <div class="card-body">
             <h3 class="mb-3"> {{ $productCategory->name }} <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.product-categories.index')) }}"><span class="fa fa-angle-double-left"></span> Back to product categories</a> | 
-                <a href="{{ url(route('laravel-crm.product-categories.edit', $productCategory)) }}" type="button" class="btn btn-outline-secondary btn-sm">Edit</a>
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.product-categories.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_product_categories')) }}</a> | 
+                <a href="{{ url(route('laravel-crm.product-categories.edit', $productCategory)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 <form action="{{ route('laravel-crm.product-categories.destroy',$productCategory) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="productCategory"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product_category') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
             </span></h3>
 
             <div class="row">
                 <div class="col-sm-6 border-right">
-                    <h6 class="text-uppercase">Details</h6>
+                    <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                     <hr />
                     <dl class="row">
-                        <dt class="col-sm-3 text-right">Description</dt>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                         <dd class="col-sm-9">{{ $productCategory->description }}</dd>
                     </dl>
 
                 </div>
                 <div class="col-sm-6">
-                    <h6 class="text-uppercase section-h6-title-table"><span>Products ({{ $productCategory->products->count() }})</span></h6>
+                    <h6 class="text-uppercase section-h6-title-table"><span>{{ ucfirst(__('laravel-crm::lang.products')) }} ({{ $productCategory->products->count() }})</span></h6>
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">Item</th>
-                            <th scope="col" width="120">Price ({{ \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD' }})</th>
-                            <th scope="col" width="80">Tax %</th>
-                            <th scope="col" width="80">Active</th>
+                            <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
+                            <th scope="col" width="120">{{ ucfirst(__('laravel-crm::lang.price')) }} ({{ \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD' }})</th>
+                            <th scope="col" width="80">{{ ucfirst(__('laravel-crm::lang.tax')) }} %</th>
+                            <th scope="col" width="80">{{ ucfirst(__('laravel-crm::lang.active')) }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -53,8 +53,8 @@
             </div>
         </div>
         @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.product-categories.index')) }}" class="btn btn-outline-secondary">Cancel</a>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{{ url(route('laravel-crm.product-categories.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+            <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
         @endcomponent
     </div>
 @endsection

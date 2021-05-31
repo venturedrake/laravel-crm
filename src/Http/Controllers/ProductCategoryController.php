@@ -51,7 +51,7 @@ class ProductCategoryController extends Controller
             'description' => $request->description,
         ]);
 
-        flash('Product category stored')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.product_category_stored')))->success()->important();
 
         return redirect(route('laravel-crm.product-categories.index'));
     }
@@ -96,7 +96,7 @@ class ProductCategoryController extends Controller
             'description' => $request->description,
         ]);
 
-        flash('Product category updated')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.product_category_updated')))->success()->important();
 
         return redirect(route('laravel-crm.product-categories.show', $productCategory));
     }
@@ -111,7 +111,7 @@ class ProductCategoryController extends Controller
     {
         $productCategory->delete();
 
-        flash('Product category deleted')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.product_category_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.product-categories.index'));
     }
