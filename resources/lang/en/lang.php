@@ -78,4 +78,18 @@ return [
     'amount' => 'amount',
     'create_deal' => 'create deal',
     'expected_close_date' => 'expected close date',
+    'add_person' => 'add person',
+    'name' => 'name',
+    'open_deals' => 'open deals',
+    'lost_deals' => 'lost deals',
+    'won_deals' => 'won deals',
+    'next_activity' => 'next activity',
+    'back_to_people' => 'back to people',
+    'add_new_deal' => 'add new deal',
+    'first_name' => 'first name',
+    'middle_name' => 'middle name',
+    'last_name' => 'last name',
+    'address' => 'address',
+    'create_person' => 'create person',
+    'edit_person' => 'edit person'
 ];

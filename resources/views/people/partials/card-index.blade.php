@@ -3,11 +3,11 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            People
+            {{ ucfirst(__('laravel-crm::lang.people')) }}
         @endslot
     
         @slot('actions')
-            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.people.create')) }}"><span class="fa fa-plus"></span>  Add person</a></span>
+            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.people.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_person')) }}</a></span>
         @endslot
 
     @endcomponent
@@ -17,16 +17,16 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Label</th>
-                <th scope="col">Organisation</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Open Deals</th>
-                <th scope="col">Lost Deals</th>
-                <th scope="col">Won Deals</th>
-                <th scope="col">Next Activity</th>
-                <th scope="col">Owner</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.labels')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.organization')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.email')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.phone')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.open_deals')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.lost_deals')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.won_deals')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.next_activity')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="150"></th>
             </tr>
             </thead>
@@ -52,7 +52,7 @@
                         <form action="{{ route('laravel-crm.people.destroy',$person) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model="person"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ ucfirst(__('laravel-crm::lang.person')) }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
                     </td>
                 </tr>

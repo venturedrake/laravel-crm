@@ -4,21 +4,21 @@
             <div class="col-2">
                 @include('laravel-crm::partials.form.text',[
                      'name' => 'title',
-                     'label' => 'Title',
+                     'label' => ucfirst(__('laravel-crm::lang.title')),
                      'value' => old('title', $person->title ?? null)
                  ])
             </div>
             <div class="col">
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'first_name',
-                      'label' => 'First Name',
+                      'label' => ucfirst(__('laravel-crm::lang.first_name')),
                       'value' => old('first_name', $person->first_name ?? null)
                   ])
             </div>
             <div class="col">
                 @include('laravel-crm::partials.form.text',[
                    'name' => 'last_name',
-                   'label' => 'Last Name',
+                   'label' => ucfirst(__('laravel-crm::lang.last_name')),
                    'value' => old('last_name', $person->last_name ?? null)
                ])
             </div>
@@ -27,14 +27,14 @@
             <div class="col">
                 @include('laravel-crm::partials.form.text',[
                     'name' => 'middle_name',
-                    'label' => 'Middle Name',
+                    'label' => ucfirst(__('laravel-crm::lang.middle_name')),
                     'value' => old('middle_name', $person->middle_name ?? null)
                 ])
             </div>
             <div class="col">
                 @include('laravel-crm::partials.form.select',[
                    'name' => 'gender',
-                   'label' => 'Gender',
+                   'label' => ucfirst(__('laravel-crm::lang.gender')),
                    'options' => [
                        '',
                        'male' => 'Male',
@@ -46,7 +46,7 @@
             <div class="col">
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'birthday',
-                      'label' => 'Birthday',
+                      'label' => ucfirst(__('laravel-crm::lang.birthday')),
                       'value' => old('birthday', $person->birthday ?? null),
                       'attributes' => [
                           'autocomplete' => \Illuminate\Support\Str::random()
@@ -57,7 +57,7 @@
         
         @include('laravel-crm::partials.form.textarea',[
            'name' => 'description',
-           'label' => 'Description',
+           'label' => ucfirst(__('laravel-crm::lang.description')),
            'rows' => 5,
            'value' => old('description', $person->description ?? null) 
         ])
@@ -71,7 +71,7 @@
             </script>
             @include('laravel-crm::partials.form.text',[
                'name' => 'organisation_name',
-               'label' => 'Organisation',
+               'label' => ucfirst(__('laravel-crm::lang.organization')),
                'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
                'value' => old('organisation_name',$person->organisation->name ?? $organisation->name ?? null),
                'attributes' => [
@@ -81,13 +81,13 @@
         </span>
         @include('laravel-crm::partials.form.multiselect',[
             'name' => 'labels',
-            'label' => 'Labels',
+            'label' => ucfirst(__('laravel-crm::lang.labels')),
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all()),      
             'value' =>  old('labels', (isset($person)) ? $person->labels->pluck('id')->toArray() : null)
         ])
         @include('laravel-crm::partials.form.select',[
          'name' => 'user_owner_id',
-         'label' => 'Owner',
+         'label' => ucfirst(__('laravel-crm::lang.owner')),
          'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
          'value' =>  old('user_owner_id', $person->user_owner_id ?? auth()->user()->id),
        ])
@@ -97,14 +97,14 @@
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                  'name' => 'phone',
-                 'label' => 'Phone',
+                 'label' => ucfirst(__('laravel-crm::lang.phone')),
                  'value' => old('phone', $phone->number ?? null)
               ])
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.select',[
                  'name' => 'phone_type',
-                 'label' => 'Type',
+                 'label' => ucfirst(__('laravel-crm::lang.type')),
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
                  'value' => old('phone_type', $phone->type ??  'mobile')
               ])
@@ -114,14 +114,14 @@
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                  'name' => 'email',
-                 'label' => 'Email',
+                 'label' => ucfirst(__('laravel-crm::lang.email')),
                  'value' => old('email', $email->address ?? null),
               ])
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.select',[
                  'name' => 'email_type',
-                 'label' => 'Type',
+                 'label' => ucfirst(__('laravel-crm::lang.type')),
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
                  'value' => old('email_type', $email->type ?? 'work')
               ])
@@ -130,36 +130,36 @@
         <hr />
         {{--@include('laravel-crm::partials.form.text',[
             'name' => 'address',
-            'label' => 'Address',
+            'label' => ucfirst(__('laravel-crm::lang.address')),
             'value' => old('address', $address ?? null)
         ])--}}
         @include('laravel-crm::partials.form.text',[
            'name' => 'line1',
-           'label' => 'Address Line 1',
+           'label' => ucfirst(__('laravel-crm::lang.address_line_1')),
            'value' => old('line1', $address->line1 ?? null)
         ])
         @include('laravel-crm::partials.form.text',[
            'name' => 'line2',
-           'label' => 'Address Line 2',
+           'label' => ucfirst(__('laravel-crm::lang.address_line_2')),
            'value' => old('line2', $address->line2 ?? null)
         ])
         @include('laravel-crm::partials.form.text',[
            'name' => 'line3',
-           'label' => 'Address Line 3',
+           'label' => ucfirst(__('laravel-crm::lang.address_line_3')),
            'value' => old('line3', $address->line3 ?? null)
         ])
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                    'name' => 'suburb',
-                   'label' => 'Suburb',
+                   'label' => ucfirst(__('laravel-crm::lang.suburb')),
                    'value' => old('suburb', $address->suburb ?? null)
                 ])
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                    'name' => 'state',
-                   'label' => 'State',
+                   'label' => ucfirst(__('laravel-crm::lang.state')),
                    'value' => old('state', $address->state ?? null)
                 ])
             </div>
@@ -168,14 +168,14 @@
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                    'name' => 'code',
-                   'label' => 'Postcode',
+                   'label' => ucfirst(__('laravel-crm::lang.postcode')),
                    'value' => old('code', $address->code ?? null)
                 ])
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.select',[
                  'name' => 'country',
-                 'label' => 'Country',
+                 'label' => ucfirst(__('laravel-crm::lang.country')),
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries(),
                  'value' => old('country', $address->country ?? 'United States')
               ])
