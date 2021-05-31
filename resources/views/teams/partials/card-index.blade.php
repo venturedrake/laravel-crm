@@ -3,11 +3,11 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            Teams
+            {{ ucfirst(__('laravel-crm::lang.teams')) }}
         @endslot
 
         @slot('actions')
-            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.teams.create')) }}"><span class="fa fa-plus"></span>  Add team</a></span>
+            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.teams.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_team')) }}</a></span>
         @endslot
 
     @endcomponent
@@ -17,11 +17,11 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Created by</th>
-                <th scope="col">Created</th>
-                <th scope="col">Updated</th>
-                <th scope="col">Users</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created_by')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.updated')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.users')) }}</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -39,7 +39,7 @@
                         <form action="{{ route('laravel-crm.teams.destroy',$team) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model="team"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.team') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
                     </td>
                 </tr>

@@ -2,17 +2,17 @@
     <div class="col-sm-6 border-right">
         @include('laravel-crm::partials.form.text',[
          'name' => 'name',
-         'label' => 'Name',
+         'label' => ucfirst(__('laravel-crm::lang.name')),
          'value' => old('name', $team->name ?? null)
        ])
     </div>
     <div class="col-sm-6">
-        <h6 class="text-uppercase">People</h6>
+        <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.people')) }}</h6>
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col" class="text-right">On Team</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col" class="text-right">{{ ucwords(__('laravel-crm::lang.on_team')) }}</th>
             </tr>
             </thead>
             <tbody>
