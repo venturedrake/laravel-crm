@@ -20,6 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.5.0 - 2021-05-31
+### Added
+- Language support
+### Fixed
+- Bug when converting lead to deal
+
 ## 0.4.0 - 2021-05-21
 ### Added
 - Products & product categories

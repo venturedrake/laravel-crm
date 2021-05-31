@@ -45,7 +45,7 @@ https://spatie.be/docs/laravel-permission/v4/installation-laravel
 #### Step 4. Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.4
+composer require venturedrake/laravel-crm:^0.5
 ```
 
 #### Step 5. Publish the migrations, config & assets
@@ -127,12 +127,12 @@ Note if you modified the route_prefix setting from the default the above url wil
 
 ## Upgrade
 
-### Upgrading from 0.3 to 0.4
+### Upgrading from 0.3
 
 #### Step 1. Run the following to the update migrations and publish assets:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.4
+composer require venturedrake/laravel-crm::^0.5
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
 php artisan migrate
