@@ -17,14 +17,14 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Label</th>
-                <th scope="col">Contact</th>
-                <th scope="col">Open Deals</th>
-                <th scope="col">Lost Deals</th>
-                <th scope="col">Won Deals</th>
-                <th scope="col">Next Activity</th>
-                <th scope="col">Owner</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.labels')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.contact')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.open_deals')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.lost_deals')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.won_deals')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.next_activity')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="150"></th>
             </tr>
             </thead>

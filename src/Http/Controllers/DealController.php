@@ -103,7 +103,7 @@ class DealController extends Controller
         
         $this->dealService->create($request, $person ?? null, $organisation ?? null);
         
-        flash('Deal stored')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.deal_stored')))->success()->important();
 
         return redirect(route('laravel-crm.deals.index'));
     }
@@ -183,7 +183,7 @@ class DealController extends Controller
 
         $deal = $this->dealService->update($request, $deal, $person ?? null, $organisation ?? null);
         
-        flash('Deal updated')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.deal_updated')))->success()->important();
 
         return redirect(route('laravel-crm.deals.show', $deal));
     }
@@ -198,7 +198,7 @@ class DealController extends Controller
     {
         $deal->delete();
 
-        flash('Deal deleted')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.deal_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.deals.index'));
     }
@@ -233,7 +233,7 @@ class DealController extends Controller
             'closed_at' => Carbon::now(),
         ]);
         
-        flash('Deal won')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.deal_won')))->success()->important();
 
         return back();
     }
@@ -251,7 +251,7 @@ class DealController extends Controller
             'closed_at' => Carbon::now(),
         ]);
         
-        flash('Deal lost')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.deal_lost')))->success()->important();
 
         return back();
     }
@@ -269,7 +269,7 @@ class DealController extends Controller
             'closed_at' => null,
         ]);
         
-        flash('Deal reopened')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.deaL_reopened')))->success()->important();
 
         return back();
     }

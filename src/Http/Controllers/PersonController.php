@@ -85,7 +85,7 @@ class PersonController extends Controller
             $person->save();
         }
         
-        flash('Person stored')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.person_stored')))->success()->important();
 
         return redirect(route('laravel-crm.people.index'));
     }
@@ -163,7 +163,7 @@ class PersonController extends Controller
             $person->save();
         }
         
-        flash('Person updated')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.person_updated')))->success()->important();
 
         return redirect(route('laravel-crm.people.show', $person));
     }
@@ -178,7 +178,7 @@ class PersonController extends Controller
     {
         $person->delete();
 
-        flash('Person deleted')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.person_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.people.index'));
     }

@@ -91,5 +91,17 @@ return [
     'last_name' => 'last name',
     'address' => 'address',
     'create_person' => 'create person',
-    'edit_person' => 'edit person'
+    'edit_person' => 'edit person',
+    'gender' => 'gender',
+    'birthday' => 'birthday',
+    'contact' => 'contact',
+    'deal_stored' => 'deal stored',
+    'deal_updated' => 'deal updated',
+    'deal_deleted' => 'deal deleted',
+    'deal_won' => 'deal won',
+    'deal_lost' => 'deal lost',
+    'deal_reopened' => 'deal reopened',
+    'person_stored' => 'person stored',
+    'person_updated' => 'person updated',
+    'person_deleted' => 'person deleted',
 ];
