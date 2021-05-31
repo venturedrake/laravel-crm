@@ -157,8 +157,11 @@ const appJquery = function() {
                 var chartData = chart.data('chart');
                 var chartDays = [];
                 var chartLeads = [];
+                var chartLeadsLabel = chart.data('label-leads');
                 var chartDeals = [];
+                var chartDealsLabel = chart.data('label-deals');
                 Object.values(chartData).forEach(function (item, index) {
+                    
                     console.log(item, index);
                     chartDays.push(item.daily.date);
                     chartLeads.push(item.daily.leads);
@@ -170,14 +173,14 @@ const appJquery = function() {
                     data: {
                         labels: chartDays,
                         datasets: [{
-                            label: 'Leads',
+                            label: chartLeadsLabel,
                             data: chartLeads,
                             borderWidth: 1,
                             backgroundColor: '#6c757d',
                             borderColor: "#373c40",
                         },
                             {
-                                label: 'Deals',
+                                label: chartDealsLabel,
                                 data: chartDeals,
                                 borderWidth: 1,
                                 backgroundColor: '#28a745',

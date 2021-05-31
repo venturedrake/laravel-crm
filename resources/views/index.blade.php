@@ -7,33 +7,33 @@
             <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title float-left m-0">Leads</h4>
+                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.leads')) }}</h4>
                     </div>
                     <div class="card-body">
                         <h2>{{ $totalLeadsCount ?? 0 }}</h2>
-                        <small>Total leads</small>
+                        <small>{{ ucfirst(__('laravel-crm::lang.total_leads')) }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title float-left m-0">Deals</h4>
+                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.deals')) }}</h4>
                     </div>
                     <div class="card-body">
                         <h2>{{ $totalDealsCount ?? 0 }}</h2>
-                        <small>Total deals</small>
+                        <small>{{ ucfirst(__('laravel-crm::lang.total_deals')) }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title float-left m-0">People</h4>
+                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.people')) }}</h4>
                     </div>
                     <div class="card-body">
                         <h2>{{ $totalPeopleCount ?? 0 }}</h2>
-                        <small>Total people</small>
+                        <small>{{ ucfirst(__('laravel-crm::lang.total_people')) }}</small>
                     </div>
                 </div>
             </div>
@@ -54,17 +54,17 @@
         <div class="col-sm-8 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title m-0">Created last 14 days</h4>
+                    <h4 class="card-title m-0">{{ ucfirst(__('laravel-crm::lang.created_last_14_days')) }}</h4>
                 </div>
                 <div class="card-body">
-                    <canvas id="createdLast14Days" style="height:500px; width:100%" data-chart="{{ $createdLast14Days }}"></canvas>
+                    <canvas id="createdLast14Days" style="height:500px; width:100%" data-chart="{{ $createdLast14Days }}" data-label-leads="{{ ucfirst(__('laravel-crm::lang.leads')) }}" data-label-deals="{{ ucfirst(__('laravel-crm::lang.deals')) }}"></canvas>
                 </div>
             </div>
         </div>
         <div class="col-sm mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title m-0">Users online</h4>
+                    <h4 class="card-title m-0">{{ ucfirst(__('laravel-crm::lang.users_online')) }}</h4>
                 </div>
                 <div class="card-body">
                     @foreach($usersOnline as $user)
