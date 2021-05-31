@@ -67,5 +67,15 @@ return [
     'files' => 'files',
     'activities' => 'activities',
     'convert_lead_to_deal' => 'convert lead to deal',
-    
+    'add_deal' => 'add deal',
+    'expected_close' => 'expected close',
+    'won' => 'won',
+    'lost' => 'lost',
+    'back_to_deals' => 'back to deals',
+    'item' => 'item',
+    'price' => 'price',
+    'quantity' => 'quantity',
+    'amount' => 'amount',
+    'create_deal' => 'create deal',
+    'expected_close_date' => 'expected close date',
 ];

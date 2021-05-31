@@ -11,7 +11,7 @@
             ])
             @include('laravel-crm::partials.form.text',[
                            'name' => 'item_name['.$index.']',
-                           'label' => 'Item',
+                           'label' => ucfirst(__('laravel-crm::lang.item')),
                            'value' => old('item_name.'.$index, null),
                            'attributes' => [
                               'autocomplete' => \Illuminate\Support\Str::random(),
@@ -23,7 +23,7 @@
     <div class="col">
         @include('laravel-crm::partials.form.text',[
             'name' => 'item_price['.$index.']',
-            'label' => 'Price',
+            'label' => ucfirst(__('laravel-crm::lang.price')),
             'type' => 'number',
             'value' => old('item_price.'.$index, null) ,
             'attributes' => [
@@ -34,7 +34,7 @@
     <div class="col">
         @include('laravel-crm::partials.form.text',[
            'name' => 'item_quantity['.$index.']',
-           'label' => 'Quantity',
+           'label' => ucfirst(__('laravel-crm::lang.quantity')),
            'type' => 'number',
            'value' => old('item_quantity.'.$index, 1)
        ])
@@ -42,7 +42,7 @@
     <div class="col">
         @include('laravel-crm::partials.form.text',[
             'name' => 'item_amount['.$index.']',
-            'label' => 'Amount',
+            'label' => ucfirst(__('laravel-crm::lang.amount')),
             'type' => 'number',
             'value' => old('item_amount.'.$index, null) ,
             'attributes' => [

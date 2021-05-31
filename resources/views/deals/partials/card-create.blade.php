@@ -5,11 +5,11 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                Create deal
+                {{ ucfirst(__('laravel-crm::lang.create_deal')) }}
             @endslot
 
             @slot('actions')
-                <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.deals.index')) }}"><span class="fa fa-angle-double-left"></span> Back to deals</a></span>
+                <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.deals.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_deals')) }}</a></span>
             @endslot
 
         @endcomponent
@@ -21,8 +21,8 @@
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.deals.index')) }}" class="btn btn-outline-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="{{ url(route('laravel-crm.deals.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         @endcomponent
 
     @endcomponent

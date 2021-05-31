@@ -8,19 +8,19 @@
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.deals.index')) }}"><span class="fa fa-angle-double-left"></span> Back to deals</a> | 
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.deals.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_deals')) }}</a> | 
                 @if(!$deal->closed_at)
-                    <a href="{{  route('laravel-crm.deals.won',$deal) }}" class="btn btn-success btn-sm">Won</a>
-                    <a href="{{  route('laravel-crm.deals.lost',$deal) }}" class="btn btn-danger btn-sm">Lost</a>
+                    <a href="{{  route('laravel-crm.deals.won',$deal) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>
+                    <a href="{{  route('laravel-crm.deals.lost',$deal) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.lost')) }}</a>
                 @else
-                    <a href="{{  route('laravel-crm.deals.reopen',$deal) }}" class="btn btn-outline-secondary btn-sm">Reopen</a>
+                    <a href="{{  route('laravel-crm.deals.reopen',$deal) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.reopen')) }}</a>
                 @endif
                 @include('laravel-crm::partials.navs.activities') |
                 <a href="{{ url(route('laravel-crm.deals.edit', $deal)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 <form action="{{ route('laravel-crm.deals.destroy',$deal) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="deal"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ ucfirst(__('laravel-crm::lang.deal')) }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
             </span>
         @endslot
@@ -31,7 +31,7 @@
 
         <div class="row card-show card-fa-w30">
             <div class="col-sm-6 border-right">
-                <h6 class="text-uppercase">Details</h6>
+                <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <p><span class="fa fa-tag" aria-hidden="true"></span>@include('laravel-crm::partials.labels',[
                             'labels' => $deal->labels
@@ -39,7 +39,7 @@
                 <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($deal->amount, $deal->currency) }}</p>
                 <p><span class="fa fa-info" aria-hidden="true"></span> {{ $deal->description }}</p>
                 <p><span class="fa fa-user-circle" aria-hidden="true"></span> {{ $deal->assignedToUser->name }}</p>
-                <h6 class="mt-4 text-uppercase"> Contact Person</h6>
+                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
                 <p><span class="fa fa-user" aria-hidden="true"></span> {{ $deal->person->name ?? null }} </p>
                 @isset($email)
@@ -48,19 +48,19 @@
                 @isset($phone)
                     <p><span class="fa fa-phone" aria-hidden="true"></span> <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})</p>
                 @endisset
-                <h6 class="mt-4 text-uppercase"> Organisation</h6>
+                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />
                 <p><span class="fa fa-building" aria-hidden="true"></span> {{ $deal->organisation->name ?? null }}</p>
                 <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
 
-                <h6 class="text-uppercase mt-4 section-h6-title-table"><span>Products ({{ $deal->dealProducts->count() }})</span></h6>
+                <h6 class="text-uppercase mt-4 section-h6-title-table"><span>{{ ucfirst(__('laravel-crm::lang.products')) }} ({{ $deal->dealProducts->count() }})</span></h6>
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Price</th>
-                         <th scope="col">Quantity</th>
-                        <th scope="col">Amount</th>
+                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
+                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
+                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
+                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -76,13 +76,13 @@
                 </table>
             </div>
             <div class="col-sm-6">
-                <h6 class="text-uppercase">Notes</h6>
+                <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.notes')) }}</h6>
                 <hr />
                 ...
-                <h6 class="text-uppercase mt-4">Files</h6>
+                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.files')) }}</h6>
                 <hr />
                 ...
-                <h6 class="text-uppercase mt-4">Activities</h6>
+                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.activities')) }}</h6>
                 <hr />
                 ...
             </div>
