@@ -59,7 +59,7 @@ class ProductController extends Controller
     {
         $product = $this->productService->create($request);
         
-        flash('Product stored')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.product_stored')))->success()->important();
 
         return redirect(route('laravel-crm.products.index'));
     }
@@ -101,7 +101,7 @@ class ProductController extends Controller
     {
         $product = $this->productService->update($product, $request);
         
-        flash('Product updated')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.product_updated')))->success()->important();
 
         return redirect(route('laravel-crm.products.show', $product));
     }
@@ -116,7 +116,7 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        flash('Product deleted')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.product_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.products.index'));
     }

@@ -6,11 +6,11 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                Edit product
+                {{ ucfirst(__('laravel-crm::lang.edit_product')) }}
             @endslot
 
             @slot('actions')
-                    <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.products.index')) }}"><span class="fa fa-angle-double-left"></span> Back to products</a></span>
+                    <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.products.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_products')) }}</a></span>
             @endslot
 
         @endcomponent
@@ -22,8 +22,8 @@
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.products.index')) }}" class="btn btn-outline-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url(route('laravel-crm.products.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+                <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
         @endcomponent
 
     @endcomponent

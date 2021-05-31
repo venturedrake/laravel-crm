@@ -3,11 +3,11 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            Products
+            {{ ucfirst(__('laravel-crm::lang.products')) }}
         @endslot
     
         @slot('actions')
-            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.products.create')) }}"><span class="fa fa-plus"></span>  Add product</a></span>
+            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.products.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_product')) }}</a></span>
         @endslot
 
     @endcomponent
@@ -17,14 +17,14 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Code</th>
-                <th scope="col">Category</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Price ({{ \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD' }})</th>
-                <th scope="col">Tax %</th>
-                <th scope="col">Active</th>
-                <th scope="col">Owner</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.code')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.category')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.unit')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }} ({{ \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD' }})</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.tax')) }} %</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.active')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -45,7 +45,7 @@
                         <form action="{{ route('laravel-crm.products.destroy',$product) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model="product"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
                     </td>
                 </tr>

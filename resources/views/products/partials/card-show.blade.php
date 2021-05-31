@@ -9,12 +9,12 @@
         @slot('actions')
 
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.products.index')) }}"><span class="fa fa-angle-double-left"></span> Back to products</a> |
-                <a href="{{ url(route('laravel-crm.products.edit', $product)) }}" type="button" class="btn btn-outline-secondary btn-sm">Edit</a>
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.products.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_products')) }}</a> |
+                <a href="{{ url(route('laravel-crm.products.edit', $product)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 <form action="{{ route('laravel-crm.products.destroy',$product) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="person"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
             </span>
             
@@ -26,36 +26,36 @@
 
         <div class="row">
             <div class="col-sm-6 border-right">
-                <h6 class="text-uppercase">Details</h6>
+                <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
-                    <dt class="col-sm-3 text-right">Product code</dt>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.product_code')) }}</dt>
                     <dd class="col-sm-9">{{ $product->code }}</dd>
-                    <dt class="col-sm-3 text-right">Unit</dt>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.unit')) }}</dt>
                     <dd class="col-sm-9">{{ $product->unit }}</dd>
-                    <dt class="col-sm-3 text-right">Tax %</dt>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.tax')) }} %</dt>
                     <dd class="col-sm-9">{{ $product->tax_rate }}</dd>
-                    <dt class="col-sm-3 text-right">Category</dt>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.category')) }}</dt>
                     <dd class="col-sm-9">{{ $product->productCategory->name ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">Description</dt>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                     <dd class="col-sm-9">{{ $product->description }}</dd>
                 </dl>
-                <h6 class="text-uppercase mt-4">Owner</h6>
+                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.owner')) }}</h6>
                 <hr />
                 <dl class="row">
-                    <dt class="col-sm-3 text-right">Name</dt>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
                     <dd class="col-sm-9">{{ $product->ownerUser->name }}</dd>
                 </dl>
             </div>
             <div class="col-sm-6">
-                <h6 class="text-uppercase">Prices</h6>
+                <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.prices')) }}</h6>
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th scope="col">Unit price</th>
-                       {{-- <th scope="col">Cost per unit</th>
-                        <th scope="col">Direct cost</th>--}}
-                        <th scope="col">Currency</th>
+                        <th scope="col">{{ ucwords(__('laravel-crm::lang.unit_price')) }}</th>
+                       {{-- <th scope="col">{{ ucwords(__('laravel-crm::lang.cost_per_unit')) }}</th>
+                        <th scope="col">{{ ucwords(__('laravel-crm::lang.direct_cost')) }}</th>--}}
+                        <th scope="col">{{ ucwords(__('laravel-crm::lang.currency')) }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,10 +70,10 @@
                     </tbody>
                 </table>
                
-                <h6 class="text-uppercase mt-4">Variations</h6>
+                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.variations')) }}</h6>
                 <hr />
                 ...
-                <h6 class="text-uppercase mt-4">Deals</h6>
+                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.deals')) }}</h6>
                 <hr />
                 ...
             </div>
