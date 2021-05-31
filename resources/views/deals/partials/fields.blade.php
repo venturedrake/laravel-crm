@@ -227,13 +227,13 @@
             let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
         </script>
         <span id="dealProducts">
-            @isset($deal)
+            @if(isset($deal) && method_exists($deal,'dealProducts'))
                 @foreach($deal->dealProducts as $dealProduct)
                     @include('laravel-crm::deal-products.partials.fields',[
                         'index' => $loop->index
                     ])
                 @endforeach
-            @endisset    
+            @endif    
         </span>
     </div>
 </div>

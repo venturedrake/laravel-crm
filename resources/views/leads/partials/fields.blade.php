@@ -10,7 +10,7 @@
                </script>
                  @include('laravel-crm::partials.form.text',[
                     'name' => 'person_name',
-                    'label' => 'Contact person',
+                    'label' => ucfirst(__('laravel-crm::lang.contact_person')),
                     'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
                     'value' => old('person_name', $lead->person->name ?? $lead->person_name ?? null),
                     'attributes' => [
@@ -28,7 +28,7 @@
             </script>
             @include('laravel-crm::partials.form.text',[
                 'name' => 'organisation_name',
-                'label' => 'Organisation',
+                'label' => ucfirst(__('laravel-crm::lang.organization')),
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
                 'value' => old('organisation_name',$lead->organisation->name ?? $lead->organisation_name ?? null),
                 'attributes' => [
@@ -38,12 +38,12 @@
         </span>
         @include('laravel-crm::partials.form.text',[
             'name' => 'title',
-            'label' => 'Title',
+            'label' => ucfirst(__('laravel-crm::lang.title')),
             'value' => old('title',$lead->title ?? null)
         ])
         @include('laravel-crm::partials.form.textarea',[
              'name' => 'description',
-             'label' => 'Description',
+             'label' => ucfirst(__('laravel-crm::lang.description')),
              'rows' => 5,
              'value' => old('description', $lead->description ?? null) 
         ])
@@ -52,7 +52,7 @@
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'amount',
-                      'label' => 'Value',
+                      'label' => ucfirst(__('laravel-crm::lang.value')),
                       'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
                       'value' => old('amount', ((isset($lead->amount)) ? ($lead->amount / 100) : null) ?? null) 
                   ])
@@ -60,7 +60,7 @@
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.select',[
                     'name' => 'currency',
-                    'label' => 'Currency',
+                    'label' => ucfirst(__('laravel-crm::lang.currency')),
                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
                     'value' => old('currency', $lead->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
                 ])
@@ -68,27 +68,27 @@
         </div>
         @include('laravel-crm::partials.form.multiselect',[
                     'name' => 'labels',
-                    'label' => 'Labels',
+                    'label' => ucfirst(__('laravel-crm::lang.labels')),
                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all()),      
                     'value' =>  old('labels', (isset($lead)) ? $lead->labels->pluck('id')->toArray() : null)
                 ])
         
         @include('laravel-crm::partials.form.select',[
                  'name' => 'user_assigned_id',
-                 'label' => 'Owner',
+                 'label' => ucfirst(__('laravel-crm::lang.owner')),
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
                  'value' =>  old('user_assigned_id', $lead->assigned_user_id ?? auth()->user()->id),
               ])
     </div>
     <div class="col-sm-6">
-        <h6 class="text-uppercase"><span class="fa fa-user" aria-hidden="true"></span> Person</h6>
+        <h6 class="text-uppercase"><span class="fa fa-user" aria-hidden="true"></span> {{ strtoupper(__('laravel-crm::lang.person')) }}</h6>
         <hr />
         <span class="autocomplete-person">
             <div class="row">
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.text',[
                      'name' => 'phone',
-                     'label' => 'Phone',
+                     'label' => ucfirst(__('laravel-crm::lang.phone')),
                      'value' => old('phone', $phone->number ?? null),
                      'attributes' => [
                          'disabled' => 'disabled'
@@ -98,7 +98,7 @@
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.select',[
                      'name' => 'phone_type',
-                     'label' => 'Type',
+                     'label' => ucfirst(__('laravel-crm::lang.type')),
                      'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
                      'value' => old('phone_type', $phone->type ??  'mobile'),
                      'attributes' => [
@@ -111,7 +111,7 @@
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.text',[
                      'name' => 'email',
-                     'label' => 'Email',
+                     'label' => ucfirst(__('laravel-crm::lang.email')),
                      'value' => old('email', $email->address ?? null),
                      'attributes' => [
                          'disabled' => 'disabled'
@@ -121,7 +121,7 @@
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.select',[
                      'name' => 'email_type',
-                     'label' => 'Type',
+                     'label' => ucfirst(__('laravel-crm::lang.type')),
                      'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
                      'value' => old('email_type', $email->type ?? 'work'),
                      'attributes' => [
@@ -131,17 +131,17 @@
                 </div>
             </div>
         </span>
-        <h6 class="text-uppercase mt-4"><span class="fa fa-building" aria-hidden="true"></span> Organisation</h6>
+        <h6 class="text-uppercase mt-4"><span class="fa fa-building" aria-hidden="true"></span> {{ strtoupper(__('laravel-crm::lang.organization')) }} </h6>
         <hr />
         <span class="autocomplete-organisation">
             {{--@include('laravel-crm::partials.form.text',[
                 'name' => 'address',
-                'label' => 'Address',
+                'label' => ucfirst(__('laravel-crm::lang.address')),
                 'value' => old('address', $address ?? null)
             ])--}}
             @include('laravel-crm::partials.form.text',[
                'name' => 'line1',
-               'label' => 'Address Line 1',
+               'label' => ucfirst(__('laravel-crm::lang.address_line_1')),
                'value' => old('line1', $address->line1 ?? null),
                'attributes' => [
                          'disabled' => 'disabled'
@@ -149,7 +149,7 @@
             ])
             @include('laravel-crm::partials.form.text',[
                'name' => 'line2',
-               'label' => 'Address Line 2',
+               'label' => ucfirst(__('laravel-crm::lang.address_line_2')),
                'value' => old('line2', $address->line2 ?? null),
                'attributes' => [
                          'disabled' => 'disabled'
@@ -158,7 +158,7 @@
             ])
             @include('laravel-crm::partials.form.text',[
                'name' => 'line3',
-               'label' => 'Address Line 3',
+               'label' => ucfirst(__('laravel-crm::lang.address_line_3')),
                'value' => old('line3', $address->line3 ?? null),
                'attributes' => [
                          'disabled' => 'disabled'
@@ -168,7 +168,7 @@
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.text',[
                        'name' => 'city',
-                       'label' => 'Suburb',
+                       'label' => ucfirst(__('laravel-crm::lang.suburb')),
                        'value' => old('city', $address->city ?? null),
                         'attributes' => [
                             'disabled' => 'disabled'
@@ -178,7 +178,7 @@
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.text',[
                        'name' => 'state',
-                       'label' => 'State',
+                       'label' => ucfirst(__('laravel-crm::lang.state')),
                        'value' => old('state', $address->state ?? null),
                        'attributes' => [
                                  'disabled' => 'disabled'
@@ -190,7 +190,7 @@
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.text',[
                        'name' => 'code',
-                       'label' => 'Postcode',
+                       'label' => ucfirst(__('laravel-crm::lang.postcode')),
                        'value' => old('code', $address->code ?? null),
                'attributes' => [
                          'disabled' => 'disabled'
@@ -200,7 +200,7 @@
                 <div class="col-sm-6">
                     @include('laravel-crm::partials.form.select',[
                      'name' => 'country',
-                     'label' => 'Country',
+                     'label' => ucfirst(__('laravel-crm::lang.country')),
                      'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries(),
                      'value' => old('country', $address->country ?? 'United States'),
                'attributes' => [

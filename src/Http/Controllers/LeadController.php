@@ -95,7 +95,7 @@ class LeadController extends Controller
 
         $lead = $this->leadService->create($request, $person ?? null, $organisation ?? null);
 
-        flash('Lead stored')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.lead_stored')))->success()->important();
         
         return redirect(route('laravel-crm.leads.index'));
     }
@@ -163,7 +163,7 @@ class LeadController extends Controller
 
         $lead = $this->leadService->update($request, $lead, $person ?? null, $organisation ?? null);
 
-        flash('Lead updated')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.lead_updated')))->success()->important();
         
         return redirect(route('laravel-crm.leads.show', $lead));
     }
@@ -178,7 +178,7 @@ class LeadController extends Controller
     {
         $lead->delete();
         
-        flash('Lead deleted')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.lead_deleted')))->success()->important();
         
         return redirect(route('laravel-crm.leads.index'));
     }
@@ -246,7 +246,7 @@ class LeadController extends Controller
             'converted_at' => Carbon::now(),
         ]);
         
-        flash('Lead converted to deal')->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.lead_converted_to_deal')))->success()->important();
 
         return redirect(route('laravel-crm.leads.index'));
     }
