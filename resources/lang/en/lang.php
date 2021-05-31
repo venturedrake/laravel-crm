@@ -167,6 +167,7 @@ return [
     'back_to_product_categories' => 'back to product categories',
     'create_product_category' => 'create product category',
     'edit_product_category' => 'edit product category',
+    'add_product_category' => 'add product category',
     'product_category' => 'product category',
     'yes' => 'yes',
     'no' => 'no',
