@@ -20,7 +20,7 @@
                 <form action="{{ route('laravel-crm.deals.destroy',$deal) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ ucfirst(__('laravel-crm::lang.deal')) }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.deal') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
             </span>
         @endslot
