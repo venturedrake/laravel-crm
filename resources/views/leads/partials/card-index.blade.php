@@ -17,13 +17,13 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.title')) }}</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.labels')) }}</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.value')) }}</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.organization')) }}</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.assigned_to')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.value')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.contact_person')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.assigned_to')) }}</th>
                 <th scope="col" width="210"></th>
             </tr>
             </thead>
@@ -47,7 +47,7 @@
                         <form action="{{ route('laravel-crm.leads.destroy',$lead) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model=" {{ ucfirst(__('laravel-crm::lang.lead')) }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.lead') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
                     </td>
                 </tr>

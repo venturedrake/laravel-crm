@@ -3,13 +3,13 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            Users
+            {{ ucfirst(__('laravel-crm::lang.users')) }}
         @endslot
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.create')) }}"><span class="fa fa-plus"></span> Add user</a>
-                <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.invite')) }}"><span class="fa fa-paper-plane"></span> Invite user</a>
+                <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_user')) }}</a>
+                <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.invite')) }}"><span class="fa fa-paper-plane"></span> {{ ucfirst(__('laravel-crm::lang.invite_user')) }}</a>
             </span>
         @endslot
 
@@ -20,14 +20,14 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Email Verified</th>
-                <th scope="col">Role</th>
-                <th scope="col">Created</th>
-                {{-- <th scope="col">Updated</th>--}}
-                <th scope="col">Last Online</th>
-                <th scope="col">CRM Access</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.email')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.email_verified')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.role')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
+                {{-- <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>--}}
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.last_online')) }}</th>
+                <th scope="col">{{ __('laravel-crm::lang.CRM_Access') }}</th>
                 <th scope="col" width="150"></th>
             </tr>
             </thead>
@@ -50,7 +50,7 @@
                         <form action="{{ route('laravel-crm.users.destroy',$user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model="user" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.user') }}" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
                     </td>
                 </tr>
