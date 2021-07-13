@@ -4,12 +4,14 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Organisation extends Model
 {
     use SoftDeletes;
     use LaravelEncryptableTrait;
+    use BelongsToTeams;
 
     protected $guarded = ['id'];
 

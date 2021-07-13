@@ -6,10 +6,12 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class Activity extends Model
 {
     use SoftDeletes;
+    use BelongsToTeams;
 
     public function getTable()
     {

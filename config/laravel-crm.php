@@ -18,6 +18,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Teams Support
+    |--------------------------------------------------------------------------
+    |
+    | This value relates to the "teams" feature in Laravel Jetstream or Spark.
+    | Only set this to true if you are using this feature as it will break
+    | your installation if not. It basically allows you to run a multi-tenant
+    | crm, and the teams can be different "accounts". You can switch between
+    | different teams/accounts and have different users, contacts, leads, etc
+    | in each account.
+    |
+    | PLEASE NOTE! This has nothing to do with the user teams feature within
+    | the crm itself, which is simply a way of grouping users within the crm.
+    |
+    | For Jetstream see https://jetstream.laravel.com/2.x/features/teams.html
+    |
+    | For Spark see https://spark-classic.laravel.com/docs/11.0/teams
+    |
+    */
+
+    'teams' => env('LARAVEL_CRM_TEAMS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Prefix
     |--------------------------------------------------------------------------
     |
