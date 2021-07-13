@@ -24,7 +24,7 @@ class HasCrmAccess
         }
        
         if (config('laravel-crm.crm_owner') == auth()->user()->email && (! auth()->user()->hasRole('Owner') || ! auth()->user()->hasCrmAccess())) {
-            auth()->user()->syncRoles(['Owner']);
+            auth()->user()->assignRole('Owner');
 
             auth()->user()->forceFill([
                 'crm_access' => 1,
