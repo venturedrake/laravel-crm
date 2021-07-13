@@ -77,6 +77,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
         
         $this->registerRoutes();
 
+        // Register Observers
+        Lead::observe(LeadObserver::class);
+        Person::observe(PersonObserver::class);
+        Organisation::observe(OrganisationObserver::class);
+        Phone::observe(PhoneObserver::class);
+        Email::observe(EmailObserver::class);
+        Setting::observe(SettingObserver::class);
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/laravel-crm.php' => config_path('laravel-crm.php'),
@@ -130,19 +138,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
             }
 
             // Registering package commands.
-            if ($this->app->runningInConsole()) {
-                $this->commands([
-                    LaravelCrmInstall::class,
-                ]);
-            }
-            
-            // Register Observers
-            Lead::observe(LeadObserver::class);
-            Person::observe(PersonObserver::class);
-            Organisation::observe(OrganisationObserver::class);
-            Phone::observe(PhoneObserver::class);
-            Email::observe(EmailObserver::class);
-            Setting::observe(SettingObserver::class);
+            $this->commands([
+                LaravelCrmInstall::class,
+            ]);
 
             // Register the model factories
             if (app()->version() < 8) {

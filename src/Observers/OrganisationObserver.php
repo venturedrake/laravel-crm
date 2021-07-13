@@ -31,6 +31,19 @@ class OrganisationObserver
     }
 
     /**
+     * Handle the organisation "updating" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
+     * @return void
+     */
+    public function updating(Organisation $organisation)
+    {
+        if (! app()->runningInConsole()) {
+            $organisation->user_updated_id = auth()->user()->id ?? null;
+        }
+    }
+
+    /**
      * Handle the organisation "updated" event.
      *
      * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
@@ -39,6 +52,20 @@ class OrganisationObserver
     public function updated(Organisation $organisation)
     {
         //
+    }
+
+    /**
+     * Handle the organisation "deleting" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
+     * @return void
+     */
+    public function deleting(Organisation $organisation)
+    {
+        if (! app()->runningInConsole()) {
+            $organisation->user_deleted_id = auth()->user()->id ?? null;
+            $organisation->saveQuietly();
+        }
     }
 
     /**
@@ -60,7 +87,10 @@ class OrganisationObserver
      */
     public function restored(Organisation $organisation)
     {
-        //
+        if (! app()->runningInConsole()) {
+            $organisation->user_deleted_id = auth()->user()->id ?? null;
+            $organisation->saveQuietly();
+        }
     }
 
     /**

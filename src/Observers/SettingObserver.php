@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Models\Setting;
 
 class SettingObserver
@@ -9,30 +10,18 @@ class SettingObserver
     /**
      * Handle the email "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Setting  $setting
+     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function creating(Setting $setting)
     {
-        if ($setting->global) {
-            switch ($setting->name) {
-                case "app_name":
-                case "app_env":
-                case "app_url":
-                case "version":
-                case "install_id":
-                case "version_latest":
-                    $setting->global = 1;
-
-                    break;
-            }
-        }
+        $this->setGlobal($setting);
     }
     
     /**
      * Handle the Setting "created" event.
      *
-     * @param  \App\Models\Setting  $setting
+     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function created(Setting $setting)
@@ -48,12 +37,13 @@ class SettingObserver
      */
     public function updating(Setting $setting)
     {
+        $this->setGlobal($setting);
     }
 
     /**
      * Handle the Setting "updated" event.
      *
-     * @param  \App\Models\Setting  $setting
+     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function updated(Setting $setting)
@@ -64,7 +54,7 @@ class SettingObserver
     /**
      * Handle the Setting "deleted" event.
      *
-     * @param  \App\Models\Setting  $setting
+     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function deleted(Setting $setting)
@@ -75,7 +65,7 @@ class SettingObserver
     /**
      * Handle the Setting "restored" event.
      *
-     * @param  \App\Models\Setting  $setting
+     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function restored(Setting $setting)
@@ -86,11 +76,28 @@ class SettingObserver
     /**
      * Handle the Setting "force deleted" event.
      *
-     * @param  \App\Models\Setting  $setting
+     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function forceDeleted(Setting $setting)
     {
         //
+    }
+    
+    protected function setGlobal(Setting $setting)
+    {
+        if (Schema::hasColumn($setting->getTable(), 'global')) {
+            switch ($setting->name) {
+                case "app_name":
+                case "app_env":
+                case "app_url":
+                case "version":
+                case "install_id":
+                case "version_latest":
+                    $setting->global = 1;
+
+                    break;
+            }
+        }
     }
 }

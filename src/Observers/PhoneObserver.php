@@ -31,6 +31,19 @@ class PhoneObserver
     }
 
     /**
+     * Handle the phone "updating" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Phone  $phone
+     * @return void
+     */
+    public function updating(Phone $phone)
+    {
+        if (! app()->runningInConsole()) {
+            $phone->user_updated_id = auth()->user()->id ?? null;
+        }
+    }
+
+    /**
      * Handle the phone "updated" event.
      *
      * @param  \VentureDrake\LaravelCrm\Phone  $phone
@@ -39,6 +52,20 @@ class PhoneObserver
     public function updated(Phone $phone)
     {
         //
+    }
+
+    /**
+     * Handle the phone "deleting" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Phone  $phone
+     * @return void
+     */
+    public function deleting(Phone $phone)
+    {
+        if (! app()->runningInConsole()) {
+            $phone->user_deleted_id = auth()->user()->id ?? null;
+            $phone->saveQuietly();
+        }
     }
 
     /**
@@ -60,7 +87,10 @@ class PhoneObserver
      */
     public function restored(Phone $phone)
     {
-        //
+        if (! app()->runningInConsole()) {
+            $phone->user_restored_id = auth()->user()->id ?? null;
+            $phone->saveQuietly();
+        }
     }
 
     /**
