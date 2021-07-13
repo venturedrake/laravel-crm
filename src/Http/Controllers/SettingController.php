@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use DB;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateSettingRequest;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
@@ -50,6 +51,12 @@ class SettingController extends Controller
         $this->settingService->set('language', $request->language);
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
+
+        if ($request->organisation_name && config('laravel-crm.teams') && auth()->user()->currentTeam) {
+            DB::table("teams")
+                ->where("id", auth()->user()->currentTeam->id)
+                ->update(["name" => $request->organisation_name]);
+        }
 
         flash(ucfirst(trans('laravel-crm::lang.settings_updated')))->success()->important();
 
