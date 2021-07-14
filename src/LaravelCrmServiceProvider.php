@@ -19,11 +19,13 @@ use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
+use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
+use VentureDrake\LaravelCrm\Observers\SettingObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -75,6 +77,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
         
         $this->registerRoutes();
 
+        // Register Observers
+        Lead::observe(LeadObserver::class);
+        Person::observe(PersonObserver::class);
+        Organisation::observe(OrganisationObserver::class);
+        Phone::observe(PhoneObserver::class);
+        Email::observe(EmailObserver::class);
+        Setting::observe(SettingObserver::class);
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/laravel-crm.php' => config_path('laravel-crm.php'),
@@ -107,6 +117,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_product_prices_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_product_prices_table.php', 8),
                 __DIR__ . '/../database/migrations/create_laravel_crm_product_variations_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_product_variations_table.php', 9),
                 __DIR__ . '/../database/migrations/create_laravel_crm_deal_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_deal_products_table.php', 10),
+                __DIR__ . '/../database/migrations/add_global_to_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_global_to_laravel_crm_settings_table.php', 11),
             ], 'migrations');
 
             // Publishing the seeders
@@ -127,18 +138,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
             }
 
             // Registering package commands.
-            if ($this->app->runningInConsole()) {
-                $this->commands([
-                    LaravelCrmInstall::class,
-                ]);
-            }
-            
-            // Register Observers
-            Lead::observe(LeadObserver::class);
-            Person::observe(PersonObserver::class);
-            Organisation::observe(OrganisationObserver::class);
-            Phone::observe(PhoneObserver::class);
-            Email::observe(EmailObserver::class);
+            $this->commands([
+                LaravelCrmInstall::class,
+            ]);
 
             // Register the model factories
             if (app()->version() < 8) {

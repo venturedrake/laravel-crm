@@ -55,6 +55,20 @@ class PersonObserver
     }
 
     /**
+     * Handle the person "deleting" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Person  $person
+     * @return void
+     */
+    public function deleting(Person $person)
+    {
+        if (! app()->runningInConsole()) {
+            $person->user_deleted_id = auth()->user()->id ?? null;
+            $person->saveQuietly();
+        }
+    }
+
+    /**
      * Handle the person "deleted" event.
      *
      * @param  \VentureDrake\LaravelCrm\Person  $person
@@ -66,6 +80,16 @@ class PersonObserver
     }
 
     /**
+     * Handle the person "restoring" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Person  $person
+     * @return void
+     */
+    public function restoring(Person $person)
+    {
+    }
+
+    /**
      * Handle the person "restored" event.
      *
      * @param  \VentureDrake\LaravelCrm\Person  $person
@@ -73,7 +97,10 @@ class PersonObserver
      */
     public function restored(Person $person)
     {
-        //
+        if (! app()->runningInConsole()) {
+            $person->user_restored_id = auth()->user()->id ?? null;
+            $person->saveQuietly();
+        }
     }
 
     /**

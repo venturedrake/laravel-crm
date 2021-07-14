@@ -55,6 +55,20 @@ class LeadObserver
     }
 
     /**
+     * Handle the lead "deleting" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Lead  $lead
+     * @return void
+     */
+    public function deleting(Lead $lead)
+    {
+        if (! app()->runningInConsole()) {
+            $lead->user_deleted_id = auth()->user()->id ?? null;
+            $lead->saveQuietly();
+        }
+    }
+
+    /**
      * Handle the lead "deleted" event.
      *
      * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
@@ -73,7 +87,10 @@ class LeadObserver
      */
     public function restored(Lead $lead)
     {
-        //
+        if (! app()->runningInConsole()) {
+            $lead->user_deleted_id = auth()->user()->id ?? null;
+            $lead->saveQuietly();
+        }
     }
 
     /**

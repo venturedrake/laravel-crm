@@ -4,10 +4,12 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class LeadSource extends Model
 {
     use SoftDeletes;
+    use BelongsToTeams;
 
     protected $guarded = ['id'];
 

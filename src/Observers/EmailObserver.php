@@ -31,6 +31,19 @@ class EmailObserver
     }
 
     /**
+     * Handle the email "updating" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Email  $email
+     * @return void
+     */
+    public function updating(Email $email)
+    {
+        if (! app()->runningInConsole()) {
+            $email->user_updated_id = auth()->user()->id ?? null;
+        }
+    }
+
+    /**
      * Handle the email "updated" event.
      *
      * @param  \VentureDrake\LaravelCrm\Models\Email  $email
@@ -39,6 +52,20 @@ class EmailObserver
     public function updated(Email $email)
     {
         //
+    }
+
+    /**
+     * Handle the email "deleting" event.
+     *
+     * @param  \VentureDrake\LaravelCrm\Email  $email
+     * @return void
+     */
+    public function deleting(Email $email)
+    {
+        if (! app()->runningInConsole()) {
+            $email->user_deleted_id = auth()->user()->id ?? null;
+            $email->saveQuietly();
+        }
     }
 
     /**
@@ -60,7 +87,10 @@ class EmailObserver
      */
     public function restored(Email $email)
     {
-        //
+        if (! app()->runningInConsole()) {
+            $email->user_restored_id = auth()->user()->id ?? null;
+            $email->saveQuietly();
+        }
     }
 
     /**

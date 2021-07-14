@@ -5,7 +5,7 @@
     <div class="card">
         <div class="card-header"><h3 class="card-title m-0">Laravel CRM {{ ucfirst(__('laravel-crm::lang.updates')) }}</h3></div>
         <div class="card-body">
-            <p class="card-text">{{ ucfirst(__('laravel-crm::lang.current_version')) }} {{ \VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value }} {{ (\VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value == \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()->value) ? ucfirst(__('laravel-crm::lang.is_the_latest_version')) : null }}</p>
+            <p class="card-text">{{ ucfirst(__('laravel-crm::lang.current_version')) }} {{ \VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value }} {{ (\VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value == \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()->value) ? __('laravel-crm::lang.is_the_latest_version') : null }}</p>
             @if(\VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value < \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()->value)
                 <hr />
                 <h5 class="mb-4">{{ ucfirst(__('laravel-crm::lang.updated_version_of_laravel_crm_is_available')) }}</h5>
