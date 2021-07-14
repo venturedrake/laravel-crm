@@ -87,7 +87,6 @@ class PersonObserver
      */
     public function restoring(Person $person)
     {
-        
     }
 
     /**
