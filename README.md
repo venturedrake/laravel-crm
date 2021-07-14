@@ -16,6 +16,7 @@ This package will add CRM functionality to your laravel projects
 - Build a custom CRM for your business or your clients
 - Use as an integrated CRM for your Laravel powered business (Saas, E-commerce, etc)
 - Use as a CRM for your Laravel development business
+- Run a multi-tenant CRM Saas business
 
 ## Features
 
@@ -27,6 +28,7 @@ This package will add CRM functionality to your laravel projects
  - Users & Teams
  - Secure registration & login
  - Reset forgotten password
+ - Laravel Jetstream/Spark teams support
 
 ## Installation (10-15mins)
 
@@ -45,7 +47,7 @@ https://spatie.be/docs/laravel-permission/v4/installation-laravel
 #### Step 4. Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.5
+composer require venturedrake/laravel-crm:^0.6
 ```
 
 #### Step 5. Publish the migrations, config & assets
@@ -127,12 +129,12 @@ Note if you modified the route_prefix setting from the default the above url wil
 
 ## Upgrade
 
-### Upgrading from 0.3
+### Upgrading from >= 0.2
 
 #### Step 1. Run the following to the update migrations and publish assets:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.5
+composer require venturedrake/laravel-crm::^0.6
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
 php artisan migrate
@@ -144,26 +146,12 @@ php artisan migrate
 php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
 ```
 
-### Upgrading from 0.1 to 0.3
+### Upgrading from < 0.2
 
-#### Step 1. Run the following to the update migrations and publish assets:
-
-```bash
-composer require venturedrake/laravel-crm::^0.3
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
-php artisan migrate
-```
-
-### Upgrading from 0.1 to 0.2
-
-#### Step 1. Run the following to the update package, database and add the default roles/permissions:
+#### Step 1. Run the following to the update package:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.2
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
-php artisan migrate
-php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
+composer require venturedrake/laravel-crm::^0.6
 ```
 
 #### Step 2. Delete previously published package views located in <code>resources/views/vendor/laravel-crm/*</code>
@@ -172,17 +160,13 @@ php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrm
 
 #### Step 4. Add HasCrmAccess, HasCrmTeams & HasRoles traits to App\User model, see installation Step 8.
 
-### Upgrading from 0.1.x to 0.1.2
-
-#### Step 1. Run the following to update the package & database
-
+#### Step 5. Run the following to the update database and add the default roles/permissions:
 ```bash
-composer require venturedrake/laravel-crm::^0.1
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
 php artisan migrate
+php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
 ```
-
-#### Step 2. Delete previously published package views located in folder <code>resources/views/vendor/laravel-crm/*</code>
 
 <!--- ## Usage --->
 

@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.6.0 - 2021-07-14
+### Added
+- Support for Jetstream/Spark teams
+### Fixed
+- Model observers - https://github.com/venturedrake/laravel-crm/issues/29
+- Assign role instead of sync - https://github.com/venturedrake/laravel-crm/pull/28
+
 ## 0.5.1 - 2021-05-31
 ### Fixed
 - Missing key in lang file
