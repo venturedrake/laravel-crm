@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use App\User;
+use DB;
 use Illuminate\Support\Facades\Hash;
 use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
@@ -18,14 +19,24 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (User::all()->count() < 30) {
-            $users = User::latest()->get();
+        if (config('laravel-crm.teams')) {
+            if (auth()->user()->currentTeam) {
+                $users = auth()->user()->currentTeam->allUsers();
+
+                if ($users->count() > 30) {
+                    $users = $users->paginate(30);
+                }
+            }
         } else {
-            $users = User::latest()->paginate(30);
+            if (User::all()->count() < 30) {
+                $users = User::latest()->get();
+            } else {
+                $users = User::latest()->paginate(30);
+            }
         }
         
         return view('laravel-crm::users.index', [
-            'users' => $users,
+            'users' => $users ?? [],
         ]);
     }
 
@@ -75,7 +86,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
-        ])->save();
+        ]);
 
         $roles = [];
         if ($request->role) {
@@ -85,6 +96,20 @@ class UserController extends Controller
         }
 
         $user->syncRoles($roles);
+
+        if (config('laravel-crm.teams')) {
+            if ($team = auth()->user()->currentTeam) {
+                DB::table('team_user')->insert([
+                    'team_id' => $team->id,
+                    'user_id' => $user->id,
+                    'role' => 'editor', // Default Jetstream role
+                ]);
+                
+                $user->forceFill([
+                    'current_team_id' => $team->id,
+                ])->save();
+            };
+        }
         
         flash(ucfirst(trans('laravel-crm::lang.user_stored')))->success()->important();
 
