@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
@@ -84,6 +86,25 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
         Setting::observe(SettingObserver::class);
+        
+        // Paginate on Collection
+        if (! Collection::hasMacro('paginate')) {
+            Collection::macro(
+                'paginate',
+                function ($perPage = 30, $page = null, $options = []) {
+                    $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+
+                    return (new LengthAwarePaginator(
+                        $this->forPage($page, $perPage),
+                        $this->count(),
+                        $perPage,
+                        $page,
+                        $options
+                    ))
+                        ->withPath('');
+                }
+            );
+        }
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
