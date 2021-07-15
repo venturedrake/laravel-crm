@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.6.1 - 2021-07-15
+### Fixed
+- Users in teams
+
 ## 0.6.0 - 2021-07-14
 ### Added
 - Support for Jetstream/Spark teams

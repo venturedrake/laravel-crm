@@ -104,6 +104,10 @@ class UserController extends Controller
                     'user_id' => $user->id,
                     'role' => 'editor', // Default Jetstream role
                 ]);
+                
+                $user->forceFill([
+                    'current_team_id' => $team->id,
+                ])->save();
             };
         }
         
