@@ -18,7 +18,21 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $usersOnline = \App\User::whereDate('last_online_at', '>=', Carbon::now()->subMinutes(20)->toDateString())->get();
+        if (config('laravel-crm.teams')) {
+            if (auth()->user()->currentTeam) {
+                $usersOnline = auth()->user()->currentTeam->allUsers();
+                foreach ($usersOnline as $userKey => $user) {
+                    if ($user->last_online_at <= Carbon::now()->subMinutes(20)->toDateString()) {
+                        $usersOnline->forget($userKey);
+                    }
+                }
+            } else {
+                $usersOnline = [];
+            }
+        } else {
+            $usersOnline = \App\User::whereDate('last_online_at', '>=', Carbon::now()->subMinutes(20)->toDateString())->get();
+        }
+        
 
         $today = today();
         $startDate = today()->subdays(14);
