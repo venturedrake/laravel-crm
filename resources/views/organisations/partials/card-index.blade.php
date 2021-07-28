@@ -7,7 +7,9 @@
         @endslot
 
         @slot('actions')
+            @can('create crm organisations')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.organisations.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_organization')) }}</a></span>
+            @endcan
         @endslot
 
     @endcomponent
@@ -43,13 +45,19 @@
                     <td></td>
                     <td>{{ $organisation->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
+                        @can('view crm organisations')
                         <a href="{{  route('laravel-crm.organisations.show',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('edit crm organisations')
                         <a href="{{  route('laravel-crm.organisations.edit',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('delete crm organisations')    
                         <form action="{{ route('laravel-crm.organisations.destroy',$organisation) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
                             <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.organization') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
+                        @endcan    
                     </td>
                 </tr>
             @endforeach
