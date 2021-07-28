@@ -7,10 +7,12 @@
         @endslot
 
         @slot('actions')
+            @can('create crm users')
             <span class="float-right">
                 <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_user')) }}</a>
                 <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.invite')) }}"><span class="fa fa-paper-plane"></span> {{ ucfirst(__('laravel-crm::lang.invite_user')) }}</a>
             </span>
+            @endcan
         @endslot
 
     @endcomponent
@@ -45,13 +47,19 @@
                     <td>{{ ($user->last_online_at) ?  \Carbon\Carbon::parse($user->last_online_at)->diffForHumans() :  'Never' }}</td>
                     <td>{{ ($user->crm_access) ? 'Yes' : 'No' }}</td>
                     <td class="disable-link text-right">
+                        @can('view crm users')
                         <a href="{{  route('laravel-crm.users.show',$user) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('edit crm users')
                         <a href="{{  route('laravel-crm.users.edit',$user) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('delete crm users')
                         <form action="{{ route('laravel-crm.users.destroy',$user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
                             <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.user') }}" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
+                        @endcan    
                     </td>
                 </tr>
             @endforeach

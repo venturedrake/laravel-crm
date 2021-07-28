@@ -9,12 +9,16 @@
         @slot('actions')
             <span class="float-right">
                 <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.users.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_users')) }}</a> | 
+                @can('edit crm users')
                 <a href="{{ url(route('laravel-crm.users.edit', $user)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                 <form action="{{ route('laravel-crm.users.destroy',$user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                @endcan
+                @can('delete crm users')
+                <form action="{{ route('laravel-crm.users.destroy',$user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                      {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.user') }}" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
+                @endcan    
             </span>
         @endslot
 
@@ -36,11 +40,13 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.CRM_Role')) }}</dt>
                     <dd class="col-sm-9">{{ $user->roles()->first()->name ?? null }}</dd>
                 </dl>
+                @can('view crm teams')
                 <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.teams')) }} ({{ $user->crmTeams->count() }})</span></h6>
                 <hr />
                 @foreach($user->crmTeams as $team)
                     <p><span class="fa fa-users" aria-hidden="true"></span> {{ $team->name }}</p>
                 @endforeach
+                @endcan    
             </div>
             <div class="col-sm-6">
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.activities')) }}</h6>
