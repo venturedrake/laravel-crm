@@ -80,6 +80,7 @@ return [
     'expected_close_date' => 'expected close date',
     'add_person' => 'add person',
     'name' => 'name',
+    'edit_deal' => 'edit deal',
     'open_deals' => 'open deals',
     'lost_deals' => 'lost deals',
     'won_deals' => 'won deals',
