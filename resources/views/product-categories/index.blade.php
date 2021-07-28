@@ -9,7 +9,7 @@
         <div class="card-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="roles" role="tabpanel">
-                    <h3 class="mb-3"> {{ ucfirst(__('laravel-crm::lang.product_categories')) }}  <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.product-categories.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_product_category')) }}</a></span></h3>
+                    <h3 class="mb-3"> {{ ucfirst(__('laravel-crm::lang.product_categories')) }}  @can('create crm product categories')<span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.product-categories.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_product_category')) }}</a></span>@endcan</h3>
                     <div class="table-responsive">
                         <table class="table mb-0 card-table table-hover">
                             <thead>
@@ -29,13 +29,19 @@
                                     <td>{{ $productCategory->updated_at->toFormattedDateString() }}</td>
                                     <td>{{ $productCategory->products->count() }}</td>
                                     <td class="disable-link text-right">
+                                        @can('view crm product categories')
                                         <a href="{{  route('laravel-crm.product-categories.show',$productCategory) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
-                                        <a href="{{  route('laravel-crm.product-categories.edit',$productCategory) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                                        @endcan
+                                        @can('edit crm product categories')
+                                            <a href="{{  route('laravel-crm.product-categories.edit',$productCategory) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                                        @endcan
+                                        @can('delete crm product categories')
                                         <form action="{{ route('laravel-crm.product-categories.destroy',$productCategory) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                             {{ method_field('DELETE') }}
                                             {{ csrf_field() }}
                                             <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product_category') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach
