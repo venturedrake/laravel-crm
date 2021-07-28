@@ -105,6 +105,7 @@ return [
     'person_stored' => 'person stored',
     'person_updated' => 'person updated',
     'person_deleted' => 'person deleted',
+    'edit_user' => 'edit user',
     'user_stored' => 'user stored',
     'user_updated' => 'user updated',
     'user_deleted' => 'user deleted',
