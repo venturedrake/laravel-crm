@@ -9,14 +9,20 @@
         @slot('actions')
             <span class="float-right">
                 <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.leads.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}</a> | 
+                @can('edit crm leads')
                 <a href="{{ route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.convert')) }}</a>
+                @endcan
                 @include('laravel-crm::partials.navs.activities') |
+                @can('edit crm leads')
                 <a href="{{ url(route('laravel-crm.leads.edit', $lead)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                @endcan
+                @can('delete crm leads')
                 <form action="{{ route('laravel-crm.leads.destroy',$lead) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.lead') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
+                @endcan
             </span>
         @endslot
 

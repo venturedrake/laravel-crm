@@ -7,7 +7,9 @@
         @endslot
     
         @slot('actions')
+            @can('create crm products')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.products.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_product')) }}</a></span>
+            @endcan
         @endslot
 
     @endcomponent
@@ -40,13 +42,19 @@
                     <td>{{ ($product->active == 1) ? 'YES' : 'NO' }}</td>
                     <td>{{ $product->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
+                        @can('view crm products')
                         <a href="{{  route('laravel-crm.products.show',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('edit crm products')
                         <a href="{{  route('laravel-crm.products.edit',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('delete crm products')    
                         <form action="{{ route('laravel-crm.products.destroy',$product) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
                             <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
+                        @endcan    
                     </td>
                 </tr>
             @endforeach

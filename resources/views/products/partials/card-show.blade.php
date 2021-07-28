@@ -10,12 +10,16 @@
 
             <span class="float-right">
                 <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.products.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_products')) }}</a> |
+                @can('edit crm products')
                 <a href="{{ url(route('laravel-crm.products.edit', $product)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                @endcan
+                @can('delete crm products')
                 <form action="{{ route('laravel-crm.products.destroy',$product) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
+                @endcan    
             </span>
             
         @endslot
@@ -73,9 +77,11 @@
                 <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.variations')) }}</h6>
                 <hr />
                 ...
+                @can('view crm deals')
                 <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.deals')) }}</h6>
                 <hr />
                 ...
+                @endcan    
             </div>
         </div>
         

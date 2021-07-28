@@ -53,7 +53,7 @@ class LeadController extends Controller
     public function index()
     {
         if (Lead::whereNull('converted_at')->get()->count() < 30) {
-            $leads = Lead::latest()->get();
+            $leads = Lead::whereNull('converted_at')->latest()->get();
         } else {
             $leads = Lead::whereNull('converted_at')->latest()->paginate(30);
         }

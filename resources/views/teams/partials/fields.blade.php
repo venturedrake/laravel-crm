@@ -7,7 +7,7 @@
        ])
     </div>
     <div class="col-sm-6">
-        <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.people')) }}</h6>
+        <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.users')) }}</h6>
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
