@@ -7,7 +7,9 @@
         @endslot
 
         @slot('actions')
+            @can('create crm deals')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.deals.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_deal')) }}</a></span>
+            @endcan
         @endslot
 
     @endcomponent
@@ -41,19 +43,27 @@
                     <td>{{ ($deal->expected_close) ? $deal->expected_close->toFormattedDateString() : null }}</td>
                     <td>{{ $deal->assignedToUser->name ?? null }}</td>
                     <td class="disable-link text-right">
+                        @can('edit crm deals')
                         @if(!$deal->closed_at)
                             <a href="{{  route('laravel-crm.deals.won',$deal) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>
                             <a href="{{  route('laravel-crm.deals.lost',$deal) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.lost')) }}</a>
                         @else
                             <a href="{{  route('laravel-crm.deals.reopen',$deal) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.reopen')) }}</a>
                         @endif
+                        @endcan
+                        @can('view crm deals')
                         <a href="{{  route('laravel-crm.deals.show',$deal) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('edit crm deals')    
                         <a href="{{  route('laravel-crm.deals.edit',$deal) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                        @endcan
+                        @can('delete crm deals')
                         <form action="{{ route('laravel-crm.deals.destroy',$deal) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
                             <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.deal') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
+                        @endcan
                     </td>
                 </tr>
             @endforeach
