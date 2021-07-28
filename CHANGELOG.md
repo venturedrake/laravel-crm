@@ -16,9 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--- ## 1.0.0 - 2021-XX-XX
 ### Added
+- Users in teams
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 0.6.2 - 2021-07-28
+### Added
+- blade directives to show/hide CRUD buttons
+### Fixed
+- Missing lang keys
+- Bug where converted leads were still showing
+- Hide on team users from latest online users dashboard widget
 
 ## 0.6.1 - 2021-07-15
 ### Fixed
