@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.6.3 - 2021-07-29
+### Fixed
+- Issue with publishing migrations
+
 ## 0.6.2 - 2021-07-28
 ### Added
 - blade directives to show/hide CRUD buttons
