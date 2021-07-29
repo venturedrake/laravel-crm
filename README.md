@@ -151,7 +151,7 @@ php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrm
 #### Step 1. Run the following to the update package:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.6
+composer require venturedrake/laravel-crm:^0.6
 ```
 
 #### Step 2. Delete previously published package views located in <code>resources/views/vendor/laravel-crm/*</code>
