@@ -209,7 +209,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
      */
     protected function getMigrationFileName(Filesystem $filesystem, $filename, $order): string
     {
-        $timestamp = date('Y_m_d_Hi').(date('s') + $order);
+        $timestamp = date('Y_m_d_His',  strtotime("+$order sec"));
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
             ->flatMap(function ($path) use ($filesystem, $filename) {
