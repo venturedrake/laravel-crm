@@ -35,8 +35,16 @@ class TeamController extends Controller
      */
     public function create()
     {
+        if (config('laravel-crm.teams')) {
+            if (auth()->user()->currentTeam) {
+                $users = auth()->user()->currentTeam->allUsers();
+            }
+        } else {
+            $users = User::all();
+        }
+        
         return view('laravel-crm::teams.create', [
-            'users' => User::all(),
+            'users' => $users,
         ]);
     }
 
@@ -85,9 +93,17 @@ class TeamController extends Controller
      */
     public function edit(Team $team)
     {
+        if (config('laravel-crm.teams')) {
+            if (auth()->user()->currentTeam) {
+                $users = auth()->user()->currentTeam->allUsers();
+            }
+        } else {
+            $users = User::all();
+        }
+        
         return view('laravel-crm::teams.edit', [
             'team' => $team,
-            'users' => User::all(),
+            'users' => $users,
         ]);
     }
 
