@@ -29,8 +29,18 @@ function users($null = true)
     if ($null) {
         $array[''] = '';
     }
+    
+    $users = [];
 
-    foreach (\App\User::all() as $item) {
+    if (config('laravel-crm.teams')) {
+        if (auth()->user()->currentTeam) {
+            $users = auth()->user()->currentTeam->allUsers();
+        }
+    } else {
+        $users = User::all();
+    }
+
+    foreach ($users as $item) {
         $array[$item->id] = $item->name;
     }
 
