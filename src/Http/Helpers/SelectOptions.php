@@ -2,9 +2,9 @@
 
 namespace VentureDrake\LaravelCrm\Http\Helpers\SelectOptions;
 
+use \App\User;
 use PragmaRX\Countries\Package\Countries;
 use PragmaRX\Countries\Update\Timezones;
-use \App\User;
 
 function optionsFromModel($model, $null = true)
 {

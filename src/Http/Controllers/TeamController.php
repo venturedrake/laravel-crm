@@ -40,7 +40,7 @@ class TeamController extends Controller
                 $users = auth()->user()->currentTeam->allUsers();
             }
         } else {
-            $users = User::all();
+            $users = User::orderBy('name', 'ASC')->get();
         }
         
         return view('laravel-crm::teams.create', [
@@ -98,7 +98,7 @@ class TeamController extends Controller
                 $users = auth()->user()->currentTeam->allUsers();
             }
         } else {
-            $users = User::all();
+            $users = User::orderBy('name', 'ASC')->get();
         }
         
         return view('laravel-crm::teams.edit', [

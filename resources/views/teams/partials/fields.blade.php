@@ -12,7 +12,7 @@
         'name' => 'team_users',
         'label' => null,
         'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel($users, null),
-        'value' => old('users', (isset($team)) ? $team->users->pluck('id')->toArray() : null)
+        'value' => old('users', (isset($team)) ? $team->users()->orderBy('name','ASC')->get()->pluck('id')->toArray() : null)
       ])
     </div>
 </div>

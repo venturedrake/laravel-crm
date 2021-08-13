@@ -216,7 +216,14 @@ const appJquery = function() {
             $("select[name^='team_users']").bootstrapDualListbox({
                 nonSelectedListLabel: 'Not on Team',
                 selectedListLabel: 'On Team',
-                preserveSelectionOnMove: 'moved',
+                moveOnSelect: false,
+                infoText: false,
+                iconsPrefix: 'fa'
+            });
+
+            $("select[name^='user_teams']").bootstrapDualListbox({
+                nonSelectedListLabel: 'Not on Team',
+                selectedListLabel: 'On Team',
                 moveOnSelect: false,
                 infoText: false,
                 iconsPrefix: 'fa'
