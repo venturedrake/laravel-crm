@@ -1,5 +1,5 @@
 <div class="form-group @error($name) text-danger @enderror">
-    <label for="{{ $name }}[]">{{ $label }}</label>
+    @isset($label)<label for="{{ $name }}[]">{{ $label }}</label>@endisset
     @isset($prepend)
     <div class="input-group">
     <div class="input-group-prepend">

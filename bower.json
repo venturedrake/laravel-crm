@@ -1,0 +1,21 @@
+{
+  "name": "laravel-crm",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Andrew Drake <andrew@venturedrake.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-duallistbox": "^4.0.2"
+  }
+}

@@ -61,8 +61,8 @@ class TeamController extends Controller
             'user_id' => auth()->user()->id,
         ]);
 
-        if ($request->user) {
-            $team->users()->sync(array_keys($request->user));
+        if ($request->team_users) {
+            $team->users()->sync($request->team_users);
         } else {
             $team->users()->sync([]);
         }
@@ -120,8 +120,8 @@ class TeamController extends Controller
             'name' => $request->name,
         ]);
         
-        if ($request->user) {
-            $team->users()->sync(array_keys($request->user));
+        if ($request->team_users) {
+            $team->users()->sync($request->team_users);
         } else {
             $team->users()->sync([]);
         }

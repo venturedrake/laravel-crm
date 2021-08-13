@@ -111,3 +111,26 @@ dt {
 #dealProducts .row:not(:first-child) label{
   display: none;
 }
+
+.bootstrap-duallistbox-container .btn-outline-secondary,
+.bootstrap-duallistbox-container select{
+  color: #495057 !important;
+  border-color: #ced4da !important;
+}
+
+.bootstrap-duallistbox-container select {
+  padding: 0;
+}
+
+.bootstrap-duallistbox-container select option {
+  padding: .1875rem .625rem;
+  line-height: 1;
+}
+
+.bootstrap-duallistbox-container select:focus {
+  color: #212529;
+  background-color: #fff;
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}

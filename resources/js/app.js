@@ -3,6 +3,7 @@ require('bootstrap4-toggle/js/bootstrap4-toggle.min');
 require('jquery-datetimepicker/build/jquery.datetimepicker.full')
 require('bootstrap-4-autocomplete/dist/bootstrap-4-autocomplete')
 require('chart.js/dist/chart.min')
+require('../../bower_components/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')
 
 const Swal = require('sweetalert2')
 
@@ -210,6 +211,16 @@ const appJquery = function() {
                     }
                 });
             }
+            
+            // bootstrap-duallistbox
+            $("select[name^='team_users']").bootstrapDualListbox({
+                nonSelectedListLabel: 'Not on Team',
+                selectedListLabel: 'On Team',
+                preserveSelectionOnMove: 'moved',
+                moveOnSelect: false,
+                infoText: false,
+                iconsPrefix: 'fa'
+            });
         },
 
         onSelectPerson: function (item, element) {
