@@ -46,6 +46,12 @@
         @endif
     </div>
     <div class="col-sm-6">
-        ...
+        <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.teams')) }}</h6>
+        @include('laravel-crm::partials.form.multiselect',[
+        'name' => 'user_teams',
+        'label' => null,
+        'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel($teams, null),
+        'value' => old('user_teams', (isset($user)) ? $user->crmTeams()->orderBy('name','ASC')->get()->pluck('id')->toArray() : null)
+      ])
     </div>
 </div>

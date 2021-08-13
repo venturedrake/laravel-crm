@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
 use VentureDrake\LaravelCrm\Models\Role;
+use VentureDrake\LaravelCrm\Models\Team;
 
 class UserController extends Controller
 {
@@ -70,7 +71,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::users.create');
+        $teams = Team::orderBy('name', 'ASC')->get();
+        
+        return view('laravel-crm::users.create', [
+            'teams' => $teams,
+        ]);
     }
 
     /**
@@ -110,6 +115,12 @@ class UserController extends Controller
                 ])->save();
             };
         }
+
+        if ($request->user_teams) {
+            $user->crmTeams()->sync($request->user_teams);
+        } else {
+            $user->crmTeams()->sync([]);
+        }
         
         flash(ucfirst(trans('laravel-crm::lang.user_stored')))->success()->important();
 
@@ -137,8 +148,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $teams = Team::orderBy('name', 'ASC')->get();
+        
         return view('laravel-crm::users.edit', [
             'user' => $user,
+            'teams' => $teams,
         ]);
     }
 
@@ -165,6 +179,12 @@ class UserController extends Controller
         }
 
         $user->syncRoles($roles);
+
+        if ($request->user_teams) {
+            $user->crmTeams()->sync($request->user_teams);
+        } else {
+            $user->crmTeams()->sync([]);
+        }
         
         flash(ucfirst(trans('laravel-crm::lang.user_updated')))->success()->important();
 
