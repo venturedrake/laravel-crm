@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Policies;
 
 use App\User;
+use App\User as UpdatingUser;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -29,7 +30,7 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function view(User $user, User $model)
+    public function view(User $user, UpdatingUser $updatingUser)
     {
         if ($user->hasPermissionTo('view crm users')) {
             return true;
@@ -56,7 +57,7 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function update(User $user, User $model)
+    public function update(User $user, UpdatingUser $updatingUser)
     {
         if ($user->hasPermissionTo('edit crm users')) {
             return true;
@@ -70,7 +71,7 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user, UpdatingUser $updatingUser)
     {
         if ($user->hasPermissionTo('delete crm users')) {
             return true;
@@ -84,7 +85,7 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user, UpdatingUser $updatingUser)
     {
         if ($user->hasPermissionTo('delete crm users')) {
             return true;
@@ -98,7 +99,7 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user, UpdatingUser $updatingUser)
     {
         return false;
     }
