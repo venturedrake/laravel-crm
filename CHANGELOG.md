@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.6.5 - 2021-08-29
+### Fixed
+- Issue with user policy when user in models directory
+
 ## 0.6.4 - 2021-08-13
 ### Changed
 - Dual listbox for managing crm team users
