@@ -22,8 +22,6 @@ class Person extends Model
         'middle_name',
         'last_name',
         'maiden_name',
-        'birthday',
-        'gender',
     ];
 
     protected $searchable = [

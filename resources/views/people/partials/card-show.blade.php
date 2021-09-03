@@ -43,6 +43,10 @@
                     <dd class="col-sm-9">{{ $person->middle_name }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.last_name')) }}</dt>
                     <dd class="col-sm-9">{{ $person->last_name }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.gender')) }}</dt>
+                    <dd class="col-sm-9">{{ ucfirst($person->gender) }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.birthday')) }}</dt>
+                    <dd class="col-sm-9">{{ $person->birthday }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
                     <dd class="col-sm-9">
                         @isset($email)
