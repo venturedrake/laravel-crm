@@ -38,6 +38,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\User' => \VentureDrake\LaravelCrm\Policies\UserPolicy::class,
+        'App\Models\User' => \VentureDrake\LaravelCrm\Policies\UserPolicy::class,
         'VentureDrake\LaravelCrm\Models\Team' => \VentureDrake\LaravelCrm\Policies\TeamPolicy::class,
         'VentureDrake\LaravelCrm\Models\Setting' => \VentureDrake\LaravelCrm\Policies\SettingPolicy::class,
         'VentureDrake\LaravelCrm\Models\Role' => \VentureDrake\LaravelCrm\Policies\RolePolicy::class,
