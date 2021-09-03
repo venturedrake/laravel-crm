@@ -92,6 +92,6 @@ return [
     |
     */
     
-    'encrypt_db_fields' => env('LARAVEL_CRM_ENCRYPT_DB_FIELDS', true),
+    'encrypt_db_fields' => env('LARAVEL_CRM_ENCRYPT_DB_FIELDS', false),
     
 ];

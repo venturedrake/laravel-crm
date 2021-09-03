@@ -34,8 +34,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.3",
+        "php": "^7.3|^7.4|^8.0",
         "cknow/laravel-money": "^4.0|^5.0|^6.0",
+        "doctrine/dbal": "^2.0|^3.0",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/support": "^6.0|^7.0|^8.0",
         "laracasts/flash": "^3.2",
