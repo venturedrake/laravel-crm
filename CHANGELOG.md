@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.6.6 - 2021-09-03
+### Changed
+- Default field level encryption security setting to false
+### Fixed
+- Issue with table field size when using field level encryption
+
 ## 0.6.5 - 2021-08-29
 ### Fixed
 - Issue with user policy when user in models directory
