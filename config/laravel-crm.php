@@ -35,6 +35,15 @@ return [
     |
     | For Spark see https://spark-classic.laravel.com/docs/11.0/teams
     |
+    | IMPORTANT! This package uses the Spatie Permissions package to manage
+    | user roles and permissions, which by default are system wide. Howwever
+    | there is support added for roles & permissions at team level. To enable
+    | you will need to adjust the settings in app/config/permission.php to
+    | the following:
+    |
+    | 'permission' => VentureDrake\LaravelCrm\Models\Permission::class
+    | 'role' => VentureDrake\LaravelCrm\Models\Role::class,
+    |
     */
 
     'teams' => env('LARAVEL_CRM_TEAMS', false),
