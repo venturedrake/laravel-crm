@@ -18,6 +18,8 @@ class AddTeamIdToRolesPermissionsTables extends Migration
             Schema::table('roles', function (Blueprint $table) {
                $table->unsignedBigInteger('team_id')->index()->nullable();
                $table->boolean('global')->default(false);
+               $table->dropUnique(['name', 'guard_name']);
+               $table->unique(['name', 'guard_name','team_id']);
             });
         }  
                 
@@ -26,6 +28,8 @@ class AddTeamIdToRolesPermissionsTables extends Migration
             Schema::table('permissions', function (Blueprint $table) {
                $table->unsignedBigInteger('team_id')->index()->nullable();
                $table->boolean('global')->default(false);
+               $table->dropUnique(['name', 'guard_name']);
+               $table->unique(['name', 'guard_name','team_id']);
             });
         }  
     }
@@ -39,10 +43,14 @@ class AddTeamIdToRolesPermissionsTables extends Migration
     {
         Schema::table('roles', function (Blueprint $table) {
             $table->dropColumn(['team_id','global']);
+            $table->dropUnique(['name', 'guard_name', 'team_id']);
+            $table->unique(['name', 'guard_name']);
         });
         
         Schema::table('permissions', function (Blueprint $table) {
+            $table->dropUnique(['name', 'guard_name', 'team_id']);
             $table->dropColumn(['team_id','global']);
+            $table->unique(['name', 'guard_name']);
         });
     }
 }

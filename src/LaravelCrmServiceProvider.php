@@ -28,6 +28,8 @@ use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
+use VentureDrake\LaravelCrm\Observers\TeamObserver;
+use VentureDrake\LaravelCrm\Observers\UserObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -58,6 +60,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     {
         if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
             class_alias(config("auth.providers.users.model"), 'App\User');
+            class_alias('App\Models\Team', 'App\Team');
         }
         
         $this->registerPolicies();
@@ -87,6 +90,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
         Setting::observe(SettingObserver::class);
+
+        if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
+            \App\Models\Team::observe(TeamObserver::class);
+            \App\Models\User::observe(UserObserver::class);
+        } else {
+            \App\Team::observe(TeamObserver::class);
+            \App\User::observe(UserObserver::class);
+        }
         
         // Paginate on Collection
         if (! Collection::hasMacro('paginate')) {
