@@ -25,7 +25,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        //
     }
 
     /**
@@ -47,7 +47,7 @@ class UserObserver
      */
     public function updated(User $user)
     {
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        //
     }
 
     /**

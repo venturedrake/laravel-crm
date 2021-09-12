@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.6.7 - 2021-09-11
+### Added
+- Roles & Permissions team support
+
 ## 0.6.6 - 2021-09-03
 ### Changed
 - Default field level encryption security setting to false

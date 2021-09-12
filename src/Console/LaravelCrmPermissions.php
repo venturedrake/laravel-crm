@@ -1,0 +1,117 @@
+<?php
+
+namespace VentureDrake\LaravelCrm\Console;
+
+use Carbon\Carbon;
+use DB;
+use Illuminate\Console\Command;
+use Illuminate\Support\Composer;
+
+class LaravelCrmPermissions extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'laravelcrm:permissions';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Install Laravel CRM package';
+
+    /**
+     * The Composer instance.
+     *
+     * @var \Illuminate\Foundation\Composer
+     */
+    protected $composer;
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct(Composer $composer)
+    {
+        parent::__construct();
+        $this->composer = $composer;
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $this->info('Updating LaravelCRM Permissions...');
+
+        $this->comment('Clearing permissions cache');
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        
+        foreach (DB::table('teams')->get() as $team) {
+            foreach (DB::table('roles')
+                         ->whereNull('team_id')
+                         ->get() as $role) {
+                $this->info('Inserting role '.$role->name.' for team '.$team->name);
+                
+                DB::table('roles')->updateOrInsert([
+                    'name' => $role->name,
+                    'guard_name' => $role->guard_name,
+                    'description' => $role->description,
+                    'crm_role' => $role->crm_role,
+                    'team_id' => $team->id,
+                ], [
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+
+                if ($newRole = DB::table('roles')->where([
+                    'name' => $role->name,
+                    'guard_name' => $role->guard_name,
+                    'description' => $role->description,
+                    'crm_role' => $role->crm_role,
+                    'team_id' => $team->id,
+                ])->first()) {
+                    foreach (DB::table('permissions')
+                                 ->leftJoin('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+                                 ->where('role_has_permissions.role_id', $role->id)
+                                 ->get() as $permission) {
+                        $this->info('Inserting permission '.$permission->name.' for role '.$role->name);
+                        
+                        DB::table('permissions')->updateOrInsert([
+                            'name' => $permission->name,
+                            'guard_name' => $permission->guard_name,
+                            'description' => $permission->description,
+                            'crm_permission' => $permission->crm_permission,
+                            'team_id' => $team->id,
+                        ], [
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ]);
+
+                        if ($newPermission = DB::table('permissions')->where([
+                            'name' => $permission->name,
+                            'guard_name' => $permission->guard_name,
+                            'description' => $permission->description,
+                            'crm_permission' => $permission->crm_permission,
+                            'team_id' => $team->id,
+                        ])->first()) {
+                            DB::table('role_has_permissions')->updateOrInsert([
+                                'permission_id' => $newPermission->id,
+                                'role_id' => $newRole->id,
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        $this->info('LaravelCRM Permissions Update Complete.');
+    }
+}

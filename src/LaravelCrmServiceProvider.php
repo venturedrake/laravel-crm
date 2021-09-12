@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
+use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
@@ -90,13 +91,17 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
         Setting::observe(SettingObserver::class);
-
-        if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
-            \App\Models\Team::observe(TeamObserver::class);
+        
+        if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
         } else {
-            \App\Team::observe(TeamObserver::class);
             \App\User::observe(UserObserver::class);
+        }
+
+        if (class_exists('App\Models\Team')) {
+            \App\Models\Team::observe(TeamObserver::class);
+        } elseif (class_exists('App\Team')) {
+            \App\Team::observe(TeamObserver::class);
         }
         
         // Paginate on Collection
@@ -175,6 +180,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             // Registering package commands.
             $this->commands([
                 LaravelCrmInstall::class,
+                LaravelCrmPermissions::class,
             ]);
 
             // Register the model factories
