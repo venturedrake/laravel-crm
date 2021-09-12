@@ -29,6 +29,12 @@ class HasCrmAccess
             auth()->user()->forceFill([
                 'crm_access' => 1,
             ])->save();
+        } elseif (config('laravel-crm.teams') && auth()->user()->currentTeam->user_id == auth()->user()->id && ! auth()->user()->hasRole('Owner')) {
+            auth()->user()->assignRole('Owner');
+
+            auth()->user()->forceFill([
+                'crm_access' => 1,
+            ])->save();
         }
         
         return $next($request);

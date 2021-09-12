@@ -21,7 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
-## 0.6.7 - 2021-09-11
+## 0.6.8 - 2021-09-12
+### Fixed
+- Roles & Permissions team owner role missing
+
+## 0.6.7 - 2021-09-12
 ### Added
 - Roles & Permissions team support
 
