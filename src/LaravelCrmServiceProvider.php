@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
+use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
@@ -28,6 +29,8 @@ use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
+use VentureDrake\LaravelCrm\Observers\TeamObserver;
+use VentureDrake\LaravelCrm\Observers\UserObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -58,6 +61,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     {
         if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
             class_alias(config("auth.providers.users.model"), 'App\User');
+            class_alias('App\Models\Team', 'App\Team');
         }
         
         $this->registerPolicies();
@@ -87,6 +91,18 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
         Setting::observe(SettingObserver::class);
+        
+        if (class_exists('App\Models\User')) {
+            \App\Models\User::observe(UserObserver::class);
+        } else {
+            \App\User::observe(UserObserver::class);
+        }
+
+        if (class_exists('App\Models\Team')) {
+            \App\Models\Team::observe(TeamObserver::class);
+        } elseif (class_exists('App\Team')) {
+            \App\Team::observe(TeamObserver::class);
+        }
         
         // Paginate on Collection
         if (! Collection::hasMacro('paginate')) {
@@ -141,6 +157,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_deal_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_deal_products_table.php', 10),
                 __DIR__ . '/../database/migrations/add_global_to_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_global_to_laravel_crm_settings_table.php', 11),
                 __DIR__ . '/../database/migrations/alter_fields_for_encryption_on_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'alter_fields_for_encryption_on_laravel_crm_tables.php', 12),
+                __DIR__ . '/../database/migrations/add_team_id_to_roles_permissions_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_team_id_to_roles_permissions_tables.php', 13),
             ], 'migrations');
 
             // Publishing the seeders
@@ -163,6 +180,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             // Registering package commands.
             $this->commands([
                 LaravelCrmInstall::class,
+                LaravelCrmPermissions::class,
             ]);
 
             // Register the model factories

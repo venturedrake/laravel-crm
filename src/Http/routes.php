@@ -503,7 +503,7 @@ Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function
         ->middleware(['can:delete,role']);
 });
 
-/* CRM routes (AJAX) */
+/* CRM (AJAX) */
 Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function () {
     Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {
         Route::get('{person}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@autocomplete')
@@ -524,3 +524,8 @@ Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function (
             ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Product']);
     });
 });
+
+/* Jetstream */
+Route::put('/current-team', 'VentureDrake\LaravelCrm\Http\Controllers\Jetstream\CurrentTeamController@update')
+    ->name('current-team.update')
+    ->middleware(['auth', 'verified']);

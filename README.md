@@ -29,6 +29,7 @@ This package will add CRM functionality to your laravel projects
  - Secure registration & login
  - Reset forgotten password
  - Laravel Jetstream/Spark teams support
+ - Team level roles & permissions
 
 ## Installation (10-15mins)
 
