@@ -98,8 +98,6 @@ class PersonController extends Controller
      */
     public function show(Person $person)
     {
-        $email = $person->getPrimaryEmail();
-        $phone = $person->getPrimaryPhone();
         $address = $person->getPrimaryAddress();
         $organisation = $person->organisation;
         if ($organisation) {
@@ -108,8 +106,8 @@ class PersonController extends Controller
         
         return view('laravel-crm::people.show', [
             'person' => $person,
-            'email' => $email ?? null,
-            'phone' => $phone ?? null,
+            'emails' => $person->emails,
+            'phones' => $person->phones,
             'address' => $address ?? null,
             'organisation' => $organisation ?? null,
             'organisation_address' => $organisationAddress ?? null,
