@@ -47,14 +47,8 @@
                     <dd class="col-sm-9">{{ ucfirst($person->gender) }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.birthday')) }}</dt>
                     <dd class="col-sm-9">{{ $person->birthday }}</dd>
-                    @foreach($emails as $email)
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
-                        <dd class="col-sm-9">
-                            @isset($email)
-                                <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }}{{ ($email->primary) ? ', Primary' : null }})
-                            @endisset
-                        </dd>
-                    @endforeach
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
+                    <dd class="col-sm-9">{{ $person->description }}</dd>
                     @foreach($phones as $phone)
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.phone')) }}</dt>
                         <dd class="col-sm-9">
@@ -63,8 +57,14 @@
                             @endisset
                         </dd>
                     @endforeach
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
-                    <dd class="col-sm-9">{{ $person->description }}</dd>
+                    @foreach($emails as $email)
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
+                        <dd class="col-sm-9">
+                            @isset($email)
+                                <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }}{{ ($email->primary) ? ', Primary' : null }})
+                            @endisset
+                        </dd>
+                    @endforeach
                 </dl>
                 <h6 class="mt-4 text-uppercase"> {{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />

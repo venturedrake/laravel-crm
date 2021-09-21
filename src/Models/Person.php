@@ -60,7 +60,7 @@ class Person extends Model
     }
 
     /**
-     * Get all of the lead's emails.
+     * Get all of the persons emails.
      */
     public function emails()
     {
@@ -73,7 +73,7 @@ class Person extends Model
     }
 
     /**
-     * Get all of the lead's phone numbers.
+     * Get all of the persons phone numbers.
      */
     public function phones()
     {

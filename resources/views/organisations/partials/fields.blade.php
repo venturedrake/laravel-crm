@@ -25,6 +25,20 @@
         ])
     </div>
     <div class="col-sm-6">
+        
+        @livewire('phone-edit', [
+        'phones' => $phones ?? null,
+        'old' => old('phones')
+        ])
+
+        @livewire('email-edit', [
+        'emails' => $emails ?? null,
+        'old' => old('emails')
+        ])
+
+        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.addresses')) }}</span> <span class="float-right"><a href="#" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
+        <hr />
+
         @include('laravel-crm::partials.form.text',[
           'name' => 'line1',
           'label' => ucfirst(__('laravel-crm::lang.address_line_1')),

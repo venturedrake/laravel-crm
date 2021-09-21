@@ -78,6 +78,8 @@ class OrganisationController extends Controller
         
         return view('laravel-crm::organisations.show', [
             'organisation' => $organisation,
+            'emails' => $organisation->emails,
+            'phones' => $organisation->phones,
             'address' => $address,
         ]);
     }
@@ -94,6 +96,8 @@ class OrganisationController extends Controller
         
         return view('laravel-crm::organisations.edit', [
             'organisation' => $organisation,
+            'emails' => $organisation->emails,
+            'phones' => $organisation->phones,
             'address' => $address,
         ]);
     }

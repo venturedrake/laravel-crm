@@ -166,6 +166,8 @@ class PersonService
     
     protected function updatePersonEmails($person, $emails)
     {
+        $emailIds = [];
+        
         if ($emails) {
             foreach ($emails as $emailRequest) {
                 if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
@@ -174,14 +176,24 @@ class PersonService
                         'type' => $emailRequest['type'] ,
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
+                    
+                    $emailIds[] = $email->id;
                 } elseif ($emailRequest['address']) {
-                    $person->emails()->create([
+                    $email = $person->emails()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'address' => $emailRequest['address'],
                         'type' => $emailRequest['type'] ,
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
+
+                    $emailIds[] = $email->id;
                 }
+            }
+        }
+
+        foreach ($person->emails as $email) {
+            if (! in_array($email->id, $emailIds)) {
+                $email->delete();
             }
         }
     }

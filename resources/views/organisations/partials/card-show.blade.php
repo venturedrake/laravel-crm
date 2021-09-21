@@ -39,10 +39,26 @@
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
                     <dd class="col-sm-9">{{ $organisation->name }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
-                    <dd class="col-sm-9">{{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                     <dd class="col-sm-9">{{ $organisation->description }}</dd>
+                    @foreach($phones as $phone)
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.phone')) }}</dt>
+                        <dd class="col-sm-9">
+                            @isset($phone)
+                                <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }}{{ ($phone->primary) ? ', Primary' : null }})
+                            @endisset
+                        </dd>
+                    @endforeach
+                    @foreach($emails as $email)
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
+                        <dd class="col-sm-9">
+                            @isset($email)
+                                <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }}{{ ($email->primary) ? ', Primary' : null }})
+                            @endisset
+                        </dd>
+                    @endforeach
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
+                    <dd class="col-sm-9">{{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }}</dd>
                 </dl>
                 @can('view crm people')
                 <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.people')) }} ({{ $organisation->people->count() }})</span>@can('create crm people')<span class="float-right"><a href="{{ url(route('laravel-crm.people.create',['model' => 'organisation', 'id' => $organisation->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
