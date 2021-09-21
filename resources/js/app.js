@@ -228,6 +228,7 @@ const appJquery = function() {
                 infoText: false,
                 iconsPrefix: 'fa'
             });
+            
         },
 
         onSelectPerson: function (item, element) {

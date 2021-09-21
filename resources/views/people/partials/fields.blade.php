@@ -93,40 +93,18 @@
        ])
     </div>
     <div class="col-sm-6">
-        <div class="row">
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                 'name' => 'phone',
-                 'label' => ucfirst(__('laravel-crm::lang.phone')),
-                 'value' => old('phone', $phone->number ?? null)
-              ])
-            </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
-                 'name' => 'phone_type',
-                 'label' => ucfirst(__('laravel-crm::lang.type')),
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(),
-                 'value' => old('phone_type', $phone->type ??  'mobile')
-              ])
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                 'name' => 'email',
-                 'label' => ucfirst(__('laravel-crm::lang.email')),
-                 'value' => old('email', $email->address ?? null),
-              ])
-            </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
-                 'name' => 'email_type',
-                 'label' => ucfirst(__('laravel-crm::lang.type')),
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(),
-                 'value' => old('email_type', $email->type ?? 'work')
-              ])
-            </div>
-        </div>
+        
+        @livewire('phone-edit', [
+        'phones' => $phones ?? null,
+        'old' => old('phones')
+        ])
+        
+        @livewire('email-edit', [
+        'emails' => $emails ?? null,
+        'old' => old('emails')
+        ])
+        
+        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.addresses')) }}</span> <span class="float-right"><a href="#" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
         <hr />
         {{--@include('laravel-crm::partials.form.text',[
             'name' => 'address',

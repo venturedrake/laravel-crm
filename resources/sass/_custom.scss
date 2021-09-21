@@ -134,3 +134,9 @@ dt {
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+
+.phone-numbers .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off),
+.email-addresses .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off),
+.addresses .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off){
+  display: none;
+}

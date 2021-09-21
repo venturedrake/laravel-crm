@@ -3,7 +3,9 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Repositories\PersonRepository;
 
 class PersonService
@@ -36,23 +38,8 @@ class PersonService
             'user_owner_id' => $request->user_owner_id,
         ]);
 
-        if ($request->phone) {
-            $person->phones()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-                'primary' => 1,
-            ]);
-        }
-
-        if ($request->email) {
-            $person->emails()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address' => $request->email,
-                'type' => $request->email_type,
-                'primary' => 1,
-            ]);
-        }
+        $this->updatePersonPhones($person, $request->phones);
+        $this->updatePersonEmails($person, $request->emails);
 
         $person->addresses()->create([
             'external_id' => Uuid::uuid4()->toString(),
@@ -85,7 +72,7 @@ class PersonService
                 'external_id' => Uuid::uuid4()->toString(),
                 'number' => $request->phone,
                 'type' => $request->phone_type,
-                'primary' => 1,
+                'primary' => (($request->phone_primary) ? 1 : 0),
             ]);
         }
 
@@ -94,7 +81,7 @@ class PersonService
                 'external_id' => Uuid::uuid4()->toString(),
                 'address' => $request->email,
                 'type' => $request->email_type,
-                'primary' => 1,
+                'primary' => (($request->email_primary) ? 1 : 0),
             ]);
         }
         
@@ -113,42 +100,11 @@ class PersonService
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
         ]);
-
-        $email = $person->getPrimaryEmail();
-        $phone = $person->getPrimaryPhone();
+        
+        $this->updatePersonPhones($person, $request->phones);
+        $this->updatePersonEmails($person, $request->emails);
+        
         $address = $person->getPrimaryAddress();
-
-        if ($request->phone && $phone) {
-            $phone->update([
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-            ]);
-        } elseif ($request->phone) {
-            $person->phones()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'number' => $request->phone,
-                'type' => $request->phone_type,
-                'primary' => 1,
-            ]);
-        } elseif ($phone) {
-            $phone->delete();
-        }
-
-        if ($request->email && $email) {
-            $email->update([
-                'address' => $request->email,
-                'type' => $request->email_type,
-            ]);
-        } elseif ($request->email) {
-            $person->emails()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address' => $request->email,
-                'type' => $request->email_type,
-                'primary' => 1,
-            ]);
-        } elseif ($email) {
-            $email->delete();
-        }
 
         if ($address) {
             $address->update([
@@ -175,5 +131,58 @@ class PersonService
         }
         
         return $person;
+    }
+    
+    protected function updatePersonPhones($person, $phones)
+    {
+        $phoneIds = [];
+        if ($phones) {
+            foreach ($phones as $phoneRequest) {
+                if ($phoneRequest['id'] && $phone = Phone::find($phoneRequest['id'])) {
+                    $phone->update([
+                        'number' => $phoneRequest['number'],
+                        'type' => $phoneRequest['type'] ,
+                        'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                    $phoneIds[] = $phone->id;
+                } elseif ($phoneRequest['number']) {
+                    $phone = $person->phones()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'number' => $phoneRequest['number'],
+                        'type' => $phoneRequest['type'] ,
+                        'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                    $phoneIds[] = $phone->id;
+                }
+            }
+        }
+        
+        foreach ($person->phones as $phone) {
+            if (! in_array($phone->id, $phoneIds)) {
+                $phone->delete();
+            }
+        }
+    }
+    
+    protected function updatePersonEmails($person, $emails)
+    {
+        if ($emails) {
+            foreach ($emails as $emailRequest) {
+                if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
+                    $email->update([
+                        'address' => $emailRequest['address'],
+                        'type' => $emailRequest['type'] ,
+                        'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                } elseif ($emailRequest['address']) {
+                    $person->emails()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address' => $emailRequest['address'],
+                        'type' => $emailRequest['type'] ,
+                        'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                }
+            }
+        }
     }
 }

@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class Setting extends Model

@@ -124,14 +124,12 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
-        $email = $person->getPrimaryEmail();
-        $phone = $person->getPrimaryPhone();
         $address = $person->getPrimaryAddress();
         
         return view('laravel-crm::people.edit', [
             'person' => $person,
-            'email' => $email ?? null,
-            'phone' => $phone ?? null,
+            'emails' => $person->emails,
+            'phones' => $person->phones,
             'address' => $address ?? null,
         ]);
     }

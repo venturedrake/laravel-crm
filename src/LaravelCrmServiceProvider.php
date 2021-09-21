@@ -10,8 +10,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
@@ -189,6 +192,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
                      ->load(__DIR__.'/../database/factories');
             }
         }
+        
+        // Livewire components
+        Livewire::component('phone-edit', LivePhoneEdit::class);
+        Livewire::component('email-edit', LiveEmailEdit::class);
     }
 
     /**
