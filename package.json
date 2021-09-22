@@ -27,6 +27,7 @@
         "bootstrap4-toggle": "^3.6.1",
         "chart.js": "^3.2.1",
         "jquery-datetimepicker": "^2.5.21",
+        "select2": "^4.1.0-rc.0",
         "sweetalert2": "^10.14.0"
     },
     "name": "laravel-crm"

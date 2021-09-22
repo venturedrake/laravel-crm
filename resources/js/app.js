@@ -4,6 +4,7 @@ require('jquery-datetimepicker/build/jquery.datetimepicker.full')
 require('bootstrap-4-autocomplete/dist/bootstrap-4-autocomplete')
 require('chart.js/dist/chart.min')
 require('../../bower_components/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')
+require('select2/dist/js/select2.min')
 
 const Swal = require('sweetalert2')
 
@@ -31,6 +32,24 @@ const appJquery = function() {
                 },
                 mouseover: function() {
                     $(this).css( 'cursor', 'pointer' );
+                }
+            });
+
+            $('select[name="labels[]"]').select2({
+                tags: true,
+                tokenSeparators: [','],
+                createTag: function (params) {
+                    var term = params.term;
+
+                    if (term === '') {
+                        return null;
+                    }
+
+                    return {
+                        id: 'new_label_' + term,
+                        text: term,
+                        newTag: true // add additional parameters
+                    }
                 }
             });
 

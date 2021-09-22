@@ -139,3 +139,10 @@ dt {
 .email-addresses .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off){
   display: none;
 }
+
+.select2-selection.select2-selection--multiple{
+  color:#495057  !important;;
+  border: 1px solid #ced4da !important;
+  border-radius: 0.25rem !important;
+  height: calc(1.6em + .75rem + 2px);
+}
