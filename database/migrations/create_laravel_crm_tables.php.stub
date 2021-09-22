@@ -86,7 +86,7 @@ class CreateLaravelCrmTables extends Migration
             $table->string('external_id');
             $table->string('number');
             $table->boolean('primary')->default(false);
-            $table->enum('type', ['work','home','mobile','other'])->default('work')->nullable();
+            $table->enum('type', ['work','home','mobile','fax','other'])->default('work')->nullable();
             $table->morphs('phoneable');
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
