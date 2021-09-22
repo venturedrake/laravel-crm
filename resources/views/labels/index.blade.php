@@ -26,7 +26,7 @@
                                 <tr class="has-link" data-url="{{ url(route('laravel-crm.labels.show',$label)) }}">
                                     <td>{{ $label->name }}</td>
                                     <td>
-                                        <span class="badge badge-primary" style="background-color: #{{ $label->hex }}; padding: 8px 10px;">
+                                        <span class="badge badge-primary" style="background-color: #{{ $label->hex }}; padding: 6px 8px;">
                                             #{{ $label->hex }}
                                         </span>
                                     </td>

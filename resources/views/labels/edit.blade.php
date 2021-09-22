@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <form method="POST" action="{{ url(route('laravel-crm.product-categories.update', $productCategory)) }}">
+    <form method="POST" action="{{ url(route('laravel-crm.labels.update', $label)) }}">
         @csrf
         @method('PUT')
         <div class="card">
@@ -10,11 +10,11 @@
                 @include('laravel-crm::layouts.partials.nav-settings')
             </div>
             <div class="card-body">
-                <h3 class="mb-3"> {{ ucfirst(trans('laravel-crm::lang.edit_product_category')) }} <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.product-categories.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(trans('laravel-crm::lang.back_to_product_categories')) }}</a></span></h3>
-                @include('laravel-crm::product-categories.partials.fields')
+                <h3 class="mb-3"> {{ ucfirst(trans('laravel-crm::lang.edit_label')) }} <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.labels.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(trans('laravel-crm::lang.back_to_labels')) }}</a></span></h3>
+                @include('laravel-crm::labels.partials.fields')
             </div>
             @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.product-categories.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(trans('laravel-crm::lang.cancel')) }}</a>
+                <a href="{{ url(route('laravel-crm.labels.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(trans('laravel-crm::lang.cancel')) }}</a>
                 <button type="submit" class="btn btn-primary">{{ ucwords(trans('laravel-crm::lang.save_changes')) }}</button>
             @endcomponent
         </div>

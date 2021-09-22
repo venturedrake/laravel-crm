@@ -4,7 +4,9 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Label;
+use VentureDrake\LaravelCrm\Models\ProductCategory;
 
 class LabelController extends Controller
 {
@@ -33,7 +35,7 @@ class LabelController extends Controller
      */
     public function create()
     {
-        //
+        return view('laravel-crm::labels.create');
     }
 
     /**
@@ -44,7 +46,16 @@ class LabelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Label::create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'name' => $request->name,
+            'description' => $request->description,
+            'hex' => $request->hex ?? '6c757d'
+        ]);
+
+        flash(ucfirst(trans('laravel-crm::lang.label_stored')))->success()->important();
+
+        return redirect(route('laravel-crm.labels.index'));
     }
 
     /**
@@ -55,7 +66,9 @@ class LabelController extends Controller
      */
     public function show(Label $label)
     {
-        //
+        return view('laravel-crm::labels.show', [
+            'label' => $label,
+        ]);
     }
 
     /**
@@ -66,7 +79,9 @@ class LabelController extends Controller
      */
     public function edit(Label $label)
     {
-        //
+        return view('laravel-crm::labels.edit', [
+            'label' => $label,
+        ]);
     }
 
     /**
@@ -78,7 +93,15 @@ class LabelController extends Controller
      */
     public function update(Request $request, Label $label)
     {
-        //
+        $label->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'hex' => $request->hex ?? '6c757d'
+        ]);
+
+        flash(ucfirst(trans('laravel-crm::lang.label_updated')))->success()->important();
+
+        return redirect(route('laravel-crm.labels.show', $label));
     }
 
     /**
@@ -89,6 +112,10 @@ class LabelController extends Controller
      */
     public function destroy(Label $label)
     {
-        //
+        $label->delete();
+
+        flash(ucfirst(trans('laravel-crm::lang.label_deleted')))->success()->important();
+
+        return redirect(route('laravel-crm.labels.index'));
     }
 }
