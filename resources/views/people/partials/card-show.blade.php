@@ -50,19 +50,19 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                     <dd class="col-sm-9">{{ $person->description }}</dd>
                     @foreach($phones as $phone)
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.phone')) }}</dt>
+                        <dt class="col-sm-3 text-right">{{ ucfirst($phone->type) }} {{ ucfirst(__('laravel-crm::lang.phone')) }}</dt>
                         <dd class="col-sm-9">
-                            <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }}{{ ($phone->primary) ? ', Primary' : null }})
+                            <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> {{ ($phone->primary) ? '(Primary)' : null }}
                         </dd>
                     @endforeach
                     @foreach($emails as $email)
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
+                        <dt class="col-sm-3 text-right">{{ ucfirst($email->type) }} {{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
                         <dd class="col-sm-9">
-                            <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }}{{ ($email->primary) ? ', Primary' : null }})
+                            <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> {{ ($email->primary) ? '(Primary)' : null }}
                         </dd>
                     @endforeach
                     @foreach($addresses as $address)
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
+                        <dt class="col-sm-3 text-right">{{ ($address->addressType) ? ucfirst($address->addressType->name).' ' : null }}{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
                         <dd class="col-sm-9">
                             {{ \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) }} {{ ($address->primary) ? '(Primary)' : null }}
                         </dd>

@@ -6,6 +6,16 @@
         <div class="row">
             <div class="col-sm-10">
 
+                <div class="form-group">
+                    <label>{{ ucfirst(__('laravel-crm::lang.type')) }}</label>
+                    <select class="form-control" wire:model="type.{{ $value }}" name="addresses[{{ $value }}][type]">
+                        @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\AddressType::all()) as $optionKey => $optionName)
+                            <option value="{{ $optionKey }}">{{ $optionName }}</option>
+                        @endforeach
+                    </select>
+                    @error('type.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                </div>
+
                 {{--  <div class="form-group">
                       <label>{{ ucfirst(__('laravel-crm::lang.address')) }}</label>
                       <input type="text" class="form-control" wire:model="address.{{ $value }}" name="addresses[{{ $value }}][address]">
@@ -13,19 +23,19 @@
                   </div>--}}
 
                 <div class="form-group">
-                    <label>{{ ucfirst(__('laravel-crm::lang.address_line_1')) }}</label>
+                    <label>{{ ucfirst(__('laravel-crm::lang.line_1')) }}</label>
                     <input type="text" class="form-control" wire:model="line1.{{ $value }}" name="addresses[{{ $value }}][line1]">
                     @error('line1.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="form-group">
-                    <label>{{ ucfirst(__('laravel-crm::lang.address_line_2')) }}</label>
+                    <label>{{ ucfirst(__('laravel-crm::lang.line_2')) }}</label>
                     <input type="text" class="form-control" wire:model="line2.{{ $value }}" name="addresses[{{ $value }}][line2]">
                     @error('line2.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="form-group">
-                    <label>{{ ucfirst(__('laravel-crm::lang.address_line_3')) }}</label>
+                    <label>{{ ucfirst(__('laravel-crm::lang.line_3')) }}</label>
                     <input type="text" class="form-control" wire:model="line3.{{ $value }}" name="addresses[{{ $value }}][line3]">
                     @error('line3.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>

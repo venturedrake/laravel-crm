@@ -37,4 +37,9 @@ class Address extends Model
     {
         return $this->morphTo();
     }
+
+    public function addressType()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\AddressType::class);
+    }
 }

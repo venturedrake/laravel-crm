@@ -16,6 +16,7 @@ class LaravelCrmTablesSeeder extends Seeder
      */
     public function run()
     {
+        // Labels
         $items = [
             [
                 [
@@ -53,6 +54,7 @@ class LaravelCrmTablesSeeder extends Seeder
             \VentureDrake\LaravelCrm\Models\Label::firstOrCreate($item[0], $item[1]);
         }
 
+        // Lead statuses
         $items = [
             [
                 [
@@ -76,6 +78,46 @@ class LaravelCrmTablesSeeder extends Seeder
 
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\LeadStatus::firstOrCreate($item[0], $item[1]);
+        }
+        
+        // Address types
+        $items = [
+            [
+                [
+                    'id' => 1,
+                ],
+                [
+                    'name' => 'Current',
+                ],
+            ],
+            [
+                [
+                    'id' => 2,
+                ],
+                [
+                    'name' => 'Previous',
+                ],
+            ],
+            [
+                [
+                    'id' => 3,
+                ],
+                [
+                    'name' => 'Postal',
+                ],
+            ],
+            [
+                [
+                    'id' => 4,
+                ],
+                [
+                    'name' => 'Business',
+                ],
+            ],
+        ];
+
+        foreach ($items as $item) {
+            \VentureDrake\LaravelCrm\Models\AddressType::firstOrCreate($item[0], $item[1]);
         }
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();

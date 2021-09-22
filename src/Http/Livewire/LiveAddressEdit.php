@@ -8,6 +8,7 @@ class LiveAddressEdit extends Component
 {
     public $addresses;
     public $address;
+    public $type;
     public $line1;
     public $line2;
     public $line3;
@@ -31,6 +32,7 @@ class LiveAddressEdit extends Component
             foreach ($this->old as $address) {
                 $this->add($this->i);
                 $this->address[$this->i] = $address['address'] ?? null;
+                $this->type[$this->i] = $address['type'] ?? null;
                 $this->line1[$this->i] = $address['line1'] ?? null;
                 $this->line2[$this->i] = $address['line2'] ?? null;
                 $this->line3[$this->i] = $address['line3'] ?? null;
@@ -45,6 +47,7 @@ class LiveAddressEdit extends Component
             foreach ($this->addresses as $address) {
                 $this->add($this->i);
                 $this->address[$this->i] = $address->address;
+                $this->type[$this->i] = $address->addressType->id ?? null;
                 $this->line1[$this->i] = $address->line1;
                 $this->line2[$this->i] = $address->line2;
                 $this->line3[$this->i] = $address->line3;

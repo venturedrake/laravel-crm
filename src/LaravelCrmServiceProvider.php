@@ -162,6 +162,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_global_to_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_global_to_laravel_crm_settings_table.php', 11),
                 __DIR__ . '/../database/migrations/alter_fields_for_encryption_on_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'alter_fields_for_encryption_on_laravel_crm_tables.php', 12),
                 __DIR__ . '/../database/migrations/add_team_id_to_roles_permissions_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_team_id_to_roles_permissions_tables.php', 13),
+                __DIR__ . '/../database/migrations/create_laravel_crm_address_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_address_types_table.php', 14),
             ], 'migrations');
 
             // Publishing the seeders

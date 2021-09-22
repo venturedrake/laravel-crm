@@ -171,6 +171,7 @@ class PersonService
             foreach ($addresses as $addressRequest) {
                 if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
                     $address->update([
+                        'address_type_id' => $addressRequest['type'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
                         'line1' => $addressRequest['line1'],
                         'line2' => $addressRequest['line2'],
@@ -186,6 +187,7 @@ class PersonService
                 } else {
                     $address = $person->addresses()->create([
                         'external_id' => Uuid::uuid4()->toString(),
+                        'address_type_id' => $addressRequest['type'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
                         'line1' => $addressRequest['line1'],
                         'line2' => $addressRequest['line2'],
