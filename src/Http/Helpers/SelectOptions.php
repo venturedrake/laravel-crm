@@ -60,6 +60,7 @@ function phoneTypes($null = true)
         'work' => 'Work',
         'home' => 'Home',
         'mobile' => 'Mobile',
+        'fax' => 'Fax',
         'other' => "Other",
     ]);
     
