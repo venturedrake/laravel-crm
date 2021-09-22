@@ -471,7 +471,6 @@ Route::group(['prefix' => 'updates', 'middleware' => 'auth.laravel-crm'], functi
         ->name('laravel-crm.updates.index');
 });
 
-
 /* Roles */
 Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@index')
@@ -501,6 +500,37 @@ Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function
     Route::delete('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@destroy')
         ->name('laravel-crm.roles.destroy')
         ->middleware(['can:delete,role']);
+});
+
+/* Labels */
+Route::group(['prefix' => 'labels', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@index')
+        ->name('laravel-crm.labels.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Label']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@create')
+        ->name('laravel-crm.labels.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Label']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@store')
+        ->name('laravel-crm.labels.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Label']);
+
+    Route::get('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@show')
+        ->name('laravel-crm.labels.show')
+        ->middleware(['can:view,label']);
+
+    Route::get('{label}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@edit')
+        ->name('laravel-crm.labels.edit')
+        ->middleware(['can:update,label']);
+
+    Route::put('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@update')
+        ->name('laravel-crm.labels.update')
+        ->middleware(['can:update,label']);
+
+    Route::delete('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@destroy')
+        ->name('laravel-crm.labels.destroy')
+        ->middleware(['can:delete,label']);
 });
 
 /* CRM (AJAX) */

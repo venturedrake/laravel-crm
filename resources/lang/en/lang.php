@@ -37,6 +37,7 @@ return [
     'product_categories' => 'product categories',
     'roles_and_permissions' => 'roles & permissions',
     'title' => 'title',
+    'label' => 'label',
     'labels' => 'labels',
     'value' => 'value',
     'contact_person' => 'contact person',
@@ -193,4 +194,5 @@ return [
     'emails' => 'emails',
     'addresses' => 'addresses',
     'primary' => 'primary',
+    'color' => 'color',
 ];
