@@ -74,13 +74,11 @@ class OrganisationController extends Controller
      */
     public function show(Organisation $organisation)
     {
-        $address = $organisation->getPrimaryAddress();
-        
         return view('laravel-crm::organisations.show', [
             'organisation' => $organisation,
             'emails' => $organisation->emails,
             'phones' => $organisation->phones,
-            'address' => $address,
+            'addresses' => $organisation->addresses,
         ]);
     }
 
@@ -92,13 +90,11 @@ class OrganisationController extends Controller
      */
     public function edit(Organisation $organisation)
     {
-        $address = $organisation->getPrimaryAddress();
-        
         return view('laravel-crm::organisations.edit', [
             'organisation' => $organisation,
             'emails' => $organisation->emails,
             'phones' => $organisation->phones,
-            'address' => $address,
+            'addresses' => $organisation->addresses,
         ]);
     }
 

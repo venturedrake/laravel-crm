@@ -13,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
@@ -196,6 +197,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
         Livewire::component('email-edit', LiveEmailEdit::class);
+        Livewire::component('address-edit', LiveAddressEdit::class);
     }
 
     /**

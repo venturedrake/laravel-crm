@@ -57,6 +57,7 @@ return [
     'address_line_2' => 'address line 2',
     'address_line_3' => 'address line 3',
     'suburb' => 'town / city',
+    'city' => 'town / city',
     'state' => 'state',
     'postcode' => 'zip code',
     'country' => 'country',

@@ -8,24 +8,25 @@
                 <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.phone')) }}</label>
                     <input type="text" class="form-control" wire:model="number.{{ $value }}" name="phones[{{ $value }}][number]">
-                    @error('number.'.$value) <span class="text-danger error">{{ $message }}</span>@enderror
+                    @error('number.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.type')) }}</label>
-                    <select class="form-control" wire:model="type.{{ $value }}" name="phones[{{ $value }}][type]>
+                    <select class="form-control" wire:model="type.{{ $value }}" name="phones[{{ $value }}][type]">
                         @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes() as $optionKey => $optionName)
                             <option value="{{ $optionKey }}">{{ $optionName }}</option>
                         @endforeach
                     </select>
-                    @error('type.'.$value) <span class="text-danger error">{{ $message }}</span>@enderror
+                    @error('type.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="col-sm-1">
                 <div class="form-group" wire:ignore>
                     <label>{{ ucfirst(__('laravel-crm::lang.primary')) }}</label>
                     <input type="checkbox" wire:model="primary.{{ $value }}" name="phones[{{ $value }}][primary]" data-toggle="toggle" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+                    @error('primary.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="col-sm-1 text-right">

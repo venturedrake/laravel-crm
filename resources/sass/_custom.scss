@@ -136,7 +136,6 @@ dt {
 }
 
 .phone-numbers .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off),
-.email-addresses .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off),
-.addresses .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off){
+.email-addresses .row:not(:first-of-type) label:not(.toggle-on):not(.toggle-off){
   display: none;
 }

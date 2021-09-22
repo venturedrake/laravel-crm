@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Phone;
@@ -35,18 +36,7 @@ class OrganisationService
 
         $this->updateOrganisationPhones($organisation, $request->phones);
         $this->updateOrganisationEmails($organisation, $request->emails);
-
-        $organisation->addresses()->create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'line1' => $request->line1,
-            'line2' => $request->line2,
-            'line3' => $request->line3,
-            'suburb' => $request->suburb,
-            'state' => $request->state,
-            'code' => $request->code,
-            'country' => $request->country,
-            'primary' => 1,
-        ]);
+        $this->updateOrganisationAddresses($organisation, $request->addresses);
         
         return $organisation;
     }
@@ -84,32 +74,7 @@ class OrganisationService
 
         $this->updateOrganisationPhones($organisation, $request->phones);
         $this->updateOrganisationEmails($organisation, $request->emails);
-
-        $address = $organisation->getPrimaryAddress();
-
-        if ($address) {
-            $address->update([
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'city' => $request->city,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-            ]);
-        } else {
-            $organisation->addresses()->create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'line1' => $request->line1,
-                'line2' => $request->line2,
-                'line3' => $request->line3,
-                'city' => $request->city,
-                'state' => $request->state,
-                'code' => $request->code,
-                'country' => $request->country,
-                'primary' => 1,
-            ]);
-        }
+        $this->updateOrganisationAddresses($organisation, $request->addresses);
         
         return $organisation;
     }
@@ -175,6 +140,52 @@ class OrganisationService
         foreach ($organisation->emails as $email) {
             if (! in_array($email->id, $emailIds)) {
                 $email->delete();
+            }
+        }
+    }
+
+    protected function updateOrganisationAddresses($organisation, $addresses)
+    {
+        $addressIds = [];
+
+        if ($addresses) {
+            foreach ($addresses as $addressRequest) {
+                if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
+                    $address->update([
+                        'address' => $addressRequest['address'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $addressIds[] = $address->id;
+                } else {
+                    $address = $organisation->addresses()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address' => $addressRequest['address'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $addressIds[] = $address->id;
+                }
+            }
+        }
+
+        foreach ($organisation->addresses as $address) {
+            if (! in_array($address->id, $addressIds)) {
+                $address->delete();
             }
         }
     }

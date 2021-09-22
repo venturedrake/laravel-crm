@@ -52,17 +52,19 @@
                     @foreach($phones as $phone)
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.phone')) }}</dt>
                         <dd class="col-sm-9">
-                            @isset($phone)
-                                <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }}{{ ($phone->primary) ? ', Primary' : null }})
-                            @endisset
+                            <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }}{{ ($phone->primary) ? ', Primary' : null }})
                         </dd>
                     @endforeach
                     @foreach($emails as $email)
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
                         <dd class="col-sm-9">
-                            @isset($email)
-                                <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }}{{ ($email->primary) ? ', Primary' : null }})
-                            @endisset
+                            <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }}{{ ($email->primary) ? ', Primary' : null }})
+                        </dd>
+                    @endforeach
+                    @foreach($addresses as $address)
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
+                        <dd class="col-sm-9">
+                            {{ \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) }} {{ ($address->primary) ? '(Primary)' : null }}
                         </dd>
                     @endforeach
                 </dl>

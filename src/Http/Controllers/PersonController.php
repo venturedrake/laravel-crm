@@ -98,7 +98,6 @@ class PersonController extends Controller
      */
     public function show(Person $person)
     {
-        $address = $person->getPrimaryAddress();
         $organisation = $person->organisation;
         if ($organisation) {
             $organisationAddress = $organisation->getPrimaryAddress();
@@ -108,7 +107,7 @@ class PersonController extends Controller
             'person' => $person,
             'emails' => $person->emails,
             'phones' => $person->phones,
-            'address' => $address ?? null,
+            'addresses' => $person->addresses,
             'organisation' => $organisation ?? null,
             'organisation_address' => $organisationAddress ?? null,
         ]);
@@ -122,13 +121,11 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
-        $address = $person->getPrimaryAddress();
-        
         return view('laravel-crm::people.edit', [
             'person' => $person,
             'emails' => $person->emails,
             'phones' => $person->phones,
-            'address' => $address ?? null,
+            'addresses' => $person->addresses,
         ]);
     }
 
