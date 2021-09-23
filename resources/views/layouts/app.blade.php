@@ -10,9 +10,6 @@
 
     <title>Laravel CRM</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=5367356756"></script>
-
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -90,6 +87,7 @@
             </div>
         </main>
     </div>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=12312312"></script>
     @livewireScripts
     @stack('livewire-js')
 </body>

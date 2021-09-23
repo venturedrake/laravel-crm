@@ -6,7 +6,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Label;
-use VentureDrake\LaravelCrm\Models\ProductCategory;
 
 class LabelController extends Controller
 {
@@ -50,7 +49,7 @@ class LabelController extends Controller
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
             'description' => $request->description,
-            'hex' => $request->hex ?? '6c757d'
+            'hex' => $request->hex ?? '6c757d',
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.label_stored')))->success()->important();
@@ -96,7 +95,7 @@ class LabelController extends Controller
         $label->update([
             'name' => $request->name,
             'description' => $request->description,
-            'hex' => $request->hex ?? '6c757d'
+            'hex' => $request->hex ?? '6c757d',
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.label_updated')))->success()->important();

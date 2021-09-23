@@ -5,6 +5,7 @@ require('bootstrap-4-autocomplete/dist/bootstrap-4-autocomplete')
 require('chart.js/dist/chart.min')
 require('../../bower_components/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')
 require('select2/dist/js/select2.min')
+require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min')
 
 const Swal = require('sweetalert2')
 
@@ -52,6 +53,8 @@ const appJquery = function() {
                     }
                 }
             });
+
+            $('#input_hex').colorpicker();
 
             $('form.form-delete-button > button[type="submit"]').on('click', function (e) {
                 
