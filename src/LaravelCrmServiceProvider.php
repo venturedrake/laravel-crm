@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
+use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
@@ -188,6 +189,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             $this->commands([
                 LaravelCrmInstall::class,
                 LaravelCrmPermissions::class,
+                LaravelCrmLabels::class,
             ]);
 
             // Register the model factories

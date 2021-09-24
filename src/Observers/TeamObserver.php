@@ -99,6 +99,22 @@ class TeamObserver
         }
 
         auth()->user()->assignRole('Owner');
+
+        foreach (DB::table('labels')
+                     ->whereNull('team_id')
+                     ->get() as $label) {
+            $this->info('Inserting label '.$label->name.' for team '.$team->name);
+
+            DB::table('labels')->updateOrInsert([
+                'name' => $label->name,
+                'hex' => $label->hex,
+                'description' => $label->description,
+                'team_id' => $team->id,
+            ], [
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
     }
 
     /**
