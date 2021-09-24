@@ -29,8 +29,8 @@ class LiveEmailEdit extends Component
                 $this->primary[$this->i] = $email['primary'] ?? null;
                 $this->emailId[$this->i] = $email['id'] ?? null;
             }
-        } elseif ($this->emails) {
-            foreach ($this->emails as $email) {
+        } elseif ($this->emails && $this->emails->count() > 0) {
+            foreach ($this->emails as $email) { 
                 $this->add($this->i);
                 $this->address[$this->i] = $email->address;
                 $this->type[$this->i] = $email->type;

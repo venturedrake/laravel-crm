@@ -43,7 +43,7 @@ class LiveAddressEdit extends Component
                 $this->primary[$this->i] = $address['primary'] ?? null;
                 $this->addressId[$this->i] = $address['id'] ?? null;
             }
-        } elseif ($this->addresses) {
+        } elseif ($this->addresses && $this->addresses->count() > 0) {
             foreach ($this->addresses as $address) {
                 $this->add($this->i);
                 $this->address[$this->i] = $address->address;

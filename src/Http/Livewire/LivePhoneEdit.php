@@ -29,7 +29,7 @@ class LivePhoneEdit extends Component
                 $this->primary[$this->i] = $phone['primary'] ?? null;
                 $this->phoneId[$this->i] = $phone['id'] ?? null;
             }
-        } elseif ($this->phones) {
+        } elseif ($this->phones && $this->phones->count() > 0) {
             foreach ($this->phones as $phone) {
                 $this->add($this->i);
                 $this->number[$this->i] = $phone->number;

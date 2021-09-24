@@ -85,7 +85,7 @@
                     @error('primary.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
-            <div class="col-sm-1 text-right">
+            <div class="col-sm-1 text-right form-group">
                 <label>&nbsp;</label>
                 <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})"><span class="fa fa-trash-o" aria-hidden="true"></span></button></span>
             </div>
