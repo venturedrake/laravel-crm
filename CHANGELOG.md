@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.7.0 - 2021-09-24
+### Added
+- Labels admin
+- Labels description
+- Multiple contact addresses
+- Mutliple contact phone numbers
+- Mutliple contact emails
+- Fax number type
+- Select2 for labels
+
 ## 0.6.8 - 2021-09-12
 ### Fixed
 - Roles & Permissions team owner role missing
