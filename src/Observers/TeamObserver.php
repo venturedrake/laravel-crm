@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 use App\Team;
 use Carbon\Carbon;
 use DB;
+use Ramsey\Uuid\Uuid;
 
 class TeamObserver
 {
@@ -105,12 +106,12 @@ class TeamObserver
                      ->get() as $label) {
             $this->info('Inserting label '.$label->name.' for team '.$team->name);
 
-            DB::table('labels')->updateOrInsert([
+            DB::table('labels')->insert([
+                'external_id' => Uuid::uuid4()->toString(),
                 'name' => $label->name,
                 'hex' => $label->hex,
                 'description' => $label->description,
                 'team_id' => $team->id,
-            ], [
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

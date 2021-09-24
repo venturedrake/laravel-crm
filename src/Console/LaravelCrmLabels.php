@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use Ramsey\Uuid\Uuid;
 
 class LaravelCrmLabels extends Command
 {
@@ -56,15 +57,24 @@ class LaravelCrmLabels extends Command
                          ->get() as $label) {
                 $this->info('Inserting label '.$label->name.' for team '.$team->name);
                 
-                DB::table('labels')->updateOrInsert([
+                $teamLabel = DB::table('labels')->where([
                     'name' => $label->name,
                     'hex' => $label->hex,
                     'description' => $label->description,
                     'team_id' => $team->id,
-                ], [
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
+                ])->first();
+                
+                if (! $teamLabel) {
+                    DB::table('labels')->insert([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'name' => $label->name,
+                        'hex' => $label->hex,
+                        'description' => $label->description,
+                        'team_id' => $team->id,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
+                }
             }
         }
         
