@@ -6,14 +6,17 @@
          'value' => old('name', $label->name ?? null)
         ])
         
-        <div id="input_hex" class="form-group">
+        <div id="input_hex" class="form-group @error('hex') text-danger @enderror">
             <label for="hex[]">{{ ucfirst(trans('laravel-crm::lang.color')) }}</label>
             <div class="input-group">
-                <input id="input_hex" type="text" name="hex" value="{{ old('hex', (isset($label->hex) ? '#'.$label->hex : null)) }}" class="form-control">
+                <input id="input_hex" type="text" name="hex" value="{{ old('hex', (isset($label->hex) ? '#'.$label->hex : null)) }}" class="form-control @error('hex') is-invalid @enderror">
                 <div class="input-group-append">
                     <span class="input-group-text colorpicker-input-addon" id="inputGroupPrepend"><i></i></span>
                 </div>
             </div>
+            @error('hex')
+            <div class="text-danger invalid-feedback-custom">{{ $message }}</div>
+            @enderror
         </div>
 
         @include('laravel-crm::partials.form.textarea',[

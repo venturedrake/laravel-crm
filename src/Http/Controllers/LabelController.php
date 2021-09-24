@@ -3,8 +3,10 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use App\User;
-use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpKernel\HttpCache\Store;
+use VentureDrake\LaravelCrm\Http\Requests\StoreLabelRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateLabelRequest;
 use VentureDrake\LaravelCrm\Models\Label;
 
 class LabelController extends Controller
@@ -43,7 +45,7 @@ class LabelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreLabelRequest $request)
     {
         Label::create([
             'external_id' => Uuid::uuid4()->toString(),
@@ -90,7 +92,7 @@ class LabelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Label $label)
+    public function update(UpdateLabelRequest $request, Label $label)
     {
         $label->update([
             'name' => $request->name,

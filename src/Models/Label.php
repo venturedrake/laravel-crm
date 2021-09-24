@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class Label extends Model
@@ -15,6 +16,11 @@ class Label extends Model
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'labels';
+    }
+
+    public function setHexAttribute($value)
+    {
+        $this->attributes['hex'] = Str::after($value, '#');
     }
 
     /**
