@@ -71,7 +71,7 @@ class Deal extends Model
      */
     public function customFieldValues()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\CustomFieldValue::class, 'custom_field_valueable');
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\FieldValue::class, 'custom_field_valueable');
     }
 
     public function createdByUser()

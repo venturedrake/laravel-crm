@@ -5,7 +5,7 @@ namespace VentureDrake\LaravelCrm\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
-class CustomField extends Model
+class FieldValue extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
@@ -14,6 +14,14 @@ class CustomField extends Model
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix').'custom_fields';
+        return config('laravel-crm.db_table_prefix').'field_values';
+    }
+
+    /**
+     * Get all of the owning field value models.
+     */
+    public function fieldValueable()
+    {
+        return $this->morphTo();
     }
 }

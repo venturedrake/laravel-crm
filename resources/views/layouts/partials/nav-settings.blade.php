@@ -11,12 +11,17 @@
     @endcan
     @can('view crm product categories')
     <li class="nav-item">
-        <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.product-categories') === 0) ? 'active' : '' }}"  href="{{ url(route('laravel-crm.product-categories.index')) }}" role="tab" aria-controls="product-categories" aria-selected="false">{{ ucwords(__('laravel-crm::lang.product_categories')) }}</a>
+        <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.product-categories') === 0) ? 'active' : '' }}"  href="{{ url(route('laravel-crm.product-categories.index')) }}" role="product-categories" aria-controls="product-categories" aria-selected="false">{{ ucwords(__('laravel-crm::lang.product_categories')) }}</a>
     </li>
     @endcan
     @can('view crm labels')
         <li class="nav-item">
-            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.labels') === 0) ? 'active' : '' }}"  href="{{ url(route('laravel-crm.labels.index')) }}" role="tab" aria-controls="roles" aria-selected="false">{{ ucwords(__('laravel-crm::lang.labels')) }}</a>
+            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.labels') === 0) ? 'active' : '' }}"  href="{{ url(route('laravel-crm.labels.index')) }}" role="tab" aria-controls="labels" aria-selected="false">{{ ucwords(__('laravel-crm::lang.labels')) }}</a>
+        </li>
+    @endcan
+    @can('view crm fields')
+        <li class="nav-item">
+            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.fields') === 0) ? 'active' : '' }}"  href="{{ url(route('laravel-crm.fields.index')) }}" role="tab" aria-controls="fields" aria-selected="false">{{ ucwords(__('laravel-crm::lang.fields')) }}</a>
         </li>
     @endcan
     {{--<li class="nav-item">

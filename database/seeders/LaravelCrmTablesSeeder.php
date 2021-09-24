@@ -175,6 +175,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm labels', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm labels', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm fields', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm fields', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm fields', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm fields', 'crm_permission' => 1]);
+
         $role = Role::firstOrCreate(['name' => 'Owner', 'crm_role' => 1])
             ->givePermissionTo(Permission::all());
         

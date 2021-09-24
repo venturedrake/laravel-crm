@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Person extends Model
@@ -12,6 +13,7 @@ class Person extends Model
     use SoftDeletes;
     use LaravelEncryptableTrait;
     use BelongsToTeams;
+    use HasCrmFields;
 
     protected $guarded = ['id'];
 

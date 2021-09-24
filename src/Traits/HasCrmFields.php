@@ -2,18 +2,18 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
-use VentureDrake\LaravelCrm\Models\CustomField;
+use VentureDrake\LaravelCrm\Models\Field;
 
 trait HasCrmFields
 {
     /*public function metas()
     {
-        return $this->hasMany(CustomField::class, 'model_id');
+        return $this->hasMany(Field::class, 'model_id');
     }
 
     public function getMeta($key)
     {
-        $meta = CustomField::where(['key' => $key, 'model_id' => $this->id])
+        $meta = Field::where(['key' => $key, 'model_id' => $this->id])
             ->first();
 
         if (empty($meta->value)) {
@@ -44,13 +44,13 @@ trait HasCrmFields
 
     public function updateMeta($key, $value)
     {
-        $meta = CustomField::where(['key' => $key, 'model_id' => $this->id]);
+        $meta = Field::where(['key' => $key, 'model_id' => $this->id]);
 
         if ($meta->exists()) {
             return $meta->first()->update(['value' => $value]);
         }
 
-        return CustomField::create([
+        return Field::create([
             'key' => $key,
             'value' => $this->encodeMetaValue($value),
             'model_type' => get_class($this),
@@ -60,6 +60,6 @@ trait HasCrmFields
 
     public function deleteMeta($key)
     {
-        return CustomField::where(['key' => $key, 'model_id' => $this->id])->delete();
+        return Field::where(['key' => $key, 'model_id' => $this->id])->delete();
     }*/
 }

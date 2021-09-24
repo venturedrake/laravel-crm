@@ -4,11 +4,13 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 
 class Product extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
+    use HasCrmFields;
 
     protected $guarded = ['id'];
 

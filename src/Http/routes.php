@@ -533,6 +533,37 @@ Route::group(['prefix' => 'labels', 'middleware' => 'auth.laravel-crm'], functio
         ->middleware(['can:delete,label']);
 });
 
+/* Fields */
+Route::group(['prefix' => 'fields', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@index')
+        ->name('laravel-crm.fields.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Field']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@create')
+        ->name('laravel-crm.fields.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Field']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@store')
+        ->name('laravel-crm.fields.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Field']);
+
+    Route::get('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@show')
+        ->name('laravel-crm.fields.show')
+        ->middleware(['can:view,field']);
+
+    Route::get('{label}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@edit')
+        ->name('laravel-crm.fields.edit')
+        ->middleware(['can:update,field']);
+
+    Route::put('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@update')
+        ->name('laravel-crm.fields.update')
+        ->middleware(['can:update,field']);
+
+    Route::delete('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@destroy')
+        ->name('laravel-crm.fields.destroy')
+        ->middleware(['can:delete,field']);
+});
+
 /* CRM (AJAX) */
 Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function () {
     Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {
