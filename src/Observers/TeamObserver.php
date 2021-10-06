@@ -104,8 +104,6 @@ class TeamObserver
         foreach (DB::table('labels')
                      ->whereNull('team_id')
                      ->get() as $label) {
-            $this->info('Inserting label '.$label->name.' for team '.$team->name);
-
             DB::table('labels')->insert([
                 'external_id' => Uuid::uuid4()->toString(),
                 'name' => $label->name,
