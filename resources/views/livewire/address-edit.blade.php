@@ -23,6 +23,12 @@
                   </div>--}}
 
                 <div class="form-group">
+                    <label>{{ ucfirst(__('laravel-crm::lang.name')) }}</label>
+                    <input type="text" class="form-control" wire:model="name.{{ $value }}" name="addresses[{{ $value }}][name]">
+                    @error('name.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                </div>
+
+                <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.line_1')) }}</label>
                     <input type="text" class="form-control" wire:model="line1.{{ $value }}" name="addresses[{{ $value }}][line1]">
                     @error('line1.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror

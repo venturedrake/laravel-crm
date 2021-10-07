@@ -154,6 +154,7 @@ class OrganisationService
                     $address->update([
                         'address_type_id' => $addressRequest['type'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'],
                         'line1' => $addressRequest['line1'],
                         'line2' => $addressRequest['line2'],
                         'line3' => $addressRequest['line3'],
@@ -170,6 +171,7 @@ class OrganisationService
                         'external_id' => Uuid::uuid4()->toString(),
                         'address_type_id' => $addressRequest['type'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'],
                         'line1' => $addressRequest['line1'],
                         'line2' => $addressRequest['line2'],
                         'line3' => $addressRequest['line3'],
