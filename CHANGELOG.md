@@ -16,10 +16,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--- ## 1.0.0 - 2021-XX-XX
 ### Added
-- Users in teams
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 0.7.1 - 2021-10-08
+### Added
+- Name field on address
+### Fixed
+- Issue with copying labels to teams
+### Removed
+- Don't set a team if not using teams
 
 ## 0.7.0 - 2021-09-24
 ### Added
