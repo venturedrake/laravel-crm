@@ -14,7 +14,7 @@ class AddNameToLaravelCrmAddressesTable extends Migration
     public function up()
     {
         Schema::table(config('laravel-crm.db_table_prefix').'addresses', function (Blueprint $table) {
-            $table->string('name')->after('address')->nullable();
+            $table->string('name', 1000)->after('address')->nullable();
         });
     }
 

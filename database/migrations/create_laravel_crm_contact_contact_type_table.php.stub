@@ -13,7 +13,7 @@ class CreateLaravelCrmContactContactTypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('laravel_crm_contact_contact_type', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'contact_contact_type', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('contact_id')->index()->nullable();
             $table->unsignedBigInteger('contact_type_id')->index()->nullable();
@@ -28,6 +28,6 @@ class CreateLaravelCrmContactContactTypeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laravel_crm_contact_contact_type');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'contact_contact_type');
     }
 }
