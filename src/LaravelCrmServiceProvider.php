@@ -55,6 +55,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Deal' => \VentureDrake\LaravelCrm\Policies\DealPolicy::class,
         'VentureDrake\LaravelCrm\Models\Person' => \VentureDrake\LaravelCrm\Policies\PersonPolicy::class,
         'VentureDrake\LaravelCrm\Models\Organisation' => \VentureDrake\LaravelCrm\Policies\OrganisationPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
         'VentureDrake\LaravelCrm\Models\Product' => \VentureDrake\LaravelCrm\Policies\ProductPolicy::class,
         'VentureDrake\LaravelCrm\Models\ProductCategory' => \VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy::class,
         'VentureDrake\LaravelCrm\Models\Label' => \VentureDrake\LaravelCrm\Policies\LabelPolicy::class,
@@ -168,6 +169,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/alter_type_on_laravel_crm_phones_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_type_on_laravel_crm_phones_table.php', 15),
                 __DIR__ . '/../database/migrations/add_description_to_laravel_crm_labels_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_description_to_laravel_crm_labels_table.php', 16),
                 __DIR__ . '/../database/migrations/add_name_to_laravel_crm_addresses_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_name_to_laravel_crm_addresses_table.php', 17),
+                __DIR__ . '/../database/migrations/create_laravel_crm_contacts_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contacts_table.php', 18),
+                __DIR__ . '/../database/migrations/create_laravel_crm_contact_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contact_types_table.php', 19),
+                __DIR__ . '/../database/migrations/create_laravel_crm_contact_contact_type_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contact_contact_type_table.php', 20),
             ], 'migrations');
 
             // Publishing the seeders

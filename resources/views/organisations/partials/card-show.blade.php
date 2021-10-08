@@ -67,6 +67,13 @@
                     <p><span class="fa fa-user" aria-hidden="true"></span> {{ $person->name }}</p>
                 @endforeach
                 @endcan
+               {{-- @can('view crm contacts')
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.contacts')) }} ({{ $organisation->contacts->count() }})</span>@can('create crm contacts')<span class="float-right"><a href="{{ url(route('laravel-crm.contacts.create',['model' => 'organisation', 'id' => $organisation->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+                    <hr />
+                    @foreach($organisation->contacts as $contacts)
+                        <p><span class="fa fa-user" aria-hidden="true"></span> {{ $contacts->name }}</p>
+                    @endforeach
+                @endcan--}}
                 @can('view crm deals')
                 <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $organisation->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'organisation', 'id' => $organisation->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
                 <hr />

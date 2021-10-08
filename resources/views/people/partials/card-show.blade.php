@@ -76,6 +76,13 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
                     <dd class="col-sm-9">{{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }}</dd>
                 </dl>
+                {{--@can('view crm contacts')
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.contacts')) }} ({{ $person->contacts->count() }})</span>@can('create crm contacts')<span class="float-right"><a href="{{ url(route('laravel-crm.contacts.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+                    <hr />
+                    @foreach($person->contacts as $contacts)
+                        <p><span class="fa fa-user" aria-hidden="true"></span> {{ $contacts->name }}</p>
+                    @endforeach
+                @endcan--}}
                 @can('view crm deals')
                 <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $person->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
                 <hr />

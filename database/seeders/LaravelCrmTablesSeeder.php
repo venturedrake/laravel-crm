@@ -119,6 +119,30 @@ class LaravelCrmTablesSeeder extends Seeder
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\AddressType::firstOrCreate($item[0], $item[1]);
         }
+        
+        // Contact types
+        $items = [
+            [
+                [
+                    'id' => 1,
+                ],
+                [
+                    'name' => 'Primary',
+                ],
+            ],
+            [
+                [
+                    'id' => 2,
+                ],
+                [
+                    'name' => 'Secondary',
+                ],
+            ],
+        ];
+        
+        foreach ($items as $item) {
+            \VentureDrake\LaravelCrm\Models\ContactType::firstOrCreate($item[0], $item[1]);
+        }
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
@@ -141,6 +165,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm organisations', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm organisations', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm organisations', 'crm_permission' => 1]);
+
+        Permission::firstOrCreate(['name' => 'create crm contacts', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm contacts', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm contacts', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm contacts', 'crm_permission' => 1]);
 
         Permission::firstOrCreate(['name' => 'create crm users', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm users', 'crm_permission' => 1]);
@@ -204,6 +233,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm organisations',
                 'edit crm organisations',
                 'delete crm organisations',
+                'create crm contacts',
+                'view crm contacts',
+                'edit crm contacts',
+                'delete crm contacts',
             ]);
         
         $role = Role::firstOrCreate(['name' => 'Employee', 'crm_role' => 1])
@@ -224,6 +257,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm organisations',
                 'edit crm organisations',
                 'delete crm organisations',
+                'create crm contacts',
+                'view crm contacts',
+                'edit crm contacts',
+                'delete crm contacts',
             ]);
     }
 }
