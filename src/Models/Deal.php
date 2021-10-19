@@ -6,12 +6,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Deal extends Model
 {
     use SoftDeletes;
     use HasCrmFields;
     use BelongsToTeams;
+    use SearchFilters;
 
     protected $guarded = ['id'];
     
@@ -23,6 +25,11 @@ class Deal extends Model
     protected $searchable = [
         'person_name',
         'organisation_name',
+    ];
+    
+    protected $filterable = [
+        'user_owner_id',
+        'labels.id',
     ];
 
     public function getSearchable()

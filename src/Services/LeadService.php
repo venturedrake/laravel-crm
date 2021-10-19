@@ -35,7 +35,7 @@ class LeadService
             'amount' => $request->amount,
             'currency' => $request->currency,
             'lead_status_id' => 1,
-            'user_assigned_id' => $request->user_assigned_id,
+            'user_owner_id' => $request->user_owner_id,
         ]);
 
         $lead->labels()->sync($request->labels ?? []);
@@ -54,7 +54,7 @@ class LeadService
             'description' => $request->description,
             'amount' => $request->amount,
             'currency' => $request->currency,
-            'user_assigned_id' => $request->user_assigned_id,
+            'user_owner_id' => $request->user_owner_id,
         ]);
 
         $lead->labels()->sync($request->labels ?? []);
