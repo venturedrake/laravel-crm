@@ -86,10 +86,10 @@
         ])
 
         @include('laravel-crm::partials.form.select',[
-                 'name' => 'user_assigned_id',
-                 'label' => ucfirst(__('laravel-crm::lang.assigned_to')),
+                 'name' => 'user_owner_id',
+                 'label' => ucfirst(__('laravel-crm::lang.owner')),
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                 'value' =>  old('user_assigned_id', $deal->assigned_user_id ?? auth()->user()->id),
+                 'value' =>  old('user_owner_id', $deal->user_owner_id ?? auth()->user()->id),
               ])
     </div>
     <div class="col-sm-6">

@@ -27,9 +27,7 @@ class LeadService
         $lead = Lead::create([
             'external_id' => Uuid::uuid4()->toString(),
             'person_id' => $person->id ?? null,
-            'person_name' => $request->person_name,
             'organisation_id' => $organisation->id ?? null,
-            'organisation_name' => $request->organisation_name,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,
@@ -47,9 +45,7 @@ class LeadService
     {
         $lead->update([
             'person_id' => $person->id ?? null,
-            'person_name' => $request->person_name,
             'organisation_id' => $organisation->id ?? null,
-            'organisation_name' => $request->organisation_name,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,

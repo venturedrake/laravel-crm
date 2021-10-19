@@ -25,7 +25,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact_person')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.expected_close')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.assigned_to')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="240"></th>
             </tr>
             </thead>
@@ -41,7 +41,7 @@
                     <td>{{ $deal->organisation->name ?? null }}</td>
                     <td>{{ $deal->person->name ?? null }}</td>
                     <td>{{ ($deal->expected_close) ? $deal->expected_close->toFormattedDateString() : null }}</td>
-                    <td>{{ $deal->assignedToUser->name ?? null }}</td>
+                    <td>{{ $deal->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm deals')
                         @if(!$deal->closed_at)

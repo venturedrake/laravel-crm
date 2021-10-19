@@ -35,8 +35,7 @@ class DealService
             'amount' => $request->amount,
             'currency' => $request->currency,
             'expected_close' => $request->expected_close,
-            'user_owner_id' => $request->user_assigned_id,
-            'user_assigned_id' => $request->user_assigned_id,
+            'user_owner_id' => $request->user_owner_id,
         ]);
 
         $deal->labels()->sync($request->labels ?? []);
@@ -66,8 +65,7 @@ class DealService
             'amount' => $request->amount,
             'currency' => $request->currency,
             'expected_close' => $request->expected_close,
-            'user_owner_id' => $request->user_assigned_id,
-            'user_assigned_id' => $request->user_assigned_id,
+            'user_owner_id' => $request->user_owner_id,
         ]);
 
         $deal->labels()->sync($request->labels ?? []);
