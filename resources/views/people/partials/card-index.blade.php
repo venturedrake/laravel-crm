@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.people')) }}
+            {{ ucfirst(__('laravel-crm::lang.people')) }} @include('laravel-crm::partials.filters')
         @endslot
     
         @slot('actions')

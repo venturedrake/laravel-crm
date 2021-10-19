@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\SearchFilters;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Person extends Model
@@ -14,6 +15,7 @@ class Person extends Model
     use LaravelEncryptableTrait;
     use BelongsToTeams;
     use HasCrmFields;
+    use SearchFilters;
 
     protected $guarded = ['id'];
 
@@ -30,6 +32,11 @@ class Person extends Model
         'middle_name',
         'last_name',
         'maiden_name',
+    ];
+
+    protected $filterable = [
+        'user_owner_id',
+        'labels.id',
     ];
     
     public function getSearchable()

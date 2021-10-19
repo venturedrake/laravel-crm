@@ -27,13 +27,17 @@ class PersonController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (Person::all()->count() < 30) {
-            $people = Person::latest()->get();
+        $params = $request->except('_token');
+        
+        if (Person::filter($params)->get()->count() < 30) {
+            $people = Person::filter($params)->latest()->get();
         } else {
-            $people = Person::latest()->paginate(30);
+            $people = Person::filter($params)->latest()->paginate(30);
         }
+        
+        // dd(Person::filter($params)->latest()->toSql());
         
         return view('laravel-crm::people.index', [
             'people' => $people,

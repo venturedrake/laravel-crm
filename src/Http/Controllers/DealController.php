@@ -43,12 +43,14 @@ class DealController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (Deal::all()->count() < 30) {
-            $deals = Deal::latest()->get();
+        $params = $request->except('_token');
+        
+        if (Deal::filter($params)->get()->count() < 30) {
+            $deals = Deal::filter($params)->latest()->get();
         } else {
-            $deals = Deal::latest()->paginate(30);
+            $deals = Deal::filter($params)->latest()->paginate(30);
         }
 
         return view('laravel-crm::deals.index', [

@@ -146,3 +146,21 @@ dt {
   border-radius: 0.25rem !important;
   height: calc(1.6em + .75rem + 2px);
 }
+
+.browse-filter .form-group > label{
+  display: none;
+}
+
+.browse-filter .multiselect-native-select .custom-select{
+  height: calc(1.1em + .75rem + 2px);
+  padding: 0.25rem 1.75rem 0.25rem 0.75rem
+}
+
+.form-inline .browse-filter .multiselect-container span.form-check{
+  padding: 3px 5px 3px 0px !important;
+}
+
+.form-inline .browse-filter .form-check {
+  align-items: flex-start !important;
+  justify-content: left !important;
+}

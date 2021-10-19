@@ -5,17 +5,24 @@ namespace VentureDrake\LaravelCrm\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Product extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
     use HasCrmFields;
+    use SearchFilters;
 
     protected $guarded = ['id'];
 
     protected $searchable = [
         'name',
+    ];
+    
+    protected $filterable = [
+        'user_owner_id',
+        'labels.id',
     ];
 
     public function getSearchable()

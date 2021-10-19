@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=435263456345" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=56754675676" rel="stylesheet">
 
     @livewireStyles
 </head>
@@ -87,7 +87,8 @@
             </div>
         </main>
     </div>
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=12312312"></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=1686754151654"></script>
+    <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
     @livewireScripts
     @stack('livewire-js')
 </body>

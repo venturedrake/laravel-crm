@@ -28,10 +28,12 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        if (Product::all()->count() < 30) {
-            $products = Product::latest()->get();
+        $params = $request->except('_token');
+        
+        if (Product::filter($params)->get()->count() < 30) {
+            $products = Product::filter($params)->latest()->get();
         } else {
-            $products = Product::latest()->paginate(30);
+            $products = Product::filter($params)->latest()->paginate(30);
         }
         
         return view('laravel-crm::products.index', [

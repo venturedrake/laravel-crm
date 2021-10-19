@@ -50,12 +50,14 @@ class LeadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (Lead::whereNull('converted_at')->get()->count() < 30) {
-            $leads = Lead::whereNull('converted_at')->latest()->get();
+        $params = $request->except('_token');
+        
+        if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
+            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
         } else {
-            $leads = Lead::whereNull('converted_at')->latest()->paginate(30);
+            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
         }
         
         return view('laravel-crm::leads.index', [

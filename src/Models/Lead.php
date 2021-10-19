@@ -5,12 +5,14 @@ namespace VentureDrake\LaravelCrm\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Lead extends Model
 {
     use SoftDeletes;
     use HasCrmFields;
     use BelongsToTeams;
+    use SearchFilters;
     
     protected $guarded = ['id'];
 
@@ -21,6 +23,11 @@ class Lead extends Model
     protected $searchable = [
         'person_name',
         'organisation_name',
+    ];
+
+    protected $filterable = [
+        'user_owner_id',
+        'labels.id',
     ];
 
     public function getSearchable()
@@ -41,7 +48,7 @@ class Lead extends Model
             $this->attributes['amount'] = null;
         }
     }
-
+    
     public function organisation()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);

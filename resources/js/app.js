@@ -251,6 +251,36 @@ const appJquery = function() {
                 iconsPrefix: 'fa'
             });
             
+            // bootstrap-multiselect
+            $('select[name="user_owner_id[]"]').multiselect({
+                buttonText: function(options, select) {
+                    return 'Owner';
+                },
+                buttonTitle: function(options, select) {
+                    var labels = [];
+                    options.each(function () {
+                        labels.push($(this).text());
+                    });
+                    return labels.join(' - ');
+                },
+                includeSelectAllOption: true,
+                selectAllName: 'select-all-owner',
+            });
+
+            $('select[name="label_id[]"]').multiselect({
+                buttonText: function(options, select) {
+                    return 'Label';
+                },
+                buttonTitle: function(options, select) {
+                    var labels = [];
+                    options.each(function () {
+                        labels.push($(this).text());
+                    });
+                    return labels.join(' - ');
+                },
+                includeSelectAllOption: true,
+                selectAllName: 'select-all-label',
+            });
         },
 
         onSelectPerson: function (item, element) {

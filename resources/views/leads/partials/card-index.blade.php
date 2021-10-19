@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.leads')) }}
+            {{ ucfirst(__('laravel-crm::lang.leads')) }} @include('laravel-crm::partials.filters')
         @endslot
 
         @slot('actions')
@@ -25,7 +25,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact_person')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.assigned_to')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="210"></th>
             </tr>
             </thead>
@@ -41,7 +41,7 @@
                     <td>{{ $lead->organisation->name ?? $lead->organisation_name }}</td>
                     <td>{{ $lead->person->name ??  $lead->person_name }}</td>
                     <td>{{ $lead->created_at->diffForHumans() }}</td>
-                    <td>{{ $lead->assignedToUser->name }}</td>
+                    <td>{{ $lead->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm leads')
                         <a href="{{  route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm"> {{ ucfirst(__('laravel-crm::lang.convert')) }}</a>

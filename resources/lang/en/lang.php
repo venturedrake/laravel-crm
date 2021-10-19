@@ -211,4 +211,6 @@ return [
     'addresses' => 'addresses',
     'primary' => 'primary',
     'color' => 'color',
+    'filter' => 'filter',
+    'filters' => 'filters',
 ];
