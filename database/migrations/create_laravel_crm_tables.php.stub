@@ -143,10 +143,8 @@ class CreateLaravelCrmTables extends Migration
         Schema::create(config('laravel-crm.db_table_prefix').'leads', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id');
-            $table->string('person_name')->nullable();
             $table->unsignedBigInteger('person_id')->index()->nullable();
             $table->foreign('person_id')->references('id')->on(config('laravel-crm.db_table_prefix').'people');
-            $table->string('organisation_name')->nullable();
             $table->unsignedBigInteger('organisation_id')->index()->nullable();
             $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');
             $table->string('title');
