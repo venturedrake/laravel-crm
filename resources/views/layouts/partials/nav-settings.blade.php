@@ -20,9 +20,9 @@
         </li>
     @endcan
     @can('view crm fields')
-        <li class="nav-item">
+        {{--<li class="nav-item">
             <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.fields') === 0) ? 'active' : '' }}"  href="{{ url(route('laravel-crm.fields.index')) }}" role="tab" aria-controls="fields" aria-selected="false">{{ ucwords(__('laravel-crm::lang.fields')) }}</a>
-        </li>
+        </li>--}}
     @endcan
     {{--<li class="nav-item">
         <a class="nav-link" href="#integrations" role="tab" aria-controls="integrations" aria-selected="false">{{ ucwords(__('laravel-crm::lang.integrations')) }}</a>

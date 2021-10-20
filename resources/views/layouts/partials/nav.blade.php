@@ -42,7 +42,13 @@
                 <li class="dropdown-divider"></li>
             @endcan
             @can('view crm settings')
-            <li class="nav-item"><a class="nav-link {{ Str::contains(Route::currentRouteName(),['laravel-crm.settings','laravel-crm.roles']) ? 'active' : '' }}" href="{{ url(route('laravel-crm.settings.edit')) }}">{{ ucfirst(__('laravel-crm::lang.settings')) }}</a></li>
+            <li class="nav-item"><a class="nav-link {{ Str::contains(Route::currentRouteName(),[
+                'laravel-crm.settings',
+                'laravel-crm.roles',
+                'laravel-crm.product-categories',
+                'laravel-crm.labels',
+                'laravel-crm.fields',
+            ]) ? 'active' : '' }}" href="{{ url(route('laravel-crm.settings.edit')) }}">{{ ucfirst(__('laravel-crm::lang.settings')) }}</a></li>
             @endcan
             @can('view crm updates')
             <li class="nav-item"><a class="nav-link {{ Str::contains(Route::currentRouteName(),['laravel-crm.updates']) ? 'active' : '' }}" href="{{ url(route('laravel-crm.updates.index')) }}">{{ ucfirst(__('laravel-crm::lang.updates')) }}</a></li>
