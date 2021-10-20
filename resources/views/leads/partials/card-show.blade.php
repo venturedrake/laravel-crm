@@ -42,7 +42,7 @@
                 <p><span class="fa fa-user-circle" aria-hidden="true"></span> {{ $lead->assignedToUser->name }}</p>
                 <h6 class="mt-4 text-uppercase"> {{ ucfirst(__('laravel-crm::lang.person')) }}</h6>
                 <hr />
-                <p><span class="fa fa-user" aria-hidden="true"></span> {{ $lead->person->name ?? $lead->person_name }} </p>
+                <p><span class="fa fa-user" aria-hidden="true"></span> {{ $lead->person->name ?? null}} </p>
                 @if($email)
                     <p><span class="fa fa-envelope" aria-hidden="true"></span> <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})</p>
                 @endif
@@ -51,7 +51,7 @@
                 @endif
                 <h6 class="mt-4 text-uppercase"> {{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />
-                <p><span class="fa fa-building" aria-hidden="true"></span> {{ $lead->organisation->name ?? $lead->organisation_name }}</p>
+                <p><span class="fa fa-building" aria-hidden="true"></span> {{ $lead->organisation->name ?? null }}</p>
                 <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }} </p>
             </div>
             <div class="col-sm-6">

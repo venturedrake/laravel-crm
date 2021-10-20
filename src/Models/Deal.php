@@ -23,8 +23,12 @@ class Deal extends Model
     ];
 
     protected $searchable = [
-        'person_name',
-        'organisation_name',
+        'title',
+        'person.first_name',
+        'person.middle_name',
+        'person.last_name',
+        'person.maiden_name',
+        'organisation.name',
     ];
     
     protected $filterable = [

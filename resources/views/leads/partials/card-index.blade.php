@@ -38,8 +38,8 @@
                             'limit' => 3
                         ])</td>
                     <td>{{ money($lead->amount, $lead->currency) }}</td>
-                    <td>{{ $lead->organisation->name ?? $lead->organisation_name }}</td>
-                    <td>{{ $lead->person->name ??  $lead->person_name }}</td>
+                    <td>{{ $lead->organisation->name ?? null}}</td>
+                    <td>{{ $lead->person->name ??  null }}</td>
                     <td>{{ $lead->created_at->diffForHumans() }}</td>
                     <td>{{ $lead->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">

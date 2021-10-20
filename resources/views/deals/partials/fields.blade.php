@@ -16,7 +16,7 @@
                'name' => 'person_name',
                'label' => ucfirst(__('laravel-crm::lang.contact_person')),
                'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-               'value' => old('person_name', $deal->person->name ?? $lead->person_name ?? $person->name ?? null),
+               'value' => old('person_name', $deal->person->name ?? $person->name ?? null),
                'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
                ]
@@ -34,7 +34,7 @@
                 'name' => 'organisation_name',
                 'label' => ucfirst(__('laravel-crm::lang.organization')),
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$deal->organisation->name ?? $lead->organisation_name ?? $organisation->name ?? null),
+                'value' => old('organisation_name',$deal->organisation->name ?? $organisation->name ?? null),
                 'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
                ]

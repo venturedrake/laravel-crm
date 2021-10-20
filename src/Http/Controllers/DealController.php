@@ -208,14 +208,38 @@ class DealController extends Controller
     public function search(Request $request)
     {
         $searchValue = $request->search;
+        
+        if (! $searchValue || trim($searchValue) == '') {
+            return redirect(route('laravel-crm.deals.index'));
+        }
 
-        $deals = Deal::all()->filter(function ($record) use ($searchValue) {
-            foreach ($record->getSearchable() as $field) {
-                if (Str::contains($record->{$field}, $searchValue)) {
-                    return $record;
+        $deals = Deal::select(
+            config('laravel-crm.db_table_prefix').'deals.*',
+            config('laravel-crm.db_table_prefix').'people.first_name',
+            config('laravel-crm.db_table_prefix').'people.middle_name',
+            config('laravel-crm.db_table_prefix').'people.last_name',
+            config('laravel-crm.db_table_prefix').'people.maiden_name',
+            config('laravel-crm.db_table_prefix').'organisations.name'
+        )
+            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'deals.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'deals.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->get()
+            ->filter(function ($record) use ($searchValue) {
+                foreach ($record->getSearchable() as $field) {
+                    if (Str::contains($field, '.')) {
+                        $field = explode('.', $field);
+                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
+                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+                                return $record;
+                            }
+                        }
+                    } elseif ($record->{$field}) {
+                        if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
+                            return $record;
+                        }
+                    }
                 }
-            }
-        });
+            });
 
         return view('laravel-crm::deals.index', [
             'deals' => $deals,

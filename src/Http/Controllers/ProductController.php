@@ -127,9 +127,13 @@ class ProductController extends Controller
     {
         $searchValue = $request->search;
 
+        if (! $searchValue || trim($searchValue) == '') {
+            return redirect(route('laravel-crm.products.index'));
+        }
+
         $products = Product::all()->filter(function ($record) use ($searchValue) {
             foreach ($record->getSearchable() as $field) {
-                if (Str::contains($record->{$field}, $searchValue)) {
+                if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
                     return $record;
                 }
             }
