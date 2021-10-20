@@ -26,7 +26,7 @@ trait SearchFilters
                         }
 
                         $query->orWhereHas($relation[0], function ($query) use ($relation, $params, $field) {
-                            $query->whereIn($relation[1],  $params[$field]);
+                            $query->whereIn($relation[1], $params[$field]);
                         });
                     });
                 } else {
