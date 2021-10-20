@@ -20,6 +20,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.7.2 - 2021-10-20
+### Added
+- Added owner and label browsing filters
+### Changed
+- Use owner rather than assigned to field
+### Fixed
+- Issue with address and contact types migrations
+- Search leads and deals
+- Settings menu active main menu issue
+### Removed
+
 ## 0.7.1 - 2021-10-08
 ### Added
 - Name field on address
