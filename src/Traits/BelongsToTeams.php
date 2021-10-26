@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use VentureDrake\LaravelCrm\Scopes\AllTeamsScope;
 use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
 
 /**
@@ -25,10 +24,5 @@ trait BelongsToTeams
                 $model->team_id = auth()->user()->currentTeam->id ?? null;
             }
         });
-    }
-
-    public function scopeAllTeams($query)
-    {
-        return $query->withoutGlobalScope(BelongsToTeamsScope::class);
     }
 }
