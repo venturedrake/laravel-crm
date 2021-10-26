@@ -31,6 +31,13 @@ This package will add CRM functionality to your laravel projects
  - Laravel Jetstream/Spark teams support
  - Team level roles & permissions
 
+## Requirements
+
+- **PHP**: 7.3 or higher
+- **For MySQL users**: 5.7.23 or higher
+- **For MariaDB users**: 10.2.7 or higher
+- **Laravel** 6.0 or higher
+
 ## Installation (10-15mins)
 
 #### Step 1. Install a Laravel project if you don't have one already
