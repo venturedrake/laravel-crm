@@ -32,6 +32,7 @@ class TeamObserver
         
         // Get the roles
         foreach (DB::table('roles')
+                     ->where('crm_role', 1)
                      ->whereNull('team_id')
                      ->get() as $role) {
             DB::table('roles')->updateOrInsert([
@@ -52,49 +53,14 @@ class TeamObserver
                 'crm_role' => $role->crm_role,
                 'team_id' => $team->id,
             ])->first()) {
-                if ($role->name == 'Owner') {
-                    if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
-                        DB::table('model_has_roles')->updateOrInsert([
-                            'role_id' => $newRole->id,
-                            'model_type' => 'App\Models\User',
-                            'model_id' => auth()->user()->id,
-                        ]);
-                    } else {
-                        DB::table('model_has_roles')->updateOrInsert([
-                            'role_id' => $newRole->id,
-                            'model_type' => 'App\User',
-                            'model_id' => auth()->user()->id,
-                        ]);
-                    }
-                }
-                
                 foreach (DB::table('permissions')
                              ->leftJoin('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                              ->where('role_has_permissions.role_id', $role->id)
                              ->get() as $permission) {
-                    DB::table('permissions')->updateOrInsert([
-                        'name' => $permission->name,
-                        'guard_name' => $permission->guard_name,
-                        'description' => $permission->description,
-                        'crm_permission' => $permission->crm_permission,
-                        'team_id' => $team->id,
-                    ], [
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
+                    DB::table('role_has_permissions')->updateOrInsert([
+                        'permission_id' => $permission->id,
+                        'role_id' => $newRole->id,
                     ]);
-
-                    if ($newPermission = DB::table('permissions')->where([
-                        'name' => $permission->name,
-                        'guard_name' => $permission->guard_name,
-                        'description' => $permission->description,
-                        'crm_permission' => $permission->crm_permission,
-                        'team_id' => $team->id,
-                    ])->first()) {
-                        DB::table('role_has_permissions')->updateOrInsert([
-                            'permission_id' => $newPermission->id,
-                            'role_id' => $newRole->id,
-                        ]);
-                    }
                 }
             }
         }

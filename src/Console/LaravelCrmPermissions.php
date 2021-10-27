@@ -56,6 +56,7 @@ class LaravelCrmPermissions extends Command
         
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('roles')
+                         ->where('crm_role', 1)
                          ->whereNull('team_id')
                          ->get() as $role) {
                 $this->info('Inserting role '.$role->name.' for team '.$team->name);
@@ -82,31 +83,12 @@ class LaravelCrmPermissions extends Command
                                  ->leftJoin('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                                  ->where('role_has_permissions.role_id', $role->id)
                                  ->get() as $permission) {
-                        $this->info('Inserting permission '.$permission->name.' for role '.$role->name);
-                        
-                        DB::table('permissions')->updateOrInsert([
-                            'name' => $permission->name,
-                            'guard_name' => $permission->guard_name,
-                            'description' => $permission->description,
-                            'crm_permission' => $permission->crm_permission,
-                            'team_id' => $team->id,
-                        ], [
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now(),
-                        ]);
+                        $this->info('Assigning permission '.$permission->name.' for role '.$role->name);
 
-                        if ($newPermission = DB::table('permissions')->where([
-                            'name' => $permission->name,
-                            'guard_name' => $permission->guard_name,
-                            'description' => $permission->description,
-                            'crm_permission' => $permission->crm_permission,
-                            'team_id' => $team->id,
-                        ])->first()) {
-                            DB::table('role_has_permissions')->updateOrInsert([
-                                'permission_id' => $newPermission->id,
-                                'role_id' => $newRole->id,
-                            ]);
-                        }
+                        DB::table('role_has_permissions')->updateOrInsert([
+                            'permission_id' => $permission->id,
+                            'role_id' => $newRole->id,
+                        ]);
                     }
                 }
             }

@@ -83,8 +83,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Middleware
         $router->aliasMiddleware('auth.laravel-crm', Authenticate::class);
-        $router->pushMiddlewareToGroup('crm', TeamsPermission::class);
-        $router->pushMiddlewareToGroup('api', TeamsPermission::class);
+        
+        if(config('laravel-crm.teams')){
+            $router->pushMiddlewareToGroup('web', TeamsPermission::class);
+            $router->pushMiddlewareToGroup('api', TeamsPermission::class); 
+        }
+        
         $router->pushMiddlewareToGroup('crm', Settings::class);
         $router->pushMiddlewareToGroup('api', Settings::class);
         $router->pushMiddlewareToGroup('crm', HasCrmAccess::class);

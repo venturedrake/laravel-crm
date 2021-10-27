@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Closure;
+use VentureDrake\LaravelCrm\Models\Role;
 
 class HasCrmAccess
 {
@@ -30,8 +31,15 @@ class HasCrmAccess
                 'crm_access' => 1,
             ])->save();
         } elseif (config('laravel-crm.teams') && auth()->user()->currentTeam->user_id == auth()->user()->id && ! auth()->user()->hasRole('Owner')) {
-            auth()->user()->assignRole('Owner');
-
+            
+            if($role = Role::where([
+                'name' => 'Owner',
+                'team_id' => auth()->user()->currentTeam->id,
+                'crm_role' => 1
+            ])->first()){
+                auth()->user()->assignRole($role->name);
+            }
+            
             auth()->user()->forceFill([
                 'crm_access' => 1,
             ])->save();
