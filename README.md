@@ -48,15 +48,25 @@ https://laravel.com/docs/6.x#installation
 
 https://laravel.com/docs/6.x/authentication
 
-#### Step 3. Install spatie roles & permissions package
-
-https://spatie.be/docs/laravel-permission/v4/installation-laravel
-
-#### Step 4. Require the current package using composer:
+#### Step 3. Require the current package using composer:
 
 ```bash
 composer require venturedrake/laravel-crm:^0.7
 ```
+
+#### Step 4. Install spatie roles & permissions package
+
+https://spatie.be/docs/laravel-permission/v4/installation-laravel
+
+Adjust the settings in app/config/permission.php to the following:
+
+```php
+'permission' => VentureDrake\LaravelCrm\Models\Permission::class
+'role' => VentureDrake\LaravelCrm\Models\Role::class,
+```
+
+If you are using the teams feature, follow this additional step:  
+https://spatie.be/docs/laravel-permission/v5/basic-usage/teams-permissions
 
 #### Step 5. Publish the migrations, config & assets
 
@@ -190,12 +200,10 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 ## Roadmap
 
- - Products
  - Notes
  - Tasks
  - Files / Documents
  - Calendar (Calls, Meetings, Reminders)
- - Dashboard
  - Custom Fields
  - Activity Feed / Timelines
  - CSV Import / Export

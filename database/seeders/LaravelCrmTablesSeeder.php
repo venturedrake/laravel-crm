@@ -209,13 +209,13 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm fields', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm fields', 'crm_permission' => 1]);
 
-        $role = Role::firstOrCreate(['name' => 'Owner', 'crm_role' => 1])
+        $role = Role::firstOrCreate(['name' => 'Owner', 'crm_role' => 1, 'team_id' => null])
             ->givePermissionTo(Permission::all());
         
-        $role = Role::firstOrCreate(['name' => 'Admin', 'crm_role' => 1])
+        $role = Role::firstOrCreate(['name' => 'Admin', 'crm_role' => 1, 'team_id' => null])
             ->givePermissionTo(Permission::all());
         
-        $role = Role::firstOrCreate(['name' => 'Manager', 'crm_role' => 1])
+        $role = Role::firstOrCreate(['name' => 'Manager', 'crm_role' => 1, 'team_id' => null])
             ->givePermissionTo([
                 'create crm leads',
                 'view crm leads',
@@ -239,7 +239,7 @@ class LaravelCrmTablesSeeder extends Seeder
                 'delete crm contacts',
             ]);
         
-        $role = Role::firstOrCreate(['name' => 'Employee', 'crm_role' => 1])
+        $role = Role::firstOrCreate(['name' => 'Employee', 'crm_role' => 1, 'team_id' => null])
             ->givePermissionTo([
                 'create crm leads',
                 'view crm leads',

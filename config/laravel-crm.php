@@ -33,16 +33,12 @@ return [
     |
     | For Jetstream see https://jetstream.laravel.com/2.x/features/teams.html
     |
-    | For Spark see https://spark-classic.laravel.com/docs/11.0/teams
+    | For Spark Classic see https://spark-classic.laravel.com/docs/11.0/teams
     |
-    | IMPORTANT! This package uses the Spatie Permissions package to manage
-    | user roles and permissions, which by default are system wide. Howwever
-    | there is support added for roles & permissions at team level. To enable
-    | you will need to adjust the settings in app/config/permission.php to
-    | the following:
-    |
-    | 'permission' => VentureDrake\LaravelCrm\Models\Permission::class
-    | 'role' => VentureDrake\LaravelCrm\Models\Role::class,
+    | IMPORTANT! This package uses the Spatie Permissions package which as of
+    | version 5 supports teams. PLease check you have version 5 or higher
+    | installed and follow this additional step when installing the package:
+    | https://spatie.be/docs/laravel-permission/v5/basic-usage/teams-permissions
     |
     */
 
