@@ -6,6 +6,7 @@ use App\Team;
 use Carbon\Carbon;
 use DB;
 use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Models\Role;
 
 class TeamObserver
 {
@@ -65,7 +66,13 @@ class TeamObserver
             }
         }
 
-        auth()->user()->assignRole('Owner');
+        if ($role = Role::where([
+            'name' => 'Owner',
+            'team_id' => auth()->user()->currentTeam->id,
+            'crm_role' => 1,
+        ])->first()) {
+            auth()->user()->assignRole($role);
+        }
 
         foreach (DB::table('labels')
                      ->whereNull('team_id')
