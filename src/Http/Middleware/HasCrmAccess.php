@@ -31,12 +31,11 @@ class HasCrmAccess
                 'crm_access' => 1,
             ])->save();
         } elseif (config('laravel-crm.teams') && auth()->user()->currentTeam->user_id == auth()->user()->id && ! auth()->user()->hasRole('Owner')) {
-            
-            if($role = Role::where([
+            if ($role = Role::where([
                 'name' => 'Owner',
                 'team_id' => auth()->user()->currentTeam->id,
-                'crm_role' => 1
-            ])->first()){
+                'crm_role' => 1,
+            ])->first()) {
                 auth()->user()->assignRole($role->name);
             }
             
