@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.8.0 - 2021-10-27
+### Added
+- Spatie permissions team support
+- allTeams scope
+### Fixed
+- Search filter scope
+- Problem with team permissions cache
+
 ## 0.7.2 - 2021-10-20
 ### Added
 - Added owner and label browsing filters

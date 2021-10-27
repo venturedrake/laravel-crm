@@ -51,7 +51,7 @@ https://laravel.com/docs/6.x/authentication
 #### Step 3. Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.7
+composer require venturedrake/laravel-crm:^0.8
 ```
 
 #### Step 4. Install spatie roles & permissions package
