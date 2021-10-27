@@ -36,7 +36,7 @@ class HasCrmAccess
                 'team_id' => auth()->user()->currentTeam->id,
                 'crm_role' => 1,
             ])->first()) {
-                auth()->user()->assignRole($role->name);
+                auth()->user()->assignRole($role);
             }
             
             auth()->user()->forceFill([
