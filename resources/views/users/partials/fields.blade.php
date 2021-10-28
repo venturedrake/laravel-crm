@@ -30,7 +30,9 @@
             @include('laravel-crm::partials.form.select',[
                'name' => 'role',
                'label' => ucfirst(__('laravel-crm::lang.CRM_role')),
-               'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->get()),
+               'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->when(config('laravel-crm.teams'), function ($query) {
+                    return $query->where('team_id', auth()->user()->currentTeam->id);
+                })->get()),
                'value' => old('role', $user->roles()->first()->id ?? null),
                'attributes' => [
                    'disabled' => 'disabled'
@@ -40,7 +42,9 @@
             @include('laravel-crm::partials.form.select',[
                 'name' => 'role',
                 'label' => ucfirst(__('laravel-crm::lang.CRM_role')),
-                'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->get()),
+                'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->when(config('laravel-crm.teams'), function ($query) {
+                    return $query->where('team_id', auth()->user()->currentTeam->id);
+                })->get()),
                 'value' => old('role', ((isset($user)) ? $user->roles()->first()->id : null)),
             ]) 
         @endif

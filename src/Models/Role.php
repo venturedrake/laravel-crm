@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use Spatie\Permission\Models\Role as SpatieRole;
+use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class Role extends SpatieRole
 {

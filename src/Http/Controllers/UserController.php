@@ -92,15 +92,16 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
-
-        $roles = [];
+        
         if ($request->role) {
             if ($role = Role::find($request->role)) {
-                $roles = [$role->name];
+                if($removeRole = $user->roles()->where('crm_role',1)->first()){
+                    $user->removeRole($removeRole); 
+                }
+                
+                $user->assignRole($role);
             }
         }
-
-        $user->syncRoles($roles);
 
         if (config('laravel-crm.teams')) {
             if ($team = auth()->user()->currentTeam) {
@@ -171,14 +172,15 @@ class UserController extends Controller
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ])->save();
 
-        $roles = [];
         if ($request->role) {
             if ($role = Role::find($request->role)) {
-                $roles = [$role->name];
+                if($removeRole = $user->roles()->where('crm_role',1)->first()){
+                    $user->removeRole($removeRole);
+                }
+
+                $user->assignRole($role);
             }
         }
-
-        $user->syncRoles($roles);
 
         if ($request->user_teams) {
             $user->crmTeams()->sync($request->user_teams);

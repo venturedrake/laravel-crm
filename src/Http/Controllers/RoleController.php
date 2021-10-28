@@ -16,7 +16,11 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::crm()->get();
+        $roles = Role::crm()
+            ->when(config('laravel-crm.teams'), function ($query) {
+                return $query->where('team_id', auth()->user()->currentTeam->id);
+            })
+            ->get();
         
         return view('laravel-crm::roles.index', [
             'roles' => $roles,
