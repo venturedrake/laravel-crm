@@ -95,8 +95,8 @@ class UserController extends Controller
         
         if ($request->role) {
             if ($role = Role::find($request->role)) {
-                if($removeRole = $user->roles()->where('crm_role',1)->first()){
-                    $user->removeRole($removeRole); 
+                if ($removeRole = $user->roles()->where('crm_role', 1)->first()) {
+                    $user->removeRole($removeRole);
                 }
                 
                 $user->assignRole($role);
@@ -174,7 +174,7 @@ class UserController extends Controller
 
         if ($request->role) {
             if ($role = Role::find($request->role)) {
-                if($removeRole = $user->roles()->where('crm_role',1)->first()){
+                if ($removeRole = $user->roles()->where('crm_role', 1)->first()) {
                     $user->removeRole($removeRole);
                 }
 

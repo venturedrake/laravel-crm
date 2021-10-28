@@ -206,6 +206,8 @@ return [
     'role_cant_be_deleted' => "role can't be deleted",
     'roles' => 'roles',
     'add_role' => 'add role',
+    'create_role' => 'create role',
+    'edit_role' => 'edit role',
     'phone_numbers' => 'phone numbers',
     'emails' => 'emails',
     'addresses' => 'addresses',

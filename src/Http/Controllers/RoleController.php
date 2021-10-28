@@ -53,12 +53,22 @@ class RoleController extends Controller
         }
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-        $role = Role::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'crm_role' => 1,
-        ]);
 
+        if (config('laravel-crm.teams')) {
+            $role = Role::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'crm_role' => 1,
+                'team_id' => auth()->user()->currentTeam->id,
+            ]);
+        } else {
+            $role = Role::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'crm_role' => 1,
+            ]);
+        }
+        
         $role->syncPermissions($permissionsArray);
         
         flash(ucfirst(trans('laravel-crm::lang.role_stored')))->success()->important();
