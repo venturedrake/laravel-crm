@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.8.1 - 2021-10-28
+### Fixed
+- Editing roles in teams mode
+
 ## 0.8.0 - 2021-10-27
 ### Added
 - Spatie permissions team support
