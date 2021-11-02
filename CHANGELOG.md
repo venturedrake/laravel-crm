@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.9.2 - 2021-11-03
+### Fixed
+- Address types migration command
+
 ## 0.9.1 - 2021-11-03
 ### Fixed
 - Missing command in service provider
