@@ -65,7 +65,6 @@ class LaravelCrmAddressTypes extends Command
                 
                 if (! $teamAddressType) {
                     DB::table('address_types')->insert([
-                        'external_id' => Uuid::uuid4()->toString(),
                         'name' => $addressType->name,
                         'description' => $addressType->description,
                         'team_id' => $team->id,
