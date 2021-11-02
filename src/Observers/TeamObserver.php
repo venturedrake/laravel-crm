@@ -87,6 +87,18 @@ class TeamObserver
                 'updated_at' => Carbon::now(),
             ]);
         }
+
+        foreach (DB::table('address_types')
+                     ->whereNull('team_id')
+                     ->get() as $addressType) {
+            DB::table('address_types')->insert([
+                'name' => $addressType->name,
+                'description' => $addressType->description,
+                'team_id' => $team->id,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
     }
 
     /**

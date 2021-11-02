@@ -21,7 +21,7 @@ class LaravelCrmPermissions extends Command
      *
      * @var string
      */
-    protected $description = 'Install Laravel CRM package';
+    protected $description = 'Migrate Laravel CRM permissions';
 
     /**
      * The Composer instance.

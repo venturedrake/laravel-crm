@@ -6,7 +6,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1946e83f51de4a0eb430a8e0a1aab3cf)](https://app.codacy.com/gh/venturedrake/laravel-crm?utm_source=github.com&utm_medium=referral&utm_content=venturedrake/laravel-crm&utm_campaign=Badge_Grade_Settings)
 [![Total Downloads](https://img.shields.io/packagist/dt/venturedrake/laravel-crm.svg?style=flat-square)](https://packagist.org/packages/venturedrake/laravel-crm)
 
-This package will add CRM functionality to your laravel projects
+The free CRM you have been looking for, this package will add CRM functionality to your laravel projects or can be used as a complete standalone CRM built with Laravel. 
 
 > ⚠️ Warning: This is a pre-release version that is not recommended for production use.
 
@@ -24,12 +24,12 @@ This package will add CRM functionality to your laravel projects
  - Sales leads management
  - Deal management
  - Contact database management
- - Products 
+ - Products & Product Categories
  - Users & Teams
  - Secure registration & login
- - Reset forgotten password
  - Laravel Jetstream/Spark teams support
- - Team level roles & permissions
+ - Roles & Permissions thanks to [Spatie Permissions](https://github.com/spatie/laravel-permission)
+ - Model Audit logging thanks to [Laravel Auditing](https://github.com/owen-it/laravel-auditing)
 
 ## Requirements
 
@@ -51,24 +51,10 @@ https://laravel.com/docs/6.x/authentication
 #### Step 3. Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.8
+composer require venturedrake/laravel-crm:^0.9
 ```
 
-#### Step 4. Install spatie roles & permissions package
-
-https://spatie.be/docs/laravel-permission/v4/installation-laravel
-
-Adjust the settings in app/config/permission.php to the following:
-
-```php
-'permission' => VentureDrake\LaravelCrm\Models\Permission::class
-'role' => VentureDrake\LaravelCrm\Models\Role::class,
-```
-
-If you are using the teams feature, follow this additional step:  
-https://spatie.be/docs/laravel-permission/v5/basic-usage/teams-permissions
-
-#### Step 5. Publish the migrations, config & assets
+#### Step 4. Publish the migrations, config & assets
 
 ```bash
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
@@ -76,7 +62,7 @@ php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmService
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
 ```
 
-#### Step 6. Update the various config settings in the published config file:
+#### Step 5. Update the various config settings in the published config file:
 
 After publishing the package assets a configuration file will be located at <code>config/laravel-crm.php</code>
 
@@ -110,19 +96,19 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 })->name('dashboard');
 ```
 
-#### Step 7. Run migrations:
+#### Step 6. Run migrations:
 
 ```bash
 php artisan migrate
 ```
 
-#### Step 8. Run database seeder:
+#### Step 7. Run database seeder:
 
 ```bash
 php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
 ```
 
-#### Step 9. Add the HasCrmAccess, HasCrmTeams & HasRoles traits to your User model(s):
+#### Step 8. Add the HasCrmAccess, HasCrmTeams & HasRoles traits to your User model(s):
 
 ```php
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -139,7 +125,7 @@ class User extends Authenticatable
     // ...
 }
 ```
-#### Step 10. Register at least one user and log in or if you already have a user login with the crm owner you set in step 5
+#### Step 9. Register at least one user and log in or if you already have a user login with the crm owner you set in step 5
 
 Access the crm to register/login at http://your-project-url/crm
 
@@ -152,8 +138,9 @@ Note if you modified the route_prefix setting from the default the above url wil
 #### Step 1. Run the following to the update migrations and publish assets:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.6
+composer require venturedrake/laravel-crm::^0.9
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
 php artisan migrate
 ```
@@ -169,22 +156,16 @@ php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrm
 #### Step 1. Run the following to the update package:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.6
+composer require venturedrake/laravel-crm::^0.9
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
+php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
+php artisan migrate
 ```
 
 #### Step 2. Delete previously published package views located in <code>resources/views/vendor/laravel-crm/*</code>
 
-#### Step 3. Install and set up spatie roles & permissions package, see install step 3.
-
-#### Step 4. Add HasCrmAccess, HasCrmTeams & HasRoles traits to App\User model, see installation Step 8.
-
-#### Step 5. Run the following to the update database and add the default roles/permissions:
-```bash
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
-php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
-php artisan migrate
-php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
-```
+#### Step 3. Add HasCrmAccess, HasCrmTeams & HasRoles traits to App\User model, see installation Step 8.
 
 <!--- ## Usage --->
 

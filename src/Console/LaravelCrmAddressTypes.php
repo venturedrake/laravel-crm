@@ -8,21 +8,21 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use Ramsey\Uuid\Uuid;
 
-class LaravelCrmLabels extends Command
+class LaravelCrmAddressTypes extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'laravelcrm:labels';
+    protected $signature = 'laravelcrm:addresstypes';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Migrate Laravel CRM labels';
+    protected $description = 'Migrate Laravel CRM address types';
 
     /**
      * The Composer instance.
@@ -49,27 +49,25 @@ class LaravelCrmLabels extends Command
      */
     public function handle()
     {
-        $this->info('Updating LaravelCRM Labels...');
+        $this->info('Updating LaravelCRM Address Types...');
         
         foreach (DB::table('teams')->get() as $team) {
-            foreach (DB::table('labels')
+            foreach (DB::table('address_types')
                          ->whereNull('team_id')
-                         ->get() as $label) {
-                $this->info('Inserting label '.$label->name.' for team '.$team->name);
+                         ->get() as $addressType) {
+                $this->info('Inserting address type '.$addressType->name.' for team '.$team->name);
                 
-                $teamLabel = DB::table('labels')->where([
-                    'name' => $label->name,
-                    'hex' => $label->hex,
-                    'description' => $label->description,
+                $teamAddressType = DB::table('address_types')->where([
+                    'name' => $addressType->name,
+                    'description' => $addressType->description,
                     'team_id' => $team->id,
                 ])->first();
                 
-                if (! $teamLabel) {
-                    DB::table('labels')->insert([
+                if (! $teamAddressType) {
+                    DB::table('address_types')->insert([
                         'external_id' => Uuid::uuid4()->toString(),
-                        'name' => $label->name,
-                        'hex' => $label->hex,
-                        'description' => $label->description,
+                        'name' => $addressType->name,
+                        'description' => $addressType->description,
                         'team_id' => $team->id,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
@@ -78,6 +76,6 @@ class LaravelCrmLabels extends Command
             }
         }
         
-        $this->info('LaravelCRM Labels Update Complete.');
+        $this->info('LaravelCRM Address Types Update Complete.');
     }
 }
