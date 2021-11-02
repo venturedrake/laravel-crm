@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
@@ -207,6 +208,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmInstall::class,
                 LaravelCrmPermissions::class,
                 LaravelCrmLabels::class,
+                LaravelCrmAddressTypes::class
             ]);
 
             // Register the model factories
