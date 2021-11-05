@@ -3,7 +3,10 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.leads')) }}  @include('laravel-crm::partials.filters', ['action' => route('laravel-crm.leads.filter')])
+            {{ ucfirst(__('laravel-crm::lang.leads')) }} @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.leads.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Lead'
+            ])
         @endslot
 
         @slot('actions')

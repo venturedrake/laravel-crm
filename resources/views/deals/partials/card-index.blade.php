@@ -3,7 +3,10 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.deals')) }}  @include('laravel-crm::partials.filters', ['action' => route('laravel-crm.deals.filter')])
+            {{ ucfirst(__('laravel-crm::lang.deals')) }} @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.deals.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Deal'
+            ])
         @endslot
 
         @slot('actions')
