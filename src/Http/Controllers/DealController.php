@@ -45,7 +45,7 @@ class DealController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->except('_token');
+        $params = Deal::filters($request);
         
         if (Deal::filter($params)->get()->count() < 30) {
             $deals = Deal::filter($params)->latest()->get();

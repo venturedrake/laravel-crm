@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use Ramsey\Uuid\Uuid;
 
 class LaravelCrmAddressTypes extends Command
 {

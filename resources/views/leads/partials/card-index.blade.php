@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.leads')) }} @include('laravel-crm::partials.filters')
+            {{ ucfirst(__('laravel-crm::lang.leads')) }}  @include('laravel-crm::partials.filters', ['action' => route('laravel-crm.leads.filter')])
         @endslot
 
         @slot('actions')

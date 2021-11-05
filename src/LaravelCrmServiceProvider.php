@@ -208,7 +208,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmInstall::class,
                 LaravelCrmPermissions::class,
                 LaravelCrmLabels::class,
-                LaravelCrmAddressTypes::class
+                LaravelCrmAddressTypes::class,
             ]);
 
             // Register the model factories

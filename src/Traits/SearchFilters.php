@@ -10,6 +10,35 @@ use Illuminate\Support\Str;
  */
 trait SearchFilters
 {
+    public static function filters($request)
+    {
+        if ($request->isMethod('post')) {
+            $request->session()->put(class_basename($request->route()->getAction()['controller']).'.params', $request->except('_token'));
+
+            return $request->except('_token');
+        } elseif ($request->session()->has(class_basename($request->route()->getAction()['controller']).'.params')) {
+            return $request->session()->get(class_basename($request->route()->getAction()['controller']).'.params');
+        }
+        
+        return $request->except('_token');
+    }
+    
+    public static function filterValue($key)
+    {
+        if ($params = request()->session()->get(class_basename(request()->route()->getAction()['controller']).'.params')) {
+            return $params[$key] ?? null;
+        }
+    }
+    
+    public static function filterActive($key, $options)
+    {
+        if ($params = request()->session()->get(class_basename(request()->route()->getAction()['controller']).'.params')) {
+            if (isset($params[$key]) && count($params[$key]) < count($options)) {
+                return true;
+            }
+        }
+    }
+    
     public function scopeFilter($query, $params)
     {
         foreach ($this->filterable as $field) {

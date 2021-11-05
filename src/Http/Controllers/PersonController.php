@@ -29,7 +29,7 @@ class PersonController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->except('_token');
+        $params = Person::filters($request);
         
         if (Person::filter($params)->get()->count() < 30) {
             $people = Person::filter($params)->latest()->get();

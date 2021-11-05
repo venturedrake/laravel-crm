@@ -28,7 +28,7 @@ class OrganisationController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->except('_token');
+        $params = Organisation::filters($request);
         
         if (Organisation::filter($params)->get()->count() < 30) {
             $organisations = Organisation::filter($params)->latest()->get();

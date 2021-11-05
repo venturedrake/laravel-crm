@@ -52,7 +52,7 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->except('_token');
+        $params = Lead::filters($request);
         
         if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
             $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
