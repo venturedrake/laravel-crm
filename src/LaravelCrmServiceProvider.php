@@ -241,6 +241,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $this->app->singleton('laravel-crm', function () {
             return new LaravelCrm;
         });
+
+        $this->app->register(LaravelCrmEventServiceProvider::class);
     }
     
     protected function registerRoutes()
