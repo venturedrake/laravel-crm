@@ -108,19 +108,25 @@ php artisan migrate
 php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
 ```
 
-#### Step 8. Add the HasCrmAccess, HasCrmTeams & HasRoles traits to your User model(s):
+#### Step 8. Update User Model
+
+- Add the HasCrmAccess, HasCrmTeams, HasRoles traits.
+- Add the Lab404\AuthChecker\Models\HasLoginsAndDevices trait and the Lab404\AuthChecker\Interfaces\HasLoginsAndDevicesInterface interface.
 
 ```php
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use VentureDrake\LaravelCrm\Traits\HasCrmAccess;
 use VentureDrake\LaravelCrm\Traits\HasCrmTeams;
+use Lab404\AuthChecker\Models\HasLoginsAndDevices;
+use Lab404\AuthChecker\Interfaces\HasLoginsAndDevicesInterface;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasLoginsAndDevicesInterface
 {
     use HasRoles;
     use HasCrmAccess;
     use HasCrmTeams;
+    use HasLoginsAndDevices;
 
     // ...
 }
