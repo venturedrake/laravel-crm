@@ -30,6 +30,7 @@ class OrganisationService
         $organisation = Organisation::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
+            'organisation_type_id' => $request->organisation_type_id,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
         ]);
@@ -68,6 +69,7 @@ class OrganisationService
     {
         $organisation->update([
             'name' => $request->name,
+            'organisation_type_id' => $request->organisation_type_id,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
         ]);

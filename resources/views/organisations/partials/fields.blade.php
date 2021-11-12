@@ -5,6 +5,12 @@
           'label' => ucfirst(__('laravel-crm::lang.name')),
           'value' => old('name', $organisation->name ?? null)
         ])
+        @include('laravel-crm::partials.form.select',[
+             'name' => 'organisation_type_id',
+             'label' => ucfirst(__('laravel-crm::lang.type')),
+             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\OrganisationType::all(), true),
+             'value' =>  old('organisation_type_id', $organisation->organisationType->id ?? null),
+        ])
         @include('laravel-crm::partials.form.textarea',[
            'name' => 'description',
            'label' => ucfirst(__('laravel-crm::lang.description')),

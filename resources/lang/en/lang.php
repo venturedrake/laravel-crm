@@ -215,4 +215,5 @@ return [
     'color' => 'color',
     'filter' => 'filter',
     'filters' => 'filters',
+    'type' => 'type',
 ];

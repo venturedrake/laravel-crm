@@ -23,6 +23,7 @@
             <thead>
             <tr>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.type')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.open_deals')) }}</th>
@@ -37,6 +38,7 @@
             @foreach($organisations as $organisation)
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.organisations.show',$organisation)) }}">
                     <td>{{ $organisation->name }}</td>
+                    <td>{{ $organisation->organisationType->name ?? null }}</td>
                     <td>@include('laravel-crm::partials.labels',[
                             'labels' => $organisation->labels,
                             'limit' => 3

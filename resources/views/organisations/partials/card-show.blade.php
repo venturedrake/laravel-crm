@@ -39,6 +39,8 @@
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
                     <dd class="col-sm-9">{{ $organisation->name }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
+                    <dd class="col-sm-9">{{ $organisation->organisationType->name ?? null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                     <dd class="col-sm-9">{{ $organisation->description }}</dd>
                     @foreach($phones as $phone)

@@ -119,4 +119,9 @@ class Organisation extends Model
     {
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
+
+    public function organisationType()
+    {
+        return $this->belongsTo(OrganisationType::class);
+    }
 }
