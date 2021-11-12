@@ -216,4 +216,5 @@ return [
     'filter' => 'filter',
     'filters' => 'filters',
     'type' => 'type',
+    'add_note' => 'add note',
 ];

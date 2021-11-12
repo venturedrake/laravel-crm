@@ -170,11 +170,8 @@ class Lead extends Model
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
-    /**
-     * Get all of the lead's notes.
-     */
     public function notes()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, config('laravel-crm.db_table_prefix').'noteable');
     }
 }

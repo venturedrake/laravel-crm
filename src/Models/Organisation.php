@@ -124,4 +124,9 @@ class Organisation extends Model
     {
         return $this->belongsTo(OrganisationType::class);
     }
+
+    public function notes()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, config('laravel-crm.db_table_prefix').'noteable');
+    }
 }

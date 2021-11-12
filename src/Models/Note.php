@@ -14,7 +14,7 @@ class Note extends Model
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix').'labels';
+        return config('laravel-crm.db_table_prefix').'notes';
     }
 
     /**

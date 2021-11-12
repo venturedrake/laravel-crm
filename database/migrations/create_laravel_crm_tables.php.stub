@@ -284,7 +284,8 @@ class CreateLaravelCrmTables extends Migration
             $table->bigIncrements('id');
             $table->string('external_id'); 
             $table->text('content');
-            $table->morphs('noteable');
+            $table->bigInteger(config('laravel-crm.db_table_prefix').'noteable_id');
+            $table->string(config('laravel-crm.db_table_prefix').'noteable_type');
             $table->boolean('pinned')->default(false);
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');

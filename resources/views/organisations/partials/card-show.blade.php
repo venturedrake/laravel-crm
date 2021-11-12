@@ -92,9 +92,9 @@
                 </dl>
             </div>
             <div class="col-sm-6">
-                <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.notes')) }}</h6>
-                <hr />
-                ...
+                @livewire('notes', [
+                    'notes' => $organisation->notes()->latest()->get()
+                ])
                 <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.files')) }}</h6>
                 <hr />
                 ...
