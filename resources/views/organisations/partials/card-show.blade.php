@@ -92,15 +92,9 @@
                 </dl>
             </div>
             <div class="col-sm-6">
-                @livewire('notes', [
-                    'notes' => $organisation->notes()->latest()->get()
+                @include('laravel-crm::partials.activities', [
+                    'model' => $organisation
                 ])
-                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.files')) }}</h6>
-                <hr />
-                ...
-                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.activities')) }}</h6>
-                <hr />
-                ...
             </div>
         </div>
 

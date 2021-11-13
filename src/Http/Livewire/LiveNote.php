@@ -3,33 +3,43 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use Ramsey\Uuid\Uuid;
 
 class LiveNote extends Component
 {
+    public $model;
     public $notes;
     public $content;
 
-    protected $rules = [
-        'content' => 'string|required',
-    ];
-
-    public function mount($notes)
+    public function mount($model)
     {
-        $this->notes = $notes;
+        $this->model = $model;
+        $this->getNotes();
     }
 
-    public function submit()
+    public function create()
     {
-        $note = $this->validate();
+        $data = $this->validate([
+            'content' => 'required',
+        ]);
         
-        //
+        $this->model->notes()->create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'content' => $data['content'],
+        ]);
 
-        $this->clearFields();
+        $this->resetFields();
+    }
+    
+    private function getNotes()
+    {
+        $this->notes = $this->model->notes()->latest()->get();
     }
 
-    private function clearFields()
+    private function resetFields()
     {
-        $this->content = '';
+        $this->reset('content');
+        $this->getNotes();
     }
     
     public function render()

@@ -55,15 +55,9 @@
                 <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }} </p>
             </div>
             <div class="col-sm-6">
-                <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.notes')) }}</h6>
-                <hr />
-                ...
-                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.files')) }}</h6>
-                <hr />
-                ...
-                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.activities')) }}</h6>
-                <hr />
-                ...
+                @include('laravel-crm::partials.activities', [
+                    'model' => $lead
+                ])
             </div>
         </div>
         

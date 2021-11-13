@@ -108,6 +108,11 @@ dt {
   background-color: #f8fafc;
 }
 
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+  background-color: #ffffff !important;
+  border-bottom-color: #ffffff !important;
+}
+
 #dealProducts .row:not(:first-child) label{
   display: none;
 }
