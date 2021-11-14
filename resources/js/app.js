@@ -264,7 +264,10 @@ const appJquery = function() {
                     return labels.join(' - ');
                 },
                 includeSelectAllOption: true,
+                selectAllJustVisible: false,
                 selectAllName: 'select-all-owner',
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true
             });
 
             $('select[name="label_id[]"]').multiselect({
@@ -279,7 +282,10 @@ const appJquery = function() {
                     return labels.join(' - ');
                 },
                 includeSelectAllOption: true,
+                selectAllJustVisible: false,
                 selectAllName: 'select-all-label',
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true
             });
         },
 
