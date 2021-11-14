@@ -25,6 +25,7 @@ The free CRM you have been looking for, this package will add CRM functionality 
  - Deal management
  - Contact database management
  - Products & Product Categories
+ - Notes
  - Users & Teams
  - Secure registration & login
  - Laravel Jetstream/Spark teams support
@@ -187,7 +188,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 ## Roadmap
 
- - Notes
  - Tasks
  - Files / Documents
  - Calendar (Calls, Meetings, Reminders)
