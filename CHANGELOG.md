@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Incorrectly names morph fields on notes table
 - Typo in lang file
-- Formatting of delete buttong on phone, email and addresses
+- Formatting of delete button on phone, email and addresses
 
 ## 0.9.3 - 2021-11-05
 ### Changed
