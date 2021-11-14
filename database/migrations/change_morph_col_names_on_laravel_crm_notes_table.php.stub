@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class ChangeMorphColNamesOnLaravelCrmNotesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table(config('laravel-crm.db_table_prefix').'notes', function (Blueprint $table) {
+            if(config('laravel-crm.db_table_prefix') && config('laravel-crm.db_table_prefix') != ''){ 
+                if (! Schema::hasColumn(config('laravel-crm.db_table_prefix').'notes', config('laravel-crm.db_table_prefix').'noteable_type')){
+                    $table->renameColumn('noteable_type', config('laravel-crm.db_table_prefix').'noteable_type');
+                }
+                
+                if (! Schema::hasColumn(config('laravel-crm.db_table_prefix').'notes', config('laravel-crm.db_table_prefix').'noteable_id')){
+                    $table->renameColumn('noteable_id', config('laravel-crm.db_table_prefix').'noteable_id');
+                }
+            }
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+    }
+}
