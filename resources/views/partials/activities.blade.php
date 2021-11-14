@@ -1,12 +1,12 @@
 <ul class="nav nav-tabs">
     <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="#tabs-notes">Notes</a>
+        <a class="nav-link active" data-toggle="tab" href="#tabs-notes">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#tabs-activities">Activities</a>
+        <a class="nav-link" data-toggle="tab" href="#tabs-activities">{{ ucfirst(__('laravel-crm::lang.activity')) }}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#tabs-files">Files</a>
+        <a class="nav-link" data-toggle="tab" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
     </li>
 </ul>
 <div class="tab-content">

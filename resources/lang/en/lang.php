@@ -87,6 +87,7 @@ return [
     'details' => 'details',
     'notes' => 'notes',
     'files' => 'files',
+    'activity' => 'activity',
     'activities' => 'activities',
     'convert_lead_to_deal' => 'convert lead to deal',
     'add_deal' => 'add deal',
