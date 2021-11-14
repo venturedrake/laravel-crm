@@ -124,6 +124,7 @@ return [
     'deal_won' => 'deal won',
     'deal_lost' => 'deal lost',
     'deal_reopened' => 'deal reopened',
+    'reopen' => 'reopen',
     'person_stored' => 'person stored',
     'person_updated' => 'person updated',
     'person_deleted' => 'person deleted',

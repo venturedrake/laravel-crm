@@ -295,7 +295,7 @@ class DealController extends Controller
             'closed_at' => null,
         ]);
         
-        flash(ucfirst(trans('laravel-crm::lang.deaL_reopened')))->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.deal_reopened')))->success()->important();
 
         return back();
     }
