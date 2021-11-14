@@ -3,12 +3,12 @@
     <hr />
     @foreach($inputs as $key => $value)
         <input type="hidden" wire:model="addressId.{{ $value }}" name="addresses[{{ $value }}][id]">
-        <div class="row">
+        <div class="form-row">
             <div class="col-sm-10">
 
                 <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.type')) }}</label>
-                    <select class="form-control" wire:model="type.{{ $value }}" name="addresses[{{ $value }}][type]">
+                    <select class="form-control custom-select" wire:model="type.{{ $value }}" name="addresses[{{ $value }}][type]">
                         @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\AddressType::all()) as $optionKey => $optionName)
                             <option value="{{ $optionKey }}">{{ $optionName }}</option>
                         @endforeach
@@ -24,7 +24,7 @@
 
                 <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.name')) }}</label>
-                    <input type="text" class="form-control" wire:model="name.{{ $value }}" name="addresses[{{ $value }}][name]">
+                    <input type="text" class="form-control custom-select" wire:model="name.{{ $value }}" name="addresses[{{ $value }}][name]">
                     @error('name.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
 
@@ -74,7 +74,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>{{ ucfirst(__('laravel-crm::lang.country')) }}</label>
-                            <select class="form-control" wire:model="country.{{ $value }}" name="addresses[{{ $value }}][country]">
+                            <select class="form-control custom-select" wire:model="country.{{ $value }}" name="addresses[{{ $value }}][country]">
                                 @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries() as $optionKey => $optionName)
                                     <option value="{{ $optionKey }}">{{ $optionName }}</option>
                                 @endforeach
@@ -91,9 +91,11 @@
                     @error('primary.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
-            <div class="col-sm-1 text-right form-group">
-                <label>&nbsp;</label>
-                <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})"><span class="fa fa-trash-o" aria-hidden="true"></span></button></span>
+            <div class="col-sm-1 text-right">
+                <div class="form-group">
+                    <label class="invisible">t</label>
+                    <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})"><span class="fa fa-trash-o" aria-hidden="true"></span></button></span>
+                </div>
             </div>
         </div>
 

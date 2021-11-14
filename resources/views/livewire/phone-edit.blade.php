@@ -3,7 +3,7 @@
     <hr />
     @foreach($inputs as $key => $value)
         <input type="hidden" wire:model="phoneId.{{ $value }}" name="phones[{{ $value }}][id]">
-        <div class="row">
+        <div class="form-row">
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.phone')) }}</label>
@@ -14,7 +14,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.type')) }}</label>
-                    <select class="form-control" wire:model="type.{{ $value }}" name="phones[{{ $value }}][type]">
+                    <select class="form-control custom-select" wire:model="type.{{ $value }}" name="phones[{{ $value }}][type]">
                         @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes() as $optionKey => $optionName)
                             <option value="{{ $optionKey }}">{{ $optionName }}</option>
                         @endforeach
@@ -30,8 +30,10 @@
                 </div>
             </div>
             <div class="col-sm-1 text-right">
-                <label>&nbsp;</label>
-                <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})"><span class="fa fa-trash-o" aria-hidden="true"></span></button></span>
+                <div class="form-group">
+                    <label class="invisible">t</label>
+                    <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})"><span class="fa fa-trash-o" aria-hidden="true"></span></button></span>
+                </div>
             </div>
         </div>
     @endforeach
