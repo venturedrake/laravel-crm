@@ -93,7 +93,6 @@
             </div>
             <div class="col-sm-1 text-right">
                 <div class="form-group">
-                    <label class="invisible">t</label>
                     <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})"><span class="fa fa-trash-o" aria-hidden="true"></span></button></span>
                 </div>
             </div>
