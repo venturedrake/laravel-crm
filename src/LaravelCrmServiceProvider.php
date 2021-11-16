@@ -14,6 +14,7 @@ use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
+use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
@@ -218,6 +219,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmPermissions::class,
                 LaravelCrmLabels::class,
                 LaravelCrmAddressTypes::class,
+                LaravelCrmOrganisationTypes::class,
             ]);
 
             // Register the model factories

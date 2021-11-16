@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.9.5 - 2021-11-16
+### Fixed
+- Missing command from service provider
+
 ## 0.9.4 - 2021-11-15
 ### Added
 - Ability to add notes to leads, deals & contacts
