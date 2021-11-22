@@ -27,7 +27,7 @@ class Contact extends Model
      */
     public function contactable()
     {
-        return $this->morphTo('contactable');
+        return $this->morphTo();
     }
 
     /**
@@ -35,6 +35,6 @@ class Contact extends Model
      */
     public function entityable()
     {
-        return $this->morphTo('entityable');
+        return $this->morphTo();
     }
 }

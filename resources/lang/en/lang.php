@@ -119,6 +119,7 @@ return [
     'gender' => 'gender',
     'birthday' => 'birthday',
     'contact' => 'contact',
+    'contacts' => 'contacts',
     'deal_stored' => 'deal stored',
     'deal_updated' => 'deal updated',
     'deal_deleted' => 'deal deleted',
@@ -219,4 +220,10 @@ return [
     'filters' => 'filters',
     'type' => 'type',
     'add_note' => 'add note',
+    'related_organisations' => 'related organizations',
+    'link_an_organisation' => 'link an organization',
+    'link_organisation' => 'link organization',
+    'related_people' => 'related people',
+    'link_a_person' => 'link a person',
+    'link_person' => 'link person',
 ];

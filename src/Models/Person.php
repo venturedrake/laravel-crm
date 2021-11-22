@@ -154,4 +154,9 @@ class Person extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, config('laravel-crm.db_table_prefix').'noteable');
     }
+
+    public function contacts()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Contact::class, 'contactable');
+    }
 }

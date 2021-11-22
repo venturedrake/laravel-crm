@@ -68,6 +68,12 @@
                         </dd>
                     @endforeach
                 </dl>
+                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.owner')) }}</h6>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
+                    <dd class="col-sm-9">{{ $person->ownerUser->name }}</dd>
+                </dl>
                 <h6 class="mt-4 text-uppercase"> {{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />
                 <dl class="row">
@@ -76,27 +82,21 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
                     <dd class="col-sm-9">{{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }}</dd>
                 </dl>
-                {{--@can('view crm contacts')
-                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.contacts')) }} ({{ $person->contacts->count() }})</span>@can('create crm contacts')<span class="float-right"><a href="{{ url(route('laravel-crm.contacts.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
-                    <hr />
-                    @foreach($person->contacts as $contacts)
-                        <p><span class="fa fa-user" aria-hidden="true"></span> {{ $contacts->name }}</p>
-                    @endforeach
-                @endcan--}}
                 @can('view crm deals')
-                <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $person->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
-                <hr />
-                @foreach($person->deals as $deal)
-                    <p>{{ $deal->title }}<br />
-                        <small>{{ money($deal->amount, $deal->currency) }}</small></p>
-                @endforeach
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $person->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+                    <hr />
+                    @foreach($person->deals as $deal)
+                        <p>{{ $deal->title }}<br />
+                            <small>{{ money($deal->amount, $deal->currency) }}</small></p>
+                    @endforeach
                 @endcan
-                <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.owner')) }}</h6>
-                <hr />
-                <dl class="row">
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">{{ $person->ownerUser->name }}</dd>
-                </dl>
+                @can('view crm contacts')
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.related_people')) }} ({{ $person->contacts->count() }})</span>@can('create crm contacts')<span class="float-right"><a href="{{ url(route('laravel-crm.contacts.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+                    <hr />
+                    @foreach($person->contacts as $contact)
+                        <p><span class="fa fa-user" aria-hidden="true"></span> {{ $contact->name }}</p>
+                    @endforeach
+                @endcan
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.activities', [

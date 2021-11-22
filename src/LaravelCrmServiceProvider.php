@@ -18,8 +18,10 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedOrganisation;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedPerson;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
@@ -234,6 +236,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('email-edit', LiveEmailEdit::class);
         Livewire::component('address-edit', LiveAddressEdit::class);
         Livewire::component('notes', LiveNote::class);
+        Livewire::component('related-organisations', LiveRelatedOrganisation::class);
+        Livewire::component('related-people', LiveRelatedPerson::class);
     }
 
     /**

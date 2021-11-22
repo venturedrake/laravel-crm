@@ -22,7 +22,7 @@ class Note extends Model
      */
     public function noteable()
     {
-        return $this->morphTo();
+        return $this->morphTo(config('laravel-crm.db_table_prefix').'noteable');
     }
 
     public function createdByUser()
