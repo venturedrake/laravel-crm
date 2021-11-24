@@ -2,7 +2,7 @@
     <div class="col-sm-6 border-right">
         @include('laravel-crm::partials.form.text',[
          'name' => 'organisation_name',
-         'label' => ucfirst(trans('laravel-crm::lang.organisation_name')),
+         'label' => ucfirst(trans('laravel-crm::lang.organization_name')),
          'value' => old('organisation_name', $organisationName->value ?? null)
        ])
         @include('laravel-crm::partials.form.select',[
