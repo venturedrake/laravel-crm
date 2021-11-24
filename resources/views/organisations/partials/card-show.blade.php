@@ -79,7 +79,7 @@
                         <small>{{ money($deal->amount, $deal->currency) }}</small></p>
                 @endforeach
                 @endcan
-                @livewire('related-organisations',[
+                @livewire('related-contact-organisations',[
                     'model' => $organisation
                 ])
             </div>

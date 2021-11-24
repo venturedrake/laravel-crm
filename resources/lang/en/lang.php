@@ -226,4 +226,5 @@ return [
     'related_people' => 'related people',
     'link_a_person' => 'link a person',
     'link_person' => 'link person',
+    'person_name' => 'person name',
 ];

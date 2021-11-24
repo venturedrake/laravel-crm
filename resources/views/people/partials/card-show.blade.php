@@ -90,13 +90,9 @@
                             <small>{{ money($deal->amount, $deal->currency) }}</small></p>
                     @endforeach
                 @endcan
-                @can('view crm contacts')
-                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.related_people')) }} ({{ $person->contacts->count() }})</span>@can('create crm contacts')<span class="float-right"><a href="{{ url(route('laravel-crm.contacts.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
-                    <hr />
-                    @foreach($person->contacts as $contact)
-                        <p><span class="fa fa-user" aria-hidden="true"></span> {{ $contact->name }}</p>
-                    @endforeach
-                @endcan
+                @livewire('related-contact-people',[
+                    'model' => $person
+                ])
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.activities', [

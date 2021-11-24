@@ -6,17 +6,17 @@ use Livewire\Component;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Person;
 
-class LiveRelatedPerson extends Component
+class LiveRelatedContactPerson extends Component
 {
     public $model;
-    public $people;
+    public $contacts;
     public $person_id;
     public $person_name;
 
     public function mount($model)
     {
         $this->model = $model;
-        $this->getPeople();
+        $this->getContacts();
     }
 
     public function link()
@@ -24,12 +24,9 @@ class LiveRelatedPerson extends Component
         $data = $this->validate([
             'person_name' => 'required',
         ]);
-        
+
         if ($this->person_id) {
             $person = Person::find($this->person_id);
-            $person->update([
-                'organisation_id' => $this->model->id,
-            ]);
         } else {
             $name = \VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstLastFromName($data['person_name']);
 
@@ -38,25 +35,30 @@ class LiveRelatedPerson extends Component
                 'first_name' => $name['first_name'],
                 'last_name' => $name['last_name'] ?? null,
                 'user_owner_id' => auth()->user()->id,
-                'organisation_id' => $this->model->id,
             ]);
         }
+        
+        $this->model->contacts()->create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'entityable_type' => $person->getMorphClass(),
+            'entityable_id' => $person->id,
+        ]);
 
         $this->resetFields();
 
-        $this->getPeople();
+        $this->getContacts();
 
         $this->dispatchBrowserEvent('linkedPerson');
     }
-    
+
     public function updatedPersonName($value)
     {
         $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
     }
-    
-    private function getPeople()
+
+    private function getContacts()
     {
-        $this->people = $this->model->people()->get();
+        $this->contacts = $this->model->contacts()->get();
     }
 
     private function resetFields()
@@ -66,6 +68,6 @@ class LiveRelatedPerson extends Component
     
     public function render()
     {
-        return view('laravel-crm::livewire.related-people');
+        return view('laravel-crm::livewire.related-contact-people');
     }
 }

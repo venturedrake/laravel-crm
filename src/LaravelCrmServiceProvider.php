@@ -18,9 +18,10 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
-use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedOrganisation;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactPerson;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedPerson;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
@@ -28,6 +29,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
+use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Note;
@@ -35,6 +37,7 @@ use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
@@ -113,6 +116,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Email::observe(EmailObserver::class);
         Setting::observe(SettingObserver::class);
         Note::observe(NoteObserver::class);
+        Contact::observe(ContactObserver::class);
         
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -236,7 +240,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('email-edit', LiveEmailEdit::class);
         Livewire::component('address-edit', LiveAddressEdit::class);
         Livewire::component('notes', LiveNote::class);
-        Livewire::component('related-organisations', LiveRelatedOrganisation::class);
+        Livewire::component('related-contact-organisations', LiveRelatedContactOrganisation::class);
+        Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
     }
 

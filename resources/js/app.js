@@ -81,63 +81,11 @@ const appJquery = function() {
             })
 
             if (typeof people !== 'undefined') {
-
-                $('input[name="person_name"]').autocomplete({
-                    source: people,
-                    onSelectItem: appJquery.onSelectPerson,
-                    highlightClass: 'text-danger',
-                    treshold: 2,
-                });
-
-                $('input[name="person_name"]').on('input', function() {
-                    $(this).closest('.autocomplete').find('input[name="person_id"]').val('');
-                    $('.autocomplete-person').find('input,select').val('');
-                    $(this).closest('.autocomplete').find('input[name="person_id"]').trigger('change');
-                });
-
-                $('input[name="person_id"]').on('change', function() {
-                    if($(this).val() == ''){
-                        $(this).closest('.autocomplete').find(".autocomplete-new").show()
-                        $('.autocomplete-person').find('input,select').removeAttr('disabled');
-                    }else{
-                        $(this).closest('.autocomplete').find(".autocomplete-new").hide()
-                        $('.autocomplete-person').find('input,select').attr('disabled','disabled');
-                    }
-                });
-                
-                if($('input[name="person_name"]').closest('.autocomplete').find('input[name="person_id"]').val() == ''){
-                    $('.autocomplete-person').find('input,select').removeAttr('disabled');
-                }
-
+                appJquery.bindPersonAutocomplete();
             }
             
             if (typeof organisations !== 'undefined') {
-                $('input[name="organisation_name"]').autocomplete({
-                    source: organisations,
-                    onSelectItem: appJquery.onSelectOrganisation,
-                    highlightClass: 'text-danger',
-                    treshold: 2,
-                });
-
-                $('input[name="organisation_name"]').on('input', function() {
-                    $(this).closest('.autocomplete').find('input[name="organisation_id"]').val('');
-                    $('.autocomplete-organisation').find('input,select').val('');
-                    $(this).closest('.autocomplete').find('input[name="organisation_id"]').trigger('change');
-                });
-
-                $('input[name="organisation_id"]').on('change', function() {
-                    if($(this).val() == ''){
-                        $(this).closest('.autocomplete').find(".autocomplete-new").show()
-                        $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
-                    }else{
-                        $(this).closest('.autocomplete').find(".autocomplete-new").hide()
-                        $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
-                    }
-                });
-
-                if($('input[name="organisation_name"]').closest('.autocomplete').find('input[name="organisation_id"]').val() == ''){
-                    $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
-                }
+                appJquery.bindOrganisationAutocomplete();
             }
 
             $(document).on('click','.btn-action-add-deal-product', function(e) {
@@ -288,10 +236,70 @@ const appJquery = function() {
                 enableCaseInsensitiveFiltering: true
             });
         },
+        
+        bindPersonAutocomplete: function (){
+
+            $('input[name="person_name"]').autocomplete({
+                source: people,
+                onSelectItem: appJquery.onSelectPerson,
+                highlightClass: 'text-danger',
+                treshold: 2,
+            });
+
+            $('input[name="person_name"]').on('input', function() {
+                $(this).closest('.autocomplete').find('input[name="person_id"]').val('');
+                $('.autocomplete-person').find('input,select').val('');
+                $(this).closest('.autocomplete').find('input[name="person_id"]').trigger('change');
+            });
+
+            $('input[name="person_id"]').on('change', function() {
+                if($(this).val() == ''){
+                    $(this).closest('.autocomplete').find(".autocomplete-new").show()
+                    $('.autocomplete-person').find('input,select').removeAttr('disabled');
+                }else{
+                    $(this).closest('.autocomplete').find(".autocomplete-new").hide()
+                    $('.autocomplete-person').find('input,select').attr('disabled','disabled');
+                }
+            });
+
+            if($('input[name="person_name"]').closest('.autocomplete').find('input[name="person_id"]').val() == ''){
+                $('.autocomplete-person').find('input,select').removeAttr('disabled');
+            }
+            
+        },
+
+        bindOrganisationAutocomplete: function (){
+            $('input[name="organisation_name"]').autocomplete({
+                source: organisations,
+                onSelectItem: appJquery.onSelectOrganisation,
+                highlightClass: 'text-danger',
+                treshold: 2,
+            });
+
+            $('input[name="organisation_name"]').on('input', function() {
+                $(this).closest('.autocomplete').find('input[name="organisation_id"]').val('');
+                $('.autocomplete-organisation').find('input,select').val('');
+                $(this).closest('.autocomplete').find('input[name="organisation_id"]').trigger('change');
+            });
+
+            $('input[name="organisation_id"]').on('change', function() {
+                if($(this).val() == ''){
+                    $(this).closest('.autocomplete').find(".autocomplete-new").show()
+                    $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+                }else{
+                    $(this).closest('.autocomplete').find(".autocomplete-new").hide()
+                    $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
+                }
+            });
+
+            if($('input[name="organisation_name"]').closest('.autocomplete').find('input[name="organisation_id"]').val() == ''){
+                $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+            }
+        },
 
         onSelectPerson: function (item, element) {
             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
-
+            
             $.ajax({
                 url: "/crm/people/" +  item.value + "/autocomplete",
                 cache: false
@@ -308,7 +316,7 @@ const appJquery = function() {
 
         onSelectOrganisation: function (item, element) {
             $(element).closest('.autocomplete').find('input[name="organisation_id"]').val(item.value).trigger('change');
-
+            
             $.ajax({
                 url: "/crm/organisations/" +  item.value + "/autocomplete",
                 cache: false
@@ -338,7 +346,6 @@ const appJquery = function() {
                 $(dealProduct).find("input[name^='item_amount']").val(data.price * $(dealProduct).find("input[name^='item_quantity']").val())
             });
         },
-        
     }
 }();
 
