@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.9.6 - 2021-11-24
+### Added
+- Related organisations and people
+
 ## 0.9.5 - 2021-11-16
 ### Fixed
 - Missing command from service provider
