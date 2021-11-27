@@ -68,10 +68,15 @@ class TeamObserver
 
         if ($role = Role::where([
             'name' => 'Owner',
-            'team_id' => auth()->user()->currentTeam->id,
+            'team_id' => $team->id,
             'crm_role' => 1,
         ])->first()) {
-            auth()->user()->assignRole($role);
+            DB::table('model_has_roles')->insert([
+                'role_id' => $role->id,
+                'model_type' => auth()->user()->getMorphClass(),
+                'model_id' => auth()->user()->id,
+                'team_id' => $team->id,
+            ]);
         }
 
         foreach (DB::table('labels')

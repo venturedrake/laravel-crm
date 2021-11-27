@@ -18,7 +18,7 @@ class TeamsPermission
             return $next($request);
         }
         
-        if (config('laravel-crm.teams')) {
+        if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
             app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->currentTeam->id);
         }
 

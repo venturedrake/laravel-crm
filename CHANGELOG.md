@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.9.7 - 2021-11-27
+### Fixed
+- Issue with adding owner role when creating new team
+
 ## 0.9.6 - 2021-11-24
 ### Added
 - Related organisations and people
