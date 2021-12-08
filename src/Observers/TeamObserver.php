@@ -31,7 +31,7 @@ class TeamObserver
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         
-        if(config('laravel-crm.teams')){
+        if (config('laravel-crm.teams')) {
             // Get the roles
             foreach (DB::table('roles')
                          ->where('crm_role', 1)
