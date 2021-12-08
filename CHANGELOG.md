@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.9.8 - 2021-12-08
+### Fixed
+- Issue with loading team roles, settings when not using teams mode
+
 ## 0.9.7 - 2021-11-27
 ### Fixed
 - Issue with adding owner role when creating new team
