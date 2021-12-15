@@ -48,6 +48,19 @@ class LiveRelatedPerson extends Component
 
         $this->dispatchBrowserEvent('linkedPerson');
     }
+
+    public function remove($id)
+    {
+        if ($person = Person::find($id)) {
+            $person->update([
+                'organisation_id' => null,
+            ]);
+        }
+
+        $this->getPeople();
+
+        $this->dispatchBrowserEvent('linkedPerson');
+    }
     
     public function updatedPersonName($value)
     {

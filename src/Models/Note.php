@@ -22,7 +22,7 @@ class Note extends Model
      */
     public function noteable()
     {
-        return $this->morphTo(config('laravel-crm.db_table_prefix').'noteable');
+        return $this->morphTo('noteable');
     }
 
     public function createdByUser()
@@ -43,5 +43,10 @@ class Note extends Model
     public function restoredByUser()
     {
         return $this->belongsTo(\App\User::class, 'user_restored_id');
+    }
+
+    public function relatedNote()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Note::class, 'related_note_id');
     }
 }

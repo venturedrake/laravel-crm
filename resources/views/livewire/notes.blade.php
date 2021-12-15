@@ -21,8 +21,20 @@
             <div class="card-body">
                {{--<img src="..." class="mr-3" alt="...">--}}
                <div class="media-body">
-                  <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</h5>
-                  {{ $note->content }}
+                  @if($note->relatedNote)
+                     <h5 class="mt-0 mb-1">{{ $note->relatedNote->created_at->diffForHumans() }} - {{ $note->relatedNote->createdByUser->name }}</h5>
+                     <p class="pb-0 mb-2">
+                        @if($note->relatedNote->noteable instanceof \VentureDrake\LaravelCrm\Models\Person)
+                           <span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
+                        @elseif($note->relatedNote->noteable instanceof \VentureDrake\LaravelCrm\Models\Organisation)
+                           <span class="fa fa-building mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.organisations.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
+                        @endif
+                     </p>
+                     {{ $note->relatedNote->content }} TEST
+                  @else   
+                     <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</h5>
+                     {{ $note->content }}
+                  @endif   
                </div>
             </div>
          </div>

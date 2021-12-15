@@ -3,7 +3,7 @@
         <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.related_organizations')) }} ({{ $contacts->count() }})</span>@can('create crm contacts')<span class="float-right"><a href="#" data-toggle="modal" data-target="#linkOrganisationModal" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
         <hr />
         @foreach($contacts as $contact)
-            <p><span class="fa fa-building" aria-hidden="true"></span> {{ $contact->entityable->name }}</p>
+            <p><span class="fa fa-building mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.organisations.show',$contact->entityable) }}">{{ $contact->entityable->name }}</a> <span class="float-right"><button wire:click.prevent="remove({{ $contact->entityable->id }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button></span></p>
         @endforeach
 
         <!-- Modal -->

@@ -48,6 +48,22 @@ class LiveRelatedContactOrganisation extends Component
         $this->dispatchBrowserEvent('linkedOrganisation');
     }
 
+    public function remove($id)
+    {
+        if ($organisation = Organisation::find($id)) {
+            $this->model->contacts()
+                ->where([
+                    'entityable_type' => $organisation->getMorphClass(),
+                    'entityable_id' => $organisation->id,
+                ])
+                ->delete();
+        }
+
+        $this->getContacts();
+
+        $this->dispatchBrowserEvent('linkedOrganisation');
+    }
+
     public function updatedOrganisationName($value)
     {
         $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');

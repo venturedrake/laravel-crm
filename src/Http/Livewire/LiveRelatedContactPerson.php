@@ -51,6 +51,22 @@ class LiveRelatedContactPerson extends Component
         $this->dispatchBrowserEvent('linkedPerson');
     }
 
+    public function remove($id)
+    {
+        if ($person = Person::find($id)) {
+            $this->model->contacts()
+                ->where([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ])
+                ->delete();
+        }
+
+        $this->getContacts();
+
+        $this->dispatchBrowserEvent('linkedPerson');
+    }
+
     public function updatedPersonName($value)
     {
         $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');

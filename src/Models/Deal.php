@@ -125,6 +125,6 @@ class Deal extends Model
 
     public function notes()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, config('laravel-crm.db_table_prefix').'noteable');
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
     }
 }
