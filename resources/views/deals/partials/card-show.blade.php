@@ -44,7 +44,7 @@
                     ])</p>
                 <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($deal->amount, $deal->currency) }}</p>
                 <p><span class="fa fa-info" aria-hidden="true"></span> {{ $deal->description }}</p>
-                <p><span class="fa fa-user-circle" aria-hidden="true"></span> {{ $deal->ownerUser->name ?? null }}</p>
+                <p><span class="fa fa-user-circle" aria-hidden="true"></span> <a href="{{ route('laravel-crm.users.show', $deal->ownerUser) }}">{{ $deal->ownerUser->name ?? null }}</a></p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
                 <p><span class="fa fa-user" aria-hidden="true"></span> {{ $deal->person->name ?? null }} </p>

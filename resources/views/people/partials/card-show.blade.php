@@ -72,13 +72,17 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">{{ $person->ownerUser->name }}</dd>
+                    <dd class="col-sm-9"><a href="{{ route('laravel-crm.users.show', $person->ownerUser) }}">{{ $person->ownerUser->name }}</a></dd>
                 </dl>
                 <h6 class="mt-4 text-uppercase"> {{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right"><span class="fa fa-building" aria-hidden="true"></span></dt>
-                    <dd class="col-sm-9">{{ $organisation->name ?? null }}</dd>
+                    <dd class="col-sm-9">
+                        @isset($organisation)
+                            <a href="{{ route('laravel-crm.organisations.show', $organisation) }}">{{ $organisation->name }}</a>
+                        @endisset    
+                    </dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
                     <dd class="col-sm-9">{{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }}</dd>
                 </dl>

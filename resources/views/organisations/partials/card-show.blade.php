@@ -66,7 +66,7 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->ownerUser->name }}</dd>
+                    <dd class="col-sm-9"><a href="{{ route('laravel-crm.users.show', $organisation->ownerUser) }}">{{ $organisation->ownerUser->name }}</a></dd>
                 </dl>
                 @livewire('related-people',[
                     'model' => $organisation
