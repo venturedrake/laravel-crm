@@ -27,7 +27,7 @@ const appJquery = function() {
                 format: 'Y/m/d',
             });
 
-            $( "tr.has-link > td:not('.disable-link')" ).on({
+            $( "tr.has-link > td:not(.disable-link)" ).on({
                 click: function() {
                     window.location = $(this).closest('tr').data('url');
                 },
@@ -234,6 +234,16 @@ const appJquery = function() {
                 selectAllName: 'select-all-label',
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true
+            });
+            
+            $('form button#clear-filter').on('click', function() {
+               $(this).closest('form').find('.col').removeClass('filter-active')
+               $(this).closest('form').find('select').each(function( index ) {
+                   $(this).find('option').each(function( index ) {
+                       $(this).prop('selected', true)
+                   });
+                   $(this).multiselect('refresh');
+                });
             });
         },
         

@@ -22,5 +22,10 @@
         <div class="col">
             <button type="submit" class="btn btn-primary btn-sm">{{ ucfirst(__('laravel-crm::lang.filter')) }}</button>
         </div>
+        <div class="col">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-filter">{{ ucfirst(__('laravel-crm::lang.clear')) }}</button>
+        </div>
     </div>
 </form>
+
+
