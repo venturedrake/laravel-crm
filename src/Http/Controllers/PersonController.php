@@ -156,7 +156,7 @@ class PersonController extends Controller
                 $person->organisation()->associate(Organisation::find($request->organisation_id));
             }
             $person->save();
-        }elseif(trim($request->organisation_name) == '' && $person->organisation){
+        } elseif (trim($request->organisation_name) == '' && $person->organisation) {
             $person->organisation()->dissociate();
             $person->save();
         }
