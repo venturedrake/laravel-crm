@@ -156,6 +156,9 @@ class PersonController extends Controller
                 $person->organisation()->associate(Organisation::find($request->organisation_id));
             }
             $person->save();
+        }elseif(trim($request->organisation_name) == '' && $person->organisation){
+            $person->organisation()->dissociate();
+            $person->save();
         }
         
         flash(ucfirst(trans('laravel-crm::lang.person_updated')))->success()->important();

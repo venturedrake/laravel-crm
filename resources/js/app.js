@@ -263,7 +263,7 @@ const appJquery = function() {
             });
 
             $('input[name="person_id"]').on('change', function() {
-                if($(this).val() == ''){
+                if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="person_name"]').val()) != ''){
                     $(this).closest('.autocomplete').find(".autocomplete-new").show()
                     $('.autocomplete-person').find('input,select').removeAttr('disabled');
                 }else{
@@ -293,7 +293,7 @@ const appJquery = function() {
             });
 
             $('input[name="organisation_id"]').on('change', function() {
-                if($(this).val() == ''){
+                if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){
                     $(this).closest('.autocomplete').find(".autocomplete-new").show()
                     $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
                 }else{
