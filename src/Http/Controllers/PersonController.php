@@ -32,9 +32,9 @@ class PersonController extends Controller
         $params = Person::filters($request);
         
         if (Person::filter($params)->get()->count() < 30) {
-            $people = Person::filter($params)->latest()->get();
+            $people = Person::filter($params)->sortable(['created_at' => 'desc'])->get();
         } else {
-            $people = Person::filter($params)->latest()->paginate(30);
+            $people = Person::filter($params)->sortable(['created_at' => 'desc'])->paginate(30);
         }
         
         return view('laravel-crm::people.index', [

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kyslik\ColumnSortable\Sortable;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
@@ -16,6 +17,7 @@ class Person extends Model
     use BelongsToTeams;
     use HasCrmFields;
     use SearchFilters;
+    use Sortable;
 
     protected $guarded = ['id'];
 
@@ -37,6 +39,14 @@ class Person extends Model
     protected $filterable = [
         'user_owner_id',
         'labels.id',
+    ];
+
+    public $sortable = [
+        'id',
+        'first_name',
+        'last_name',
+        'created_at',
+        'updated_at',
     ];
     
     public function getSearchable()

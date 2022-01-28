@@ -31,9 +31,9 @@ class OrganisationController extends Controller
         $params = Organisation::filters($request);
         
         if (Organisation::filter($params)->get()->count() < 30) {
-            $organisations = Organisation::filter($params)->latest()->get();
+            $organisations = Organisation::filter($params)->sortable(['created_at' => 'desc'])->get();
         } else {
-            $organisations = Organisation::filter($params)->latest()->paginate(30);
+            $organisations = Organisation::filter($params)->sortable(['created_at' => 'desc'])->paginate(30);
         }
         
         return view('laravel-crm::organisations.index', [

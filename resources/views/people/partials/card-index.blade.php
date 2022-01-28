@@ -22,9 +22,9 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col">@sortablelink('first_name', ucwords(__('laravel-crm::lang.name')))</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
+                <th scope="col">@sortablelink('organisation.name', ucwords(__('laravel-crm::lang.organization')))</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.email')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.phone')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.open_deals')) }}</th>
