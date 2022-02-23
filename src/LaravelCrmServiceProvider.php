@@ -18,6 +18,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
@@ -245,6 +246,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('related-contact-organisations', LiveRelatedContactOrganisation::class);
         Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
+        Livewire::component('live-lead-form', LiveLeadForm::class);
     }
 
     /**

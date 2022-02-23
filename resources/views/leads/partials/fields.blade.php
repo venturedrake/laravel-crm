@@ -1,46 +1,10 @@
 <div class="row">
     <div class="col-sm-6 border-right">
-         <span class="autocomplete">
-               @include('laravel-crm::partials.form.hidden',[
-                   'name' => 'person_id',
-                   'value' => old('person_id', $lead->person->id ?? null),
-                ])
-               <script type="text/javascript">
-                let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
-               </script>
-                 @include('laravel-crm::partials.form.text',[
-                    'name' => 'person_name',
-                    'label' => ucfirst(__('laravel-crm::lang.contact_person')),
-                    'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-                    'value' => old('person_name', $lead->person->name ?? null),
-                    'attributes' => [
-                       'autocomplete' => \Illuminate\Support\Str::random()
-                    ]
-                ])
-         </span>
-        <span class="autocomplete">
-            @include('laravel-crm::partials.form.hidden',[
-             'name' => 'organisation_id',
-             'value' => old('organisation_id', $lead->organisation->id ?? null),
-            ])
-            <script type="text/javascript">
-                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
-            </script>
-            @include('laravel-crm::partials.form.text',[
-                'name' => 'organisation_name',
-                'label' => ucfirst(__('laravel-crm::lang.organization')),
-                'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$lead->organisation->name ?? null),
-                'attributes' => [
-                 'autocomplete' => \Illuminate\Support\Str::random()
-               ]
-            ])  
-        </span>
-        @include('laravel-crm::partials.form.text',[
-            'name' => 'title',
-            'label' => ucfirst(__('laravel-crm::lang.title')),
-            'value' => old('title',$lead->title ?? null)
+
+        @livewire('live-lead-form',[
+            'lead' => $lead ?? null
         ])
+        
         @include('laravel-crm::partials.form.textarea',[
              'name' => 'description',
              'label' => ucfirst(__('laravel-crm::lang.description')),

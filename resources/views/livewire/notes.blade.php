@@ -30,7 +30,7 @@
                            <span class="fa fa-building mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.organisations.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
                         @endif
                      </p>
-                     {{ $note->relatedNote->content }} TEST
+                     {{ $note->relatedNote->content }}
                   @else   
                      <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</h5>
                      {{ $note->content }}
