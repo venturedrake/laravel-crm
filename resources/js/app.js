@@ -321,7 +321,6 @@ const appJquery = function() {
                 $('.autocomplete-person').find('select[name="email_type"]').val(data.email_type);
                 
             });
-            
         },
 
         onSelectOrganisation: function (item, element) {
@@ -341,7 +340,6 @@ const appJquery = function() {
                 $('.autocomplete-organisation').find('select[name="country"]').val(data.address_country);
                 
             });
-
         },
 
         onSelectProduct: function (item, element) {

@@ -20,6 +20,16 @@ class LiveLeadForm extends Component
         $this->organisation_name = old('organisation_name') ?? $lead->organisation->name ?? null;
         $this->title = old('title') ?? $lead->title ?? null;
     }
+
+    public function updatedPersonName($value)
+    {
+        $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
+    }
+
+    public function updatedOrganisationName($value)
+    {
+        $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
+    }
     
     public function render()
     {
