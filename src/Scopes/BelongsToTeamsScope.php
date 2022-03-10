@@ -22,12 +22,12 @@ class BelongsToTeamsScope implements Scope
             $this->extend($builder);
             
             if (Schema::hasColumn($model->getTable(), 'global')) {
-                $builder->where(function ($query) {
-                    $query->orWhere('team_id', auth()->user()->currentTeam->id)
-                        ->orWhere('global', 1);
+                $builder->where(function ($query) use ($model) {
+                    $query->orWhere($model->getTable().'.team_id', auth()->user()->currentTeam->id)
+                        ->orWhere($model->getTable().'.global', 1);
                 });
             } else {
-                $builder->where('team_id', auth()->user()->currentTeam->id);
+                $builder->where($model->getTable().'.team_id', auth()->user()->currentTeam->id);
             }
         }
     }
