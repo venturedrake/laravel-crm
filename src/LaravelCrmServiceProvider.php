@@ -153,9 +153,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            if(app()->version() >= 8.6){
+            if (app()->version() >= 8.6) {
                 $auditConfig = '/../config/audit-sanctum.php';
-            }else{
+            } else {
                 $auditConfig = '/../config/audit.php';
             }
             
