@@ -153,10 +153,16 @@ class LaravelCrmServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
+            if(app()->version() >= 8.6){
+                $auditConfig = '/../config/audit-sanctum.php';
+            }else{
+                $auditConfig = '/../config/audit.php';
+            }
+            
             $this->publishes([
                 __DIR__ . '/../config/laravel-crm.php' => config_path('laravel-crm.php'),
                 __DIR__ . '/../config/permission.php' => config_path('permission.php'),
-                __DIR__ . '/../config/audit.php' => config_path('audit.php'),
+                __DIR__ . $auditConfig => config_path('audit.php'),
                 __DIR__ . '/../config/columnsortable.php' => config_path('columnsortable.php'),
             ], 'config');
 
