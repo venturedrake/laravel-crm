@@ -19,6 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.10.0 - 2021-03-11
+### Added
+- Link to owner profile on contacts
+- Clear filters button
+- Sort functionality on filters where available
+- Auto build lead title
+### Fixed
+- Remove organisation from a person
+- Problem when query has joins and using teams 
+- https://github.com/venturedrake/laravel-crm/issues/33
+- https://github.com/venturedrake/laravel-crm/issues/34
+
 ## 0.9.9 - 2021-12-15
 ### Added
 - Show related notes from related contacts
