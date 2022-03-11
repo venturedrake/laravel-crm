@@ -80,7 +80,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
     {
         if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
             class_alias(config("auth.providers.users.model"), 'App\User');
-            class_alias('App\Models\Team', 'App\Team');
+            if (class_exists('App\Models\Team')) {
+                class_alias('App\Models\Team', 'App\Team');
+            }
         }
         
         $this->registerPolicies();
