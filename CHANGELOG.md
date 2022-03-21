@@ -13,11 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Activity Feed / Timelines
 - CSV Import / Export
 
-<!--- ## 1.0.0 - 2021-XX-XX
+<!--- ## 1.0.0 - 2022-XX-XX
 ### Added
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 0.10.1 - 2022-03-22
+### Fixed
+- Issue with middleware affecting access to non-crm API
 
 ## 0.10.0 - 2022-03-11
 ### Added
