@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DB;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Role;
+use VentureDrake\LaravelCrm\Models\Setting;
 
 class TeamObserver
 {
@@ -117,6 +118,31 @@ class TeamObserver
                     'updated_at' => Carbon::now(),
                 ]);
             }
+            
+            // Default settings
+            Setting::updateOrCreate([
+                'name' => 'organisation_name',
+            ], [
+                'value' => $team->name,
+            ]);
+
+            Setting::updateOrCreate([
+                'name' => 'language',
+            ], [
+                'value' => config('laravel-crm.language') ?? 'english',
+            ]);
+
+            Setting::updateOrCreate([
+                'name' => 'country',
+            ], [
+                'value' => config('laravel-crm.country') ?? 'United States',
+            ]);
+
+            Setting::updateOrCreate([
+                'name' => 'currency',
+            ], [
+                'value' => config('laravel-crm.currency') ?? 'USD',
+            ]);
         }
     }
 

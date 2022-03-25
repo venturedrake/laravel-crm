@@ -46,6 +46,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default Settings
+    |--------------------------------------------------------------------------
+    |
+    | These are some default settings. They are also used each time a user
+    | creates a new team when team support is enabled above.
+    |
+    */
+    
+    'currency' => env('LARAVEL_CRM_CURRENCY', 'USD'),
+    
+    'country' => env('LARAVEL_CRM_COUNTRY', 'United States'),
+    
+    'language' => env('LARAVEL_CRM_LANGUAGE', 'english'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Prefix
     |--------------------------------------------------------------------------
     |
