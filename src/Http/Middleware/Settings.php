@@ -45,29 +45,23 @@ class Settings
                 'value' => config('laravel-crm.version'),
             ]);
 
-            if (config('laravel-crm.language')) {
-                Setting::firstOrCreate([
-                    'name' => 'language',
-                ], [
-                    'value' => config('laravel-crm.language'),
-                ]);
-            }
+            Setting::firstOrCreate([
+                'name' => 'language',
+            ], [
+                'value' => config('laravel-crm.language') ?? 'english',
+            ]);
 
-            if (config('laravel-crm.country')) {
-                Setting::firstOrCreate([
-                    'name' => 'country',
-                ], [
-                    'value' => config('laravel-crm.country'),
-                ]);
-            }
+            Setting::firstOrCreate([
+                'name' => 'country',
+            ], [
+                'value' => config('laravel-crm.country') ?? 'United States',
+            ]);
 
-            if (config('laravel-crm.currency')) {
-                Setting::firstOrCreate([
-                    'name' => 'currency',
-                ], [
-                    'value' => config('laravel-crm.currency'),
-                ]);
-            }
+            Setting::firstOrCreate([
+                'name' => 'currency',
+            ], [
+                'value' => config('laravel-crm.currency') ?? 'USD',
+            ]);
 
             $installIdSetting = Setting::where([
                 'name' => 'install_id',
