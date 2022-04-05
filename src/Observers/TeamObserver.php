@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use DB;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Role;
-use VentureDrake\LaravelCrm\Models\Setting;
 
 class TeamObserver
 {
@@ -118,13 +117,6 @@ class TeamObserver
                     'updated_at' => Carbon::now(),
                 ]);
             }
-            
-            // Default settings
-            Setting::create([
-                'name' => 'organisation_name',
-            ], [
-                'value' => $team->name,
-            ]);
         }
     }
 
