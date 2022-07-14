@@ -95,7 +95,7 @@ class UserController extends Controller
         
         if ($request->role) {
             if ($role = Role::find($request->role)) {
-                if ($removeRole = $user->roles()->where('crm_role', 1)->first()) {
+                if ($removeRole = $user->roles()->where('crm_role', 1)->first()) { // THIS COULD BE A BUG
                     $user->removeRole($removeRole);
                 }
                 
