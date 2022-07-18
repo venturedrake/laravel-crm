@@ -10,10 +10,7 @@ use Illuminate\Support\Facades\Schema;
 class BelongsToTeamsScope implements Scope
 {
     protected $team;
-
-    /**
-     * Landlord constructor.
-     */
+    
     public function __construct($team)
     {
         $this->team = $team;

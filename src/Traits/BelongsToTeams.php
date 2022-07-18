@@ -17,12 +17,14 @@ trait BelongsToTeams
      */
     public static function bootBelongsToTeams()
     {
-        static::addGlobalScope(new BelongsToTeamsScope(auth()->user()->currentTeam ?? null));
+        if(! app()->runningInConsole()){
+            static::addGlobalScope(new BelongsToTeamsScope(auth()->user()->currentTeam ?? null));
 
-        static::creating(function (Model $model) {
-            if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
-                $model->team_id = auth()->user()->currentTeam->id ?? null;
-            }
-        });
+            static::creating(function (Model $model) {
+                if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
+                    $model->team_id = auth()->user()->currentTeam->id ?? null;
+                }
+            });  
+        }
     }
 }
