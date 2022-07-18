@@ -18,20 +18,16 @@ class BelongsToTeamsScope implements Scope
     
     public function apply(Builder $builder, Model $model)
     {
-        if (config('laravel-crm.teams')) {
-            if(auth()->user()){
-                if(auth()->user()->currentTeam){
-                    $this->extend($builder);
+        if (config('laravel-crm.teams') && isset(auth()->user()->currentTeam)) {
+            $this->extend($builder);
 
-                    if (Schema::hasColumn($model->getTable(), 'global')) {
-                        $builder->where(function ($query) use ($model) {
-                            $query->orWhere($model->getTable().'.team_id', auth()->user()->currentTeam->id)
-                                ->orWhere($model->getTable().'.global', 1);
-                        });
-                    } else {
-                        $builder->where($model->getTable().'.team_id', auth()->user()->currentTeam->id);
-                    }
-                }
+            if (Schema::hasColumn($model->getTable(), 'global')) {
+                $builder->where(function ($query) use ($model) {
+                    $query->orWhere($model->getTable().'.team_id', auth()->user()->currentTeam->id)
+                        ->orWhere($model->getTable().'.global', 1);
+                });
+            } else {
+                $builder->where($model->getTable().'.team_id', auth()->user()->currentTeam->id);
             }
         }
     }
