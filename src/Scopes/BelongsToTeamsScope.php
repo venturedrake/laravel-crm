@@ -18,7 +18,7 @@ class BelongsToTeamsScope implements Scope
     
     public function apply(Builder $builder, Model $model)
     {
-        if (config('laravel-crm.teams') && ! app()->runningInConsole() && auth()->user()->currentTeam) {
+        if (config('laravel-crm.teams') && isset(auth()->user()->id) && auth()->user()->currentTeam) {
             $this->extend($builder);
             
             if (Schema::hasColumn($model->getTable(), 'global')) {
