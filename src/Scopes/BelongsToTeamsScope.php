@@ -9,25 +9,35 @@ use Illuminate\Support\Facades\Schema;
 
 class BelongsToTeamsScope implements Scope
 {
+    protected $team;
+
+    /**
+     * Landlord constructor.
+     */
+    public function __construct($team)
+    {
+        $this->team = $team;
+    }
+
     /**
      * All of the extensions to be added to the builder.
      *
      * @var string[]
      */
     protected $extensions = ['AllTeams'];
-    
+
     public function apply(Builder $builder, Model $model)
     {
-        if (config('laravel-crm.teams') && isset(auth()->user()->currentTeam)) {
+        if (config('laravel-crm.teams') && $this->team) {
             $this->extend($builder);
 
             if (Schema::hasColumn($model->getTable(), 'global')) {
                 $builder->where(function ($query) use ($model) {
-                    $query->orWhere($model->getTable().'.team_id', auth()->user()->currentTeam->id)
+                    $query->orWhere($model->getTable().'.team_id', $this->team->id)
                         ->orWhere($model->getTable().'.global', 1);
                 });
             } else {
-                $builder->where($model->getTable().'.team_id', auth()->user()->currentTeam->id);
+                $builder->where($model->getTable().'.team_id', $this->team->id);
             }
         }
     }
