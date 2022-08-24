@@ -284,6 +284,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
+            'domain' => config('laravel-crm.route_subdomain'),
             'prefix' => config('laravel-crm.route_prefix'),
             'middleware' => array_unique(array_merge(['web','crm','crm-api'], config('laravel-crm.route_middleware') ?? [])),
         ];

@@ -62,6 +62,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Route Subdomain
+    |--------------------------------------------------------------------------
+    |
+    | This value is used to define whether you wish to use the crm on a subdomain
+    |
+    | eg. https://subdomain.yourdomain.com
+    |
+    |
+    */
+
+    'route_subdomain' => env('LARAVEL_CRM_ROUTE_SUBDOMAIN', null),
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Prefix
     |--------------------------------------------------------------------------
     |
