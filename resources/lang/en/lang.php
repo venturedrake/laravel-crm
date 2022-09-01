@@ -220,6 +220,7 @@ return [
     'filters' => 'filters',
     'type' => 'type',
     'add_note' => 'add note',
+    'noted_at' => 'noted at',
     'related_organizations' => 'related organizations',
     'link_an_organization' => 'link an organization',
     'link_organization' => 'link organization',

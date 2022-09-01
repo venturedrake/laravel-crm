@@ -9,6 +9,13 @@
          <div class="text-danger invalid-feedback-custom">{{ $message }}</div>
          @enderror
       </div>
+      @include('laravel-crm::partials.form.text',[
+        'name' => 'noted_at',
+        'label' => ucfirst(__('laravel-crm::lang.noted_at')),
+        'attributes' => [
+            'wire:model.debounce.10000ms' => 'noted_at'  
+        ]
+      ])
       <div class="form-group">
          <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
       </div>
@@ -34,6 +41,10 @@
                   @else   
                      <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</h5>
                      {{ $note->content }}
+                      @if($note->noted_at)
+                          <br />
+                           <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->noted_at->format('h:i A') }} on {{ $note->noted_at->toFormattedDateString() }}</span>
+                      @endif    
                   @endif   
                </div>
             </div>
@@ -41,6 +52,15 @@
       </li>
    @endforeach
    </ul>
+@push('livewire-js')
+    <script>
+        $(document).ready(function () {
+            $(document).on("change", "input[name='noted_at']", function() {
+                @this.set('noted_at', $(this).val());
+            });
+        });
+    </script>
+@endpush    
 </div>
 
 

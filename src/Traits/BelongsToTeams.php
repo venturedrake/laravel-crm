@@ -3,8 +3,6 @@
 namespace VentureDrake\LaravelCrm\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Event;
 use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
 
 /**

@@ -87,7 +87,7 @@
             </div>
         </main>
     </div>
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=we56364565"></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=64787587234"></script>
     <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
     @livewireScripts
     @stack('livewire-js')

@@ -13,6 +13,7 @@ class LiveNote extends Component
     public $model;
     public $notes;
     public $content;
+    public $noted_at;
 
     public function mount($model)
     {
@@ -29,6 +30,7 @@ class LiveNote extends Component
         $note = $this->model->notes()->create([
             'external_id' => Uuid::uuid4()->toString(),
             'content' => $data['content'],
+            'noted_at' => $this->noted_at,
         ]);
         
         // Add to any upstream related models
@@ -37,6 +39,7 @@ class LiveNote extends Component
                 $this->model->organisation->notes()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'content' => $data['content'],
+                    'noted_at' => $this->noted_at,
                     'related_note_id' => $note->id,
                 ]);
             }
@@ -50,6 +53,7 @@ class LiveNote extends Component
                 $contact->contactable->notes()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'content' => $data['content'],
+                    'noted_at' => $this->noted_at,
                     'related_note_id' => $note->id,
                 ]);
             }
@@ -65,7 +69,7 @@ class LiveNote extends Component
 
     private function resetFields()
     {
-        $this->reset('content');
+        $this->reset('content', 'noted_at');
         $this->getNotes();
     }
     

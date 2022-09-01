@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
@@ -12,9 +13,25 @@ class Note extends Model
     
     protected $guarded = ['id'];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'noted_at' => 'datetime',
+    ];
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'notes';
+    }
+
+    public function setNotedAtAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['noted_at'] = Carbon::createFromFormat('Y/m/d H:i', $value);
+        }
     }
 
     /**

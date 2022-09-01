@@ -27,6 +27,11 @@ const appJquery = function() {
                 format: 'Y/m/d',
             });
 
+            $('input[name="noted_at"]').datetimepicker({
+                timepicker:true,
+                format: 'Y/m/d H:i',
+            });
+
             $( "tr.has-link > td:not(.disable-link)" ).on({
                 click: function() {
                     window.location = $(this).closest('tr').data('url');
