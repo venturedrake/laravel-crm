@@ -46,7 +46,7 @@
         "owen-it/laravel-auditing": "^12.0|^13.0",
         "pragmarx/countries": "^0.8.2",
         "spatie/laravel-permission": "^5.0",
-        "venturedrake/laravel-encryptable": "^0.1"
+        "venturedrake/laravel-encryptable": "^0.1.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.17@dev",
