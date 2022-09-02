@@ -3,8 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Helpers\SelectOptions;
 
 use \App\User;
-use PragmaRX\Countries\Package\Countries;
-use PragmaRX\Countries\Update\Timezones;
+use Rinvex\Country\CountryLoader;
+use Rinvex\Country\CurrencyLoader;
 
 function optionsFromModel($model, $null = true)
 {
@@ -86,11 +86,15 @@ function emailTypes($null = true)
 
 function countries()
 {
-    $countries = new Countries();
-    $items = [];
-    
-    foreach ($countries->all()->pluck('name.common')->toArray() as $country) {
-        $items[$country] = $country;
+    /* $countries = new Countries();
+     $items = [];
+
+     foreach ($countries->all()->pluck('name.common')->toArray() as $country) {
+         $items[$country] = $country;
+     }*/
+
+    foreach (CountryLoader::countries() as $country) {
+        $items[$country['name']] = $country['name'];
     }
 
     return $items;
@@ -98,10 +102,14 @@ function countries()
 
 function currencies()
 {
-    $countries = new Countries();
+    /*$countries = new Countries();
     $items = [];
     foreach ($countries->currencies()->sortBy('name')->toArray() as $currencyCode => $currency) {
         $items[$currencyCode] = $currency['name'].(' ('.$currencyCode.')');
+    }*/
+
+    foreach (CurrencyLoader::currencies(true) as $currency) {
+        $items[$currency['iso_4217_code']] = $currency['iso_4217_name'].(' ('.$currency['iso_4217_code'].')');
     }
 
     return $items;
@@ -110,12 +118,12 @@ function currencies()
 
 function timezones()
 {
-    $countries = new Countries();
+    /*$countries = new Countries();
     $collection = $countries->all()->hydrate('timezones')->pluck("timezones");
-    
+
     foreach ($collection->toArray() as $timezone) {
         $items[array_key_first($timezone)] = current($timezone)['zone_name'];
     }
 
-    return $items;
+    return $items;*/
 }

@@ -44,7 +44,7 @@
         "laracasts/flash": "^3.2",
         "livewire/livewire": "^1.0|^2.0",
         "owen-it/laravel-auditing": "^12.0|^13.0",
-        "pragmarx/countries": "dev-simplecachev3",
+        "rinvex/countries": "^8.1",
         "spatie/laravel-permission": "^5.0",
         "venturedrake/laravel-encryptable": "^0.1.2"
     },
@@ -90,11 +90,5 @@
                 "LaravelCrm": "VentureDrake\\LaravelCrm\\Facades\\LaravelCrmFacade"
             }
         }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:venturedrake/countries"
-        }
-    ]
+    }
 }
