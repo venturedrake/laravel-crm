@@ -25,7 +25,7 @@ class AddNotedAtToLaravelCrmNotesTable extends Migration
      */
     public function down()
     {
-        Schema::table(config('laravel-crm.db_table_prefix').'labels', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'notes', function (Blueprint $table) {
             $table->dropColumn([
                 'noted_at',
             ]);
