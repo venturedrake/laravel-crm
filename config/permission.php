@@ -104,7 +104,7 @@ return [
      * 'model_has_permissions'(view the latest version of package's migration file)
      */
 
-    'teams' => true,
+    'teams' => env('LARAVEL_CRM_TEAMS', false),
 
     /*
      * When set to true, the required permission names are added to the exception
