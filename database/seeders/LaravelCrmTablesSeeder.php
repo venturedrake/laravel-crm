@@ -248,14 +248,32 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm fields', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm fields', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm fields', 'crm_permission' => 1]);
+        
+        if (config('permission.teams')) {
+            $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
+        } else {
+            $roleArray = ['name' => 'Owner', 'crm_role' => 1];
+        }
 
-        $role = Role::firstOrCreate(['name' => 'Owner', 'crm_role' => 1, 'team_id' => null])
+        $role = Role::firstOrCreate($roleArray)
             ->givePermissionTo(Permission::all());
+
+        if (config('permission.teams')) {
+            $roleArray = ['name' => 'Admin', 'crm_role' => 1, 'team_id' => null];
+        } else {
+            $roleArray = ['name' => 'Admin', 'crm_role' => 1];
+        }
         
-        $role = Role::firstOrCreate(['name' => 'Admin', 'crm_role' => 1, 'team_id' => null])
+        $role = Role::firstOrCreate($roleArray)
             ->givePermissionTo(Permission::all());
+
+        if (config('permission.teams')) {
+            $roleArray = ['name' => 'Manager', 'crm_role' => 1, 'team_id' => null];
+        } else {
+            $roleArray = ['name' => 'Manager', 'crm_role' => 1];
+        }
         
-        $role = Role::firstOrCreate(['name' => 'Manager', 'crm_role' => 1, 'team_id' => null])
+        $role = Role::firstOrCreate($roleArray)
             ->givePermissionTo([
                 'create crm leads',
                 'view crm leads',
@@ -278,8 +296,14 @@ class LaravelCrmTablesSeeder extends Seeder
                 'edit crm contacts',
                 'delete crm contacts',
             ]);
+
+        if (config('permission.teams')) {
+            $roleArray = ['name' => 'Employee', 'crm_role' => 1, 'team_id' => null];
+        } else {
+            $roleArray = ['name' => 'Employee', 'crm_role' => 1];
+        }
         
-        $role = Role::firstOrCreate(['name' => 'Employee', 'crm_role' => 1, 'team_id' => null])
+        $role = Role::firstOrCreate($roleArray)
             ->givePermissionTo([
                 'create crm leads',
                 'view crm leads',
