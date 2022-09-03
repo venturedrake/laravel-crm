@@ -109,7 +109,7 @@ function currencies()
     }*/
     
     // Allow for typo in package
-    if (method_exists('CurrencyLoader', 'curriencies')) {
+    if (method_exists('Rinvex\Country\CurrencyLoader', 'curriencies')) {
         foreach (CurrencyLoader::curriencies(true) as $currency) {
             $items[$currency['iso_4217_code']] = $currency['iso_4217_name'].(' ('.$currency['iso_4217_code'].')');
         }
