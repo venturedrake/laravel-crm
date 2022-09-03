@@ -52,7 +52,7 @@ https://laravel.com/docs/6.x/authentication
 #### Step 3. Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.10
+composer require venturedrake/laravel-crm:^0.11
 ```
 
 #### Step 4. Publish the migrations, config & assets
@@ -145,7 +145,7 @@ Note if you modified the route_prefix setting from the default the above url wil
 #### Step 1. Run the following to the update migrations and publish assets:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.10
+composer require venturedrake/laravel-crm::^0.11
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
@@ -163,7 +163,7 @@ php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrm
 #### Step 1. Run the following to the update package:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.9
+composer require venturedrake/laravel-crm::^0.11
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force

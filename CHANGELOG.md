@@ -19,6 +19,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.11.0 - 2022-09-03
+### Added
+- Laravel 9 support
+- Default settings in config
+- Better subdomain support so not to conflict with other routes
+- Noted at datetime on notes
+### Changed
+- Replaced countries package for Laravel 9 support
+### Fixed
+- Laravel 6 support
+- PHP 7 support
+- Team settings
+- Bug when not using teams support causing issue with permissions and seeder
+
 ## 0.10.1 - 2022-03-22
 ### Fixed
 - Issue with middleware affecting access to non-crm API
