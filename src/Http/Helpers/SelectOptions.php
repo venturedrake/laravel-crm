@@ -107,11 +107,18 @@ function currencies()
     foreach ($countries->currencies()->sortBy('name')->toArray() as $currencyCode => $currency) {
         $items[$currencyCode] = $currency['name'].(' ('.$currencyCode.')');
     }*/
-
-    foreach (CurrencyLoader::currencies(true) as $currency) {
-        $items[$currency['iso_4217_code']] = $currency['iso_4217_name'].(' ('.$currency['iso_4217_code'].')');
+    
+    // Allow for typo in package
+    if (method_exists('CurrencyLoader', 'curriencies')) {
+        foreach (CurrencyLoader::curriencies(true) as $currency) {
+            $items[$currency['iso_4217_code']] = $currency['iso_4217_name'].(' ('.$currency['iso_4217_code'].')');
+        }
+    } else {
+        foreach (CurrencyLoader::currencies(true) as $currency) {
+            $items[$currency['iso_4217_code']] = $currency['iso_4217_name'].(' ('.$currency['iso_4217_code'].')');
+        }
     }
-
+    
     return $items;
 }
 
