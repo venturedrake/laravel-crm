@@ -38,7 +38,11 @@
                         @endif
                      </p>
                      {{ $note->relatedNote->content }}
-                  @else   
+                       @if($note->relatedNote->noted_at)
+                           <br />
+                           <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->relatedNote->noted_at->format('h:i A') }} on {{ $note->relatedNote->noted_at->toFormattedDateString() }}</span>
+                       @endif
+                   @else   
                      <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</h5>
                      {{ $note->content }}
                       @if($note->noted_at)
