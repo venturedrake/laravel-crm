@@ -286,7 +286,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
     {
         if (config('laravel-crm.route_subdomain')) {
             $host = explode(".", request()->getHost());
-            $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 2)].'.'.end($host);
+            if (count($host) == 3) { // .com
+                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 2)].'.'.end($host);
+            } elseif (count($host) == 4) { // .com.au
+                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 3)].'.'.$host[(count($host) - 2)].'.'.end($host);
+            }
         }
         
         return [
