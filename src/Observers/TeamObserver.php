@@ -30,14 +30,16 @@ class TeamObserver
     public function created(Team $team)
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $tableNames = config('permission.table_names');
         
         if (config('laravel-crm.teams')) {
             // Get the roles
-            foreach (DB::table('roles')
+            foreach (DB::table($tableNames['roles'])
                          ->where('crm_role', 1)
                          ->whereNull('team_id')
                          ->get() as $role) {
-                DB::table('roles')->updateOrInsert([
+                DB::table($tableNames['roles'])->updateOrInsert([
                     'name' => $role->name,
                     'guard_name' => $role->guard_name,
                     'description' => $role->description,
@@ -48,18 +50,18 @@ class TeamObserver
                     'updated_at' => Carbon::now(),
                 ]);
 
-                if ($newRole = DB::table('roles')->where([
+                if ($newRole = DB::table($tableNames['roles'])->where([
                     'name' => $role->name,
                     'guard_name' => $role->guard_name,
                     'description' => $role->description,
                     'crm_role' => $role->crm_role,
                     'team_id' => $team->id,
                 ])->first()) {
-                    foreach (DB::table('permissions')
-                                 ->leftJoin('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
-                                 ->where('role_has_permissions.role_id', $role->id)
+                    foreach (DB::table($tableNames['permissions'])
+                                 ->leftJoin($tableNames['role_has_permissions'], $tableNames['permissions'].'.id', '=', $tableNames['role_has_permissions'].'.permission_id')
+                                 ->where($tableNames['role_has_permissions'].'.role_id', $role->id)
                                  ->get() as $permission) {
-                        DB::table('role_has_permissions')->updateOrInsert([
+                        DB::table($tableNames['role_has_permissions'])->updateOrInsert([
                             'permission_id' => $permission->id,
                             'role_id' => $newRole->id,
                         ]);
@@ -72,7 +74,7 @@ class TeamObserver
                 'team_id' => $team->id,
                 'crm_role' => 1,
             ])->first()) {
-                DB::table('model_has_roles')->insert([
+                DB::table($tableNames['model_has_roles'])->insert([
                     'role_id' => $role->id,
                     'model_type' => auth()->user()->getMorphClass(),
                     'model_id' => auth()->user()->id,
