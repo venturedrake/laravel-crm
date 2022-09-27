@@ -14,8 +14,7 @@
     </div>
     @push('livewire-js')
         <script>
-            $(document).ready(function () {  
-                $('#notifyToast').toast('show')
+            $(document).ready(function () {
                 window.addEventListener('notifyToast', event => {
                     $('#notifyToast').toast('show')
                     @this.set('level',event.detail.level);
