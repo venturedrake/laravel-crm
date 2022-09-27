@@ -195,3 +195,21 @@ dt {
 .multiselect-container .multiselect-filter{
   margin-bottom: 0.5rem;
 }
+
+.close-dropdown{
+  float: right;
+}
+
+.dropleft.close-dropdown  .dropdown-toggle::before{
+  display: none;
+}
+
+.toast-header.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.toast-body.alert {
+  border:none;
+}

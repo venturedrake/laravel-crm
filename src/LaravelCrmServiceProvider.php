@@ -24,6 +24,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactPerson;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedPerson;
+use VentureDrake\LaravelCrm\Http\Livewire\NotifyToast;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
@@ -256,6 +257,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
         Livewire::component('live-lead-form', LiveLeadForm::class);
+        Livewire::component('notify-toast', NotifyToast::class);
     }
 
     /**

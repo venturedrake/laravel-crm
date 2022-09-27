@@ -5,11 +5,15 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 use Livewire\Component;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Contact;
+use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveNote extends Component
 {
+    use NotifyToast;
+    
     public $model;
     public $notes;
     public $content;
@@ -59,7 +63,22 @@ class LiveNote extends Component
             }
         }
 
+        $this->notify(
+            'Note created.',
+        );
+
         $this->resetFields();
+    }
+    
+    public function delete($id)
+    {
+        Note::find($id)->delete();
+
+        $this->notify(
+            'Note deleted.'
+        );
+        
+        $this->getNotes();
     }
     
     private function getNotes()

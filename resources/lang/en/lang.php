@@ -86,6 +86,7 @@ return [
     'edit_lead' => 'edit lead',
     'details' => 'details',
     'notes' => 'notes',
+    'note' => 'note',
     'files' => 'files',
     'activity' => 'activity',
     'activities' => 'activities',

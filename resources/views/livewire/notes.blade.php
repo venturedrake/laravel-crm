@@ -29,7 +29,7 @@
                {{--<img src="..." class="mr-3" alt="...">--}}
                <div class="media-body">
                   @if($note->relatedNote)
-                     <h5 class="mt-0 mb-1">{{ $note->relatedNote->created_at->diffForHumans() }} - {{ $note->relatedNote->createdByUser->name }}</h5>
+                     <h5 class="mt-0 mb-1">{{ $note->relatedNote->created_at->diffForHumans() }} - {{ $note->relatedNote->createdByUser->name }} @include('laravel-crm::livewire.partials.notes.actions', ['note' => $note])</h5>
                      <p class="pb-0 mb-2">
                         @if($note->relatedNote->noteable instanceof \VentureDrake\LaravelCrm\Models\Person)
                            <span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
@@ -43,7 +43,7 @@
                            <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->relatedNote->noted_at->format('h:i A') }} on {{ $note->relatedNote->noted_at->toFormattedDateString() }}</span>
                        @endif
                    @else   
-                     <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</h5>
+                     <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }} @include('laravel-crm::livewire.partials.notes.actions', ['note' => $note])</h5>
                      {{ $note->content }}
                       @if($note->noted_at)
                           <br />
