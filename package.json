@@ -31,7 +31,8 @@
         "jquery-datetimepicker": "^2.5.21",
         "knockout": "^3.5.1",
         "select2": "^4.1.0-rc.0",
-        "sweetalert2": "^10.14.0"
+        "sweetalert2": "^10.14.0",
+        "trix": "^2.0.0-beta.0"
     },
     "name": "laravel-crm"
 }

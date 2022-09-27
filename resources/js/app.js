@@ -6,6 +6,7 @@ require('chart.js/dist/chart.min')
 require('../../bower_components/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')
 require('select2/dist/js/select2.min')
 require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min')
+require('trix/dist/trix')
 
 const Swal = require('sweetalert2')
 
