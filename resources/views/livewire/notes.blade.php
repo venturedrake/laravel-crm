@@ -2,20 +2,7 @@
    {{--<h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.notes')) }}</h6>
    <hr />--}}
    <form wire:submit.prevent="create">
-      <div class="form-group @error('content') text-danger @enderror">
-         <label>{{ ucfirst(__('laravel-crm::lang.add_note')) }}</label>
-         <textarea wire:model="content" class="form-control @error('content') is-invalid @enderror" id="textarea_content" name="content" rows="3">{{ $value ?? null }}</textarea>
-         @error('content')
-         <div class="text-danger invalid-feedback-custom">{{ $message }}</div>
-         @enderror
-      </div>
-      @include('laravel-crm::partials.form.text',[
-        'name' => 'noted_at',
-        'label' => ucfirst(__('laravel-crm::lang.noted_at')),
-        'attributes' => [
-            'wire:model.debounce.10000ms' => 'noted_at'  
-        ]
-      ])
+     @include('laravel-crm::livewire.partials.notes.form-fields')
       <div class="form-group">
          <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
       </div>
@@ -37,14 +24,14 @@
                            <span class="fa fa-building mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.organisations.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
                         @endif
                      </p>
-                     {{ $note->relatedNote->content }}
+                     {!! $note->relatedNote->content !!}
                        @if($note->relatedNote->noted_at)
                            <br />
                            <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->relatedNote->noted_at->format('h:i A') }} on {{ $note->relatedNote->noted_at->toFormattedDateString() }}</span>
                        @endif
                    @else   
                      <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }} @include('laravel-crm::livewire.partials.notes.actions', ['note' => $note])</h5>
-                     {{ $note->content }}
+                     {!! $note->content !!}
                       @if($note->noted_at)
                           <br />
                            <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->noted_at->format('h:i A') }} on {{ $note->noted_at->toFormattedDateString() }}</span>
