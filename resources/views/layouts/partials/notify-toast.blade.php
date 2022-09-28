@@ -1,4 +1,4 @@
-<div id="notifyToast" class="toast show p-0 m-0 border border-success" style="position: absolute; top: 10px; right: 10px; z-index: 9999999999999"  data-delay="3000" data-autohide="false">
+<div id="notifyToast" class="toast show p-0 m-0 border border-success" style="position: absolute; top: 10px; right: 10px; z-index: 9999999999999"  data-delay="3000">
     <div class="toast-header alert-success">
         <span class="fa fa-check mr-0 rounded-circle p-2" aria-hidden="true"></span>
         <strong class="mr-auto">Success</strong>
