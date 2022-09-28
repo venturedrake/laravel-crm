@@ -24,19 +24,11 @@
                            <span class="fa fa-building mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.organisations.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
                         @endif
                      </p>
-                     {!! $note->relatedNote->content !!}
-                       @if($note->relatedNote->noted_at)
-                           <br />
-                           <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->relatedNote->noted_at->format('h:i A') }} on {{ $note->relatedNote->noted_at->toFormattedDateString() }}</span>
-                       @endif
+                     @include('laravel-crm::livewire.partials.notes.note', ['note' => $note->relatedNote])
                    @else   
                      <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }} @include('laravel-crm::livewire.partials.notes.actions', ['note' => $note])</h5>
-                     {!! $note->content !!}
-                      @if($note->noted_at)
-                          <br />
-                           <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->noted_at->format('h:i A') }} on {{ $note->noted_at->toFormattedDateString() }}</span>
-                      @endif    
-                  @endif   
+                     @include('laravel-crm::livewire.partials.notes.note', ['note' => $note])
+                   @endif 
                </div>
             </div>
          </div>

@@ -25,6 +25,18 @@ class LiveNote extends Component
         $this->getNotes();
     }
 
+    /**
+     * Returns validation rules.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return [
+            'notes.*.content' => 'nullable',
+        ];
+    }
+
     public function create()
     {
         $data = $this->validate([
