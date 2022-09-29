@@ -1,5 +1,5 @@
 <div>
-    <div id="notifyToast" class="toast p-0 m-0 border border-{{ $level }} w-75" style="position: fixed; top: 10px; right: 10px; z-index: 9999999999999"  data-delay="3000" data-autohide="false">
+    <div id="notifyToast" class="toast p-0 m-0 border border-{{ $level }} w-75" style="position: fixed; top: 10px; right: 10px; z-index: 9999999999999"  data-delay="3000" data-autohide="true">
         <div class="toast-header alert-{{ $level }}">
             <span class="fa fa-check mr-0 rounded-circle p-2" aria-hidden="true"></span>
             <strong class="mr-auto">{{ ucwords($level) }}</strong>

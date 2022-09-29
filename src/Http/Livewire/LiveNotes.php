@@ -5,12 +5,11 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 use Livewire\Component;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Contact;
-use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
-class LiveNote extends Component
+class LiveNotes extends Component
 {
     use NotifyToast;
     
@@ -19,22 +18,12 @@ class LiveNote extends Component
     public $content;
     public $noted_at;
 
+    protected $listeners = ['noteDeleted' => 'getNotes'];
+
     public function mount($model)
     {
         $this->model = $model;
         $this->getNotes();
-    }
-
-    /**
-     * Returns validation rules.
-     *
-     * @return array
-     */
-    protected function rules()
-    {
-        return [
-            'notes.*.content' => 'nullable',
-        ];
     }
 
     public function create()
@@ -76,24 +65,13 @@ class LiveNote extends Component
         }
 
         $this->notify(
-            'Note created.',
+            'Note created',
         );
 
         $this->resetFields();
     }
     
-    public function delete($id)
-    {
-        Note::find($id)->delete();
-
-        $this->notify(
-            'Note deleted.'
-        );
-        
-        $this->getNotes();
-    }
-    
-    private function getNotes()
+    public function getNotes()
     {
         $this->notes = $this->model->notes()->latest()->get();
     }

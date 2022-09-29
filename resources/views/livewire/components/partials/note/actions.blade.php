@@ -3,7 +3,8 @@
         <span aria-hidden="true"><span class="fa fa-ellipsis-h" aria-hidden="true"></span></span>
     </button>
     <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Edit</a>
-        <a class="dropdown-item" href="#" wire:click.prevent="delete({{$note->id}})">Delete</a>
+        <a class="dropdown-item" href="#edit" wire:click="$toggle('editMode')">Edit</a>
+        <a class="dropdown-item" href="#pin">Pin this note</a>
+        <a class="dropdown-item" href="#delete" wire:click.prevent="delete({{$note->id}})">Delete</a>
     </div>
 </div>
