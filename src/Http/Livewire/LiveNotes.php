@@ -15,14 +15,19 @@ class LiveNotes extends Component
     
     public $model;
     public $notes;
+    public $pinned;
     public $content;
     public $noted_at;
 
-    protected $listeners = ['noteDeleted' => 'getNotes'];
+    protected $listeners = [
+        'noteDeleted' => 'getNotes',
+        'notePinned' => 'getNotes',
+    ];
 
-    public function mount($model)
+    public function mount($model, $pinned = false)
     {
         $this->model = $model;
+        $this->pinned = $pinned;
         $this->getNotes();
     }
 
@@ -73,7 +78,11 @@ class LiveNotes extends Component
     
     public function getNotes()
     {
-        $this->notes = $this->model->notes()->latest()->get();
+        if ($this->pinned) {
+            $this->notes = $this->model->notes()->where('pinned', 1)->latest()->get();
+        } else {
+            $this->notes = $this->model->notes()->latest()->get();
+        }
     }
 
     private function resetFields()

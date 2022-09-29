@@ -4,7 +4,11 @@
     </button>
     <div class="dropdown-menu">
         <a class="dropdown-item" href="#edit" wire:click="$toggle('editMode')">Edit</a>
-        <a class="dropdown-item" href="#pin">Pin this note</a>
-        <a class="dropdown-item" href="#delete" wire:click.prevent="delete({{$note->id}})">Delete</a>
+        @if($note->pinned == 1)
+            <a class="dropdown-item" href="#pin" wire:click.prevent="unpin()">Unpin this note</a>
+        @else
+            <a class="dropdown-item" href="#pin" wire:click.prevent="pin()">Pin this note</a>
+        @endif
+        <a class="dropdown-item" href="#delete" wire:click.prevent="delete()">Delete</a>
     </div>
 </div>

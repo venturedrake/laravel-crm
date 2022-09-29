@@ -1,6 +1,7 @@
 <div class="notes">
     {{--<h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.notes')) }}</h6>
     <hr />--}}
+    @if(! $pinned)
     <form wire:submit.prevent="create">
         @include('laravel-crm::livewire.components.partials.note.form-fields')
         <div class="form-group">
@@ -8,6 +9,7 @@
         </div>
     </form>
     <hr/>
+    @endif
     <ul class="list-unstyled">
         @foreach($notes as $note)
             @livewire('note',[

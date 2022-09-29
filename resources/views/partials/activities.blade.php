@@ -1,3 +1,7 @@
+@livewire('notes', [
+'model' => $model,
+'pinned' => true
+ ])
 <ul class="nav nav-tabs">
     <li class="nav-item">
         <a class="nav-link active" data-toggle="tab" href="#tabs-notes">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a>

@@ -48,14 +48,40 @@ class LiveNote extends Component
         );
     }
 
-    public function delete($id)
+    public function delete()
     {
-        Note::find($id)->delete();
+        $this->note->delete();
 
         $this->emit('noteDeleted');
 
         $this->notify(
             'Note deleted.'
+        );
+    }
+
+    public function pin()
+    {
+        $this->note->update([
+            'pinned' => 1,
+        ]);
+
+        $this->emit('notePinned');
+
+        $this->notify(
+            'Note pinned'
+        );
+    }
+
+    public function unpin()
+    {
+        $this->note->update([
+            'pinned' => 0,
+        ]);
+
+        $this->emit('notePinned');
+
+        $this->notify(
+            'Note unpinned'
         );
     }
 
