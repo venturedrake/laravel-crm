@@ -2,7 +2,7 @@
     {{--<h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.notes')) }}</h6>
     <hr />--}}
     @if(! $pinned)
-    <form wire:submit.prevent="create">
+    <form wire:submit.prevent="create" id="inputCreateForm">
         @include('laravel-crm::livewire.components.partials.note.form-fields')
         <div class="form-group">
             <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
@@ -20,8 +20,8 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).on("change", "input[name='noted_at']", function () {
-                @this.set('noted_at', $(this).val());
+                $(document).on("change", "#inputCreateForm input[name='noted_at']", function () {
+                    @this.set('noted_at', $(this).val());
                 });
             });
         </script>

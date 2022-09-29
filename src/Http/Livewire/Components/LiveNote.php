@@ -88,6 +88,8 @@ class LiveNote extends Component
     public function toggleEditMode()
     {
         $this->editMode = ! $this->editMode;
+        
+        $this->emit('noteEditModeToggled');
     }
     
     public function render()
