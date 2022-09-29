@@ -17,15 +17,29 @@
             ], key($note->id))
         @endforeach
     </ul>
-    @push('livewire-js')
-        <script>
-            $(document).ready(function () {
-                $(document).on("change", "#inputCreateForm input[name='noted_at']", function () {
-                    @this.set('noted_at', $(this).val());
+    @if(! $pinned)
+        @push('livewire-js')
+            <script>
+                $(document).ready(function () {
+                    $(document).on("change", "#inputCreateForm input[name='noted_at']", function () {
+                        @this.set('noted_at', $(this).val());
+                    });
                 });
-            });
-        </script>
-    @endpush
+            </script>
+        @endpush
+        @push('livewire-js')
+            <script>
+                $(document).ready(function () {
+                    window.addEventListener('noteEditModeToggled', event => {
+                        $('input[name="noted_at"]').datetimepicker({
+                            timepicker:true,
+                            format: 'Y/m/d H:i',
+                        });
+                    });
+                });
+            </script>
+        @endpush
+    @endif
 </div>
 
 

@@ -19,7 +19,7 @@ class LiveNote extends Component
     {
         $this->note = $note;
         $this->content = $note->content;
-        $this->noted_at = $note->noted_at;
+        $this->noted_at = ($note->noted_at) ? $note->noted_at->format('Y/m/d H:i') : null;
     }
 
     /**
@@ -40,7 +40,7 @@ class LiveNote extends Component
         $this->validate();
         $this->note->update([
             'content' => $this->content,
-            'noted_at' => $this->noted_at ?? null,
+            'noted_at' => $this->noted_at,
         ]);
         $this->toggleEditMode();
         $this->notify(
@@ -89,7 +89,7 @@ class LiveNote extends Component
     {
         $this->editMode = ! $this->editMode;
         
-        $this->emit('noteEditModeToggled');
+        $this->dispatchBrowserEvent('noteEditModeToggled');
     }
     
     public function render()

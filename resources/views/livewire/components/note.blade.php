@@ -24,5 +24,14 @@
             </div>
         </div>
     </div>
+    @push('livewire-js')
+        <script>
+            $(document).ready(function () {
+                $(document).on("change", "input[name='noted_at']", function () {
+                @this.set('noted_at', $(this).val());
+                });
+            });
+        </script>
+    @endpush
 </li>
 

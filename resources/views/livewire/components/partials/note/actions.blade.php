@@ -3,7 +3,7 @@
         <span aria-hidden="true"><span class="fa fa-ellipsis-h" aria-hidden="true"></span></span>
     </button>
     <div class="dropdown-menu">
-        <a class="dropdown-item" href="#edit" wire:click="$toggle('editMode')">Edit</a>
+        <a class="dropdown-item" href="#edit" wire:click="toggleEditMode()">Edit</a>
         @if($note->pinned == 1)
             <a class="dropdown-item" href="#pin" wire:click.prevent="unpin()">Unpin this note</a>
         @else

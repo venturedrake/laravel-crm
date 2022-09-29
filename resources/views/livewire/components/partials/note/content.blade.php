@@ -2,7 +2,7 @@
     <form wire:submit.prevent="update">
         @include('laravel-crm::livewire.components.partials.note.form-fields')
         <div class="form-group">
-            <button type="button" class="btn btn-outline-secondary" wire:click="$toggle('editMode')">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</button>
+            <button type="button" class="btn btn-outline-secondary" wire:click="toggleEditMode()">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</button>
             <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         </div>
     </form>
