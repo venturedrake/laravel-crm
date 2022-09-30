@@ -469,6 +469,38 @@ Route::group(['prefix' => 'product-categories', 'middleware' => 'auth.laravel-cr
         ->middleware(['can:delete,productCategory']);
 });
 
+/* Product Attributes */
+
+Route::group(['prefix' => 'product-attributes', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@index')
+        ->name('laravel-crm.product-attributes.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\ProductCategory']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@create')
+        ->name('laravel-crm.product-attributes.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\ProductCategory']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@store')
+        ->name('laravel-crm.product-attributes.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\ProductCategory']);
+
+    Route::get('{productCategory}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@show')
+        ->name('laravel-crm.product-attributes.show')
+        ->middleware(['can:view,productCategory']);
+
+    Route::get('{productCategory}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@edit')
+        ->name('laravel-crm.product-attributes.edit')
+        ->middleware(['can:update,productCategory']);
+
+    Route::put('{productCategory}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@update')
+        ->name('laravel-crm.product-attributes.update')
+        ->middleware(['can:update,productCategory']);
+
+    Route::delete('{productCategory}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductCategoryController@destroy')
+        ->name('laravel-crm.product-attributes.destroy')
+        ->middleware(['can:delete,productCategory']);
+});
+
 /* Settings */
 
 Route::group(['prefix' => 'settings', 'middleware' => 'auth.laravel-crm'], function () {

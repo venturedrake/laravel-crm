@@ -239,6 +239,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm product categories', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm product categories', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm product attributes', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm product attributes', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm product attributes', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm product attributes', 'crm_permission' => 1]);
+
         Permission::firstOrCreate(['name' => 'create crm labels', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm labels', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm labels', 'crm_permission' => 1]);
@@ -248,6 +253,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm fields', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm fields', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm fields', 'crm_permission' => 1]);
+
+        Permission::firstOrCreate(['name' => 'create crm integrations', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm integrations', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm integrations', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm integrations', 'crm_permission' => 1]);
         
         if (config('permission.teams')) {
             $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
