@@ -187,6 +187,86 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
     });
 });
 
+/* Quotes */
+
+Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('create-product', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@createProduct')
+        ->name('laravel-crm.quote-products.create-product');
+
+    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@index')
+        ->name('laravel-crm.quotes.filter')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
+
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@index')
+        ->name('laravel-crm.quotes.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
+
+    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@create')
+        ->name('laravel-crm.quotes.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Quote']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@store')
+        ->name('laravel-crm.quotes.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Quote']);
+
+    Route::get('{quote}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@show')
+        ->name('laravel-crm.quotes.show')
+        ->middleware(['can:view,quote']);
+
+    Route::get('{quote}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@edit')
+        ->name('laravel-crm.quotes.edit')
+        ->middleware(['can:update,quote']);
+
+    Route::put('{quote}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@update')
+        ->name('laravel-crm.quotes.update')
+        ->middleware(['can:update,quote']);
+
+    Route::delete('{quote}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@destroy')
+        ->name('laravel-crm.quotes.destroy')
+        ->middleware(['can:delete,quote']);
+
+    Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@search')
+        ->name('laravel-crm.quotes.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
+
+    Route::get('{quote}/accept', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@accept')
+        ->name('laravel-crm.quotes.accept')
+        ->middleware(['can:update,quote']);
+
+    Route::get('{quote}/reject', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@reject')
+        ->name('laravel-crm.quotes.reject')
+        ->middleware(['can:update,quote']);
+
+    Route::get('{quote}/unaccept', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@unaccept')
+        ->name('laravel-crm.quotes.unaccept')
+        ->middleware(['can:update,quote']);
+
+    /* Quote Products */
+
+    Route::group(['prefix' => '{quote}/products', 'middleware' => 'auth.laravel-crm'], function () {
+        Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@index')
+            ->name('laravel-crm.quote-products.index');
+
+        Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@create')
+            ->name('laravel-crm.quote-products.create');
+
+        Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@store')
+            ->name('laravel-crm.quote-products.store');
+
+        Route::get('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@show')
+            ->name('laravel-crm.quote-products.show');
+
+        Route::get('{product}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@edit')
+            ->name('laravel-crm.quote-products.edit');
+
+        Route::put('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@update')
+            ->name('laravel-crm.quote-products.update');
+
+        Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@destroy')
+            ->name('laravel-crm.quote-products.destroy');
+    });
+});
+
 /* Activities */
 
 Route::group(['prefix' => 'activities', 'middleware' => 'auth.laravel-crm'], function () {

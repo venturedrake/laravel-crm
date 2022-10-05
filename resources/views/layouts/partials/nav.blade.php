@@ -8,6 +8,9 @@
             @can('view crm deals')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deals') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deals.index')) }}">{{ ucfirst(__('laravel-crm::lang.deals')) }}</a></li>
             @endcan
+            @can('view crm quotes')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.quotes') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.quotes.index')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a></li>
+            @endcan
             @canany(['view crm people', 'dview crm organisations'])
             <li class="dropdown-divider"></li>
             @endcan
