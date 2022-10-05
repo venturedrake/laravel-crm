@@ -14,6 +14,12 @@ class LiveNote extends Component
     public $editMode = false;
     public $content;
     public $noted_at;
+
+    protected $listeners = [
+        'refreshComponent' => '$refresh',
+        'notePinned' => '$refresh',
+        'noteUnpinned' => '$refresh',
+    ];
     
     public function mount(Note $note)
     {
@@ -43,6 +49,7 @@ class LiveNote extends Component
             'noted_at' => $this->noted_at,
         ]);
         $this->toggleEditMode();
+        $this->emit('refreshComponent');
         $this->notify(
             'Note updated',
         );
@@ -53,7 +60,6 @@ class LiveNote extends Component
         $this->note->delete();
 
         $this->emit('noteDeleted');
-
         $this->notify(
             'Note deleted.'
         );
@@ -66,7 +72,6 @@ class LiveNote extends Component
         ]);
 
         $this->emit('notePinned');
-
         $this->notify(
             'Note pinned'
         );
@@ -78,8 +83,7 @@ class LiveNote extends Component
             'pinned' => 0,
         ]);
 
-        $this->emit('notePinned');
-
+        $this->emit('noteUnpinned');
         $this->notify(
             'Note unpinned'
         );

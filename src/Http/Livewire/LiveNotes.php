@@ -22,6 +22,7 @@ class LiveNotes extends Component
     protected $listeners = [
         'noteDeleted' => 'getNotes',
         'notePinned' => 'getNotes',
+        'noteUnpinned' => 'getNotes',
     ];
 
     public function mount($model, $pinned = false)
