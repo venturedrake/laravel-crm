@@ -2,6 +2,7 @@
     <div class="card-body py-3">
         <ul class="nav nav-pills flex-column">
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') === 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}">{{ ucfirst(__('laravel-crm::lang.dashboard')) }}</a></li>
+            <li class="dropdown-divider"></li>
             @can('view crm leads')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.leads') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.leads.index')) }}">{{ ucfirst(__('laravel-crm::lang.leads')) }}</a></li>
             @endcan
@@ -10,6 +11,15 @@
             @endcan
             @can('view crm quotes')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.quotes') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.quotes.index')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a></li>
+            @endcan
+            @canany(['view crm orders', 'view crm projects'])
+                <li class="dropdown-divider"></li>
+            @endcan
+            @can('view crm orders')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.orders') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.orders.index')) }}">{{ ucfirst(__('laravel-crm::lang.orders')) }}</a></li>
+            @endcan
+            @can('view crm projects')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.projects') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.projects.index')) }}">{{ ucfirst(__('laravel-crm::lang.projects')) }}</a></li>
             @endcan
             @canany(['view crm people', 'view crm organisations'])
             <li class="dropdown-divider"></li>
