@@ -201,7 +201,7 @@ return [
     'you_can_update_from_laravel_crm' => 'You can update from Laravel CRM',
     'upgrade_guide' => 'upgrade guide',
     'settings_updated' => 'settings updated',
-    'organisation_name' => 'organization name',
+    'organization_name' => 'organization name',
     'language' => 'language',
     'product_category_stored' => 'product category stored',
     'product_category_updated' => 'product category updated',
@@ -255,5 +255,5 @@ return [
     'sub_total' => 'sub total',
     'discount' => 'discount',
     'adjustment' => 'adjustment',
-    'total' => 'total'
+    'total' => 'total',
 ];
