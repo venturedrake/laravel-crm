@@ -252,4 +252,8 @@ return [
     'link_person' => 'link person',
     'person_name' => 'person name',
     'clear' => 'clear',
+    'sub_total' => 'sub total',
+    'discount' => 'discount',
+    'adjustment' => 'adjustment',
+    'total' => 'total'
 ];

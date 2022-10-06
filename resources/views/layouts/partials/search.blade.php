@@ -6,6 +6,9 @@
      }elseif(strpos(Route::currentRouteName(), 'laravel-crm.deals') === 0 && auth()->user()->can('view crm deals')){
          echo url(route('laravel-crm.deals.search'));
          $currentAction = ucfirst(__('laravel-crm::lang.deals'));
+     }elseif(strpos(Route::currentRouteName(), 'laravel-crm.quotes') === 0 && auth()->user()->can('view crm quotes')){
+         echo url(route('laravel-crm.quotes.search'));
+         $currentAction = ucfirst(__('laravel-crm::lang.quotes'));
      }elseif(strpos(Route::currentRouteName(), 'laravel-crm.people') === 0  && auth()->user()->can('view crm people')){
          echo url(route('laravel-crm.people.search'));
          $currentAction = ucfirst(__('laravel-crm::lang.people'));
@@ -24,6 +27,9 @@
          }elseif(auth()->user()->can('view crm deals')){
              echo url(route('laravel-crm.deals.search'));
              $currentAction = ucfirst(__('laravel-crm::lang.deals'));
+         }elseif(auth()->user()->can('view crm quotes')){
+             echo url(route('laravel-crm.quotes.search'));
+             $currentAction = ucfirst(__('laravel-crm::lang.quotes'));
          }elseif(auth()->user()->can('view crm people')){
              echo url(route('laravel-crm.people.search'));
              $currentAction = ucfirst(__('laravel-crm::lang.people'));
@@ -50,6 +56,9 @@
                 @endcan
                 @can('view crm deals')
                 <a class="dropdown-item" href="#deals" data-type="deals" data-action="{{ url(route('laravel-crm.deals.search')) }}">{{ ucfirst(__('laravel-crm::lang.deals')) }}</a>
+                @endcan
+                @can('view crm quotes')
+                    <a class="dropdown-item" href="#quotes" data-type="deals" data-action="{{ url(route('laravel-crm.quotes.search')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a>
                 @endcan
                 @can('view crm people')
                 <a class="dropdown-item" href="#people" data-type="people" data-action="{{ url(route('laravel-crm.people.search')) }}">{{ ucfirst(__('laravel-crm::lang.people')) }}</a>

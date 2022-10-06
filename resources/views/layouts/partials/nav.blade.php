@@ -11,7 +11,7 @@
             @can('view crm quotes')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.quotes') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.quotes.index')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a></li>
             @endcan
-            @canany(['view crm people', 'dview crm organisations'])
+            @canany(['view crm people', 'view crm organisations'])
             <li class="dropdown-divider"></li>
             @endcan
             {{--<li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.activities') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.activities.index')) }}">{{ ucfirst(__('laravel-crm::lang.activities')) }}</a></li>--}}
