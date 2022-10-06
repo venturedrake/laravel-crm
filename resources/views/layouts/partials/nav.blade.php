@@ -25,7 +25,7 @@
             @can('view crm users')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.users') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.users.index')) }}">{{ ucfirst(__('laravel-crm::lang.users')) }}</a></li>
             @endcan
-            @can('view crm users')
+            @can('view crm teams')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.teams') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.teams.index')) }}">{{ ucfirst(__('laravel-crm::lang.teams')) }}</a></li>
             @endcan
             @canany(['view crm products'])
