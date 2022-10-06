@@ -256,4 +256,7 @@ return [
     'discount' => 'discount',
     'adjustment' => 'adjustment',
     'total' => 'total',
+    'issue_date' => 'issue date',
+    'expiry_date' => 'expiry date',
+    'reference' => 'reference',
 ];
