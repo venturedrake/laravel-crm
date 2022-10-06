@@ -201,6 +201,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm quotes', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm quotes', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm orders', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm orders', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm orders', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm orders', 'crm_permission' => 1]);
+
         Permission::firstOrCreate(['name' => 'create crm people', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm people', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm people', 'crm_permission' => 1]);
@@ -304,6 +309,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm quotes',
                 'edit crm quotes',
                 'delete crm quotes',
+                'create crm orders',
+                'view crm orders',
+                'edit crm orders',
+                'delete crm orders',
                 'create crm people',
                 'view crm people',
                 'edit crm people',
@@ -338,6 +347,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm quotes',
                 'edit crm quotes',
                 'delete crm quotes',
+                'create crm orders',
+                'view crm orders',
+                'edit crm orders',
+                'delete crm orders',
                 'create crm people',
                 'view crm people',
                 'edit crm people',

@@ -9,6 +9,9 @@
      }elseif(strpos(Route::currentRouteName(), 'laravel-crm.quotes') === 0 && auth()->user()->can('view crm quotes')){
          echo url(route('laravel-crm.quotes.search'));
          $currentAction = ucfirst(__('laravel-crm::lang.quotes'));
+     }elseif(strpos(Route::currentRouteName(), 'laravel-crm.orders') === 0 && auth()->user()->can('view crm orders')){
+         echo url(route('laravel-crm.orders.search'));
+         $currentAction = ucfirst(__('laravel-crm::lang.orders'));
      }elseif(strpos(Route::currentRouteName(), 'laravel-crm.people') === 0  && auth()->user()->can('view crm people')){
          echo url(route('laravel-crm.people.search'));
          $currentAction = ucfirst(__('laravel-crm::lang.people'));
@@ -30,6 +33,9 @@
          }elseif(auth()->user()->can('view crm quotes')){
              echo url(route('laravel-crm.quotes.search'));
              $currentAction = ucfirst(__('laravel-crm::lang.quotes'));
+         }elseif(auth()->user()->can('view crm orders')){
+             echo url(route('laravel-crm.orders.search'));
+             $currentAction = ucfirst(__('laravel-crm::lang.orders'));
          }elseif(auth()->user()->can('view crm people')){
              echo url(route('laravel-crm.people.search'));
              $currentAction = ucfirst(__('laravel-crm::lang.people'));
@@ -58,7 +64,10 @@
                 <a class="dropdown-item" href="#deals" data-type="deals" data-action="{{ url(route('laravel-crm.deals.search')) }}">{{ ucfirst(__('laravel-crm::lang.deals')) }}</a>
                 @endcan
                 @can('view crm quotes')
-                    <a class="dropdown-item" href="#quotes" data-type="deals" data-action="{{ url(route('laravel-crm.quotes.search')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a>
+                    <a class="dropdown-item" href="#quotes" data-type="quotes" data-action="{{ url(route('laravel-crm.quotes.search')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a>
+                @endcan
+                @can('view crm orders')
+                    <a class="dropdown-item" href="#orders" data-type="orders" data-action="{{ url(route('laravel-crm.orders.search')) }}">{{ ucfirst(__('laravel-crm::lang.orders')) }}</a>
                 @endcan
                 @can('view crm people')
                 <a class="dropdown-item" href="#people" data-type="people" data-action="{{ url(route('laravel-crm.people.search')) }}">{{ ucfirst(__('laravel-crm::lang.people')) }}</a>

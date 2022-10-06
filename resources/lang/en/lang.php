@@ -259,4 +259,6 @@ return [
     'issue_date' => 'issue date',
     'expiry_date' => 'expiry date',
     'reference' => 'reference',
+    'order' => 'order',
+    'orders' => 'orders',
 ];
