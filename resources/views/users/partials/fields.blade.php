@@ -33,7 +33,7 @@
                'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->when(config('laravel-crm.teams'), function ($query) {
                     return $query->where('team_id', auth()->user()->currentTeam->id);
                 })->get()),
-               'value' => old('role', $user->roles()->first()->id ?? null),
+               'value' => old('role', ($user->roles()->first()->id ?? null) ?? null),
                'attributes' => [
                    'disabled' => 'disabled'
                ]
@@ -45,7 +45,7 @@
                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(VentureDrake\LaravelCrm\Models\Role::crm()->when(config('laravel-crm.teams'), function ($query) {
                     return $query->where('team_id', auth()->user()->currentTeam->id);
                 })->get()),
-                'value' => old('role', ((isset($user)) ? $user->roles()->first()->id : null)),
+                'value' => old('role', ((isset($user)) ? ($user->roles()->first()->id ?? null) : null)),
             ]) 
         @endif
     </div>
