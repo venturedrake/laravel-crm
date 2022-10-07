@@ -130,4 +130,9 @@ class Quote extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
     }
+
+    public function files()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\File::class, 'fileable');
+    }
 }

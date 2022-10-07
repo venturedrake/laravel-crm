@@ -17,7 +17,7 @@
     <div class="tab-pane fade show active" id="tabs-notes">
         <div class="card-body pl-0 pr-0">
             @livewire('notes', [
-            'model' => $model
+                'model' => $model
             ])
         </div>
     </div>
@@ -30,9 +30,9 @@
     </div>
     <div class="tab-pane fade" id="tabs-files">
         <div class="card-body pl-0 pr-0">
-            {{--<h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.files')) }}</h6>
-            <hr />--}}
-            ...
+            @livewire('files', [
+                'model' => $model
+            ])
         </div>
     </div>
 </div>

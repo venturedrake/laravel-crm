@@ -165,6 +165,11 @@ class Person extends Model
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
     }
 
+    public function files()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\File::class, 'fileable');
+    }
+
     public function contacts()
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Contact::class, 'contactable');

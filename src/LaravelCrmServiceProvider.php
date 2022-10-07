@@ -16,9 +16,11 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
+use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveNotes;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
@@ -218,6 +220,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_noted_at_to_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_noted_at_to_laravel_crm_notes_table.php', 29),
                 __DIR__ . '/../database/migrations/create_laravel_crm_quotes_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_quotes_table.php', 30),
                 __DIR__ . '/../database/migrations/create_laravel_crm_quote_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_quote_products_table.php', 31),
+                __DIR__ . '/../database/migrations/create_laravel_crm_files_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_files_table.php', 32),
             ], 'migrations');
 
             // Publishing the seeders
@@ -259,6 +262,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('address-edit', LiveAddressEdit::class);
         Livewire::component('notes', LiveNotes::class);
         Livewire::component('note', LiveNote::class);
+        Livewire::component('files', LiveFiles::class);
+        Livewire::component('file', LiveFile::class);
         Livewire::component('related-contact-organisations', LiveRelatedContactOrganisation::class);
         Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
