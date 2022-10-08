@@ -261,4 +261,6 @@ return [
     'reference' => 'reference',
     'order' => 'order',
     'orders' => 'orders',
+    'upload' => 'upload',
+    'choose_file' => 'choose file',
 ];

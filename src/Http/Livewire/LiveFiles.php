@@ -3,20 +3,19 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Models\Contact;
-use VentureDrake\LaravelCrm\Models\Organisation;
-use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveFiles extends Component
 {
     use NotifyToast;
+    use WithFileUploads;
     
     public $model;
     public $files;
-    public $content;
-    public $filed_at;
+    public $file;
+    public $random;
 
     protected $listeners = [
         'fileDeleted' => 'getFiles',
@@ -25,52 +24,35 @@ class LiveFiles extends Component
     public function mount($model)
     {
         $this->model = $model;
+        $this->random = rand();
         $this->getFiles();
     }
 
-    public function create()
+    public function upload()
     {
         $data = $this->validate([
-            'content' => 'required',
+            'file' => 'required',
         ]);
+
+        $file = $this->file->store('laravel-crm/'.strtolower(class_basename($this->model)).'/'.$this->model->id.'/files');
         
-        $file = $this->model->files()->create([
+        $this->model->files()->create([
             'external_id' => Uuid::uuid4()->toString(),
-            'content' => $data['content'],
-            'filed_at' => $this->filed_at,
+            'file' => $file,
+            'name' => $this->file->getClientOriginalName(),
+            'filesize' => $this->file->getSize(),
+            'mime' => $this->file->getMimeType(),
         ]);
-        
-        // Add to any upstream related models
-        if ($this->model instanceof Person) {
-            if ($this->model->organisation) {
-                $this->model->organisation->files()->create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'content' => $data['content'],
-                    'filed_at' => $this->filed_at,
-                    'related_file_id' => $file->id,
-                ]);
-            }
-        }
-        
-        if ($this->model instanceof Organisation || $this->model instanceof Person) {
-            foreach (Contact::where([
-                'entityable_type' => $this->model->getMorphClass(),
-                'entityable_id' => $this->model->id,
-            ])->get() as $contact) {
-                $contact->contactable->files()->create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'content' => $data['content'],
-                    'filed_at' => $this->filed_at,
-                    'related_file_id' => $file->id,
-                ]);
-            }
-        }
 
         $this->notify(
-            'File created',
+            'File uploaded',
         );
 
         $this->resetFields();
+    }
+    
+    public function fileSelected()
+    {
     }
     
     public function getFiles()
@@ -81,6 +63,7 @@ class LiveFiles extends Component
     private function resetFields()
     {
         $this->reset('file');
+        $this->random = rand();
         $this->getFiles();
     }
     

@@ -35,20 +35,30 @@ use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Models\Contact;
+use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Note;
+use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
+use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
+use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
+use VentureDrake\LaravelCrm\Observers\FileObserver;
 use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
+use VentureDrake\LaravelCrm\Observers\OrderObserver;
 use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
+use VentureDrake\LaravelCrm\Observers\ProductObserver;
+use VentureDrake\LaravelCrm\Observers\QuoteObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Observers\UserObserver;
@@ -119,12 +129,17 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Register Observers
         Lead::observe(LeadObserver::class);
+        Deal::observe(DealObserver::class);
+        Quote::observe(QuoteObserver::class);
+        Order::observe(OrderObserver::class);
         Person::observe(PersonObserver::class);
         Organisation::observe(OrganisationObserver::class);
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
+        Product::observe(ProductObserver::class);
         Setting::observe(SettingObserver::class);
         Note::observe(NoteObserver::class);
+        File::observe(FileObserver::class);
         Contact::observe(ContactObserver::class);
         
         if (class_exists('App\Models\User')) {
@@ -221,6 +236,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_quotes_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_quotes_table.php', 30),
                 __DIR__ . '/../database/migrations/create_laravel_crm_quote_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_quote_products_table.php', 31),
                 __DIR__ . '/../database/migrations/create_laravel_crm_files_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_files_table.php', 32),
+                __DIR__ . '/../database/migrations/add_mime_to_laravel_crm_files_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_mime_to_laravel_crm_files_tables.php', 33),
             ], 'migrations');
 
             // Publishing the seeders

@@ -1,7 +1,7 @@
 <div class="files">
     {{--<h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.files')) }}</h6>
     <hr />--}}
-    <form wire:submit.prevent="create" id="inputCreateForm">
+    <form wire:submit.prevent="upload" id="inputUploadForm">
         @include('laravel-crm::livewire.components.partials.file.form-fields')
         <div class="form-group">
             <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.upload')) }}</button>
@@ -10,9 +10,9 @@
     <hr/>
     <ul class="list-unstyled">
         @foreach($files as $file)
-            {{--@livewire('file',[
+            @livewire('file',[
                 'file' => $file
-            ], key($file->id))--}}
+            ], key($file->id))
         @endforeach
     </ul>
 </div>

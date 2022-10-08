@@ -8,6 +8,8 @@ require('select2/dist/js/select2.min')
 require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min')
 require('trix/dist/trix')
 
+import bsCustomFileInput from 'bs-custom-file-input'
+
 const Swal = require('sweetalert2')
 
 // Little bit of Jquery
@@ -20,6 +22,8 @@ const appJquery = function() {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            bsCustomFileInput.init()
 
             $('[data-toggle="tooltip"]').tooltip()
             
