@@ -14,6 +14,7 @@
     <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    
 
     <!-- Styles -->
     <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=45634556345654" rel="stylesheet">
@@ -94,8 +95,9 @@
             </div>
         </footer>
     </div>
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=67856784784"></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=43567567567"></script>
     <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     @livewireScripts
     @livewire('notify-toast')
     @stack('livewire-js')

@@ -264,5 +264,5 @@ return [
     'upload' => 'upload',
     'choose_file' => 'choose file',
     'items' => 'items',
-    'quote_items' => 'quote items'
+    'quote_items' => 'quote items',
 ];

@@ -7,6 +7,15 @@
             <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.upload')) }}</button>
         </div>
     </form>
+    @push('livewire-js')
+        <script>
+            $(document).ready(function () {
+                window.addEventListener('fileUploaded', event => {
+                    bsCustomFileInput.init()
+                });
+            });
+        </script>
+    @endpush
     <hr/>
     <ul class="list-unstyled">
         @foreach($files as $file)

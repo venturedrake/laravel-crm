@@ -48,6 +48,8 @@ class LiveFiles extends Component
             'File uploaded',
         );
 
+        $this->dispatchBrowserEvent('fileUploaded');
+
         $this->resetFields();
     }
     
