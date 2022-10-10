@@ -94,7 +94,7 @@
             </div>
         </footer>
     </div>
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=45634556345654"></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=67856784784"></script>
     <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
     @livewireScripts
     @livewire('notify-toast')
