@@ -9,7 +9,7 @@
             @can('view crm deals')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deals') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deals.index')) }}">{{ ucfirst(__('laravel-crm::lang.deals')) }}</a></li>
             @endcan
-            @can('view crm quotes')
+            {{--@can('view crm quotes')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.quotes') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.quotes.index')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a></li>
             @endcan
             @canany(['view crm orders', 'view crm projects'])
@@ -17,7 +17,7 @@
             @endcan
             @can('view crm orders')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.orders') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.orders.index')) }}">{{ ucfirst(__('laravel-crm::lang.orders')) }}</a></li>
-            @endcan
+            @endcan--}}
             @can('view crm projects')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.projects') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.projects.index')) }}">{{ ucfirst(__('laravel-crm::lang.projects')) }}</a></li>
             @endcan
