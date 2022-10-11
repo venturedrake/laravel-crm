@@ -130,6 +130,18 @@ dt {
   display: none;
 }
 
+#quoteProducts .row:not(:first-child) label{
+  display: none;
+}
+
+#quoteProductsTotals label{
+  display: none;
+}
+
+#quoteProductsTotals .input-group-text{
+  min-width: 100px;
+}
+
 .bootstrap-duallistbox-container .btn-outline-secondary,
 .bootstrap-duallistbox-container select{
   color: #495057 !important;

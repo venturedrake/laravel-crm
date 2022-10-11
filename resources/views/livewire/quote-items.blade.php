@@ -1,22 +1,90 @@
 <div>
-    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.quote_items')) }} <span class="float-right"><a href="{{ (isset($quote)) ? url(route('laravel-crm.quote-products.create', $quote)) : url(route('laravel-crm.quote-products.create-product')) }}" class="btn btn-outline-secondary btn-sm btn-action-add-quote-product"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
+    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.quote_items')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
     <hr />
     <script type="text/javascript">
         let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
     </script>
     <span id="quoteProducts">
-        @if(isset($quote) && method_exists($quote,'quoteProducts'))
-            @foreach($quote->quoteProducts as $quoteProduct)
-                @include('laravel-crm::quote-products.partials.fields',[
-                    'index' => $loop->index
-                ])
-            @endforeach
-        @endif    
+        @foreach($inputs as $key => $value)
+            @include('laravel-crm::quote-products.partials.fields')
+        @endforeach
     </span>
     <hr />
-    Sub total<br />
-    Discount<br />
-    Tax<br />
-    Adjustment<br />
-    Total
+    <span id="quoteProductsTotals">
+        <div class="row">
+            <div class="col offset-8 text-right">
+                @include('laravel-crm::partials.form.text',[
+                  'name' => 'sub_total',
+                   'label' => ucfirst(__('laravel-crm::lang.sub_total')),
+                   'type' => 'number',
+                   'prepend' => ucfirst(__('laravel-crm::lang.sub_total')),
+                   'attributes' => [
+                       'wire:model' => 'sub_total',
+                       'step' => .01,
+                       'readonly' => 'readonly'
+                   ]
+                ])
+            </div>
+        </div>
+        <div class="row">
+            <div class="col offset-8 text-right">
+                @include('laravel-crm::partials.form.text',[
+                  'name' => 'discount',
+                  'label' => ucfirst(__('laravel-crm::lang.discount')),
+                   'type' => 'number',
+                   'prepend' => ucfirst(__('laravel-crm::lang.discount')),
+                   'attributes' => [
+                       'wire:model' => 'discount',
+                       'step' => .01,
+                       'readonly' => 'readonly'
+                   ]
+                ])
+            </div>
+        </div>
+        <div class="row">
+            <div class="col offset-8 text-right">
+                @include('laravel-crm::partials.form.text',[
+                  'name' => 'tax',
+                  'label' => ucfirst(__('laravel-crm::lang.tax')),
+                   'type' => 'number',
+                   'prepend' => ucfirst(__('laravel-crm::lang.tax')),
+                   'attributes' => [
+                       'wire:model' => 'tax',
+                       'step' => .01,
+                       'readonly' => 'readonly'
+                   ]
+                ])
+            </div>
+        </div>
+        <div class="row">
+            <div class="col offset-8 text-right">
+                @include('laravel-crm::partials.form.text',[
+                  'name' => 'adjustment',
+                  'label' => ucfirst(__('laravel-crm::lang.adjustment')),
+                   'type' => 'number',
+                   'prepend' => ucfirst(__('laravel-crm::lang.adjustment')),
+                   'attributes' => [
+                       'wire:model' => 'adjustment',
+                       'step' => .01,
+                       'readonly' => 'readonly'
+                   ]
+                ])
+            </div>
+        </div>
+        <div class="row">
+            <div class="col offset-8 text-right">
+                @include('laravel-crm::partials.form.text',[
+                  'name' => 'total',
+                  'label' => ucfirst(__('laravel-crm::lang.total')),
+                   'type' => 'number',
+                   'prepend' => ucfirst(__('laravel-crm::lang.total')),
+                   'attributes' => [
+                       'wire:model' => 'total',
+                       'step' => .01,
+                       'readonly' => 'readonly'
+                   ]
+                ])
+            </div>
+        </div>
+    </span>
 </div>

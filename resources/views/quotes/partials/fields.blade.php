@@ -106,7 +106,9 @@
     </div>
     <div class="col-sm-6">
         @livewire('quote-items',[
-            'quote' => $quote ?? null
+            'quote' => $quote ?? null,
+            'products' => $quote->quoteProducts ?? null,
+            'old' => old('revenues')
         ])
     </div>
 </div>
