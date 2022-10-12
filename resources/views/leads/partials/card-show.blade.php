@@ -10,7 +10,7 @@
             <span class="float-right">
                 <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.leads.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}</a> | 
                 @can('edit crm leads')
-                <a href="{{ route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.convert')) }}</a>
+                <a href="{{ route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.convert')) }}</a> |
                 @endcan
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm leads')
