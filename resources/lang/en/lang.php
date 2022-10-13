@@ -265,4 +265,11 @@ return [
     'choose_file' => 'choose file',
     'items' => 'items',
     'quote_items' => 'quote items',
+    'add_task' => 'add task',
+    'schedule_call' => 'schedule call',
+    'send_email' => 'send email',
+    'schedule_meeting' => 'schedule meeting',
+    'set_deadline' => 'set deadline',
+    'schedule_lunch' => 'schedule lunch',
+    'add_file' => 'add file',
 ];

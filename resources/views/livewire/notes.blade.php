@@ -1,14 +1,16 @@
 <div class="notes">
     {{--<h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.notes')) }}</h6>
     <hr />--}}
-    @if(! $pinned)
-    <form wire:submit.prevent="create" id="inputCreateForm">
-        @include('laravel-crm::livewire.components.partials.note.form-fields')
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
-        </div>
-    </form>
-    <hr/>
+    @if($showForm)
+        @if(! $pinned)
+        <form wire:submit.prevent="create" id="inputCreateForm">
+            @include('laravel-crm::livewire.components.partials.note.form-fields')
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
+            </div>
+        </form>
+        <hr/>
+        @endif
     @endif
     <ul class="list-unstyled">
         @foreach($notes as $note)

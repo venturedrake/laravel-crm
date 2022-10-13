@@ -18,8 +18,10 @@ class LiveNotes extends Component
     public $pinned;
     public $content;
     public $noted_at;
+    public $showForm = false;
 
     protected $listeners = [
+        'addNoteActivity' => 'addNoteToggle',
         'noteDeleted' => 'getNotes',
         'notePinned' => 'getNotes',
         'noteUnpinned' => 'getNotes',
@@ -84,6 +86,11 @@ class LiveNotes extends Component
         } else {
             $this->notes = $this->model->notes()->latest()->get();
         }
+    }
+    
+    public function addNoteToggle()
+    {
+        $this->showForm = ! $this->showForm;
     }
 
     private function resetFields()

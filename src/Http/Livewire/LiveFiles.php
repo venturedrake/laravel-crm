@@ -16,8 +16,10 @@ class LiveFiles extends Component
     public $files;
     public $file;
     public $random;
+    public $showForm = false;
 
     protected $listeners = [
+        'addFileActivity' => 'addFileToggle',
         'fileDeleted' => 'getFiles',
     ];
 
@@ -60,6 +62,12 @@ class LiveFiles extends Component
     public function getFiles()
     {
         $this->files = $this->model->files()->latest()->get();
+    }
+
+    public function addFileToggle()
+    {
+        $this->showForm = ! $this->showForm;
+        $this->dispatchBrowserEvent('addFileToggled');
     }
 
     private function resetFields()

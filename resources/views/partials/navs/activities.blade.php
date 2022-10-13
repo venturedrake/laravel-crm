@@ -1,8 +1,1 @@
-| <a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.add_note')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-sticky-note-o" aria-hidden="true"></span></a>
-<a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.add_task')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-tasks" aria-hidden="true"></span></a>
-<a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.schedule_call')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-phone" aria-hidden="true"></span></a>
-<a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.send_email')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-envelope-o" aria-hidden="true"></span></a>
-<a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.schedule_meeting')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-users" aria-hidden="true"></span></a>
-<a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.set_deadline')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-flag" aria-hidden="true"></span></a>
-<a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.schedule_lunch')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-cutlery" aria-hidden="true"></span></a>
-<a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ ucfirst(__('laravel-crm::lang.add_file')) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-paperclip" aria-hidden="true"></span></a>
+@livewire('activity-menu')

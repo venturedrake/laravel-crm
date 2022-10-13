@@ -2,15 +2,15 @@
 'model' => $model,
 'pinned' => true
  ])
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs nav-activities">
     <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="#tabs-notes">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a>
+        <a class="nav-link active" data-toggle="tab" id="tab-notes" href="#tabs-notes">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#tabs-activities">{{ ucfirst(__('laravel-crm::lang.activity')) }}</a>
+        <a class="nav-link" data-toggle="tab" id="tab-activities" href="#tabs-activities">{{ ucfirst(__('laravel-crm::lang.activity')) }}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
+        <a class="nav-link" data-toggle="tab" id="tab-files" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
     </li>
 </ul>
 <div class="tab-content">
