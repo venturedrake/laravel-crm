@@ -91,6 +91,8 @@ class LiveNotes extends Component
     public function addNoteToggle()
     {
         $this->showForm = ! $this->showForm;
+
+        $this->dispatchBrowserEvent('noteEditModeToggled');
     }
 
     private function resetFields()
