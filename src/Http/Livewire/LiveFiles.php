@@ -28,6 +28,10 @@ class LiveFiles extends Component
         $this->model = $model;
         $this->random = rand();
         $this->getFiles();
+
+        if($this->files->count() < 1){
+            $this->showForm = true;
+        }
     }
 
     public function upload()
@@ -53,10 +57,6 @@ class LiveFiles extends Component
         $this->dispatchBrowserEvent('fileUploaded');
 
         $this->resetFields();
-    }
-    
-    public function fileSelected()
-    {
     }
     
     public function getFiles()

@@ -32,6 +32,10 @@ class LiveNotes extends Component
         $this->model = $model;
         $this->pinned = $pinned;
         $this->getNotes();
+        
+        if($this->notes->count() < 1){
+            $this->showForm = true;
+        }
     }
 
     public function create()
