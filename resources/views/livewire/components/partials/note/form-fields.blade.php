@@ -19,7 +19,8 @@
       'name' => 'noted_at',
       'label' => ucfirst(__('laravel-crm::lang.noted_at')),
       'attributes' => [
-          'wire:model.debounce.10000ms' => 'noted_at'  
+          'wire:model.debounce.10000ms' => 'noted_at',
+          'autocomplete' => \Illuminate\Support\Str::random(),
       ]
     ])
 @else
@@ -44,7 +45,8 @@
       'name' => 'noted_at',
       'label' => ucfirst(__('laravel-crm::lang.noted_at')),
       'attributes' => [
-          'wire:model.debounce.10000ms' => 'noted_at'  
+          'wire:model.debounce.10000ms' => 'noted_at',
+          'autocomplete' => \Illuminate\Support\Str::random(),
       ]
     ])
 @endif    
