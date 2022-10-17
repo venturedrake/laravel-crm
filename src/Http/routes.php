@@ -773,12 +773,8 @@ Route::group(['prefix' => 'fields', 'middleware' => 'auth.laravel-crm'], functio
 });
 
 Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], function () {
-    /*Route::group(['prefix' => ''], function () {
-        return redirect(route('laravel-crm.integrations.xero'));
-    });*/
-    
     Route::group(['prefix' => 'xero'], function () {
-        Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\Integrations\XeroController@index')->name('laravel-crm.integrations.xero');
+        Route::get('', \VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect::class)->name('laravel-crm.integrations.xero');
 
         Route::get('connect', function () {
             return \Dcblogdev\Xero\Facades\Xero::connect();
@@ -793,6 +789,10 @@ Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], f
         })->name('laravel-crm.integrations.xero.disconnect');
     });
 });
+
+Route::get('integrations', function () {
+    return redirect(route('laravel-crm.integrations.xero'));
+})->name('laravel-crm.integrations');
 
 /* CRM (AJAX) */
 Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function () {
