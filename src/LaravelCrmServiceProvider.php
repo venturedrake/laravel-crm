@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -290,6 +291,13 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('notify-toast', NotifyToast::class);
         Livewire::component('quote-items', LiveQuoteItems::class);
         Livewire::component('activity-menu', LiveActivityMenu::class);
+
+        if ($this->app->runningInConsole()) {
+            $this->app->booted(function () {
+                $schedule = $this->app->make(Schedule::class);
+                $schedule->command('xero:keep-alive')->everyFiveMinutes();
+            });
+        }
     }
 
     /**
