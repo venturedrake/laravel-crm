@@ -31,7 +31,7 @@
     @endcan
     @can('view crm integrations')
     <li class="nav-item">
-        <a class="nav-link" href="#integrations" role="tab" aria-controls="integrations" aria-selected="false">{{ ucwords(__('laravel-crm::lang.integrations')) }}</a>
+        <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.integrations.xero') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.integrations.xero')) }}" role="tab" aria-controls="integrations" aria-selected="false">{{ ucwords(__('laravel-crm::lang.integrations')) }}</a>
     </li>
     @endcan
 </ul>

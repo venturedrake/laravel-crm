@@ -33,7 +33,7 @@ class LiveNotes extends Component
         $this->pinned = $pinned;
         $this->getNotes();
         
-        if($this->notes->count() < 1){
+        if ($this->notes->count() < 1) {
             $this->showForm = true;
         }
     }

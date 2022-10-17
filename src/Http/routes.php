@@ -772,6 +772,28 @@ Route::group(['prefix' => 'fields', 'middleware' => 'auth.laravel-crm'], functio
         ->middleware(['can:delete,field']);
 });
 
+Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], function () {
+    /*Route::group(['prefix' => ''], function () {
+        return redirect(route('laravel-crm.integrations.xero'));
+    });*/
+    
+    Route::group(['prefix' => 'xero'], function () {
+        Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\Integrations\XeroController@index')->name('laravel-crm.integrations.xero');
+
+        Route::get('connect', function () {
+            return \Dcblogdev\Xero\Facades\Xero::connect();
+        })->name('laravel-crm.integrations.xero.connect');
+
+        Route::get('disconnect', function () {
+            if (\Dcblogdev\Xero\Facades\Xero::isConnected()) {
+                \Dcblogdev\Xero\Facades\Xero::disconnect();
+            }
+
+            return redirect(route('laravel-crm.integrations.xero'));
+        })->name('laravel-crm.integrations.xero.disconnect');
+    });
+});
+
 /* CRM (AJAX) */
 Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function () {
     Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {

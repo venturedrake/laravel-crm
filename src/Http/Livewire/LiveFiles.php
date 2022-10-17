@@ -29,7 +29,7 @@ class LiveFiles extends Component
         $this->random = rand();
         $this->getFiles();
 
-        if($this->files->count() < 1){
+        if ($this->files->count() < 1) {
             $this->showForm = true;
         }
     }
