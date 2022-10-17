@@ -61,6 +61,7 @@
                 'laravel-crm.product-categories',
                 'laravel-crm.labels',
                 'laravel-crm.fields',
+                'laravel-crm.integrations',
             ]) ? 'active' : '' }}" href="{{ url(route('laravel-crm.settings.edit')) }}">{{ ucfirst(__('laravel-crm::lang.settings')) }}</a></li>
             @endcan
             @can('view crm updates')
