@@ -19,7 +19,7 @@ class XeroConnect extends Component
     
     public $setting_contacts = false;
 
-    public $setting_products = true;
+    public $setting_products = false;
 
     public $setting_quotes = false;
 
