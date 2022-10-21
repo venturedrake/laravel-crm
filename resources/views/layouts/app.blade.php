@@ -84,7 +84,7 @@
                     @endauth
                     <div class="col">
                         @include('flash::message')
-                        @yield('content')
+                        @yield('content', $slot ?? null)
                     </div>
                 </div>
             </div>

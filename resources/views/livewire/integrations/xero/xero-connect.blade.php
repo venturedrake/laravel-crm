@@ -1,5 +1,4 @@
 <div>
-    @section('content')
     <div class="card">
         <div class="card-header">
             @include('laravel-crm::layouts.partials.nav-settings')
@@ -19,34 +18,40 @@
                         </a>
                         <hr />
                         <h4 class="mb-3">Settings</h4>
-                        <table class="table mb-0 card-table table-hover">
-                            <tbody>
-                                <tr>
-                                    <td>Sync Contacts</td>
-                                    <td class="disable-link text-right">
-                                        <input id="sync_contacts" type="checkbox" name="sync_contacts" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Sync Products</td>
-                                    <td class="disable-link text-right">
-                                        <input id="sync_products" type="checkbox" name="sync_products" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Create & Update Quotes</td>
-                                    <td class="disable-link text-right">
-                                        <input id="create_quotes" type="checkbox" name="create_quotes" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Create & Update Invoices</td>
-                                    <td class="disable-link text-right">
-                                        <input id="create_invoices" type="checkbox" name="create_invoices" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <form wire:submit.prevent="updateSettings">
+                            <table class="table mb-0 card-table table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td>Sync Contacts</td>
+                                        <td wire:ignore class="disable-link text-right">
+                                            <input wire:model="setting_contacts" id="setting_contacts" type="checkbox" name="setting_contacts" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger" {{ ($setting_contacts == 1) ? 'checked' : null }}>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sync Products</td>
+                                        <td wire:ignore class="disable-link text-right">
+                                            <input wire:model="setting_products" id="setting_products" type="checkbox" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger" {{ ($setting_products == 1) ? 'checked' : null }}>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Create & Update Quotes</td>
+                                        <td wire:ignore class="disable-link text-right">
+                                            <input wire:model="setting_quotes" id="setting_quotes" type="checkbox" name="setting_quotes" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger" {{ ($setting_quotes == 1) ? 'checked' : null }}>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Create & Update Invoices</td>
+                                        <td wire:ignore class="disable-link text-right">
+                                            <input wire:model="setting_invoices" id="setting_invoices" type="checkbox" name="setting_invoices" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger" {{ ($setting_invoices == 1) ? 'checked' : null }}>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr />
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
+                            </div>
+                        </form>
                     @else
                         <a type="button" class="btn btn-outline-secondary" href="{{ route('laravel-crm.integrations.xero.connect') }}">
                             Connect to xero
@@ -56,5 +61,25 @@
             </div>
         </div>
     </div>
-    @endsection
+    @push('livewire-js')
+        <script>
+            $(document).ready(function () {
+                $('#setting_contacts').change(function() {
+                    @this.set('setting_contacts', $(this).prop('checked'));
+                })
+
+                $('#setting_products').change(function() {
+                    @this.set('setting_products', $(this).prop('checked'));
+                })
+
+                $('#setting_quotes').change(function() {
+                    @this.set('setting_quotes', $(this).prop('checked'));
+                })
+
+                $('#setting_invoices').change(function() {
+                    @this.set('setting_invoices', $(this).prop('checked'));
+                })
+            });
+        </script>
+    @endpush
 </div>

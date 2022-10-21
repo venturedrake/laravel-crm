@@ -19,6 +19,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
+use VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
@@ -291,6 +292,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('notify-toast', NotifyToast::class);
         Livewire::component('quote-items', LiveQuoteItems::class);
         Livewire::component('activity-menu', LiveActivityMenu::class);
+        Livewire::component('xero-connect', XeroConnect::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
