@@ -34,8 +34,8 @@ class XeroConnect extends Component
     {
         if (Xero::isConnected()) {
             $this->tenantName = Xero::getTenantName();
-            $this->invoices = Xero::invoices()->get();
-            $this->contacts = Xero::contacts()->get();
+            /*$this->invoices = Xero::invoices()->get();
+            $this->contacts = Xero::contacts()->get();*/
         }
         
         $this->updateSettings();
