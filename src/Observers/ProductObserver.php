@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Product;
 
 class ProductObserver
@@ -14,6 +15,8 @@ class ProductObserver
      */
     public function creating(Product $product)
     {
+        $product->external_id = Uuid::uuid4()->toString();
+        
         if (! app()->runningInConsole()) {
             $product->user_created_id = auth()->user()->id ?? null;
         }

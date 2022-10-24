@@ -52,6 +52,7 @@ use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
@@ -67,6 +68,7 @@ use VentureDrake\LaravelCrm\Observers\QuoteObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Observers\UserObserver;
+use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -146,6 +148,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Note::observe(NoteObserver::class);
         File::observe(FileObserver::class);
         Contact::observe(ContactObserver::class);
+        XeroItem::observe(XeroItemObserver::class);
         
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);

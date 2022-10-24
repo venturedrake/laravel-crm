@@ -15,6 +15,8 @@ class CreateLaravelCrmXeroItemsTable extends Migration
     {
         Schema::create(config('laravel-crm.db_table_prefix').'xero_items', function (Blueprint $table) {
             $table->id();
+            $table->string('external_id');
+            $table->unsignedBigInteger('team_id')->index()->nullable();
             $table->foreignIdFor(\VentureDrake\LaravelCrm\Models\Product::class);
             $table->string('item_id')->nullable();
             $table->string('code')->nullable();

@@ -84,4 +84,12 @@ class Product extends Model
     {
         return $query->where('active', 1);
     }
+
+    /**
+     * Get the xero item associated with the product.
+     */
+    public function xeroItem()
+    {
+        return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroItem::class);
+    }
 }

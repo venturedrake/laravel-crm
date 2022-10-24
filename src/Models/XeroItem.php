@@ -16,4 +16,12 @@ class XeroItem extends Model
     {
         return config('laravel-crm.db_table_prefix').'xero_items';
     }
+
+    /**
+     * Get the product that owns the xero item.
+     */
+    public function product()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Product::class);
+    }
 }

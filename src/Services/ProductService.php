@@ -25,7 +25,6 @@ class ProductService
     public function create($request)
     {
         $product = Product::create([
-            'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
             'code' => $request->code ?? null,
             'product_category_id' => $request->product_category,
