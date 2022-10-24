@@ -17,13 +17,13 @@ class XeroConnect extends Component
 
     public $contacts;
     
-    public $setting_contacts = false;
+    public $setting_contacts;
 
-    public $setting_products = false;
+    public $setting_products;
 
-    public $setting_quotes = false;
+    public $setting_quotes;
 
-    public $setting_invoices = false;
+    public $setting_invoices;
 
     /**
      * @inheritDoc
@@ -36,9 +36,12 @@ class XeroConnect extends Component
             $this->tenantName = Xero::getTenantName();
             /*$this->invoices = Xero::invoices()->get();
             $this->contacts = Xero::contacts()->get();*/
+            
+            $this->setting_contacts = $this->trueFalse(Setting::where('name', 'xero_contacts')->first()->value ?? 0);
+            $this->setting_products = $this->trueFalse(Setting::where('name', 'xero_products')->first()->value ?? 0);
+            $this->setting_quotes = $this->trueFalse(Setting::where('name', 'xero_quotes')->first()->value ?? 0);
+            $this->setting_invoices = $this->trueFalse(Setting::where('name', 'xero_invoices')->first()->value ?? 0);
         }
-        
-        $this->updateSettings();
     }
 
     public function updateSettings()
@@ -71,6 +74,15 @@ class XeroConnect extends Component
         $this->notify(
             'Updated settings',
         );
+    }
+    
+    protected function trueFalse($value)
+    {
+        if ($value == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function render()

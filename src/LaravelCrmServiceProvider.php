@@ -17,6 +17,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
+use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect;
@@ -269,6 +270,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmLabels::class,
                 LaravelCrmAddressTypes::class,
                 LaravelCrmOrganisationTypes::class,
+                LaravelCrmXero::class,
             ]);
 
             // Register the model factories
