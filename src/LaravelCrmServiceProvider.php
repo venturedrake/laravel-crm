@@ -101,6 +101,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
      */
     public function boot(Router $router, Filesystem $filesystem)
     {
+        Paginator::useBootstrap();
+        
         if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
             class_alias(config("auth.providers.users.model"), 'App\User');
             if (class_exists('App\Models\Team')) {
