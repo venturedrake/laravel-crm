@@ -71,32 +71,34 @@ class LaravelCrmXero extends Command
 
                             if (! $person) {
                                 $person = Person::create([
-                                    'first_name' => $contact['FirstName'],
-                                    'last_name' => $contact['LastName'],
+                                    'first_name' => $contact['FirstName'] ?? null,
+                                    'last_name' => $contact['LastName'] ?? null,
                                     'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
                                     'organisation_id' => $organisation->id,
                                 ]);
                             } else {
                                 $person->update([
-                                    'first_name' => $contact['FirstName'],
-                                    'last_name' => $contact['LastName'],
+                                    'first_name' => $contact['FirstName'] ?? null,
+                                    'last_name' => $contact['LastName'] ?? null,
                                     'organisation_id' => $organisation->id,
                                 ]);
                             }
 
-                            $person->emails()->updateOrCreate([
-                                'primary' => 1,
-                            ], [
-                                'address' => $contact['EmailAddress'],
-                                'type' => 'work',
-                            ]);
+                            if(isset($contact['EmailAddress'])){
+                                $person->emails()->updateOrCreate([
+                                    'primary' => 1,
+                                ], [
+                                    'address' => $contact['EmailAddress'],
+                                    'type' => 'work',
+                                ]);
+                            }
 
                             $person->xeroPerson()->updateOrCreate([
                                 'contact_id' => $contact['ContactID'],
                             ], [
-                                'first_name' => $contact['FirstName'],
-                                'last_name' => $contact['LastName'],
-                                'email' => $contact['EmailAddress'],
+                                'first_name' => $contact['FirstName'] ?? null,
+                                'last_name' => $contact['LastName'] ?? null,
+                                'email' => $contact['EmailAddress'] ?? null,
                                 'is_primary' => 1,
                             ]);
                         }
