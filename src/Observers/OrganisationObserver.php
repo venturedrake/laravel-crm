@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Organisation;
 
 class OrganisationObserver
@@ -14,6 +15,8 @@ class OrganisationObserver
      */
     public function creating(Organisation $organisation)
     {
+        $organisation->external_id = Uuid::uuid4()->toString();
+        
         if (! app()->runningInConsole()) {
             $organisation->user_created_id = auth()->user()->id ?? null;
         }

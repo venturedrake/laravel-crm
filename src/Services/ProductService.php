@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Repositories\ProductRepository;
 
@@ -35,7 +34,6 @@ class ProductService
         ]);
 
         $product->productPrices()->create([
-            'external_id' => Uuid::uuid4()->toString(),
             'unit_price' => $request->unit_price,
             'currency' => $request->currency,
         ]);
@@ -63,7 +61,6 @@ class ProductService
             ]);
         } else {
             $product->productPrices()->create([
-                'external_id' => Uuid::uuid4()->toString(),
                 'unit_price' => $request->unit_price,
                 'currency' => $request->currency,
             ]);

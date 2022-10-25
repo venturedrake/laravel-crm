@@ -148,4 +148,12 @@ class Organisation extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Contact::class, 'contactable');
     }
+
+    /**
+     * Get the xero item associated with the product.
+     */
+    public function xeroContact()
+    {
+        return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroContact::class);
+    }
 }

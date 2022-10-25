@@ -50,8 +50,10 @@ use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\ProductPrice;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\XeroContact;
 use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
@@ -64,10 +66,12 @@ use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 use VentureDrake\LaravelCrm\Observers\ProductObserver;
+use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Observers\UserObserver;
+use VentureDrake\LaravelCrm\Observers\XeroContactObserver;
 use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
@@ -146,11 +150,13 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
         Product::observe(ProductObserver::class);
+        ProductPrice::observe(ProductPriceObserver::class);
         Setting::observe(SettingObserver::class);
         Note::observe(NoteObserver::class);
         File::observe(FileObserver::class);
         Contact::observe(ContactObserver::class);
         XeroItem::observe(XeroItemObserver::class);
+        XeroContact::observe(XeroContactObserver::class);
         
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -249,6 +255,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_mime_to_laravel_crm_files_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_mime_to_laravel_crm_files_table.php', 33),
                 __DIR__ . '/../database/migrations/create_xero_tokens_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_xero_tokens_table.php', 34),
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_items_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_items_table.php', 35),
+                __DIR__ . '/../database/migrations/create_laravel_crm_xero_contacts_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_contacts_table.php', 36),
             ], 'migrations');
 
             // Publishing the seeders
