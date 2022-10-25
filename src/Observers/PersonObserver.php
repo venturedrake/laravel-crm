@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class PersonObserver
@@ -14,6 +15,8 @@ class PersonObserver
      */
     public function creating(Person $person)
     {
+        $person->external_id = Uuid::uuid4()->toString();
+        
         if (! app()->runningInConsole()) {
             $person->user_created_id = auth()->user()->id ?? null;
         }

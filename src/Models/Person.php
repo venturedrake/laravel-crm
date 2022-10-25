@@ -174,4 +174,12 @@ class Person extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Contact::class, 'contactable');
     }
+
+    /**
+     * Get the xero person associated with the person.
+     */
+    public function xeroPerson()
+    {
+        return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroPerson::class);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Contact;
 
 class ContactObserver
@@ -14,6 +15,8 @@ class ContactObserver
      */
     public function creating(Contact $contact)
     {
+        $contact->external_id = Uuid::uuid4()->toString();
+        
         if (! app()->runningInConsole()) {
             $contact->user_created_id = auth()->user()->id ?? null;
         }

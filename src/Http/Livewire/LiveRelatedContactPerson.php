@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class LiveRelatedContactPerson extends Component
@@ -31,7 +30,6 @@ class LiveRelatedContactPerson extends Component
             $name = \VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstLastFromName($data['person_name']);
 
             $person = Person::create([
-                'external_id' => Uuid::uuid4()->toString(),
                 'first_name' => $name['first_name'],
                 'last_name' => $name['last_name'] ?? null,
                 'user_owner_id' => auth()->user()->id,
@@ -39,7 +37,6 @@ class LiveRelatedContactPerson extends Component
         }
         
         $this->model->contacts()->create([
-            'external_id' => Uuid::uuid4()->toString(),
             'entityable_type' => $person->getMorphClass(),
             'entityable_id' => $person->id,
         ]);

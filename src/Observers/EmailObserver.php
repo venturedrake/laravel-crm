@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Email;
 
 class EmailObserver
@@ -14,6 +15,8 @@ class EmailObserver
      */
     public function creating(Email $email)
     {
+        $email->external_id = Uuid::uuid4()->toString();
+        
         if (! app()->runningInConsole()) {
             $email->user_created_id = auth()->user()->id ?? null;
         }

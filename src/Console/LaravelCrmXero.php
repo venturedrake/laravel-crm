@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Console;
 use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Console\Command;
 use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Product;
 
 class LaravelCrmXero extends Command
@@ -61,6 +62,44 @@ class LaravelCrmXero extends Command
                         ], [
                             'name' => $contact['Name'],
                         ]);
+
+                        if (isset($contact['FirstName']) || isset($contact['LastName'])) {
+                            $person = Person::select(config('laravel-crm.db_table_prefix').'people.*')
+                                ->leftJoin(config('laravel-crm.db_table_prefix').'xero_people', config('laravel-crm.db_table_prefix').'people.id', '=', config('laravel-crm.db_table_prefix').'xero_people.person_id')
+                                ->where(config('laravel-crm.db_table_prefix').'xero_people.contact_id', $contact['ContactID'])
+                                ->first();
+
+                            if (! $person) {
+                                $person = Person::create([
+                                    'first_name' => $contact['FirstName'],
+                                    'last_name' => $contact['LastName'],
+                                    'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
+                                    'organisation_id' => $organisation->id,
+                                ]);
+                            } else {
+                                $person->update([
+                                    'first_name' => $contact['FirstName'],
+                                    'last_name' => $contact['LastName'],
+                                    'organisation_id' => $organisation->id,
+                                ]);
+                            }
+
+                            $person->emails()->updateOrCreate([
+                                'primary' => 1,
+                            ], [
+                                'address' => $contact['EmailAddress'],
+                                'type' => 'work',
+                            ]);
+
+                            $person->xeroPerson()->updateOrCreate([
+                                'contact_id' => $contact['ContactID'],
+                            ], [
+                                'first_name' => $contact['FirstName'],
+                                'last_name' => $contact['LastName'],
+                                'email' => $contact['EmailAddress'],
+                                'is_primary' => 1,
+                            ]);
+                        }
                     }
 
                     break;

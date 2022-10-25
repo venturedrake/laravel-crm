@@ -150,7 +150,7 @@ class Organisation extends Model
     }
 
     /**
-     * Get the xero item associated with the product.
+     * Get the xero contact associated with the organisation.
      */
     public function xeroContact()
     {
