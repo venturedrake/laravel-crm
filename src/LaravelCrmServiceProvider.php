@@ -317,6 +317,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
                 $schedule->command('xero:keep-alive')->everyFiveMinutes();
+                $schedule->command('laravelcrm:xero contacts')->daily();
+                $schedule->command('laravelcrm:xero products')->daily();
             });
         }
     }
