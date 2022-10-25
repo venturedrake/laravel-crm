@@ -84,7 +84,7 @@ class LaravelCrmXero extends Command
                                 ]);
                             }
 
-                            if(isset($contact['EmailAddress'])){
+                            if (isset($contact['EmailAddress'])) {
                                 $person->emails()->updateOrCreate([
                                     'primary' => 1,
                                 ], [
