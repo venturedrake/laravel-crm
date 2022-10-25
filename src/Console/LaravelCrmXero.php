@@ -79,14 +79,14 @@ class LaravelCrmXero extends Command
                                 $product = Product::create([
                                     'code' => $item['Code'],
                                     'name' => $item['Name'],
-                                    'description' => $item['Description'],
+                                    'description' => $item['Description'] ?? null,
                                     'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
                                 ]);
                             } else {
                                 $product->update([
                                     'code' => $item['Code'],
                                     'name' => $item['Name'],
-                                    'description' => $item['Description'],
+                                    'description' => $item['Description'] ?? null,
                                 ]);
                             }
 
