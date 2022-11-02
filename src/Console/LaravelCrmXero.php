@@ -119,6 +119,7 @@ class LaravelCrmXero extends Command
                             if (! $product) {
                                 $product = Product::create([
                                     'code' => $item['Code'],
+                                    'tax_rate' => $this->taxTypePercentage($item),
                                     'name' => $item['Name'],
                                     'description' => $item['Description'] ?? null,
                                     'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
@@ -126,6 +127,7 @@ class LaravelCrmXero extends Command
                             } else {
                                 $product->update([
                                     'code' => $item['Code'],
+                                    'tax_rate' => $this->taxTypePercentage($item),
                                     'name' => $item['Name'],
                                     'description' => $item['Description'] ?? null,
                                 ]);
@@ -169,5 +171,30 @@ class LaravelCrmXero extends Command
         }
         
         $this->info('Updating LaravelCRM Xero Integration Complete.');
+    }
+    
+    protected function taxTypePercentage($item)
+    {
+        switch ($item['SalesDetails']['TaxType']) {
+            case "OUTPUT":
+                return 10;
+
+                break;
+
+            case "INPUT":
+                return 0;
+
+                break;
+
+            case "INPUT2":
+                return 15;
+
+                break;
+
+            case "CAPEXOUTPUT":
+                return 17.5;
+
+                break;
+        }
     }
 }

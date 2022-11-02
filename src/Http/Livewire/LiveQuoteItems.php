@@ -76,13 +76,19 @@ class LiveQuoteItems extends Component
     public function calculateAmounts()
     {
         $this->sub_total = 0;
+        $this->tax = 0;
         $this->total = 0;
         
         for ($i = 1; $i <= $this->i; $i++) {
             $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
             $this->sub_total += $this->amount[$i];
-            $this->total += $this->sub_total;
+           
+            if (isset($this->product_id[$i]) && $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+                $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
+            }
         }
+
+        $this->total = $this->sub_total + $this->tax;
     }
         
     public function render()
