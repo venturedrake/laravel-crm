@@ -8,14 +8,16 @@
                     'wire:model' => 'product_id.'.$value,
                 ]
             ])
-            @include('laravel-crm::partials.form.text',[
-                'name' => '[products]['.$value.'][name]',
-                'label' => ucfirst(__('laravel-crm::lang.name')),
-                'attributes' => [
-                    'wire:model' => 'name.'.$value,
-                    'autocomplete' => \Illuminate\Support\Str::random(),
-                ]
-            ])
+            <span wire:ignore>
+                @include('laravel-crm::partials.form.text',[
+                    'name' => '[products]['.$value.'][name]',
+                    'label' => ucfirst(__('laravel-crm::lang.name')),
+                    'attributes' => [
+                        'wire:model' => 'name.'.$value,
+                        'autocomplete' => \Illuminate\Support\Str::random(),
+                    ]
+                ])
+            </span>
         </span>
     </div>
     <div class="col">
@@ -26,7 +28,7 @@
             'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
             'attributes' => [
                 'wire:model' => 'unit_price.'.$value,
-                'wire:change' => 'calculateAmount('.$value.')',
+                'wire:change' => 'calculateAmounts',
                 'step' => .01
             ]
         ])
@@ -38,7 +40,7 @@
             'type' => 'number',
             'attributes' => [
                 'wire:model' => 'quantity.'.$value,
-                'wire:change' => 'calculateAmount('.$value.')'
+                'wire:change' => 'calculateAmounts'
             ]
         ])
     </div>

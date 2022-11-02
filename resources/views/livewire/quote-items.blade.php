@@ -87,4 +87,24 @@
             </div>
         </div>
     </span>
+
+    @push('livewire-js')
+        <script>
+            $(document).ready(function () {
+                $(document).delegate("input[name^='[products]']", "focus", function() {
+                    var number = $(this).attr('value')
+                    $(this).autocomplete({
+                        source: products,
+                        onSelectItem: function(item, element){
+                            @this.set('product_id.' + number,item.value);
+                            @this.set('name.' + number,item.label);
+                            Livewire.emit('loadItemDefault', number)
+                        },
+                        highlightClass: 'text-danger',
+                        treshold: 2,
+                    });
+                })
+            });
+        </script>
+    @endpush
 </div>

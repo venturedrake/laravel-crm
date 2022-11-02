@@ -36,6 +36,8 @@ class LiveQuoteItems extends Component
     public $adjustment = 0;
 
     public $total = 0;
+
+    protected $listeners = ['loadItemDefault'];
     
     public function mount($quote, $products, $old = null)
     {
@@ -50,28 +52,41 @@ class LiveQuoteItems extends Component
         } else {
             $this->add($this->i);
         }
+        
+        $this->calculateAmounts();
     }
 
     public function add($i)
     {
         $i = $i + 1;
         $this->i = $i;
+        $this->unit_price[$i] = null;
+        $this->quantity[$i] = null;
         array_push($this->inputs, $i);
     }
-
-    public function calculateAmount($id)
-    {
-        // This doesn't work, using loop in render()
-    }
     
+    public function loadItemDefault($id)
+    {
+        $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id]);
+        $this->unit_price[$id] = ($product->getDefaultPrice()->unit_price / 100);
+        $this->quantity[$id] = 1;
+        $this->calculateAmounts();
+    }
+
+    public function calculateAmounts()
+    {
+        $this->sub_total = 0;
+        $this->total = 0;
+        
+        for ($i = 1; $i <= $this->i; $i++) {
+            $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
+            $this->sub_total += $this->amount[$i];
+            $this->total += $this->sub_total;
+        }
+    }
+        
     public function render()
     {
-        for ($i = 1; $i <= $this->i; $i++) {
-            if (isset($this->unit_price[$i]) && isset($this->quantity[$i])) {
-                $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
-            }
-        }
-
         return view('laravel-crm::livewire.quote-items');
     }
 }
