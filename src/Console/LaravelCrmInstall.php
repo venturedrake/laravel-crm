@@ -59,7 +59,7 @@ class LaravelCrmInstall extends Command
         $this->warn('*                                                                        *');
         $this->warn('*    The developers of this package accept no liability for compromised  *');
         $this->warn('*    data as a result of your software not following the various         *');
-        $this->warn('*    best practices.                                                     *');
+        $this->warn('*    security best practices.                                            *');
         $this->warn('*                                                                        *');
         $this->warn('*    To find out more contact me at andrew@laravelcrm.com                *');
         $this->warn('**************************************************************************');
@@ -115,7 +115,7 @@ class LaravelCrmInstall extends Command
             $this->info('Composer dump autoload');
             $this->composer->dumpAutoloads();
 
-            $this->info('Setting up datebase...');
+            $this->info('Setting up database...');
             $this->call('migrate');
             $this->callSilent('db:seed', [
                 '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
