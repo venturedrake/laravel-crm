@@ -272,4 +272,9 @@ return [
     'set_deadline' => 'set deadline',
     'schedule_lunch' => 'schedule lunch',
     'add_file' => 'add file',
+    'mark_as_accepted' => 'mark as accepted',
+    'mark_as_rejected' => 'mark as rejected',
+    'quote_accepted' => 'quote accepted',
+    'quote_rejected' => 'quote rejected',
+    'quote_unaccepted' => 'quote unaccepted',
 ];

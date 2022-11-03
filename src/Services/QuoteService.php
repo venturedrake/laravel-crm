@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Repositories\QuoteRepository;
@@ -26,28 +25,33 @@ class QuoteService
     public function create($request, $person = null, $organisation = null)
     {
         $quote = Quote::create([
-            'external_id' => Uuid::uuid4()->toString(),
             'lead_id' => $request->lead_id ?? null,
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'title' => $request->title,
             'description' => $request->description,
-            'amount' => $request->amount,
+            'reference' => $request->reference,
             'currency' => $request->currency,
-            'expected_close' => $request->expected_close,
+            'issue_at' => $request->issue_at,
+            'expire_at' => $request->expire_at,
+            'subtotal' => $request->sub_total,
+            'discount' => $request->discount,
+            'tax' => $request->tax,
+            'adjustments' => $request->adjustment,
+            'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
         ]);
 
         $quote->labels()->sync($request->labels ?? []);
 
-        if (isset($request->item_quote_product_id)) {
-            foreach ($request->item_quote_product_id as $quoteProductKey => $quoteProductValue) {
+        if (isset($request->products)) {
+            foreach ($request->products as $product) {
                 $quote->quoteProducts()->create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'product_id' => $request->item_product_id[$quoteProductKey],
-                    'price' => $request->item_price[$quoteProductKey],
-                    'quantity' => $request->item_quantity[$quoteProductKey],
-                    'amount' => $request->item_amount[$quoteProductKey],
+                    'product_id' => $product['product_id'],
+                    'quantity' => $product['quantity'],
+                    'price' => $product['unit_price'],
+                    'amount' => $product['amount'],
+                    'currency' => $request->currency,
                 ]);
             }
         }
@@ -62,24 +66,37 @@ class QuoteService
             'organisation_id' => $organisation->id ?? null,
             'title' => $request->title,
             'description' => $request->description,
-            'amount' => $request->amount,
+            'reference' => $request->reference,
             'currency' => $request->currency,
-            'expected_close' => $request->expected_close,
+            'issue_at' => $request->issue_at,
+            'expire_at' => $request->expire_at,
+            'subtotal' => $request->sub_total,
+            'discount' => $request->discount,
+            'tax' => $request->tax,
+            'adjustments' => $request->adjustment,
+            'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
         ]);
 
         $quote->labels()->sync($request->labels ?? []);
         
-        if (isset($request->item_quote_product_id)) {
-            foreach ($request->item_quote_product_id as $quoteProductKey => $quoteProductValue) {
-                $quoteProduct = QuoteProduct::find($quoteProductValue);
-                
-                if ($quoteProduct) {
+        if (isset($request->products)) {
+            foreach ($request->products as $product) {
+                if (isset($product['quote_product_id']) && $quoteProduct = QuoteProduct::find($product['quote_product_id'])) {
                     $quoteProduct->update([
-                        'product_id' => $request->item_product_id[$quoteProductKey],
-                        'price' => $request->item_price[$quoteProductKey],
-                        'quantity' => $request->item_quantity[$quoteProductKey],
-                        'amount' => $request->item_amount[$quoteProductKey],
+                        'product_id' => $product['product_id'],
+                        'quantity' => $product['quantity'],
+                        'price' => $product['unit_price'],
+                        'amount' => $product['amount'],
+                        'currency' => $request->currency,
+                    ]);
+                } else {
+                    $quote->quoteProducts()->create([
+                        'product_id' => $product['product_id'],
+                        'quantity' => $product['quantity'],
+                        'price' => $product['unit_price'],
+                        'amount' => $product['amount'],
+                        'currency' => $request->currency,
                     ]);
                 }
             }

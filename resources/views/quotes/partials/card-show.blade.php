@@ -8,16 +8,16 @@
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.quotes.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_quotes')) }}</a> | 
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.quotes.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_quotes')) }}</a> 
                 @can('edit crm quotes')
-                @if(!$quote->closed_at)
-                    <a href="{{  route('laravel-crm.quotes.won',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>
-                    <a href="{{  route('laravel-crm.quotes.lost',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.lost')) }}</a>
-                @else
-                    <a href="{{  route('laravel-crm.quotes.reopen',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.reopen')) }}</a>
-                @endif
+                    @if(!$quote->accepted_at && !$quote->rejected_at)
+                        | <a href="{{  route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_accepted')) }}</a>
+                        <a href="{{  route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_rejected')) }}</a>
+                    @elseif($quote->accepted_at)
+                        | <a href="{{  route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
+                    @endif
                 @endcan
-                @include('laravel-crm::partials.navs.activities') |
+                @include('laravel-crm::partials.navs.activities') 
                 @can('edit crm quotes')
                 <a href="{{ url(route('laravel-crm.quotes.edit', $quote)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
@@ -39,12 +39,23 @@
             <div class="col-sm-6 border-right">
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
-                <p><span class="fa fa-tag" aria-hidden="true"></span>@include('laravel-crm::partials.labels',[
+                <dl class="row">
+                    <dt class="col-sm-3 text-right">Reference</dt>
+                    <dd class="col-sm-9">{{ $quote->reference }}</dd>
+                    <dt class="col-sm-3 text-right">Issue Date</dt>
+                    <dd class="col-sm-9">{{ ($quote->issue_at) ? $quote->issue_at->toFormattedDateString() : null }}</dd>
+                    <dt class="col-sm-3 text-right">Expiry Date</dt>
+                    <dd class="col-sm-9">{{ ($quote->expire_at) ? $quote->expire_at->toFormattedDateString() : null }}</dd>
+                    <dt class="col-sm-3 text-right">Description</dt>
+                    <dd class="col-sm-9">{{ $quote->description }}</dd>
+                    <dt class="col-sm-3 text-right">Labels</dt>
+                    <dd class="col-sm-9">@include('laravel-crm::partials.labels',[
                             'labels' => $quote->labels
-                    ])</p>
-                <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($quote->amount, $quote->currency) }}</p>
-                <p><span class="fa fa-info" aria-hidden="true"></span> {{ $quote->description }}</p>
-                <p><span class="fa fa-user-circle" aria-hidden="true"></span> <a href="{{ route('laravel-crm.users.show', $quote->ownerUser) }}">{{ $quote->ownerUser->name ?? null }}</a></p>
+                    ])</dd>
+                    <dt class="col-sm-3 text-right">Owner</dt>
+                    <dd class="col-sm-9">{{ $quote->ownerUser->name ?? null }}</dd>
+                </dl>
+                
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
                 <p><span class="fa fa-user" aria-hidden="true"></span> {{ $quote->person->name ?? null }} </p>
@@ -59,13 +70,13 @@
                 <p><span class="fa fa-building" aria-hidden="true"></span> {{ $quote->organisation->name ?? null }}</p>
                 <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
                 @can('view crm products')
-                <h6 class="text-uppercase mt-4 section-h6-title-table"><span>{{ ucfirst(__('laravel-crm::lang.products')) }} ({{ $quote->quoteProducts->count() }})</span></h6>
+                <h6 class="text-uppercase mt-4 section-h6-title-table"><span>{{ ucfirst(__('laravel-crm::lang.quote_items')) }} ({{ $quote->quoteProducts->count() }})</span></h6>
                 <table class="table table-hover">
                     <thead>
                     <tr>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
-                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
+                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
                     </thead>
@@ -75,10 +86,42 @@
                             <td>{{ $quoteProduct->product->name }}</td>
                             <td>{{ money($quoteProduct->price ?? null, $quoteProduct->currency) }}</td>
                             <td>{{ $quoteProduct->quantity }}</td>
-                            <th>{{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}</th>
+                            <td>{{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}</td>
                         </tr>
                     @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
+                            <td>{{ money($quote->subtotal, $quote->currency) }}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
+                            <td>{{ money($quote->discount, $quote->currency) }}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ ucfirst(__('laravel-crm::lang.tax')) }}</strong></td>
+                            <td>{{ money($quote->tax, $quote->currency) }}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
+                            <td>{{ money($quote->adjustments, $quote->currency) }}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
+                            <td>{{ money($quote->total, $quote->currency) }}</td>
+                        </tr>
+                    </tfoot>
                 </table>
                 @endcan    
             </div>

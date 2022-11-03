@@ -52,6 +52,7 @@ use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductPrice;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\XeroContact;
 use VentureDrake\LaravelCrm\Models\XeroItem;
@@ -69,6 +70,7 @@ use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 use VentureDrake\LaravelCrm\Observers\ProductObserver;
 use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteObserver;
+use VentureDrake\LaravelCrm\Observers\QuoteProductObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Observers\UserObserver;
@@ -146,6 +148,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Lead::observe(LeadObserver::class);
         Deal::observe(DealObserver::class);
         Quote::observe(QuoteObserver::class);
+        QuoteProduct::observe(QuoteProductObserver::class);
         Order::observe(OrderObserver::class);
         Person::observe(PersonObserver::class);
         Organisation::observe(OrganisationObserver::class);
@@ -260,6 +263,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_items_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_items_table.php', 35),
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_contacts_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_contacts_table.php', 36),
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_people_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_people_table.php', 37),
+                __DIR__ . '/../database/migrations/add_reference_to_laravel_crm_quotes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_reference_to_laravel_crm_quotes_table.php', 38),
             ], 'migrations');
 
             // Publishing the seeders

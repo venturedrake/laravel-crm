@@ -13,6 +13,8 @@ class LiveQuoteItems extends Component
 
     public $products;
 
+    public $quote_product_id;
+
     public $product_id;
     
     public $name;
@@ -46,9 +48,25 @@ class LiveQuoteItems extends Component
         $this->old = $old;
 
         if ($this->old) {
-            //
+            foreach ($this->old as $old) {
+                $this->add($this->i);
+                $this->quote_product_id[$this->i] = $old['quote_product_id'] ?? null;
+                $this->product_id[$this->i] = $old['product_id'] ?? null;
+                $this->name[$this->i] = $old['name'] ?? null;
+                $this->quantity[$this->i] = $old['quantity'] ?? null;
+                $this->unit_price[$this->i] = $old['unit_price'] ?? null;
+                $this->amount[$this->i] = $old['amount'] ?? null;
+            }
         } elseif ($this->products && $this->products->count() > 0) {
-            //
+            foreach ($this->products as $quoteProduct) {
+                $this->add($this->i);
+                $this->quote_product_id[$this->i] = $quoteProduct->id;
+                $this->product_id[$this->i] = $quoteProduct->product->id ?? null;
+                $this->name[$this->i] = $quoteProduct->product->name ?? null;
+                $this->quantity[$this->i] = $quoteProduct->quantity;
+                $this->unit_price[$this->i] = $quoteProduct->price / 100;
+                $this->amount[$this->i] = $quoteProduct->amount / 100;
+            }
         } else {
             $this->add($this->i);
         }

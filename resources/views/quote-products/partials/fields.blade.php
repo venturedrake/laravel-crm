@@ -1,16 +1,21 @@
 <div class="row">
-    {{--<input type="hidden" wire:model="quote_product_id.{{ $value }}" name="products[{{ $value }}][id]">--}}
+    @include('laravel-crm::partials.form.hidden',[
+       'name' => 'products['.$value.'][quote_product_id]',
+       'attributes' => [
+           'wire:model' => 'quote_product_id.'.$value,
+       ]
+    ])
     <div class="col-6">
         <span class="autocomplete autocomplete-product-name">
             @include('laravel-crm::partials.form.hidden',[
-                'name' => '[products]['.$value.'][product_id]',
+                'name' => 'products['.$value.'][product_id]',
                 'attributes' => [
                     'wire:model' => 'product_id.'.$value,
                 ]
             ])
             <span wire:ignore>
                 @include('laravel-crm::partials.form.text',[
-                    'name' => '[products]['.$value.'][name]',
+                    'name' => 'products['.$value.'][name]',
                     'label' => ucfirst(__('laravel-crm::lang.name')),
                     'attributes' => [
                         'wire:model' => 'name.'.$value,
@@ -22,18 +27,7 @@
     </div>
     <div class="col">
         @include('laravel-crm::partials.form.text',[
-            'name' => '[products]['.$value.'][quantity]',
-            'label' => ucfirst(__('laravel-crm::lang.quantity')),
-            'type' => 'number',
-            'attributes' => [
-                'wire:model' => 'quantity.'.$value,
-                'wire:change' => 'calculateAmounts'
-            ]
-        ])
-    </div>
-    <div class="col">
-        @include('laravel-crm::partials.form.text',[
-           'name' => '[products]['.$value.'][unit_price]',
+           'name' => 'products['.$value.'][unit_price]',
             'label' => ucfirst(__('laravel-crm::lang.price')),
             'type' => 'number',
             'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
@@ -46,7 +40,18 @@
     </div>
     <div class="col">
         @include('laravel-crm::partials.form.text',[
-           'name' => '[products]['.$value.'][amount]',
+            'name' => 'products['.$value.'][quantity]',
+            'label' => ucfirst(__('laravel-crm::lang.quantity')),
+            'type' => 'number',
+            'attributes' => [
+                'wire:model' => 'quantity.'.$value,
+                'wire:change' => 'calculateAmounts'
+            ]
+        ])
+    </div>
+    <div class="col">
+        @include('laravel-crm::partials.form.text',[
+           'name' => 'products['.$value.'][amount]',
             'label' => ucfirst(__('laravel-crm::lang.amount')),
             'type' => 'number',
             'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',

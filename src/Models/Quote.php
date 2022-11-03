@@ -20,6 +20,8 @@ class Quote extends Model
     protected $casts = [
         'issue_at' => 'datetime',
         'expire_at' => 'datetime',
+        'accepted_at' => 'datetime',
+        'rejected_at' => 'datetime',
     ];
 
     protected $searchable = [
@@ -57,6 +59,51 @@ class Quote extends Model
     {
         if ($value) {
             $this->attributes['expire_at'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+
+    public function setSubtotalAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['subtotal'] = $value * 100;
+        } else {
+            $this->attributes['subtotal'] = null;
+        }
+    }
+
+    public function setDiscountAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['discount'] = $value * 100;
+        } else {
+            $this->attributes['discount'] = null;
+        }
+    }
+
+    public function setTaxAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['tax'] = $value * 100;
+        } else {
+            $this->attributes['tax'] = null;
+        }
+    }
+
+    public function setAdjustmentsAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['adjustments'] = $value * 100;
+        } else {
+            $this->attributes['adjustments'] = null;
+        }
+    }
+
+    public function setTotalAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['total'] = $value * 100;
+        } else {
+            $this->attributes['total'] = null;
         }
     }
     

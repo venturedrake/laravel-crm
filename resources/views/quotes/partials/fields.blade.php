@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-sm-6 border-right">
+    <div class="col-sm-5 border-right">
         @include('laravel-crm::partials.form.hidden',[
              'name' => 'lead_id',
              'value' => old('lead_id', $quote->lead->id ?? $lead->id ?? null),
@@ -104,11 +104,11 @@
                  'value' =>  old('user_owner_id', $quote->user_owner_id ?? auth()->user()->id),
               ])
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-7">
         @livewire('quote-items',[
             'quote' => $quote ?? null,
             'products' => $quote->quoteProducts ?? null,
-            'old' => old('revenues')
+            'old' => old('products')
         ])
     </div>
 </div>

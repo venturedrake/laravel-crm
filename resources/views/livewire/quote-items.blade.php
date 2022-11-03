@@ -91,7 +91,7 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).delegate("input[name^='[products]']", "focus", function() {
+                $(document).delegate("input[name^='products']", "focus", function() {
                     var number = $(this).attr('value')
                     $(this).autocomplete({
                         source: products,

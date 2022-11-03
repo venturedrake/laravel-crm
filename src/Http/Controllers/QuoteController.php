@@ -255,11 +255,10 @@ class QuoteController extends Controller
     public function accept(Quote $quote)
     {
         $quote->update([
-            'closed_status' => 'won',
-            'closed_at' => Carbon::now(),
+            'accepted_at' => Carbon::now(),
         ]);
         
-        flash(ucfirst(trans('laravel-crm::lang.quote_won')))->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.quote_accepted')))->success()->important();
 
         return back();
     }
@@ -273,11 +272,10 @@ class QuoteController extends Controller
     public function reject(Quote $quote)
     {
         $quote->update([
-            'closed_status' => 'lost',
-            'closed_at' => Carbon::now(),
+            'rejected_at' => Carbon::now(),
         ]);
         
-        flash(ucfirst(trans('laravel-crm::lang.quote_lost')))->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
 
         return back();
     }
@@ -291,11 +289,10 @@ class QuoteController extends Controller
     public function unaccept(Quote $quote)
     {
         $quote->update([
-            'closed_status' => null,
-            'closed_at' => null,
+            'accepted_at' => null,
         ]);
         
-        flash(ucfirst(trans('laravel-crm::lang.quote_reopened')))->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.quote_unaccepted')))->success()->important();
 
         return back();
     }

@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Quote;
 
 class QuoteObserver
@@ -14,6 +15,8 @@ class QuoteObserver
      */
     public function creating(Quote $quote)
     {
+        $quote->external_id = Uuid::uuid4()->toString();
+        
         if (! app()->runningInConsole()) {
             $quote->user_created_id = auth()->user()->id ?? null;
         }
