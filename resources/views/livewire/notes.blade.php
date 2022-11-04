@@ -33,6 +33,8 @@
             <script>
                 $(document).ready(function () {
                     window.addEventListener('noteEditModeToggled', event => {
+                        bsCustomFileInput.init()
+                        $('.nav-activities li a#tab-notes').tab('show')
                         $('input[name="noted_at"]').datetimepicker({
                             timepicker:true,
                             format: 'Y/m/d H:i',
