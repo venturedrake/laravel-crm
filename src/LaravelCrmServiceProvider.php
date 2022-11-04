@@ -32,6 +32,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactPerson;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedPerson;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveTasks;
 use VentureDrake\LaravelCrm\Http\Livewire\NotifyToast;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
@@ -306,6 +307,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('address-edit', LiveAddressEdit::class);
         Livewire::component('notes', LiveNotes::class);
         Livewire::component('note', LiveNote::class);
+        Livewire::component('tasks', LiveTasks::class);
         Livewire::component('files', LiveFiles::class);
         Livewire::component('file', LiveFile::class);
         Livewire::component('related-contact-organisations', LiveRelatedContactOrganisation::class);

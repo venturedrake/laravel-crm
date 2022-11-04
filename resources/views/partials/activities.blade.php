@@ -10,6 +10,9 @@
         <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-notes">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" id="tab-tasks" href="#tabs-tasks">{{ ucfirst(__('laravel-crm::lang.tasks')) }}</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" data-toggle="tab" id="tab-files" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
     </li>
 </ul>
@@ -24,6 +27,13 @@
     <div class="tab-pane fade" id="tabs-notes">
         <div class="card-body pl-0 pr-0">
             @livewire('notes', [
+            'model' => $model
+            ])
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tabs-tasks">
+        <div class="card-body pl-0 pr-0">
+            @livewire('tasks', [
             'model' => $model
             ])
         </div>
