@@ -175,26 +175,30 @@ class LaravelCrmXero extends Command
     
     protected function taxTypePercentage($item)
     {
-        switch ($item['SalesDetails']['TaxType']) {
-            case "OUTPUT":
-                return 10;
+        if(isset($item['SalesDetails']['TaxType'])){
+            switch ($item['SalesDetails']['TaxType']) {
+                case "OUTPUT":
+                    return 10;
 
-                break;
+                    break;
 
-            case "INPUT":
-                return 0;
+                case "INPUT":
+                    return 0;
 
-                break;
+                    break;
 
-            case "INPUT2":
-                return 15;
+                case "INPUT2":
+                    return 15;
 
-                break;
+                    break;
 
-            case "CAPEXOUTPUT":
-                return 17.5;
+                case "CAPEXOUTPUT":
+                    return 17.5;
 
-                break;
+                    break;
+            }
         }
+        
+        return null;
     }
 }
