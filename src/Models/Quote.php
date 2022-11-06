@@ -173,6 +173,11 @@ class Quote extends Model
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
+    public function activities()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Activity::class, 'timelineable');
+    }
+
     public function tasks()
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Task::class, 'taskable');

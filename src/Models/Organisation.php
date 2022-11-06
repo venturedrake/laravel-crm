@@ -134,6 +134,11 @@ class Organisation extends Model
         return $this->belongsTo(OrganisationType::class);
     }
 
+    public function activities()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Activity::class, 'timelineable');
+    }
+
     public function notes()
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
