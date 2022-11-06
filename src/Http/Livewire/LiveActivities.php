@@ -9,12 +9,6 @@ class LiveActivities extends Component
     public $model;
     public $activities;
 
-    /*protected $listeners = [
-        'notesRefreshed' => '$refresh',
-        'tasksRefreshed' => '$refresh',
-        'filesRefreshed' => '$refresh',
-    ];*/
-
     public function mount($model)
     {
         $this->model = $model;
