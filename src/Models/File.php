@@ -49,4 +49,9 @@ class File extends Model
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\File::class, 'related_file_id');
     }
+
+    public function activity()
+    {
+        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Activity::class, 'recordable');
+    }
 }

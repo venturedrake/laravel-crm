@@ -19,9 +19,9 @@
 <div class="tab-content">
     <div class="tab-pane fadev show active" id="tabs-activities">
         <div class="card-body pl-0 pr-0">
-            {{--<h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.activities')) }}</h6>
-            <hr />--}}
-            ...
+            @livewire('activities', [
+            'model' => $model
+            ])
         </div>
     </div>
     <div class="tab-pane fade" id="tabs-notes">

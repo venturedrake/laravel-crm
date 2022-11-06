@@ -26,15 +26,18 @@
                     $(document).on("change", "#inputCreateForm input[name='noted_at']", function () {
                         @this.set('noted_at', $(this).val());
                     });
-                });
-            </script>
-        @endpush
-        @push('livewire-js')
-            <script>
-                $(document).ready(function () {
-                    window.addEventListener('noteEditModeToggled', event => {
+
+                    window.addEventListener('noteAddOn', event => {
                         bsCustomFileInput.init()
                         $('.nav-activities li a#tab-notes').tab('show')
+                        $('input[name="noted_at"]').datetimepicker({
+                            timepicker:true,
+                            format: 'Y/m/d H:i',
+                        });
+                    });
+
+                    window.addEventListener('noteEditModeToggled', event => {
+                        bsCustomFileInput.init()
                         $('input[name="noted_at"]').datetimepicker({
                             timepicker:true,
                             format: 'Y/m/d H:i',

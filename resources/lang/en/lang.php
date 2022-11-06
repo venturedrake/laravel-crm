@@ -279,4 +279,6 @@ return [
     'quote_unaccepted' => 'quote unaccepted',
     'tasks' => 'tasks',
     'due' => 'Due',
+    'planned' => 'planned',
+    'complete' => 'complete',
 ];

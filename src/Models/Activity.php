@@ -10,15 +10,24 @@ class Activity extends Model
     use SoftDeletes;
     use BelongsToTeams;
 
+    protected $guarded = ['id'];
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'activities';
     }
 
-    /**
-     * Get all of the owning activityable models.
-     */
-    public function activityable()
+    public function causeable()
+    {
+        return $this->morphTo();
+    }
+
+    public function timelineable()
+    {
+        return $this->morphTo();
+    }
+
+    public function recordable()
     {
         return $this->morphTo();
     }

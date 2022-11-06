@@ -42,12 +42,21 @@ class LiveFiles extends Component
 
         $file = $this->file->store('laravel-crm/'.strtolower(class_basename($this->model)).'/'.$this->model->id.'/files');
         
-        $this->model->files()->create([
+        $fileModel = $this->model->files()->create([
             'external_id' => Uuid::uuid4()->toString(),
             'file' => $file,
             'name' => $this->file->getClientOriginalName(),
             'filesize' => $this->file->getSize(),
             'mime' => $this->file->getMimeType(),
+        ]);
+
+        $this->model->activities()->create([
+            'causable_type' => auth()->user()->getMorphClass(),
+            'causable_id' => auth()->user()->id,
+            'timelineable_type' => $this->model->getMorphClass(),
+            'timelineable_id' => $this->model->id,
+            'recordable_type' => $fileModel->getMorphClass(),
+            'recordable_id' => $fileModel->id,
         ]);
 
         $this->notify(
@@ -62,6 +71,7 @@ class LiveFiles extends Component
     public function getFiles()
     {
         $this->files = $this->model->files()->latest()->get();
+        $this->emit('filesRefreshed');
     }
 
     public function addFileToggle()
@@ -73,7 +83,7 @@ class LiveFiles extends Component
     public function addFileOn()
     {
         $this->showForm = true;
-        $this->dispatchBrowserEvent('addFileToggled');
+        $this->dispatchBrowserEvent('fileAddOn');
     }
 
     private function resetFields()

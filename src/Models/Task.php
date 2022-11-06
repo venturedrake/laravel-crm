@@ -73,4 +73,9 @@ class Task extends Model
     {
         return $this->belongsTo(\App\User::class, 'user_assigned_id');
     }
+
+    public function activity()
+    {
+        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Activity::class, 'recordable');
+    }
 }

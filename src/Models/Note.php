@@ -66,4 +66,9 @@ class Note extends Model
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Note::class, 'related_note_id');
     }
+
+    public function activity()
+    {
+        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Activity::class, 'recordable');
+    }
 }

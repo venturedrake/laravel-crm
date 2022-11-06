@@ -16,9 +16,12 @@
                 window.addEventListener('fileUploaded', event => {
                     bsCustomFileInput.init()
                 });
-                window.addEventListener('addFileToggled', event => {
+                window.addEventListener('fileAddOn', event => {
                     bsCustomFileInput.init()
                     $('.nav-activities li a#tab-files').tab('show')
+                });
+                window.addEventListener('addFileToggled', event => {
+                    bsCustomFileInput.init()
                 });
             });
         </script>

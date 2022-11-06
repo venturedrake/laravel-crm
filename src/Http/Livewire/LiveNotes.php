@@ -49,15 +49,33 @@ class LiveNotes extends Component
             'content' => $data['content'],
             'noted_at' => $this->noted_at,
         ]);
+
+        $this->model->activities()->create([
+            'causable_type' => auth()->user()->getMorphClass(),
+            'causable_id' => auth()->user()->id,
+            'timelineable_type' => $this->model->getMorphClass(),
+            'timelineable_id' => $this->model->id,
+            'recordable_type' => $note->getMorphClass(),
+            'recordable_id' => $note->id,
+        ]);
         
         // Add to any upstream related models
         if ($this->model instanceof Person) {
             if ($this->model->organisation) {
-                $this->model->organisation->notes()->create([
+                $note = $this->model->organisation->notes()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'content' => $data['content'],
                     'noted_at' => $this->noted_at,
                     'related_note_id' => $note->id,
+                ]);
+
+                $this->model->activities()->create([
+                    'causable_type' => auth()->user()->getMorphClass(),
+                    'causable_id' => auth()->user()->id,
+                    'timelineable_type' => $this->model->organisation->getMorphClass(),
+                    'timelineable_id' => $this->model->organisation->id,
+                    'recordable_type' => $note->getMorphClass(),
+                    'recordable_id' => $note->id,
                 ]);
             }
         }
@@ -67,11 +85,20 @@ class LiveNotes extends Component
                 'entityable_type' => $this->model->getMorphClass(),
                 'entityable_id' => $this->model->id,
             ])->get() as $contact) {
-                $contact->contactable->notes()->create([
+                $note = $contact->contactable->notes()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'content' => $data['content'],
                     'noted_at' => $this->noted_at,
                     'related_note_id' => $note->id,
+                ]);
+
+                $this->model->activities()->create([
+                    'causable_type' => auth()->user()->getMorphClass(),
+                    'causable_id' => auth()->user()->id,
+                    'timelineable_type' => $contact->contactable->getMorphClass(),
+                    'timelineable_id' => $contact->contactable->id,
+                    'recordable_type' => $note->getMorphClass(),
+                    'recordable_id' => $note->id,
                 ]);
             }
         }
@@ -90,6 +117,8 @@ class LiveNotes extends Component
         } else {
             $this->notes = $this->model->notes()->latest()->get();
         }
+
+        $this->emit('notesRefreshed');
     }
     
     public function addNoteToggle()
@@ -103,7 +132,7 @@ class LiveNotes extends Component
     {
         $this->showForm = true;
 
-        $this->dispatchBrowserEvent('noteEditModeToggled');
+        $this->dispatchBrowserEvent('noteAddOn');
     }
 
     private function resetFields()
