@@ -67,6 +67,7 @@ class LiveTasks extends Component
     public function getTasks()
     {
         $this->tasks = $this->model->tasks()->where('user_assigned_id', auth()->user()->id)->latest()->get();
+        $this->emit('refreshActivities');
     }
     
     public function addTaskToggle()

@@ -9,6 +9,10 @@ class LiveActivities extends Component
     public $model;
     public $activities;
 
+    protected $listeners = [
+        'refreshActivities' => 'getActivities',
+    ];
+
     public function mount($model)
     {
         $this->model = $model;

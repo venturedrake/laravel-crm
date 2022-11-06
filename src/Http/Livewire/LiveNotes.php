@@ -102,6 +102,8 @@ class LiveNotes extends Component
                 ]);
             }
         }
+        
+        $this->emit('notAdded');
 
         $this->notify(
             'Note created',
@@ -117,6 +119,8 @@ class LiveNotes extends Component
         } else {
             $this->notes = $this->model->notes()->latest()->get();
         }
+        
+        $this->emit('refreshActivities');
     }
     
     public function addNoteToggle()

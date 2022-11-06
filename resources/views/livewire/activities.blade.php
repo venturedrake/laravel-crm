@@ -8,18 +8,18 @@
         @switch($activity->recordable_type)
             @case('VentureDrake\LaravelCrm\Models\Note')
                 @livewire('note',[
-                'note' => $activity->recordable
-                ], key($activity->recordable->id))
+                    'note' => $activity->recordable
+                ], key('note_'.$activity->recordable->id))
                 @break
             @case('VentureDrake\LaravelCrm\Models\Task')
                 @livewire('task',[
-                'task' => $activity->recordable
-                ], key($activity->recordable->id))
+                    'task' => $activity->recordable
+                ], key('task_'.$activity->recordable->id))
             @break
             @case('VentureDrake\LaravelCrm\Models\File')
                 @livewire('file',[
-                'file' => $activity->recordable
-                ], key($activity->recordable->id))
+                    'file' => $activity->recordable
+                ], key('file_'.$activity->recordable->id))
                 @break
         @endswitch    
     @endforeach
