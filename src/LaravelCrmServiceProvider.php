@@ -20,6 +20,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
+use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveTask;
 use VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
@@ -55,6 +56,7 @@ use VentureDrake\LaravelCrm\Models\ProductPrice;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Models\XeroContact;
 use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Models\XeroPerson;
@@ -73,6 +75,7 @@ use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteProductObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
+use VentureDrake\LaravelCrm\Observers\TaskObserver;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Observers\UserObserver;
 use VentureDrake\LaravelCrm\Observers\XeroContactObserver;
@@ -103,6 +106,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Product' => \VentureDrake\LaravelCrm\Policies\ProductPolicy::class,
         'VentureDrake\LaravelCrm\Models\ProductCategory' => \VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy::class,
         'VentureDrake\LaravelCrm\Models\Label' => \VentureDrake\LaravelCrm\Policies\LabelPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Task' => \VentureDrake\LaravelCrm\Policies\TaskPolicy::class,
     ];
     
     /**
@@ -164,6 +168,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         XeroItem::observe(XeroItemObserver::class);
         XeroContact::observe(XeroContactObserver::class);
         XeroPerson::observe(XeroPersonObserver::class);
+        Task::observe(TaskObserver::class);
         
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -265,6 +270,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_contacts_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_contacts_table.php', 36),
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_people_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_people_table.php', 37),
                 __DIR__ . '/../database/migrations/add_reference_to_laravel_crm_quotes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_reference_to_laravel_crm_quotes_table.php', 38),
+                __DIR__ . '/../database/migrations/create_laravel_crm_tasks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_tasks_table.php', 38),
             ], 'migrations');
 
             // Publishing the seeders
@@ -308,6 +314,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('notes', LiveNotes::class);
         Livewire::component('note', LiveNote::class);
         Livewire::component('tasks', LiveTasks::class);
+        Livewire::component('task', LiveTask::class);
         Livewire::component('files', LiveFiles::class);
         Livewire::component('file', LiveFile::class);
         Livewire::component('related-contact-organisations', LiveRelatedContactOrganisation::class);

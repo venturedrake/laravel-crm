@@ -17,10 +17,13 @@ class CreateLaravelCrmTasksTable extends Migration
             $table->bigIncrements('id');
             $table->string('external_id');
             $table->unsignedBigInteger('team_id')->index()->nullable();
-       
-            // TBC
-            
-            $table->nullableMorphs('taskable')->nullable(;
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->datetime('due_at')->nullable();
+            $table->datetime('completed_at')->nullable();
+            $table->boolean('reminder_email')->default(false);
+            $table->boolean('reminder_sms')->default(false);
+            $table->nullableMorphs('taskable');
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_updated_id')->nullable();

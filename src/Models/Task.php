@@ -2,17 +2,34 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Task extends Model
 {
     use SoftDeletes;
+    use HasCrmFields;
     use BelongsToTeams;
+    use SearchFilters;
     
     protected $guarded = ['id'];
-    
+
+    protected $casts = [
+        'due_at' => 'datetime',
+        'completed_at' => 'datetime',
+    ];
+
+    protected $searchable = [
+        'name',
+        'description',
+    ];
+
+    public function getSearchable()
+    {
+        return $this->searchable;
+    }
 
     public function getTable()
     {
@@ -47,8 +64,13 @@ class Task extends Model
         return $this->belongsTo(\App\User::class, 'user_restored_id');
     }
 
-    public function relatedNote()
+    public function ownerUser()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Note::class, 'related_note_id');
+        return $this->belongsTo(\App\User::class, 'user_owner_id');
+    }
+
+    public function assignedToUser()
+    {
+        return $this->belongsTo(\App\User::class, 'user_assigned_id');
     }
 }

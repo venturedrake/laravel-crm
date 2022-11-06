@@ -11,6 +11,11 @@ class LiveActivityMenu extends Component
         $this->emit('addNoteActivity');
     }
 
+    public function addTask()
+    {
+        $this->emit('addTaskActivity');
+    }
+
     public function addFile()
     {
         $this->emit('addFileActivity');

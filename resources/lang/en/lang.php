@@ -278,4 +278,5 @@ return [
     'quote_rejected' => 'quote rejected',
     'quote_unaccepted' => 'quote unaccepted',
     'tasks' => 'tasks',
+    'due' => 'Due',
 ];

@@ -21,7 +21,7 @@ class LiveNotes extends Component
     public $showForm = false;
 
     protected $listeners = [
-        'addNoteActivity' => 'addNoteToggle',
+        'addNoteActivity' => 'addNoteOn',
         'noteDeleted' => 'getNotes',
         'notePinned' => 'getNotes',
         'noteUnpinned' => 'getNotes',
@@ -95,6 +95,13 @@ class LiveNotes extends Component
     public function addNoteToggle()
     {
         $this->showForm = ! $this->showForm;
+
+        $this->dispatchBrowserEvent('noteEditModeToggled');
+    }
+
+    public function addNoteOn()
+    {
+        $this->showForm = true;
 
         $this->dispatchBrowserEvent('noteEditModeToggled');
     }

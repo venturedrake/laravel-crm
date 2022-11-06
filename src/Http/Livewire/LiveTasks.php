@@ -3,10 +3,6 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
-use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Models\Contact;
-use VentureDrake\LaravelCrm\Models\Organisation;
-use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveTasks extends Component
@@ -15,22 +11,20 @@ class LiveTasks extends Component
     
     public $model;
     public $tasks;
-    public $pinned;
-    public $content;
-    public $taskd_at;
+    public $name;
+    public $description;
+    public $due_at;
     public $showForm = false;
 
     protected $listeners = [
-        'addTaskActivity' => 'addTaskToggle',
+        'addTaskActivity' => 'addTaskOn',
         'taskDeleted' => 'getTasks',
-        'taskPinned' => 'getTasks',
-        'taskUnpinned' => 'getTasks',
-    ];
+        'taskCompleted' => 'getTasks',
+     ];
 
-    public function mount($model, $pinned = false)
+    public function mount($model)
     {
         $this->model = $model;
-        $this->pinned = $pinned;
         $this->getTasks();
         
         if ($this->tasks->count() < 1) {
@@ -41,37 +35,18 @@ class LiveTasks extends Component
     public function create()
     {
         $data = $this->validate([
-            'content' => 'required',
+            'name' => 'required',
+            'description' => 'nullable',
+            'due_at' => 'nullable',
         ]);
         
         $task = $this->model->tasks()->create([
-            'content' => $data['content'],
-            'taskd_at' => $this->taskd_at,
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'due_at' => $this->due_at,
+            'user_owner_id' => auth()->user()->id,
+            'user_assigned_id' => auth()->user()->id,
         ]);
-        
-        // Add to any upstream related models
-        if ($this->model instanceof Person) {
-            if ($this->model->organisation) {
-                $this->model->organisation->tasks()->create([
-                    'content' => $data['content'],
-                    'taskd_at' => $this->taskd_at,
-                    'related_task_id' => $task->id,
-                ]);
-            }
-        }
-        
-        if ($this->model instanceof Organisation || $this->model instanceof Person) {
-            foreach (Contact::where([
-                'entityable_type' => $this->model->getMorphClass(),
-                'entityable_id' => $this->model->id,
-            ])->get() as $contact) {
-                $contact->contactable->tasks()->create([
-                    'content' => $data['content'],
-                    'taskd_at' => $this->taskd_at,
-                    'related_task_id' => $task->id,
-                ]);
-            }
-        }
 
         $this->notify(
             'Task created',
@@ -82,11 +57,7 @@ class LiveTasks extends Component
     
     public function getTasks()
     {
-        if ($this->pinned) {
-            $this->tasks = $this->model->tasks()->where('pinned', 1)->latest()->get();
-        } else {
-            $this->tasks = $this->model->tasks()->latest()->get();
-        }
+        $this->tasks = $this->model->tasks()->where('user_assigned_id', auth()->user()->id)->latest()->get();
     }
     
     public function addTaskToggle()
@@ -95,10 +66,17 @@ class LiveTasks extends Component
 
         $this->dispatchBrowserEvent('taskEditModeToggled');
     }
+    
+    public function addTaskOn()
+    {
+        $this->showForm = true;
+
+        $this->dispatchBrowserEvent('taskEditModeToggled');
+    }
 
     private function resetFields()
     {
-        $this->reset('content', 'taskd_at');
+        $this->reset('name', 'description', 'due_at');
         $this->getTasks();
     }
     
