@@ -117,8 +117,6 @@ class LiveNotes extends Component
         } else {
             $this->notes = $this->model->notes()->latest()->get();
         }
-
-        $this->emit('notesRefreshed');
     }
     
     public function addNoteToggle()

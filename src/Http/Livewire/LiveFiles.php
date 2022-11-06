@@ -71,7 +71,6 @@ class LiveFiles extends Component
     public function getFiles()
     {
         $this->files = $this->model->files()->latest()->get();
-        $this->emit('filesRefreshed');
     }
 
     public function addFileToggle()
