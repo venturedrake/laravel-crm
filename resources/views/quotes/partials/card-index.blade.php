@@ -25,10 +25,12 @@
                 <th scope="col">#</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.sub_total')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.contact')) }}</th>
+                {{--<th scope="col">{{ ucwords(__('laravel-crm::lang.sub_total')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.discount')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.tax')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.adjustment')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.adjustment')) }}</th>--}}
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.total')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.issue_at')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.expire_at')) }}</th>
@@ -45,10 +47,12 @@
                             'labels' => $quote->labels,
                             'limit' => 3
                         ])</td>
-                   <td>{{ money($quote->subtotal, $quote->currency) }}</td>
+                   <td>{{ $deal->organisation->name ?? null }}</td>
+                   <td>{{ $deal->person->name ?? null }}</td>
+                   {{--<td>{{ money($quote->subtotal, $quote->currency) }}</td>
                    <td>{{ money($quote->discount, $quote->currency) }}</td>
                    <td>{{ money($quote->tax, $quote->currency) }}</td>
-                   <td>{{ money($quote->adjustments, $quote->currency) }}</td>
+                   <td>{{ money($quote->adjustments, $quote->currency) }}</td>--}}
                    <td>{{ money($quote->total, $quote->currency) }}</td>
                    <td>{{ ($quote->issue_at) ? $quote->issue_at->toFormattedDateString() : null }}</td>
                    <td>{{ ($quote->expire_at) ? $quote->expire_at->toFormattedDateString() : null }}</td>

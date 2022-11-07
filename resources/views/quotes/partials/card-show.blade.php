@@ -17,7 +17,7 @@
                         | <a href="{{  route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
                     @endif
                 @endcan
-                @include('laravel-crm::partials.navs.activities') 
+                @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm quotes')
                 <a href="{{ url(route('laravel-crm.quotes.edit', $quote)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
