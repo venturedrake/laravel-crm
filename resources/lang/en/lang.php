@@ -277,8 +277,10 @@ return [
     'quote_accepted' => 'quote accepted',
     'quote_rejected' => 'quote rejected',
     'quote_unaccepted' => 'quote unaccepted',
+    'task' => 'task',
     'tasks' => 'tasks',
     'due' => 'Due',
     'planned' => 'planned',
     'complete' => 'complete',
+    'status' => 'status',
 ];

@@ -372,6 +372,14 @@ Route::group(['prefix' => 'activities', 'middleware' => 'auth.laravel-crm'], fun
         ->name('laravel-crm.activities.destroy');
 });
 
+/* Tasks */
+
+Route::group(['prefix' => 'tasks', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@index')
+        ->name('laravel-crm.tasks.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Task']);
+});
+
 /* Notes */
 
 Route::group(['prefix' => 'notes', 'middleware' => 'auth.laravel-crm'], function () {
