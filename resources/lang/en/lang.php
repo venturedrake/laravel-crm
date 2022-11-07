@@ -283,4 +283,6 @@ return [
     'planned' => 'planned',
     'complete' => 'complete',
     'status' => 'status',
+    'send' => 'send',
+    'send_quote' => 'send quote',
 ];

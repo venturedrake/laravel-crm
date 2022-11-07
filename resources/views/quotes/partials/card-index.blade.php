@@ -57,9 +57,12 @@
                    <td>{{ ($quote->issue_at) ? $quote->issue_at->toFormattedDateString() : null }}</td>
                    <td>{{ ($quote->expire_at) ? $quote->expire_at->toFormattedDateString() : null }}</td>
                    <td>{{ $quote->ownerUser->name ?? null }}</td>
-                   <td class="disable-link text-right" width="270">
-                        @can('edit crm quotes')
-                           @if(!$quote->accepted_at && !$quote->rejected_at)
+                   <td class="disable-link text-right" width="320">
+                       @livewire('send-quote',[
+                       'quote' => $quote
+                       ])
+                       @can('edit crm quotes')
+                       @if(!$quote->accepted_at && !$quote->rejected_at)
                                <a href="{{  route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
                                <a href="{{  route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.reject')) }}</a>
                            @elseif($quote->accepted_at)

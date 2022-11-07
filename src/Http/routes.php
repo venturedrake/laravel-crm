@@ -241,6 +241,10 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.quotes.unaccept')
         ->middleware(['can:update,quote']);
 
+    Route::post('{quote}/send', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@send')
+        ->name('laravel-crm.quotes.send')
+        ->middleware(['can:update,quote']);
+
     /* Quote Products */
 
     Route::group(['prefix' => '{quote}/products', 'middleware' => 'auth.laravel-crm'], function () {
