@@ -10,7 +10,13 @@ class SendQuote extends Component
 {
     public $quote;
 
-    public $email;
+    public $to;
+
+    public $subject;
+    
+    public $message;
+
+    public $cc;
 
     public $signedUrl;
 

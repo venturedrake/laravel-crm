@@ -10,23 +10,18 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form wire:submit.prevent="share">
+                    <x-form wire:submit.prevent="send">
                         <div class="modal-body text-left">
-                            TO, SUBJECT, MESSAGE, CC
-                           {{-- <p>Anyone with this link <strong>can view</strong>. The link will expire after 14 days.</p>
-                            <x-form-input wire:model="email" name="email" label="Email" placeholder="Send link to an email" />
-                            <p><strong><span class="fa fa-link" aria-hidden="true"></span> <a wire:click.prevent="generateUrl()" href="#">Create</a> and copy link</strong></p>
-                            @if($this->signedUrl)
-                                <div class="bg-light p-3">
-                                    {{ $this->signedUrl }}
-                                </div>
-                            @endif    --}}
+                            <x-form-input wire:model="to" name="to" label="To" />
+                            <x-form-input wire:model="subject" name="subject" label="Subject" />
+                            <x-form-textarea wire:model="message" name="message" label="Message" rows="10" />
+                            <x-form-checkbox wire:model="cc" name="cc" label="Send me a copy" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</button>
                             <button wire:click.prevent="send()" type="button" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.send')) }}</button>
                         </div>
-                    </form>
+                    </x-form>
                 </div>
             </div>
         </div>

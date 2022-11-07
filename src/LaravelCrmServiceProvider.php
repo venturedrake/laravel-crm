@@ -38,6 +38,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveTasks;
 use VentureDrake\LaravelCrm\Http\Livewire\NotifyToast;
 use VentureDrake\LaravelCrm\Http\Livewire\SendQuote;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
+use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
@@ -150,6 +151,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $router->pushMiddlewareToGroup('crm-api', HasCrmAccess::class);
         $router->pushMiddlewareToGroup('crm', LastOnlineAt::class);
         $router->pushMiddlewareToGroup('crm', SystemCheck::class);
+        $router->pushMiddlewareToGroup('crm', FormComponentsConfig::class);
+        $router->pushMiddlewareToGroup('web', FormComponentsConfig::class);
         
         $this->registerRoutes();
 
