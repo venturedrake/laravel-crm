@@ -44,6 +44,7 @@
         "lab404/laravel-auth-checker": "^1.6",
         "laracasts/flash": "^3.2",
         "livewire/livewire": "^1.0|^2.0",
+        "mpdf/mpdf": "^7.0|^8.0",
         "owen-it/laravel-auditing": "^12.0|^13.0",
         "protonemedia/laravel-form-components": "^3.6",
         "rinvex/countries": "^6.0|^8.1",
