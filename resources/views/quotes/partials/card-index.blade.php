@@ -47,8 +47,8 @@
                             'labels' => $quote->labels,
                             'limit' => 3
                         ])</td>
-                   <td>{{ $deal->organisation->name ?? null }}</td>
-                   <td>{{ $deal->person->name ?? null }}</td>
+                   <td>{{ $quote->organisation->name ?? null }}</td>
+                   <td>{{ $quote->person->name ?? null }}</td>
                    {{--<td>{{ money($quote->subtotal, $quote->currency) }}</td>
                    <td>{{ money($quote->discount, $quote->currency) }}</td>
                    <td>{{ money($quote->tax, $quote->currency) }}</td>

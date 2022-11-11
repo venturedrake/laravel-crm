@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
@@ -26,6 +27,9 @@ class SendQuote extends Component
     public function mount($quote)
     {
         $this->quote = $quote;
+        $this->to = $quote->person->getPrimaryEmail()->address ?? null;
+        $this->subject = view('laravel-crm::mail.templates.send-quote.subject', ['quote' => $this->quote])->render();
+        $this->message = view('laravel-crm::mail.templates.send-quote.message', ['quote' => $this->quote])->render();
     }
 
     /**
@@ -36,9 +40,9 @@ class SendQuote extends Component
     protected function rules()
     {
         return [
-            'to'=> 'required|string',
-            'subject'=> 'required|string',
-            'message'=> 'required|string',
+            'to' => 'required|string',
+            'subject' => 'required|string',
+            'message' => 'required|string',
         ];
     }
 
@@ -47,6 +51,13 @@ class SendQuote extends Component
         $this->validate();
         
         $this->generateUrl();
+
+        Mail::send(new \VentureDrake\LaravelCrm\Mail\SendQuote([
+            'to' => $this->to,
+            'subject' => $this->subject,
+            'message' => $this->message,
+            'cc' => $this->cc,
+        ]));
 
         /*Notification::route('mail', $this->email)
             ->notify(new OrderSharedNotification(auth()->user(), auth()->user()->currentTeam, $this->order, $this->signedUrl));*/
@@ -63,7 +74,9 @@ class SendQuote extends Component
     public function generateUrl()
     {
         $this->signedUrl = URL::temporarySignedRoute(
-            'laravel-crm.public.quotes.show', now()->addDays(14), [
+            'laravel-crm.public.quotes.show',
+            now()->addDays(14),
+            [
                 'quote' => $this->quote,
             ]
         );
@@ -71,7 +84,7 @@ class SendQuote extends Component
 
     private function resetFields()
     {
-        $this->reset('to','subject','message','cc');
+        $this->reset('to', 'subject', 'message', 'cc');
     }
 
     public function render()

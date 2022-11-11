@@ -285,4 +285,5 @@ return [
     'status' => 'status',
     'send' => 'send',
     'send_quote' => 'send quote',
+    'terms' => 'terms',
 ];

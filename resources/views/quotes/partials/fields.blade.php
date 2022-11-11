@@ -90,6 +90,14 @@
                 ])
             </div>
         </div>
+
+        @include('laravel-crm::partials.form.textarea',[
+             'name' => 'terms',
+             'label' => ucfirst(__('laravel-crm::lang.terms')),
+             'rows' => 5,
+             'value' => old('terms', $quote->terms ?? null) 
+        ])
+        
         @include('laravel-crm::partials.form.multiselect',[
             'name' => 'labels',
             'label' => ucfirst(__('laravel-crm::lang.labels')),
