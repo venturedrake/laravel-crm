@@ -229,3 +229,11 @@ dt {
 .toast-body.alert {
   border:none;
 }
+
+.toast.show{
+  z-index: 9999999999999;
+}
+
+.toast.hide{
+  z-index: 0;
+}
