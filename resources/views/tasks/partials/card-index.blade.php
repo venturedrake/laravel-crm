@@ -30,35 +30,10 @@
             </thead>
             <tbody>
             @foreach($tasks as $task)
-                <tr>
-                    <td>
-                        @include('laravel-crm::livewire.components.partials.task.status', ['task' => $task])
-                    </td>
-                    <td>{{ $task->name }}</td>
-                    <td>{{ $task->description }}</td>
-                    <td>
-                        @if($task->due_at)
-                            {{ $task->due_at->format('h:i A') }} on {{ $task->due_at->toFormattedDateString() }}
-                        @endif
-                    </td>
-                    <td>{{ $task->createdByUser->name ?? null }}</td>
-                    <td>{{ $task->assignedToUser->name ?? null }}</td>
-                    <td class="disable-link text-right">
-                        {{--@can('view crm products')
-                        <a href="{{  route('laravel-crm.products.show',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
-                        @endcan
-                        @can('edit crm products')
-                        <a href="{{  route('laravel-crm.products.edit',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                        @endcan
-                        @can('delete crm products')    
-                        <form action="{{ route('laravel-crm.products.destroy',$product) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
-                            {{ method_field('DELETE') }}
-                            {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
-                        </form>
-                        @endcan --}}   
-                    </td>
-                </tr>
+                @livewire('task',[
+                    'task' => $task,
+                    'view' => 'task-table'
+                ], key($task->id))
             @endforeach
             </tbody>
         </table>

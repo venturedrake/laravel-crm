@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Models\Task;
 
@@ -88,8 +89,23 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        //
+        $task->delete();
+
+        flash(ucfirst(trans('laravel-crm::lang.task_deleted')))->success()->important();
+
+        return redirect(route('laravel-crm.tasks.index'));
+    }
+
+    public function complete(Task $task)
+    {
+        $task->update([
+            'completed_at' => Carbon::now(),
+        ]);
+
+        flash(ucfirst(trans('laravel-crm::lang.task_completed')))->success()->important();
+
+        return redirect(route('laravel-crm.tasks.index'));
     }
 }

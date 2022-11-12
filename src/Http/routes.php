@@ -389,6 +389,38 @@ Route::group(['prefix' => 'tasks', 'middleware' => 'auth.laravel-crm'], function
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@index')
         ->name('laravel-crm.tasks.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Task']);
+
+    /*Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@create')
+        ->name('laravel-crm.tasks.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Task']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@store')
+        ->name('laravel-crm.tasks.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Task']);
+
+    Route::get('{task}', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@show')
+        ->name('laravel-crm.tasks.show')
+        ->middleware(['can:view,task']);
+
+    Route::get('{task}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@edit')
+        ->name('laravel-crm.tasks.edit')
+        ->middleware(['can:update,task']);
+
+    Route::put('{task}', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@update')
+        ->name('laravel-crm.tasks.update')
+        ->middleware(['can:update,task']);*/
+
+    Route::delete('{task}', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@destroy')
+        ->name('laravel-crm.tasks.destroy')
+        ->middleware(['can:delete,task']);
+
+    /*Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@search')
+        ->name('laravel-crm.tasks.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Task']);*/
+
+    Route::get('{task}/complete', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@complete')
+        ->name('laravel-crm.tasks.complete')
+        ->middleware(['can:update,task']);
 });
 
 /* Notes */

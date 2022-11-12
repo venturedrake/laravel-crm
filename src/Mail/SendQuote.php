@@ -11,8 +11,6 @@ class SendQuote extends Mailable
     use Queueable;
     use SerializesModels;
     
-    public $quote;
-    
     public $emailTo;
 
     public $subject;
@@ -28,7 +26,6 @@ class SendQuote extends Mailable
      */
     public function __construct($data)
     {
-        $this->quote = $data['quote'];
         $this->emailTo = $data['to'];
         $this->subject = $data['subject'];
         $this->content = $data['message'];

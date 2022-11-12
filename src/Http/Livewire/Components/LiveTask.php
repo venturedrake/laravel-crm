@@ -16,17 +16,19 @@ class LiveTask extends Component
     public $name;
     public $description;
     public $due_at;
+    public $view;
 
     protected $listeners = [
         'refreshComponent' => '$refresh',
     ];
     
-    public function mount(Task $task)
+    public function mount(Task $task, $view = 'task')
     {
         $this->task = $task;
         $this->name = $task->name;
         $this->description = $task->description;
         $this->due_at = ($task->due_at) ? $task->due_at->format('Y/m/d H:i') : null;
+        $this->view = $view;
     }
 
     /**
@@ -54,7 +56,7 @@ class LiveTask extends Component
         $this->toggleEditMode();
         $this->emit('refreshComponent');
         $this->notify(
-            'Task updated',
+            ucfirst(trans('laravel-crm::lang.task_updated'))
         );
     }
 
@@ -66,7 +68,7 @@ class LiveTask extends Component
 
         $this->emit('taskCompleted');
         $this->notify(
-            'Task completed'
+            ucfirst(trans('laravel-crm::lang.task_completed'))
         );
     }
 
@@ -76,7 +78,7 @@ class LiveTask extends Component
 
         $this->emit('taskDeleted');
         $this->notify(
-            'Task deleted.'
+            ucfirst(trans('laravel-crm::lang.task_deleted'))
         );
     }
 
@@ -89,6 +91,6 @@ class LiveTask extends Component
     
     public function render()
     {
-        return view('laravel-crm::livewire.components.task');
+        return view('laravel-crm::livewire.components.'.$this->view);
     }
 }

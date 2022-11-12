@@ -286,4 +286,7 @@ return [
     'send' => 'send',
     'send_quote' => 'send quote',
     'terms' => 'terms',
+    'task_deleted' => 'task deleted',
+    'task_completed' => 'task completed',
+    'task_updated' => 'task updated',
 ];
