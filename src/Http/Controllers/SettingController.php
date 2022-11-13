@@ -29,12 +29,16 @@ class SettingController extends Controller
         $language = $this->settingService->get('language');
         $country = $this->settingService->get('country');
         $currency = $this->settingService->get('currency');
+        $timezone = $this->settingService->get('timezone');
+        $logoFile = $this->settingService->get('logo_file');
         
         return view('laravel-crm::settings.edit', [
             'organisationName' => $organisationName,
             'language' => $language,
             'country' => $country,
             'currency' => $currency,
+            'timezone' => $timezone,
+            'logoFile' => $logoFile,
         ]);
     }
 
@@ -51,6 +55,19 @@ class SettingController extends Controller
         $this->settingService->set('language', $request->language);
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
+        $this->settingService->set('timezone', $request->timezone);
+        
+        if ($file = $request->file('logo')) {
+            if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
+                $filePath = 'laravel-crm/'.auth()->user()->currentTeam->id;
+            } else {
+                $filePath = 'laravel-crm';
+            }
+            
+            $file->move(storage_path('app/public/'.$filePath), $file->getClientOriginalName());
+            $this->settingService->set('logo_file', $filePath.'/'.$file->getClientOriginalName());
+            $this->settingService->set('logo_file_name', $file->getClientOriginalName());
+        }
 
         if ($request->organisation_name && config('laravel-crm.teams') && auth()->user()->currentTeam) {
             DB::table("teams")

@@ -184,6 +184,15 @@ class LaravelCrmTablesSeeder extends Seeder
             \VentureDrake\LaravelCrm\Models\ContactType::firstOrCreate($item[0], $item[1]);
         }
 
+        $timestamp = time();
+        foreach (timezone_identifiers_list() as $zone) {
+            date_default_timezone_set($zone);
+            $zones['offset'] = date('P', $timestamp);
+            $zones['diff_from_gtm'] = 'UTC/GMT '.date('P', $timestamp);
+
+            \VentureDrake\LaravelCrm\Models\Timezone::updateOrCreate(['name' => $zone], $zones);
+        }
+
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         Permission::firstOrCreate(['name' => 'create crm leads', 'crm_permission' => 1]);

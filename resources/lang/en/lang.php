@@ -289,4 +289,6 @@ return [
     'task_deleted' => 'task deleted',
     'task_completed' => 'task completed',
     'task_updated' => 'task updated',
+    'logo' => 'logo',
+    'timezone' => 'timezone',
 ];

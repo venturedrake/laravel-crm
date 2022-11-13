@@ -17,6 +17,8 @@ class SendQuote extends Mailable
 
     public $content;
     
+    public $onlineQuoteLink;
+    
     public $copyMe = false;
 
     /**
@@ -30,6 +32,7 @@ class SendQuote extends Mailable
         $this->subject = $data['subject'];
         $this->content = $data['message'];
         $this->ccTo = $data['cc'];
+        $this->onlineQuoteLink = $data['onlineQuoteLink'];
     }
 
     /**
@@ -39,6 +42,10 @@ class SendQuote extends Mailable
      */
     public function build()
     {
+        $this->content = str_replace('[Online Quote Link]', $this->onlineQuoteLink, $this->content);
+
+        $this->content = nl2br($this->content);
+        
         $mailable = $this->subject($this->subject)
             ->from(auth()->user()->email, auth()->user()->name)
             ->to($this->emailTo)

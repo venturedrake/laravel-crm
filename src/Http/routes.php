@@ -53,8 +53,8 @@ Route::get('crm-password/confirm', function () {
 
 Route::group(['prefix' => 'p'], function () {
     Route::prefix('quotes')->group(function () {
-        Route::get('{quote}', 'VentureDrake\LaravelCrm\Http\Controllers\Public\QuoteController@show')
-            ->name('laravel-crm.public.quotes.show');
+        Route::get('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@show')
+            ->name('laravel-crm.portal.quotes.show');
     });
 });
 

@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Helpers\SelectOptions;
 use \App\User;
 use Rinvex\Country\CountryLoader;
 use Rinvex\Country\CurrencyLoader;
+use VentureDrake\LaravelCrm\Models\Timezone;
 
 function optionsFromModel($model, $null = true)
 {
@@ -125,12 +126,13 @@ function currencies()
 
 function timezones()
 {
-    /*$countries = new Countries();
-    $collection = $countries->all()->hydrate('timezones')->pluck("timezones");
+    $items = [];
 
-    foreach ($collection->toArray() as $timezone) {
-        $items[array_key_first($timezone)] = current($timezone)['zone_name'];
+    $items[''] = '';
+    
+    foreach (Timezone::all() as $timezone) {
+        $items[$timezone->name] = $timezone->name.' - '.$timezone->diff_from_gtm;
     }
-
-    return $items;*/
+    
+    return $items;
 }

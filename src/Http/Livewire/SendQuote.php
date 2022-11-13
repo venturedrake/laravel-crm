@@ -57,6 +57,7 @@ class SendQuote extends Component
             'subject' => $this->subject,
             'message' => $this->message,
             'cc' => $this->cc,
+            'onlineQuoteLink' => $this->signedUrl,
         ]));
 
         /*Notification::route('mail', $this->email)

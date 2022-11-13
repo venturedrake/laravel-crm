@@ -1,7 +1,7 @@
 @extends('laravel-crm::layouts.app')
 
 @section('content')
-<form method="POST" action="{{ url(route('laravel-crm.settings.update')) }}">
+<form method="POST" action="{{ url(route('laravel-crm.settings.update')) }}" enctype="multipart/form-data">
     @csrf
     <div class="card">
         <div class="card-header">

@@ -1,9 +1,10 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Http\Controllers\Public;
+namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\Quote;
 
 class QuoteController extends Controller
@@ -36,7 +37,7 @@ class QuoteController extends Controller
             $organisation_address = $quote->organisation->getPrimaryAddress();
         }
         
-        return view('laravel-crm::quotes.show', [
+        return view('laravel-crm::portal.quotes.show', [
             'quote' => $quote,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
