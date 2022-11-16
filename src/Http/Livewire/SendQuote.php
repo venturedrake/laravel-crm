@@ -27,7 +27,7 @@ class SendQuote extends Component
     public function mount($quote)
     {
         $this->quote = $quote;
-        $this->to = $quote->person->getPrimaryEmail()->address ?? null;
+        $this->to = ($quote->person) ? ($quote->person->getPrimaryEmail()->address ?? null) : null;
         $this->subject = view('laravel-crm::mail.templates.send-quote.subject', ['quote' => $this->quote])->render();
         $this->message = view('laravel-crm::mail.templates.send-quote.message', ['quote' => $this->quote])->render();
     }
