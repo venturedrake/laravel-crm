@@ -15,7 +15,6 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     
-
     <!-- Styles -->
     <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=342534624562365" rel="stylesheet">
 

@@ -55,6 +55,9 @@ Route::group(['prefix' => 'p'], function () {
     Route::prefix('quotes')->group(function () {
         Route::get('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@show')
             ->name('laravel-crm.portal.quotes.show');
+
+        Route::post('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@process')
+            ->name('laravel-crm.portal.quotes.process');
     });
 });
 

@@ -291,4 +291,11 @@ return [
     'task_updated' => 'task updated',
     'logo' => 'logo',
     'timezone' => 'timezone',
+    'expires_in' => 'expires in',
+    'to' => 'to',
+    'from' => 'from',
+    'you_have_accepted_this_quote' => 'you have accepted this quote',
+    'you_have_rejected_this_quote' => 'you have rejected this quote',
+    'accepted' => 'accepted',
+    'rejected' => 'rejected',
 ];

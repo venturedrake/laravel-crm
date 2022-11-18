@@ -6,9 +6,20 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\SettingService;
 
 class QuoteController extends Controller
 {
+    /**
+     * @var SettingService
+     */
+    private $settingService;
+
+    public function __construct(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +33,7 @@ class QuoteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show(Quote $quote)
@@ -32,50 +43,50 @@ class QuoteController extends Controller
             $phone = $quote->person->getPrimaryPhone();
             $address = $quote->person->getPrimaryAddress();
         }
-        
+
         if ($quote->organisation) {
             $organisation_address = $quote->organisation->getPrimaryAddress();
         }
-        
+
         return view('laravel-crm::portal.quotes.show', [
             'quote' => $quote,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
             'organisation_address' => $organisation_address ?? null,
+            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'logo' => $this->settingService->get('logo_file')->value ?? null,
         ]);
-    }
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function accept(Quote $quote)
-    {
-        $quote->update([
-            'accepted_at' => Carbon::now(),
-        ]);
-        
-        flash(ucfirst(trans('laravel-crm::lang.quote_accepted')))->success()->important();
-
-        return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function reject(Quote $quote)
+    public function process(Quote $quote, Request $request)
     {
-        $quote->update([
-            'rejected_at' => Carbon::now(),
-        ]);
-        
-        flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
+        switch ($request->action) {
+            case "accept":
+                $quote->update([
+                    'accepted_at' => Carbon::now(),
+                ]);
+
+                flash(ucfirst(trans('laravel-crm::lang.quote_accepted')))->success()->important();
+
+                break;
+
+            case "reject":
+                $quote->update([
+                    'rejected_at' => Carbon::now(),
+                ]);
+
+                flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
+
+                break;
+        }
+
 
         return back();
     }

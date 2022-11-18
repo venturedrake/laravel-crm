@@ -75,7 +75,7 @@ class SendQuote extends Component
     public function generateUrl()
     {
         $this->signedUrl = URL::temporarySignedRoute(
-            'laravel-crm.public.quotes.show',
+            'laravel-crm.portal.quotes.show',
             now()->addDays(14),
             [
                 'quote' => $this->quote,
