@@ -31,7 +31,7 @@ class SendQuote extends Mailable
         $this->emailTo = $data['to'];
         $this->subject = $data['subject'];
         $this->content = $data['message'];
-        $this->ccTo = $data['cc'];
+        $this->copyMe = $data['cc'];
         $this->onlineQuoteLink = $data['onlineQuoteLink'];
     }
 
