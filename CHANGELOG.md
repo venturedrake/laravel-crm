@@ -19,6 +19,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.12.0 - 2022-11-19
+### Added
+- Quote builder
+- Send quotes
+- Accept/Reject quotes
+- Tasks
+- Files upload
+- Xero integration
+- Noted at field on notes
+- Pin notes
+- Toast notifications
+- Timezone setting
+- Logo setting
+### Fixed
+ - Support for country domains when using sudomain
+ - Issue with spatie permissions when conflicting tables exist
+ - Various minor bugs and typos
+
 ## 0.11.0 - 2022-09-03
 ### Added
 - Laravel 9 support

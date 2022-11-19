@@ -8,7 +8,7 @@
 
 The free CRM you have been looking for, this package will add CRM functionality to your laravel projects or can be used as a complete standalone CRM built with Laravel. 
 
-> ⚠️ Warning: This is a pre-release version that is not recommended for production use.
+> ⚠️ Warning: This is a pre-release version that is not recommended for production use just yet. 
 
 ## Use Cases
 
@@ -23,15 +23,19 @@ The free CRM you have been looking for, this package will add CRM functionality 
  - Dashboard
  - Sales leads management
  - Deal management
+ - Quote builder
+ - Send quotes with accept/reject functionality
  - Contact database management
  - Products & Product Categories
- - Notes
+ - Notes & Tasks
+ - File uploads
  - Users & Teams
  - Secure registration & login
  - Laravel Jetstream/Spark teams support
  - Roles & Permissions thanks to [Spatie Permissions](https://github.com/spatie/laravel-permission)
  - Model Audit logging thanks to [Laravel Auditing](https://github.com/owen-it/laravel-auditing)
-
+ - Xero integration
+ 
 ## Requirements
 
 - **PHP**: 7.3 or higher
@@ -43,16 +47,16 @@ The free CRM you have been looking for, this package will add CRM functionality 
 
 #### Step 1. Install a Laravel project if you don't have one already
 
-https://laravel.com/docs/6.x#installation
+https://laravel.com/docs/installation
 
-#### Step 2. Make sure you have set up Laravel auth in your project
+#### Step 2. Make sure you have set up authentication in your project
 
-https://laravel.com/docs/6.x/authentication
+https://laravel.com/docs/authentication
 
 #### Step 3. Require the current package using composer:
 
 ```bash
-composer require venturedrake/laravel-crm:^0.11
+composer require venturedrake/laravel-crm
 ```
 
 #### Step 4. Publish the migrations, config & assets
@@ -145,7 +149,7 @@ Note if you modified the route_prefix setting from the default the above url wil
 #### Step 1. Run the following to the update migrations and publish assets:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.11
+composer require venturedrake/laravel-crm
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
@@ -158,12 +162,18 @@ php artisan migrate
 php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder"
 ```
 
+#### Step 3. If using teams support then run the following permissions update command
+
+```bash
+php artisan laravelcrm:permissions
+```
+
 ### Upgrading from < 0.2
 
 #### Step 1. Run the following to the update package:
 
 ```bash
-composer require venturedrake/laravel-crm::^0.11
+composer require venturedrake/laravel-crm
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="migrations"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="config"
 php artisan vendor:publish --provider="VentureDrake\LaravelCrm\LaravelCrmServiceProvider" --tag="assets" --force
@@ -188,12 +198,13 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 ## Roadmap
 
- - Tasks
- - Files / Documents
+ - Orders
+ - Documents
  - Calendar (Calls, Meetings, Reminders)
  - Custom Fields
  - Activity Feed / Timelines
  - CSV Import / Export
+ - SMS
 
 ## Feedback
 
