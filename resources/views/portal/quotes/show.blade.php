@@ -62,7 +62,7 @@
                         </div>
                         <div class="col px-5 py-4 text-right">
                             @if($logo)
-                                <img src="{{ asset($logo) }}" height="80" />
+                                <img src="{{ asset('storage/'.$logo) }}" height="80" />
                             @endif    
                         </div>
                     </div>
