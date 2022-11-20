@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Timezone setting
 - Logo setting
 ### Fixed
- - Support for country domains when using sudomain
+ - Support for country domains when using subdomain
  - Issue with spatie permissions when conflicting tables exist
  - Various minor bugs and typos
 
