@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm;
 
+use Dcblogdev\Xero\Models\XeroToken;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -44,6 +45,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
+use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -86,6 +88,7 @@ use VentureDrake\LaravelCrm\Observers\UserObserver;
 use VentureDrake\LaravelCrm\Observers\XeroContactObserver;
 use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
+use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -143,6 +146,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         if (config('laravel-crm.teams')) {
             $router->pushMiddlewareToGroup('web', TeamsPermission::class);
             $router->pushMiddlewareToGroup('crm-api', TeamsPermission::class);
+            $router->pushMiddlewareToGroup('web', XeroTenant::class);
+            $router->pushMiddlewareToGroup('crm-api', XeroTenant::class);
         }
         
         $router->pushMiddlewareToGroup('crm', Settings::class);
@@ -177,6 +182,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         XeroPerson::observe(XeroPersonObserver::class);
         Task::observe(TaskObserver::class);
         Activity::observe(ActivityObserver::class);
+        XeroToken::observe(XeroTokenObserver::class);
         
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
