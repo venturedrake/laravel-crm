@@ -143,10 +143,6 @@ dt {
   display: none;
 }
 
-#quoteProductsTotals .input-group-text{
-  min-width: 100px;
-}
-
 .bootstrap-duallistbox-container .btn-outline-secondary,
 .bootstrap-duallistbox-container select{
   color: #495057 !important;
@@ -237,4 +233,8 @@ dt {
 
 .toast.hide{
   z-index: 0;
+}
+
+.table .form-group{
+  margin-bottom: 0;
 }
