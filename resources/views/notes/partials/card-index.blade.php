@@ -20,6 +20,7 @@
             <thead>
             <tr>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.note')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.noted_at')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.created_by')) }}</th>
                 <th scope="col"></th>
@@ -27,10 +28,10 @@
             </thead>
             <tbody>
             @foreach($notes as $note)
-               {{-- @livewire('note',[
+                @livewire('note',[
                     'note' => $note,
                     'view' => 'note-table'
-                ], key($note->id))--}}
+                ], key($note->id))
             @endforeach
             </tbody>
         </table>

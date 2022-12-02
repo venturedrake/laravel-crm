@@ -65,6 +65,8 @@ class FileObserver
         if (! app()->runningInConsole()) {
             $file->user_deleted_id = auth()->user()->id ?? null;
             $file->saveQuietly();
+
+            $file->activity->delete();
         }
     }
 

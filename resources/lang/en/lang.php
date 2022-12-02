@@ -298,4 +298,5 @@ return [
     'you_have_rejected_this_quote' => 'you have rejected this quote',
     'accepted' => 'accepted',
     'rejected' => 'rejected',
+    'note_deleted' => 'note deleted',
 ];

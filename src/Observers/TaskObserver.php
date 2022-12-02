@@ -68,6 +68,8 @@ class TaskObserver
         if (! app()->runningInConsole()) {
             $task->user_deleted_id = auth()->user()->id ?? null;
             $task->saveQuietly();
+
+            $task->activity->delete();
         }
     }
 

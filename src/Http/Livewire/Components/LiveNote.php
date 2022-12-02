@@ -14,6 +14,7 @@ class LiveNote extends Component
     public $editMode = false;
     public $content;
     public $noted_at;
+    public $view;
 
     protected $listeners = [
         'refreshComponent' => '$refresh',
@@ -21,11 +22,12 @@ class LiveNote extends Component
         'noteUnpinned' => '$refresh',
     ];
     
-    public function mount(Note $note)
+    public function mount(Note $note, $view = 'note')
     {
         $this->note = $note;
         $this->content = $note->content;
         $this->noted_at = ($note->noted_at) ? $note->noted_at->format('Y/m/d H:i') : null;
+        $this->view = $view;
     }
 
     /**
@@ -98,6 +100,6 @@ class LiveNote extends Component
     
     public function render()
     {
-        return view('laravel-crm::livewire.components.note');
+        return view('laravel-crm::livewire.components.'.$this->view);
     }
 }

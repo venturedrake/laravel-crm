@@ -65,6 +65,8 @@ class NoteObserver
         if (! app()->runningInConsole()) {
             $note->user_deleted_id = auth()->user()->id ?? null;
             $note->saveQuietly();
+            
+            $note->activity->delete();
         }
     }
 
