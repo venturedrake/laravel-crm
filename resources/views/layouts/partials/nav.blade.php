@@ -15,6 +15,9 @@
             @can('view crm tasks')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.tasks') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.tasks.index')) }}">{{ ucfirst(__('laravel-crm::lang.tasks')) }}</a></li>
             @endcan
+            @can('view crm notes')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.notes') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.notes.index')) }}">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a></li>
+            @endcan
             {{--@canany(['view crm orders', 'view crm projects'])
                 <li class="dropdown-divider"></li>
             @endcan

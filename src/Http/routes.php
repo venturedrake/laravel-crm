@@ -430,25 +430,32 @@ Route::group(['prefix' => 'tasks', 'middleware' => 'auth.laravel-crm'], function
 
 Route::group(['prefix' => 'notes', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@index')
-        ->name('laravel-crm.notes.index');
+        ->name('laravel-crm.notes.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Note']);
 
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@create')
-        ->name('laravel-crm.notes.create');
+    /*Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@create')
+        ->name('laravel-crm.notes.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Note']);
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@store')
-        ->name('laravel-crm.notes.store');
+        ->name('laravel-crm.notes.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Note']);
 
     Route::get('{note}', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@show')
-        ->name('laravel-crm.notes.show');
+        ->name('laravel-crm.notes.show')
+        ->middleware(['can:view,note']);
 
     Route::get('{note}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@edit')
-        ->name('laravel-crm.notes.edit');
+        ->name('laravel-crm.notes.edit')
+        ->middleware(['can:update,note']);
 
     Route::put('{note}', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@update')
-        ->name('laravel-crm.notes.update');
+        ->name('laravel-crm.notes.update')
+        ->middleware(['can:update,note']);*/
 
     Route::delete('{note}', 'VentureDrake\LaravelCrm\Http\Controllers\NoteController@destroy')
-        ->name('laravel-crm.notes.destroy');
+        ->name('laravel-crm.notes.destroy')
+        ->middleware(['can:delete,note']);
 });
 
 /* People */

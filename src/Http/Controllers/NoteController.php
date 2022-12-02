@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Models\Note;
 
 class NoteController extends Controller
 {
@@ -13,7 +14,17 @@ class NoteController extends Controller
      */
     public function index()
     {
-        //
+        $notes = Note::where('user_created_id', auth()->user()->id)->latest();
+
+        if ($notes->count() < 30) {
+            $notes = $notes->get();
+        } else {
+            $notes = $notes->paginate(30);
+        }
+
+        return view('laravel-crm::notes.index', [
+            'notes' => $notes ?? [],
+        ]);
     }
 
     /**
@@ -77,8 +88,12 @@ class NoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Note $note)
     {
-        //
+        $note->delete();
+
+        flash(ucfirst(trans('laravel-crm::lang.note_deleted')))->success()->important();
+
+        return redirect(route('laravel-crm.notes.index'));
     }
 }

@@ -284,6 +284,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm tasks', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm tasks', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm tasks', 'crm_permission' => 1]);
+
+        Permission::firstOrCreate(['name' => 'create crm notes', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm notes', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm notes', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm notes', 'crm_permission' => 1]);
         
         if (config('permission.teams')) {
             $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
@@ -343,6 +348,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm tasks',
                 'edit crm tasks',
                 'delete crm tasks',
+                'create crm notes',
+                'view crm notes',
+                'edit crm notes',
+                'delete crm notes',
             ]);
 
         if (config('permission.teams')) {
@@ -385,6 +394,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm tasks',
                 'edit crm tasks',
                 'delete crm tasks',
+                'create crm notes',
+                'view crm notes',
+                'edit crm notes',
+                'delete crm notes',
             ]);
     }
 }
