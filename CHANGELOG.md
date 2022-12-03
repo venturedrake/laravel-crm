@@ -19,6 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.12.1 - 2022-12-03
+### Added
+- Aggregated notes
+- Support for xero integration multi-tenancy
+### Changed
+- Quote items in a table
+- Disable autofill on noted_at field
+### Fixed
+- Xero integration when using teams
+- Deleting of activity when notes, tasks or files deleted
+### Removed
+
 ## 0.12.0 - 2022-11-19
 ### Added
 - Quote builder
