@@ -29,7 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Xero integration when using teams
 - Deleting of activity when notes, tasks or files deleted
-### Removed
 
 ## 0.12.0 - 2022-11-19
 ### Added
