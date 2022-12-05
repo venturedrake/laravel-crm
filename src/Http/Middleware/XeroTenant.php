@@ -20,7 +20,7 @@ class XeroTenant
             return $next($request);
         }
         
-        if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
+        if (config('laravel-crm.teams') && auth()->hasUser() && auth()->user()->currentTeam) {
             if ($xeroToken = XeroToken::where('team_id', auth()->user()->currentTeam->id)->first()) {
                 Xero::setTenantId($xeroToken->id);
             } else {
