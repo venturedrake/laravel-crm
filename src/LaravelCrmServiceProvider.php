@@ -52,6 +52,7 @@ use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\LeadSource;
 use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -72,6 +73,7 @@ use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\FileObserver;
 use VentureDrake\LaravelCrm\Observers\LeadObserver;
+use VentureDrake\LaravelCrm\Observers\LeadSourceObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
 use VentureDrake\LaravelCrm\Observers\OrderObserver;
 use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
@@ -164,6 +166,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Register Observers
         Lead::observe(LeadObserver::class);
+        LeadSource::observe(LeadSourceObserver::class);
         Deal::observe(DealObserver::class);
         Quote::observe(QuoteObserver::class);
         QuoteProduct::observe(QuoteProductObserver::class);
