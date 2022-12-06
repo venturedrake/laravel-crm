@@ -105,6 +105,8 @@ class LaravelCrmXero extends Command
                                 ]);
                             }
                         }
+                    }else{
+                        $this->info('LaravelCRM Xero Integration '.ucfirst($this->argument('model')).' disabled');
                     }
 
                     break;
@@ -159,6 +161,8 @@ class LaravelCrmXero extends Command
                                 ]);
                             }
                         }
+                    }else{
+                        $this->info('LaravelCRM Xero Integration '.ucfirst($this->argument('model')).' disabled');
                     }
                     
                     break;
