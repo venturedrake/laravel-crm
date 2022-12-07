@@ -30,11 +30,26 @@ class PersonController extends Controller
     public function index(Request $request)
     {
         $params = Person::filters($request);
+        $people = Person::filter($params);
         
-        if (Person::filter($params)->get()->count() < 30) {
-            $people = Person::filter($params)->sortable(['created_at' => 'desc'])->get();
-        } else {
-            $people = Person::filter($params)->sortable(['created_at' => 'desc'])->paginate(30);
+        if(request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')){
+            if ($people->count() < 30) {
+                $people = $people->get()->sortBy([
+                    request()->only(['sort', 'direction'])['sort'],
+                    request()->only(['sort', 'direction'])['direction']
+                ]);
+            }else{
+                $people = $people->get()->sortBy([
+                    request()->only(['sort', 'direction'])['sort'],
+                    request()->only(['sort', 'direction'])['direction']
+                ])->paginate(30);
+            }
+        }else{
+            if ($people->count() < 30) {
+                $people = $people->sortable(['created_at' => 'desc'])->get();
+            } else {
+                $people = $people->sortable(['created_at' => 'desc'])->paginate(30);
+            }
         }
         
         return view('laravel-crm::people.index', [
