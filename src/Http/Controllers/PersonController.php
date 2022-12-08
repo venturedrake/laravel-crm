@@ -32,19 +32,26 @@ class PersonController extends Controller
         $params = Person::filters($request);
         $people = Person::filter($params);
         
-        if(request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')){
+        if (request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')) {
+            $people = $people->get();
+            
+            foreach ($people as $key => $person) {
+                $people[$key]->first_name_decrypted = $person->first_name;
+                $people[$key]->last_name_decrypted = $person->last_name;
+            }
+            
             if ($people->count() < 30) {
-                $people = $people->get()->sortBy([
-                    request()->only(['sort', 'direction'])['sort'],
-                    request()->only(['sort', 'direction'])['direction']
+                $people = $people->sortBy([
+                    request()->only(['sort', 'direction'])['sort'].'_decrypted',
+                    request()->only(['sort', 'direction'])['direction'],
                 ]);
-            }else{
-                $people = $people->get()->sortBy([
-                    request()->only(['sort', 'direction'])['sort'],
-                    request()->only(['sort', 'direction'])['direction']
+            } else {
+                $people = $people->sortBy([
+                    request()->only(['sort', 'direction'])['sort'].'_decrypted',
+                    request()->only(['sort', 'direction'])['direction'],
                 ])->paginate(30);
             }
-        }else{
+        } else {
             if ($people->count() < 30) {
                 $people = $people->sortable(['created_at' => 'desc'])->get();
             } else {

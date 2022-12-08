@@ -78,6 +78,11 @@ class Person extends Model
         }
     }
 
+    public function getFirstNameDecryptedAttribute()
+    {
+        return $this->decryptField($this->first_name);
+    }
+
     /**
      * Get all of the persons emails.
      */
