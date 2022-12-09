@@ -213,7 +213,9 @@ class PersonController extends Controller
             return redirect(route('laravel-crm.people.index'));
         }
 
-        $people = Person::all()->filter(function ($record) use ($searchValue) {
+        $params = Person::filters($request, 'search');
+
+        $people = Person::filter($params)->get()->filter(function ($record) use ($searchValue) {
             foreach ($record->getSearchable() as $field) {
                 if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
                     return $record;

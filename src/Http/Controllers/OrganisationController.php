@@ -162,8 +162,10 @@ class OrganisationController extends Controller
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.organisations.index'));
         }
+        
+        $params = Organisation::filters($request, 'search');
 
-        $organisations = Organisation::all()->filter(function ($record) use ($searchValue) {
+        $organisations = Organisation::filter($params)->get()->filter(function ($record) use ($searchValue) {
             foreach ($record->getSearchable() as $field) {
                 if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
                     return $record;

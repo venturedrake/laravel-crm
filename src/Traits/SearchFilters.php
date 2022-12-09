@@ -10,14 +10,14 @@ use Illuminate\Support\Str;
  */
 trait SearchFilters
 {
-    public static function filters($request)
+    public static function filters($request, $action = 'index')
     {
-        if ($request->isMethod('post')) {
-            $request->session()->put(class_basename($request->route()->getAction()['controller']).'.params', $request->except('_token'));
+        if ($request->isMethod('post') && $action != 'search') {
+            $request->session()->put(class_basename($request->route()->getController()).'.params', $request->except('_token'));
 
             return $request->except('_token');
-        } elseif ($request->session()->has(class_basename($request->route()->getAction()['controller']).'.params')) {
-            return $request->session()->get(class_basename($request->route()->getAction()['controller']).'.params');
+        } elseif ($request->session()->has(class_basename($request->route()->getController()).'.params')) {
+            return $request->session()->get(class_basename($request->route()->getController()).'.params');
         }
         
         return $request->except('_token');
@@ -25,14 +25,14 @@ trait SearchFilters
     
     public static function filterValue($key)
     {
-        if ($params = request()->session()->get(class_basename(request()->route()->getAction()['controller']).'.params')) {
+        if ($params = request()->session()->get(class_basename(request()->route()->getController()).'.params')) {
             return $params[$key] ?? null;
         }
     }
     
     public static function filterActive($key, $options)
     {
-        if ($params = request()->session()->get(class_basename(request()->route()->getAction()['controller']).'.params')) {
+        if ($params = request()->session()->get(class_basename(request()->route()->getController()).'.params')) {
             if (isset($params[$key]) && count($params[$key]) < count($options)) {
                 return true;
             }
