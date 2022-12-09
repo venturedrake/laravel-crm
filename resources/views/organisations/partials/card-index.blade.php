@@ -3,13 +3,14 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.organizations')) }} @include('laravel-crm::partials.filters', [
-                'action' => route('laravel-crm.organisations.filter'),
-                'model' => '\VentureDrake\LaravelCrm\Models\Organisation'
-            ])
+            {{ ucfirst(__('laravel-crm::lang.organizations')) }}
         @endslot
 
         @slot('actions')
+            @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.organisations.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Organisation'
+            ])
             @can('create crm organisations')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.organisations.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_organization')) }}</a></span>
             @endcan

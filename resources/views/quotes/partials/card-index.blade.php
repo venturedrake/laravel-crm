@@ -3,13 +3,14 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.quotes')) }} @include('laravel-crm::partials.filters', [
-                'action' => route('laravel-crm.quotes.filter'),
-                'model' => '\VentureDrake\LaravelCrm\Models\Quote'
-            ])
+            {{ ucfirst(__('laravel-crm::lang.quotes')) }} 
         @endslot
 
         @slot('actions')
+            @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.quotes.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Quote'
+            ])
             @can('create crm quotes')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.quotes.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_quote')) }}</a></span>
             @endcan

@@ -3,13 +3,14 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.people')) }} @include('laravel-crm::partials.filters', [
-                'action' => route('laravel-crm.people.filter'),
-                'model' => '\VentureDrake\LaravelCrm\Models\Person'
-            ])
+            {{ ucfirst(__('laravel-crm::lang.people')) }}
         @endslot
     
         @slot('actions')
+            @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.people.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Person'
+            ])
             @can('create crm people')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.people.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_person')) }}</a></span>
             @endcan

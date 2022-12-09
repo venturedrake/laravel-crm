@@ -3,13 +3,14 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.orders')) }} @include('laravel-crm::partials.filters', [
-                'action' => route('laravel-crm.orders.filter'),
-                'model' => '\VentureDrake\LaravelCrm\Models\Order'
-            ])
+            {{ ucfirst(__('laravel-crm::lang.orders')) }} 
         @endslot
 
         @slot('actions')
+            @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.orders.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Order'
+            ])
             {{--@can('create crm orders')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.orders.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_order')) }}</a></span>
             @endcan--}}

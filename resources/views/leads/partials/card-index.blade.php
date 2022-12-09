@@ -7,15 +7,13 @@
         @endslot
 
         @slot('actions')
-            <span class="float-right">
-                @include('laravel-crm::partials.filters', [
-                    'action' => route('laravel-crm.leads.filter'),
-                    'model' => '\VentureDrake\LaravelCrm\Models\Lead'
-                ])
-                @can('create crm leads')
-                   <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.leads.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_lead')) }}</a>
-                @endcan
-            </span>
+            @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.leads.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Lead'
+            ])
+            @can('create crm leads')
+               <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.leads.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_lead')) }}</a>
+            @endcan 
         @endslot
        
     @endcomponent
