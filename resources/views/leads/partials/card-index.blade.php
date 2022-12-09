@@ -3,18 +3,21 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.leads')) }} @include('laravel-crm::partials.filters', [
-                'action' => route('laravel-crm.leads.filter'),
-                'model' => '\VentureDrake\LaravelCrm\Models\Lead'
-            ])
+            {{ ucfirst(__('laravel-crm::lang.leads')) }}
         @endslot
 
         @slot('actions')
-            @can('create crm leads')
-            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.leads.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_lead')) }}</a></span>
-            @endcan
+            <span class="float-right">
+                @include('laravel-crm::partials.filters', [
+                    'action' => route('laravel-crm.leads.filter'),
+                    'model' => '\VentureDrake\LaravelCrm\Models\Lead'
+                ])
+                @can('create crm leads')
+                   <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.leads.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_lead')) }}</a>
+                @endcan
+            </span>
         @endslot
-
+       
     @endcomponent
 
     @component('laravel-crm::components.card-table')
