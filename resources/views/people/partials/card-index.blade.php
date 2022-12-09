@@ -75,7 +75,7 @@
     
     @if($people instanceof \Illuminate\Pagination\LengthAwarePaginator )
         @component('laravel-crm::components.card-footer')
-            {{ $people->links() }}
+            {{ $people->appends(request()->except('page'))->links() }}
         @endcomponent
     @endif
     

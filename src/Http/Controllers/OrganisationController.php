@@ -29,11 +29,33 @@ class OrganisationController extends Controller
     public function index(Request $request)
     {
         $params = Organisation::filters($request);
-        
-        if (Organisation::filter($params)->get()->count() < 30) {
-            $organisations = Organisation::filter($params)->sortable(['created_at' => 'desc'])->get();
+        $organisations = Organisation::filter($params);
+
+        // This is  not the best, will refactor. Problem with trying to sort encryoted fields
+        if (request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')) {
+            $organisations = $organisations->get();
+
+            foreach ($organisations as $key => $organisation) {
+                $organisations[$key]->name_decrypted = $organisation->name;
+            }
+
+            $sortField = Str::replace('.', '_', request()->only(['sort', 'direction'])['sort']).'_decrypted';
+
+            if (request()->only(['sort', 'direction'])['direction'] == 'asc') {
+                $organisations = $organisations->sortBy($sortField);
+            } else {
+                $organisations = $organisations->sortByDesc($sortField);
+            }
+
+            if ($organisations->count() > 30) {
+                $organisations = $organisations->paginate(30);
+            }
         } else {
-            $organisations = Organisation::filter($params)->sortable(['created_at' => 'desc'])->paginate(30);
+            if ($organisations->count() < 30) {
+                $organisations = $organisations->sortable(['created_at' => 'desc'])->get();
+            } else {
+                $organisations = $organisations->sortable(['created_at' => 'desc'])->paginate(30);
+            }
         }
         
         return view('laravel-crm::organisations.index', [

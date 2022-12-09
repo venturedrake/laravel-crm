@@ -32,24 +32,26 @@ class PersonController extends Controller
         $params = Person::filters($request);
         $people = Person::filter($params);
         
+        // This is  not the best, will refactor. Problem with trying to sort encryoted fields
         if (request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')) {
             $people = $people->get();
             
             foreach ($people as $key => $person) {
                 $people[$key]->first_name_decrypted = $person->first_name;
                 $people[$key]->last_name_decrypted = $person->last_name;
+                $people[$key]->organisation_name_decrypted = $person->organisation->name ?? null;
             }
             
-            if ($people->count() < 30) {
-                $people = $people->sortBy([
-                    request()->only(['sort', 'direction'])['sort'].'_decrypted',
-                    request()->only(['sort', 'direction'])['direction'],
-                ]);
+            $sortField = Str::replace('.', '_', request()->only(['sort', 'direction'])['sort']).'_decrypted';
+            
+            if (request()->only(['sort', 'direction'])['direction'] == 'asc') {
+                $people = $people->sortBy($sortField);
             } else {
-                $people = $people->sortBy([
-                    request()->only(['sort', 'direction'])['sort'].'_decrypted',
-                    request()->only(['sort', 'direction'])['direction'],
-                ])->paginate(30);
+                $people = $people->sortByDesc($sortField);
+            }
+            
+            if ($people->count() > 30) {
+                $people = $people->paginate(30);
             }
         } else {
             if ($people->count() < 30) {
