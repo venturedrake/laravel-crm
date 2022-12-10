@@ -28,6 +28,7 @@ class OrganisationController extends Controller
      */
     public function index(Request $request)
     {
+        Organisation::resetSearchValue($request);
         $params = Organisation::filters($request);
         $organisations = Organisation::filter($params);
 
@@ -157,7 +158,7 @@ class OrganisationController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = $request->search;
+        $searchValue = Organisation::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.organisations.index'));
@@ -175,6 +176,7 @@ class OrganisationController extends Controller
 
         return view('laravel-crm::organisations.index', [
             'organisations' => $organisations,
+            'searchValue' => $searchValue ?? null,
         ]);
     }
 

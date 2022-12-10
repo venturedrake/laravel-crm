@@ -45,6 +45,7 @@ class QuoteController extends Controller
      */
     public function index(Request $request)
     {
+        Quote::resetSearchValue($request);
         $params = Quote::filters($request);
         
         if (Quote::filter($params)->get()->count() < 30) {
@@ -207,7 +208,7 @@ class QuoteController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = $request->search;
+        $searchValue = Quote::searchValue($request);
         
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.quotes.index'));
@@ -246,6 +247,7 @@ class QuoteController extends Controller
 
         return view('laravel-crm::quotes.index', [
             'quotes' => $quotes,
+            'searchValue' => $searchValue ?? null,
         ]);
     }
     

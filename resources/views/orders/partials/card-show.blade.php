@@ -8,13 +8,16 @@
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.orders.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_orders')) }}</a> | 
+                @include('laravel-crm::partials.return-button',[
+                    'model' => $order,
+                    'route' => 'orders'
+                ]) | 
                 @can('edit crm orders')
                 @if(!$order->closed_at)
-                    <a href="{{  route('laravel-crm.orders.won',$order) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>
-                    <a href="{{  route('laravel-crm.orders.lost',$order) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.lost')) }}</a>
+                    <a href="{{ route('laravel-crm.orders.won',$order) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>
+                    <a href="{{ route('laravel-crm.orders.lost',$order) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.lost')) }}</a>
                 @else
-                    <a href="{{  route('laravel-crm.orders.reopen',$order) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.reopen')) }}</a>
+                    <a href="{{ route('laravel-crm.orders.reopen',$order) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.reopen')) }}</a>
                 @endif
                 @endcan
                 @include('laravel-crm::partials.navs.activities') |

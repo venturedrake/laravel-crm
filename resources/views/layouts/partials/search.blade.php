@@ -1,4 +1,4 @@
-<form role="search" method="post" action="@php
+<form role="search" method="get" action="@php
 
      if(strpos(Route::currentRouteName(), 'laravel-crm.leads') === 0 && auth()->user()->can('view crm leads')){
         echo url(route('laravel-crm.leads.search'));
@@ -52,7 +52,7 @@
     @csrf
     <input type="hidden" name="type" value="{!! Route::current()->getName() !!}">
     <div class="input-group">
-        <input type="text" class="form-control" name="search" aria-label="Search" value="{{ old('search') ?? Request::input('search') }}">
+        <input type="text" class="form-control" name="search" aria-label="Search" value="{{ old('search') ?? Request::input('search') ?? $searchValue ?? null }}">
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i> <span class="action-current">{{ $currentAction ?? ucfirst(__('laravel-crm::lang.leads')) }}</span></button>
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>

@@ -10,7 +10,10 @@
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.organisations.index')) }}"><span class="fa fa-angle-double-left"></span>  {{ ucfirst(__('laravel-crm::lang.back_to_organizations')) }}</a> | 
+                @include('laravel-crm::partials.return-button',[
+                    'model' => $organisation,
+                    'route' => 'organisations'
+                ]) | 
                 @can('create crm deals')
                 <a href="{{ url(route('laravel-crm.deals.create',['model' => 'organisation', 'id' => $organisation->id])) }}" alt="Add deal" class="btn btn-success btn-sm"><span class="fa fa-plus" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.add_new_deal')) }}</a>
                 @endcan

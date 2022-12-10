@@ -9,7 +9,10 @@
         @slot('actions')
 
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.products.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_products')) }}</a> |
+                @include('laravel-crm::partials.return-button',[
+                    'model' => $product,
+                    'route' => 'products'
+                ]) | 
                 @can('edit crm products')
                 <a href="{{ url(route('laravel-crm.products.edit', $product)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan

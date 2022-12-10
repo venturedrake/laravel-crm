@@ -299,4 +299,5 @@ return [
     'accepted' => 'accepted',
     'rejected' => 'rejected',
     'note_deleted' => 'note deleted',
+    'back_to_search_results' => 'back to search results',
 ];

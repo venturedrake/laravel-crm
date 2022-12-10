@@ -8,7 +8,10 @@
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.deals.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_deals')) }}</a> | 
+                @include('laravel-crm::partials.return-button',[
+                    'model' => $deal,
+                    'route' => 'deals'
+                ]) | 
                 @can('edit crm deals')
                 @if(!$deal->closed_at)
                     <a href="{{  route('laravel-crm.deals.won',$deal) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>

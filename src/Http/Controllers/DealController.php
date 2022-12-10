@@ -45,6 +45,7 @@ class DealController extends Controller
      */
     public function index(Request $request)
     {
+        Deal::resetSearchValue($request);
         $params = Deal::filters($request);
         
         if (Deal::filter($params)->get()->count() < 30) {
@@ -207,7 +208,7 @@ class DealController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = $request->search;
+        $searchValue = Deal::searchValue($request);
         
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.deals.index'));
@@ -246,6 +247,7 @@ class DealController extends Controller
 
         return view('laravel-crm::deals.index', [
             'deals' => $deals,
+            'searchValue' => $searchValue ?? null,
         ]);
     }
     

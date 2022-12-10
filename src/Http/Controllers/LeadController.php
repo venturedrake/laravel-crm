@@ -52,6 +52,7 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
+        Lead::resetSearchValue($request);
         $params = Lead::filters($request);
         
         if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
@@ -187,7 +188,7 @@ class LeadController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = $request->search;
+        $searchValue = Lead::searchValue($request);
         
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.leads.index'));
@@ -226,6 +227,7 @@ class LeadController extends Controller
 
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
+            'searchValue' => $searchValue ?? null,
         ]);
     }
 

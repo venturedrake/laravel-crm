@@ -29,6 +29,7 @@ class PersonController extends Controller
      */
     public function index(Request $request)
     {
+        Person::resetSearchValue($request);
         $params = Person::filters($request);
         $people = Person::filter($params);
         
@@ -207,7 +208,7 @@ class PersonController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = $request->search;
+        $searchValue = Person::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.people.index'));
@@ -225,6 +226,7 @@ class PersonController extends Controller
 
         return view('laravel-crm::people.index', [
             'people' => $people,
+            'searchValue' => $searchValue ?? null,
         ]);
     }
 

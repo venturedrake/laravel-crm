@@ -10,7 +10,10 @@
             @endslot
 
             @slot('actions')
-                <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.orders.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_orders')) }}</a></span>
+                @include('laravel-crm::partials.return-button',[
+                    'model' => $order,
+                    'route' => 'orders'
+                ])
             @endslot
 
         @endcomponent

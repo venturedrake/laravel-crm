@@ -10,6 +10,22 @@ use Illuminate\Support\Str;
  */
 trait SearchFilters
 {
+    public static function searchValue($request)
+    {
+        if ($request->search) {
+            $request->session()->put(class_basename($request->route()->getController()).'.search', $request->search);
+            
+            return $request->search;
+        } elseif ($request->session()->has(class_basename($request->route()->getController()).'.search')) {
+            return $request->session()->get(class_basename($request->route()->getController()).'.search');
+        }
+    }
+
+    public static function resetSearchValue($request)
+    {
+        $request->session()->forget(class_basename($request->route()->getController()).'.search');
+    }
+    
     public static function filters($request, $action = 'index')
     {
         if ($request->isMethod('post') && $action != 'search') {

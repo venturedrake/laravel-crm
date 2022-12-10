@@ -45,6 +45,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        Order::resetSearchValue($request);
         /*$params = Order::filters($request);
 
         if (Order::filter($params)->get()->count() < 30) {
@@ -207,7 +208,7 @@ class OrderController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = $request->search;
+        $searchValue = Order::searchValue($request);
         
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.orders.index'));
@@ -246,6 +247,7 @@ class OrderController extends Controller
 
         return view('laravel-crm::orders.index', [
             'orders' => $orders,
+            'searchValue' => $searchValue ?? null,
         ]);
     }
     
