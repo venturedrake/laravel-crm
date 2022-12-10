@@ -20,7 +20,7 @@
                             'name' => 'user_owner_id',
                             'label' => 'owner',
                             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false) + [0 => '(Blank)'],
-                            'value' => request()->input('user_owner_id') ?? $model::filterValue('user_owner_id') ?? array_keys(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all(), false) + [0 => '(Blank)'])
+                            'value' => request()->input('user_owner_id') ?? $model::filterValue('user_owner_id') ?? array_keys(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false) + [0 => '(Blank)'])
                         ])
                     </div>
                     <div class="modal-filter-group {{ ($model::filterActive('label_id', \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all(), false) + [0 => '(Blank)'])) ? 'filter-active' : null }}">
