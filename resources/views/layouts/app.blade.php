@@ -17,7 +17,7 @@
     
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=798656879089" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=9565677678789" rel="stylesheet">
 
     @livewireStyles
 </head>

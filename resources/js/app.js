@@ -225,7 +225,8 @@ const appJquery = function() {
                 selectAllJustVisible: false,
                 selectAllName: 'select-all-owner',
                 enableFiltering: true,
-                enableCaseInsensitiveFiltering: true
+                enableCaseInsensitiveFiltering: true,
+                maxHeight: 500
             });
 
             $('select[name="label_id[]"]').multiselect({
@@ -243,7 +244,8 @@ const appJquery = function() {
                 selectAllJustVisible: false,
                 selectAllName: 'select-all-label',
                 enableFiltering: true,
-                enableCaseInsensitiveFiltering: true
+                enableCaseInsensitiveFiltering: true,
+                maxHeight: 500
             });
             
             $('form button#clear-filter').on('click', function() {
