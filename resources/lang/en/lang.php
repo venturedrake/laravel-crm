@@ -300,4 +300,6 @@ return [
     'rejected' => 'rejected',
     'note_deleted' => 'note deleted',
     'back_to_search_results' => 'back to search results',
+    'back_to_orders' => 'back_to_orders',
+    'back_to_organisations' => 'back to organizations',
 ];
