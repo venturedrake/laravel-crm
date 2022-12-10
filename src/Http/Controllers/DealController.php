@@ -213,14 +213,17 @@ class DealController extends Controller
             return redirect(route('laravel-crm.deals.index'));
         }
 
-        $deals = Deal::select(
-            config('laravel-crm.db_table_prefix').'deals.*',
-            config('laravel-crm.db_table_prefix').'people.first_name',
-            config('laravel-crm.db_table_prefix').'people.middle_name',
-            config('laravel-crm.db_table_prefix').'people.last_name',
-            config('laravel-crm.db_table_prefix').'people.maiden_name',
-            config('laravel-crm.db_table_prefix').'organisations.name'
-        )
+        $params = Deal::filters($request, 'search');
+
+        $deals = Deal::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'deals.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'deals.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'deals.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
             ->get()

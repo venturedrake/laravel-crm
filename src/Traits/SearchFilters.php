@@ -68,9 +68,9 @@ trait SearchFilters
                 }
             } elseif (isset($params[$field]) && is_array($params[$field])) {
                 $query->where(function ($query) use ($params, $field) {
-                    $query->orWhereIn($field, $params[$field]);
+                    $query->orWhereIn($this->getTable().'.'.$field, $params[$field]);
                     if (in_array(0, $params[$field])) {
-                        $query->orWhereNull($field);
+                        $query->orWhereNull($this->getTable().'.'.$field);
                     }
                 });
             }

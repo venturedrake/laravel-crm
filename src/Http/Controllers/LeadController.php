@@ -192,15 +192,18 @@ class LeadController extends Controller
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.leads.index'));
         }
+
+        $params = Lead::filters($request, 'search');
         
-        $leads = Lead::select(
-            config('laravel-crm.db_table_prefix').'leads.*',
-            config('laravel-crm.db_table_prefix').'people.first_name',
-            config('laravel-crm.db_table_prefix').'people.middle_name',
-            config('laravel-crm.db_table_prefix').'people.last_name',
-            config('laravel-crm.db_table_prefix').'people.maiden_name',
-            config('laravel-crm.db_table_prefix').'organisations.name'
-        )
+        $leads = Lead::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'leads.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'leads.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'leads.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
             ->get()

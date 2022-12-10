@@ -213,14 +213,17 @@ class OrderController extends Controller
             return redirect(route('laravel-crm.orders.index'));
         }
 
-        $orders = Order::select(
-            config('laravel-crm.db_table_prefix').'orders.*',
-            config('laravel-crm.db_table_prefix').'people.first_name',
-            config('laravel-crm.db_table_prefix').'people.middle_name',
-            config('laravel-crm.db_table_prefix').'people.last_name',
-            config('laravel-crm.db_table_prefix').'people.maiden_name',
-            config('laravel-crm.db_table_prefix').'organisations.name'
-        )
+        $params = Order::filters($request, 'search');
+
+        $orders = Order::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'orders.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
             ->get()

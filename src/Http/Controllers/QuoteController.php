@@ -213,14 +213,17 @@ class QuoteController extends Controller
             return redirect(route('laravel-crm.quotes.index'));
         }
 
-        $quotes = Quote::select(
-            config('laravel-crm.db_table_prefix').'quotes.*',
-            config('laravel-crm.db_table_prefix').'people.first_name',
-            config('laravel-crm.db_table_prefix').'people.middle_name',
-            config('laravel-crm.db_table_prefix').'people.last_name',
-            config('laravel-crm.db_table_prefix').'people.maiden_name',
-            config('laravel-crm.db_table_prefix').'organisations.name'
-        )
+        $params = Quote::filters($request, 'search');
+
+        $quotes = Quote::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'quotes.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'quotes.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'quotes.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
             ->get()
