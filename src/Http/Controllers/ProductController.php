@@ -28,6 +28,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        Product::resetSearchValue($request);
         $params = $request->except('_token');
         
         if (Product::filter($params)->get()->count() < 30) {
@@ -125,7 +126,7 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = $request->search;
+        $searchValue = Product::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.products.index'));
@@ -141,6 +142,7 @@ class ProductController extends Controller
 
         return view('laravel-crm::products.index', [
             'products' => $products,
+            'searchValue' => $searchValue ?? null,
         ]);
     }
 
