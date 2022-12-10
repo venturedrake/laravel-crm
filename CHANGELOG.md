@@ -19,6 +19,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.12.2 - 2022-12-10
+### Added
+- Lead source observer
+- Invoices permissions
+- Retain filters when searching
+- Return to search results
+### Changed
+- Only run xero scheduled tasks when relevant setting is true
+- Moved model filters to a modal for better UX
+- Set multi-select max height
+### Fixed
+- Xero middleware check if auth user before setting tenant id
+- Sorting working with encrypted table fields
+- Default owner user filter
+- Support for browser back button with search
+
 ## 0.12.1 - 2022-12-03
 ### Added
 - Aggregated notes
