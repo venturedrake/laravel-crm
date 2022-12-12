@@ -5,7 +5,7 @@
         @slot('title')
             {{ ucfirst(__('laravel-crm::lang.notes')) }}
         @endslot
-    
+
         @slot('actions')
             {{--@can('create crm notes')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.notes.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_note')) }}</a></span>
@@ -27,21 +27,29 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($notes as $note)
-                @livewire('note',[
-                    'note' => $note,
-                    'view' => 'note-table'
-                ], key($note->id))
-            @endforeach
+            @if($notes && $notes->count() > 0)
+                @foreach($notes as $note)
+                    @livewire('note',[
+                        'note' => $note,
+                        'view' => 'note-table'
+                    ], key($note->id))
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="7">
+                        {{ ucfirst(__('laravel-crm::lang.no_notes')) }}
+                    </td>
+                </tr>
+            @endif
             </tbody>
         </table>
-        
+
     @endcomponent
-    
+
     @if($notes instanceof \Illuminate\Pagination\LengthAwarePaginator )
         @component('laravel-crm::components.card-footer')
             {{ $notes->links() }}
         @endcomponent
     @endif
-    
-@endcomponent    
+
+@endcomponent

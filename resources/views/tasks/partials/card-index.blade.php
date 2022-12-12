@@ -5,7 +5,7 @@
         @slot('title')
             {{ ucfirst(__('laravel-crm::lang.tasks')) }}
         @endslot
-    
+
         @slot('actions')
             {{--@can('create crm tasks')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.tasks.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_task')) }}</a></span>
@@ -29,21 +29,29 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($tasks as $task)
-                @livewire('task',[
-                    'task' => $task,
-                    'view' => 'task-table'
-                ], key($task->id))
-            @endforeach
+            @if($tasks && $tasks->count() > 0)
+                @foreach($tasks as $task)
+                    @livewire('task',[
+                        'task' => $task,
+                        'view' => 'task-table'
+                    ], key($task->id))
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="7">
+                        {{ ucfirst(__('laravel-crm::lang.no_tasks')) }}
+                    </td>
+                </tr>
+            @endif
             </tbody>
         </table>
-        
+
     @endcomponent
-    
+
     @if($tasks instanceof \Illuminate\Pagination\LengthAwarePaginator )
         @component('laravel-crm::components.card-footer')
             {{ $tasks->links() }}
         @endcomponent
     @endif
-    
-@endcomponent    
+
+@endcomponent

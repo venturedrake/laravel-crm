@@ -79,7 +79,7 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
     Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@search')
         ->name('laravel-crm.leads.search')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
-    
+
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@index')
         ->name('laravel-crm.leads.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
@@ -130,7 +130,7 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
     Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@search')
         ->name('laravel-crm.deals.search')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
-    
+
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@index')
         ->name('laravel-crm.deals.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
@@ -200,9 +200,6 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 /* Quotes */
 
 Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::get('create-product', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@createProduct')
-        ->name('laravel-crm.quote-products.create-product');
-
     Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@index')
         ->name('laravel-crm.quotes.filter')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
@@ -284,9 +281,6 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
 /* Orders */
 
 Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::get('create-product', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@createProduct')
-        ->name('laravel-crm.order-products.create-product');
-
     Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@index')
         ->name('laravel-crm.orders.filter')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Order']);
@@ -322,18 +316,6 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
     Route::delete('{order}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@destroy')
         ->name('laravel-crm.orders.destroy')
         ->middleware(['can:delete,order']);
-
-    Route::get('{order}/accept', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@accept')
-        ->name('laravel-crm.orders.accept')
-        ->middleware(['can:update,order']);
-
-    Route::get('{order}/reject', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@reject')
-        ->name('laravel-crm.orders.reject')
-        ->middleware(['can:update,order']);
-
-    Route::get('{order}/unaccept', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@unaccept')
-        ->name('laravel-crm.orders.unaccept')
-        ->middleware(['can:update,order']);
 
     /* Order Products */
 
@@ -468,7 +450,7 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
     Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@search')
         ->name('laravel-crm.people.search')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
-    
+
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@index')
         ->name('laravel-crm.people.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
@@ -496,7 +478,7 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
     Route::delete('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@destroy')
         ->name('laravel-crm.people.destroy')
         ->middleware(['can:delete,person']);
-    
+
     Route::get('{person}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@autocomplete')
         ->name('laravel-crm.people.autocomplete')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
@@ -512,7 +494,7 @@ Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], 
     Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@search')
         ->name('laravel-crm.organisations.search')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
-    
+
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@index')
         ->name('laravel-crm.organisations.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);

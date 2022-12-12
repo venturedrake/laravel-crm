@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.orders')) }} 
+            {{ ucfirst(__('laravel-crm::lang.orders')) }}
         @endslot
 
         @slot('actions')
@@ -11,9 +11,9 @@
                 'action' => route('laravel-crm.orders.filter'),
                 'model' => '\VentureDrake\LaravelCrm\Models\Order'
             ])
-            {{--@can('create crm orders')
+            @can('create crm orders')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.orders.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_order')) }}</a></span>
-            @endcan--}}
+            @endcan
         @endslot
 
     @endcomponent
@@ -62,7 +62,7 @@
                         @can('view crm orders')
                         <a href="{{  route('laravel-crm.orders.show',$order) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
-                        @can('edit crm orders')    
+                        @can('edit crm orders')
                         <a href="{{  route('laravel-crm.orders.edit',$order) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                         @endcan
                         @can('delete crm orders')
@@ -86,4 +86,4 @@
         @endcomponent
     @endif
 
-@endcomponent    
+@endcomponent

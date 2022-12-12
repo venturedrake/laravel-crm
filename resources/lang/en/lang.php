@@ -302,4 +302,8 @@ return [
     'back_to_search_results' => 'back to search results',
     'back_to_orders' => 'back_to_orders',
     'back_to_organisations' => 'back to organizations',
+    'add_order' => 'add order',
+    'create_order' => 'create order',
+    'no_tasks' => 'no tasks',
+    'no_notes' => 'no notes',
 ];

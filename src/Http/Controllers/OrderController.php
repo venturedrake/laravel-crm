@@ -20,7 +20,7 @@ class OrderController extends Controller
      * @var OrderService
      */
     private $orderService;
-    
+
     /**
      * @var PersonService
      */
@@ -37,7 +37,7 @@ class OrderController extends Controller
         $this->personService = $personService;
         $this->organisationService = $organisationService;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -46,16 +46,16 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         Order::resetSearchValue($request);
-        /*$params = Order::filters($request);
+        $params = Order::filters($request);
 
         if (Order::filter($params)->get()->count() < 30) {
             $orders = Order::filter($params)->latest()->get();
         } else {
             $orders = Order::filter($params)->latest()->paginate(30);
-        }*/
+        }
 
         return view('laravel-crm::orders.index', [
-            'orders' => [],
+            'orders' => $orders,
         ]);
     }
 
@@ -71,13 +71,13 @@ class OrderController extends Controller
                 $person = Person::find($request->id);
 
                 break;
-                
+
             case "organisation":
                 $organisation = Organisation::find($request->id);
 
                 break;
         }
-        
+
         return view('laravel-crm::orders.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
@@ -103,9 +103,9 @@ class OrderController extends Controller
         } elseif ($request->organisation_id) {
             $organisation = Organisation::find($request->organisation_id);
         }
-        
+
         $this->orderService->create($request, $person ?? null, $organisation ?? null);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.order_stored')))->success()->important();
 
         return redirect(route('laravel-crm.orders.index'));
@@ -124,11 +124,11 @@ class OrderController extends Controller
             $phone = $order->person->getPrimaryPhone();
             $address = $order->person->getPrimaryAddress();
         }
-        
+
         if ($order->organisation) {
             $organisation_address = $order->organisation->getPrimaryAddress();
         }
-        
+
         return view('laravel-crm::orders.show', [
             'order' => $order,
             'email' => $email ?? null,
@@ -154,7 +154,7 @@ class OrderController extends Controller
         if ($order->organisation) {
             $address = $order->organisation->getPrimaryAddress();
         }
-        
+
         return view('laravel-crm::orders.edit', [
             'order' => $order,
             'email' => $email ?? null,
@@ -185,7 +185,7 @@ class OrderController extends Controller
         }
 
         $order = $this->orderService->update($request, $order, $person ?? null, $organisation ?? null);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.order_updated')))->success()->important();
 
         return redirect(route('laravel-crm.orders.show', $order));
@@ -209,7 +209,7 @@ class OrderController extends Controller
     public function search(Request $request)
     {
         $searchValue = Order::searchValue($request);
-        
+
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.orders.index'));
         }
@@ -250,7 +250,7 @@ class OrderController extends Controller
             'searchValue' => $searchValue ?? null,
         ]);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -263,7 +263,7 @@ class OrderController extends Controller
             'closed_status' => 'won',
             'closed_at' => Carbon::now(),
         ]);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.order_won')))->success()->important();
 
         return back();
@@ -281,7 +281,7 @@ class OrderController extends Controller
             'closed_status' => 'lost',
             'closed_at' => Carbon::now(),
         ]);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.order_lost')))->success()->important();
 
         return back();
@@ -299,7 +299,7 @@ class OrderController extends Controller
             'closed_status' => null,
             'closed_at' => null,
         ]);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.order_reopened')))->success()->important();
 
         return back();
