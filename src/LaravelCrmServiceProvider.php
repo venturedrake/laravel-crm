@@ -55,6 +55,7 @@ use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\LeadSource;
 use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
@@ -76,6 +77,7 @@ use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\LeadSourceObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
 use VentureDrake\LaravelCrm\Observers\OrderObserver;
+use VentureDrake\LaravelCrm\Observers\OrderProductObserver;
 use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
@@ -119,23 +121,23 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Task' => \VentureDrake\LaravelCrm\Policies\TaskPolicy::class,
         'VentureDrake\LaravelCrm\Models\Note' => \VentureDrake\LaravelCrm\Policies\NotePolicy::class,
     ];
-    
+
     /**
      * Bootstrap the application services.
      */
     public function boot(Router $router, Filesystem $filesystem)
     {
         Paginator::useBootstrap();
-        
+
         if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
             class_alias(config("auth.providers.users.model"), 'App\User');
             if (class_exists('App\Models\Team')) {
                 class_alias('App\Models\Team', 'App\Team');
             }
         }
-        
+
         $this->registerPolicies();
-        
+
         /*
          * Optional methods to load your package assets
          */
@@ -145,14 +147,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Middleware
         $router->aliasMiddleware('auth.laravel-crm', Authenticate::class);
-        
+
         if (config('laravel-crm.teams')) {
             $router->pushMiddlewareToGroup('web', TeamsPermission::class);
             $router->pushMiddlewareToGroup('crm-api', TeamsPermission::class);
             $router->pushMiddlewareToGroup('web', XeroTenant::class);
             $router->pushMiddlewareToGroup('crm-api', XeroTenant::class);
         }
-        
+
         $router->pushMiddlewareToGroup('crm', Settings::class);
         $router->pushMiddlewareToGroup('crm-api', Settings::class);
         $router->pushMiddlewareToGroup('crm', HasCrmAccess::class);
@@ -161,7 +163,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $router->pushMiddlewareToGroup('crm', SystemCheck::class);
         $router->pushMiddlewareToGroup('crm', FormComponentsConfig::class);
         $router->pushMiddlewareToGroup('web', FormComponentsConfig::class);
-        
+
         $this->registerRoutes();
 
         // Register Observers
@@ -171,6 +173,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Quote::observe(QuoteObserver::class);
         QuoteProduct::observe(QuoteProductObserver::class);
         Order::observe(OrderObserver::class);
+        OrderProduct::observe(OrderProductObserver::class);
         Person::observe(PersonObserver::class);
         Organisation::observe(OrganisationObserver::class);
         Phone::observe(PhoneObserver::class);
@@ -187,7 +190,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Task::observe(TaskObserver::class);
         Activity::observe(ActivityObserver::class);
         XeroToken::observe(XeroTokenObserver::class);
-        
+
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
         } else {
@@ -199,7 +202,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         } elseif (class_exists('App\Team')) {
             \App\Team::observe(TeamObserver::class);
         }
-        
+
         // Paginate on Collection
         if (! Collection::hasMacro('paginate')) {
             Collection::macro(
@@ -225,7 +228,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             } else {
                 $auditConfig = '/../config/audit.php';
             }
-            
+
             $this->publishes([
                 __DIR__ . '/../config/laravel-crm.php' => config_path('laravel-crm.php'),
                 __DIR__ . '/../config/permission.php' => config_path('permission.php'),
@@ -292,6 +295,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_deleted_at_to_laravel_crm_activities_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_deleted_at_to_laravel_crm_activities_table.php', 40),
                 __DIR__ . '/../database/migrations/create_laravel_crm_timezones_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_timezones_table.php', 41),
                 __DIR__ . '/../database/migrations/add_team_id_to_xero_tokens_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_team_id_to_xero_tokens_table.php', 42),
+                __DIR__ . '/../database/migrations/create_laravel_crm_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_orders_table.php', 43),
+                __DIR__ . '/../database/migrations/create_laravel_crm_order_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_order_products_table.php', 44),
+
             ], 'migrations');
 
             // Publishing the seeders
@@ -327,7 +333,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                      ->load(__DIR__.'/../database/factories');
             }
         }
-        
+
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
         Livewire::component('email-edit', LiveEmailEdit::class);
@@ -375,14 +381,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         $this->app->register(LaravelCrmEventServiceProvider::class);
     }
-    
+
     protected function registerRoutes()
     {
         Route::group($this->routeConfiguration(), function () {
             $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
         });
     }
-    
+
     protected function routeConfiguration()
     {
         if (config('laravel-crm.route_subdomain')) {
@@ -393,7 +399,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 3)].'.'.$host[(count($host) - 2)].'.'.end($host);
             }
         }
-        
+
         return [
             'domain' => $domain ?? null,
             'prefix' => config('laravel-crm.route_prefix'),

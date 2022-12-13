@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Order;
 
 class OrderObserver
@@ -14,11 +15,13 @@ class OrderObserver
      */
     public function creating(Order $order)
     {
+        $order->external_id = Uuid::uuid4()->toString();
+
         if (! app()->runningInConsole()) {
             $order->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the order "created" event.
      *
