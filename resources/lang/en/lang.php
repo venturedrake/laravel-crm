@@ -315,4 +315,5 @@ return [
     'invoice' => 'invoice',
     'invoices' => 'invoices',
     'order_invoiced' => 'order invoiced',
+    'invoice_prefix' => 'invoice prefix',
 ];

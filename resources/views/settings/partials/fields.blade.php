@@ -5,7 +5,7 @@
          'label' => ucfirst(trans('laravel-crm::lang.organization_name')),
          'value' => old('organisation_name', $organisationName->value ?? null)
         ])
-        
+
         @if($logoFile)
         <div class="mb-3">
             <img src=" {{ ($logoFile) ? asset('storage/'.$logoFile->value) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" />
@@ -16,13 +16,13 @@
              'label' => ucfirst(trans('laravel-crm::lang.logo')),
              'value' => old('logo', $timezone ?? null)
          ])
-        
-        @include('laravel-crm::partials.form.select',[
-           'name' => 'language',
-           'label' => ucfirst(trans('laravel-crm::lang.language')),
-           'options' => ['english' => 'English'],
-           'value' => old('language', $language->value ?? 'english')
+
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'invoice_prefix',
+         'label' => ucfirst(trans('laravel-crm::lang.invoice_prefix')),
+         'value' => old('invoice_prefix', $invoicePrefix->value ?? null)
         ])
+
     </div>
     <div class="col">
         @include('laravel-crm::partials.form.select',[
@@ -31,6 +31,12 @@
                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries(),
                 'value' => old('country', $country->value  ?? 'United States')
              ])
+        @include('laravel-crm::partials.form.select',[
+           'name' => 'language',
+           'label' => ucfirst(trans('laravel-crm::lang.language')),
+           'options' => ['english' => 'English'],
+           'value' => old('language', $language->value ?? 'english')
+        ])
         @include('laravel-crm::partials.form.select',[
            'name' => 'currency',
            'label' => ucfirst(trans('laravel-crm::lang.currency')),

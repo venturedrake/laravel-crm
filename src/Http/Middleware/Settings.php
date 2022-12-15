@@ -71,10 +71,16 @@ class Settings
                 'value' => config('laravel-crm.currency') ?? 'USD',
             ]);
 
+            Setting::firstOrCreate([
+                'name' => 'invoice_prefix',
+            ], [
+                'value' => 'INV-',
+            ]);
+
             $installIdSetting = Setting::where([
                 'name' => 'install_id',
             ])->first();
-            
+
             if ($versionSetting && ($versionSetting->updated_at < Carbon::now()->subDays(3) || ! $installIdSetting)) {
                 try {
                     $client = new Client();
@@ -118,13 +124,13 @@ class Settings
                 } catch (\Exception $e) {
                     //
                 }
-                
+
                 if ($versionSetting) {
                     $versionSetting->touch();
                 }
             }
         }
-        
+
         return $next($request);
     }
 }

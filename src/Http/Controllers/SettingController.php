@@ -31,7 +31,8 @@ class SettingController extends Controller
         $currency = $this->settingService->get('currency');
         $timezone = $this->settingService->get('timezone');
         $logoFile = $this->settingService->get('logo_file');
-        
+        $invoicePrefix = $this->settingService->get('invoice_prefix');
+
         return view('laravel-crm::settings.edit', [
             'organisationName' => $organisationName,
             'language' => $language,
@@ -39,6 +40,7 @@ class SettingController extends Controller
             'currency' => $currency,
             'timezone' => $timezone,
             'logoFile' => $logoFile,
+            'invoicePrefix' => $invoicePrefix,
         ]);
     }
 
@@ -56,14 +58,15 @@ class SettingController extends Controller
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
         $this->settingService->set('timezone', $request->timezone);
-        
+        $this->settingService->set('invoice_prefix', $request->invoice_prefix);
+
         if ($file = $request->file('logo')) {
             if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
                 $filePath = 'laravel-crm/'.auth()->user()->currentTeam->id;
             } else {
                 $filePath = 'laravel-crm';
             }
-            
+
             $file->move(storage_path('app/public/'.$filePath), $file->getClientOriginalName());
             $this->settingService->set('logo_file', $filePath.'/'.$file->getClientOriginalName());
             $this->settingService->set('logo_file_name', $file->getClientOriginalName());
