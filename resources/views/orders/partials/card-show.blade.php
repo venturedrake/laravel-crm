@@ -11,7 +11,10 @@
                 @include('laravel-crm::partials.return-button',[
                     'model' => $order,
                     'route' => 'orders'
-                ])
+                ]) | 
+                @can('edit crm orders')
+                    <a href="{{ route('laravel-crm.orders.invoice',$order) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                @endcan
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm orders')
                 <a href="{{ url(route('laravel-crm.orders.edit', $order)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
