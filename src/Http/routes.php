@@ -252,6 +252,10 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.quotes.send')
         ->middleware(['can:update,quote']);
 
+    Route::post('{quote}/create-order', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@createOrder')
+        ->name('laravel-crm.quotes.create-order')
+        ->middleware(['can:update,quote', 'can:create,VentureDrake\LaravelCrm\Models\Order']);
+
     /* Quote Products */
 
     Route::group(['prefix' => '{quote}/products', 'middleware' => 'auth.laravel-crm'], function () {

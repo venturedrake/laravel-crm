@@ -11,7 +11,7 @@
                 @include('laravel-crm::partials.return-button',[
                     'model' => $quote,
                     'route' => 'quotes'
-                ]) | 
+                ]) |
                 @can('edit crm quotes')
                     @livewire('send-quote',[
                     'quote' => $quote
@@ -21,6 +21,7 @@
                         <a href="{{ route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_rejected')) }}</a>
                     @elseif($quote->accepted_at)
                          <a href="{{ route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
+                         <a href="{{  route('laravel-crm.quotes.create-order',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
                     @endif
                 @endcan
                 @include('laravel-crm::partials.navs.activities') |
@@ -61,7 +62,7 @@
                     <dt class="col-sm-3 text-right">Owner</dt>
                     <dd class="col-sm-9">{{ $quote->ownerUser->name ?? null }}</dd>
                 </dl>
-                
+
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
                 <p><span class="fa fa-user" aria-hidden="true"></span> @if($quote->person)<a href="{{ route('laravel-crm.people.show',$quote->person) }}">{{ $quote->person->name }}</a>@endif </p>
@@ -129,7 +130,7 @@
                         </tr>
                     </tfoot>
                 </table>
-                @endcan    
+                @endcan
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.activities', [
@@ -140,4 +141,4 @@
 
     @endcomponent
 
-@endcomponent    
+@endcomponent

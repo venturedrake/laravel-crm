@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.quotes')) }} 
+            {{ ucfirst(__('laravel-crm::lang.quotes')) }}
         @endslot
 
         @slot('actions')
@@ -36,13 +36,13 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.issue_at')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.expire_at')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
-                <th scope="col" width="240"></th>
+                <th scope="col" width="330"></th>
             </tr>
             </thead>
             <tbody>
             @foreach($quotes as $quote)
                <tr class="has-link @if($quote->accepted_at) table-success @elseif($quote->rejected_at) table-danger @endif" data-url="{{ url(route('laravel-crm.quotes.show',$quote)) }}">
-                   <td>{{ $quote->reference }}</td> 
+                   <td>{{ $quote->reference }}</td>
                    <td>{{ $quote->title }}</td>
                    <td>@include('laravel-crm::partials.labels',[
                             'labels' => $quote->labels,
@@ -63,17 +63,18 @@
                        'quote' => $quote
                        ])
                        @can('edit crm quotes')
-                       @if(!$quote->accepted_at && !$quote->rejected_at)
+                           @if(!$quote->accepted_at && !$quote->rejected_at)
                                <a href="{{  route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
                                <a href="{{  route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.reject')) }}</a>
                            @elseif($quote->accepted_at)
                                <a href="{{  route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
+                               <a href="{{  route('laravel-crm.quotes.create-order',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.order')) }}</a>
                            @endif
                         @endcan
                         @can('view crm quotes')
                         <a href="{{  route('laravel-crm.quotes.show',$quote) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
-                        @can('edit crm quotes')    
+                        @can('edit crm quotes')
                         <a href="{{  route('laravel-crm.quotes.edit',$quote) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                         @endcan
                         @can('delete crm quotes')
@@ -97,4 +98,4 @@
         @endcomponent
     @endif
 
-@endcomponent    
+@endcomponent

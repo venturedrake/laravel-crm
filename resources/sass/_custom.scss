@@ -26,6 +26,12 @@ tr.table-danger .btn-outline-secondary{
   background-color: #ffffff;
 }
 
+tr.table-success .btn.btn-outline-secondary:hover,
+tr.table-danger .btn.btn-outline-secondary:hover{
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
 /*
  * Forms
  */
