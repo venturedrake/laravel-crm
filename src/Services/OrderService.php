@@ -43,7 +43,7 @@ class OrderService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
-                $order->quoteProducts()->create([
+                $order->orderProducts()->create([
                     'product_id' => $product['product_id'],
                     'quantity' => $product['quantity'],
                     'price' => $product['unit_price'],
