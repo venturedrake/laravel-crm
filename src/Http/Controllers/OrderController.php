@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrderRequest;
@@ -249,59 +248,5 @@ class OrderController extends Controller
             'orders' => $orders,
             'searchValue' => $searchValue ?? null,
         ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function accept(Order $order)
-    {
-        $order->update([
-            'closed_status' => 'won',
-            'closed_at' => Carbon::now(),
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.order_won')))->success()->important();
-
-        return back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function reject(Order $order)
-    {
-        $order->update([
-            'closed_status' => 'lost',
-            'closed_at' => Carbon::now(),
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.order_lost')))->success()->important();
-
-        return back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function unaccept(Order $order)
-    {
-        $order->update([
-            'closed_status' => null,
-            'closed_at' => null,
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.order_reopened')))->success()->important();
-
-        return back();
     }
 }

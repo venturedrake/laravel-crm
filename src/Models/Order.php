@@ -24,7 +24,7 @@ class Order extends Model
         'person.maiden_name',
         'organisation.name',
     ];
-    
+
     protected $filterable = [
         'user_owner_id',
         'labels.id',
@@ -39,7 +39,12 @@ class Order extends Model
     {
         return config('laravel-crm.db_table_prefix').'orders';
     }
-    
+
+    public function getTitleAttribute()
+    {
+        return money($this->total, $this->currency).' - '.($this->organisation->name ?? $this->organisation->person->name ?? null);
+    }
+
     public function person()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);

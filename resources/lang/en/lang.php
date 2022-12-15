@@ -306,4 +306,10 @@ return [
     'create_order' => 'create order',
     'no_tasks' => 'no tasks',
     'no_notes' => 'no notes',
+    'back_to_orders' => 'back to orders',
+    'order_items' => 'order items',
+    'order_stored' => 'order stored',
+    'order_updated' => 'order updated',
+    'order_deleted' => 'order deleted',
+    'edit_order' => 'edit order',
 ];

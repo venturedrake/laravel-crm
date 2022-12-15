@@ -143,6 +143,14 @@ dt {
   display: none;
 }
 
+#orderProducts .row:not(:first-child) label{
+    display: none;
+}
+
+#orderProductsTotals label{
+    display: none;
+}
+
 .bootstrap-duallistbox-container .btn-outline-secondary,
 .bootstrap-duallistbox-container select{
   color: #495057 !important;
