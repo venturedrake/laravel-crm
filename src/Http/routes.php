@@ -317,6 +317,10 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.orders.destroy')
         ->middleware(['can:delete,order']);
 
+    Route::get('{order}/invoice', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@invoice')
+        ->name('laravel-crm.orders.invoice')
+        ->middleware(['can:update,order']);
+
     /* Order Products */
 
     Route::group(['prefix' => '{order}/products', 'middleware' => 'auth.laravel-crm'], function () {
@@ -341,6 +345,46 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
         Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@destroy')
             ->name('laravel-crm.order-products.destroy');
     });
+});
+
+/* Invoices */
+
+Route::group(['prefix' => 'invoices', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@index')
+        ->name('laravel-crm.invoices.filter')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Invoice']);
+
+    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@search')
+        ->name('laravel-crm.invoices.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Invoice']);
+
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@index')
+        ->name('laravel-crm.invoices.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Invoice']);
+
+    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@create')
+        ->name('laravel-crm.invoices.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Invoice']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@store')
+        ->name('laravel-crm.invoices.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Invoice']);
+
+    Route::get('{invoice}', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@show')
+        ->name('laravel-crm.invoices.show')
+        ->middleware(['can:view,invoice']);
+
+    Route::get('{invoice}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@edit')
+        ->name('laravel-crm.invoices.edit')
+        ->middleware(['can:update,invoice']);
+
+    Route::put('{invoice}', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@update')
+        ->name('laravel-crm.invoices.update')
+        ->middleware(['can:update,invoice']);
+
+    Route::delete('{invoice}', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@destroy')
+        ->name('laravel-crm.invoices.destroy')
+        ->middleware(['can:delete,invoice']);
 });
 
 /* Activities */

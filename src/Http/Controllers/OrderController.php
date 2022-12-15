@@ -249,4 +249,13 @@ class OrderController extends Controller
             'searchValue' => $searchValue ?? null,
         ]);
     }
+
+    public function invoice(Order $order)
+    {
+        // TBC
+
+        flash(ucfirst(trans('laravel-crm::lang.order_invoiced')))->success()->important();
+
+        return redirect(route('laravel-crm.orders.index'));
+    }
 }

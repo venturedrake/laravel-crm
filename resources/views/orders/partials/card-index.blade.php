@@ -53,6 +53,9 @@
                     <td>{{ money($order->total, $order->currency) }}</td>
                     <td>{{ $order->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
+                        @can('edit crm orders')
+                            <a href="{{ route('laravel-crm.orders.invoice',$order) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                        @endcan
                         @can('view crm orders')
                         <a href="{{ route('laravel-crm.orders.show',$order) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan

@@ -52,6 +52,7 @@ use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\File;
+use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\LeadSource;
 use VentureDrake\LaravelCrm\Models\Note;
@@ -74,6 +75,7 @@ use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\FileObserver;
+use VentureDrake\LaravelCrm\Observers\InvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\LeadSourceObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
@@ -113,6 +115,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Deal' => \VentureDrake\LaravelCrm\Policies\DealPolicy::class,
         'VentureDrake\LaravelCrm\Models\Quote' => \VentureDrake\LaravelCrm\Policies\QuotePolicy::class,
         'VentureDrake\LaravelCrm\Models\Order' => \VentureDrake\LaravelCrm\Policies\OrderPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Invoice' => \VentureDrake\LaravelCrm\Policies\InvoicePolicy::class,
         'VentureDrake\LaravelCrm\Models\Person' => \VentureDrake\LaravelCrm\Policies\PersonPolicy::class,
         'VentureDrake\LaravelCrm\Models\Organisation' => \VentureDrake\LaravelCrm\Policies\OrganisationPolicy::class,
         'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
@@ -175,6 +178,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         QuoteProduct::observe(QuoteProductObserver::class);
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
+        Invoice::observe(InvoiceObserver::class);
         Person::observe(PersonObserver::class);
         Organisation::observe(OrganisationObserver::class);
         Phone::observe(PhoneObserver::class);

@@ -312,4 +312,7 @@ return [
     'order_updated' => 'order updated',
     'order_deleted' => 'order deleted',
     'edit_order' => 'edit order',
+    'invoice' => 'invoice',
+    'invoices' => 'invoices',
+    'order_invoiced' => 'order invoiced',
 ];
