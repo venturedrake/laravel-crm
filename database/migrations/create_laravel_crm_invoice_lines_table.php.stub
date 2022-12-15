@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLaravelCrmOrderProductsTable extends Migration
+class CreateLaravelCrmInvoiceLinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -23,7 +23,7 @@ class CreateLaravelCrmOrderProductsTable extends Migration
             $table->foreign('product_id')->references('id')->on(config('laravel-crm.db_table_prefix').'products');
             $table->unsignedBigInteger('product_variation_id')->index()->nullable();
             $table->foreign('product_variation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'product_variations');
-            $table->text('description')->nullable()
+            $table->text('description')->nullable();
             $table->integer('price')->nullable();
             $table->integer('quantity')->nullable();
             $table->decimal('tax_rate')->nullable();
