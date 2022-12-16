@@ -318,4 +318,5 @@ return [
     'invoice_prefix' => 'invoice prefix',
     'order_created_from_quote' => 'order created from quote',
     'ordered' => 'ordered',
+    'quote_updated' => 'quote updated',
 ];
