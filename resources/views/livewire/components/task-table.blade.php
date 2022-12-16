@@ -1,4 +1,5 @@
 <tr>
+    <td>{{ $task->created_at->diffForHumans() }}</td>
     <td>
         @include('laravel-crm::livewire.components.partials.task.status', ['task' => $task])
     </td>
@@ -20,7 +21,7 @@
             @endif
             {{--<a href="{{  route('laravel-crm.tasks.edit',$task) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>--}}
         @endcan
-        @can('delete crm tasks')    
+        @can('delete crm tasks')
         <form action="{{ route('laravel-crm.tasks.destroy',$task) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
             {{ method_field('DELETE') }}
             {{ csrf_field() }}

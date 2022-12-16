@@ -19,8 +19,8 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.note')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.note')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.noted_at')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.created_by')) }}</th>
                 <th scope="col"></th>

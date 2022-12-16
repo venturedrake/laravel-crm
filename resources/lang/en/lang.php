@@ -316,4 +316,6 @@ return [
     'invoices' => 'invoices',
     'order_invoiced' => 'order invoiced',
     'invoice_prefix' => 'invoice prefix',
+    'order_created_from_quote' => 'order created from quote',
+    'ordered' => 'ordered',
 ];

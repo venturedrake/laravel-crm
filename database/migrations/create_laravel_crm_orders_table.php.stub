@@ -21,9 +21,9 @@ class CreateLaravelCrmOrdersTable extends Migration
             $table->foreign('lead_id')->references('id')->on(config('laravel-crm.db_table_prefix').'leads');
             $table->unsignedBigInteger('deal_id')->index()->nullable();
             $table->foreign('deal_id')->references('id')->on(config('laravel-crm.db_table_prefix').'deals');
-            $table->unsignedBigInteger('person_id')->index()->nullable();
             $table->unsignedBigInteger('quote_id')->index()->nullable();
             $table->foreign('quote_id')->references('id')->on(config('laravel-crm.db_table_prefix').'quotes');
+            $table->unsignedBigInteger('person_id')->index()->nullable();
             $table->foreign('person_id')->references('id')->on(config('laravel-crm.db_table_prefix').'people');
             $table->unsignedBigInteger('organisation_id')->index()->nullable();
             $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');

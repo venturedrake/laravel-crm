@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.deals')) }} 
+            {{ ucfirst(__('laravel-crm::lang.deals')) }}
         @endslot
 
         @slot('actions')
@@ -23,6 +23,7 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.value')) }}</th>
@@ -36,6 +37,7 @@
             <tbody>
             @foreach($deals as $deal)
                 <tr class="has-link @if($deal->closed_status == 'won') table-success @elseif($deal->closed_status == 'lost') table-danger @endif" data-url="{{ url(route('laravel-crm.deals.show',$deal)) }}">
+                    <td>{{ $deal->created_at->diffForHumans() }}</td>
                     <td>{{ $deal->title }}</td>
                     <td>@include('laravel-crm::partials.labels',[
                             'labels' => $deal->labels,
@@ -58,7 +60,7 @@
                         @can('view crm deals')
                         <a href="{{  route('laravel-crm.deals.show',$deal) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
-                        @can('edit crm deals')    
+                        @can('edit crm deals')
                         <a href="{{  route('laravel-crm.deals.edit',$deal) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                         @endcan
                         @can('delete crm deals')
@@ -82,4 +84,4 @@
         @endcomponent
     @endif
 
-@endcomponent    
+@endcomponent

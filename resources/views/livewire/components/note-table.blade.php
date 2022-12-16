@@ -1,14 +1,14 @@
 <tr>
+    <td>
+        {{ $note->created_at->diffForHumans() }}
+    </td>
     <td>{{ $note->content }}<br />
         @include('laravel-crm::notes.partials.note-model', ['note' => $note])
     </td>
     <td>
-        {{ $note->created_at->diffForHumans() }}
-    </td>
-    <td>
         @if($note->noted_at)
         {{ $note->noted_at->format('h:i A') }} on {{ $note->noted_at->toFormattedDateString() }}
-        @endif    
+        @endif
     </td>
     <td>{{ $note->createdByUser->name ?? null }}</td>
     <td class="disable-link text-right">
@@ -18,7 +18,7 @@
             @endif--}}
             {{--<a href="{{  route('laravel-crm.notes.edit',$note) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>--}}
         @endcan
-        @can('delete crm notes')    
+        @can('delete crm notes')
         <form action="{{ route('laravel-crm.notes.destroy',$note) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
             {{ method_field('DELETE') }}
             {{ csrf_field() }}

@@ -19,6 +19,7 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.status')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.task')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.description')) }}</th>

@@ -13,9 +13,9 @@
             ])
             @can('create crm leads')
                <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.leads.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_lead')) }}</a>
-            @endcan 
+            @endcan
         @endslot
-       
+
     @endcomponent
 
     @component('laravel-crm::components.card-table')
@@ -23,12 +23,12 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.value')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact_person')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="210"></th>
             </tr>
@@ -36,6 +36,7 @@
             <tbody>
             @foreach($leads as $lead)
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.leads.show',$lead)) }}">
+                    <td>{{ $lead->created_at->diffForHumans() }}</td>
                     <td>{{ $lead->title }}</td>
                     <td>@include('laravel-crm::partials.labels',[
                             'labels' => $lead->labels,
@@ -44,7 +45,6 @@
                     <td>{{ money($lead->amount, $lead->currency) }}</td>
                     <td>{{ $lead->organisation->name ?? null}}</td>
                     <td>{{ $lead->person->name ??  null }}</td>
-                    <td>{{ $lead->created_at->diffForHumans() }}</td>
                     <td>{{ $lead->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm leads')
@@ -62,13 +62,13 @@
                         {{ csrf_field() }}
                             <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.lead') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
-                        @endcan    
+                        @endcan
                     </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-        
+
     @endcomponent
 
     @if($leads instanceof \Illuminate\Pagination\LengthAwarePaginator )
@@ -77,4 +77,4 @@
         @endcomponent
     @endif
 
-@endcomponent    
+@endcomponent

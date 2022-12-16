@@ -26,6 +26,8 @@ class OrderService
     {
         $order = Order::create([
             'lead_id' => $request->lead_id ?? null,
+            'deal_id' => $request->deal_id ?? null,
+            'quote_id' => $request->quote_id ?? null,
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'description' => $request->description,

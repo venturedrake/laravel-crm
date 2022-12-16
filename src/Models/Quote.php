@@ -16,7 +16,7 @@ class Quote extends Model
     use SearchFilters;
 
     protected $guarded = ['id'];
-    
+
     protected $casts = [
         'issue_at' => 'datetime',
         'expire_at' => 'datetime',
@@ -32,7 +32,7 @@ class Quote extends Model
         'person.maiden_name',
         'organisation.name',
     ];
-    
+
     protected $filterable = [
         'user_owner_id',
         'labels.id',
@@ -106,7 +106,7 @@ class Quote extends Model
             $this->attributes['total'] = null;
         }
     }
-    
+
     public function person()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
@@ -191,5 +191,10 @@ class Quote extends Model
     public function files()
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\File::class, 'fileable');
+    }
+
+    public function order()
+    {
+        return $this->hasOne(\VentureDrake\LaravelCrm\Models\Order::class);
     }
 }
