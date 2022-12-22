@@ -24,17 +24,17 @@
             @case('VentureDrake\LaravelCrm\Models\Call')
                 @livewire('call',[
                     'call' => $activity->recordable
-                ], key('file_'.$activity->recordable->id))
+                ], key('call_'.$activity->recordable->id))
                 @break
-            @case('VentureDrake\LaravelCrm\Models\Meeting')
+           @case('VentureDrake\LaravelCrm\Models\Meeting')
                 @livewire('meeting',[
                     'meeting' => $activity->recordable
-                ], key('file_'.$activity->recordable->id))
+                ], key('meeting_'.$activity->recordable->id))
                 @break
             @case('VentureDrake\LaravelCrm\Models\Lunch')
                 @livewire('lunch',[
                     'lunch' => $activity->recordable
-                ], key('file_'.$activity->recordable->id))
+                ], key('lunch_'.$activity->recordable->id))
                 @break
         @endswitch
     @endforeach
