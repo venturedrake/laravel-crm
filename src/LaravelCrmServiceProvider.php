@@ -19,6 +19,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
+use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveCall;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveTask;
@@ -26,6 +27,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivities;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveCalls;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
@@ -48,6 +50,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Models\Activity;
+use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Email;
@@ -55,6 +58,8 @@ use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\LeadSource;
+use VentureDrake\LaravelCrm\Models\Lunch;
+use VentureDrake\LaravelCrm\Models\Meeting;
 use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
@@ -71,6 +76,7 @@ use VentureDrake\LaravelCrm\Models\XeroContact;
 use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Models\XeroPerson;
 use VentureDrake\LaravelCrm\Observers\ActivityObserver;
+use VentureDrake\LaravelCrm\Observers\CallObserver;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
@@ -78,6 +84,8 @@ use VentureDrake\LaravelCrm\Observers\FileObserver;
 use VentureDrake\LaravelCrm\Observers\InvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\LeadSourceObserver;
+use VentureDrake\LaravelCrm\Observers\LunchObserver;
+use VentureDrake\LaravelCrm\Observers\MeetingObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
 use VentureDrake\LaravelCrm\Observers\OrderObserver;
 use VentureDrake\LaravelCrm\Observers\OrderProductObserver;
@@ -124,6 +132,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Label' => \VentureDrake\LaravelCrm\Policies\LabelPolicy::class,
         'VentureDrake\LaravelCrm\Models\Task' => \VentureDrake\LaravelCrm\Policies\TaskPolicy::class,
         'VentureDrake\LaravelCrm\Models\Note' => \VentureDrake\LaravelCrm\Policies\NotePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Call' => \VentureDrake\LaravelCrm\Policies\CallPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Meeting' => \VentureDrake\LaravelCrm\Policies\MeetingPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Lunch' => \VentureDrake\LaravelCrm\Policies\LunchPolicy::class,
     ];
 
     /**
@@ -195,6 +206,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Task::observe(TaskObserver::class);
         Activity::observe(ActivityObserver::class);
         XeroToken::observe(XeroTokenObserver::class);
+        Call::observe(CallObserver::class);
+        Meeting::observe(MeetingObserver::class);
+        Lunch::observe(LunchObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -305,6 +319,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_invoices_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_invoices_table.php', 45),
                 __DIR__ . '/../database/migrations/create_laravel_crm_invoice_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_invoice_lines_table.php', 46),
                 __DIR__ . '/../database/migrations/add_reference_to_laravel_crm_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_reference_to_laravel_crm_orders_table.php', 47),
+                __DIR__ . '/../database/migrations/create_laravel_crm_calls_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_calls_table.php', 48),
+                __DIR__ . '/../database/migrations/create_laravel_crm_meetings_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_meetings_table.php', 49),
+                __DIR__ . '/../database/migrations/create_laravel_crm_lunches_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_lunches_table.php', 50),
             ], 'migrations');
 
             // Publishing the seeders
@@ -349,6 +366,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('note', LiveNote::class);
         Livewire::component('tasks', LiveTasks::class);
         Livewire::component('task', LiveTask::class);
+        Livewire::component('calls', LiveCalls::class);
+        Livewire::component('call', LiveCall::class);
         Livewire::component('files', LiveFiles::class);
         Livewire::component('file', LiveFile::class);
         Livewire::component('related-contact-organisations', LiveRelatedContactOrganisation::class);

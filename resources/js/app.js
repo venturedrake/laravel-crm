@@ -26,13 +26,13 @@ const appJquery = function() {
             bsCustomFileInput.init()
 
             $('[data-toggle="tooltip"]').tooltip()
-            
+
             $('input[name="birthday"], input[name="expected_close"], input[name="issue_at"], input[name="expire_at"]').datetimepicker({
                 timepicker:false,
                 format: 'Y/m/d',
             });
 
-            $('input[name="noted_at"]').datetimepicker({
+            $('input[name="noted_at"], input[name="due_at"], input[name="start_at"], input[name="finish_at"]').datetimepicker({
                 timepicker:true,
                 format: 'Y/m/d H:i',
             });
@@ -67,7 +67,7 @@ const appJquery = function() {
             $('#input_hex').colorpicker();
 
             $('form.form-delete-button > button[type="submit"]').on('click', function (e) {
-                
+
                 Swal.fire({
                     customClass: {
                         confirmButton: 'btn btn-danger',
@@ -93,7 +93,7 @@ const appJquery = function() {
             if (typeof people !== 'undefined') {
                 appJquery.bindPersonAutocomplete();
             }
-            
+
             if (typeof organisations !== 'undefined') {
                 appJquery.bindOrganisationAutocomplete();
             }
@@ -113,7 +113,7 @@ const appJquery = function() {
                     highlightClass: 'text-danger',
                     treshold: 2,
                 });
-                
+
             })
 
             $(document).on("change", "input[name^='item_price']", function() {
@@ -132,7 +132,7 @@ const appJquery = function() {
                     $(this).closest('form').find('.action-current').html($(this).text());
                 },
             });
-            
+
             if($('#createdLast14Days').length > 0){
                 var chart = $('#createdLast14Days');
                 var chartData = chart.data('chart');
@@ -142,7 +142,7 @@ const appJquery = function() {
                 var chartDeals = [];
                 var chartDealsLabel = chart.data('label-deals');
                 Object.values(chartData).forEach(function (item, index) {
-                    
+
                     console.log(item, index);
                     chartDays.push(item.daily.date);
                     chartLeads.push(item.daily.leads);
@@ -191,7 +191,7 @@ const appJquery = function() {
                     }
                 });
             }
-            
+
             // bootstrap-duallistbox
             $("select[name^='team_users']").bootstrapDualListbox({
                 nonSelectedListLabel: 'Not on Team',
@@ -208,7 +208,7 @@ const appJquery = function() {
                 infoText: false,
                 iconsPrefix: 'fa'
             });
-            
+
             // bootstrap-multiselect
             $('select[name="user_owner_id[]"]').multiselect({
                 buttonText: function(options, select) {
@@ -247,7 +247,7 @@ const appJquery = function() {
                 enableCaseInsensitiveFiltering: true,
                 maxHeight: 500
             });
-            
+
             $('form button#clear-filter').on('click', function() {
                $(this).closest('form').find('.col').removeClass('filter-active')
                $(this).closest('form').find('select').each(function( index ) {
@@ -258,7 +258,7 @@ const appJquery = function() {
                 });
             });
         },
-        
+
         bindPersonAutocomplete: function (){
 
             $('input[name="person_name"]').autocomplete({
@@ -287,7 +287,7 @@ const appJquery = function() {
             if($('input[name="person_name"]').closest('.autocomplete').find('input[name="person_id"]').val() == ''){
                 $('.autocomplete-person').find('input,select').removeAttr('disabled');
             }
-            
+
         },
 
         bindOrganisationAutocomplete: function (){
@@ -321,7 +321,7 @@ const appJquery = function() {
 
         onSelectPerson: function (item, element) {
             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
-            
+
             $.ajax({
                 url: "/crm/people/" +  item.value + "/autocomplete",
                 cache: false
@@ -331,13 +331,13 @@ const appJquery = function() {
                 $('.autocomplete-person').find('select[name="phone_type"]').val(data.phone_type);
                 $('.autocomplete-person').find('input[name="email"]').val(data.email);
                 $('.autocomplete-person').find('select[name="email_type"]').val(data.email_type);
-                
+
             });
         },
 
         onSelectOrganisation: function (item, element) {
             $(element).closest('.autocomplete').find('input[name="organisation_id"]').val(item.value).trigger('change');
-            
+
             $.ajax({
                 url: "/crm/organisations/" +  item.value + "/autocomplete",
                 cache: false
@@ -350,14 +350,14 @@ const appJquery = function() {
                 $('.autocomplete-organisation').find('input[name="state"]').val(data.address_state);
                 $('.autocomplete-organisation').find('input[name="code"]').val(data.address_code);
                 $('.autocomplete-organisation').find('select[name="country"]').val(data.address_country);
-                
+
             });
         },
 
         onSelectProduct: function (item, element) {
             $(element).closest('.autocomplete').find("input[name^='item_product_id']").val(item.value).trigger('change');
             var dealProduct = $(element).closest('.deal-product-row');
-            
+
             $.ajax({
                 url: "/crm/products/" +  item.value + "/autocomplete",
                 cache: false

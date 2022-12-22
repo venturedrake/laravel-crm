@@ -13,6 +13,15 @@
         <a class="nav-link" data-toggle="tab" id="tab-tasks" href="#tabs-tasks">{{ ucfirst(__('laravel-crm::lang.tasks')) }}</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" id="tab-calls" href="#tabs-calls">{{ ucfirst(__('laravel-crm::lang.calls')) }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" id="tab-meetings" href="#tabs-meetings">{{ ucfirst(__('laravel-crm::lang.meetings')) }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" id="tab-lunches" href="#tabs-lunches">{{ ucfirst(__('laravel-crm::lang.lunches')) }}</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" data-toggle="tab" id="tab-files" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
     </li>
 </ul>
@@ -38,6 +47,27 @@
             ])
         </div>
     </div>
+    <div class="tab-pane fade" id="tabs-calls">
+        <div class="card-body pl-0 pr-0">
+            @livewire('calls', [
+            'model' => $model
+            ])
+        </div>
+    </div>
+   {{-- <div class="tab-pane fade" id="tabs-meetings">
+        <div class="card-body pl-0 pr-0">
+            @livewire('meetings', [
+            'model' => $model
+            ])
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tabs-lunches">
+        <div class="card-body pl-0 pr-0">
+            @livewire('lunches', [
+            'model' => $model
+            ])
+        </div>
+    </div>--}}
     <div class="tab-pane fade" id="tabs-files">
         <div class="card-body pl-0 pr-0">
             @livewire('files', [

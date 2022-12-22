@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
@@ -13,7 +14,8 @@ class Lead extends Model
     use HasCrmFields;
     use BelongsToTeams;
     use SearchFilters;
-    
+    use HasCrmActivities;
+
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -52,7 +54,7 @@ class Lead extends Model
             $this->attributes['amount'] = null;
         }
     }
-    
+
     public function organisation()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
@@ -70,7 +72,7 @@ class Lead extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Email::class, 'emailable');
     }
-    
+
     public function getPrimaryEmail()
     {
         if ($this->person) {
@@ -168,25 +170,5 @@ class Lead extends Model
     public function labels()
     {
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
-    }
-
-    public function activities()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Activity::class, 'timelineable');
-    }
-
-    public function tasks()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Task::class, 'taskable');
-    }
-
-    public function notes()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
-    }
-
-    public function files()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\File::class, 'fileable');
     }
 }

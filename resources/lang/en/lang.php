@@ -319,4 +319,9 @@ return [
     'order_created_from_quote' => 'order created from quote',
     'ordered' => 'ordered',
     'quote_updated' => 'quote updated',
+    'calls' => 'calls',
+    'meetings' => 'meetings',
+    'lunches' => 'lunches',
+    'guests' => 'guests',
+    'location' => 'location',
 ];

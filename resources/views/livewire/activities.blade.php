@@ -1,7 +1,7 @@
 <div>
     {{--<h6 class="text-uppercase mt-0">{{ ucfirst(__('laravel-crm::lang.planned')) }}</h6>
     <hr />
-    
+
     <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.complete')) }}</h6>
     <hr />--}}
     @foreach($activities as $activity)
@@ -21,6 +21,21 @@
                     'file' => $activity->recordable
                 ], key('file_'.$activity->recordable->id))
                 @break
-        @endswitch    
+            @case('VentureDrake\LaravelCrm\Models\Call')
+                @livewire('call',[
+                    'call' => $activity->recordable
+                ], key('file_'.$activity->recordable->id))
+                @break
+            @case('VentureDrake\LaravelCrm\Models\Meeting')
+                @livewire('meeting',[
+                    'meeting' => $activity->recordable
+                ], key('file_'.$activity->recordable->id))
+                @break
+            @case('VentureDrake\LaravelCrm\Models\Lunch')
+                @livewire('lunch',[
+                    'lunch' => $activity->recordable
+                ], key('file_'.$activity->recordable->id))
+                @break
+        @endswitch
     @endforeach
 </div>

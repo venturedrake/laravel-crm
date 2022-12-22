@@ -28,7 +28,6 @@
                     });
 
                     window.addEventListener('noteAddOn', event => {
-                        bsCustomFileInput.init()
                         $('.nav-activities li a#tab-notes').tab('show')
                         $('input[name="noted_at"]').datetimepicker({
                             timepicker:true,

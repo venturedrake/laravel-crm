@@ -33,7 +33,6 @@
                 });
 
                 window.addEventListener('taskAddOn', event => {
-                    bsCustomFileInput.init()
                     $('.nav-activities li a#tab-tasks').tab('show')
                     $('input[name="due_at"]').datetimepicker({
                         timepicker:true,
