@@ -18,12 +18,12 @@ class LiveActivities extends Component
         $this->model = $model;
         $this->getActivities();
     }
-    
+
     public function getActivities()
     {
         $this->activities = $this->model->activities()->latest()->get();
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.activities');

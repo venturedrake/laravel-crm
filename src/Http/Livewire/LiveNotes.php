@@ -12,7 +12,7 @@ use VentureDrake\LaravelCrm\Traits\NotifyToast;
 class LiveNotes extends Component
 {
     use NotifyToast;
-    
+
     public $model;
     public $notes;
     public $pinned;
@@ -32,7 +32,7 @@ class LiveNotes extends Component
         $this->model = $model;
         $this->pinned = $pinned;
         $this->getNotes();
-        
+
         if ($this->notes->count() < 1) {
             $this->showForm = true;
         }
@@ -43,7 +43,7 @@ class LiveNotes extends Component
         $data = $this->validate([
             'content' => 'required',
         ]);
-        
+
         $note = $this->model->notes()->create([
             'external_id' => Uuid::uuid4()->toString(),
             'content' => $data['content'],
@@ -58,7 +58,7 @@ class LiveNotes extends Component
             'recordable_type' => $note->getMorphClass(),
             'recordable_id' => $note->id,
         ]);
-        
+
         // Add to any upstream related models
         if ($this->model instanceof Person) {
             if ($this->model->organisation) {
@@ -79,7 +79,7 @@ class LiveNotes extends Component
                 ]);
             }
         }
-        
+
         if ($this->model instanceof Organisation || $this->model instanceof Person) {
             foreach (Contact::where([
                 'entityable_type' => $this->model->getMorphClass(),
@@ -102,8 +102,8 @@ class LiveNotes extends Component
                 ]);
             }
         }
-        
-        $this->emit('notAdded');
+
+        $this->emit('noteAdded');
 
         $this->notify(
             'Note created',
@@ -111,7 +111,7 @@ class LiveNotes extends Component
 
         $this->resetFields();
     }
-    
+
     public function getNotes()
     {
         if ($this->pinned) {
@@ -119,10 +119,10 @@ class LiveNotes extends Component
         } else {
             $this->notes = $this->model->notes()->latest()->get();
         }
-        
+
         $this->emit('refreshActivities');
     }
-    
+
     public function addNoteToggle()
     {
         $this->showForm = ! $this->showForm;
@@ -142,7 +142,7 @@ class LiveNotes extends Component
         $this->reset('content', 'noted_at');
         $this->getNotes();
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.notes');

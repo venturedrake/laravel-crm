@@ -54,7 +54,7 @@
             ])
         </div>
     </div>
-   {{-- <div class="tab-pane fade" id="tabs-meetings">
+    <div class="tab-pane fade" id="tabs-meetings">
         <div class="card-body pl-0 pr-0">
             @livewire('meetings', [
             'model' => $model
@@ -67,7 +67,7 @@
             'model' => $model
             ])
         </div>
-    </div>--}}
+    </div>
     <div class="tab-pane fade" id="tabs-files">
         <div class="card-body pl-0 pr-0">
             @livewire('files', [
