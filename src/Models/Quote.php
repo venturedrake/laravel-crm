@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
@@ -14,6 +15,7 @@ class Quote extends Model
     use HasCrmFields;
     use BelongsToTeams;
     use SearchFilters;
+    use HasCrmActivities;
 
     protected $guarded = ['id'];
 
@@ -171,26 +173,6 @@ class Quote extends Model
     public function labels()
     {
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
-    }
-
-    public function activities()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Activity::class, 'timelineable');
-    }
-
-    public function tasks()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Task::class, 'taskable');
-    }
-
-    public function notes()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
-    }
-
-    public function files()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\File::class, 'fileable');
     }
 
     public function order()

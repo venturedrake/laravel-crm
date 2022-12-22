@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kyslik\ColumnSortable\Sortable;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
@@ -17,6 +18,7 @@ class Organisation extends Model
     use HasCrmFields;
     use SearchFilters;
     use Sortable;
+    use HasCrmActivities;
 
     protected $guarded = ['id'];
 
@@ -27,7 +29,7 @@ class Organisation extends Model
     protected $searchable = [
         'name',
     ];
-    
+
     protected $filterable = [
         'user_owner_id',
         'labels.id',
@@ -132,26 +134,6 @@ class Organisation extends Model
     public function organisationType()
     {
         return $this->belongsTo(OrganisationType::class);
-    }
-
-    public function activities()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Activity::class, 'timelineable');
-    }
-
-    public function tasks()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Task::class, 'taskable');
-    }
-
-    public function notes()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Note::class, 'noteable');
-    }
-
-    public function files()
-    {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\File::class, 'fileable');
     }
 
     public function contacts()
