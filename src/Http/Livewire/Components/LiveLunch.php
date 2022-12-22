@@ -16,6 +16,7 @@ class LiveLunch extends Component
     public $description;
     public $start_at;
     public $finish_at;
+    public $location;
     public $view;
 
     protected $listeners = [
@@ -29,6 +30,7 @@ class LiveLunch extends Component
         $this->description = $lunch->description;
         $this->start_at = ($lunch->start_at) ? $lunch->start_at->format('Y/m/d H:i') : null;
         $this->finish_at = ($lunch->finish_at) ? $lunch->finish_at->format('Y/m/d H:i') : null;
+        $this->location = $lunch->location;
         $this->view = $view;
     }
 
@@ -44,6 +46,7 @@ class LiveLunch extends Component
             'description' => "nullable",
             'start_at' => 'required',
             'finish_at' => 'required',
+            'location' => "nullable",
         ];
     }
 
@@ -55,6 +58,7 @@ class LiveLunch extends Component
             'description' => $this->description,
             'start_at' => $this->start_at,
             'finish_at' => $this->finish_at,
+            'location' => $this->location
         ]);
         $this->toggleEditMode();
         $this->emit('refreshComponent');

@@ -326,6 +326,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_calls_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_calls_table.php', 48),
                 __DIR__ . '/../database/migrations/create_laravel_crm_meetings_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_meetings_table.php', 49),
                 __DIR__ . '/../database/migrations/create_laravel_crm_lunches_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_lunches_table.php', 50),
+                __DIR__ . '/../database/migrations/add_location_to_laravel_crm_activities_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_location_to_laravel_crm_activities_table.php', 51),
             ], 'migrations');
 
             // Publishing the seeders
