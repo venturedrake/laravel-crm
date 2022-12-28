@@ -20,37 +20,55 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).on("change", "#inputCreateForm input[name='start_at']", function () {
-                    @this.set('start_at', $(this).val());
+                $(document).on("change", ".meetings #inputCreateForm input[name='start_at']", function () {
+                @this.set('start_at', $(this).val());
                 });
 
-                $(document).on("change", "#inputCreateForm input[name='finish_at']", function () {
-                    @this.set('finish_at', $(this).val());
+                $(document).on("change", ".meetings #inputCreateForm input[name='finish_at']", function () {
+                @this.set('finish_at', $(this).val());
+                });
+
+                $(document).on("change", '.meetings select[name="guests[]"]', function (e) {
+                    var data = $('select[name="guests[]"]').select2("val");
+                @this.set('guests', data);
                 });
 
                 window.addEventListener('meetingEditModeToggled', event => {
-                    $('input[name="start_at"]').datetimepicker({
-                     timepicker:true,
-                     format: 'Y/m/d H:i',
-                    });
-                    $('input[name="finish_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
+                    bindDateTimePicker();
+                    bindSelect2();
                 });
 
                 window.addEventListener('meetingAddOn', event => {
                     $('.nav-activities li a#tab-meetings').tab('show')
-                    $('input[name="start_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
-                    $('input[name="finish_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
+                    bindDateTimePicker()
+                    bindSelect2();
+                });
+
+                $('.nav-tabs a#tab-meetings').on('shown.bs.tab', function(event){
+                    bindDateTimePicker()
+                    bindSelect2();
+                });
+
+                window.addEventListener('meetingFieldsReset', event => {
+                    bindDateTimePicker();
+                    bindSelect2();
                 });
             });
+
+            function bindDateTimePicker(){
+                $('.meetings input[name="start_at"]').datetimepicker({
+                    timepicker:true,
+                    format: 'Y/m/d H:i',
+                });
+                $('.meetings input[name="finish_at"]').datetimepicker({
+                    timepicker:true,
+                    format: 'Y/m/d H:i',
+                });
+            }
+
+            function bindSelect2(){
+                $('.meetings select[name="guests[]"]').select2();
+            }
         </script>
     @endpush
 </div>

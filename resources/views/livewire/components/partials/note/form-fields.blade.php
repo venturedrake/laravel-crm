@@ -47,7 +47,8 @@
       'label' => ucfirst(__('laravel-crm::lang.noted_at')),
       'attributes' => [
           'wire:model.debounce.10000ms' => 'noted_at',
-          'autocomplete' => \Illuminate\Support\Str::random(),
+          'autocomplete' => 'off',
+          'role' => 'presentation'
       ]
     ])
 @endif    

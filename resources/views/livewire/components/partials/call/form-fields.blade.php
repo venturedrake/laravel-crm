@@ -7,34 +7,46 @@
         @enderror
     </div>
     <div class="row">
-        <div class="col">
+        <div wire:ignore class="col">
             @include('laravel-crm::partials.form.text',[
                   'name' => 'start_at',
                   'label' => ucfirst(__('laravel-crm::lang.from')),
                   'attributes' => [
                       'wire:model.debounce.10000ms' => 'start_at',
-                      'autocomplete' => \Illuminate\Support\Str::random(),
+                      'autocomplete' => 'off',
+                      'role' => 'presentation'
                   ]
                 ])
         </div>
-        <div class="col">
+        <div wire:ignore class="col">
             @include('laravel-crm::partials.form.text',[
                  'name' => 'finish_at',
                  'label' => ucfirst(__('laravel-crm::lang.to')),
                  'attributes' => [
                      'wire:model.debounce.10000ms' => 'finish_at',
-                     'autocomplete' => \Illuminate\Support\Str::random(),
+                     'autocomplete' => 'off',
+                     'role' => 'presentation'
                  ]
                ])
         </div>
     </div>
-    @include('laravel-crm::partials.form.text',[
-      'name' => 'guests',
-      'label' => ucfirst(__('laravel-crm::lang.guests'))
-    ])
+    <span wire:ignore>
+        @include('laravel-crm::partials.form.multiselect',[
+          'name' => 'guests',
+          'label' => ucfirst(__('laravel-crm::lang.guests')),
+          'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Person::all(), false),      
+          'attributes' => [
+               'wire:model' => 'guests',
+          ]
+        ])
+    </span>
+    
     @include('laravel-crm::partials.form.text',[
      'name' => 'location',
-     'label' => ucfirst(__('laravel-crm::lang.location'))
+     'label' => ucfirst(__('laravel-crm::lang.location')),
+     'attributes' => [
+           'wire:model' => 'location',
+      ]
    ])
     {{--<div wire:model="content" x-data @trix-blur="$dispatch('change', $event.target.value)" class="form-group @error('content') text-danger @enderror">
         <span wire:ignore>
@@ -61,34 +73,39 @@
         @enderror
     </div>
     <div class="row">
-        <div class="col">
+        <div wire:ignore class="col">
             @include('laravel-crm::partials.form.text',[
-                  'name' => 'start_at',
-                  'label' => ucfirst(__('laravel-crm::lang.from')),
-                  'attributes' => [
-                      'wire:model.debounce.10000ms' => 'start_at',
-                      'autocomplete' => \Illuminate\Support\Str::random(),
-                  ]
-                ])
+              'name' => 'start_at',
+              'label' => ucfirst(__('laravel-crm::lang.from')),
+              'attributes' => [
+                  'wire:model.debounce.10000ms' => 'start_at',
+                  'autocomplete' => 'off',
+                  'role' => 'presentation'
+              ]
+            ])
         </div>
-        <div class="col">
+        <div wire:ignore class="col">
             @include('laravel-crm::partials.form.text',[
                  'name' => 'finish_at',
                  'label' => ucfirst(__('laravel-crm::lang.to')),
                  'attributes' => [
                      'wire:model.debounce.10000ms' => 'finish_at',
-                     'autocomplete' => \Illuminate\Support\Str::random(),
+                     'autocomplete' => 'off',
+                     'role' => 'presentation'
                  ]
                ])
         </div>
     </div>
-    @include('laravel-crm::partials.form.text',[
+    <span wire:ignore>
+    @include('laravel-crm::partials.form.multiselect',[
       'name' => 'guests',
       'label' => ucfirst(__('laravel-crm::lang.guests')),
+      'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Person::all(), false),
       'attributes' => [
          'wire:model' => 'guests',
        ]
-    ])
+    ])  
+    </span>
     @include('laravel-crm::partials.form.text',[
      'name' => 'location',
      'label' => ucfirst(__('laravel-crm::lang.location')),

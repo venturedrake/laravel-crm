@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Livewire\Components;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Call;
+use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveCall extends Component
@@ -16,6 +17,7 @@ class LiveCall extends Component
     public $description;
     public $start_at;
     public $finish_at;
+    public $guests = [];
     public $location;
     public $view;
 
@@ -30,6 +32,7 @@ class LiveCall extends Component
         $this->description = $call->description;
         $this->start_at = ($call->start_at) ? $call->start_at->format('Y/m/d H:i') : null;
         $this->finish_at = ($call->finish_at) ? $call->finish_at->format('Y/m/d H:i') : null;
+        $this->guests = $call->contacts()->pluck('entityable_id')->toArray();
         $this->location = $call->location;
         $this->view = $view;
     }
@@ -46,6 +49,7 @@ class LiveCall extends Component
             'description' => "nullable",
             'start_at' => 'required',
             'finish_at' => 'required',
+            'guests' => 'nullable',
             'location' => "nullable",
         ];
     }
@@ -58,8 +62,24 @@ class LiveCall extends Component
             'description' => $this->description,
             'start_at' => $this->start_at,
             'finish_at' => $this->finish_at,
-            'location' => $this->location
+            'location' => $this->location,
         ]);
+
+        foreach ($this->guests as $personId) {
+            if ($person = Person::find($personId)) {
+                $this->call->contacts()->firstOrCreate([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+                
+                foreach ($this->call->contacts as $contact) {
+                    if (! in_array($contact->entityable_id, $this->guests)) {
+                        $contact->delete();
+                    }
+                }
+            }
+        }
+        
         $this->toggleEditMode();
         $this->emit('refreshComponent');
         $this->notify(

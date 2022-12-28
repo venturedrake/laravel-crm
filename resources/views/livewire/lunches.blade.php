@@ -20,37 +20,55 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).on("change", "#inputCreateForm input[name='start_at']", function () {
-                    @this.set('start_at', $(this).val());
+                $(document).on("change", ".lunches #inputCreateForm input[name='start_at']", function () {
+                @this.set('start_at', $(this).val());
                 });
 
-                $(document).on("change", "#inputCreateForm input[name='finish_at']", function () {
-                    @this.set('finish_at', $(this).val());
+                $(document).on("change", ".lunches #inputCreateForm input[name='finish_at']", function () {
+                @this.set('finish_at', $(this).val());
+                });
+
+                $(document).on("change", '.lunches select[name="guests[]"]', function (e) {
+                    var data = $('select[name="guests[]"]').select2("val");
+                @this.set('guests', data);
                 });
 
                 window.addEventListener('lunchEditModeToggled', event => {
-                    $('input[name="start_at"]').datetimepicker({
-                     timepicker:true,
-                     format: 'Y/m/d H:i',
-                    });
-                    $('input[name="finish_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
+                    bindDateTimePicker();
+                    bindSelect2();
                 });
 
                 window.addEventListener('lunchAddOn', event => {
                     $('.nav-activities li a#tab-lunches').tab('show')
-                    $('input[name="start_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
-                    $('input[name="finish_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
+                    bindDateTimePicker()
+                    bindSelect2();
+                });
+
+                $('.nav-tabs a#tab-lunches').on('shown.bs.tab', function(event){
+                    bindDateTimePicker()
+                    bindSelect2();
+                });
+
+                window.addEventListener('lunchFieldsReset', event => {
+                    bindDateTimePicker();
+                    bindSelect2();
                 });
             });
+
+            function bindDateTimePicker(){
+                $('.lunches input[name="start_at"]').datetimepicker({
+                    timepicker:true,
+                    format: 'Y/m/d H:i',
+                });
+                $('.lunches input[name="finish_at"]').datetimepicker({
+                    timepicker:true,
+                    format: 'Y/m/d H:i',
+                });
+            }
+
+            function bindSelect2(){
+                $('.lunches select[name="guests[]"]').select2();
+            }
         </script>
     @endpush
 </div>

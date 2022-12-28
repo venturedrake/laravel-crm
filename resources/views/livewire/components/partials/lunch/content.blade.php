@@ -8,8 +8,23 @@
     </form>
 @else
     {!! $lunch->description !!}
-    @if($lunch->start_at)
-        <br />
-        <span class="badge badge-secondary">{{ $lunch->start_at->format('h:i A') }} on {{ $lunch->start_at->toFormattedDateString() }}</span>
+    <br />
+    <span class="badge badge-secondary">{{ $lunch->start_at->format('h:i A') }} on {{ $lunch->start_at->toFormattedDateString() }}</span> to <span class="badge badge-secondary">{{ $lunch->finish_at->format('h:i A') }} on {{ $lunch->finish_at->toFormattedDateString() }}</span>
+    @if($lunch->contacts->count() > 0)
+        <hr />
+        <h6><strong>Guests</strong></h6>
+        @foreach($lunch->contacts as $contact)
+            <span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show', $contact->entityable) }}">{{ $contact->entityable->name }}</a><br />
+        @endforeach
+    @endif
+    @if($lunch->location)
+        <hr />
+        <h6><strong>Location</strong></h6>
+        {{ $lunch->location }}
+    @endif
+    @if($lunch->location)
+        <hr />
+        <h6><strong>Description</strong></h6>
+        {{ $lunch->description }}
     @endif
 @endif

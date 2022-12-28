@@ -20,37 +20,55 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).on("change", "#inputCreateForm input[name='start_at']", function () {
+                $(document).on("change", ".calls #inputCreateForm input[name='start_at']", function () {
                     @this.set('start_at', $(this).val());
                 });
 
-                $(document).on("change", "#inputCreateForm input[name='finish_at']", function () {
+                $(document).on("change", ".calls #inputCreateForm input[name='finish_at']", function () {
                     @this.set('finish_at', $(this).val());
                 });
 
+                $(document).on("change", '.calls select[name="guests[]"]', function (e) {
+                    var data = $('select[name="guests[]"]').select2("val");
+                    @this.set('guests', data);
+                });
+
                 window.addEventListener('callEditModeToggled', event => {
-                    $('input[name="start_at"]').datetimepicker({
-                     timepicker:true,
-                     format: 'Y/m/d H:i',
-                    });
-                    $('input[name="finish_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
+                    bindDateTimePicker();
+                    bindSelect2();
                 });
 
                 window.addEventListener('callAddOn', event => {
                     $('.nav-activities li a#tab-calls').tab('show')
-                    $('input[name="start_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
-                    $('input[name="finish_at"]').datetimepicker({
-                        timepicker:true,
-                        format: 'Y/m/d H:i',
-                    });
+                    bindDateTimePicker()
+                    bindSelect2();
+                });
+
+                $('.nav-tabs a#tab-calls').on('shown.bs.tab', function(event){
+                    bindDateTimePicker()
+                    bindSelect2();
+                });
+
+                window.addEventListener('callFieldsReset', event => {
+                    bindDateTimePicker();
+                    bindSelect2();
                 });
             });
+            
+            function bindDateTimePicker(){
+                $('.calls input[name="start_at"]').datetimepicker({
+                    timepicker:true,
+                    format: 'Y/m/d H:i',
+                });
+                $('.calls input[name="finish_at"]').datetimepicker({
+                    timepicker:true,
+                    format: 'Y/m/d H:i',
+                });
+            }
+            
+            function bindSelect2(){
+                $('.calls select[name="guests[]"]').select2();
+            }
         </script>
     @endpush
 </div>

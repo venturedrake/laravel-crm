@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveMeetings extends Component
@@ -15,6 +16,8 @@ class LiveMeetings extends Component
     public $description;
     public $start_at;
     public $finish_at;
+    public $guests = [];
+    public $location;
     public $showForm = false;
 
     protected $listeners = [
@@ -36,10 +39,12 @@ class LiveMeetings extends Component
     public function create()
     {
         $data = $this->validate([
-            'name' => 'required',
-            'description' => 'nullable',
+            'name' => "required",
+            'description' => "nullable",
             'start_at' => 'required',
             'finish_at' => 'required',
+            'guests' => 'nullable',
+            'location' => "nullable",
         ]);
 
         $meeting = $this->model->meetings()->create([
@@ -47,9 +52,19 @@ class LiveMeetings extends Component
             'description' => $data['description'],
             'start_at' => $this->start_at,
             'finish_at' => $this->finish_at,
+            'location' => $this->location,
             'user_owner_id' => auth()->user()->id,
             'user_assigned_id' => auth()->user()->id,
         ]);
+
+        foreach ($this->guests as $personId) {
+            if ($person = Person::find($personId)) {
+                $meeting->contacts()->create([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+            }
+        }
 
         $this->model->activities()->create([
             'causable_type' => auth()->user()->getMorphClass(),
@@ -61,7 +76,7 @@ class LiveMeetings extends Component
         ]);
 
         $this->notify(
-            'Meeting created',
+            ucfirst(trans('laravel-crm::lang.meeting_created'))
         );
 
         $this->resetFields();
@@ -89,7 +104,12 @@ class LiveMeetings extends Component
 
     private function resetFields()
     {
-        $this->reset('name', 'description', 'start_at', 'finish_at');
+        $this->reset('name', 'description', 'start_at', 'finish_at', 'guests', 'location');
+
+        $this->dispatchBrowserEvent('meetingFieldsReset');
+
+        $this->addMeetingToggle();
+        
         $this->getMeetings();
     }
 

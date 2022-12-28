@@ -324,4 +324,13 @@ return [
     'lunches' => 'lunches',
     'guests' => 'guests',
     'location' => 'location',
+    'call_created' => 'call created',
+    'call_updated' => 'call updated',
+    'call_deleted' => 'call deleted',
+    'meeting_created' => 'meeting created',
+    'meeting_updated' => 'meeting updated',
+    'meeting_deleted' => 'meeting deleted',
+    'lunch_created' => 'lunch created',
+    'lunch_updated' => 'lunch updated',
+    'lunch_deleted' => 'lunch deleted',
 ];

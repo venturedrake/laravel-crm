@@ -78,4 +78,9 @@ class Meeting extends Model
     {
         return $this->morphOne(\VentureDrake\LaravelCrm\Models\Activity::class, 'recordable');
     }
+
+    public function contacts()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Contact::class, 'contactable');
+    }
 }

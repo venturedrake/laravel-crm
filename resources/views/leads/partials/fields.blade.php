@@ -156,9 +156,9 @@
                        'name' => 'code',
                        'label' => ucfirst(__('laravel-crm::lang.postcode')),
                        'value' => old('code', $address->code ?? null),
-               'attributes' => [
+                        'attributes' => [
                          'disabled' => 'disabled'
-                     ]
+                        ]
                     ])
                 </div>
                 <div class="col-sm-6">
@@ -167,7 +167,7 @@
                      'label' => ucfirst(__('laravel-crm::lang.country')),
                      'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries(),
                      'value' => old('country', $address->country ?? 'United States'),
-               'attributes' => [
+                     'attributes' => [
                          'disabled' => 'disabled'
                      ]
                   ])
