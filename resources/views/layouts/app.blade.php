@@ -17,9 +17,11 @@
 
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=56767865897698" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=34523545342534" rel="stylesheet">
 
     @livewireStyles
+
+    @include('laravel-crm::layouts.partials.favicon')
 </head>
 <body class="d-flex flex-column h-100">
     <div id="app" class="d-flex flex-column h-100">

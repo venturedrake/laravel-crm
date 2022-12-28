@@ -16,9 +16,11 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=342534624562365" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=345324356435657" rel="stylesheet">
 
     @livewireStyles
+
+    @include('laravel-crm::layouts.partials.favicon')
 </head>
 <body class="d-flex flex-column h-100 layout-portal">
     <div id="app" class="d-flex flex-column h-100">

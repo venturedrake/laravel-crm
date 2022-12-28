@@ -132,6 +132,10 @@ dt {
   background-color: #f8fafc;
 }
 
+.nav-tabs.card-header-tabs .nav-link{
+  padding: .5rem .65rem;
+}
+
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
   background-color: #ffffff !important;
   border-bottom-color: #ffffff !important;
@@ -252,3 +256,11 @@ dt {
 .table .form-group{
   margin-bottom: 0;
 }
+
+.nav-activities .nav-link{
+  padding: .5rem .65rem;
+}
+
+/*.nav-side .nav-link{
+  padding: 0.35rem 1rem;
+}*/

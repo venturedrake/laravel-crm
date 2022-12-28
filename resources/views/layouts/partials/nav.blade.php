@@ -1,6 +1,6 @@
 <div class="card mb-4">
     <div class="card-body py-3">
-        <ul class="nav nav-pills flex-column">
+        <ul class="nav nav-pills nav-side flex-column">
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') === 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}">{{ ucfirst(__('laravel-crm::lang.dashboard')) }}</a></li>
             <li class="dropdown-divider"></li>
             @can('view crm leads')
