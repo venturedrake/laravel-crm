@@ -34,28 +34,28 @@
                 });
 
                 window.addEventListener('callEditModeToggled', event => {
-                    bindDateTimePicker();
-                    bindSelect2();
+                    bindDateTimePicker_Call();
+                    bindSelect2_Call();
                 });
 
                 window.addEventListener('callAddOn', event => {
                     $('.nav-activities li a#tab-calls').tab('show')
-                    bindDateTimePicker()
-                    bindSelect2();
+                    bindDateTimePicker_Call()
+                    bindSelect2_Call();
                 });
 
                 $('.nav-tabs a#tab-calls').on('shown.bs.tab', function(event){
-                    bindDateTimePicker()
-                    bindSelect2();
+                    bindDateTimePicker_Call()
+                    bindSelect2_Call();
                 });
 
                 window.addEventListener('callFieldsReset', event => {
-                    bindDateTimePicker();
-                    bindSelect2();
+                    bindDateTimePicker_Call();
+                    bindSelect2_Call();
                 });
             });
             
-            function bindDateTimePicker(){
+            function bindDateTimePicker_Call(){
                 $('.calls input[name="start_at"]').datetimepicker({
                     timepicker:true,
                     format: 'Y/m/d H:i',
@@ -66,7 +66,7 @@
                 });
             }
             
-            function bindSelect2(){
+            function bindSelect2_Call(){
                 $('.calls select[name="guests[]"]').select2();
             }
         </script>

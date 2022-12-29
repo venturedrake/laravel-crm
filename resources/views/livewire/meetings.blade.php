@@ -21,41 +21,41 @@
         <script>
             $(document).ready(function () {
                 $(document).on("change", ".meetings #inputCreateForm input[name='start_at']", function () {
-                @this.set('start_at', $(this).val());
+                    @this.set('start_at', $(this).val());
                 });
 
                 $(document).on("change", ".meetings #inputCreateForm input[name='finish_at']", function () {
-                @this.set('finish_at', $(this).val());
+                    @this.set('finish_at', $(this).val());
                 });
 
                 $(document).on("change", '.meetings select[name="guests[]"]', function (e) {
                     var data = $('select[name="guests[]"]').select2("val");
-                @this.set('guests', data);
+                    @this.set('guests', data);
                 });
 
                 window.addEventListener('meetingEditModeToggled', event => {
-                    bindDateTimePicker();
-                    bindSelect2();
+                    bindDateTimePicker_Meeting();
+                    bindSelect2_Meeting();
                 });
 
                 window.addEventListener('meetingAddOn', event => {
                     $('.nav-activities li a#tab-meetings').tab('show')
-                    bindDateTimePicker()
-                    bindSelect2();
+                    bindDateTimePicker_Meeting()
+                    bindSelect2_Meeting();
                 });
 
                 $('.nav-tabs a#tab-meetings').on('shown.bs.tab', function(event){
-                    bindDateTimePicker()
-                    bindSelect2();
+                    bindDateTimePicker_Meeting()
+                    bindSelect2_Meeting();
                 });
 
                 window.addEventListener('meetingFieldsReset', event => {
-                    bindDateTimePicker();
-                    bindSelect2();
+                    bindDateTimePicker_Meeting();
+                    bindSelect2_Meeting();
                 });
             });
 
-            function bindDateTimePicker(){
+            function bindDateTimePicker_Meeting(){
                 $('.meetings input[name="start_at"]').datetimepicker({
                     timepicker:true,
                     format: 'Y/m/d H:i',
@@ -66,7 +66,7 @@
                 });
             }
 
-            function bindSelect2(){
+            function bindSelect2_Meeting(){
                 $('.meetings select[name="guests[]"]').select2();
             }
         </script>

@@ -34,28 +34,28 @@
                 });
 
                 window.addEventListener('lunchEditModeToggled', event => {
-                    bindDateTimePicker();
-                    bindSelect2();
+                    bindDateTimePicker_Lunch();
+                    bindSelect2_Lunch();
                 });
 
                 window.addEventListener('lunchAddOn', event => {
                     $('.nav-activities li a#tab-lunches').tab('show')
-                    bindDateTimePicker()
-                    bindSelect2();
+                    bindDateTimePicker_Lunch()
+                    bindSelect2_Lunch();
                 });
 
                 $('.nav-tabs a#tab-lunches').on('shown.bs.tab', function(event){
-                    bindDateTimePicker()
-                    bindSelect2();
+                    bindDateTimePicker_Lunch()
+                    bindSelect2_Lunch();
                 });
 
                 window.addEventListener('lunchFieldsReset', event => {
-                    bindDateTimePicker();
-                    bindSelect2();
+                    bindDateTimePicker_Lunch();
+                    bindSelect2_Lunch();
                 });
             });
 
-            function bindDateTimePicker(){
+            function bindDateTimePicker_Lunch(){
                 $('.lunches input[name="start_at"]').datetimepicker({
                     timepicker:true,
                     format: 'Y/m/d H:i',
@@ -66,7 +66,7 @@
                 });
             }
 
-            function bindSelect2(){
+            function bindSelect2_Lunch(){
                 $('.lunches select[name="guests[]"]').select2();
             }
         </script>

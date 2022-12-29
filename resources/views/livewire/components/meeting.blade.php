@@ -12,16 +12,16 @@
         <script>
             $(document).ready(function () {
                 $(document).on("change", ".meetings input[name='start_at']", function () {
-                @this.set('start_at', $(this).val());
+                    @this.set('start_at', $(this).val());
                 });
 
                 $(document).on("change", ".meetings input[name='finish_at']", function () {
-                @this.set('finish_at', $(this).val());
+                    @this.set('finish_at', $(this).val());
                 });
 
                 $(document).on("change", '.meetings select[name="guests[]"]', function (e) {
                     var data = $('.meetings select[name="guests[]"]').select2("val");
-                @this.set('guests', data);
+                    @this.set('guests', data);
                 });
             });
         </script>

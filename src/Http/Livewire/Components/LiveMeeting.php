@@ -33,7 +33,7 @@ class LiveMeeting extends Component
         $this->start_at = ($meeting->start_at) ? $meeting->start_at->format('Y/m/d H:i') : null;
         $this->finish_at = ($meeting->finish_at) ? $meeting->finish_at->format('Y/m/d H:i') : null;
         $this->guests = $meeting->contacts()->pluck('entityable_id')->toArray();
-        $this->location = $call->location;
+        $this->location = $meeting->location;
         $this->view = $view;
     }
 
