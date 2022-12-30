@@ -11,14 +11,14 @@ class LunchPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any lunchs.
+     * Determine whether the user can view any lunches.
      *
      * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view crm lunchs')) {
+        if ($user->hasPermissionTo('view crm lunches')) {
             return true;
         }
     }
@@ -32,20 +32,20 @@ class LunchPolicy
      */
     public function view(User $user, Lunch $lunch)
     {
-        if ($user->hasPermissionTo('view crm lunchs')) {
+        if ($user->hasPermissionTo('view crm lunches')) {
             return true;
         }
     }
 
     /**
-     * Determine whether the user can create lunchs.
+     * Determine whether the user can create lunches.
      *
      * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('create crm lunchs')) {
+        if ($user->hasPermissionTo('create crm lunches')) {
             return true;
         }
     }
@@ -59,7 +59,7 @@ class LunchPolicy
      */
     public function update(User $user, Lunch $lunch)
     {
-        if ($user->hasPermissionTo('edit crm lunchs')) {
+        if ($user->hasPermissionTo('edit crm lunches')) {
             return true;
         }
     }
@@ -73,7 +73,7 @@ class LunchPolicy
      */
     public function delete(User $user, Lunch $lunch)
     {
-        if ($user->hasPermissionTo('delete crm lunchs')) {
+        if ($user->hasPermissionTo('delete crm lunches')) {
             return true;
         }
     }
@@ -87,7 +87,7 @@ class LunchPolicy
      */
     public function restore(User $user, Lunch $lunch)
     {
-        if ($user->hasPermissionTo('delete crm lunchs')) {
+        if ($user->hasPermissionTo('delete crm lunches')) {
             return true;
         }
     }

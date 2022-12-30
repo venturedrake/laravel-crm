@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\File;
 
 class FileObserver
@@ -14,6 +15,8 @@ class FileObserver
      */
     public function creating(File $file)
     {
+        $file->external_id = Uuid::uuid4()->toString();
+        
         if (! app()->runningInConsole()) {
             $file->user_created_id = auth()->user()->id ?? null;
         }

@@ -139,6 +139,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Call' => \VentureDrake\LaravelCrm\Policies\CallPolicy::class,
         'VentureDrake\LaravelCrm\Models\Meeting' => \VentureDrake\LaravelCrm\Policies\MeetingPolicy::class,
         'VentureDrake\LaravelCrm\Models\Lunch' => \VentureDrake\LaravelCrm\Policies\LunchPolicy::class,
+        'VentureDrake\LaravelCrm\Models\File' => \VentureDrake\LaravelCrm\Policies\FilePolicy::class,
     ];
 
     /**
