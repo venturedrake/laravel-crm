@@ -488,6 +488,166 @@ Route::group(['prefix' => 'notes', 'middleware' => 'auth.laravel-crm'], function
         ->middleware(['can:delete,note']);
 });
 
+/* Calls */
+
+Route::group(['prefix' => 'calls', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@index')
+        ->name('laravel-crm.calls.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Call']);
+
+    /*Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@create')
+        ->name('laravel-crm.calls.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Call']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@store')
+        ->name('laravel-crm.calls.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Call']);
+
+    Route::get('{call}', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@show')
+        ->name('laravel-crm.calls.show')
+        ->middleware(['can:view,call']);
+
+    Route::get('{call}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@edit')
+        ->name('laravel-crm.calls.edit')
+        ->middleware(['can:update,call']);
+
+    Route::put('{call}', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@update')
+        ->name('laravel-crm.calls.update')
+        ->middleware(['can:update,call']);*/
+
+    Route::delete('{call}', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@destroy')
+        ->name('laravel-crm.calls.destroy')
+        ->middleware(['can:delete,call']);
+
+    /*Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@search')
+        ->name('laravel-crm.calls.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Call']);*/
+
+    Route::get('{call}/complete', 'VentureDrake\LaravelCrm\Http\Controllers\CallController@complete')
+        ->name('laravel-crm.calls.complete')
+        ->middleware(['can:update,call']);
+});
+
+/* Meetings */
+
+Route::group(['prefix' => 'meetings', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@index')
+        ->name('laravel-crm.meetings.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Meeting']);
+
+    /*Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@create')
+        ->name('laravel-crm.meetings.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Meeting']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@store')
+        ->name('laravel-crm.meetings.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Meeting']);
+
+    Route::get('{meeting}', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@show')
+        ->name('laravel-crm.meetings.show')
+        ->middleware(['can:view,meeting']);
+
+    Route::get('{meeting}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@edit')
+        ->name('laravel-crm.meetings.edit')
+        ->middleware(['can:update,meeting']);
+
+    Route::put('{meeting}', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@update')
+        ->name('laravel-crm.meetings.update')
+        ->middleware(['can:update,meeting']);*/
+
+    Route::delete('{meeting}', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@destroy')
+        ->name('laravel-crm.meetings.destroy')
+        ->middleware(['can:delete,meeting']);
+
+    /*Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@search')
+        ->name('laravel-crm.meetings.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Meeting']);*/
+
+    Route::get('{meeting}/complete', 'VentureDrake\LaravelCrm\Http\Controllers\MeetingController@complete')
+        ->name('laravel-crm.meetings.complete')
+        ->middleware(['can:update,meeting']);
+});
+
+/* Lunches */
+
+Route::group(['prefix' => 'lunches', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@index')
+        ->name('laravel-crm.lunches.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lunch']);
+
+    /*Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@create')
+        ->name('laravel-crm.lunches.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Lunch']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@store')
+        ->name('laravel-crm.lunches.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Lunch']);
+
+    Route::get('{lunch}', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@show')
+        ->name('laravel-crm.lunches.show')
+        ->middleware(['can:view,lunch']);
+
+    Route::get('{lunch}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@edit')
+        ->name('laravel-crm.lunches.edit')
+        ->middleware(['can:update,lunch']);
+
+    Route::put('{lunch}', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@update')
+        ->name('laravel-crm.lunches.update')
+        ->middleware(['can:update,lunch']);*/
+
+    Route::delete('{lunch}', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@destroy')
+        ->name('laravel-crm.lunches.destroy')
+        ->middleware(['can:delete,lunch']);
+
+    /*Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@search')
+        ->name('laravel-crm.lunches.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lunch']);*/
+
+    Route::get('{lunch}/complete', 'VentureDrake\LaravelCrm\Http\Controllers\LunchController@complete')
+        ->name('laravel-crm.lunches.complete')
+        ->middleware(['can:update,lunch']);
+});
+
+/* Files */
+
+Route::group(['prefix' => 'files', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@index')
+        ->name('laravel-crm.files.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\File']);
+
+    /*Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@create')
+        ->name('laravel-crm.files.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\File']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@store')
+        ->name('laravel-crm.files.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\File']);
+
+    Route::get('{file}', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@show')
+        ->name('laravel-crm.files.show')
+        ->middleware(['can:view,file']);
+
+    Route::get('{file}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@edit')
+        ->name('laravel-crm.files.edit')
+        ->middleware(['can:update,file']);
+
+    Route::put('{file}', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@update')
+        ->name('laravel-crm.files.update')
+        ->middleware(['can:update,file']);*/
+
+    Route::delete('{file}', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@destroy')
+        ->name('laravel-crm.files.destroy')
+        ->middleware(['can:delete,file']);
+
+    /*Route::post('search', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@search')
+        ->name('laravel-crm.files.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\File']);*/
+
+    Route::get('{file}/complete', 'VentureDrake\LaravelCrm\Http\Controllers\FileController@complete')
+        ->name('laravel-crm.files.complete')
+        ->middleware(['can:update,file']);
+});
+
 /* People */
 
 Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {

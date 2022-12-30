@@ -14,11 +14,13 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        /*if (Activity::all()->count() < 30) {
-            $activities = Activity::latest()->get();
+        $activities = Activity::latest();
+
+        if ($activities->count() < 30) {
+            $activities = $activities->get();
         } else {
-            $activities = Activity::latest()->paginate(30);
-        }*/
+            $activities = $activities->paginate(30);
+        }
 
         return view('laravel-crm::activities.index', [
             'activities' => $activities ?? [],
@@ -32,7 +34,7 @@ class ActivityController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::activities.create');
+        //
     }
 
     /**
@@ -43,9 +45,7 @@ class ActivityController extends Controller
      */
     public function store(Request $request)
     {
-        flash('Activity stored')->success()->important();
-
-        return redirect(route('laravel-crm.activities.index'));
+        //
     }
 
     /**
@@ -56,9 +56,7 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        return view('laravel-crm::activities.show', [
-            'activity' => $activity,
-        ]);
+        //
     }
 
     /**
@@ -69,9 +67,7 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
-        return view('laravel-crm::activities.edit', [
-            'activity' => $activity,
-        ]);
+        //
     }
 
     /**
@@ -83,9 +79,7 @@ class ActivityController extends Controller
      */
     public function update(Request $request, Activity $activity)
     {
-        flash('Activity updated')->success()->important();
-
-        return redirect(route('laravel-crm.activities.show', $activity));
+        //
     }
 
     /**
@@ -96,10 +90,6 @@ class ActivityController extends Controller
      */
     public function destroy(Activity $activity)
     {
-        $activity->delete();
-
-        flash('Activity deleted')->success()->important();
-
-        return redirect(route('laravel-crm.activities.index'));
+        //
     }
 }

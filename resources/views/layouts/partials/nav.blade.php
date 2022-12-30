@@ -12,12 +12,23 @@
             @can('view crm quotes')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.quotes') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.quotes.index')) }}">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</a></li>
             @endcan
-            @can('view crm tasks')
+            @canany(['view crm activities', 'view crm tasks', 'view crm notes'])
+                <li class="nav-item"><a class="nav-link {{ Str::contains(Route::currentRouteName(),[
+                'laravel-crm.activities',
+                'laravel-crm.notes',
+                'laravel-crm.tasks',
+                'laravel-crm.calls',
+                'laravel-crm.meetings',
+                'laravel-crm.lunches',
+                'laravel-crm.files',
+            ]) ? 'active' : '' }}" href="{{ url(route('laravel-crm.activities.index')) }}">{{ ucfirst(__('laravel-crm::lang.activity')) }}</a></li>
+            @endcan   
+            {{--@can('view crm tasks')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.tasks') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.tasks.index')) }}">{{ ucfirst(__('laravel-crm::lang.tasks')) }}</a></li>
             @endcan
             @can('view crm notes')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.notes') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.notes.index')) }}">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a></li>
-            @endcan
+            @endcan--}}
             @canany(['view crm orders', 'view crm projects', 'view crm invoices'])
                 <li class="dropdown-divider"></li>
             @endcan
