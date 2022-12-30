@@ -7,7 +7,7 @@
         @enderror
     </div>
     <div class="row">
-        <div wire:ignore class="col">
+        <div class="col">
             @include('laravel-crm::partials.form.text',[
                   'name' => 'start_at',
                   'label' => ucfirst(__('laravel-crm::lang.from')),
@@ -18,7 +18,7 @@
                   ]
                 ])
         </div>
-        <div wire:ignore class="col">
+        <div class="col">
             @include('laravel-crm::partials.form.text',[
                  'name' => 'finish_at',
                  'label' => ucfirst(__('laravel-crm::lang.to')),
@@ -72,7 +72,7 @@
         @enderror
     </div>
     <div class="row">
-        <div wire:ignore class="col">
+        <div class="col">
             @include('laravel-crm::partials.form.text',[
                   'name' => 'start_at',
                   'label' => ucfirst(__('laravel-crm::lang.from')),
@@ -83,7 +83,7 @@
                   ]
                 ])
         </div>
-        <div wire:ignore class="col">
+        <div class="col">
             @include('laravel-crm::partials.form.text',[
                  'name' => 'finish_at',
                  'label' => ucfirst(__('laravel-crm::lang.to')),
