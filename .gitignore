@@ -8,3 +8,4 @@ coverage
 /node_modules
 package-lock.json
 /bower_components
+/docs/node_modules

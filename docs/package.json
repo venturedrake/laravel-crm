@@ -1,0 +1,19 @@
+{
+  "name": "venturedrake/laravel-crm",
+  "version": "0.12.2",
+  "description": "A free open source CRM built as a package for laravel projects",
+  "main": "index.js",
+  "authors": {
+    "name": "Andrew Drake",
+    "email": "andrew@laravelcrm.com"
+  },
+  "repository": "https://github.com/venturedrake/laravel-crm",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}
