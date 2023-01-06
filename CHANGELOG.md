@@ -19,6 +19,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.13.0 - 2023-01-06
+### Added
+- Orders
+- Calls, meetings and lunches
+- Logo and favicon
+### Changed
+- Merged notes and tasks into activities
+### Fixed
+- Button background colors
+- Zero tasks, notes and orders
+
 ## 0.12.2 - 2022-12-10
 ### Added
 - Lead source observer
