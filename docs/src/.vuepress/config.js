@@ -61,11 +61,25 @@ module.exports = {
         children: [
           ['/', 'Overview'],
           ['/quickstart', 'Quick Start'],
-          '/installation',
-          '/configuration',
+          ['/installation', 'Installation'],
+          ['/configuration', 'Configuration'],
           ['/upgrading', 'Upgrade Guide'],
           ['/security', 'Security'],
           ['/contributing', 'Contributing'],
+        ]
+      },
+      {
+        title: 'User Interface',
+        collapsable: false, // optional, defaults to true
+        children: [
+          '/user-interface/overview',
+        ]
+      },
+      {
+        title: 'Guide',
+        collapsable: false, // optional, defaults to true
+        children: [
+          '/guide/addresses',
         ]
       },
     ]
