@@ -18,9 +18,15 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/config/#head
    */
   head: [
-    ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
-    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }]
+    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
+    ['link', { rel: "apple-touch-icon", type: "image/png", sizes: "180x180", href: "/apple-touch-icon.png"}],
+    ['link', { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png"}],
+    ['link', { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png"}],
+    ['link', { rel: "manifest", href: "/site.webmanifest"}],
+    ['link', { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#5bbad5"}],
+    ['meta', { name: "msapplication-TileColor", content: "#b91d47"}],
+    ['meta', { name: "theme-color", content: "#ffffff"}],
   ],
 
   /**
@@ -29,23 +35,22 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    repo: '',
-    editLinks: false,
-    docsDir: '',
-    editLinkText: '',
+    repo: 'venturedrake/laravel-crm',
+    docsDir: 'docs/src',
+    docsRepo: 'venturedrake/laravel-crm',
+    docsBranch: 'master',
+    editLinks: true,
+    editLinkText: 'Help us improve this page!',
+    smoothScroll: true,
     lastUpdated: false,
     nav: [
       {
-        text: 'Guide',
-        link: '/guide/',
+        text: 'Roadmap',
+        link: 'https://github.com/venturedrake/laravel-crm/blob/master/README.md#roadmap',
       },
       {
-        text: 'Config',
-        link: '/config/'
-      },
-      {
-        text: 'VuePress',
-        link: 'https://v1.vuepress.vuejs.org'
+        text: 'Discord',
+        link: 'https://discord.gg/rygVyyGSHj'
       }
     ],
     sidebar: {
