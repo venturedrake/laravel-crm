@@ -54,18 +54,21 @@ module.exports = {
         link: 'https://discord.gg/rygVyyGSHj'
       }
     ],
-    sidebar: {
-      '/guide/': [
-        {
-          title: 'Guide',
-          collapsable: false,
-          children: [
-            '',
-            'using-vue',
-          ]
-        }
-      ],
-    }
+    sidebar: [
+      {
+        title: 'Getting Started',   // required
+        collapsable: false, // optional, defaults to true
+        children: [
+          ['/', 'Overview'],
+          ['/quickstart', 'Quick Start'],
+          '/installation',
+          '/configuration',
+          ['/upgrading', 'Upgrade Guide'],
+          ['/security', 'Security'],
+          ['/contributing', 'Contributing'],
+        ]
+      },
+    ]
   },
 
   /**
