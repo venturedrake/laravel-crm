@@ -1,10 +1,10 @@
 <div>
-    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.order_items')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
+    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.invoice_lines')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
     <hr class="mb-0" />
     <script type="text/javascript">
         let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
     </script>
-    <span id="orderProducts">
+    <span id="invoiceLines">
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -17,10 +17,10 @@
                 </thead>
                 <tbody>
                 @foreach($inputs as $key => $value)
-                    @include('laravel-crm::order-products.partials.fields')
+                    @include('laravel-crm::invoice-lines.partials.fields')
                 @endforeach
                 </tbody>
-                <tfoot id="orderProductsTotals" class="tfoot">
+                <tfoot id="invoiceLinesTotals" class="tfoot">
                     <tr>
                         <td></td>
                         <td></td>
@@ -39,24 +39,7 @@
                             ])
                         </td>
                     </tr>
-                 <tr>
-                    <td></td>
-                    <td></td>
-                   <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.discount')) }}</td>
-                    <td>
-                         @include('laravel-crm::partials.form.text',[
-                          'name' => 'discount',
-                          'label' => ucfirst(__('laravel-crm::lang.discount')),
-                           'type' => 'number',
-                          'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
-                           'attributes' => [
-                               'wire:model' => 'discount',
-                               'step' => .01,
-                               'readonly' => 'readonly'
-                           ]
-                        ])
-                    </td>
-                  </tr>
+                 
                 <tr>
                     <td></td>
                     <td></td>
@@ -69,24 +52,6 @@
                        'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
                        'attributes' => [
                            'wire:model' => 'tax',
-                           'step' => .01,
-                           'readonly' => 'readonly'
-                       ]
-                    ])
-                    </td>
-                  </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.adjustment')) }}</td>
-                    <td>
-                    @include('laravel-crm::partials.form.text',[
-                      'name' => 'adjustment',
-                      'label' => ucfirst(__('laravel-crm::lang.adjustment')),
-                       'type' => 'number',
-                       'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
-                       'attributes' => [
-                           'wire:model' => 'adjustment',
                            'step' => .01,
                            'readonly' => 'readonly'
                        ]
@@ -119,14 +84,14 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).delegate("input[name^='products']", "focus", function() {
+                $(document).delegate("input[name^='invoiceLines']", "focus", function() {
                     var number = $(this).attr('value')
                     $(this).autocomplete({
                         source: products,
                         onSelectItem: function(item, element){
                             @this.set('product_id.' + number,item.value);
                             @this.set('name.' + number,item.label);
-                            Livewire.emit('loadItemDefault', number)
+                            Livewire.emit('loadInvoiceLineDefault', number)
                         },
                         highlightClass: 'text-danger',
                         treshold: 2,

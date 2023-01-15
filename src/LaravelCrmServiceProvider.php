@@ -32,6 +32,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveCalls;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveInvoiceLines;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLunches;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveMeetings;
@@ -60,6 +61,7 @@ use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\LeadSource;
 use VentureDrake\LaravelCrm\Models\Lunch;
@@ -85,6 +87,7 @@ use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\FileObserver;
+use VentureDrake\LaravelCrm\Observers\InvoiceLineObserver;
 use VentureDrake\LaravelCrm\Observers\InvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\LeadSourceObserver;
@@ -195,6 +198,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
         Invoice::observe(InvoiceObserver::class);
+        InvoiceLine::observe(InvoiceLineObserver::class);
         Person::observe(PersonObserver::class);
         Organisation::observe(OrganisationObserver::class);
         Phone::observe(PhoneObserver::class);
@@ -328,6 +332,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_meetings_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_meetings_table.php', 49),
                 __DIR__ . '/../database/migrations/create_laravel_crm_lunches_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_lunches_table.php', 50),
                 __DIR__ . '/../database/migrations/add_location_to_laravel_crm_activities_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_location_to_laravel_crm_activities_table.php', 51),
+                __DIR__ . '/../database/migrations/add_prefix_to_laravel_crm_invoices_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_invoices_table.php', 52),
             ], 'migrations');
 
             // Publishing the seeders
@@ -391,6 +396,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('xero-connect', XeroConnect::class);
         Livewire::component('activities', LiveActivities::class);
         Livewire::component('send-quote', SendQuote::class);
+        Livewire::component('invoice-lines', LiveInvoiceLines::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

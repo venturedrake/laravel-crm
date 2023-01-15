@@ -11,51 +11,53 @@
                 'action' => route('laravel-crm.invoices.filter'),
                 'model' => '\VentureDrake\LaravelCrm\Models\Invoice'
             ])
-            {{--@can('create crm invoices')
+            @can('create crm invoices')
             <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.invoices.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_invoice')) }}</a></span>
-            @endcan--}}
+            @endcan
         @endslot
 
     @endcomponent
 
     @component('laravel-crm::components.card-table')
-
-       {{-- <table class="table mb-0 card-table table-hover">
+        <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.contact')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.sub_total')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.discount')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.tax')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.adjustment')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.total')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
-                <th scope="col" width="240"></th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.number')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.to')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.due_date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.overdue_by')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.paid_date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.paid')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.due')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
+                <th scope="col" width="155"></th>
             </tr>
             </thead>
             <tbody>
             @foreach($invoices as $invoice)
                <tr class="has-link" data-url="{{ url(route('laravel-crm.invoices.show', $invoice)) }}">
+                   <td>{{ $invoice->invoice_id }}</td>
                    <td>{{ $invoice->reference }}</td>
-                   <td>@include('laravel-crm::partials.labels',[
-                            'labels' => $invoice->labels,
-                            'limit' => 3
-                        ])</td>
-                    <td>{{ $invoice->organisation->name ?? null }}</td>
-                    <td>{{ $invoice->person->name ?? null }}</td>
-                    <td>{{ money($invoice->subtotal, $invoice->currency) }}</td>
-                    <td>{{ money($invoice->discount, $invoice->currency) }}</td>
-                    <td>{{ money($invoice->tax, $invoice->currency) }}</td>
-                    <td>{{ money($invoice->adjustments, $invoice->currency) }}</td>
-                    <td>{{ money($invoice->total, $invoice->currency) }}</td>
-                    <td>{{ $invoice->ownerUser->name ?? null }}</td>
+                   <td>
+                       {{ $invoice->organisation->name ?? null }}
+                       @if($invoice->person)
+                           <br /><small>{{ $invoice->person->name }}</small>
+                       @endif    
+                   </td>
+                   <td>{{ $invoice->issue_date->format('d M Y') }}</td>
+                   <td>{{ $invoice->due_date->format('d M Y') }}</td>
+                   <td class="text-danger">
+                       @if(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
+                           {{ $invoice->due_date->diffForHumans() }}
+                       @endif    
+                   </td>
+                   <td>{{ ($invoice->fully_paid_at) ? $invoice->fully_paid_at->format('d M Y') : null }}</td>
+                   <td>{{ money($invoice->amount_paid, $invoice->currency) }}</td>
+                   <td>{{ money($invoice->amount_due, $invoice->currency) }}</td>
+                   <td></td>
                     <td class="disable-link text-right">
-                        @can('edit crm invoices')
-                            <a href="{{ route('laravel-crm.invoices.invoice',$invoice) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
-                        @endcan
                         @can('view crm invoices')
                         <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
@@ -73,7 +75,7 @@
                 </tr>
             @endforeach
             </tbody>
-        </table>--}}
+        </table>
 
     @endcomponent
 

@@ -10,7 +10,7 @@
 
             @slot('actions')
                 @include('laravel-crm::partials.return-button',[
-                    'model' => new \VentureDrake\LaravelCrm\Models\Order(),
+                    'model' => new \VentureDrake\LaravelCrm\Models\Invoice(),
                     'route' => 'invoices'
                 ])
             @endslot

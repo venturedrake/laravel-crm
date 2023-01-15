@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
@@ -17,6 +18,12 @@ class Invoice extends Model
     use HasCrmActivities;
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'issue_date' => 'datetime',
+        'due_date' => 'datetime',
+        'fully_paid_at' => 'datetime',
+    ];
 
     protected $searchable = [
         //
@@ -37,6 +44,27 @@ class Invoice extends Model
         return config('laravel-crm.db_table_prefix').'invoices';
     }
 
+    public function setIssueDateAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['issue_date'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+
+    public function setDueDateAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['due_date'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+
+    public function setFullyPaidAtAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['fully_paid_at'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+
     public function person()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
@@ -50,6 +78,11 @@ class Invoice extends Model
     public function order()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Order::class);
+    }
+
+    public function invoiceLines()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\InvoiceLine::class);
     }
 
     /**

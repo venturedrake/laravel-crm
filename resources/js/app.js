@@ -27,7 +27,7 @@ const appJquery = function() {
 
             $('[data-toggle="tooltip"]').tooltip()
 
-            $('input[name="birthday"], input[name="expected_close"], input[name="issue_at"], input[name="expire_at"]').datetimepicker({
+            $('input[name="birthday"], input[name="expected_close"], input[name="issue_at"], input[name="expire_at"], input[name="issue_date"], input[name="due_date"]').datetimepicker({
                 timepicker:false,
                 format: 'Y/m/d',
             });

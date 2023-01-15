@@ -161,6 +161,14 @@ dt {
     display: none;
 }
 
+#invoiceLines .row:not(:first-child) label{
+  display: none;
+}
+
+#invoiceLines label{
+  display: none;
+}
+
 .bootstrap-duallistbox-container .btn-outline-secondary,
 .bootstrap-duallistbox-container select{
   color: #495057 !important;

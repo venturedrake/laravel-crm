@@ -3,10 +3,46 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Http\Requests\StoreInvoiceRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateInvoiceRequest;
 use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\InvoiceService;
+use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Services\SettingService;
 
 class InvoiceController extends Controller
 {
+    /**
+     * @var SettingService
+     */
+    private $settingService;
+
+    /**
+     * @var PersonService
+     */
+    private $personService;
+
+    /**
+     * @var OrganisationService
+     */
+    private $organisationService;
+
+    /**
+     * @var InvoiceService
+     */
+    private $invoiceService;
+
+    public function __construct(SettingService $settingService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService)
+    {
+        $this->settingService = $settingService;
+        $this->personService = $personService;
+        $this->organisationService = $organisationService;
+        $this->invoiceService = $invoiceService;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -33,9 +69,26 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        switch ($request->model) {
+            case "person":
+                $person = Person::find($request->id);
+
+                break;
+
+            case "organisation":
+                $organisation = Organisation::find($request->id);
+
+                break;
+        }
+
+        return view('laravel-crm::invoices.create', [
+            'person' => $person ?? null,
+            'organisation' => $organisation ?? null,
+            'prefix' => $this->settingService->get('invoice_prefix'),
+            'number' => (Invoice::latest()->first()->number ?? 0) + 1,
+        ]);
     }
 
     /**
@@ -44,9 +97,25 @@ class InvoiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreInvoiceRequest $request)
     {
-        //
+        if ($request->person_name && ! $request->person_id) {
+            $person = $this->personService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $person = Person::find($request->person_id);
+        }
+
+        if ($request->organisation_name && ! $request->organisation_id) {
+            $organisation = $this->organisationService->createFromRelated($request);
+        } elseif ($request->organisation_id) {
+            $organisation = Organisation::find($request->organisation_id);
+        }
+
+        $this->invoiceService->create($request, $person ?? null, $organisation ?? null);
+
+        flash(ucfirst(trans('laravel-crm::lang.invoice_created')))->success()->important();
+
+        return redirect(route('laravel-crm.invoices.index'));
     }
 
     /**
@@ -55,7 +124,7 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Invoice $invoice)
     {
         //
     }
@@ -66,7 +135,7 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Invoice $invoice)
     {
         //
     }
@@ -78,9 +147,13 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
         //
+
+        flash(ucfirst(trans('laravel-crm::lang.invoice_updated')))->success()->important();
+
+        return redirect(route('laravel-crm.invoices.show', $invoice));
     }
 
     /**
@@ -89,8 +162,12 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Invoice $invoice)
     {
-        //
+        $invoice->delete();
+        
+        flash(ucfirst(trans('laravel-crm::lang.invoice_deleted')))->success()->important();
+
+        return redirect(route('laravel-crm.invoices.index'));
     }
 }
