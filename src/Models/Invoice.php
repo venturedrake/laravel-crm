@@ -44,6 +44,11 @@ class Invoice extends Model
         return config('laravel-crm.db_table_prefix').'invoices';
     }
 
+    public function getTitleAttribute()
+    {
+        return money($this->total, $this->currency).' - '.($this->organisation->name ?? $this->organisation->person->name ?? null);
+    }
+
     public function setIssueDateAttribute($value)
     {
         if ($value) {
@@ -62,6 +67,33 @@ class Invoice extends Model
     {
         if ($value) {
             $this->attributes['fully_paid_at'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+
+    public function setSubtotalAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['subtotal'] = $value * 100;
+        } else {
+            $this->attributes['subtotal'] = null;
+        }
+    }
+    
+    public function setTaxAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['tax'] = $value * 100;
+        } else {
+            $this->attributes['tax'] = null;
+        }
+    }
+
+    public function setTotalAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['total'] = $value * 100;
+        } else {
+            $this->attributes['total'] = null;
         }
     }
 

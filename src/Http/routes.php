@@ -320,11 +320,7 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
     Route::delete('{order}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@destroy')
         ->name('laravel-crm.orders.destroy')
         ->middleware(['can:delete,order']);
-
-    Route::get('{order}/invoice', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@invoice')
-        ->name('laravel-crm.orders.invoice')
-        ->middleware(['can:update,order']);
-
+    
     /* Order Products */
 
     Route::group(['prefix' => '{order}/products', 'middleware' => 'auth.laravel-crm'], function () {

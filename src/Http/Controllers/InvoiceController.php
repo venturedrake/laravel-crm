@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StoreInvoiceRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateInvoiceRequest;
 use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\InvoiceService;
@@ -81,13 +82,21 @@ class InvoiceController extends Controller
                 $organisation = Organisation::find($request->id);
 
                 break;
+
+            case "order":
+                $order = Order::find($request->id);
+                $person = $order->person;
+                $organisation = $order->organisation;
+
+                break;
         }
 
         return view('laravel-crm::invoices.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
+            'order' => $order ?? null,
             'prefix' => $this->settingService->get('invoice_prefix'),
-            'number' => (Invoice::latest()->first()->number ?? 0) + 1,
+            'number' => (Invoice::latest()->first()->number ?? 1000) + 1,
         ]);
     }
 
@@ -126,7 +135,23 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
-        //
+        if ($invoice->person) {
+            $email = $invoice->person->getPrimaryEmail();
+            $phone = $invoice->person->getPrimaryPhone();
+            $address = $invoice->person->getPrimaryAddress();
+        }
+
+        if ($invoice->organisation) {
+            $organisation_address = $invoice->organisation->getPrimaryAddress();
+        }
+
+        return view('laravel-crm::invoices.show', [
+            'invoice' => $invoice,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+            'organisation_address' => $organisation_address ?? null,
+        ]);
     }
 
     /**
@@ -137,7 +162,21 @@ class InvoiceController extends Controller
      */
     public function edit(Invoice $invoice)
     {
-        //
+        if ($invoice->person) {
+            $email = $invoice->person->getPrimaryEmail();
+            $phone = $invoice->person->getPrimaryPhone();
+        }
+
+        if ($invoice->organisation) {
+            $address = $invoice->organisation->getPrimaryAddress();
+        }
+
+        return view('laravel-crm::invoices.edit', [
+            'invoice' => $invoice,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+        ]);
     }
 
     /**
@@ -149,7 +188,19 @@ class InvoiceController extends Controller
      */
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
-        //
+        if ($request->person_name && ! $request->person_id) {
+            $person = $this->personService->createFromRelated($request);
+        } elseif ($request->person_id) {
+            $person = Person::find($request->person_id);
+        }
+
+        if ($request->organisation_name && ! $request->organisation_id) {
+            $organisation = $this->organisationService->createFromRelated($request);
+        } elseif ($request->organisation_id) {
+            $organisation = Organisation::find($request->organisation_id);
+        }
+
+        $invoice = $this->invoiceService->update($request, $invoice, $person ?? null, $organisation ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.invoice_updated')))->success()->important();
 

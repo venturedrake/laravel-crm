@@ -3,7 +3,7 @@
         @include('laravel-crm::partials.form.hidden',[
            'name' => 'invoiceLines['.$value.'][invoice_line_id]',
            'attributes' => [
-               'wire:model' => 'order_product_id.'.$value,
+               'wire:model' => 'invoice_line_id.'.$value,
            ]
         ])
         <span class="autocomplete autocomplete-product-name">

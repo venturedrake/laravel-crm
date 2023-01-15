@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-sm-5 border-right">
         @include('laravel-crm::partials.form.hidden',[
-             'name' => 'lead_id',
-             'value' => old('lead_id', $invoice->lead->id ?? $lead->id ?? null),
+             'name' => 'order_id',
+             'value' => old('order_id', $invoice->order->id ?? $order->id ?? null),
         ])
         <span class="autocomplete">
              @include('laravel-crm::partials.form.hidden',[
@@ -67,7 +67,7 @@
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'issue_date',
                       'label' => ucfirst(__('laravel-crm::lang.issue_date')),
-                      'value' => old('issue_date', (isset($quote->issue_date)) ? \Carbon\Carbon::parse($quote->issue_date)->format('Y/m/d') : null),
+                      'value' => old('issue_date', (isset($invoice->issue_date)) ? \Carbon\Carbon::parse($invoice->issue_date)->format('Y/m/d') : null),
                        'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
                        ]
@@ -77,7 +77,7 @@
                 @include('laravel-crm::partials.form.text',[
                        'name' => 'due_date',
                        'label' => ucfirst(__('laravel-crm::lang.due_date')),
-                       'value' => old('due_date', (isset($quote->due_date)) ? \Carbon\Carbon::parse($quote->due_date)->format('Y/m/d') : null),
+                       'value' => old('due_date', (isset($invoice->due_date)) ? \Carbon\Carbon::parse($invoice->due_date)->format('Y/m/d') : null),
                        'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
                        ]
@@ -88,7 +88,7 @@
                      'name' => 'currency',
                      'label' => ucfirst(__('laravel-crm::lang.currency')),
                      'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-                     'value' => old('currency', $invoice->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
+                     'value' => old('currency', $invoice->currency ?? $order->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
                  ])
         @include('laravel-crm::partials.form.textarea',[
              'name' => 'terms',
@@ -113,7 +113,7 @@
     <div class="col-sm-7">
         @livewire('invoice-lines',[
             'invoice' => $invoice ?? null,
-            'invoiceLines' => $invoice->invoiceLines ?? null,
+            'invoiceLines' => $invoice->invoiceLines ?? $order->orderProducts ?? null,
             'old' => old('lines')
         ])
     </div>

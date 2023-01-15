@@ -13,7 +13,9 @@
                     'route' => 'orders'
                 ]) | 
                 @can('edit crm orders')
-                    <a href="{{ route('laravel-crm.orders.invoice',$order) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                    @if($order->invoices()->count() < 1)
+                    <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id])}}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_invoice')) }}</a>
+                    @endif
                 @endcan
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm orders')

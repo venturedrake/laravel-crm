@@ -161,4 +161,9 @@ class Order extends Model
     {
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Invoice::class);
+    }
 }

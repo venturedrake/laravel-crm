@@ -56,7 +56,9 @@
                     <td>{{ $order->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm orders')
-                            <a href="{{ route('laravel-crm.orders.invoice',$order) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                            @if($order->invoices()->count() < 1)
+                            <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                            @endif
                         @endcan
                         @can('view crm orders')
                         <a href="{{ route('laravel-crm.orders.show',$order) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

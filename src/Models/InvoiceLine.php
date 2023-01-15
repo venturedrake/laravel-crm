@@ -17,7 +17,7 @@ class InvoiceLine extends Model
         return config('laravel-crm.db_table_prefix').'invoice_lines';
     }
 
-    /*public function setPriceAttribute($value)
+    public function setPriceAttribute($value)
     {
         if (isset($value)) {
             $this->attributes['price'] = $value * 100;
@@ -33,7 +33,7 @@ class InvoiceLine extends Model
         } else {
             $this->attributes['amount'] = null;
         }
-    }*/
+    }
 
     public function invoice()
     {

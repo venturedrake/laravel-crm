@@ -3,7 +3,7 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use VentureDrake\LaravelCrm\Models\Invoice;
-use VentureDrake\LaravelCrm\Models\InvoiceProduct;
+use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
 
 class InvoiceService
@@ -62,35 +62,36 @@ class InvoiceService
         $invoice->update([
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
-            'description' => $request->description,
             'reference' => $request->reference,
+            'invoice_id' => $request->prefix.$request->number,
+            'prefix' => $request->prefix,
+            'number' => $request->number,
+            'issue_date' => $request->issue_date,
+            'due_date' => $request->due_date,
             'currency' => $request->currency,
+            'terms' => $request->terms,
             'subtotal' => $request->sub_total,
-            'discount' => $request->discount,
             'tax' => $request->tax,
-            'adjustments' => $request->adjustment,
             'total' => $request->total,
-            'user_owner_id' => $request->user_owner_id,
+            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        $invoice->labels()->sync($request->labels ?? []);
-
-        if (isset($request->products)) {
-            foreach ($request->products as $product) {
-                if (isset($product['invoice_product_id']) && $invoiceProduct = InvoiceProduct::find($product['invoice_product_id'])) {
-                    $invoiceProduct->update([
-                        'product_id' => $product['product_id'],
-                        'quantity' => $product['quantity'],
-                        'price' => $product['unit_price'],
-                        'amount' => $product['amount'],
+        if (isset($request->invoiceLines)) {
+            foreach ($request->invoiceLines as $line) {
+                if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
+                    $invoiceLine->update([
+                        'product_id' => $line['product_id'],
+                        'quantity' => $line['quantity'],
+                        'price' => $line['price'],
+                        'amount' => $line['amount'],
                         'currency' => $request->currency,
                     ]);
                 } else {
-                    $invoice->invoiceProducts()->create([
-                        'product_id' => $product['product_id'],
-                        'quantity' => $product['quantity'],
-                        'price' => $product['unit_price'],
-                        'amount' => $product['amount'],
+                    $invoice->invoiceLines()->create([
+                        'product_id' => $line['product_id'],
+                        'quantity' => $line['quantity'],
+                        'price' => $line['price'],
+                        'amount' => $line['amount'],
                         'currency' => $request->currency,
                     ]);
                 }

@@ -346,4 +346,6 @@ return [
     'invoice_number' => 'invoice number',
     'invoice_lines' => 'invoice lines',
     'invoice_create' => 'invoice created',
+    'edit_invoice' => 'edit invoice',
+    'invoice_updated' => 'invoice updated',
 ];

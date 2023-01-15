@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Http\Requests\UpdateOrderRequest;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -30,11 +31,17 @@ class OrderController extends Controller
      */
     private $organisationService;
 
-    public function __construct(OrderService $orderService, PersonService $personService, OrganisationService $organisationService)
+    /**
+     * @var InvoiceService
+     */
+    private $invoiceService;
+
+    public function __construct(OrderService $orderService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService)
     {
         $this->orderService = $orderService;
         $this->personService = $personService;
         $this->organisationService = $organisationService;
+        $this->invoiceService = $invoiceService;
     }
 
     /**
@@ -248,14 +255,5 @@ class OrderController extends Controller
             'orders' => $orders,
             'searchValue' => $searchValue ?? null,
         ]);
-    }
-
-    public function invoice(Order $order)
-    {
-        // TBC
-
-        flash(ucfirst(trans('laravel-crm::lang.order_invoiced')))->success()->important();
-
-        return redirect(route('laravel-crm.orders.index'));
     }
 }
