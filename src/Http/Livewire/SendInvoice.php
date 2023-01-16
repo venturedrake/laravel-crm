@@ -52,13 +52,13 @@ class SendInvoice extends Component
         
         $this->generateUrl();
 
-        /*Mail::send(new \VentureDrake\LaravelCrm\Mail\SendQuote([
+        Mail::send(new \VentureDrake\LaravelCrm\Mail\SendInvoice([
             'to' => $this->to,
             'subject' => $this->subject,
             'message' => $this->message,
             'cc' => $this->cc,
             'onlineInvoiceLink' => $this->signedUrl,
-        ]));*/
+        ]));
 
         /*Notification::route('mail', $this->email)
             ->notify(new OrderSharedNotification(auth()->user(), auth()->user()->currentTeam, $this->order, $this->signedUrl));*/

@@ -59,6 +59,11 @@ Route::group(['prefix' => 'p'], function () {
         Route::post('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@process')
             ->name('laravel-crm.portal.quotes.process');
     });
+
+    Route::prefix('invoices')->group(function () {
+        Route::get('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@show')
+            ->name('laravel-crm.portal.invoices.show');
+    });
 });
 
 /* Private Routes */
