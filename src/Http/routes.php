@@ -385,6 +385,10 @@ Route::group(['prefix' => 'invoices', 'middleware' => 'auth.laravel-crm'], funct
     Route::delete('{invoice}', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@destroy')
         ->name('laravel-crm.invoices.destroy')
         ->middleware(['can:delete,invoice']);
+
+    Route::post('{invoice}/send', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@send')
+        ->name('laravel-crm.invoices.send')
+        ->middleware(['can:update,invoice']);
 });
 
 /* Activities */

@@ -348,4 +348,5 @@ return [
     'invoice_create' => 'invoice created',
     'edit_invoice' => 'edit invoice',
     'invoice_updated' => 'invoice updated',
+    'send_invoice' => 'send invoice',
 ];

@@ -45,6 +45,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactPerson;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedPerson;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveTasks;
 use VentureDrake\LaravelCrm\Http\Livewire\NotifyToast;
+use VentureDrake\LaravelCrm\Http\Livewire\SendInvoice;
 use VentureDrake\LaravelCrm\Http\Livewire\SendQuote;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
@@ -397,6 +398,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('activities', LiveActivities::class);
         Livewire::component('send-quote', SendQuote::class);
         Livewire::component('invoice-lines', LiveInvoiceLines::class);
+        Livewire::component('send-invoice', SendInvoice::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

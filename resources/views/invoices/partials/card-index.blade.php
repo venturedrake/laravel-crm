@@ -32,7 +32,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.paid')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.due')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
-                <th scope="col" width="155"></th>
+                <th scope="col" width="210"></th>
             </tr>
             </thead>
             <tbody>
@@ -58,6 +58,9 @@
                    <td>{{ money($invoice->amount_due, $invoice->currency) }}</td>
                    <td></td>
                     <td class="disable-link text-right">
+                        @livewire('send-invoice',[
+                            'invoice' => $invoice
+                        ])
                         @can('view crm invoices')
                         <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
