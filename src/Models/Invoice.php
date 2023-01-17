@@ -97,6 +97,24 @@ class Invoice extends Model
         }
     }
 
+    public function setAmountDueAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['amount_due'] = $value * 100;
+        } else {
+            $this->attributes['amount_due'] = null;
+        }
+    }
+
+    public function setAmountPaidAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['amount_paid'] = $value * 100;
+        } else {
+            $this->attributes['amount_paid'] = null;
+        }
+    }
+
     public function person()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);

@@ -349,4 +349,11 @@ return [
     'edit_invoice' => 'edit invoice',
     'invoice_updated' => 'invoice updated',
     'send_invoice' => 'send invoice',
+    'quote_expired' => 'quote expired',
+    'due_in' => 'due in',
+    'you_have_paid_this_invoice' => 'you have paid this invoice',
+    'pay_now' => 'pay now',
+    'issued' => 'issued',
+    'pay' => 'pay',
+    'pay_invoice' => 'pay invoice',
 ];

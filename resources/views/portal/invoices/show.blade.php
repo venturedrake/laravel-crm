@@ -6,47 +6,34 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
             <div class="container-fluid">
                 <h1 class="navbar-brand mb-0" href="#">
-                    {{ money($invoice->total, $invoice->currency) }} {{ $invoice->currency }}
-                    {{--@if($invoice->accepted_at)
-                        <small><span class="badge badge-success">{{ ucfirst(__('laravel-crm::lang.accepted')) }}</span></small>
-                    @elseif($invoice->rejected_at)
-                        <small><span class="badge badge-danger">{{ ucfirst(__('laravel-crm::lang.rejected')) }}</span></small>
-                    @elseif(\Carbon\Carbon::now() <= $invoice->expire_at)
-                        <small><span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.expires_in')) }} {{ $invoice->expire_at->diffForHumans() }}</span></small>
-                    @else
-                        <small><span class="badge badge-danger">{{ ucfirst(__('laravel-crm::lang.invoice_expired')) }}</span></small>
-                    @endif--}}
+                    {{ money($invoice->total, $invoice->currency) }} <small>{{ $invoice->currency }}</small>
+                    @if($invoice->fully_paid_at)
+                        <small><span class="badge badge-success">{{ ucfirst(__('laravel-crm::lang.paid')) }}</span></small>
+                    @elseif(! $invoice->fully_paid_at && $invoice->due_date >= \Carbon\Carbon::now())
+                        <small><span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans() }} </span></small>
+                    @elseif(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
+                        <small><span class="badge badge-danger">{{ $invoice->due_date->diffForHumans() }} {{ ucfirst(__('laravel-crm::lang.overdue')) }} </span></small>
+                    @endif
                 </h1>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto">
-                       {{-- @if($invoice->accepted_at)
+                    {{--<ul class="navbar-nav ml-auto">
+                       @if($invoice->fully_paid_at)
                             <div class="alert alert-success m-0" role="alert">
-                                {{ ucfirst(__('laravel-crm::lang.you_have_accepted_this_invoice')) }}.
+                                {{ ucfirst(__('laravel-crm::lang.you_have_paid_this_invoice')) }}.
                             </div>
-                        @elseif($invoice->rejected_at)
-                            <div class="alert alert-danger m-0" role="alert">
-                                {{ ucfirst(__('laravel-crm::lang.you_have_rejected_this_invoice')) }}.
-                            </div>
-                        @elseif(\Carbon\Carbon::now() <= $invoice->expire_at)
+                        @else
                             <li class="nav-item mr-2">
                                 <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}" method="POST" class="form-check-inline mr-0">
                                     {{ csrf_field() }}
-                                    <x-form-input name="action" value="accept" type="hidden" />
-                                    <button class="btn btn-outline-success" type="submit">{{ ucfirst(__('laravel-crm::lang.accept')) }}</button>
+                                    <x-form-input name="action" value="pay" type="hidden" />
+                                    <button class="btn btn-outline-success" type="submit">{{ ucfirst(__('laravel-crm::lang.pay_now')) }}</button>
                                 </form>
                             </li>
-                            <li class="nav-item mr-2">
-                                <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}" method="POST" class="form-check-inline mr-0">
-                                    {{ csrf_field() }}
-                                    <x-form-input name="action" value="reject" type="hidden" />
-                                    <button class="btn btn-outline-danger" type="submit">{{ ucfirst(__('laravel-crm::lang.reject')) }}</button>
-                                </form>
-                            </li>
-                        @endif--}}
-                        {{--<li class="nav-item">
-                            <a class="btn btn-outline-secondary" href="#">Download</a>
-                        </li>--}}
-                    </ul>
+                        @endif
+                        <li class="nav-item">
+                            <a class="btn btn-outline-secondary" href="#">PDF</a>
+                        </li>
+                    </ul>--}}
                 </div>
             </div>
         </nav>
@@ -105,17 +92,17 @@
                             @if($invoice->reference)
                             <div class="row py-1">
                                 <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong>
+                                    <strong>{{ ucfirst(__('laravel-crm::lang.invoice_number')) }}</strong>
                                 </div>
                                 <div class="col">
-                                    {{ $invoice->reference }}
+                                    {{ $invoice->invoice_id }}
                                 </div>
                             </div>
                             @endif
                             @if($invoice->issue_date)
                             <div class="row py-1">
                                 <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.issue_date')) }}</strong>
+                                    <strong>{{ ucfirst(__('laravel-crm::lang.issued')) }}</strong>
                                 </div>
                                 <div class="col">
                                     {{ $invoice->issue_date->toFormattedDateString() }}
@@ -125,10 +112,15 @@
                             @if($invoice->due_date)
                             <div class="row py-1">
                                 <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.due_date')) }}</strong>
+                                    <strong>{{ ucfirst(__('laravel-crm::lang.due')) }}</strong>
                                 </div>
                                 <div class="col">
                                     {{ $invoice->due_date->toFormattedDateString() }}
+                                    @if(! $invoice->fully_paid_at && $invoice->due_date >= \Carbon\Carbon::now())
+                                        <small class="text-secondary"> ({{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans() }})</small>
+                                    @elseif(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
+                                        <small class="text-danger"> ({{ $invoice->due_date->diffForHumans() }} {{ ucfirst(__('laravel-crm::lang.overdue')) }})</small>
+                                    @endif
                                 </div>
                             </div>
                             @endif    
@@ -147,7 +139,7 @@
                             </div>
                         </div>
                     </div>
-                    <hr />
+                    <hr class="mb-5" />
                     <div class="row py-1">
                         <div class="col px-5 py-1">
                             <table class="table table-hover mb-0">

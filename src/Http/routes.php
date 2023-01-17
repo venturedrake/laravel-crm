@@ -394,6 +394,10 @@ Route::group(['prefix' => 'invoices', 'middleware' => 'auth.laravel-crm'], funct
     Route::post('{invoice}/send', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@send')
         ->name('laravel-crm.invoices.send')
         ->middleware(['can:update,invoice']);
+
+    Route::post('{invoice}/pay', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@pay')
+        ->name('laravel-crm.invoices.pay')
+        ->middleware(['can:update,invoice']);
 });
 
 /* Activities */

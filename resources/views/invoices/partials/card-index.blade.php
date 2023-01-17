@@ -32,7 +32,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.paid')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.due')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
-                <th scope="col" width="210"></th>
+                <th scope="col" width="245"></th>
             </tr>
             </thead>
             <tbody>
@@ -61,19 +61,26 @@
                         @livewire('send-invoice',[
                             'invoice' => $invoice
                         ])
+                        @if(! $invoice->fully_paid_at)
+                            @livewire('pay-invoice',[
+                                'invoice' => $invoice
+                            ])
+                        @endif
                         @can('view crm invoices')
                         <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
-                        @can('edit crm invoices')
-                        <a href="{{ route('laravel-crm.invoices.edit',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                        @endcan
-                        @can('delete crm invoices')
-                        <form action="{{ route('laravel-crm.invoices.destroy',$invoice) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
-                            {{ method_field('DELETE') }}
-                            {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
-                        </form>
-                        @endcan
+                        @if($invoice->amount_paid <= 0)
+                            @can('edit crm invoices')
+                            <a href="{{ route('laravel-crm.invoices.edit',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                            @endcan
+                            @can('delete crm invoices')
+                            <form action="{{ route('laravel-crm.invoices.destroy',$invoice) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                                {{ method_field('DELETE') }}
+                                {{ csrf_field() }}
+                                <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            </form>
+                            @endcan
+                        @endif    
                     </td>
                 </tr>
             @endforeach

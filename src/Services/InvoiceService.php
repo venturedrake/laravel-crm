@@ -73,6 +73,7 @@ class InvoiceService
             'subtotal' => $request->sub_total,
             'tax' => $request->tax,
             'total' => $request->total,
+            'amount_due' => $request->total - ($invoice->amount_paid / 100),
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 

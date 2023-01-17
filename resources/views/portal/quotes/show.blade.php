@@ -6,7 +6,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
             <div class="container-fluid">
                 <h1 class="navbar-brand mb-0" href="#">
-                    {{ money($quote->total, $quote->currency) }} {{ $quote->currency }}
+                    {{ money($quote->total, $quote->currency) }} <small>{{ $quote->currency }}</small>
                     @if($quote->accepted_at)
                         <small><span class="badge badge-success">{{ ucfirst(__('laravel-crm::lang.accepted')) }}</span></small>
                     @elseif($quote->rejected_at)

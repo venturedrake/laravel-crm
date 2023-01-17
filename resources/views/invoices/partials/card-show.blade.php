@@ -11,8 +11,16 @@
                 @include('laravel-crm::partials.return-button',[
                     'model' => $invoice,
                     'route' => 'invoices'
+                ]) | 
+                @livewire('send-invoice',[
+                    'invoice' => $invoice
                 ])
-                @include('laravel-crm::partials.navs.activities') |
+                @if(! $invoice->fully_paid_at)
+                    @livewire('pay-invoice',[
+                        'invoice' => $invoice
+                    ])
+                @endif
+                @include('laravel-crm::partials.navs.activities') @if($invoice->amount_paid <= 0) |
                 @can('edit crm invoices')
                 <a href="{{ url(route('laravel-crm.invoices.edit', $invoice)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
@@ -23,6 +31,7 @@
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
                 @endcan
+                @endif                                                      
             </span>
         @endslot
 
