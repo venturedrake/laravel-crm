@@ -199,13 +199,14 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 ## Roadmap
 
- - Orders
  - Documents
- - Calendar (Calls, Meetings, Reminders)
+ - Calendar
  - Custom Fields
  - Activity Feed / Timelines
  - CSV Import / Export
  - SMS
+ - Payments
+ - Kanban boards
 
 ## Feedback
 

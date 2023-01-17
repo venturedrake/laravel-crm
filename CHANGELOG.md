@@ -6,18 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Tasks
-- Files / Documents
-- Calendar (Calls, Meetings, Reminders)
+- Documents
+- Calendar
 - Custom Fields
 - Activity Feed / Timelines
 - CSV Import / Export
+- SMS
+- Payments
+- Kanban boards
 
 <!--- ## 1.0.0 - 2022-XX-XX
 ### Added
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 0.14.0.0 - 2022-01-17
+### Added
+- Invoicing
 
 ## 0.13.0 - 2023-01-06
 ### Added
