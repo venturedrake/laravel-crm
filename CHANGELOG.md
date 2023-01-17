@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
-## 0.14.0.0 - 2022-01-17
+## 0.14.0 - 2022-01-17
 ### Added
 - Invoicing
 
