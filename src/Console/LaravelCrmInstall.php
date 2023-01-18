@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 class LaravelCrmInstall extends Command
@@ -71,66 +70,71 @@ class LaravelCrmInstall extends Command
 
             return;
         }
+
+        $this->info('Checking requirements...');
+
+        $this->info('Checking user authentication...');
+        if (class_exists('App\Models\User') || class_exists('App\User')) {
+            $this->error('Laravel CRM requires the user model, See https://laravel.com/docs/authentication');
+
+            return;
+        }
+
+        $this->info('Checking user authentication passed.');
         
-        // TBC: Check if User model exists
-        // TBC: Check if audit exists already
-        // TBC: Check if spatie exists already
-        // Check if can install Audit, Spatie, etc. Look for conflicting tables
-        // Create settings for the env file, route, db name, etc
-        // Update the User model automatically option
-        // Update the routes file automatically option
-        // Create the first admin user if there are no users
+        // TBC: Check if audits table exists already
+        // TBC: Check if spatie permissions tables exists already
 
-        DB::transaction(function () {
-            $this->info('Installing Laravel CRM...');
+        $this->info('Checking requirements passed.');
+        
+        $this->info('Installing Laravel CRM...');
 
-            $this->info('Publishing configuration...');
+        $this->info('Publishing configuration...');
 
-            if (! $this->configExists('laravel-crm')) {
-                $this->publishConfiguration();
+        if (! $this->configExists('laravel-crm')) {
+            $this->publishConfiguration();
+        } else {
+            if ($this->shouldOverwriteConfig()) {
+                $this->info('Overwriting configuration file...');
+                $this->publishConfiguration($force = true);
             } else {
-                if ($this->shouldOverwriteConfig()) {
-                    $this->info('Overwriting configuration file...');
-                    $this->publishConfiguration($force = true);
-                } else {
-                    $this->info('Existing configuration was not overwritten');
-                }
+                $this->info('Existing configuration was not overwritten');
             }
+        }
 
-            $this->info('Publishing migrations...');
-            
-            $this->callSilent('vendor:publish', [
-                '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
-                '--tag' => 'migrations',
-            ]);
+        $this->info('Publishing migrations...');
+        
+        $this->callSilent('vendor:publish', [
+            '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
+            '--tag' => 'migrations',
+        ]);
 
-            $this->info('Publishing assets...');
+        $this->info('Publishing assets...');
 
-            $this->callSilent('vendor:publish', [
-                '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
-                '--tag' => 'assets',
-                '--force' => true,
-            ]);
+        $this->callSilent('vendor:publish', [
+            '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
+            '--tag' => 'assets',
+            '--force' => true,
+        ]);
 
-            $this->info('Composer dump autoload');
-            $this->composer->dumpAutoloads();
+        $this->info('Composer dump autoload');
+        $this->composer->dumpAutoloads();
 
-            $this->info('Setting up database...');
-            $this->call('migrate');
-            $this->callSilent('db:seed', [
-                '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
-            ]);
+        $this->info('Setting up database...');
+        $this->call('migrate');
+        $this->callSilent('db:seed', [
+            '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
+        ]);
 
-            $this->info('Laravel CRM is now installed.');
+        $this->info('Laravel CRM is now installed.');
 
-            if ($this->confirm('Would you like to show some love by starring the repo?')) {
-                $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';
+        if ($this->confirm('Would you like to show some love by starring the repo?')) {
+            $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : 'open';
 
-                exec("{$exec} https://github.com/venturedrake/laravel-crm");
+            exec("{$exec} https://github.com/venturedrake/laravel-crm");
 
-                $this->line("Thanks for the love.");
-            }
-        });
+            $this->line("Thanks for the love.");
+        }
     }
 
     /**
