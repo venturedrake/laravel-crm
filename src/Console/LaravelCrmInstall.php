@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 
 class LaravelCrmInstall extends Command
 {
@@ -125,6 +126,40 @@ class LaravelCrmInstall extends Command
         $this->callSilent('db:seed', [
             '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
         ]);
+        
+        if (\App\User::where('crm_access')->count() < 1) {
+            $this->info('Create your default owner user');
+
+            $firstname = $this->ask('Whats your first name?');
+            $lastname = $this->ask('Whats your last name?');
+            $email = $this->ask('Whats your email address?');
+            $password = $this->secret('Enter a password');
+            
+            if ($user = \App\User::where('email', $email)->first()) {
+                $this->info('User already exists, granting crm access...');
+
+                $user->update([
+                    'crm_access' => 1,
+                ]);
+              
+                if (! $user->hasRole('Owner')) {
+                    $user->assignRole('Owner');
+                }
+                
+                $this->info('User access and role updated.');
+            } else {
+                $user = \App\User::forceCreate([
+                    'name' => trim($firstname.' '.$lastname),
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                    'crm_access' => 1,
+                ]);
+
+                $user->assignRole('Owner');
+
+                $this->info('User created with owner role');
+            }
+        }
 
         $this->info('Laravel CRM is now installed.');
 
