@@ -75,7 +75,7 @@ class LaravelCrmInstall extends Command
         $this->info('Checking requirements...');
 
         $this->info('Checking user authentication...');
-        if (class_exists('App\Models\User') || class_exists('App\User')) {
+        if (! class_exists('App\Models\User') && ! class_exists('App\User')) {
             $this->error('Laravel CRM requires the user model, See https://laravel.com/docs/authentication');
 
             return;
