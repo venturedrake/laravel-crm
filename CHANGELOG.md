@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Laravel Breeze profile section support
 ### Changed
-- Complete the CLI installer
+- Completed the CLI installer
 
 ## 0.14.0 - 2022-01-17
 ### Added
