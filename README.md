@@ -44,7 +44,13 @@ The free CRM you have been looking for, this package will add CRM functionality 
 - **For MariaDB users**: 10.2.7 or higher
 - **Laravel** 6.0 or higher
 
-## Installation (10-15mins)
+## Quick Start
+
+If you want to get up and running quickly with a complete Laravel CRM please go to the [laravel-crm-starter project](https://github.com/venturedrake/laravel-crm-starter).
+
+If you would prefer to install Laravel CRM into your own Laravel application, please follow the installation steps below. 
+
+## Installation
 
 #### Step 1. Install a Laravel project if you don't have one already
 
