@@ -52,6 +52,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
+use VentureDrake\LaravelCrm\Http\Middleware\LogUsage;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
@@ -186,6 +187,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $router->pushMiddlewareToGroup('crm-api', HasCrmAccess::class);
         $router->pushMiddlewareToGroup('crm', LastOnlineAt::class);
         $router->pushMiddlewareToGroup('crm', SystemCheck::class);
+        $router->pushMiddlewareToGroup('crm', LogUsage::class);
+        $router->pushMiddlewareToGroup('crm-api', LogUsage::class);
         $router->pushMiddlewareToGroup('crm', FormComponentsConfig::class);
         $router->pushMiddlewareToGroup('web', FormComponentsConfig::class);
 
@@ -335,6 +338,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_lunches_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_lunches_table.php', 50),
                 __DIR__ . '/../database/migrations/add_location_to_laravel_crm_activities_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_location_to_laravel_crm_activities_table.php', 51),
                 __DIR__ . '/../database/migrations/add_prefix_to_laravel_crm_invoices_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_invoices_table.php', 52),
+                __DIR__ . '/../database/migrations/create_laravel_crm_usage_requests_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_usage_requests_table.php', 53),
             ], 'migrations');
 
             // Publishing the seeders
