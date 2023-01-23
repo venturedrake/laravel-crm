@@ -35,8 +35,12 @@ class InvoiceController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Invoice $invoice)
+    public function show(Request $request, Invoice $invoice)
     {
+        if (! $request->hasValidSignature()) {
+            abort(401);
+        }
+        
         if ($invoice->person) {
             $email = $invoice->person->getPrimaryEmail();
             $phone = $invoice->person->getPrimaryPhone();

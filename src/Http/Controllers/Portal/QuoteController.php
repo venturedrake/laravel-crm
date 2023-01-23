@@ -36,8 +36,12 @@ class QuoteController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Quote $quote)
+    public function show(Request $request, Quote $quote)
     {
+        if (! $request->hasValidSignature()) {
+            abort(401);
+        }
+        
         if ($quote->person) {
             $email = $quote->person->getPrimaryEmail();
             $phone = $quote->person->getPrimaryPhone();
@@ -67,6 +71,10 @@ class QuoteController extends Controller
      */
     public function process(Quote $quote, Request $request)
     {
+        if (! $request->hasValidSignature()) {
+            abort(401);
+        }
+        
         switch ($request->action) {
             case "accept":
                 $quote->update([
