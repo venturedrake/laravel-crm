@@ -2,10 +2,33 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
-use VentureDrake\LaravelCrm\Models\Field;
+use VentureDrake\LaravelCrm\Models\FieldModel;
+use VentureDrake\LaravelCrm\Models\Lead;
 
 trait HasCrmFields
 {
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            foreach (FieldModel::where('model', Lead::class)->get() as $fieldModel) {
+                $model->fields()->create([
+                    'field_id' => $fieldModel->field_id,
+                    'value' => $fieldModel->field->default,
+                ]);
+            }
+        });
+    }
+
+    public function fields()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\FieldValue::class, 'field_valueable');
+    }
+    
     /*public function metas()
     {
         return $this->hasMany(Field::class, 'model_id');

@@ -62,6 +62,9 @@ use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\Field;
+use VentureDrake\LaravelCrm\Models\FieldModel;
+use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
@@ -89,6 +92,9 @@ use VentureDrake\LaravelCrm\Observers\CallObserver;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
+use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
+use VentureDrake\LaravelCrm\Observers\FieldObserver;
+use VentureDrake\LaravelCrm\Observers\FieldValueObserver;
 use VentureDrake\LaravelCrm\Observers\FileObserver;
 use VentureDrake\LaravelCrm\Observers\InvoiceLineObserver;
 use VentureDrake\LaravelCrm\Observers\InvoiceObserver;
@@ -146,6 +152,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Meeting' => \VentureDrake\LaravelCrm\Policies\MeetingPolicy::class,
         'VentureDrake\LaravelCrm\Models\Lunch' => \VentureDrake\LaravelCrm\Policies\LunchPolicy::class,
         'VentureDrake\LaravelCrm\Models\File' => \VentureDrake\LaravelCrm\Policies\FilePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Field' => \VentureDrake\LaravelCrm\Policies\FieldPolicy::class,
     ];
 
     /**
@@ -223,6 +230,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Call::observe(CallObserver::class);
         Meeting::observe(MeetingObserver::class);
         Lunch::observe(LunchObserver::class);
+        Field::observe(FieldObserver::class);
+        FieldModel::observe(FieldModelObserver::class);
+        FieldValue::observe(FieldValueObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -339,6 +349,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_location_to_laravel_crm_activities_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_location_to_laravel_crm_activities_table.php', 51),
                 __DIR__ . '/../database/migrations/add_prefix_to_laravel_crm_invoices_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_invoices_table.php', 52),
                 __DIR__ . '/../database/migrations/create_laravel_crm_usage_requests_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_usage_requests_table.php', 53),
+                __DIR__ . '/../database/migrations/add_label_type_to_laravel_crm_fields_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_label_type_to_laravel_crm_fields_table.php', 54),
+                __DIR__ . '/../database/migrations/create_laravel_crm_field_models_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_field_models_table.php', 55),
+
             ], 'migrations');
 
             // Publishing the seeders

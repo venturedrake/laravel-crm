@@ -26,7 +26,7 @@
     @endcan
     @can('view crm fields')
        <li class="nav-item">
-            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.fields') === 0) ? 'active' : '' }}" href="#" role="tab" aria-controls="fields" aria-selected="false">{{ ucwords(__('laravel-crm::lang.fields')) }}</a>
+            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.fields') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.fields.index')) }}" role="tab" aria-controls="fields" aria-selected="false">{{ ucwords(__('laravel-crm::lang.custom_fields')) }}</a>
        </li>
     @endcan
     @can('view crm integrations')

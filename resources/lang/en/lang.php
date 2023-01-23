@@ -356,4 +356,6 @@ return [
     'issued' => 'issued',
     'pay' => 'pay',
     'pay_invoice' => 'pay invoice',
+    'custom_fields' => 'custom fields',
+    'add_custom_field' => 'add custom field',
 ];
