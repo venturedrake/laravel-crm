@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Traits;
 
 use VentureDrake\LaravelCrm\Models\FieldModel;
-use VentureDrake\LaravelCrm\Models\Lead;
 
 trait HasCrmFields
 {
@@ -15,7 +14,7 @@ trait HasCrmFields
     protected static function booted()
     {
         static::created(function ($model) {
-            foreach (FieldModel::where('model', Lead::class)->get() as $fieldModel) {
+            foreach (FieldModel::where('model', get_class($model))->get() as $fieldModel) {
                 $model->fields()->create([
                     'field_id' => $fieldModel->field_id,
                     'value' => $fieldModel->field->default,
