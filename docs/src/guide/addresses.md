@@ -1,1 +1,3 @@
-# Welcome to Laravel CRM!
+# Addresses
+
+[[toc]]

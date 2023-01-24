@@ -80,6 +80,7 @@ module.exports = {
         collapsable: false, // optional, defaults to true
         children: [
           '/guide/addresses',
+          '/guide/custom-fields',
         ]
       },
     ]
