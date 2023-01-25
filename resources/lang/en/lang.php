@@ -359,4 +359,5 @@ return [
     'custom_fields' => 'custom fields',
     'add_custom_field' => 'add custom field',
     'group' => 'group',
+    'custom_field_groups' => 'custom field groups',
 ];
