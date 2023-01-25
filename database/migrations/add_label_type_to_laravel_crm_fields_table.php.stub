@@ -23,8 +23,8 @@ class AddLabelTypeToLaravelCrmFieldsTable extends Migration
                 'radio',
                 'date'
              ])->after('team_id')->default('text');
-             $table->string('label')->after('name')->nullable();
-             $table->boolean('required')->after('label')->default(false);
+             $table->string('handle')->after('name')->nullable();
+             $table->boolean('required')->after('handle')->default(false);
              $table->string('default')->after('required')->nullable();
              $table->json('config')->after('default')->nullable();
              $table->json('validation')->after('config')->nullable();
@@ -45,12 +45,12 @@ class AddLabelTypeToLaravelCrmFieldsTable extends Migration
     {
         Schema::table(config('laravel-crm.db_table_prefix').'fields', function (Blueprint $table) {
             $table->dropColumn([
-                'label',
+                'handle',
                 'type',
                 'required',
                 'default',
                 'config',
-                'validations'
+                'validation'
             ]);
             
             $table->string('model')->nullable();

@@ -5,7 +5,7 @@ namespace VentureDrake\LaravelCrm\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
-class Field extends Model
+class FieldGroup extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
@@ -14,11 +14,11 @@ class Field extends Model
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix').'fields';
+        return config('laravel-crm.db_table_prefix').'field_groups';
     }
 
-    public function fieldGroup()
+    public function fields()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\FieldGroup::class);
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Field::class);
     }
 }

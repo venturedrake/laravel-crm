@@ -63,6 +63,7 @@ use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Field;
+use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
 use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\File;
@@ -92,6 +93,7 @@ use VentureDrake\LaravelCrm\Observers\CallObserver;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
+use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
 use VentureDrake\LaravelCrm\Observers\FieldObserver;
 use VentureDrake\LaravelCrm\Observers\FieldValueObserver;
@@ -231,6 +233,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Meeting::observe(MeetingObserver::class);
         Lunch::observe(LunchObserver::class);
         Field::observe(FieldObserver::class);
+        FieldGroup::observe(FieldGroupObserver::class);
         FieldModel::observe(FieldModelObserver::class);
         FieldValue::observe(FieldValueObserver::class);
 
@@ -351,7 +354,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_usage_requests_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_usage_requests_table.php', 53),
                 __DIR__ . '/../database/migrations/add_label_type_to_laravel_crm_fields_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_label_type_to_laravel_crm_fields_table.php', 54),
                 __DIR__ . '/../database/migrations/create_laravel_crm_field_models_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_field_models_table.php', 55),
-
+                __DIR__ . '/../database/migrations/create_laravel_crm_field_groups_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_field_groups_table.php', 56),
             ], 'migrations');
 
             // Publishing the seeders

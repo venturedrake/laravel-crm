@@ -14,9 +14,9 @@
                         <table class="table mb-0 card-table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.label')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.type')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.group')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>
                                 <th scope="col"></th>
@@ -25,9 +25,9 @@
                             <tbody>
                             @foreach($fields as $field)
                                 <tr class="has-link" data-url="{{ url(route('laravel-crm.fields.show',$field)) }}">
-                                    <td>{{ $field->label }}</td>
                                     <td>{{ ucwords(str_replace('_',' ',$field->type)) }}</td>
                                     <td>{{ $field->name }}</td>
+                                    <td>{{ $field->fieldGroup->name ?? null }}</td>
                                     <td>{{ $field->created_at->toFormattedDateString() }}</td>
                                     <td>{{ $field->updated_at->toFormattedDateString() }}</td>
                                     <td class="disable-link text-right">

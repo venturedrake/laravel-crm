@@ -21,9 +21,9 @@ class FieldController extends Controller
     {
         // Create field
         $field = Field::firstOrCreate([
-            'name' => 'test_field',
+            'handle' => 'test_field',
             ], [
-            'label' => 'Test Field',
+            'name' => 'Test Field',
         ]);
         
         FieldModel::firstOrCreate([

@@ -358,4 +358,5 @@ return [
     'pay_invoice' => 'pay invoice',
     'custom_fields' => 'custom fields',
     'add_custom_field' => 'add custom field',
+    'group' => 'group',
 ];
