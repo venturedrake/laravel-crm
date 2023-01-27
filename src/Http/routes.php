@@ -1015,21 +1015,52 @@ Route::group(['prefix' => 'fields', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.fields.store')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Field']);
 
-    Route::get('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@show')
+    Route::get('{field}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@show')
         ->name('laravel-crm.fields.show')
         ->middleware(['can:view,field']);
 
-    Route::get('{label}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@edit')
+    Route::get('{field}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@edit')
         ->name('laravel-crm.fields.edit')
         ->middleware(['can:update,field']);
 
-    Route::put('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@update')
+    Route::put('{field}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@update')
         ->name('laravel-crm.fields.update')
         ->middleware(['can:update,field']);
 
-    Route::delete('{label}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@destroy')
+    Route::delete('{field}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@destroy')
         ->name('laravel-crm.fields.destroy')
         ->middleware(['can:delete,field']);
+});
+
+/* Field Groups */
+Route::group(['prefix' => 'field-groups', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\FieldGroupController@index')
+        ->name('laravel-crm.field-groups.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\FieldGroup']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\FieldGroupController@create')
+        ->name('laravel-crm.field-groups.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\FieldGroup']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\FieldGroupController@store')
+        ->name('laravel-crm.field-groups.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\FieldGroup']);
+
+    Route::get('{fieldGroup}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldGroupController@show')
+        ->name('laravel-crm.field-groups.show')
+        ->middleware(['can:view,fieldGroup']);
+
+    Route::get('{fieldGroup}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\FieldGroupController@edit')
+        ->name('laravel-crm.field-groups.edit')
+        ->middleware(['can:update,fieldGroup']);
+
+    Route::put('{fieldGroup}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldGroupController@update')
+        ->name('laravel-crm.field-groups.update')
+        ->middleware(['can:update,fieldGroup']);
+
+    Route::delete('{fieldGroup}', 'VentureDrake\LaravelCrm\Http\Controllers\FieldGroupController@destroy')
+        ->name('laravel-crm.field-groups.destroy')
+        ->middleware(['can:delete,fieldGroup']);
 });
 
 Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], function () {

@@ -3,12 +3,9 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use App\User;
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreFieldRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateFieldRequest;
 use VentureDrake\LaravelCrm\Models\Field;
-use VentureDrake\LaravelCrm\Models\FieldModel;
-use VentureDrake\LaravelCrm\Models\Lead;
 
 class FieldController extends Controller
 {
@@ -19,18 +16,6 @@ class FieldController extends Controller
      */
     public function index(User $user)
     {
-        // Create field
-        $field = Field::firstOrCreate([
-            'handle' => 'test_field',
-            ], [
-            'name' => 'Test Field',
-        ]);
-        
-        FieldModel::firstOrCreate([
-            'field_id' => $field->id,
-            'model' => Lead::class,
-        ]);
-        
         if (Field::all()->count() < 30) {
             $fields = Field::latest()->get();
         } else {
@@ -61,10 +46,11 @@ class FieldController extends Controller
     public function store(StoreFieldRequest $request)
     {
         Field::create([
-            'external_id' => Uuid::uuid4()->toString(),
+            'type' => $request->type,
             'name' => $request->name,
-            'description' => $request->description,
-            'hex' => $request->hex ?? '6c757d',
+            'field_group_id' => $request->field_group_id,
+            'required' => (($request->required == 'on') ? 1 : 0),
+            'default' => $request->default,
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.field_stored')))->success()->important();
@@ -108,9 +94,11 @@ class FieldController extends Controller
     public function update(UpdateFieldRequest $request, Field $field)
     {
         $field->update([
+            'type' => $request->type,
             'name' => $request->name,
-            'description' => $request->description,
-            'hex' => $request->hex ?? '6c757d',
+            'field_group_id' => $request->field_group_id,
+            'required' => (($request->required == 'on') ? 1 : 0),
+            'default' => $request->default,
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.field_updated')))->success()->important();

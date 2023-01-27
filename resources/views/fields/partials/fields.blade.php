@@ -1,29 +1,38 @@
 <div class="row">
-    {{--<div class="col">
+    <div class="col">
+        @include('laravel-crm::partials.form.select',[
+        'name' => 'type',
+        'label' => ucfirst(trans('laravel-crm::lang.type')),
+        'options' => [
+           'text' => 'Text' 
+         ],
+        'value' => old('type', $field->type ?? null)
+       ])
+
+        @include('laravel-crm::partials.form.select',[
+        'name' => 'field_group_id',
+        'label' => ucfirst(trans('laravel-crm::lang.group')),
+        'options' => [''=>''] + \VentureDrake\LaravelCrm\Models\FieldGroup::pluck('name','id')->toArray(),
+        'value' => old('field_group_id', $field->type ?? null)
+       ])
+        
         @include('laravel-crm::partials.form.text',[
          'name' => 'name',
          'label' => ucfirst(trans('laravel-crm::lang.name')),
-         'value' => old('name', $label->name ?? null)
+         'value' => old('name', $field->name ?? null)
         ])
-        
-        <div id="input_hex" class="form-group @error('hex') text-danger @enderror">
-            <label for="hex[]">{{ ucfirst(trans('laravel-crm::lang.color')) }}</label>
-            <div class="input-group">
-                <input id="input_hex" type="text" name="hex" value="{{ old('hex', (isset($label->hex) ? '#'.$label->hex : null)) }}" class="form-control @error('hex') is-invalid @enderror">
-                <div class="input-group-append">
-                    <span class="input-group-text colorpicker-input-addon" id="inputGroupPrepend"><i></i></span>
-                </div>
-            </div>
-            @error('hex')
-            <div class="text-danger invalid-feedback-custom">{{ $message }}</div>
-            @enderror
-        </div>
 
-        @include('laravel-crm::partials.form.textarea',[
-        'name' => 'description',
-        'label' => ucfirst(trans('laravel-crm::lang.description')),
-         'rows' => 5,
-        'value' => old('name', $label->description ?? null)
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'default',
+         'label' => ucfirst(trans('laravel-crm::lang.default')),
+         'value' => old('default', $field->default ?? null)
         ])
-    </div>--}}
+
+        <div class="form-group">
+            <label for="required">{{ ucfirst(__('laravel-crm::lang.required')) }}</label>
+            <span class="form-control-toggle">
+                 <input id="required" type="checkbox" name="required" {{ (isset($field) && $field->required == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+            </span>
+        </div>
+    </div>
 </div>

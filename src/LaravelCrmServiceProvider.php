@@ -155,6 +155,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Lunch' => \VentureDrake\LaravelCrm\Policies\LunchPolicy::class,
         'VentureDrake\LaravelCrm\Models\File' => \VentureDrake\LaravelCrm\Policies\FilePolicy::class,
         'VentureDrake\LaravelCrm\Models\Field' => \VentureDrake\LaravelCrm\Policies\FieldPolicy::class,
+        'VentureDrake\LaravelCrm\Models\FieldGroup' => \VentureDrake\LaravelCrm\Policies\FieldGroupPolicy::class,
     ];
 
     /**

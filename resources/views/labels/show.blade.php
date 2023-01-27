@@ -22,7 +22,7 @@
             </span></h3>
 
             <div class="row">
-                <div class="col-sm-6 border-right">
+                <div class="col-sm-12">
                     <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                     <hr />
                     <dl class="row">
@@ -36,14 +36,7 @@
                         <dd class="col-sm-9">{{ $label->description }}</dd>
                     </dl>
                 </div>
-                <div class="col-sm-6">
-                   ...
-                </div>
             </div>
         </div>
-        @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.labels.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
-            <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
-        @endcomponent
     </div>
 @endsection

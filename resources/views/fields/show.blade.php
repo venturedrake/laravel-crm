@@ -7,43 +7,38 @@
             @include('laravel-crm::layouts.partials.nav-settings')
         </div>
         <div class="card-body">
-            <h3 class="mb-3"> {{ $label->name }} <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.labels.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_labels')) }}</a> | 
-                @can('edit crm labels')
-                <a href="{{ url(route('laravel-crm.labels.edit', $label)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+            <h3 class="mb-3"> {{ $field->name }} <span class="float-right">
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.fields.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_fields')) }}</a> | 
+                @can('edit crm fields')
+                <a href="{{ url(route('laravel-crm.fields.edit', $field)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
-                @can('delete crm labels')    
-                <form action="{{ route('laravel-crm.labels.destroy',$label) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                @can('delete crm fields')    
+                <form action="{{ route('laravel-crm.fields.destroy',$field) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.label') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.field') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
                 @endcan
             </span></h3>
 
             <div class="row">
-                <div class="col-sm-6 border-right">
+                <div class="col-sm-12">
                     <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                     <hr />
                     <dl class="row">
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.color')) }}</dt>
-                        <dd class="col-sm-9">
-                            <span class="badge badge-primary" style="background-color: #{{ $label->hex }}; padding: 6px 8px;">
-                                #{{ $label->hex }}
-                            </span>
-                        </dd>
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
-                        <dd class="col-sm-9">{{ $label->description }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
+                        <dd class="col-sm-9">{{ ucwords(str_replace('_',' ',$field->type)) }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.group')) }}</dt>
+                        <dd class="col-sm-9">{{ $field->fieldGroup->name ?? null}}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.default')) }}</dt>
+                        <dd class="col-sm-9">{{ $field->default }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.required')) }}</dt>
+                        <dd class="col-sm-9">{{ ($field->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.handle')) }}</dt>
+                        <dd class="col-sm-9">{{ $field->handle }}</dd>
                     </dl>
-                </div>
-                <div class="col-sm-6">
-                   ...
                 </div>
             </div>
         </div>
-        @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.labels.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
-            <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
-        @endcomponent
     </div>
 @endsection
