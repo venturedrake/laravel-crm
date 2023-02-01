@@ -22,7 +22,7 @@ class LogUsage
         $requestTime = Carbon::createFromTimestamp($_SERVER['REQUEST_TIME']);
 
         UsageRequest::create([
-            'host' => $request->host(),
+            'host' => (method_exists($request, 'host')) ? $request->host() : $request->getHost(),
             'path' => $request->path(),
             'url' => $request->fullUrl(),
             'method' => $request->method(),
