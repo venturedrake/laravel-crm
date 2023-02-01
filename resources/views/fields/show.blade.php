@@ -22,7 +22,7 @@
             </span></h3>
 
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6 border-right">
                     <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                     <hr />
                     <dl class="row">
@@ -37,6 +37,13 @@
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.handle')) }}</dt>
                         <dd class="col-sm-9">{{ $field->handle }}</dd>
                     </dl>
+                </div>
+                <div class="col-sm-6">
+                    <h6 class="text-uppercase section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.attached_to')) }}</span></h6>
+                    <hr />
+                    @foreach(\VentureDrake\LaravelCrm\Models\FieldModel::where('field_id', $field->id)->get() as $fieldModel)
+                        <p>{{ \Illuminate\Support\Str::plural(class_basename($fieldModel->model)) }}</p>
+                    @endforeach
                 </div>
             </div>
         </div>

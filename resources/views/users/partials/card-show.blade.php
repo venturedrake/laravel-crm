@@ -40,18 +40,15 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.CRM_Role')) }}</dt>
                     <dd class="col-sm-9">{{ $user->roles()->first()->name ?? null }}</dd>
                 </dl>
-                @can('view crm teams')
-                <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.teams')) }} ({{ $user->crmTeams->count() }})</span></h6>
-                <hr />
-                @foreach($user->crmTeams as $team)
-                    <p><span class="fa fa-users" aria-hidden="true"></span> {{ $team->name }}</p>
-                @endforeach
-                @endcan    
             </div>
             <div class="col-sm-6">
-                <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.activities')) }}</h6>
-                <hr />
-                ...
+                @can('view crm teams')
+                    <h6 class="text-uppercase section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.teams')) }} ({{ $user->crmTeams->count() }})</span></h6>
+                    <hr />
+                    @foreach($user->crmTeams as $team)
+                        <p><span class="fa fa-users" aria-hidden="true"></span> {{ $team->name }}</p>
+                    @endforeach
+                @endcan
             </div>
         </div>
         

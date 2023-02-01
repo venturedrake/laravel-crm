@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col">
+    <div class="col-sm-6 border-right">
         @include('laravel-crm::partials.form.select',[
         'name' => 'type',
         'label' => ucfirst(trans('laravel-crm::lang.type')),
@@ -34,5 +34,14 @@
                  <input id="required" type="checkbox" name="required" {{ (isset($field) && $field->required == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
             </span>
         </div>
+    </div>
+    <div class="col-6">
+        <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.attach')) }}</h6>
+        @include('laravel-crm::partials.form.multiselect',[
+        'name' => 'field_models',
+        'label' => null,
+        'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\fieldModels(),
+        'value' => old('field_models', (isset($field)) ? \VentureDrake\LaravelCrm\Models\FieldModel::where('field_id', $field->id)->get()->pluck('model')->toArray() : null)
+      ])
     </div>
 </div>

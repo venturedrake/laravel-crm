@@ -209,6 +209,14 @@ const appJquery = function() {
                 iconsPrefix: 'fa'
             });
 
+            $("select[name^='field_models']").bootstrapDualListbox({
+                nonSelectedListLabel: 'Not Attached',
+                selectedListLabel: 'Attached To',
+                moveOnSelect: false,
+                infoText: false,
+                iconsPrefix: 'fa'
+            });
+
             // bootstrap-multiselect
             $('select[name="user_owner_id[]"]').multiselect({
                 buttonText: function(options, select) {

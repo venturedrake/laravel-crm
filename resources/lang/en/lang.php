@@ -371,4 +371,6 @@ return [
     'field_group' => 'field group',
     'edit_field_group' => 'edit field group',
     'field_group_deleted' => 'field group deleted',
+    'attached_to' => 'attached to',
+    'attach' => 'attach',
 ];

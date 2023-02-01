@@ -6,6 +6,7 @@ use App\User;
 use VentureDrake\LaravelCrm\Http\Requests\StoreFieldRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateFieldRequest;
 use VentureDrake\LaravelCrm\Models\Field;
+use VentureDrake\LaravelCrm\Models\FieldModel;
 
 class FieldController extends Controller
 {
@@ -45,13 +46,15 @@ class FieldController extends Controller
      */
     public function store(StoreFieldRequest $request)
     {
-        Field::create([
+        $field = Field::create([
             'type' => $request->type,
             'name' => $request->name,
             'field_group_id' => $request->field_group_id,
             'required' => (($request->required == 'on') ? 1 : 0),
             'default' => $request->default,
         ]);
+
+        $this->syncFieldModels($request, $field);
 
         flash(ucfirst(trans('laravel-crm::lang.field_stored')))->success()->important();
 
@@ -100,6 +103,8 @@ class FieldController extends Controller
             'required' => (($request->required == 'on') ? 1 : 0),
             'default' => $request->default,
         ]);
+        
+        $this->syncFieldModels($request, $field);
 
         flash(ucfirst(trans('laravel-crm::lang.field_updated')))->success()->important();
 
@@ -119,5 +124,25 @@ class FieldController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.field_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.fields.index'));
+    }
+    
+    protected function syncFieldModels($request, $field)
+    {
+        if ($request->field_models) {
+            foreach ($request->field_models as $model) {
+                FieldModel::firstOrCreate([
+                    'field_id' => $field->id,
+                    'model' => $model,
+                ]);
+            }
+        } else {
+            $request->field_models = [];
+        }
+
+        foreach (FieldModel::where('field_id', $field->id)->get() as $fieldModel) {
+            if (! in_array($fieldModel->model, $request->field_models)) {
+                $fieldModel->delete();
+            }
+        }
     }
 }
