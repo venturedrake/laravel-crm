@@ -13,7 +13,7 @@
         'name' => 'field_group_id',
         'label' => ucfirst(trans('laravel-crm::lang.group')),
         'options' => [''=>''] + \VentureDrake\LaravelCrm\Models\FieldGroup::pluck('name','id')->toArray(),
-        'value' => old('field_group_id', $field->type ?? null)
+        'value' => old('field_group_id', $field->fieldGroup->id ?? null)
        ])
         
         @include('laravel-crm::partials.form.text',[

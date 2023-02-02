@@ -29,7 +29,7 @@
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
                         <dd class="col-sm-9">{{ ucwords(str_replace('_',' ',$field->type)) }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.group')) }}</dt>
-                        <dd class="col-sm-9">{{ $field->fieldGroup->name ?? null}}</dd>
+                        <dd class="col-sm-9">{{ $field->fieldGroup->name ?? null }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.default')) }}</dt>
                         <dd class="col-sm-9">{{ $field->default }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.required')) }}</dt>
