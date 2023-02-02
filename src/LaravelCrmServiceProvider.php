@@ -456,8 +456,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Route::group($this->routeConfiguration(), function () {
             if (config('laravel-crm.user_interface')) {
                 $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
-            } else {
-                abort(404);
             }
         });
     }
