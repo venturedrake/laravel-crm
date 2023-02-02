@@ -128,5 +128,20 @@ return [
     */
     
     'encrypt_db_fields' => env('LARAVEL_CRM_ENCRYPT_DB_FIELDS', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Front-end / User Interface
+    |--------------------------------------------------------------------------
+    |
+    | The crm packages comes with a ready to go user interface. If you want to
+    | build your own it is recommended to disable this to avoid any conflicts
+    | or users coming across the default views. This works by not allowing
+    | anything that hits the "laravel-crm" route prefix to load, which also
+    | will override the route_prefix you set above.
+    |
+    */
+
+    'user_interface' => env('LARAVEL_CRM_USER_INTERFACE', true),
     
 ];

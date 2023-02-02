@@ -454,7 +454,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
     protected function registerRoutes()
     {
         Route::group($this->routeConfiguration(), function () {
-            $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+            if (config('laravel-crm.user_interface')) {
+                $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+            } else {
+                abort(404);
+            }
         });
     }
 
@@ -471,7 +475,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         return [
             'domain' => $domain ?? null,
-            'prefix' => config('laravel-crm.route_prefix'),
+            'prefix' => (config('laravel-crm.user_interface')) ? config('laravel-crm.route_prefix') : 'laravel-crm',
             'middleware' => array_unique(array_merge(['web','crm','crm-api'], config('laravel-crm.route_middleware') ?? [])),
         ];
     }
