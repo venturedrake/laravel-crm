@@ -42,14 +42,14 @@ class SendQuote extends Mailable
      */
     public function build()
     {
-        $this->content = str_replace('[Online Quote Link]', $this->onlineQuoteLink, $this->content);
+        $this->content = str_replace('[Online Quote Link]', '<a href="'.$this->onlineQuoteLink.'">'.$this->onlineQuoteLink.'</a>', $this->content);
 
         $this->content = nl2br($this->content);
         
         $mailable = $this->subject($this->subject)
             ->from(auth()->user()->email, auth()->user()->name)
             ->to($this->emailTo)
-            ->view('laravel-crm::mail.email');
+            ->markdown('laravel-crm::mail.email');
 
         if ($this->copyMe == 1) {
             $mailable->cc(auth()->user()->email);

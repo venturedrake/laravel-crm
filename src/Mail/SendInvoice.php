@@ -42,7 +42,7 @@ class SendInvoice extends Mailable
      */
     public function build()
     {
-        $this->content = str_replace('[Online Invoice Link]', $this->onlineInvoiceLink, $this->content);
+        $this->content = str_replace('[Online Invoice Link]', '<a href="'.$this->onlineInvoiceLink.'">'.$this->onlineInvoiceLink.'</a>', $this->content);
 
         $this->content = nl2br($this->content);
         
