@@ -423,15 +423,18 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('activities', LiveActivities::class);
         Livewire::component('send-quote', SendQuote::class);
         Livewire::component('invoice-lines', LiveInvoiceLines::class);
-        Livewire::component('send-invoice', SendInvoice::class);
+        Livewire::component('send-invoice',  SendInvoice::class);
         Livewire::component('pay-invoice', PayInvoice::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
-                $schedule->command('xero:keep-alive')->everyFiveMinutes();
-                $schedule->command('laravelcrm:xero contacts')->daily();
-                $schedule->command('laravelcrm:xero products')->daily();
+                
+                if (config('xero.clientId') && config('xero.clientSecret')) {
+                    $schedule->command('xero:keep-alive')->everyFiveMinutes();
+                    $schedule->command('laravelcrm:xero contacts')->daily();
+                    $schedule->command('laravelcrm:xero products')->daily();
+                }
             });
         }
     }
