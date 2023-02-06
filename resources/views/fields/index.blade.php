@@ -41,13 +41,13 @@
                                         <a href="{{  route('laravel-crm.fields.show', $field) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                                         @endcan
                                         @can('edit crm fields')
-                                            <a href="{{ route('laravel-crm.fields.edit', $field) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                                            <a href="{{ route('laravel-crm.fields.edit', $field) }}" class="btn btn-outline-secondary btn-sm {{ ($field->system == 1) ? 'disabled' : null }}"><span class="fa fa-edit" aria-hidden="true"></span></a>
                                         @endcan
                                         @can('delete crm fields')
                                         <form action="{{ route('laravel-crm.fields.destroy',$field) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                             {{ method_field('DELETE') }}
                                             {{ csrf_field() }}
-                                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.field') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.field') }}" {{ ($field->system == 1) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                                         </form>
                                         @endcan
                                     </td>

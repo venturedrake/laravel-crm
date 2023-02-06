@@ -10,16 +10,17 @@
             <h3 class="mb-3"> {{ $field->name }} <span class="float-right">
                 <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.fields.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_fields')) }}</a> | 
                 @can('edit crm fields')
-                <a href="{{ url(route('laravel-crm.fields.edit', $field)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                <a href="{{ url(route('laravel-crm.fields.edit', $field)) }}" type="button" class="btn btn-outline-secondary btn-sm {{ ($field->system == 1) ? 'disabled' : null }}"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
                 @can('delete crm fields')    
                 <form action="{{ route('laravel-crm.fields.destroy',$field) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.field') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.field') }}" {{ ($field->system == 1) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
                 @endcan
-            </span></h3>
+            </span>
+            </h3>
 
             <div class="row">
                 <div class="col-sm-6 border-right">
