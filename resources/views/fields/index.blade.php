@@ -19,6 +19,7 @@
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.required')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.default')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.system')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>
                                 <th scope="col"></th>
@@ -32,6 +33,7 @@
                                     <td>{{ $field->name }}</td>
                                     <td>{{ ($field->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
                                     <td>{{ $field->default }}</td>
+                                    <td>{{ ($field->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
                                     <td>{{ $field->created_at->toFormattedDateString() }}</td>
                                     <td>{{ $field->updated_at->toFormattedDateString() }}</td>
                                     <td class="disable-link text-right">

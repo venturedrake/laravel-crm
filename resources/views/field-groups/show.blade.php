@@ -21,22 +21,18 @@
                 @endcan
             </span></h3>
 
-          {{--  <div class="row">
+          <div class="row">
                 <div class="col-sm-12">
                     <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                     <hr />
                     <dl class="row">
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
-                        <dd class="col-sm-9">{{ ucwords(str_replace('_',' ',$fieldGroup->type)) }}</dd>
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.default')) }}</dt>
-                        <dd class="col-sm-9">{{ $fieldGroup->default }}</dd>
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.required')) }}</dt>
-                        <dd class="col-sm-9">{{ ($fieldGroup->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.system')) }}</dt>
+                        <dd class="col-sm-9">{{ ($fieldGroup->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.handle')) }}</dt>
                         <dd class="col-sm-9">{{ $fieldGroup->handle }}</dd>
                     </dl>
                 </div>
-            </div>--}}
+            </div>
         </div>
     </div>
 @endsection

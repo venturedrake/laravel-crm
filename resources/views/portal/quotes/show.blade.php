@@ -43,9 +43,9 @@
                                 </form>
                             </li>
                         @endif
-                        {{--<li class="nav-item">
-                            <a class="btn btn-outline-secondary" href="#">Download</a>
-                        </li>--}}
+                        <li class="nav-item">
+                            <a class="btn btn-outline-secondary" href="#"><span class="fa fa-download" aria-hidden="true"></span> Download</a>
+                        </li>
                     </ul>
                 </div>
             </div>

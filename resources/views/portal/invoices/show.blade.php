@@ -16,8 +16,8 @@
                     @endif
                 </h1>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    {{--<ul class="navbar-nav ml-auto">
-                       @if($invoice->fully_paid_at)
+                    <ul class="navbar-nav ml-auto">
+                       {{--@if($invoice->fully_paid_at)
                             <div class="alert alert-success m-0" role="alert">
                                 {{ ucfirst(__('laravel-crm::lang.you_have_paid_this_invoice')) }}.
                             </div>
@@ -29,11 +29,11 @@
                                     <button class="btn btn-outline-success" type="submit">{{ ucfirst(__('laravel-crm::lang.pay_now')) }}</button>
                                 </form>
                             </li>
-                        @endif
+                        @endif--}}
                         <li class="nav-item">
-                            <a class="btn btn-outline-secondary" href="#">PDF</a>
+                            <a class="btn btn-outline-secondary" href="#"><span class="fa fa-download" aria-hidden="true"></span> Download</a>
                         </li>
-                    </ul>--}}
+                    </ul>
                 </div>
             </div>
         </nav>

@@ -30,10 +30,12 @@
                         <dd class="col-sm-9">{{ ucwords(str_replace('_',' ',$field->type)) }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.group')) }}</dt>
                         <dd class="col-sm-9">{{ $field->fieldGroup->name ?? null }}</dd>
-                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.default')) }}</dt>
-                        <dd class="col-sm-9">{{ $field->default }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.required')) }}</dt>
                         <dd class="col-sm-9">{{ ($field->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.default')) }}</dt>
+                        <dd class="col-sm-9">{{ $field->default }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.system')) }}</dt>
+                        <dd class="col-sm-9">{{ ($field->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.handle')) }}</dt>
                         <dd class="col-sm-9">{{ $field->handle }}</dd>
                     </dl>

@@ -59,7 +59,7 @@ class FieldGroupPolicy
      */
     public function update(User $user, FieldGroup $fieldGroup)
     {
-        if ($user->hasPermissionTo('edit crm fields')) {
+        if ($fieldGroup->system != 1 && $user->hasPermissionTo('edit crm fields')) {
             return true;
         }
     }
@@ -73,7 +73,7 @@ class FieldGroupPolicy
      */
     public function delete(User $user, FieldGroup $fieldGroup)
     {
-        if ($user->hasPermissionTo('delete crm fields')) {
+        if ($fieldGroup->system != 1 && $user->hasPermissionTo('delete crm fields')) {
             return true;
         }
     }
@@ -87,7 +87,7 @@ class FieldGroupPolicy
      */
     public function restore(User $user, FieldGroup $fieldGroup)
     {
-        if ($user->hasPermissionTo('delete crm fields')) {
+        if ($fieldGroup->system != 1 && $user->hasPermissionTo('delete crm fields')) {
             return true;
         }
     }
