@@ -15,6 +15,7 @@
                 @livewire('send-invoice',[
                     'invoice' => $invoice
                 ])
+                <a class="btn btn-outline-secondary btn-sm" href="#">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
                 @if(! $invoice->fully_paid_at)
                     @livewire('pay-invoice',[
                         'invoice' => $invoice

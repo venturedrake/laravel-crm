@@ -32,7 +32,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.paid')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.due')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
-                <th scope="col" width="245"></th>
+                <th scope="col" width="280"></th>
             </tr>
             </thead>
             <tbody>
@@ -61,6 +61,7 @@
                         @livewire('send-invoice',[
                             'invoice' => $invoice
                         ])
+                        <a class="btn btn-outline-secondary btn-sm" href="#"><span class="fa fa-download" aria-hidden="true"></span></a>
                         @if(! $invoice->fully_paid_at)
                             @livewire('pay-invoice',[
                                 'invoice' => $invoice

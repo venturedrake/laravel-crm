@@ -374,4 +374,5 @@ return [
     'attached_to' => 'attached to',
     'attach' => 'attach',
     'system' => 'system',
+    'download' => 'download',
 ];

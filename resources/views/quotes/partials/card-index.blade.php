@@ -37,7 +37,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.issue_at')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.expire_at')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
-                <th scope="col" width="330"></th>
+                <th scope="col" width="360"></th>
             </tr>
             </thead>
             <tbody>
@@ -60,12 +60,13 @@
                    <td>{{ ($quote->issue_at) ? $quote->issue_at->toFormattedDateString() : null }}</td>
                    <td>{{ ($quote->expire_at) ? $quote->expire_at->toFormattedDateString() : null }}</td>
                    <td>{{ $quote->ownerUser->name ?? null }}</td>
-                   <td class="disable-link text-right" width="320">
+                   <td class="disable-link text-right">
                        @if(! $quote->order)
                            @livewire('send-quote',[
                            'quote' => $quote
                            ])
                        @endif
+                       <a class="btn btn-outline-secondary btn-sm" href="#"><span class="fa fa-download" aria-hidden="true"></span></a>
                        @can('edit crm quotes')
                            @if(!$quote->accepted_at && !$quote->rejected_at)
                                <a href="{{  route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
