@@ -23,7 +23,7 @@ class XeroTenant
         if (config('laravel-crm.teams') && auth()->hasUser() && auth()->user()->currentTeam) {
             if ($xeroToken = XeroToken::where('team_id', auth()->user()->currentTeam->id)->first()) {
                 Xero::setTenantId($xeroToken->id);
-            } else {
+            } elseif ($request->route()->getName() != 'laravel-crm.integrations.xero.connect' || ($request->route()->getName() == 'laravel-crm.integrations.xero.connect' && ! request()->has('code'))) {
                 Xero::setTenantId(999999999); // Workaround for issue with package
             }
         }
