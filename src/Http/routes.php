@@ -261,6 +261,10 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.quotes.create-order')
         ->middleware(['can:update,quote', 'can:create,VentureDrake\LaravelCrm\Models\Order']);
 
+    Route::get('{quote}/download', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@download')
+        ->name('laravel-crm.quotes.download')
+        ->middleware(['can:view,quote']);
+
     /* Quote Products */
 
     Route::group(['prefix' => '{quote}/products', 'middleware' => 'auth.laravel-crm'], function () {

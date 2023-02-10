@@ -17,4 +17,5 @@ mix.copy(
 )
 
 mix.js('resources/js/app.js', 'resources/assets/js')
-    .sass('resources/sass/app.scss', 'resources/assets/css');
+    .sass('resources/sass/app.scss', 'resources/assets/css')
+    .sass('resources/sass/document.scss', 'resources/assets/css');

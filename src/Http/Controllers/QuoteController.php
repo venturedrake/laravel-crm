@@ -2,8 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreQuoteRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateQuoteRequest;
@@ -14,6 +17,7 @@ use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\QuoteService;
+use VentureDrake\LaravelCrm\Services\SettingService;
 
 class QuoteController extends Controller
 {
@@ -37,12 +41,18 @@ class QuoteController extends Controller
      */
     private $orderService;
 
-    public function __construct(QuoteService $quoteService, PersonService $personService, OrganisationService $organisationService, OrderService $orderService)
+    /**
+     * @var SettingService
+     */
+    private $settingService;
+
+    public function __construct(QuoteService $quoteService, PersonService $personService, OrganisationService $organisationService, OrderService $orderService, SettingService $settingService)
     {
         $this->quoteService = $quoteService;
         $this->personService = $personService;
         $this->organisationService = $organisationService;
         $this->orderService = $orderService;
+        $this->settingService = $settingService;
     }
 
     /**
@@ -353,5 +363,47 @@ class QuoteController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.order_created_from_quote')))->success()->important();
 
         return back();
+    }
+
+    public function download(Quote $quote)
+    {
+        if ($quote->person) {
+            $email = $quote->person->getPrimaryEmail();
+            $phone = $quote->person->getPrimaryPhone();
+            $address = $quote->person->getPrimaryAddress();
+        }
+
+        if ($quote->organisation) {
+            $organisation_address = $quote->organisation->getPrimaryAddress();
+        }
+        
+        /*$pdfLocation = 'laravel-crm/'.strtolower(class_basename($quote)).'/'.$quote->id.'/';
+
+        if(!File::exists($pdfLocation)){
+            Storage::makeDirectory($pdfLocation);
+        }*/
+        
+        /*return view('laravel-crm::quotes.partials.document', [
+            'quote' => $quote,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+            'organisation_address' => $organisation_address ?? null,
+            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'logo' => $this->settingService->get('logo_file')->value ?? null,
+        ]);*/
+        
+        return Pdf::setOption([
+            'fontDir' => public_path('vendor/laravel-crm/fonts'),
+        ])
+            ->loadView('laravel-crm::quotes.partials.document', [
+            'quote' => $quote,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+            'organisation_address' => $organisation_address ?? null,
+            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'logo' => $this->settingService->get('logo_file')->value ?? null,
+        ])->download('quote-'.$quote->id.'.pdf');
     }
 }

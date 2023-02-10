@@ -66,7 +66,7 @@
                            'quote' => $quote
                            ])
                        @endif
-                       <a class="btn btn-outline-secondary btn-sm" href="#"><span class="fa fa-download" aria-hidden="true"></span></a>
+                       <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
                        @can('edit crm quotes')
                            @if(!$quote->accepted_at && !$quote->rejected_at)
                                <a href="{{  route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
