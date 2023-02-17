@@ -1,7 +1,3 @@
-@extends('laravel-crm::layouts.document')
-
-@section('content')
-
 <div class="row">
     <div class="col px-5 py-4">
         <h1 class="card-title pricing-card-title py-4 m-0">{{ ucfirst(__('laravel-crm::lang.quote')) }}</h1>
@@ -164,5 +160,3 @@
         {!! nl2br($quote->terms) !!}
     </div>
 </div>
-    
-@endsection

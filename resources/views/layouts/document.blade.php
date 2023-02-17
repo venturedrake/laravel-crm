@@ -10,6 +10,20 @@
     <link href="{{ asset('vendor/laravel-crm/css/document.css') }}" rel="stylesheet">
 
     <style>
+        @font-face {
+            font-family: 'Nunito';
+            font-style: normal;
+            font-weight: normal;
+            src: url('vendor/laravel-crm/fonts/Nunito-Regular.ttf') format('truetype');
+        }
+        
+        @font-face {
+            font-family: 'Nunito';
+            font-style: normal;
+            font-weight: 500;
+            src: url('vendor/laravel-crm/fonts/Nunito-Medium.ttf') format('truetype');
+        }
+
         @page {
             @bottom-right {
                 content: counter(page) " of " counter(pages);
@@ -19,7 +33,7 @@
         .page-break {
             page-break-after: always;
         }
-        
+
         .container-document{
             width:18.6cm
         }

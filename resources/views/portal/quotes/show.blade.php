@@ -3,7 +3,7 @@
 @section('content')
 
     <header>
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top"> 
             <div class="container-fluid">
                 <h1 class="navbar-brand mb-0" href="#">
                     {{ money($quote->total, $quote->currency) }} <small>{{ $quote->currency }}</small>

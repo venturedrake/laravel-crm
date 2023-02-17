@@ -1,14 +1,21 @@
 @extends('laravel-crm::layouts.document')
 
 @section('content')
+
+    @include('laravel-crm::quotes.partials.document')
+
+@endsection
+
+{{--
+@section('content')
     
-    <div class="row">
+   <div class="row">
         <div class="col-12">
             <strong>Application #:</strong>
             <span>593</span>
         </div>
     </div>
-    <h4>Section I: Applicant Information</h4>
+    <h3>Section I: Applicant Information</h3>
     <table class="table table-bordered table-condensed">
         <tbody>
 
@@ -182,3 +189,4 @@
     </table>
     
 @endsection
+--}}
