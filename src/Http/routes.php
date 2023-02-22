@@ -329,6 +329,10 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
     Route::delete('{order}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@destroy')
         ->name('laravel-crm.orders.destroy')
         ->middleware(['can:delete,order']);
+
+    Route::get('{order}/download', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@download')
+        ->name('laravel-crm.orders.download')
+        ->middleware(['can:view,order']);
     
     /* Order Products */
 

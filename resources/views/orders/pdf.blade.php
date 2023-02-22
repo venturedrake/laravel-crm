@@ -6,15 +6,9 @@
         <tbody>
             <tr>
                 <td width="50%"> 
-                    <h1>{{ strtoupper(__('laravel-crm::lang.quote')) }}</h1>
-                    @if($quote->reference)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $quote->reference }}</p>
-                    @endif
-                    @if($quote->issue_at)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.issue_date')) }}</strong> {{ $quote->issue_at->toFormattedDateString() }}</p>
-                    @endif
-                    @if($quote->expire_at)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.expiry_date')) }}</strong>  {{ $quote->expire_at->toFormattedDateString() }}</p>
+                    <h1>{{ strtoupper(__('laravel-crm::lang.order')) }}</h1>
+                    @if($order->reference)
+                        <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $order->reference }}</p>
                     @endif
                 </td>
                 <td width="50%" style="text-align: right">
@@ -25,9 +19,9 @@
             </tr>
             <tr>
                 <td>
-                    <strong>{{ ucfirst(__('laravel-crm::lang.issued_to')) }}</strong><br />
-                    {{ $quote->organisation->name ?? $quote->organisation->person->name }}<br />
-                    {{ $quote->person->name }}<br />
+                    <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
+                    {{ $order->organisation->name ?? $order->organisation->person->name }}<br />
+                    {{ $order->person->name }}<br />
                     @if(isset($organisation_address))
                         @if($organisation_address->line2)
                             {{ $organisation_address->line1 }}<br />
@@ -65,12 +59,12 @@
             </tr>
         </tbody>
     </table>
-    @if($quote->description)
+    @if($order->description)
         <table class="table table-bordered table-condensed">
           <tbody>
             <tr>
                 <td><h4>{{ ucfirst(__('laravel-crm::lang.description')) }}</h4>
-                    {!! nl2br($quote->description) !!}</td>
+                    {!! nl2br($order->description) !!}</td>
             </tr>
           </tbody>  
         </table>
@@ -86,13 +80,13 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($quote->quoteProducts()->whereNotNull('product_id')->get() as $quoteProduct)
+        @foreach($order->orderProducts()->whereNotNull('product_id')->get() as $orderProduct)
             <tr>
-                <td>{{ $quoteProduct->product->name }}</td>
-                <td>{{ money($quoteProduct->price ?? null, $quoteProduct->currency) }}</td>
-                <td>{{ $quoteProduct->quantity }}</td>
-                <td>{{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}</td>
-                <td>{{ $quoteProduct->comments }}</td>
+                <td>{{ $orderProduct->product->name }}</td>
+                <td>{{ money($orderProduct->price ?? null, $orderProduct->currency) }}</td>
+                <td>{{ $orderProduct->quantity }}</td>
+                <td>{{ money($orderProduct->amount ?? null, $orderProduct->currency) }}</td>
+                <td>{{ $orderProduct->comments }}</td>
             </tr>
         @endforeach
         </tbody>
@@ -101,15 +95,15 @@
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
-            <td>{{ money($quote->subtotal, $quote->currency) }}</td>
+            <td>{{ money($order->subtotal, $order->currency) }}</td>
             <td></td>
         </tr>
-        @if($quote->discount > 0)
+        @if($order->discount > 0)
             <tr>
                 <td></td>
                 <td></td>
                 <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
-                <td>{{ money($quote->discount, $quote->currency) }}</td>
+                <td>{{ money($order->discount, $order->currency) }}</td>
                 <td></td>
             </tr>
         @endif
@@ -117,32 +111,32 @@
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.tax')) }}</strong></td>
-            <td>{{ money($quote->tax, $quote->currency) }}</td>
+            <td>{{ money($order->tax, $order->currency) }}</td>
             <td></td>
         </tr>
         {{--<tr>
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
-            <td>{{ money($quote->adjustments, $quote->currency) }}</td>
+            <td>{{ money($order->adjustments, $order->currency) }}</td>
             <td></td>
         </tr>--}}
         <tr>
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
-            <td>{{ money($quote->total, $quote->currency) }}</td>
+            <td>{{ money($order->total, $order->currency) }}</td>
             <td></td>
         </tr>
         </tfoot>
     </table>
-    @if($quote->terms)
+    @if($order->terms)
         <table class="table table-bordered table-condensed">
             <tbody>
             <tr>
                 <td>
                     <h4>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h4>
-                    {!! nl2br($quote->terms) !!}
+                    {!! nl2br($order->terms) !!}
                 </td>
             </tr>
             </tbody>

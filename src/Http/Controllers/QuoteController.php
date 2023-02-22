@@ -337,6 +337,7 @@ class QuoteController extends Controller
                 'unit_price' => $quoteProduct->unit_price / 100,
                 'amount' => $quoteProduct->amount / 100,
                 'currency' => $quoteProduct->currency,
+                'comments' => $quoteProduct->comments,
             ];
         }
 
@@ -383,7 +384,7 @@ class QuoteController extends Controller
             Storage::makeDirectory($pdfLocation);
         }*/
         
-        return view('laravel-crm::quotes.pdf', [
+        /*return view('laravel-crm::quotes.pdf', [
             'quote' => $quote,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
@@ -391,7 +392,7 @@ class QuoteController extends Controller
             'organisation_address' => $organisation_address ?? null,
             'fromName' => $this->settingService->get('organisation_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
-        ]);
+        ]);*/
         
         return Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),

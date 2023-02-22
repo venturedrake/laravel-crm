@@ -27,8 +27,7 @@
                 <th scope="col">#</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.contact')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.customer')) }}</th>
                 {{--<th scope="col">{{ ucwords(__('laravel-crm::lang.sub_total')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.discount')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.tax')) }}</th>
@@ -50,8 +49,11 @@
                             'labels' => $quote->labels,
                             'limit' => 3
                         ])</td>
-                   <td>{{ $quote->organisation->name ?? null }}</td>
-                   <td>{{ $quote->person->name ?? null }}</td>
+                   <td>
+                       {{ $quote->organisation->name ?? null }}<br />
+                       <small>{{ $quote->person->name ?? null }}</small>
+                   </td>
+                  
                    {{--<td>{{ money($quote->subtotal, $quote->currency) }}</td>
                    <td>{{ money($quote->discount, $quote->currency) }}</td>
                    <td>{{ money($quote->tax, $quote->currency) }}</td>
@@ -66,7 +68,6 @@
                            'quote' => $quote
                            ])
                        @endif
-                       <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
                        @can('edit crm quotes')
                            @if(!$quote->accepted_at && !$quote->rejected_at)
                                <a href="{{  route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
@@ -79,7 +80,8 @@
                            @endif
                         @endcan
                         @can('view crm quotes')
-                        <a href="{{  route('laravel-crm.quotes.show',$quote) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                           <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                           <a href="{{  route('laravel-crm.quotes.show',$quote) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
                         @can('edit crm quotes')
                             @if(! $quote->order && ! $quote->accepted_at)

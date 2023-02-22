@@ -63,3 +63,14 @@
       ])
     </td>
 </tr>
+<tr>
+    <td colspan="4" class="border-0 pt-0">
+        @include('laravel-crm::partials.form.text',[
+           'name' => 'products['.$value.'][comments]',
+           'label' => ucfirst(__('laravel-crm::lang.comments')),
+           'attributes' => [
+               'wire:model' => 'comments.'.$value,
+           ]
+       ])
+    </td>
+</tr>

@@ -13,6 +13,7 @@ use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Services\SettingService;
 
 class OrderController extends Controller
 {
@@ -36,12 +37,18 @@ class OrderController extends Controller
      */
     private $invoiceService;
 
-    public function __construct(OrderService $orderService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService)
+    /**
+     * @var SettingService
+     */
+    private $settingService;
+
+    public function __construct(OrderService $orderService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService, SettingService $settingService)
     {
         $this->orderService = $orderService;
         $this->personService = $personService;
         $this->organisationService = $organisationService;
         $this->invoiceService = $invoiceService;
+        $this->settingService = $settingService;
     }
 
     /**
@@ -255,5 +262,47 @@ class OrderController extends Controller
             'orders' => $orders,
             'searchValue' => $searchValue ?? null,
         ]);
+    }
+
+    public function download(Order $order)
+    {
+        if ($order->person) {
+            $email = $order->person->getPrimaryEmail();
+            $phone = $order->person->getPrimaryPhone();
+            $address = $order->person->getPrimaryAddress();
+        }
+
+        if ($order->organisation) {
+            $organisation_address = $order->organisation->getPrimaryAddress();
+        }
+
+        /*$pdfLocation = 'laravel-crm/'.strtolower(class_basename($quote)).'/'.$quote->id.'/';
+
+        if(!File::exists($pdfLocation)){
+            Storage::makeDirectory($pdfLocation);
+        }*/
+
+        /*return view('laravel-crm::orders.pdf', [
+            'order' => $order,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+            'organisation_address' => $organisation_address ?? null,
+            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'logo' => $this->settingService->get('logo_file')->value ?? null,
+        ]);*/
+
+        return Pdf::setOption([
+            'fontDir' => public_path('vendor/laravel-crm/fonts'),
+        ])
+            ->loadView('laravel-crm::orders.pdf', [
+                'order' => $order,
+                'email' => $email ?? null,
+                'phone' => $phone ?? null,
+                'address' => $address ?? null,
+                'organisation_address' => $organisation_address ?? null,
+                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'logo' => $this->settingService->get('logo_file')->value ?? null,
+            ])->download('order-'.$order->id.'.pdf');
     }
 }

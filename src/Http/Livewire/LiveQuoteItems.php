@@ -25,6 +25,8 @@ class LiveQuoteItems extends Component
     
     public $amount;
 
+    public $comments;
+
     public $inputs = [];
 
     public $i = 0;
@@ -56,6 +58,7 @@ class LiveQuoteItems extends Component
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
                 $this->unit_price[$this->i] = $old['unit_price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
+                $this->comments[$this->i] = $old['comments'] ?? null;
             }
         } elseif ($this->products && $this->products->count() > 0) {
             foreach ($this->products as $quoteProduct) {
@@ -66,6 +69,7 @@ class LiveQuoteItems extends Component
                 $this->quantity[$this->i] = $quoteProduct->quantity;
                 $this->unit_price[$this->i] = $quoteProduct->price / 100;
                 $this->amount[$this->i] = $quoteProduct->amount / 100;
+                $this->comments[$this->i] = $quoteProduct->comments;
             }
         } else {
             $this->add($this->i);

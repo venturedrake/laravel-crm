@@ -25,6 +25,8 @@ class LiveOrderItems extends Component
 
     public $amount;
 
+    public $comments;
+
     public $inputs = [];
 
     public $i = 0;
@@ -56,6 +58,7 @@ class LiveOrderItems extends Component
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
                 $this->unit_price[$this->i] = $old['unit_price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
+                $this->comments[$this->i] = $old['comments'] ?? null;
             }
         } elseif ($this->products && $this->products->count() > 0) {
             foreach ($this->products as $orderProduct) {
@@ -66,6 +69,7 @@ class LiveOrderItems extends Component
                 $this->quantity[$this->i] = $orderProduct->quantity;
                 $this->unit_price[$this->i] = $orderProduct->price / 100;
                 $this->amount[$this->i] = $orderProduct->amount / 100;
+                $this->comments[$this->i] = $orderProduct->comments;
             }
         } else {
             $this->add($this->i);

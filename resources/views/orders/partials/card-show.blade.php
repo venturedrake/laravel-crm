@@ -17,6 +17,9 @@
                     <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id])}}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_invoice')) }}</a>
                     @endif
                 @endcan
+                @can('view crm orders')
+                    <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.orders.download', $order) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
+                @endcan    
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm orders')
                 <a href="{{ url(route('laravel-crm.orders.edit', $order)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
@@ -84,6 +87,14 @@
                             <td>{{ $orderProduct->quantity }}</td>
                             <td>{{ money($orderProduct->amount ?? null, $orderProduct->currency) }}</td>
                         </tr>
+                        @if($orderProduct->comments)
+                            <tr>
+                                <td colspan="4" class="border-0 pt-0">
+                                    <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong><br />
+                                    {{ $orderProduct->comments }}
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                     </tbody>
                     <tfoot>

@@ -53,6 +53,7 @@ class QuoteService
                     'price' => $product['unit_price'],
                     'amount' => $product['amount'],
                     'currency' => $request->currency,
+                    'comments' => $product['comments'],
                 ]);
             }
         }
@@ -91,6 +92,7 @@ class QuoteService
                         'price' => $product['unit_price'],
                         'amount' => $product['amount'],
                         'currency' => $request->currency,
+                        'comments' => $product['comments'],
                     ]);
                 } else {
                     $quote->quoteProducts()->create([
@@ -99,6 +101,7 @@ class QuoteService
                         'price' => $product['unit_price'],
                         'amount' => $product['amount'],
                         'currency' => $request->currency,
+                        'comments' => $product['comments'],
                     ]);
                 }
             }

@@ -51,6 +51,7 @@ class OrderService
                     'price' => $product['unit_price'],
                     'amount' => $product['amount'],
                     'currency' => $request->currency,
+                    'comments' => $product['comments'],
                 ]);
             }
         }
@@ -85,6 +86,7 @@ class OrderService
                         'price' => $product['unit_price'],
                         'amount' => $product['amount'],
                         'currency' => $request->currency,
+                        'comments' => $product['comments'],
                     ]);
                 } else {
                     $order->orderProducts()->create([
@@ -93,6 +95,7 @@ class OrderService
                         'price' => $product['unit_price'],
                         'amount' => $product['amount'],
                         'currency' => $request->currency,
+                        'comments' => $product['comments'],
                     ]);
                 }
             }

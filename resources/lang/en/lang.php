@@ -373,4 +373,6 @@ return [
     'system' => 'system',
     'download' => 'download',
     'issued_to' => 'issued to',
+    'comments' => 'comments',
+    'customer' => 'customer',
 ];

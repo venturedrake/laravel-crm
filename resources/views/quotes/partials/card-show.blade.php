@@ -17,7 +17,6 @@
                     'quote' => $quote
                     ])
                 @endif
-                <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
                 @can('edit crm quotes')
                     @if(!$quote->accepted_at && !$quote->rejected_at)
                         <a href="{{  route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_accepted')) }}</a>
@@ -29,6 +28,9 @@
                         <a href="{{  route('laravel-crm.quotes.create-order',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
                     @endif
                 @endcan
+                @can('view crm quotes')
+                    <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
+                @endcan    
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm quotes')
                     @if(! $quote->order && ! $quote->accepted_at)
@@ -102,6 +104,14 @@
                             <td>{{ $quoteProduct->quantity }}</td>
                             <td>{{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}</td>
                         </tr>
+                        @if($quoteProduct->comments)
+                        <tr>
+                            <td colspan="4" class="border-0 pt-0">
+                                <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong><br />
+                                {{ $quoteProduct->comments }}
+                            </td>
+                        </tr>
+                        @endif
                     @endforeach
                     </tbody>
                     <tfoot>
