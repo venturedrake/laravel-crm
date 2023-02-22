@@ -29,14 +29,14 @@
                             </div>
                         @elseif(\Carbon\Carbon::now() <= $quote->expire_at)
                             <li class="nav-item mr-2">
-                                <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}" method="POST" class="form-check-inline mr-0">
+                                <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}&expires={{ request()->input('expires') }}" method="POST" class="form-check-inline mr-0">
                                     {{ csrf_field() }}
                                     <x-form-input name="action" value="accept" type="hidden" />
                                     <button class="btn btn-outline-success" type="submit">{{ ucfirst(__('laravel-crm::lang.accept')) }}</button>
                                 </form>
                             </li>
                             <li class="nav-item mr-2">
-                                <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}" method="POST" class="form-check-inline mr-0">
+                                <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}&expires={{ request()->input('expires') }}" method="POST" class="form-check-inline mr-0">
                                     {{ csrf_field() }}
                                     <x-form-input name="action" value="reject" type="hidden" />
                                     <button class="btn btn-outline-danger" type="submit">{{ ucfirst(__('laravel-crm::lang.reject')) }}</button>
@@ -44,7 +44,11 @@
                             </li>
                         @endif
                         <li class="nav-item">
-                            <a class="btn btn-outline-secondary" href="#"><span class="fa fa-download" aria-hidden="true"></span> Download</a>
+                            <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}&expires={{ request()->input('expires') }}" method="POST" class="form-check-inline mr-0">
+                                {{ csrf_field() }}
+                                <x-form-input name="action" value="download" type="hidden" />
+                                <button class="btn btn-outline-secondary" type="submit"><span class="fa fa-download" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.download')) }}</button>
+                            </form>
                         </li>
                     </ul>
                 </div>

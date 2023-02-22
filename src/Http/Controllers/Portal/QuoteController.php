@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -92,6 +93,22 @@ class QuoteController extends Controller
 
                 flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
 
+                break;
+                
+            case "download":
+                return Pdf::setOption([
+                    'fontDir' => public_path('vendor/laravel-crm/fonts'),
+                ])
+                    ->loadView('laravel-crm::quotes.partials.pdf', [
+                        'quote' => $quote,
+                        'email' => $email ?? null,
+                        'phone' => $phone ?? null,
+                        'address' => $address ?? null,
+                        'organisation_address' => $organisation_address ?? null,
+                        'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                        'logo' => $this->settingService->get('logo_file')->value ?? null,
+                    ])->download('quote-'.$quote->id.'.pdf');
+                
                 break;
         }
 
