@@ -330,6 +330,10 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.orders.destroy')
         ->middleware(['can:delete,order']);
 
+    Route::get('{order}/create-delivery', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@createDelivery')
+        ->name('laravel-crm.orders.create-delivery')
+        ->middleware(['can:update,order', 'can:create,VentureDrake\LaravelCrm\Models\Order']);
+
     Route::get('{order}/download', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@download')
         ->name('laravel-crm.orders.download')
         ->middleware(['can:view,order']);
@@ -446,6 +450,10 @@ Route::group(['prefix' => 'deliveries', 'middleware' => 'auth.laravel-crm'], fun
     Route::delete('{delivery}', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@destroy')
         ->name('laravel-crm.deliveries.destroy')
         ->middleware(['can:delete,delivery']);
+
+    Route::get('{delivery}/download', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@download')
+        ->name('laravel-crm.deliveries.download')
+        ->middleware(['can:view,delivery']);
 });
 
 /* Activities */

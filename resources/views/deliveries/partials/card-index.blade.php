@@ -19,74 +19,61 @@
     @endcomponent
 
     @component('laravel-crm::components.card-table')
-        {{--<table class="table mb-0 card-table table-hover">
+        <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.number')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.order')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.to')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.date')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.due_date')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.overdue_by')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.paid_date')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.paid')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.due')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
-                <th scope="col" width="280"></th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.customer')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
+                <th scope="col" width="240"></th>
             </tr>
             </thead>
             <tbody>
-            @foreach($invoices as $invoice)
-               <tr class="has-link" data-url="{{ url(route('laravel-crm.invoices.show', $invoice)) }}">
-                   <td>{{ $invoice->invoice_id }}</td>
-                   <td>{{ $invoice->reference }}</td>
-                   <td>
-                       {{ $invoice->organisation->name ?? null }}
-                       @if($invoice->person)
-                           <br /><small>{{ $invoice->person->name }}</small>
-                       @endif    
-                   </td>
-                   <td>{{ $invoice->issue_date->format('d M Y') }}</td>
-                   <td>{{ $invoice->due_date->format('d M Y') }}</td>
-                   <td class="text-danger">
-                       @if(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
-                           {{ $invoice->due_date->diffForHumans() }}
-                       @endif    
-                   </td>
-                   <td>{{ ($invoice->fully_paid_at) ? $invoice->fully_paid_at->format('d M Y') : null }}</td>
-                   <td>{{ money($invoice->amount_paid, $invoice->currency) }}</td>
-                   <td>{{ money($invoice->amount_due, $invoice->currency) }}</td>
-                   <td></td>
+            @foreach($deliveries as $delivery)
+                <tr>
+                    <td>{{ $delivery->created_at->diffForHumans() }}</td>
+                    <td><a href="{{ route('laravel-crm.orders.show', $delivery->order) }}">{{ $delivery->order->id }}</a> </td>
+                    <td><a href="{{ route('laravel-crm.orders.show', $delivery->order) }}">{{ $delivery->order->reference }}</a> </td>
+
+                    <td>
+                        {{ $delivery->order->organisation->name ?? null }}<br />
+                        <small>{{ $delivery->order->person->name ?? null }}</small>
+                    </td>
+                    <td>{{ $delivery->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
-                        @livewire('send-invoice',[
-                            'invoice' => $invoice
-                        ])
-                        <a class="btn btn-outline-secondary btn-sm" href="#"><span class="fa fa-download" aria-hidden="true"></span></a>
-                        @if(! $invoice->fully_paid_at)
-                            @livewire('pay-invoice',[
-                                'invoice' => $invoice
-                            ])
-                        @endif
-                        @can('view crm invoices')
-                        <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                       {{--@can('edit crm deliveries')
+                            @if($order->invoices()->count() < 1)
+                                <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                            @else
+                                <a href="{{ route('laravel-crm.invoices.show',$order->invoices()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.invoiced')) }}</a>
+                            @endif
+                            @if($order->deliveries()->count() < 1)
+                                <a href="{{ route('laravel-crm.orders.create-delivery',$order) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                            @else
+                                <a href="{{ route('laravel-crm.deliveries.show',$order->deliveries()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.delivered')) }}</a>
+                            @endif
+                        @endcan--}}
+                        @can('view crm orders')
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.deliveries.download', $delivery) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                            {{--<a href="{{ route('laravel-crm.orders.show',$order) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>--}}
                         @endcan
-                        @if($invoice->amount_paid <= 0)
-                            @can('edit crm invoices')
-                            <a href="{{ route('laravel-crm.invoices.edit',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                            @endcan
-                            @can('delete crm invoices')
-                            <form action="{{ route('laravel-crm.invoices.destroy',$invoice) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                        {{--@can('edit crm orders')
+                            <a href="{{ route('laravel-crm.orders.edit',$order) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                        @endcan--}}
+                        @can('delete crm deliveries')
+                            <form action="{{ route('laravel-crm.deliveries.destroy',$delivery) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}
-                                <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                                <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.delivery') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                             </form>
-                            @endcan
-                        @endif    
+                        @endcan
                     </td>
                 </tr>
             @endforeach
             </tbody>
-        </table>--}}
+        </table>
 
     @endcomponent
 

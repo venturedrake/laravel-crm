@@ -23,37 +23,20 @@ class DeliveryService
 
     public function create($request, $person = null, $organisation = null)
     {
-        /*$delivery = Delivery::create([
-            'order_id' => $request->order_id ?? null,
-            'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
-            'reference' => $request->reference,
-            'delivery_id' => $request->prefix.$request->number,
-            'prefix' => $request->prefix,
-            'number' => $request->number,
-            'issue_date' => $request->issue_date,
-            'due_date' => $request->due_date,
-            'currency' => $request->currency,
-            'terms' => $request->terms,
-            'subtotal' => $request->sub_total,
-            'tax' => $request->tax,
-            'total' => $request->total,
+        $delivery = Delivery::create([
+            'order_id' => $request->order_id,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        if (isset($request->deliveryLines)) {
-            foreach ($request->deliveryLines as $deliveryLine) {
-                $delivery->deliveryLines()->create([
-                    'product_id' => $deliveryLine['product_id'],
-                    'quantity' => $deliveryLine['quantity'],
-                    'price' => $deliveryLine['price'],
-                    'amount' => $deliveryLine['amount'],
-                    'currency' => $request->currency,
+        if (isset($request->products)) {
+            foreach ($request->products as $product) {
+                $delivery->deliveryProducts()->create([
+                    'order_product_id' => $product['order_product_id'],
                 ]);
             }
         }
 
-        return $delivery;*/
+        return $delivery;
     }
 
     public function update($request, Delivery $delivery, $person = null, $organisation = null)

@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Http\Requests\UpdateOrderRequest;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\DeliveryService;
 use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -42,13 +43,19 @@ class OrderController extends Controller
      */
     private $settingService;
 
-    public function __construct(OrderService $orderService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService, SettingService $settingService)
+    /**
+     * @var DeliveryService
+     */
+    private $deliveryService;
+
+    public function __construct(OrderService $orderService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService, SettingService $settingService, DeliveryService $deliveryService)
     {
         $this->orderService = $orderService;
         $this->personService = $personService;
         $this->organisationService = $organisationService;
         $this->invoiceService = $invoiceService;
         $this->settingService = $settingService;
+        $this->deliveryService = $deliveryService;
     }
 
     /**
@@ -262,6 +269,36 @@ class OrderController extends Controller
             'orders' => $orders,
             'searchValue' => $searchValue ?? null,
         ]);
+    }
+
+    /**
+     * Create an order from the quote
+     *
+     * @param  Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function createDelivery(Order $order)
+    {
+        $request = new \Illuminate\Http\Request();
+        $products = [];
+
+        foreach ($order->orderProducts as $orderProduct) {
+            $products[] = [
+                'order_product_id' => $orderProduct->id,
+            ];
+        }
+
+        $request->replace([
+            'order_id' => $order->id,
+            'user_owner_id' => $order->user_owner_id,
+            'products' => $products,
+        ]);
+
+        $this->deliveryService->create($request, $order);
+
+        flash(ucfirst(trans('laravel-crm::lang.delivery_created_from_order')))->success()->important();
+
+        return back();
     }
 
     public function download(Order $order)

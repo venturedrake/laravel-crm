@@ -219,4 +219,48 @@ class DeliveryController extends Controller
 
         return redirect(route('laravel-crm.deliveries.index'));
     }
+
+    public function download(Delivery $delivery)
+    {
+        if ($person = $delivery->order->person) {
+            $email = $person->getPrimaryEmail();
+            $phone = $person->getPrimaryPhone();
+            $address = $person->getPrimaryAddress();
+        }
+
+        if ($organisation = $delivery->order->organisation) {
+            $organisation_address = $organisation->getPrimaryAddress();
+        }
+
+        /*$pdfLocation = 'laravel-crm/'.strtolower(class_basename($quote)).'/'.$quote->id.'/';
+
+        if(!File::exists($pdfLocation)){
+            Storage::makeDirectory($pdfLocation);
+        }*/
+
+        return view('laravel-crm::deliveries.pdf', [
+            'delivery' => $delivery,
+            'order' => $delivery->order,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+            'organisation_address' => $organisation_address ?? null,
+            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'logo' => $this->settingService->get('logo_file')->value ?? null,
+        ]);
+
+        return Pdf::setOption([
+            'fontDir' => public_path('vendor/laravel-crm/fonts'),
+        ])
+            ->loadView('laravel-crm::deliveries.pdf', [
+                'delivery' => $delivery,
+                'order' => $delivery->order,
+                'email' => $email ?? null,
+                'phone' => $phone ?? null,
+                'address' => $address ?? null,
+                'organisation_address' => $organisation_address ?? null,
+                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'logo' => $this->settingService->get('logo_file')->value ?? null,
+            ])->download('delivery-'.$delivery->id.'.pdf');
+    }
 }
