@@ -380,4 +380,5 @@ return [
     'create_delivery' => 'create delivery',
     'delivery_created_from_order' => 'delivery created from order',
     'delivery' => 'delivery',
+    'delivered' => 'delivered',
 ];

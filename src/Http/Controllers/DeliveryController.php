@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDeliveryRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDeliveryRequest;
