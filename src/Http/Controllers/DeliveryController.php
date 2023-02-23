@@ -238,7 +238,7 @@ class DeliveryController extends Controller
             Storage::makeDirectory($pdfLocation);
         }*/
 
-        return view('laravel-crm::deliveries.pdf', [
+        /*return view('laravel-crm::deliveries.pdf', [
             'delivery' => $delivery,
             'order' => $delivery->order,
             'email' => $email ?? null,
@@ -247,7 +247,7 @@ class DeliveryController extends Controller
             'organisation_address' => $organisation_address ?? null,
             'fromName' => $this->settingService->get('organisation_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
-        ]);
+        ]);*/
 
         return Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
