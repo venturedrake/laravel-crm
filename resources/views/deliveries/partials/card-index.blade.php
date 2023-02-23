@@ -1,0 +1,99 @@
+@component('laravel-crm::components.card')
+
+    @component('laravel-crm::components.card-header')
+
+        @slot('title')
+            {{ ucfirst(__('laravel-crm::lang.deliveries')) }}
+        @endslot
+
+        @slot('actions')
+           {{-- @include('laravel-crm::partials.filters', [
+                'action' => route('laravel-crm.deliveries.filter'),
+                'model' => '\VentureDrake\LaravelCrm\Models\Delivery'
+            ])--}}
+           {{-- @can('create crm deliveries')
+            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.deliveries.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_delivery')) }}</a></span>
+            @endcan--}}
+        @endslot
+
+    @endcomponent
+
+    @component('laravel-crm::components.card-table')
+        {{--<table class="table mb-0 card-table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.number')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.to')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.due_date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.overdue_by')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.paid_date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.paid')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.due')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
+                <th scope="col" width="280"></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($invoices as $invoice)
+               <tr class="has-link" data-url="{{ url(route('laravel-crm.invoices.show', $invoice)) }}">
+                   <td>{{ $invoice->invoice_id }}</td>
+                   <td>{{ $invoice->reference }}</td>
+                   <td>
+                       {{ $invoice->organisation->name ?? null }}
+                       @if($invoice->person)
+                           <br /><small>{{ $invoice->person->name }}</small>
+                       @endif    
+                   </td>
+                   <td>{{ $invoice->issue_date->format('d M Y') }}</td>
+                   <td>{{ $invoice->due_date->format('d M Y') }}</td>
+                   <td class="text-danger">
+                       @if(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
+                           {{ $invoice->due_date->diffForHumans() }}
+                       @endif    
+                   </td>
+                   <td>{{ ($invoice->fully_paid_at) ? $invoice->fully_paid_at->format('d M Y') : null }}</td>
+                   <td>{{ money($invoice->amount_paid, $invoice->currency) }}</td>
+                   <td>{{ money($invoice->amount_due, $invoice->currency) }}</td>
+                   <td></td>
+                    <td class="disable-link text-right">
+                        @livewire('send-invoice',[
+                            'invoice' => $invoice
+                        ])
+                        <a class="btn btn-outline-secondary btn-sm" href="#"><span class="fa fa-download" aria-hidden="true"></span></a>
+                        @if(! $invoice->fully_paid_at)
+                            @livewire('pay-invoice',[
+                                'invoice' => $invoice
+                            ])
+                        @endif
+                        @can('view crm invoices')
+                        <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
+                        @if($invoice->amount_paid <= 0)
+                            @can('edit crm invoices')
+                            <a href="{{ route('laravel-crm.invoices.edit',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                            @endcan
+                            @can('delete crm invoices')
+                            <form action="{{ route('laravel-crm.invoices.destroy',$invoice) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                                {{ method_field('DELETE') }}
+                                {{ csrf_field() }}
+                                <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            </form>
+                            @endcan
+                        @endif    
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>--}}
+
+    @endcomponent
+
+    @if($deliveries instanceof \Illuminate\Pagination\LengthAwarePaginator )
+        @component('laravel-crm::components.card-footer')
+            {{ $deliveries->links() }}
+        @endcomponent
+    @endif
+
+@endcomponent

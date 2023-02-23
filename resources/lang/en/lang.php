@@ -375,4 +375,7 @@ return [
     'issued_to' => 'issued to',
     'comments' => 'comments',
     'customer' => 'customer',
+    'deliveries' => 'deliveries',
+    'invoiced' => 'invoiced',
+    'create_delivery' => 'create delivery',
 ];

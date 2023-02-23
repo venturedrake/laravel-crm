@@ -166,4 +166,9 @@ class Order extends Model
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Invoice::class);
     }
+
+    public function deliveries()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Delivery::class);
+    }
 }

@@ -58,7 +58,14 @@
                     <td class="disable-link text-right">
                         @can('edit crm orders')
                             @if($order->invoices()->count() < 1)
-                            <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                                <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                            @else
+                                <a href="{{ route('laravel-crm.invoices.show',$order->invoices()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.invoiced')) }}</a>
+                            @endif
+                            @if($order->deliveries()->count() < 1) 
+                                <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id])}}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                            @else
+                                <a href="{{ route('laravel-crm.deliveries.show',$order->deliveries()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.delivered')) }}</a>
                             @endif
                         @endcan
                         @can('view crm orders')

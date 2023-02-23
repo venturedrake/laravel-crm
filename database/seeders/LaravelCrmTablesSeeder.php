@@ -319,6 +319,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm files', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm files', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm files', 'crm_permission' => 1]);
+
+        Permission::firstOrCreate(['name' => 'create crm deliveries', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm deliveries', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm deliveries', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm deliveries', 'crm_permission' => 1]);
         
         if (config('permission.teams')) {
             $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
@@ -402,6 +407,14 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm files',
                 'edit crm files',
                 'delete crm files',
+                'create crm invoices',
+                'view crm invoices',
+                'edit crm invoices',
+                'delete crm invoices',
+                'create crm deliveries',
+                'view crm deliveries',
+                'edit crm deliveries',
+                'delete crm deliveries',
             ]);
 
         if (config('permission.teams')) {
@@ -468,6 +481,14 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm files',
                 'edit crm files',
                 'delete crm files',
+                'create crm invoices',
+                'view crm invoices',
+                'edit crm invoices',
+                'delete crm invoices',
+                'create crm deliveries',
+                'view crm deliveries',
+                'edit crm deliveries',
+                'delete crm deliveries',
             ]);
     }
 }

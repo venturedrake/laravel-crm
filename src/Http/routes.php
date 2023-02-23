@@ -408,6 +408,46 @@ Route::group(['prefix' => 'invoices', 'middleware' => 'auth.laravel-crm'], funct
         ->middleware(['can:update,invoice']);
 });
 
+/* Deliveries */
+
+Route::group(['prefix' => 'deliveries', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@index')
+        ->name('laravel-crm.deliveries.filter')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Delivery']);
+
+    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@search')
+        ->name('laravel-crm.deliveries.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Delivery']);
+
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@index')
+        ->name('laravel-crm.deliveries.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Delivery']);
+
+    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@create')
+        ->name('laravel-crm.deliveries.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Delivery']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@store')
+        ->name('laravel-crm.deliveries.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Delivery']);
+
+    Route::get('{delivery}', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@show')
+        ->name('laravel-crm.deliveries.show')
+        ->middleware(['can:view,delivery']);
+
+    Route::get('{delivery}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@edit')
+        ->name('laravel-crm.deliveries.edit')
+        ->middleware(['can:update,delivery']);
+
+    Route::put('{delivery}', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@update')
+        ->name('laravel-crm.deliveries.update')
+        ->middleware(['can:update,delivery']);
+
+    Route::delete('{delivery}', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@destroy')
+        ->name('laravel-crm.deliveries.destroy')
+        ->middleware(['can:delete,delivery']);
+});
+
 /* Activities */
 
 Route::group(['prefix' => 'activities', 'middleware' => 'auth.laravel-crm'], function () {
