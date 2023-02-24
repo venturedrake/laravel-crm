@@ -8,7 +8,7 @@
 
         @if($logoFile)
         <div class="mb-3">
-            <img src=" {{ ($logoFile) ? asset('storage/'.$logoFile->value) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" />
+            <img src=" {{ ($logoFile) ? asset('storage/'.$logoFile->value) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
         </div>
         @endif
         @include('laravel-crm::partials.form.file',[
@@ -21,6 +21,20 @@
          'name' => 'invoice_prefix',
          'label' => ucfirst(trans('laravel-crm::lang.invoice_prefix')),
          'value' => old('invoice_prefix', $invoicePrefix->value ?? null)
+        ])
+
+        @include('laravel-crm::partials.form.textarea',[
+         'name' => 'quote_terms',
+         'label' => ucfirst(trans('laravel-crm::lang.quote_terms')),
+         'rows' => 5,
+         'value' => old('quote_terms', $quoteTerms->value ?? null)
+        ])
+
+        @include('laravel-crm::partials.form.textarea',[
+         'name' => 'invoice_terms',
+         'label' => ucfirst(trans('laravel-crm::lang.invoice_terms')),
+         'rows' => 5,
+         'value' => old('invoice_terms', $invoiceTerms->value ?? null)
         ])
 
     </div>

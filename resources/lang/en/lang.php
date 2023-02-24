@@ -381,4 +381,6 @@ return [
     'delivery_created_from_order' => 'delivery created from order',
     'delivery' => 'delivery',
     'delivered' => 'delivered',
+    'quote_terms' => 'quote terms',
+    'invoice_terms' => 'invoice terms'
 ];
