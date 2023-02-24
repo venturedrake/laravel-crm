@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disable UI setting
 - Deliveries
 - Quote, Order, Invoice & Delivery PDF downloads
+- Default Quote & Invoice Terms setting
 ### Changed
 - Use mail template for outgoing emails
 ### Fixed
