@@ -91,12 +91,15 @@ class InvoiceController extends Controller
                 break;
         }
 
+        $invoiceTerms = $this->settingService->get('invoice_terms');
+
         return view('laravel-crm::invoices.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
             'order' => $order ?? null,
             'prefix' => $this->settingService->get('invoice_prefix'),
             'number' => (Invoice::latest()->first()->number ?? 1000) + 1,
+            'invoiceTerms' => $invoiceTerms,
         ]);
     }
 

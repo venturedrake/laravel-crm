@@ -95,7 +95,7 @@
              'name' => 'terms',
              'label' => ucfirst(__('laravel-crm::lang.terms')),
              'rows' => 5,
-             'value' => old('terms', $quote->terms ?? null) 
+             'value' => old('terms', $quote->terms ?? $quoteTerms->value ?? null) 
         ])
         
         @include('laravel-crm::partials.form.multiselect',[

@@ -95,9 +95,12 @@ class QuoteController extends Controller
                 break;
         }
 
+        $quoteTerms = $this->settingService->get('quote_terms');
+
         return view('laravel-crm::quotes.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
+            'quoteTerms' => $quoteTerms,
         ]);
     }
 
