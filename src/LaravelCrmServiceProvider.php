@@ -59,6 +59,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
+use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Delivery;
@@ -92,6 +93,7 @@ use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Models\XeroPerson;
 use VentureDrake\LaravelCrm\Observers\ActivityObserver;
 use VentureDrake\LaravelCrm\Observers\CallObserver;
+use VentureDrake\LaravelCrm\Observers\ClientObserver;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\DeliveryObserver;
@@ -146,6 +148,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Quote' => \VentureDrake\LaravelCrm\Policies\QuotePolicy::class,
         'VentureDrake\LaravelCrm\Models\Order' => \VentureDrake\LaravelCrm\Policies\OrderPolicy::class,
         'VentureDrake\LaravelCrm\Models\Invoice' => \VentureDrake\LaravelCrm\Policies\InvoicePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Client' => \VentureDrake\LaravelCrm\Policies\ClientPolicy::class,
         'VentureDrake\LaravelCrm\Models\Person' => \VentureDrake\LaravelCrm\Policies\PersonPolicy::class,
         'VentureDrake\LaravelCrm\Models\Organisation' => \VentureDrake\LaravelCrm\Policies\OrganisationPolicy::class,
         'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
@@ -219,6 +222,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         OrderProduct::observe(OrderProductObserver::class);
         Invoice::observe(InvoiceObserver::class);
         InvoiceLine::observe(InvoiceLineObserver::class);
+        Client::observe(ClientObserver::class);
         Person::observe(PersonObserver::class);
         Organisation::observe(OrganisationObserver::class);
         Phone::observe(PhoneObserver::class);
@@ -371,6 +375,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_deliveries_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_deliveries_table.php', 62),
                 __DIR__ . '/../database/migrations/create_laravel_crm_delivery_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_delivery_products_table.php', 63),
                 __DIR__ . '/../database/migrations/alter_url_on_laravel_crm_usage_requests_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_url_on_laravel_crm_usage_requests_table.php', 64),
+                __DIR__ . '/../database/migrations/create_laravel_crm_clients_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_clients_table.php', 65),
             ], 'migrations');
 
             // Publishing the seeders

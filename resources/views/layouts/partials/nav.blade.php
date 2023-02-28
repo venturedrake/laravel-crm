@@ -44,11 +44,12 @@
             @can('view crm deliveries')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deliveries') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deliveries.index')) }}"><i class="fa fa-shipping-fast"></i> {{ ucfirst(__('laravel-crm::lang.deliveries')) }}</a></li>
             @endcan
-            @canany(['view crm people', 'view crm organisations'])
+            @canany(['view crm clients', 'view crm people', 'view crm organisations'])
             <li class="dropdown-divider"></li>
             @endcan
-            {{--<li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.activities') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.activities.index')) }}">{{ ucfirst(__('laravel-crm::lang.activities')) }}</a></li>--}}
-            {{--<li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.contacts') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.contacts.index')) }}">{{ ucfirst(__('laravel-crm::lang.contacts')) }}</a></li>--}}
+            @can('view crm clients')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.clients') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.clients.index')) }}"><i class="fa fa-address-card"></i> {{ ucfirst(__('laravel-crm::lang.clients')) }}</a></li>
+            @endcan
             @can('view crm people')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.people') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.people.index')) }}"><i class="fa fa-user-circle"></i> {{ ucfirst(__('laravel-crm::lang.people')) }}</a></li>
             @endcan
