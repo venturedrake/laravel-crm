@@ -32,6 +32,6 @@ class CreateLaravelCrmDeliveryProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'order_products');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'delivery_products');
     }
 }
