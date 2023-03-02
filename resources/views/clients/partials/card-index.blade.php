@@ -24,34 +24,34 @@
             <thead>
             <tr>
                 <th scope="col">@sortablelink('name', ucwords(__('laravel-crm::lang.name')))</th>
-           {{--     <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>--}}
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="150"></th>
             </tr>
             </thead>
             <tbody>
             @foreach($clients as $client)
-                <tr{{-- class="has-link" data-url="{{ url(route('laravel-crm.clients.show',$client)) }}"--}}>
+                <tr class="has-link" data-url="{{ url(route('laravel-crm.clients.show',$client)) }}">
                     <td>{{ $client->name }}</td>
-                  {{--  <td>@include('laravel-crm::partials.labels',[
+                    <td>@include('laravel-crm::partials.labels',[
                             'labels' => $client->labels,
                             'limit' => 3
-                        ])</td>--}}
+                        ])</td>
                     <td>{{ $client->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
-                       {{-- @can('view crm clients')
-                        <a href="{{  route('laravel-crm.clients.show',$client) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @can('view crm clients')
+                            <a href="{{  route('laravel-crm.clients.show',$client) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
                         @can('edit crm clients')
-                        <a href="{{  route('laravel-crm.clients.edit',$client) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                            <a href="{{  route('laravel-crm.clients.edit',$client) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                         @endcan
                         @can('delete crm clients')    
                         <form action="{{ route('laravel-crm.clients.destroy',$client) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
-                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.organization') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                            <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.client') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                         </form>
-                        @endcan    --}}
+                        @endcan
                     </td>
                 </tr>
             @endforeach

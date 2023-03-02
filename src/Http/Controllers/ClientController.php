@@ -113,19 +113,9 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        /* $organisation = $person->organisation;
-         if ($organisation) {
-             $organisationAddress = $organisation->getPrimaryAddress();
-         }
-
-         return view('laravel-crm::people.show', [
-             'person' => $person,
-             'emails' => $person->emails,
-             'phones' => $person->phones,
-             'addresses' => $person->addresses,
-             'organisation' => $organisation ?? null,
-             'organisation_address' => $organisationAddress ?? null,
-         ]);*/
+        return view('laravel-crm::clients.show', [
+             'client' => $client,
+         ]);
     }
 
     /**

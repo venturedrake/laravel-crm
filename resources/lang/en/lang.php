@@ -384,4 +384,6 @@ return [
     'quote_terms' => 'quote terms',
     'invoice_terms' => 'invoice terms',
     'clients' => 'clients',
+    'client' => 'client',
+    'back_to_clients' => 'back to clients',
 ];

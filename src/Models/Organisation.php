@@ -7,6 +7,7 @@ use Kyslik\ColumnSortable\Sortable;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\HasCrmUserRelations;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
@@ -19,6 +20,7 @@ class Organisation extends Model
     use SearchFilters;
     use Sortable;
     use HasCrmActivities;
+    use HasCrmUserRelations;
 
     protected $guarded = ['id'];
 
@@ -96,31 +98,6 @@ class Organisation extends Model
     public function deals()
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);
-    }
-
-    public function createdByUser()
-    {
-        return $this->belongsTo(\App\User::class, 'user_created_id');
-    }
-
-    public function updatedByUser()
-    {
-        return $this->belongsTo(\App\User::class, 'user_updated_id');
-    }
-
-    public function deletedByUser()
-    {
-        return $this->belongsTo(\App\User::class, 'user_deleted_id');
-    }
-
-    public function restoredByUser()
-    {
-        return $this->belongsTo(\App\User::class, 'user_restored_id');
-    }
-
-    public function ownerUser()
-    {
-        return $this->belongsTo(\App\User::class, 'user_owner_id');
     }
 
     /**
