@@ -71,7 +71,10 @@ class LiveRelatedContactPerson extends Component
 
     private function getContacts()
     {
-        $this->contacts = $this->model->contacts()->get();
+        $this->contacts = $this->model
+            ->contacts()
+            ->where('entityable_type', 'LIKE', '%Person%')
+            ->get();
     }
 
     private function resetFields()
