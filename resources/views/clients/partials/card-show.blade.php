@@ -43,9 +43,7 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
                     <dd class="col-sm-9">{{ $client->name }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
-                    <dd class="col-sm-9">{{ $client->clientType->name ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
-                    <dd class="col-sm-9">{{ $client->description }}</dd>
+                    <dd class="col-sm-9">{{ class_basename($client->clientable) }}</dd>
                 </dl>
                 <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.owner')) }}</h6>
                 <hr />
