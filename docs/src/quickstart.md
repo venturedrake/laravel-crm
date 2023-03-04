@@ -16,9 +16,9 @@ If you would prefer to install the Laravel CRM package into your own Laravel app
 - PHP ^7.3
 - MySQL 5.7+ / MariaDB 10.2.7+
 
-# Installation
+## Installation
 
-## Clone the repo
+### Clone the repo
 
 ```bash
 git clone --depth=1 https://github.com/venturedrake/laravel-crm-starter.git
@@ -32,7 +32,7 @@ Then install composer dependencies
 composer install
 ```
 
-## Configure the Laravel app
+### Configure the Laravel app
 
 Copy the `.env.example` file to `.env` and make sure the details match to your install.
 
@@ -42,7 +42,7 @@ cp .env.example .env
 
 All the relevant configuration files should be present in the repo.
 
-## Complete the installation
+### Generate application key and link storage
 
 Generate the application key
 
@@ -56,7 +56,7 @@ Link the storage directory
 php artisan storage:link
 ```
 
-Install Laravel CRM
+### Run the Laravel CRM package installer
 
 ```
 php artisan laravelcrm:install
