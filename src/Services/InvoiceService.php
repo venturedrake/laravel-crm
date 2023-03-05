@@ -2,8 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use Carbon\Carbon;
+use Dcblogdev\Xero\Facades\Xero;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
+use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
 
 class InvoiceService
@@ -51,6 +54,47 @@ class InvoiceService
                     'amount' => $invoiceLine['amount'],
                     'currency' => $request->currency,
                 ]);
+            }
+        }
+
+        if (Xero::isConnected()) {
+            $lineItems = [];
+
+            foreach ($invoice->invoiceLines as $line) {
+                $lineItems[] = [
+                    'Description' => $line->product->name,
+                    'Quantity' => $line->quantity,
+                    'UnitAmount' => $line->price / 100,
+                    'TaxType' => 'OUTPUT',
+                    /*'TaxAmount' => ($line->tax_total->value / 100),*/
+                    // 'LineAmount' => null,
+                    'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
+                    /*'AccountCode' => null*/
+                ];
+            }
+
+            try {
+                $xeroInvoice = Xero::invoices()->store([
+                    'Type' => 'ACCREC',
+                    'Status' => 'AUTHORISED',
+                    'Contact' => [
+                        'ContactID' => $invoice->organisation->xeroContact->contact_id,
+                    ],
+                    'LineItems' => $lineItems ?? [],
+                    'Date' => Carbon::now()->format('Y-m-d'),
+                    'DueDate' => Carbon::now()->addDays(30)->format('Y-m-d'),
+                ]);
+
+                XeroInvoice::create([
+                    'xero_id' => $xeroInvoice['InvoiceID'],
+                    'xero_type' => $xeroInvoice['Type'],
+                    'number' => $xeroInvoice['InvoiceNumber'],
+                    'reference' => $xeroInvoice['Reference'],
+                    'invoice_id' => $invoice->id,
+                    'status' => $xeroInvoice['Status'],
+                ]);
+            } catch (Exception $e) {
+                //
             }
         }
 

@@ -172,7 +172,12 @@ class LaravelCrmXero extends Command
                     break;
 
                 case "invoices":
-                    //
+                    if (Setting::where('name', 'xero_invoices')->first() && Setting::where('name', 'xero_invoices')->first()->value == 1) {
+                        foreach (Xero::invoices()->get() as $invoice) {
+                            // Update invoices TBC
+                        }
+                    }
+
                     break;
             }
         } else {

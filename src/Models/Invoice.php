@@ -180,4 +180,12 @@ class Invoice extends Model
     {
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
+
+    /**
+     * Get the xero invoice associated with the invoice.
+     */
+    public function xeroInvoice()
+    {
+        return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroInvoice::class);
+    }
 }

@@ -89,6 +89,7 @@ use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Models\XeroContact;
+use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Models\XeroPerson;
 use VentureDrake\LaravelCrm\Observers\ActivityObserver;
@@ -125,6 +126,7 @@ use VentureDrake\LaravelCrm\Observers\TaskObserver;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Observers\UserObserver;
 use VentureDrake\LaravelCrm\Observers\XeroContactObserver;
+use VentureDrake\LaravelCrm\Observers\XeroInvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
@@ -236,6 +238,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         XeroItem::observe(XeroItemObserver::class);
         XeroContact::observe(XeroContactObserver::class);
         XeroPerson::observe(XeroPersonObserver::class);
+        XeroInvoice::observe(XeroInvoiceObserver::class);
         Task::observe(TaskObserver::class);
         Activity::observe(ActivityObserver::class);
         XeroToken::observe(XeroTokenObserver::class);
@@ -376,6 +379,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_delivery_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_delivery_products_table.php', 63),
                 __DIR__ . '/../database/migrations/alter_url_on_laravel_crm_usage_requests_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_url_on_laravel_crm_usage_requests_table.php', 64),
                 __DIR__ . '/../database/migrations/create_laravel_crm_clients_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_clients_table.php', 65),
+                __DIR__ . '/../database/migrations/create_laravel_crm_xero_invoices_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_invoices_table.php', 66),
             ], 'migrations');
 
             // Publishing the seeders

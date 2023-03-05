@@ -33,16 +33,16 @@
                                             <input wire:model="setting_products" id="setting_products" type="checkbox" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    {{--<tr>
                                         <td>Create & Update Quotes</td>
                                         <td wire:ignore class="disable-link text-right">
                                             <input wire:model="setting_quotes" id="setting_quotes" type="checkbox" name="setting_quotes" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                                         </td>
-                                    </tr>
+                                    </tr>--}}
                                     <tr>
                                         <td>Create & Update Invoices</td>
                                         <td wire:ignore class="disable-link text-right">
-                                            <input wire:model="setting_invoices" id="setting_invoices" type="checkbox" name="setting_invoices" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+                                            <input wire:model="setting_invoices" id="setting_invoices" type="checkbox" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                                         </td>
                                     </tr>
                                 </tbody>
