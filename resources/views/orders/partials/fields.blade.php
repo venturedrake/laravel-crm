@@ -79,7 +79,8 @@
 
         @livewire('address-edit', [
         'addresses' => $addresses ?? null,
-        'old' => old('addresses')
+        'old' => old('addresses'),
+        'model' => 'order'
         ])
     </div>
     <div class="col-sm-7">

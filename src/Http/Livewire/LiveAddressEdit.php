@@ -20,14 +20,16 @@ class LiveAddressEdit extends Component
     public $primary;
     public $addressId;
     public $old;
+    public $model;
     public $updateMode = false;
     public $inputs = [];
     public $i = 0;
 
-    public function mount($addresses, $old)
+    public function mount($addresses, $old, $model = null)
     {
         $this->addresses = $addresses;
         $this->old = $old;
+        $this->model = $model;
 
         if ($this->old) {
             foreach ($this->old as $address) {
@@ -63,6 +65,10 @@ class LiveAddressEdit extends Component
             }
         } else {
             $this->add($this->i);
+            
+            if($model == 'order'){
+                $this->add($this->i);
+            }
         }
     }
 
