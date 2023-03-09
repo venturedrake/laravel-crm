@@ -154,6 +154,22 @@ class LaravelCrmTablesSeeder extends Seeder
                     'name' => 'Business',
                 ],
             ],
+            [
+                [
+                    'id' => 5,
+                ],
+                [
+                    'name' => 'Billing',
+                ],
+            ],
+            [
+                [
+                    'id' => 6,
+                ],
+                [
+                    'name' => 'Shipping',
+                ],
+            ],
         ];
 
         foreach ($items as $item) {
