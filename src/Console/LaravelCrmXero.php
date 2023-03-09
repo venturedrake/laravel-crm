@@ -143,7 +143,7 @@ class LaravelCrmXero extends Command
                                     $product->productPrices()->updateOrCreate([
                                         'currency' => \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD',
                                     ], [
-                                        'unit_price' => $item['SalesDetails']['UnitPrice'] * 100,
+                                        'unit_price' => $item['SalesDetails']['UnitPrice'],
                                     ]);
                                 }
 
@@ -155,8 +155,8 @@ class LaravelCrmXero extends Command
                                     'inventory_tracked' => $item['IsTrackedAsInventory'],
                                     'is_sold' => $item['IsSold'],
                                     'is_purchased' => $item['IsPurchased'],
-                                    'purchase_price' => (isset($item['PurchaseDetails']['UnitPrice'])) ? $item['PurchaseDetails']['UnitPrice'] * 100 : null,
-                                    'sell_price' => (isset($item['SalesDetails']['UnitPrice'])) ? $item['SalesDetails']['UnitPrice'] * 100 : null,
+                                    'purchase_price' => (isset($item['PurchaseDetails']['UnitPrice'])) ? $item['PurchaseDetails']['UnitPrice'] : null,
+                                    'sell_price' => (isset($item['SalesDetails']['UnitPrice'])) ? $item['SalesDetails']['UnitPrice'] : null,
                                     'purchase_description' => $item['PurchaseDescription'],
                                 ]);
                             }

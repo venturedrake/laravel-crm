@@ -387,4 +387,5 @@ return [
     'client' => 'client',
     'back_to_clients' => 'back to clients',
     'invoice_created' => 'invoice created',
+    'quote_stored' => 'quote stored',
 ];
