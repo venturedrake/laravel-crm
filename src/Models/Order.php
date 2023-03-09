@@ -171,4 +171,19 @@ class Order extends Model
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Delivery::class);
     }
+
+    public function addresses()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+    }
+
+    public function getBillingAddress()
+    {
+        return $this->addresses()->where('address_type_id', 5)->first();
+    }
+
+    public function getShippingAddress()
+    {
+        return $this->addresses()->where('address_type_id', 6)->first();
+    }
 }

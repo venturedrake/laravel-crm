@@ -50,16 +50,22 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
-                    <dt class="col-sm-3 text-right">Reference</dt>
-                    <dd class="col-sm-9">{{ $order->reference }}</dd>
-                    <dt class="col-sm-3 text-right">Description</dt>
-                    <dd class="col-sm-9">{{ $order->description }}</dd>
-                    <dt class="col-sm-3 text-right">Labels</dt>
-                    <dd class="col-sm-9">@include('laravel-crm::partials.labels',[
+                    <dt class="col-sm-4 text-right">Reference</dt>
+                    <dd class="col-sm-8">{{ $order->reference }}</dd>
+                    <dt class="col-sm-4 text-right">Description</dt>
+                    <dd class="col-sm-8">{{ $order->description }}</dd>
+                    @foreach($addresses as $address)
+                        <dt class="col-sm-4 text-right">{{ ($address->addressType) ? ucfirst($address->addressType->name).' ' : null }}{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
+                        <dd class="col-sm-8">
+                            {{ \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) }} {{ ($address->primary) ? '(Primary)' : null }}
+                        </dd>
+                    @endforeach
+                    <dt class="col-sm-4 text-right">Labels</dt>
+                    <dd class="col-sm-8">@include('laravel-crm::partials.labels',[
                             'labels' => $order->labels
                     ])</dd>
-                    <dt class="col-sm-3 text-right">Owner</dt>
-                    <dd class="col-sm-9">{{ $order->ownerUser->name ?? null }}</dd>
+                    <dt class="col-sm-4 text-right">Owner</dt>
+                    <dd class="col-sm-8">{{ $order->ownerUser->name ?? null }}</dd>
                 </dl>
 
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>

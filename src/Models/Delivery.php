@@ -68,4 +68,19 @@ class Delivery extends Model
     {
         return $this->belongsTo(\App\User::class, 'user_assigned_id');
     }
+
+    public function addresses()
+    {
+        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+    }
+
+    public function getBillingAddress()
+    {
+        return $this->addresses()->where('address_type_id', 5)->first();
+    }
+
+    public function getShippingAddress()
+    {
+        return $this->addresses()->where('address_type_id', 6)->first();
+    }
 }

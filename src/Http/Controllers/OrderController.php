@@ -143,19 +143,18 @@ class OrderController extends Controller
         if ($order->person) {
             $email = $order->person->getPrimaryEmail();
             $phone = $order->person->getPrimaryPhone();
-            $address = $order->person->getPrimaryAddress();
         }
 
         if ($order->organisation) {
-            $organisation_address = $order->organisation->getPrimaryAddress();
+            $address = $order->organisation->getPrimaryAddress();
         }
 
         return view('laravel-crm::orders.show', [
             'order' => $order,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'organisation_address' => $address,
+            'addresses' => $order->addresses,
         ]);
     }
 
@@ -180,7 +179,8 @@ class OrderController extends Controller
             'order' => $order,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'address' => $address ?? null,
+            'organisation_address' => $address,
+            'addresses' => $order->addresses,
         ]);
     }
 

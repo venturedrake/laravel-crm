@@ -76,8 +76,14 @@
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
                  'value' =>  old('user_owner_id', $order->user_owner_id ?? auth()->user()->id),
               ])
+
+        @livewire('address-edit', [
+        'addresses' => $addresses ?? null,
+        'old' => old('addresses')
+        ])
     </div>
     <div class="col-sm-7">
+        
         @livewire('order-items',[
             'order' => $order ?? null,
             'products' => $order->orderProducts ?? null,
