@@ -22,13 +22,8 @@ class DeliveryProduct extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Delivery::class);
     }
 
-    public function product()
+    public function orderProduct()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Product::class);
-    }
-
-    public function productVariation()
-    {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\ProductVariation::class);
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\OrderProduct::class);
     }
 }

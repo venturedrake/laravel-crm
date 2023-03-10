@@ -22,7 +22,17 @@
                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
                     {{ $order->organisation->name ?? $order->organisation->person->name }}<br />
                     {{ $order->person->name }}<br />
-                    @if(isset($organisation_address))
+                    @if($address)
+                        {{ $address->line1 }}<br />
+                        @if($address->line2)
+                            {{ $address->line2 }}<br />
+                        @endif
+                        @if($address->line3)
+                            {{ $address->line3 }}<br />
+                        @endif
+                        {{ $address->city }}<br />
+                        {{ $address->country }}
+                    @elseif(isset($organisation_address))
                         @if($organisation_address->line2)
                             {{ $organisation_address->line1 }}<br />
                         @endif
@@ -36,16 +46,6 @@
                             {{ $organisation_address->city }} {{ $organisation_address->state }} {{ $organisation_address->postcode }}<br />
                         @endif
                         {{ $organisation_address->country }}
-                    @elseif($address)
-                        {{ $address->line1 }}<br />
-                        @if($address->line2)
-                            {{ $address->line2 }}<br />
-                        @endif
-                        @if($address->line3)
-                            {{ $address->line3 }}<br />
-                        @endif
-                        {{ $address->city }}<br />
-                        {{ $address->country }}
                     @endif
                 </td>
                 

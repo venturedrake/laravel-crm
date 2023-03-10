@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Repositories\DeliveryRepository;
 
@@ -36,51 +38,65 @@ class DeliveryService
             }
         }
 
+        $this->updateDeliveryAddresses($delivery, $request->addresses);
+
         return $delivery;
     }
 
     public function update($request, Delivery $delivery, $person = null, $organisation = null)
     {
-        /*$delivery->update([
-            'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
-            'reference' => $request->reference,
-            'delivery_id' => $request->prefix.$request->number,
-            'prefix' => $request->prefix,
-            'number' => $request->number,
-            'issue_date' => $request->issue_date,
-            'due_date' => $request->due_date,
-            'currency' => $request->currency,
-            'terms' => $request->terms,
-            'subtotal' => $request->sub_total,
-            'tax' => $request->tax,
-            'total' => $request->total,
-            'amount_due' => $request->total - ($delivery->amount_paid / 100),
-            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
-        ]);
+        $this->updateDeliveryAddresses($delivery, $request->addresses);
 
-        if (isset($request->deliveryLines)) {
-            foreach ($request->deliveryLines as $line) {
-                if (isset($line['delivery_line_id']) && $deliveryLine = DeliveryLine::find($line['delivery_line_id'])) {
-                    $deliveryLine->update([
-                        'product_id' => $line['product_id'],
-                        'quantity' => $line['quantity'],
-                        'price' => $line['price'],
-                        'amount' => $line['amount'],
-                        'currency' => $request->currency,
+        return $delivery;
+    }
+
+    protected function updateDeliveryAddresses($delivery, $addresses)
+    {
+        $addressIds = [];
+
+        if ($addresses) {
+            foreach ($addresses as $addressRequest) {
+                if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
+                    $address->update([
+                        'address_type_id' => 6,
+                        'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
                     ]);
+
+                    $addressIds[] = $address->id;
                 } else {
-                    $delivery->deliveryLines()->create([
-                        'product_id' => $line['product_id'],
-                        'quantity' => $line['quantity'],
-                        'price' => $line['price'],
-                        'amount' => $line['amount'],
-                        'currency' => $request->currency,
+                    $address = $delivery->addresses()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address_type_id' => 6,
+                        'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
                     ]);
+
+                    $addressIds[] = $address->id;
                 }
             }
         }
 
-        return $delivery;*/
+        foreach ($delivery->addresses as $address) {
+            if (! in_array($address->id, $addressIds)) {
+                $address->delete();
+            }
+        }
     }
 }

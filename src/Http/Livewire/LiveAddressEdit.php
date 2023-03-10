@@ -66,10 +66,11 @@ class LiveAddressEdit extends Component
         } else {
             $this->add($this->i);
             
-            
-            if($model == 'order'){
+            if ($model == 'order') {
                 $this->type[$this->i] = 5;
                 $this->add($this->i);
+                $this->type[$this->i] = 6;
+            } elseif ($model == 'delivery') {
                 $this->type[$this->i] = 6;
             }
         }

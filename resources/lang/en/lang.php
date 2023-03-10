@@ -388,4 +388,10 @@ return [
     'back_to_clients' => 'back to clients',
     'invoice_created' => 'invoice created',
     'quote_stored' => 'quote stored',
+    'back_to_deliveries' => 'back to deliveries',
+    'delivery_items' => 'delivery items',
+    'shipping_address' => 'shipping address',
+    'edit_delivery' => 'edit delivery',
+    'delivery_updated' => 'delivery updated',
+    'delivery_deleted' => 'delivery deleted',
 ];

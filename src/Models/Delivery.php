@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Delivery extends Model
@@ -12,6 +13,7 @@ class Delivery extends Model
     use SoftDeletes;
     use BelongsToTeams;
     use SearchFilters;
+    use HasCrmActivities;
 
     protected $guarded = ['id'];
 
@@ -73,12 +75,7 @@ class Delivery extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
     }
-
-    public function getBillingAddress()
-    {
-        return $this->addresses()->where('address_type_id', 5)->first();
-    }
-
+    
     public function getShippingAddress()
     {
         return $this->addresses()->where('address_type_id', 6)->first();
