@@ -8,7 +8,7 @@
 
                 <div class="form-group">
                     <label>{{ ucfirst(__('laravel-crm::lang.type')) }}</label>
-                    <select class="form-control custom-select" wire:model="type.{{ $value }}" name="addresses[{{ $value }}][type]">
+                    <select class="form-control custom-select" wire:model="type.{{ $value }}" name="addresses[{{ $value }}][type]" @if(in_array($model, ['order','delivery'])) disabled="disabled" @endif>
                         @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\AddressType::all()) as $optionKey => $optionName)
                             <option value="{{ $optionKey }}">{{ $optionName }}</option>
                         @endforeach

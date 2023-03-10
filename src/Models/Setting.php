@@ -39,4 +39,9 @@ class Setting extends Model
     {
         return $query->where('name', 'currency')->first();
     }
+
+    public function scopeCountry($query)
+    {
+        return $query->where('name', 'country')->first();
+    }
 }
