@@ -68,7 +68,7 @@
                        @include('laravel-crm::layouts.partials.nav')
                     </div>
                     @endauth
-                    <div class="col">
+                    <div class="col col-md-10">
                         @include('flash::message')
                         @yield('content', $slot ?? null)
                     </div>
