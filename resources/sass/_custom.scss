@@ -290,3 +290,8 @@ dt {
   width: 20px;
   text-align: center;
 }
+
+.table-sm.table-items th,
+.table-sm.table-items td{
+  padding: 0.75rem 0.3rem;
+}

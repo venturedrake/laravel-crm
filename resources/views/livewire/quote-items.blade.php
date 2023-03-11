@@ -6,7 +6,7 @@
     </script>--}}
     <span id="quoteProducts">
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-sm table-items">
                 <thead>
                     <tr>
                         <th scope="col" class="border-0">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>

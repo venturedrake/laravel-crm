@@ -114,7 +114,7 @@
         @livewire('invoice-lines',[
             'invoice' => $invoice ?? null,
             'invoiceLines' => $invoice->invoiceLines ?? $order->orderProducts ?? null,
-            'old' => old('lines')
+            'old' => old('invoiceLines')
         ])
     </div>
 </div>

@@ -6,7 +6,7 @@
     </script>--}}
     <span id="orderProducts">
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-sm table-items">
                 <thead>
                     <tr>
                         <th scope="col" class="border-0">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
@@ -112,17 +112,17 @@
                     <td></td>
                     <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.total')) }}</td>
                     <td>
-                   @include('laravel-crm::partials.form.text',[
-                  'name' => 'total',
-                  'label' => ucfirst(__('laravel-crm::lang.total')),
-                   'type' => 'number',
-                    'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
-                   'attributes' => [
-                       'wire:model' => 'total',
-                       'step' => .01,
-                       'readonly' => 'readonly'
-                   ]
-                ])
+                    @include('laravel-crm::partials.form.text',[
+                      'name' => 'total',
+                      'label' => ucfirst(__('laravel-crm::lang.total')),
+                       'type' => 'number',
+                        'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
+                        'attributes' => [
+                           'wire:model' => 'total',
+                           'step' => .01,
+                           'readonly' => 'readonly'
+                       ]
+                    ])
                     </td>
                       <td></td>
                   </tr>

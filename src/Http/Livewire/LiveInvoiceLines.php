@@ -46,7 +46,7 @@ class LiveInvoiceLines extends Component
         if ($this->old) {
             foreach ($this->old as $old) {
                 $this->add($this->i);
-                $this->invoice_product_id[$this->i] = $old['invoice_product_id'] ?? null;
+                $this->invoice_line_id[$this->i] = $old['invoice_line_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
                 $this->name[$this->i] = $old['name'] ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
@@ -77,13 +77,21 @@ class LiveInvoiceLines extends Component
         $this->price[$i] = null;
         $this->quantity[$i] = null;
         array_push($this->inputs, $i);
+
+        $this->dispatchBrowserEvent('addedItem', ['id' => $this->i]);
     }
 
     public function loadInvoiceLineDefault($id)
     {
-        $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id]);
-        $this->price[$id] = ($product->getDefaultPrice()->unit_price / 100);
-        $this->quantity[$id] = 1;
+        if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])){
+            $this->price[$id] = ($product->getDefaultPrice()->unit_price / 100);
+            $this->quantity[$id] = 1;
+        }else{
+            $this->price[$id] = null;
+            $this->quantity[$id] = null;
+            $this->amount[$id] = null;
+        }
+       
         $this->calculateAmounts();
     }
 
@@ -94,15 +102,21 @@ class LiveInvoiceLines extends Component
         $this->total = 0;
 
         for ($i = 1; $i <= $this->i; $i++) {
-            $this->amount[$i] = $this->price[$i] * $this->quantity[$i];
-            $this->sub_total += $this->amount[$i];
-
             if (isset($this->product_id[$i]) && $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+                $this->amount[$i] = $this->price[$i] * $this->quantity[$i];
+                $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
             }
         }
 
         $this->total = $this->sub_total + $this->tax;
+    }
+
+    public function remove($id)
+    {
+        unset($this->inputs[$id - 1], $this->product_id[$id]);
+
+        $this->calculateAmounts();
     }
 
     public function render()
