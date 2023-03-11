@@ -1,9 +1,9 @@
 <div>
     <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.quote_items')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
     <hr class="mb-0" />
-    <script type="text/javascript">
+    {{--<script type="text/javascript">
         let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
-    </script>
+    </script>--}}
     <span id="quoteProducts">
         <div class="table-responsive">
             <table class="table">
@@ -21,6 +21,15 @@
                 @endforeach
                 </tbody>
                 <tfoot id="quoteProductsTotals" class="tfoot">
+                 <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right align-middle">
+                            <button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button>
+                        </td>
+                 </tr>
                     <tr>
                         <td></td>
                         <td></td>
@@ -38,11 +47,12 @@
                                ]
                             ])
                         </td>
+                        <td></td>
                     </tr>
                  <tr>
                     <td></td>
                     <td></td>
-                   <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.discount')) }}</td>
+                    <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.discount')) }}</td>
                     <td>
                          @include('laravel-crm::partials.form.text',[
                           'name' => 'discount',
@@ -56,6 +66,7 @@
                            ]
                         ])
                     </td>
+                    <td></td>
                   </tr>
                 <tr>
                     <td></td>
@@ -74,6 +85,7 @@
                        ]
                     ])
                     </td>
+                     <td></td>
                   </tr>
                 <tr>
                     <td></td>
@@ -92,6 +104,7 @@
                        ]
                     ])
                     </td>
+                     <td></td>
                   </tr>
                  <tr>
                     <td></td>
@@ -110,6 +123,7 @@
                    ]
                 ])
                     </td>
+                      <td></td>
                   </tr>
                 </tfoot>
             </table>
@@ -119,9 +133,9 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).delegate("input[name^='products']", "focus", function() {
-                    var number = $(this).attr('value')
-                    $(this).autocomplete({
+                //$(document).delegate("select[name^='products']", "focus", function() {
+                    //var number = $(this).attr('value')
+                    /*$(this).autocomplete({
                         source: products,
                         onSelectItem: function(item, element){
                             @this.set('product_id.' + number,item.value);
@@ -130,8 +144,28 @@
                         },
                         highlightClass: 'text-danger',
                         treshold: 2,
-                    });
-                })
+                    });*/
+
+                    /*$(this).select2().on('select2:select', function (e) {
+                        var data = e.params.data;
+                        console.log(data);
+                    })*/
+                //})
+
+                window.addEventListener('addedItem', event => {
+                    $("tr[data-number='" + event.detail.id + "'] select[name^='products']").select2()
+                        .on('change', function (e) {
+                            @this.set('product_id.' + $(this).data('value'), $(this).val());
+                            @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                            Livewire.emit('loadItemDefault', $(this).data('value'))
+                        });
+                });
+
+                $("select[name^='products']").on('change', function (e) {
+                    @this.set('product_id.' + $(this).data('value'), $(this).val());
+                    @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                    Livewire.emit('loadItemDefault', $(this).data('value'))
+                });
             });
         </script>
     @endpush

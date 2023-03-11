@@ -197,11 +197,20 @@ dt {
   display: none;
 }
 
-.select2-selection.select2-selection--multiple{
+.select2-selection.select2-selection--multiple,
+.select2-selection.select2-selection--single{
   color:#495057  !important;;
   border: 1px solid #ced4da !important;
   border-radius: 0.25rem !important;
   height: calc(1.6em + .75rem + 2px);
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered{
+  padding: 0.175rem 0.95rem 0.175rem 0.75rem;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+  top: 5px;
 }
 
 .browse-filter .form-group > label{

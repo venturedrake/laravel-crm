@@ -64,6 +64,8 @@ const appJquery = function() {
                 }
             });
 
+            $("select[name^='products']").select2();
+
             $('#input_hex').colorpicker();
 
             $('form.form-delete-button > button[type="submit"]').on('click', function (e) {

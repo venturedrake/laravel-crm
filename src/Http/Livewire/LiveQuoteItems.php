@@ -85,13 +85,21 @@ class LiveQuoteItems extends Component
         $this->unit_price[$i] = null;
         $this->quantity[$i] = null;
         array_push($this->inputs, $i);
+
+        $this->dispatchBrowserEvent('addedItem', ['id' => $this->i]);
     }
     
     public function loadItemDefault($id)
     {
-        $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id]);
-        $this->unit_price[$id] = ($product->getDefaultPrice()->unit_price / 100);
-        $this->quantity[$id] = 1;
+        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])) {
+            $this->unit_price[$id] = ($product->getDefaultPrice()->unit_price / 100);
+            $this->quantity[$id] = 1;
+        } else {
+            $this->unit_price[$id] = null;
+            $this->quantity[$id] = null;
+            $this->amount[$id] = null;
+        }
+
         $this->calculateAmounts();
     }
 
@@ -102,15 +110,21 @@ class LiveQuoteItems extends Component
         $this->total = 0;
         
         for ($i = 1; $i <= $this->i; $i++) {
-            $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
-            $this->sub_total += $this->amount[$i];
-           
             if (isset($this->product_id[$i]) && $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+                $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
+                $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
             }
         }
 
         $this->total = $this->sub_total + $this->tax;
+    }
+    
+    public function remove($id)
+    {
+        unset($this->inputs[$id - 1], $this->product_id[$id]);
+        
+        $this->calculateAmounts();
     }
         
     public function render()

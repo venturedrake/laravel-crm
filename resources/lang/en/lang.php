@@ -394,4 +394,5 @@ return [
     'edit_delivery' => 'edit delivery',
     'delivery_updated' => 'delivery updated',
     'delivery_deleted' => 'delivery deleted',
+    'quote_deleted' => 'quote deleted',
 ];
