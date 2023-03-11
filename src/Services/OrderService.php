@@ -47,14 +47,16 @@ class OrderService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
-                $order->orderProducts()->create([
-                    'product_id' => $product['product_id'],
-                    'quantity' => $product['quantity'],
-                    'price' => $product['unit_price'],
-                    'amount' => $product['amount'],
-                    'currency' => $request->currency,
-                    'comments' => $product['comments'],
-                ]);
+                if (isset($product['product_id']) && $product['quantity'] > 0) {
+                    $order->orderProducts()->create([
+                        'product_id' => $product['product_id'],
+                        'quantity' => $product['quantity'],
+                        'price' => $product['unit_price'],
+                        'amount' => $product['amount'],
+                        'currency' => $request->currency,
+                        'comments' => $product['comments'],
+                    ]);
+                }
             }
         }
 
@@ -82,18 +84,26 @@ class OrderService
         $order->labels()->sync($request->labels ?? []);
 
         if (isset($request->products)) {
+            $orderProductIds = [];
+            
             foreach ($request->products as $product) {
                 if (isset($product['order_product_id']) && $orderProduct = OrderProduct::find($product['order_product_id'])) {
-                    $orderProduct->update([
-                        'product_id' => $product['product_id'],
-                        'quantity' => $product['quantity'],
-                        'price' => $product['unit_price'],
-                        'amount' => $product['amount'],
-                        'currency' => $request->currency,
-                        'comments' => $product['comments'],
-                    ]);
+                    $orderProductIds[] = $product['order_product_id'];
+
+                    if (! isset($product['product_id']) || $product['quantity'] == 0) {
+                        $orderProduct->delete();
+                    } else {
+                        $orderProduct->update([
+                            'product_id' => $product['product_id'],
+                            'quantity' => $product['quantity'],
+                            'price' => $product['unit_price'],
+                            'amount' => $product['amount'],
+                            'currency' => $request->currency,
+                            'comments' => $product['comments'],
+                        ]);
+                    }
                 } else {
-                    $order->orderProducts()->create([
+                    $orderProduct = $order->orderProducts()->create([
                         'product_id' => $product['product_id'],
                         'quantity' => $product['quantity'],
                         'price' => $product['unit_price'],
@@ -101,6 +111,14 @@ class OrderService
                         'currency' => $request->currency,
                         'comments' => $product['comments'],
                     ]);
+
+                    $orderProductIds[] = $orderProduct->id;
+                }
+            }
+
+            foreach ($order->orderProducts as $orderProduct) {
+                if (! in_array($orderProduct->id, $orderProductIds)) {
+                    $orderProduct->delete();
                 }
             }
         }

@@ -1,9 +1,9 @@
 <div>
     <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.order_items')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
     <hr class="mb-0" />
-    <script type="text/javascript">
+    {{--<script type="text/javascript">
         let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
-    </script>
+    </script>--}}
     <span id="orderProducts">
         <div class="table-responsive">
             <table class="table">
@@ -24,6 +24,16 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right align-middle">
+                            <button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                       
                         <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.sub_total')) }}</td>
                         <td>
                             @include('laravel-crm::partials.form.text',[
@@ -38,6 +48,7 @@
                                ]
                             ])
                         </td>
+                         <td></td>
                     </tr>
                  <tr>
                     <td></td>
@@ -56,6 +67,7 @@
                            ]
                         ])
                     </td>
+                      <td></td>
                   </tr>
                 <tr>
                     <td></td>
@@ -74,6 +86,7 @@
                        ]
                     ])
                     </td>
+                     <td></td>
                   </tr>
                 <tr>
                     <td></td>
@@ -92,6 +105,7 @@
                        ]
                     ])
                     </td>
+                     <td></td>
                   </tr>
                  <tr>
                     <td></td>
@@ -110,6 +124,7 @@
                    ]
                 ])
                     </td>
+                      <td></td>
                   </tr>
                 </tfoot>
             </table>
@@ -119,7 +134,7 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                $(document).delegate("input[name^='products']", "focus", function() {
+                /*$(document).delegate("input[name^='products']", "focus", function() {
                     var number = $(this).attr('value')
                     $(this).autocomplete({
                         source: products,
@@ -131,7 +146,22 @@
                         highlightClass: 'text-danger',
                         treshold: 2,
                     });
-                })
+                })*/
+
+                window.addEventListener('addedItem', event => {
+                    $("tr[data-number='" + event.detail.id + "'] select[name^='products']").select2()
+                        .on('change', function (e) {
+                            @this.set('product_id.' + $(this).data('value'), $(this).val());
+                            @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                            Livewire.emit('loadItemDefault', $(this).data('value'))
+                        });
+                });
+
+                $("select[name^='products']").on('change', function (e) {
+                    @this.set('product_id.' + $(this).data('value'), $(this).val());
+                    @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                    Livewire.emit('loadItemDefault', $(this).data('value'))
+                });
             });
         </script>
     @endpush

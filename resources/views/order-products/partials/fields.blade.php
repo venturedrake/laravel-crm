@@ -1,4 +1,4 @@
-<tr>
+<tr data-number="{{ $value }}">
     <td>
         @include('laravel-crm::partials.form.hidden',[
            'name' => 'products['.$value.'][order_product_id]',
@@ -6,7 +6,7 @@
                'wire:model' => 'order_product_id.'.$value,
            ]
         ])
-        <span class="autocomplete autocomplete-product-name">
+        {{--<span class="autocomplete autocomplete-product-name">
             @include('laravel-crm::partials.form.hidden',[
                 'name' => 'products['.$value.'][product_id]',
                 'attributes' => [
@@ -23,6 +23,17 @@
                     ]
                 ])
             </span>
+        </span>--}}
+        <span wire:ignore>
+             @include('laravel-crm::partials.form.select',[
+                'name' => 'products['.$value.'][product_id]',
+                /*'label' => ucfirst(__('laravel-crm::lang.name')),*/
+                'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Product::all(), true),      
+                'attributes' => [
+                    'wire:model' => 'product_id.'.$value,
+                    'data-value' => $value
+                ]
+            ])
         </span>
     </td>
     <td>
@@ -62,9 +73,12 @@
           ]
       ])
     </td>
+    <td>
+        <button wire:click.prevent="remove({{ $value }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button>
+    </td>
 </tr>
-<tr>
-    <td colspan="4" class="border-0 pt-0">
+<tr data-number="{{ $value }}">
+    <td colspan="5" class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[
            'name' => 'products['.$value.'][comments]',
            'label' => ucfirst(__('laravel-crm::lang.comments')),
