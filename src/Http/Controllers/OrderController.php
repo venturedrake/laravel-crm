@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrderRequest;
 use VentureDrake\LaravelCrm\Models\Order;
@@ -295,7 +296,32 @@ class OrderController extends Controller
             'products' => $products,
         ]);
 
-        $this->deliveryService->create($request, $order);
+        $delivery = $this->deliveryService->create($request, $order);
+
+        if ($address = $order->getShippingAddress()) {
+            $shippingAddress = $address;
+        } elseif ($address = $order->organisation->getShippingAddress()) {
+            $shippingAddress = $address;
+        } elseif ($address = $order->organisation->getPrimaryAddress()) {
+            $shippingAddress = $address;
+        }
+
+        if (isset($shippingAddress)) {
+            $delivery->addresses()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => 6,
+                'address' => $shippingAddress->address,
+                'name' => $shippingAddress->name,
+                'line1' => $shippingAddress->line1,
+                'line2' => $shippingAddress->line2,
+                'line3' => $shippingAddress->line3,
+                'city' => $shippingAddress->city,
+                'state' => $shippingAddress->state,
+                'code' => $shippingAddress->code,
+                'country' => $shippingAddress->country,
+                'primary' => $shippingAddress->primary,
+            ]);
+        }
 
         flash(ucfirst(trans('laravel-crm::lang.delivery_created_from_order')))->success()->important();
 

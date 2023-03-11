@@ -95,6 +95,16 @@ class Organisation extends Model
         return $this->addresses()->where('primary', 1)->first();
     }
 
+    public function getBillingAddress()
+    {
+        return $this->addresses()->where('address_type_id', 5)->first();
+    }
+
+    public function getShippingAddress()
+    {
+        return $this->addresses()->where('address_type_id', 6)->first();
+    }
+
     public function deals()
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);

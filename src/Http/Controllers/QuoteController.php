@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreQuoteRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateQuoteRequest;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -362,8 +363,54 @@ class QuoteController extends Controller
             'products' => $products,
         ]);
 
-        $this->orderService->create($request, $quote->person ?? null, $quote ?? null);
+        $order = $this->orderService->create($request, $quote->person ?? null, $quote->organisation ?? null);
 
+        if ($address = $quote->organisation->getBillingAddress()) {
+            $billingAddress = $address;
+        } elseif ($address = $quote->organisation->getPrimaryAddress()) {
+            $billingAddress = $address;
+        }
+
+        if (isset($billingAddress)) {
+            $order->addresses()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => 5,
+                'address' => $billingAddress->address,
+                'name' => $billingAddress->name,
+                'line1' => $billingAddress->line1,
+                'line2' => $billingAddress->line2,
+                'line3' => $billingAddress->line3,
+                'city' => $billingAddress->city,
+                'state' => $billingAddress->state,
+                'code' => $billingAddress->code,
+                'country' => $billingAddress->country,
+                'primary' => $billingAddress->primary,
+            ]);
+        }
+
+        if ($address = $quote->organisation->getShippingAddress()) {
+            $shippingAddress = $address;
+        } elseif ($address = $quote->organisation->getPrimaryAddress()) {
+            $shippingAddress = $address;
+        }
+
+        if (isset($shippingAddress)) {
+            $order->addresses()->create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => 6,
+                'address' => $shippingAddress->address,
+                'name' => $shippingAddress->name,
+                'line1' => $shippingAddress->line1,
+                'line2' => $shippingAddress->line2,
+                'line3' => $shippingAddress->line3,
+                'city' => $shippingAddress->city,
+                'state' => $shippingAddress->state,
+                'code' => $shippingAddress->code,
+                'country' => $shippingAddress->country,
+                'primary' => $shippingAddress->primary,
+            ]);
+        }
+        
         flash(ucfirst(trans('laravel-crm::lang.order_created_from_quote')))->success()->important();
 
         return back();

@@ -29,7 +29,7 @@
                     {{ $quote->organisation->name ?? $quote->organisation->person->name }}<br />
                     {{ $quote->person->name }}<br />
                     @if(isset($organisation_address))
-                        @if($organisation_address->line2)
+                        @if($organisation_address->line1)
                             {{ $organisation_address->line1 }}<br />
                         @endif
                         @if($organisation_address->line2)
