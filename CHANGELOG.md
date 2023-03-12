@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documents
 - Calendar
 - Custom Fields
-- Activity Feed / Timelines
 - CSV Import / Export
 - SMS
 - Payments
@@ -20,6 +19,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 0.16.0 - 2023-03-12
+### Added
+- Menu icons
+- User model relations trait
+- Client model
+- Invoice generation in xero integration
+- Billing & shipping addresses on orders
+- Shipping address on Deliveries
+### Changed
+- No text wrapping on responsive tables
+- Quote items now using Select2
+- Order items now using Select2
+- Invoice lines now using Select2
+- Improved layout for quote items, order items & invoice lines
+### Fixed
+- Typo in delivery products migration
+- Bug when retrieving related contacts by type
+- Bug with decimal missing from product pricing in xero integration
+- Layout issues fixed on smaller screens
 
 ## 0.15.0 - 2023-02-24
 ### Added

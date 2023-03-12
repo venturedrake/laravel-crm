@@ -27,6 +27,7 @@ The free CRM you have been looking for, this package will add CRM functionality 
  - Send quotes with accept/reject functionality
  - Orders & Invoicing
  - Deliveries
+ - Client management
  - Contact database management
  - Products & Product Categories
  - Notes & Tasks
