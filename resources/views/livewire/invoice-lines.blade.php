@@ -7,14 +7,14 @@
     <span id="invoiceLines">
         <div class="table-responsive">
             <table class="table table-sm table-items">
-                <thead>
+                {{--<thead>
                     <tr>
                         <th scope="col" class="border-0">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
                         <th scope="col" class="col-3 border-0">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
                         <th scope="col" class="col-2 border-0">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
                         <th scope="col" class="col-3 border-0">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
-                </thead>
+                </thead>--}}
                 <tbody>
                 @foreach($inputs as $key => $value)
                     @include('laravel-crm::invoice-lines.partials.fields')
@@ -33,6 +33,7 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.sub_total')) }}</td>
                         <td>
                             @include('laravel-crm::partials.form.text',[
@@ -47,10 +48,10 @@
                                ]
                             ])
                         </td>
-                        <td></td>
                     </tr>
                  
                 <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.tax')) }}</td>
@@ -67,11 +68,11 @@
                        ]
                     ])
                     </td>
-                    <td></td>
                   </tr>
                  <tr>
                     <td></td>
                     <td></td>
+                     <td></td>
                     <td class="text-right align-middle">{{  ucfirst(__('laravel-crm::lang.total')) }}</td>
                     <td>
                    @include('laravel-crm::partials.form.text',[
@@ -86,7 +87,6 @@
                    ]
                 ])
                     </td>
-                     <td></td>
                   </tr>
                 </tfoot>
             </table>

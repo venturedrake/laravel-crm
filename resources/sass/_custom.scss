@@ -165,7 +165,7 @@ dt {
   display: none;
 }
 
-#invoiceLines label{
+#invoiceLinesTotals label{
   display: none;
 }
 
@@ -294,4 +294,8 @@ dt {
 .table-sm.table-items th,
 .table-sm.table-items td{
   padding: 0.75rem 0.3rem;
+}
+
+.table-sm.table-items tbody tr:first-child td{
+  border-top: none;
 }

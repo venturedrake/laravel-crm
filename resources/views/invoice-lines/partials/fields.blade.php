@@ -1,5 +1,5 @@
-<tr data-number="{{ $value }}">
-    <td>
+<tr data-number="{{ $value }}" class="item-tr">
+    <td colspan="5" class="pt-3" style="position: relative;">
         @include('laravel-crm::partials.form.hidden',[
            'name' => 'invoiceLines['.$value.'][invoice_line_id]',
            'attributes' => [
@@ -27,7 +27,7 @@
         <span wire:ignore>
              @include('laravel-crm::partials.form.select',[
                 'name' => 'invoiceLines['.$value.'][product_id]',
-                /*'label' => ucfirst(__('laravel-crm::lang.name')),*/
+                'label' => ucfirst(__('laravel-crm::lang.name')),
                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Product::all(), true),      
                 'attributes' => [
                     'wire:model' => 'product_id.'.$value,
@@ -35,11 +35,16 @@
                 ]
             ])
         </span>
+        <span style="position: absolute;top:13%; right: 5px;">
+            <button wire:click.prevent="remove({{ $value }})" type="button" class="btn btn-outline-danger btn-sm btn-close"><span class="fa fa-remove"></span></button>
+        </span>
     </td>
-    <td>
+</tr>
+<tr data-number="{{ $value }}" class="item-tr">
+    <td colspan="3" class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[
           'name' => 'invoiceLines['.$value.'][price]',
-          /* 'label' => ucfirst(__('laravel-crm::lang.price')),*/
+           'label' => ucfirst(__('laravel-crm::lang.price')),
            'type' => 'number',
            'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
            'attributes' => [
@@ -49,10 +54,10 @@
            ]
        ])
     </td>
-    <td>
+    <td class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[
            'name' => 'invoiceLines['.$value.'][quantity]',
-          /* 'label' => ucfirst(__('laravel-crm::lang.quantity')),*/
+           'label' => ucfirst(__('laravel-crm::lang.quantity')),
            'type' => 'number',
            'attributes' => [
                'wire:model' => 'quantity.'.$value,
@@ -60,10 +65,10 @@
            ]
        ])
     </td>
-    <td>
+    <td class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[
          'name' => 'invoiceLines['.$value.'][amount]',
-         /* 'label' => ucfirst(__('laravel-crm::lang.amount')),*/
+          'label' => ucfirst(__('laravel-crm::lang.amount')),
           'type' => 'number',
           'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
           'attributes' => [
@@ -73,7 +78,15 @@
           ]
       ])
     </td>
-    <td>
-        <button wire:click.prevent="remove({{ $value }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button>
+</tr>
+<tr data-number="{{ $value }}" class="item-tr">
+    <td colspan="5" class="border-0 pt-0 pb-4">
+        @include('laravel-crm::partials.form.text',[
+           'name' => 'invoiceLines['.$value.'][comments]',
+           'label' => ucfirst(__('laravel-crm::lang.comments')),
+           'attributes' => [
+               'wire:model' => 'comments.'.$value,
+           ]
+       ])
     </td>
 </tr>

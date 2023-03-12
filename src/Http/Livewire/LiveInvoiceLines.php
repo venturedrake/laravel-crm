@@ -83,10 +83,10 @@ class LiveInvoiceLines extends Component
 
     public function loadInvoiceLineDefault($id)
     {
-        if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])){
+        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])) {
             $this->price[$id] = ($product->getDefaultPrice()->unit_price / 100);
             $this->quantity[$id] = 1;
-        }else{
+        } else {
             $this->price[$id] = null;
             $this->quantity[$id] = null;
             $this->amount[$id] = null;
