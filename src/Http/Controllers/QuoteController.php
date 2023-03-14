@@ -338,7 +338,7 @@ class QuoteController extends Controller
             $products[] = [
                 'product_id' => $quoteProduct->product_id,
                 'quantity' => $quoteProduct->quantity,
-                'unit_price' => $quoteProduct->unit_price / 100,
+                'unit_price' => $quoteProduct->price / 100,
                 'amount' => $quoteProduct->amount / 100,
                 'currency' => $quoteProduct->currency,
                 'comments' => $quoteProduct->comments,
