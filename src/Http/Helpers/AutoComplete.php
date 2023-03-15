@@ -38,3 +38,22 @@ function products()
 
     return json_encode($data);
 }
+
+function productsSelect2()
+{
+    $data = [];
+
+    $data[] = [
+        'id' => -1,
+        'text' => null
+    ];
+    
+    foreach (Product::all() as $product) {
+        $data[] = [
+            'id' => $product->id,
+            'text' => $product->name
+        ];
+    }
+
+    return json_encode($data);
+}

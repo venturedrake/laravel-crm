@@ -28,7 +28,7 @@
              @include('laravel-crm::partials.form.select',[
                 'name' => 'products['.$value.'][product_id]',
                 'label' => ucfirst(__('laravel-crm::lang.name')),
-                'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Product::all(), true),      
+                'options' => [],
                 'attributes' => [
                     'wire:model' => 'product_id.'.$value,
                     'data-value' => $value

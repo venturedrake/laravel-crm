@@ -1,9 +1,9 @@
 <div>
     <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.invoice_lines')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
     <hr class="mb-0" />
-    {{--<script type="text/javascript">
-        let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
-    </script>--}}
+    <script type="text/javascript">
+        let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\productsSelect2() !!}
+    </script>
     <span id="invoiceLines">
         <div class="table-responsive">
             <table class="table table-sm table-items">
@@ -111,7 +111,9 @@
                 })*/
 
                 window.addEventListener('addedItem', event => {
-                    $("tr[data-number='" + event.detail.id + "'] select[name^='invoiceLines']").select2()
+                    $("tr[data-number='" + event.detail.id + "'] select[name^='invoiceLines']").select2({
+                        data: products,
+                    })
                         .on('change', function (e) {
                             @this.set('product_id.' + $(this).data('value'), $(this).val());
                             @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());

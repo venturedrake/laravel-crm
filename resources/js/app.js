@@ -64,9 +64,13 @@ const appJquery = function() {
                 }
             });
 
-            $("select[name^='products']").select2();
+            $("select[name^='products']").select2({
+                data: products
+            });
 
-            $("select[name^='invoiceLines']").select2();
+            $("select[name^='invoiceLines']").select2({
+                data: products,
+            });
 
             $('#input_hex').colorpicker();
 
