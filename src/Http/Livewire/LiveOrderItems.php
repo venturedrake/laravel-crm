@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveOrderItems extends Component
@@ -54,7 +55,7 @@ class LiveOrderItems extends Component
                 $this->add($this->i);
                 $this->order_product_id[$this->i] = $old['order_product_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
-                $this->name[$this->i] = $old['name'] ?? null;
+                $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
                 $this->unit_price[$this->i] = $old['unit_price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;

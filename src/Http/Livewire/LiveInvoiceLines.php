@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveInvoiceLines extends Component
@@ -48,7 +49,7 @@ class LiveInvoiceLines extends Component
                 $this->add($this->i);
                 $this->invoice_line_id[$this->i] = $old['invoice_line_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
-                $this->name[$this->i] = $old['name'] ?? null;
+                $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
                 $this->price[$this->i] = $old['price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;

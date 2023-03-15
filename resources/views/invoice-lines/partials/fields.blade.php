@@ -28,7 +28,10 @@
              @include('laravel-crm::partials.form.select',[
                 'name' => 'invoiceLines['.$value.'][product_id]',
                 'label' => ucfirst(__('laravel-crm::lang.name')),
-                'options' => [],      
+                'options' => [
+                    $this->product_id[$value] ?? null => $this->name[$value] ?? null,
+                ],
+                'value' => $this->product_id[$value] ?? null,      
                 'attributes' => [
                     'wire:model' => 'product_id.'.$value,
                     'data-value' => $value

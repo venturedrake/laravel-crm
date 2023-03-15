@@ -47,7 +47,7 @@ class QuoteService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
-                if (isset($product['product_id']) && $product['quantity'] > 0) {
+                if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
                     $quote->quoteProducts()->create([
                         'product_id' => $product['product_id'],
                         'quantity' => $product['quantity'],
@@ -104,7 +104,7 @@ class QuoteService
                             'comments' => $product['comments'],
                         ]);
                     }
-                } elseif (isset($product['product_id']) && $product['quantity'] > 0) {
+                } elseif (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
                     $quoteProduct = $quote->quoteProducts()->create([
                         'product_id' => $product['product_id'],
                         'quantity' => $product['quantity'],

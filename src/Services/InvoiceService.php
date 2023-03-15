@@ -47,13 +47,15 @@ class InvoiceService
 
         if (isset($request->invoiceLines)) {
             foreach ($request->invoiceLines as $invoiceLine) {
-                $invoice->invoiceLines()->create([
-                    'product_id' => $invoiceLine['product_id'],
-                    'quantity' => $invoiceLine['quantity'],
-                    'price' => $invoiceLine['price'],
-                    'amount' => $invoiceLine['amount'],
-                    'currency' => $request->currency,
-                ]);
+                if (isset($invoiceLine['product_id']) && $invoiceLine['product_id'] > 0 && $invoiceLine['quantity'] > 0) {
+                    $invoice->invoiceLines()->create([
+                        'product_id' => $invoiceLine['product_id'],
+                        'quantity' => $invoiceLine['quantity'],
+                        'price' => $invoiceLine['price'],
+                        'amount' => $invoiceLine['amount'],
+                        'currency' => $request->currency,
+                    ]);
+                }
             }
         }
 
@@ -131,7 +133,7 @@ class InvoiceService
                         'amount' => $line['amount'],
                         'currency' => $request->currency,
                     ]);
-                } else {
+                } elseif (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
                     $invoice->invoiceLines()->create([
                         'product_id' => $line['product_id'],
                         'quantity' => $line['quantity'],

@@ -45,13 +45,13 @@ function productsSelect2()
 
     $data[] = [
         'id' => -1,
-        'text' => null
+        'text' => null,
     ];
     
     foreach (Product::all() as $product) {
         $data[] = [
             'id' => $product->id,
-            'text' => $product->name
+            'text' => $product->name,
         ];
     }
 

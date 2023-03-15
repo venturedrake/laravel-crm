@@ -47,7 +47,7 @@ class OrderService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
-                if (isset($product['product_id']) && $product['quantity'] > 0) {
+                if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
                     $order->orderProducts()->create([
                         'product_id' => $product['product_id'],
                         'quantity' => $product['quantity'],
@@ -102,7 +102,7 @@ class OrderService
                             'comments' => $product['comments'],
                         ]);
                     }
-                } else {
+                } elseif (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
                     $orderProduct = $order->orderProducts()->create([
                         'product_id' => $product['product_id'],
                         'quantity' => $product['quantity'],
