@@ -107,10 +107,17 @@ class LiveInvoiceLines extends Component
                 $this->amount[$i] = $this->price[$i] * $this->quantity[$i];
                 $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
+
+                $this->price[$i] = $this->currencyFormat($this->price[$i]);
+                $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
             }
         }
 
         $this->total = $this->sub_total + $this->tax;
+
+        $this->sub_total = $this->currencyFormat($this->sub_total);
+        $this->tax = $this->currencyFormat($this->tax);
+        $this->total = $this->currencyFormat($this->total);
     }
 
     public function remove($id)
@@ -118,6 +125,11 @@ class LiveInvoiceLines extends Component
         unset($this->inputs[$id - 1], $this->product_id[$id]);
 
         $this->calculateAmounts();
+    }
+
+    protected function currencyFormat($number)
+    {
+        return number_format($number, 2, '.', '');
     }
 
     public function render()

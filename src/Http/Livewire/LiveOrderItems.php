@@ -115,10 +115,19 @@ class LiveOrderItems extends Component
                 $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
                 $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
+
+                $this->unit_price[$i] = $this->currencyFormat($this->unit_price[$i]);
+                $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
             }
         }
 
         $this->total = $this->sub_total + $this->tax;
+
+        $this->sub_total = $this->currencyFormat($this->sub_total);
+        $this->tax = $this->currencyFormat($this->tax);
+        $this->discount = $this->currencyFormat($this->discount);
+        $this->adjustment = $this->currencyFormat($this->adjustment);
+        $this->total = $this->currencyFormat($this->total);
     }
 
     public function remove($id)
@@ -128,6 +137,11 @@ class LiveOrderItems extends Component
         $this->calculateAmounts();
     }
 
+    protected function currencyFormat($number)
+    {
+        return number_format($number, 2, '.', '');
+    }
+    
     public function render()
     {
         return view('laravel-crm::livewire.order-items');
