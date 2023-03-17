@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <table class="table table-condensed">
+    <table class="table table-sm">
         <tbody>
             <tr>
                 <td width="50%"> 
@@ -66,7 +66,7 @@
         </tbody>
     </table>
     @if($quote->description)
-        <table class="table table-bordered table-condensed">
+        <table class="table table-bordered table-sm">
           <tbody>
             <tr>
                 <td><h4>{{ ucfirst(__('laravel-crm::lang.description')) }}</h4>
@@ -75,7 +75,7 @@
           </tbody>  
         </table>
     @endif
-    <table class="table table-bordered table-condensed">
+    <table class="table table-bordered table-sm">
         <thead>
         <tr>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
@@ -137,7 +137,7 @@
         </tfoot>
     </table>
     @if($quote->terms)
-        <table class="table table-bordered table-condensed">
+        <table class="table table-bordered table-sm">
             <tbody>
             <tr>
                 <td>

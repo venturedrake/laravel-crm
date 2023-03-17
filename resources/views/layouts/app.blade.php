@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=456345634565" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=3245245367547678657754" rel="stylesheet">
 
     @livewireStyles
 
