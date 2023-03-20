@@ -173,6 +173,13 @@ class LaravelCrmXero extends Command
                                 'Code' => $product->code,
                                 'Name' => $product->name,
                                 'Description' => $product->description,
+                                'PurchaseDetails' => [
+                                    'AccountCode' => 310,
+                                ],
+                                'SalesDetails' => [
+                                    'UnitPrice' => ($product->getDefaultPrice()->unit_price) ? $product->getDefaultPrice()->unit_price / 100 : null,
+                                    'AccountCode' => 200,
+                                ],
                             ]);
 
                             $item = $xeroProduct['body']['Items'][0];

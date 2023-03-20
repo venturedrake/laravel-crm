@@ -455,7 +455,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     $schedule->command('xero:keep-alive')
                         ->everyFiveMinutes();
                     $schedule->command('laravelcrm:xero contacts')
-                        ->daily();
+                        ->everyTenMinutes()
+                        ->withoutOverlapping();
                     $schedule->command('laravelcrm:xero products')
                         ->everyTenMinutes()
                         ->withoutOverlapping();
