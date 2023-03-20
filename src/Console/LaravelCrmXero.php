@@ -157,12 +157,39 @@ class LaravelCrmXero extends Command
                                     'is_purchased' => $item['IsPurchased'],
                                     'purchase_price' => (isset($item['PurchaseDetails']['UnitPrice'])) ? $item['PurchaseDetails']['UnitPrice'] : null,
                                     'sell_price' => (isset($item['SalesDetails']['UnitPrice'])) ? $item['SalesDetails']['UnitPrice'] : null,
-                                    'purchase_description' => $item['PurchaseDescription'],
+                                    'purchase_description' => $item['PurchaseDescription'] ?? null,
                                 ]);
                             }
                         }
                     } else {
                         $this->info('LaravelCRM Xero Integration '.ucfirst($this->argument('model')).' disabled');
+                    }
+                    
+                    foreach (Product::all() as $product) {
+                        if (! $product->xeroItem) {
+                            $this->info('LaravelCRM Xero Integration Adding product '.$product->name.' to Xero');
+                            
+                            $xeroProduct = Xero::post('Items', [
+                                'Code' => $product->code,
+                                'Name' => $product->name,
+                                'Description' => $product->description,
+                            ]);
+
+                            $item = $xeroProduct['body']['Items'][0];
+
+                            $product->xeroItem()->updateOrCreate([
+                                'item_id' => $item['ItemID'],
+                            ], [
+                                'code' => $item['Code'],
+                                'name' => $item['Name'],
+                                'inventory_tracked' => $item['IsTrackedAsInventory'],
+                                'is_sold' => $item['IsSold'],
+                                'is_purchased' => $item['IsPurchased'],
+                                'purchase_price' => (isset($item['PurchaseDetails']['UnitPrice'])) ? $item['PurchaseDetails']['UnitPrice'] : null,
+                                'sell_price' => (isset($item['SalesDetails']['UnitPrice'])) ? $item['SalesDetails']['UnitPrice'] : null,
+                                'purchase_description' => $item['PurchaseDescription'] ?? null,
+                            ]);
+                        }
                     }
                     
                     break;

@@ -452,9 +452,13 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 $schedule = $this->app->make(Schedule::class);
                 
                 if (config('xero.clientId') && config('xero.clientSecret')) {
-                    $schedule->command('xero:keep-alive')->everyFiveMinutes();
-                    $schedule->command('laravelcrm:xero contacts')->daily();
-                    $schedule->command('laravelcrm:xero products')->daily();
+                    $schedule->command('xero:keep-alive')
+                        ->everyFiveMinutes();
+                    $schedule->command('laravelcrm:xero contacts')
+                        ->daily();
+                    $schedule->command('laravelcrm:xero products')
+                        ->everyTenMinutes()
+                        ->withoutOverlapping();
                 }
             });
         }
