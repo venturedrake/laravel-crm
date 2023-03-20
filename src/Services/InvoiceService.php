@@ -85,6 +85,7 @@ class InvoiceService
                     'LineItems' => $lineItems ?? [],
                     'Date' => Carbon::now()->format('Y-m-d'),
                     'DueDate' => Carbon::now()->addDays(30)->format('Y-m-d'),
+                    'Reference' => $invoice->reference
                 ]);
 
                 XeroInvoice::create([
