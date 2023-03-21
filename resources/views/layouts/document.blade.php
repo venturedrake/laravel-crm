@@ -7,7 +7,7 @@
     <title>{{ (config('app.name')) ? config('app.name').' - ' : null }} CRM - Document</title>
     
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/document.css') }}?c=576896790" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/document.css') }}?c=57898086907890" rel="stylesheet">
 
     <style>
         @font-face {

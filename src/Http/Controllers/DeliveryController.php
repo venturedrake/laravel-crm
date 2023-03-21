@@ -248,7 +248,6 @@ class DeliveryController extends Controller
             'fromName' => $this->settingService->get('organisation_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ]);*/
-        
 
         return Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),

@@ -395,4 +395,7 @@ return [
     'delivery_updated' => 'delivery updated',
     'delivery_deleted' => 'delivery deleted',
     'quote_deleted' => 'quote deleted',
+    'received_by' => 'received by',
+    'received_date' => 'received date',
+    'signature' => 'signature'
 ];

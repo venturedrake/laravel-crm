@@ -99,4 +99,21 @@
             </tbody>
         </table>
     @endif
+
+    <table class="table table-bordered table-sm table-delivery">
+        <tbody>
+        <tr>
+            <th width="150">{{ ucfirst(__('laravel-crm::lang.received_by')) }} </th>
+            <td></td>
+        </tr>
+        <tr>
+            <th>{{ ucfirst(__('laravel-crm::lang.received_date')) }} </th>
+            <td></td>
+        </tr>
+        <tr>
+            <th>{{ ucfirst(__('laravel-crm::lang.signature')) }} </th>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
 @endsection
