@@ -122,7 +122,9 @@ class LiveInvoiceLines extends Component
 
     public function remove($id)
     {
-        unset($this->inputs[$id - 1], $this->product_id[$id]);
+        unset($this->product_id[$id], $this->name[$id]);
+
+        $this->dispatchBrowserEvent('removedItem', ['id' => $id]);
 
         $this->calculateAmounts();
     }

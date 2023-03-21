@@ -163,6 +163,10 @@
                         });
                 });
 
+                window.addEventListener('removedItem', event => {
+                    $("tr[data-number='" + event.detail.id + "']").remove()
+                });
+
                 $("select[name^='products']").on('change', function (e) {
                     @this.set('product_id.' + $(this).data('value'), $(this).val());
                     @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
