@@ -52,6 +52,18 @@ class SendQuote extends Component
         
         $this->generateUrl();
 
+        if ($this->quote->person) {
+            $email = $this->quote->person->getPrimaryEmail();
+            $phone = $this->quote->person->getPrimaryPhone();
+            $address = $this->quote->person->getPrimaryAddress();
+        }
+
+        if ($this->quote->organisation) {
+            $organisation_address = $this->quote->organisation->getPrimaryAddress();
+        }
+        
+        // Create PDF for attaching
+
         Mail::send(new \VentureDrake\LaravelCrm\Mail\SendQuote([
             'to' => $this->to,
             'subject' => $this->subject,
