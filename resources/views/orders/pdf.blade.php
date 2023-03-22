@@ -21,7 +21,9 @@
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
                     {{ $order->organisation->name ?? $order->organisation->person->name }}<br />
-                    {{ $order->person->name }}<br />
+                    @isset($order->person)
+                        {{ $order->person->name }}<br />
+                    @endisset
                     @if(isset($organisation_address))
                         @if($organisation_address->line1)
                             {{ $organisation_address->line1 }}<br />

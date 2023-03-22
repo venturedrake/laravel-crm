@@ -27,7 +27,9 @@
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.issued_to')) }}</strong><br />
                     {{ $quote->organisation->name ?? $quote->organisation->person->name }}<br />
+                    @isset($quote->person)
                     {{ $quote->person->name }}<br />
+                    @endisset
                     @if(isset($organisation_address))
                         @if($organisation_address->line1)
                             {{ $organisation_address->line1 }}<br />
