@@ -23,7 +23,7 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">@sortablelink('name', ucwords(__('laravel-crm::lang.name')))</th>
+                <th scope="col" colspan="2">@sortablelink('name', ucwords(__('laravel-crm::lang.name')))</th>
                 <th scope="col">@sortablelink('organisationType.name', ucwords(__('laravel-crm::lang.type')))</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact')) }}</th>
@@ -38,7 +38,8 @@
             <tbody>
             @foreach($organisations as $organisation)
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.organisations.show',$organisation)) }}">
-                    <td>{{ $organisation->name }}</td>
+                    <td>{{ $organisation->name }} </td>
+                    <td>@if($organisation->xeroContact)<img src="/vendor/laravel-crm/img/xero-icon.png" height="20" />@endif</td>
                     <td>{{ $organisation->organisationType->name ?? null }}</td>
                     <td>@include('laravel-crm::partials.labels',[
                             'labels' => $organisation->labels,
