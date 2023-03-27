@@ -1,4 +1,4 @@
-<tr data-key="{{ $key }}" data-number="{{ $value }}" class="item-tr">
+<tr wire:key="select2-{{ $value }}" data-number="{{ $value }}" class="item-tr">
     <td colspan="5" class="pt-3" style="position: relative;">
         @include('laravel-crm::partials.form.hidden',[
            'name' => 'products['.$value.'][order_product_id]',
