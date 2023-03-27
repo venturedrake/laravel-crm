@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StoreInvoiceRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateInvoiceRequest;
@@ -223,5 +224,31 @@ class InvoiceController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.invoice_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.invoices.index'));
+    }
+
+    public function download(Invoice $invoice)
+    {
+        if ($invoice->person) {
+            $email = $invoice->person->getPrimaryEmail();
+            $phone = $invoice->person->getPrimaryPhone();
+            $address = $invoice->person->getPrimaryAddress();
+        }
+
+        if ($invoice->organisation) {
+            $organisation_address = $invoice->organisation->getPrimaryAddress();
+        }
+
+        return Pdf::setOption([
+            'fontDir' => public_path('vendor/laravel-crm/fonts'),
+        ])
+            ->loadView('laravel-crm::invoices.pdf', [
+                'invoice' => $invoice,
+                'email' => $email ?? null,
+                'phone' => $phone ?? null,
+                'address' => $address ?? null,
+                'organisation_address' => $organisation_address ?? null,
+                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'logo' => $this->settingService->get('logo_file')->value ?? null,
+            ])->download('invoice-'.$invoice->id.'.pdf');
     }
 }

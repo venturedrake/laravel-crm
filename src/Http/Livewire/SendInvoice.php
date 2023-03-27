@@ -2,15 +2,20 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class SendInvoice extends Component
 {
     use NotifyToast;
+
+    private $settingService;
     
     public $invoice;
 
@@ -22,7 +27,14 @@ class SendInvoice extends Component
 
     public $cc;
 
+    public $pdf;
+
     public $signedUrl;
+
+    public function boot(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
 
     public function mount($invoice)
     {
@@ -52,16 +64,35 @@ class SendInvoice extends Component
         
         $this->generateUrl();
 
+        $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->invoice)).'/'.$this->invoice->id.'/';
+
+        if (! File::exists($pdfLocation)) {
+            Storage::makeDirectory($pdfLocation);
+        }
+
+        $this->pdf = 'app/'.$pdfLocation.'invoice-'.$this->invoice->id.'.pdf';
+        
+        Pdf::setOption([
+            'fontDir' => public_path('vendor/laravel-crm/fonts'),
+        ])
+            ->loadView('laravel-crm::invoices.pdf', [
+                'invoice' => $this->invoice,
+                'email' => $email ?? null,
+                'phone' => $phone ?? null,
+                'address' => $address ?? null,
+                'organisation_address' => $organisation_address ?? null,
+                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'logo' => $this->settingService->get('logo_file')->value ?? null,
+            ])->save(storage_path($this->pdf)); ;
+
         Mail::send(new \VentureDrake\LaravelCrm\Mail\SendInvoice([
             'to' => $this->to,
             'subject' => $this->subject,
             'message' => $this->message,
             'cc' => $this->cc,
             'onlineInvoiceLink' => $this->signedUrl,
+            'pdf' => $this->pdf,
         ]));
-
-        /*Notification::route('mail', $this->email)
-            ->notify(new OrderSharedNotification(auth()->user(), auth()->user()->currentTeam, $this->order, $this->signedUrl));*/
 
         $this->notify(
             'Invoice sent',

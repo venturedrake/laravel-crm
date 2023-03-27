@@ -87,8 +87,8 @@
                                     <strong>{{ ucfirst(__('laravel-crm::lang.issued_to')) }}</strong>
                                 </div>
                                 <div class="col">
-                                    {{ $quote->organisation->name ?? $quote->organisation->person->name }}<br />
-                                    {{ $quote->person->name }}<br />
+                                    {{ $quote->organisation->name ?? $quote->organisation->person->name ?? null }}<br />
+                                    {{ $quote->person->name ?? null }}<br />
                                     @if(isset($organisation_address))
                                         @if($organisation_address->line2)
                                             {{ $organisation_address->line1 }}<br />

@@ -21,6 +21,8 @@ class SendInvoice extends Mailable
     
     public $copyMe = false;
 
+    public $pdf;
+
     /**
      * Create a new message instance.
      *
@@ -33,6 +35,7 @@ class SendInvoice extends Mailable
         $this->content = $data['message'];
         $this->copyMe = $data['cc'];
         $this->onlineInvoiceLink = $data['onlineInvoiceLink'];
+        $this->pdf = $data['pdf'];
     }
 
     /**
@@ -49,11 +52,13 @@ class SendInvoice extends Mailable
         $mailable = $this->subject($this->subject)
             ->from(auth()->user()->email, auth()->user()->name)
             ->to($this->emailTo)
-            ->view('laravel-crm::mail.email');
+            ->markdown('laravel-crm::mail.email');
 
         if ($this->copyMe == 1) {
             $mailable->cc(auth()->user()->email);
         }
+
+        $mailable->attach(storage_path($this->pdf));
 
         return $mailable;
     }

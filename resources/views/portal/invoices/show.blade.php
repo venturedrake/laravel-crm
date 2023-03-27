@@ -31,7 +31,11 @@
                             </li>
                         @endif--}}
                         <li class="nav-item">
-                            <a class="btn btn-outline-secondary" href="#"><span class="fa fa-download" aria-hidden="true"></span> Download</a>
+                            <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}&expires={{ request()->input('expires') }}" method="POST" class="form-check-inline mr-0">
+                                {{ csrf_field() }}
+                                <x-form-input name="action" value="download" type="hidden" />
+                                <button class="btn btn-outline-secondary" type="submit"><span class="fa fa-download" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.download')) }}</button>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -61,7 +65,7 @@
                                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong>
                                 </div>
                                 <div class="col">
-                                    {{ $invoice->organisation->name ?? $invoice->organisation->person->name }}<br />
+                                    {{ $invoice->organisation->name ?? $invoice->organisation->person->name ?? null }}<br />
                                     @if(isset($organisation_address))
                                         @if($organisation_address->line2)
                                         {{ $organisation_address->line1 }}<br />
