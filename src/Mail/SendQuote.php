@@ -16,10 +16,12 @@ class SendQuote extends Mailable
     public $subject;
 
     public $content;
+
+    public $copyMe = false;
     
     public $onlineQuoteLink;
     
-    public $copyMe = false;
+    public $pdf;
 
     /**
      * Create a new message instance.
@@ -33,6 +35,7 @@ class SendQuote extends Mailable
         $this->content = $data['message'];
         $this->copyMe = $data['cc'];
         $this->onlineQuoteLink = $data['onlineQuoteLink'];
+        $this->pdf = $data['pdf'];
     }
 
     /**
@@ -54,6 +57,8 @@ class SendQuote extends Mailable
         if ($this->copyMe == 1) {
             $mailable->cc(auth()->user()->email);
         }
+        
+        $mailable->attach(storage_path($this->pdf));
 
         return $mailable;
     }

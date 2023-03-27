@@ -2,15 +2,20 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class SendQuote extends Component
 {
     use NotifyToast;
+
+    private $settingService;
     
     public $quote;
 
@@ -21,8 +26,15 @@ class SendQuote extends Component
     public $message;
 
     public $cc;
+    
+    public $pdf;
 
     public $signedUrl;
+
+    public function boot(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
 
     public function mount($quote)
     {
@@ -61,8 +73,27 @@ class SendQuote extends Component
         if ($this->quote->organisation) {
             $organisation_address = $this->quote->organisation->getPrimaryAddress();
         }
+
+        $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->quote)).'/'.$this->quote->id.'/';
+
+        if (! File::exists($pdfLocation)) {
+            Storage::makeDirectory($pdfLocation);
+        }
         
-        // Create PDF for attaching
+        $this->pdf = 'app/'.$pdfLocation.'quote-'.$this->quote->id.'.pdf';
+
+        Pdf::setOption([
+            'fontDir' => public_path('vendor/laravel-crm/fonts'),
+        ])
+            ->loadView('laravel-crm::quotes.pdf', [
+                'quote' => $this->quote,
+                'email' => $email ?? null,
+                'phone' => $phone ?? null,
+                'address' => $address ?? null,
+                'organisation_address' => $organisation_address ?? null,
+                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'logo' => $this->settingService->get('logo_file')->value ?? null,
+            ])->save(storage_path($this->pdf));
 
         Mail::send(new \VentureDrake\LaravelCrm\Mail\SendQuote([
             'to' => $this->to,
@@ -70,10 +101,8 @@ class SendQuote extends Component
             'message' => $this->message,
             'cc' => $this->cc,
             'onlineQuoteLink' => $this->signedUrl,
+            'pdf' => $this->pdf,
         ]));
-
-        /*Notification::route('mail', $this->email)
-            ->notify(new OrderSharedNotification(auth()->user(), auth()->user()->currentTeam, $this->order, $this->signedUrl));*/
 
         $this->notify(
             'Quote sent',
