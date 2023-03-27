@@ -22,9 +22,9 @@ function organisations()
     $data = [];
 
     foreach (Organisation::all() as $organisation) {
-        if($organisation->xeroContact){
+        if ($organisation->xeroContact) {
             $data[$organisation->name. ' (xero contact)'] = $organisation->id;
-        }else{
+        } else {
             $data[$organisation->name] = $organisation->id;
         }
     }

@@ -165,9 +165,9 @@
                         });
                 });
 
-                window.addEventListener('removedItem', event => {
+                /*window.addEventListener('removedItem', event => {
                     $("tr[data-number='" + event.detail.id + "']").remove()
-                });
+                });*/
 
                 $("select[name^='products']").on('change', function (e) {
                     @this.set('product_id.' + $(this).data('value'), $(this).val());

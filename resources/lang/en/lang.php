@@ -397,5 +397,5 @@ return [
     'quote_deleted' => 'quote deleted',
     'received_by' => 'received by',
     'received_date' => 'received date',
-    'signature' => 'signature'
+    'signature' => 'signature',
 ];
