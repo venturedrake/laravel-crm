@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\Invoice;
@@ -60,5 +61,39 @@ class InvoiceController extends Controller
             'fromName' => $this->settingService->get('organisation_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function process(Invoice $invoice, Request $request)
+    {
+        if (! $request->hasValidSignature()) {
+            abort(401);
+        }
+
+        switch ($request->action) {
+            case "download":
+                return Pdf::setOption([
+                    'fontDir' => public_path('vendor/laravel-crm/fonts'),
+                ])
+                    ->loadView('laravel-crm::invoices.pdf', [
+                        'invoice' => $invoice,
+                        'email' => $email ?? null,
+                        'phone' => $phone ?? null,
+                        'address' => $address ?? null,
+                        'organisation_address' => $organisation_address ?? null,
+                        'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                        'logo' => $this->settingService->get('logo_file')->value ?? null,
+                    ])->download('invoice-'.$invoice->id.'.pdf');
+
+                break;
+        }
+
+
+        return back();
     }
 }

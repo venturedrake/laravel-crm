@@ -99,7 +99,7 @@ class QuoteController extends Controller
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
                 ])
-                    ->loadView('laravel-crm::quotes.partials.pdf', [
+                    ->loadView('laravel-crm::quotes.pdf', [
                         'quote' => $quote,
                         'email' => $email ?? null,
                         'phone' => $phone ?? null,

@@ -62,11 +62,11 @@
                             @livewire('send-invoice',[
                                 'invoice' => $invoice
                             ])
-                            <a class="btn btn-outline-secondary btn-sm" href="#"><span class="fa fa-download" aria-hidden="true"></span></a>
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.invoices.download', $invoice) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
                             @if(! $invoice->fully_paid_at)
                                 @livewire('pay-invoice',[
                                     'invoice' => $invoice
-                                ])
+                                ]) 
                             @endif
                             @can('view crm invoices')
                             <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

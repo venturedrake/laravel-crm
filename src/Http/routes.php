@@ -63,6 +63,9 @@ Route::group(['prefix' => 'p'], function () {
     Route::prefix('invoices')->group(function () {
         Route::get('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@show')
             ->name('laravel-crm.portal.invoices.show');
+
+        Route::post('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@process')
+            ->name('laravel-crm.portal.invoices.process');
     });
 });
 
@@ -410,6 +413,10 @@ Route::group(['prefix' => 'invoices', 'middleware' => 'auth.laravel-crm'], funct
     Route::post('{invoice}/pay', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@pay')
         ->name('laravel-crm.invoices.pay')
         ->middleware(['can:update,invoice']);
+
+    Route::get('{invoice}/download', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@download')
+        ->name('laravel-crm.invoices.download')
+        ->middleware(['can:view,invoice']);
 });
 
 /* Deliveries */
