@@ -19,7 +19,8 @@
                'value' => old('person_name', $order->person->name ?? $person->name ?? null),
                'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+               'required' => 'true'
             ])
         </span>
         <span class="autocomplete">
@@ -37,7 +38,8 @@
                 'value' => old('organisation_name',$order->organisation->name ?? $organisation->name ?? null),
                 'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+               'required' => 'true'
             ])
         </span>
         @include('laravel-crm::partials.form.textarea',[

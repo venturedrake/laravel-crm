@@ -16,7 +16,8 @@
             'attributes' => [
                 'autocomplete' => \Illuminate\Support\Str::random(),
                 'wire:model.debounce.10000ms' => 'organisation_name'  
-           ]
+           ],
+           'required' => 'true'
         ])  
     </span>
     
@@ -37,7 +38,8 @@
             'attributes' => [
                'autocomplete' => \Illuminate\Support\Str::random(),
                'wire:model.debounce.10000ms' => 'person_name'        
-            ]
+            ],
+            'required' => 'true'
         ])
     </span>
     
@@ -46,7 +48,8 @@
         'label' => ucfirst(__('laravel-crm::lang.title')),
         'attributes' => [
             'wire:model' => 'title'        
-        ]   
+        ],
+        'required' => 'true'
     ])
 
     @push('livewire-js')

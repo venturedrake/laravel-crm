@@ -3,22 +3,26 @@
         @include('laravel-crm::partials.form.text',[
           'name' => 'name',
           'label' => ucfirst(__('laravel-crm::lang.name')),
-          'value' => old('name', $user->name ?? null)
+          'value' => old('name', $user->name ?? null),
+          'required' => 'true'
         ])
         @include('laravel-crm::partials.form.text',[
           'name' => 'email',
           'label' => ucfirst(__('laravel-crm::lang.email')),
-          'value' => old('email', $user->email ?? null)
+          'value' => old('email', $user->email ?? null),
+          'required' => 'true'
         ])
         @include('laravel-crm::partials.form.password',[
           'name' => 'password',
           'label' => ucfirst(__('laravel-crm::lang.password')),
-          'value' => old('password')
+          'value' => old('password'),
+          'required' => 'true'
         ])
         @include('laravel-crm::partials.form.password',[
           'name' => 'password_confirmation',
           'label' => ucfirst(__('laravel-crm::lang.confirm_password')),
-          'value' => old('password_confirmation')
+          'value' => old('password_confirmation'),
+          'required' => 'true'
         ])
         <div class="form-group">
             <label for="crm_access">{{ ucfirst(__('laravel-crm::lang.CRM_access')) }}</label>

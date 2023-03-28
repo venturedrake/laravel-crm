@@ -19,7 +19,8 @@
                'value' => old('person_name', $invoice->person->name ?? $person->name ?? null),
                'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+               'required' => 'true'
             ])
         </span>
         <span class="autocomplete">
@@ -37,7 +38,8 @@
                 'value' => old('organisation_name',$invoice->organisation->name ?? $organisation->name ?? null),
                 'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+               'required' => 'true'
             ])
         </span>
         <div class="row">
@@ -59,6 +61,7 @@
                     'label' => ucfirst(__('laravel-crm::lang.invoice_number')),
                     'value' => old('number', $invoice->number ?? $number ?? null),
                     'prepend' => '<span aria-hidden="true">'.($invoice->prefix ?? $invoicePrefix->value ?? 'INV-').'</span>',
+                    'required' => 'true'
                 ])
             </div>
         </div>
@@ -70,7 +73,8 @@
                       'value' => old('issue_date', (isset($invoice->issue_date)) ? \Carbon\Carbon::parse($invoice->issue_date)->format('Y/m/d') : null),
                        'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
-                       ]
+                       ],
+                       'required' => 'true'
                   ])
             </div>
             <div class="col-sm-6">
@@ -80,7 +84,8 @@
                        'value' => old('due_date', (isset($invoice->due_date)) ? \Carbon\Carbon::parse($invoice->due_date)->format('Y/m/d') : null),
                        'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
-                       ]
+                       ],
+                       'required' => 'true'
                    ])
             </div>
         </div>

@@ -299,3 +299,7 @@ dt {
 .table-sm.table-items tbody tr:first-child td{
   border-top: none;
 }
+
+label span.required-label{
+  color: red;
+}

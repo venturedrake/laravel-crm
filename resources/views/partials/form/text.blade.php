@@ -1,5 +1,5 @@
 <div class="form-group @error($name) text-danger @enderror">
-    @isset($label)<label for="{{ $name }}[]">{{ $label }}</label>@endisset
+    @isset($label)<label for="{{ $name }}[]">{{ $label }} @isset($required)<span class="required-label"> *</span>@endisset</label>@endisset
     <div class="autocomplete-control">
         @if(isset($prepend) || isset($append))
         <div class="input-group">

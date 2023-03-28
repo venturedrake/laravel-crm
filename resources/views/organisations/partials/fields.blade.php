@@ -3,7 +3,8 @@
         @include('laravel-crm::partials.form.text',[
           'name' => 'name',
           'label' => ucfirst(__('laravel-crm::lang.name')),
-          'value' => old('name', $organisation->name ?? null)
+          'value' => old('name', $organisation->name ?? null),
+          'required' => 'true'
         ])
         @include('laravel-crm::partials.form.select',[
              'name' => 'organisation_type_id',

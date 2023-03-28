@@ -19,7 +19,8 @@
                'value' => old('person_name', $deal->person->name ?? $person->name ?? null),
                'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+               'required' => 'true'
             ])
         </span>
         <span class="autocomplete">
@@ -37,13 +38,15 @@
                 'value' => old('organisation_name',$deal->organisation->name ?? $organisation->name ?? null),
                 'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
-               ]
+               ],
+               'required' => 'true'
             ])
         </span>    
         @include('laravel-crm::partials.form.text',[
             'name' => 'title',
             'label' => ucfirst(__('laravel-crm::lang.title')),
-            'value' => old('title',$deal->title ?? null)
+            'value' => old('title',$deal->title ?? null),
+            'required' => 'true'
         ])
         @include('laravel-crm::partials.form.textarea',[
              'name' => 'description',

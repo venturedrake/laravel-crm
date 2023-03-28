@@ -3,7 +3,8 @@
         @include('laravel-crm::partials.form.text',[
                     'name' => 'name',
                     'label' => ucfirst(__('laravel-crm::lang.name')),
-                    'value' => old('name', $product->name ?? null)
+                    'value' => old('name', $product->name ?? null),
+                    'required' => 'true'
                 ])
         <div class="row">
             <div class="col-sm-6">

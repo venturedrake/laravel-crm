@@ -3,7 +3,8 @@
         @include('laravel-crm::partials.form.text',[
          'name' => 'organisation_name',
          'label' => ucfirst(trans('laravel-crm::lang.organization_name')),
-         'value' => old('organisation_name', $organisationName->value ?? null)
+         'value' => old('organisation_name', $organisationName->value ?? null),
+         'required' => 'true'
         ])
 
         @if($logoFile)
@@ -43,25 +44,29 @@
                 'name' => 'country',
                 'label' => ucfirst(trans('laravel-crm::lang.country')),
                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries(),
-                'value' => old('country', $country->value  ?? 'United States')
+                'value' => old('country', $country->value  ?? 'United States'),
+                'required' => 'true'
              ])
         @include('laravel-crm::partials.form.select',[
            'name' => 'language',
            'label' => ucfirst(trans('laravel-crm::lang.language')),
            'options' => ['english' => 'English'],
-           'value' => old('language', $language->value ?? 'english')
+           'value' => old('language', $language->value ?? 'english'),
+           'required' => 'true'
         ])
         @include('laravel-crm::partials.form.select',[
            'name' => 'currency',
            'label' => ucfirst(trans('laravel-crm::lang.currency')),
            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-           'value' => old('currency', $currency->value ?? 'USD')
+           'value' => old('currency', $currency->value ?? 'USD'),
+           'required' => 'true'
        ])
        @include('laravel-crm::partials.form.select',[
             'name' => 'timezone',
             'label' => ucfirst(trans('laravel-crm::lang.timezone')),
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timezones(),
-            'value' => old('timezone', $timezone->value ?? null)
+            'value' => old('timezone', $timezone->value ?? null),
+            'required' => 'true'
        ])
     </div>
 </div>

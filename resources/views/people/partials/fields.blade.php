@@ -12,7 +12,8 @@
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'first_name',
                       'label' => ucfirst(__('laravel-crm::lang.first_name')),
-                      'value' => old('first_name', $person->first_name ?? null)
+                      'value' => old('first_name', $person->first_name ?? null),
+                      'required' => 'true'
                   ])
             </div>
             <div class="col">
