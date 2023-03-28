@@ -22,10 +22,21 @@
                       @error('address.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                   </div>--}}
 
-                <div class="form-group">
-                    <label>{{ ucfirst(__('laravel-crm::lang.contact')) }}</label>
-                    <input type="text" class="form-control" wire:model="contact.{{ $value }}" name="addresses[{{ $value }}][contact]">
-                    @error('contact.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>{{ ucfirst(__('laravel-crm::lang.contact_name')) }}</label>
+                            <input type="text" class="form-control" wire:model="contact.{{ $value }}" name="addresses[{{ $value }}][contact]">
+                            @error('contact.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>{{ ucfirst(__('laravel-crm::lang.contact_phone')) }}</label>
+                            <input type="text" class="form-control" wire:model="phone.{{ $value }}" name="addresses[{{ $value }}][phone]">
+                            @error('phone.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">

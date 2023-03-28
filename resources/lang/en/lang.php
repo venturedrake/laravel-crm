@@ -399,4 +399,6 @@ return [
     'received_date' => 'received date',
     'signature' => 'signature',
     'delivery_contact' => 'delivery contact',
+    'contact_name' => 'contact name',
+    'contact_phone' => 'contact phone',
 ];

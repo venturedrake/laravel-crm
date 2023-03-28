@@ -46,8 +46,11 @@
                         @if($address = $delivery->getShippingAddress())
                             {{ \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) }} {{ ($address->primary) ? '(Primary)' : null }}
                             @if($address->contact)
-                                <small><br >{{ ucwords(__('laravel-crm::lang.contact')) }}: {{ $address->contact }}</small>
-                            @endif    
+                                <small><br >{{ ucwords(__('laravel-crm::lang.contact_name')) }}: {{ $address->contact }}</small>
+                            @endif
+                            @if($address->phone)
+                                <small><br >{{ ucwords(__('laravel-crm::lang.contact_phone')) }}: {{ $address->phone }}</small>
+                            @endif
                         @endif    
                     </td>
                     <td>{{ $delivery->ownerUser->name ?? null }}</td>
