@@ -24,6 +24,9 @@
                     @isset($order->person)
                         {{ $order->person->name }}<br />
                     @endisset
+                    @if($address->contact)
+                        <strong>{{ ucwords(__('laravel-crm::lang.delivery_contact')) }}: {{ $address->contact }}</strong><br >
+                    @endif
                     @if($address)
                         {{ $address->line1 }}<br />
                         @if($address->line2)

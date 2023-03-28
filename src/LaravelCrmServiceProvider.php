@@ -380,6 +380,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/alter_url_on_laravel_crm_usage_requests_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_url_on_laravel_crm_usage_requests_table.php', 64),
                 __DIR__ . '/../database/migrations/create_laravel_crm_clients_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_clients_table.php', 65),
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_invoices_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_invoices_table.php', 66),
+                __DIR__ . '/../database/migrations/add_contact_to_laravel_crm_addresses_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_contact_to_laravel_crm_addresses_table.php', 67),
             ], 'migrations');
 
             // Publishing the seeders

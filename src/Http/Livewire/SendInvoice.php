@@ -83,7 +83,8 @@ class SendInvoice extends Component
                 'organisation_address' => $organisation_address ?? null,
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
-            ])->save(storage_path($this->pdf)); ;
+            ])->save(storage_path($this->pdf));
+        ;
 
         Mail::send(new \VentureDrake\LaravelCrm\Mail\SendInvoice([
             'to' => $this->to,
