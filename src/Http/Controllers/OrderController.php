@@ -313,6 +313,7 @@ class OrderController extends Controller
                 'address' => $shippingAddress->address,
                 'name' => $shippingAddress->name,
                 'contact' => $shippingAddress->contact,
+                'phone' => $shippingAddress->phone,
                 'line1' => $shippingAddress->line1,
                 'line2' => $shippingAddress->line2,
                 'line3' => $shippingAddress->line3,

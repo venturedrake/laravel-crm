@@ -25,7 +25,10 @@
                         {{ $order->person->name }}<br />
                     @endisset
                     @if($address->contact)
-                        <strong>{{ ucwords(__('laravel-crm::lang.delivery_contact')) }}: {{ $address->contact }}</strong><br >
+                        <strong>{{ ucwords(__('laravel-crm::lang.contact')) }}: {{ $address->contact }}</strong><br >
+                    @endif
+                    @if($address->phone)
+                        <strong>{{ ucwords(__('laravel-crm::lang.phone')) }}: {{ $address->phone }}</strong><br >
                     @endif
                     @if($address)
                         {{ $address->line1 }}<br />
