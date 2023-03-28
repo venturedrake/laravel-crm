@@ -42,6 +42,9 @@
                         <dt class="col-sm-4 text-right">{{ ($address->addressType) ? ucfirst($address->addressType->name).' ' : null }}{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
                         <dd class="col-sm-8">
                             {{ \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) }} {{ ($address->primary) ? '(Primary)' : null }}
+                            @if($address->contact)
+                                <small><br >{{ ucwords(__('laravel-crm::lang.contact')) }}: {{ $address->contact }}</small>
+                            @endif
                         </dd>
                     @endforeach
                 </dl>
