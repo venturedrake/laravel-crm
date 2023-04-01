@@ -23,12 +23,12 @@ class LiveLeadForm extends Component
 
     public function updatedPersonName($value)
     {
-        $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
+        $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
     }
 
     public function updatedOrganisationName($value)
     {
-        $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
+        $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
     }
     
     public function render()
