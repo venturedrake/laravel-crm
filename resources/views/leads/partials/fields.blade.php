@@ -2,7 +2,8 @@
     <div class="col-sm-6 border-right">
 
         @livewire('live-lead-form',[
-            'lead' => $lead ?? null
+            'lead' => $lead ?? null,
+            'generateTitle' => $generateTitle ?? true
         ])
         
         @include('laravel-crm::partials.form.textarea',[
