@@ -2,9 +2,21 @@
 
 namespace VentureDrake\LaravelCrm\Http\Helpers\AutoComplete;
 
+use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Product;
+
+function clients()
+{
+    $data = [];
+
+    foreach (Client::all() as $client) {
+        $data[$client->name] = $client->id;
+    }
+
+    return json_encode($data);
+}
 
 function people()
 {

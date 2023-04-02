@@ -4,7 +4,7 @@
              'name' => 'lead_id',
              'value' => old('lead_id', $order->lead->id ?? $lead->id ?? null),
         ])
-        <span class="autocomplete">
+        {{--<span class="autocomplete">
              @include('laravel-crm::partials.form.hidden',[
                'name' => 'person_id',
                'value' => old('person_id', $order->person->id ?? $person->id ?? null),
@@ -41,7 +41,12 @@
                ],
                'required' => 'true'
             ])
-        </span>
+        </span>--}}
+
+        @livewire('order-form',[
+            'order' => $order ?? null
+        ])
+        
         @include('laravel-crm::partials.form.textarea',[
              'name' => 'description',
              'label' => ucfirst(__('laravel-crm::lang.description')),

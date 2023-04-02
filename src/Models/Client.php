@@ -54,9 +54,13 @@ class Client extends Model
         return config('laravel-crm.db_table_prefix').'clients';
     }
 
-    public function getNameAttribute()
+    public function getNameAttribute($value)
     {
-        return $this->clientable->name;
+        if ($value) {
+            return $value;
+        } else {
+            return $this->clientable->name;
+        }
     }
     
     /**

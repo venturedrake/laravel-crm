@@ -24,8 +24,9 @@ class StoreOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'person_name' => 'required_without:organisation_name|max:255',
-            'organisation_name' => 'required_without:person_name|max:255',
+            'client_name' => 'required|max:255',
+            'organisation_name' => 'required_without:organisation_id|max:255',
+            'person_name' => 'required_without:person_id|max:255',
             'user_owner_id' => 'required',
         ];
     }

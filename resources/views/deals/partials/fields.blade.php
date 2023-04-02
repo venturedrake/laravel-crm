@@ -4,6 +4,26 @@
              'name' => 'lead_id',
              'value' => old('lead_id', $deal->lead->id ?? $lead->id ?? null),
         ])
+        
+        <span class="autocomplete">
+            @include('laravel-crm::partials.form.hidden',[
+              'name' => 'organisation_id',
+              'value' => old('organisation_id', $deal->organisation->id ?? $organisation->id ??  null),
+            ])
+            <script type="text/javascript">
+                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
+            </script>
+            @include('laravel-crm::partials.form.text',[
+                'name' => 'organisation_name',
+                'label' => ucfirst(__('laravel-crm::lang.organization')),
+                'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
+                'value' => old('organisation_name',$deal->organisation->name ?? $organisation->name ?? null),
+                'attributes' => [
+                  'autocomplete' => \Illuminate\Support\Str::random()
+               ],
+               'required' => 'true'
+            ])
+        </span>
         <span class="autocomplete">
              @include('laravel-crm::partials.form.hidden',[
                'name' => 'person_id',
@@ -23,25 +43,7 @@
                'required' => 'true'
             ])
         </span>
-        <span class="autocomplete">
-            @include('laravel-crm::partials.form.hidden',[
-              'name' => 'organisation_id',
-              'value' => old('organisation_id', $deal->organisation->id ?? $organisation->id ??  null),
-            ])
-            <script type="text/javascript">
-                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
-            </script>
-            @include('laravel-crm::partials.form.text',[
-                'name' => 'organisation_name',
-                'label' => ucfirst(__('laravel-crm::lang.organization')),
-                'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$deal->organisation->name ?? $organisation->name ?? null),
-                'attributes' => [
-                  'autocomplete' => \Illuminate\Support\Str::random()
-               ],
-               'required' => 'true'
-            ])
-        </span>    
+        
         @include('laravel-crm::partials.form.text',[
             'name' => 'title',
             'label' => ucfirst(__('laravel-crm::lang.title')),
