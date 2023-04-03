@@ -56,13 +56,15 @@
                      'value' => old('prefix', ($invoice->prefix ?? $prefix->value ?? 'INV-')),
                 ])
                 
-                @include('laravel-crm::partials.form.text',[
-                    'name' => 'number',
-                    'label' => ucfirst(__('laravel-crm::lang.invoice_number')),
-                    'value' => old('number', $invoice->number ?? $number ?? null),
-                    'prepend' => '<span aria-hidden="true">'.($invoice->prefix ?? $invoicePrefix->value ?? 'INV-').'</span>',
-                    'required' => 'true'
-                ])
+                @if(! \Dcblogdev\Xero\Facades\Xero::isConnected())
+                    @include('laravel-crm::partials.form.text',[
+                        'name' => 'number',
+                        'label' => ucfirst(__('laravel-crm::lang.invoice_number')),
+                        'value' => old('number', $invoice->number ?? $number ?? null),
+                        'prepend' => '<span aria-hidden="true">'.($invoice->prefix ?? $invoicePrefix->value ?? 'INV-').'</span>',
+                        'required' => 'true'
+                    ])
+                @endif    
             </div>
         </div>
         <div class="row">

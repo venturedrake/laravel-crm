@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Dcblogdev\Xero\Facades\Xero;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Invoice;
 
@@ -19,6 +20,10 @@ class InvoiceObserver
 
         if (! app()->runningInConsole()) {
             $invoice->user_created_id = auth()->user()->id ?? null;
+        }
+
+        if (Xero::isConnected() && ! $invoice->number) {
+            $invoice->number = Invoice::orderBy('number', 'DESC')->first()->number + 1;
         }
     }
 

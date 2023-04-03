@@ -59,7 +59,7 @@ class Client extends Model
         if ($value) {
             return $value;
         } else {
-            return $this->clientable->name;
+            return $this->clientable->name ?? null;
         }
     }
     

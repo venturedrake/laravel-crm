@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Requests;
 
+use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateInvoiceRequest extends FormRequest
@@ -23,13 +24,18 @@ class UpdateInvoiceRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'person_name' => 'required_without:organisation_name|max:255',
             'organisation_name' => 'required_without:person_name|max:255',
-            'number' => 'required|integer|unique:VentureDrake\LaravelCrm\Models\Invoice,number,'.$this->invoice->id,
             'issue_date' => 'required|date_format:Y/m/d',
             'due_date' => 'required|date_format:Y/m/d',
             'currency' => 'required',
         ];
+
+        if (! Xero::isConnected()) {
+            $rules['number'] = 'required|integer|unique:VentureDrake\LaravelCrm\Models\Invoice,number,'.$this->invoice->id;
+        }
+
+        return $rules;
     }
 }
