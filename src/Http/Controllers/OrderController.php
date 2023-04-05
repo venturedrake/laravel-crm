@@ -127,12 +127,12 @@ class OrderController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
         
-        if($request->client_name && ! $request->client_id){
+        if ($request->client_name && ! $request->client_id) {
             $client = Client::create([
                 'name' => $request->client_name,
                 'user_owner_id' => $request->user_owner_id,
             ]);
-        }else{
+        } else {
             $client = Client::find($request->client_id);
         }
 
@@ -226,12 +226,12 @@ class OrderController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
 
-        if($request->client_name && ! $request->client_id){
+        if ($request->client_name && ! $request->client_id) {
             $client = Client::create([
                 'name' => $request->client_name,
                 'user_owner_id' => $request->user_owner_id,
             ]);
-        }else{
+        } else {
             $client = Client::find($request->client_id);
         }
 

@@ -26,24 +26,40 @@ class LiveOrderForm extends Component
         $this->person_name = old('person_name') ?? $order->person->name ?? null;
         $this->organisation_id = old('organisation_id') ?? $order->organisation->id ?? null;
         $this->organisation_name = old('organisation_name') ?? $order->organisation->name ?? null;
+
+        if ($this->client_id) {
+            $this->getClientOrganisations();
+
+            $this->getClientPeople();
+        }
     }
 
     public function updatedClientName($value)
     {
         if ($this->client_id) {
-            foreach (Client::find($this->client_id)->contacts()
-                        ->where('entityable_type', 'LIKE', '%Organisation%')
-                        ->get() as $contact) {
-                $this->organisations[$contact->entityable_id] = $contact->entityable->name;
-                $this->clientHasOrganisations = true;
-            }
+            $this->getClientOrganisations();
 
-            foreach (Client::find($this->client_id)->contacts()
-                        ->where('entityable_type', 'LIKE', '%Person%')
-                        ->get() as $contact) {
-                $this->people[$contact->entityable_id] = $contact->entityable->name;
-                $this->clientHasPeople = true;
-            }
+            $this->getClientPeople();
+        }
+    }
+    
+    public function getClientOrganisations()
+    {
+        foreach (Client::find($this->client_id)->contacts()
+                     ->where('entityable_type', 'LIKE', '%Organisation%')
+                     ->get() as $contact) {
+            $this->organisations[$contact->entityable_id] = $contact->entityable->name;
+            $this->clientHasOrganisations = true;
+        }
+    }
+
+    public function getClientPeople()
+    {
+        foreach (Client::find($this->client_id)->contacts()
+                     ->where('entityable_type', 'LIKE', '%Person%')
+                     ->get() as $contact) {
+            $this->people[$contact->entityable_id] = $contact->entityable->name;
+            $this->clientHasPeople = true;
         }
     }
     

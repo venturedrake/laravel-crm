@@ -43,7 +43,7 @@ class Order extends Model
 
     public function getTitleAttribute()
     {
-        return money($this->total, $this->currency).' - '.($this->organisation->name ?? $this->organisation->person->name ?? null);
+        return money($this->total, $this->currency).' - '.($this->client->name ?? $this->organisation->name ?? $this->organisation->person->name ?? null);
     }
 
     public function setSubtotalAttribute($value)
@@ -99,6 +99,11 @@ class Order extends Model
     public function organisation()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Client::class);
     }
 
     public function orderProducts()

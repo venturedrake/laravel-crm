@@ -46,8 +46,19 @@
                             'limit' => 3
                         ])</td>
                     <td>
-                        {{ $order->organisation->name ?? null }}<br />
-                        <small>{{ $order->person->name ?? null }}</small>
+                        @if($order->client)
+                            {{ $order->client->name }}
+                        @endif
+                        @if($order->organisation)
+                            @if($order->client)<br /><small>@endif
+                                {{ $order->organisation->name }}
+                                @if($order->client)</small>@endif
+                        @endif
+                        @if($order->organisation && $order->person)
+                            <br /><small>{{ $order->person->name }}</small>
+                        @elseif($order->person)
+                            {{ $order->person->name }}
+                        @endif
                     </td>
                     <td>{{ money($order->subtotal, $order->currency) }}</td>
                     <td>{{ money($order->discount, $order->currency) }}</td>
