@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrderRequest;
+use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -125,8 +126,27 @@ class OrderController extends Controller
         } elseif ($request->organisation_id) {
             $organisation = Organisation::find($request->organisation_id);
         }
+        
+        if($request->client_name && ! $request->client_id){
+            $client = Client::create([
+                'name' => $request->client_name,
+                'user_owner_id' => $request->user_owner_id,
+            ]);
+        }else{
+            $client = Client::find($request->client_id);
+        }
 
-        $this->orderService->create($request, $person ?? null, $organisation ?? null);
+        $client->contacts()->firstOrCreate([
+            'entityable_type' => $organisation->getMorphClass(),
+            'entityable_id' => $organisation->id,
+        ]);
+
+        $client->contacts()->firstOrCreate([
+            'entityable_type' => $person->getMorphClass(),
+            'entityable_id' => $person->id,
+        ]);
+
+        $this->orderService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.order_stored')))->success()->important();
 
@@ -206,7 +226,26 @@ class OrderController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
 
-        $order = $this->orderService->update($request, $order, $person ?? null, $organisation ?? null);
+        if($request->client_name && ! $request->client_id){
+            $client = Client::create([
+                'name' => $request->client_name,
+                'user_owner_id' => $request->user_owner_id,
+            ]);
+        }else{
+            $client = Client::find($request->client_id);
+        }
+
+        $client->contacts()->firstOrCreate([
+            'entityable_type' => $organisation->getMorphClass(),
+            'entityable_id' => $organisation->id,
+        ]);
+
+        $client->contacts()->firstOrCreate([
+            'entityable_type' => $person->getMorphClass(),
+            'entityable_id' => $person->id,
+        ]);
+
+        $order = $this->orderService->update($request, $order, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.order_updated')))->success()->important();
 

@@ -401,4 +401,6 @@ return [
     'delivery_contact' => 'delivery contact',
     'contact_name' => 'contact name',
     'contact_phone' => 'contact phone',
+    'delivery_expected' => 'delivery expected',
+    'delivered_on' => 'delivered on',
 ];

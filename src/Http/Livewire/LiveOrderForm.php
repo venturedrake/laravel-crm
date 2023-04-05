@@ -8,6 +8,8 @@ use VentureDrake\LaravelCrm\Models\Client;
 class LiveOrderForm extends Component
 {
     public $client_id;
+    public $clientHasOrganisations = false;
+    public $clientHasPeople = false;
     public $client_name;
     public $people = [];
     public $person_id;
@@ -33,26 +35,16 @@ class LiveOrderForm extends Component
                         ->where('entityable_type', 'LIKE', '%Organisation%')
                         ->get() as $contact) {
                 $this->organisations[$contact->entityable_id] = $contact->entityable->name;
+                $this->clientHasOrganisations = true;
             }
 
             foreach (Client::find($this->client_id)->contacts()
                         ->where('entityable_type', 'LIKE', '%Person%')
                         ->get() as $contact) {
                 $this->people[$contact->entityable_id] = $contact->entityable->name;
+                $this->clientHasPeople = true;
             }
         }
-        
-        // $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
-    }
-
-    public function updatedOrganisationName($value)
-    {
-        // $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
-    }
-
-    public function updatedPersonName($value)
-    {
-        // $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
     }
     
     public function render()

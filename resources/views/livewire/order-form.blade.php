@@ -23,7 +23,7 @@
         </span>    
     </span>
     
-    @if($client_id)
+    @if($clientHasOrganisations)
 
         @include('laravel-crm::partials.form.select',[
             'name' => 'organisation_id',
@@ -66,7 +66,7 @@
     @endif
 
 
-    @if($client_id)
+    @if($clientHasPeople)
 
         @include('laravel-crm::partials.form.select',[
             'name' => 'person_id',

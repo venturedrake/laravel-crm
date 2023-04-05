@@ -27,7 +27,14 @@ const appJquery = function() {
 
             $('[data-toggle="tooltip"]').tooltip()
 
-            $('input[name="birthday"], input[name="expected_close"], input[name="issue_at"], input[name="expire_at"], input[name="issue_date"], input[name="due_date"]').datetimepicker({
+            $('input[name="birthday"],' +
+                ' input[name="expected_close"],' +
+                ' input[name="issue_at"],' +
+                ' input[name="expire_at"],' +
+                ' input[name="issue_date"],' +
+                ' input[name="due_date"],' +
+                ' input[name="delivery_expected"],' +
+                ' input[name="delivered_on"]').datetimepicker({
                 timepicker:false,
                 format: 'Y/m/d',
             });
@@ -64,13 +71,15 @@ const appJquery = function() {
                 }
             });
 
-            $("select[name^='products']").select2({
-                data: products
-            });
+            if(typeof products !== 'undefined'){
+                $("select[name^='products']").select2({
+                    data: products
+                });
 
-            $("select[name^='invoiceLines']").select2({
-                data: products,
-            });
+                $("select[name^='invoiceLines']").select2({
+                    data: products,
+                });
+            }
 
             $('#input_hex').colorpicker();
 

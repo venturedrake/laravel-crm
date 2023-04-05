@@ -17,7 +17,7 @@ class AddDeliveryDatesToLaravelCrmDeliveriesTable extends Migration
             $table->datetime('delivery_initiated')->after('order_id')->nullable();
             $table->datetime('delivery_shipped')->after('delivery_initiated')->nullable();
             $table->datetime('delivery_expected')->after('delivery_shipped')->nullable();
-            $table->datetime('delivered_at')->after('delivery_expected')->nullable();
+            $table->datetime('delivered_on')->after('delivery_expected')->nullable();
         });
     }
 
@@ -32,7 +32,7 @@ class AddDeliveryDatesToLaravelCrmDeliveriesTable extends Migration
             $table->dropColumn([
                 'delivery_initiated',
                 'delivery_shipped',
-                'delivery_expected'
+                'delivery_expected',
                 'delivered_at'
             ]);
         });

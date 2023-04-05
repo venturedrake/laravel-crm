@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
@@ -29,6 +30,34 @@ class Delivery extends Model
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'deliveries';
+    }
+
+    public function setDeliveryExpectedAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['delivery_expected'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+
+    public function getDeliveryExpectedAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format('Y/m/d');
+        }
+    }
+
+    public function setDeliveredOnAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['delivered_on'] = Carbon::createFromFormat('Y/m/d', $value);
+        }
+    }
+
+    public function getDeliveredOnAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format('Y/m/d');
+        }
     }
 
     public function order()

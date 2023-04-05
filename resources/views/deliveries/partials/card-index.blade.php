@@ -27,6 +27,8 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.customer')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.shipping_address')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.delivery_expected')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.delivered_on')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="240"></th>
             </tr>
@@ -59,6 +61,12 @@
                                 <small><br >{{ ucwords(__('laravel-crm::lang.phone')) }}: {{ $address->phone }}</small>
                             @endif
                         @endif    
+                    </td>
+                    <td>
+                        {{ $delivery->delivery_expected  ?? null }}
+                    </td>
+                    <td>
+                        {{ $delivery->delivered_on  ?? null }}
                     </td>
                     <td>{{ $delivery->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
