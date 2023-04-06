@@ -29,7 +29,7 @@
             'name' => 'organisation_id',
             'label' => ucfirst(__('laravel-crm::lang.organization')),
             'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-            'options' => $organisations,
+            'options' => ['' => ''] + $organisations,
             'attributes' => [
                 'wire:model' => 'organisation_id'        
             ],
@@ -71,7 +71,7 @@
             'name' => 'person_id',
             'label' => ucfirst(__('laravel-crm::lang.contact_person')),
             'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-            'options' => $people,
+            'options' => ['' => ''] + $people,
             'attributes' => [
                 'wire:model' => 'person_id'        
             ],
