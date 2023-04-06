@@ -54,12 +54,10 @@ class Lead extends Model
             $this->attributes['amount'] = null;
         }
     }
-
     public function client()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Client::class);
     }
-    
     public function organisation()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);

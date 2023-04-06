@@ -27,6 +27,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.value')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.client')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact_person')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.expected_close')) }}</th>
@@ -44,6 +45,7 @@
                             'limit' => 3
                         ])</td>
                     <td>{{ money($deal->amount, $deal->currency) }}</td>
+                    <td>{{ $deal->client->name ?? null }}</td>
                     <td>{{ $deal->organisation->name ?? null }}</td>
                     <td>{{ $deal->person->name ?? null }}</td>
                     <td>{{ ($deal->expected_close) ? $deal->expected_close->toFormattedDateString() : null }}</td>

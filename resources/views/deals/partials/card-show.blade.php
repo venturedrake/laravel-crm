@@ -48,6 +48,13 @@
                 <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($deal->amount, $deal->currency) }}</p>
                 <p><span class="fa fa-info" aria-hidden="true"></span> {{ $deal->description }}</p>
                 <p><span class="fa fa-user-circle" aria-hidden="true"></span> <a href="{{ route('laravel-crm.users.show', $deal->ownerUser) }}">{{ $deal->ownerUser->name ?? null }}</a></p>
+                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.client')) }}</h6>
+                <hr />
+                <p><span class="fa fa-address-card" aria-hidden="true"></span> @if($deal->client)<a href="{{ route('laravel-crm.clients.show',$deal->client) }}">{{ $deal->client->name }}</a>@endif </p>
+                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
+                <hr />
+                <p><span class="fa fa-building" aria-hidden="true"></span> @if($deal->organisation)<a href="{{ route('laravel-crm.organisations.show',$deal->organisation) }}">{{ $deal->organisation->name }}</a>@endif</p>
+                <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
                 <p><span class="fa fa-user" aria-hidden="true"></span> @if($deal->person)<a href="{{ route('laravel-crm.people.show',$deal->person) }}">{{ $deal->person->name }}</a>@endif </p>
@@ -57,10 +64,6 @@
                 @isset($phone)
                     <p><span class="fa fa-phone" aria-hidden="true"></span> <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})</p>
                 @endisset
-                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
-                <hr />
-                <p><span class="fa fa-building" aria-hidden="true"></span> @if($deal->organisation)<a href="{{ route('laravel-crm.organisations.show',$deal->organisation) }}">{{ $deal->organisation->name }}</a>@endif</p>
-                <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
                 @can('view crm products')
                 <h6 class="text-uppercase mt-4 section-h6-title-table"><span>{{ ucfirst(__('laravel-crm::lang.products')) }} ({{ $deal->dealProducts->count() }})</span></h6>
                 <table class="table table-hover">

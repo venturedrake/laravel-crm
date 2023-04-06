@@ -23,13 +23,14 @@ class DealService
         $this->dealRepository = $dealRepository;
     }
 
-    public function create($request, $person = null, $organisation = null)
+    public function create($request, $person = null, $organisation = null, $client = null)
     {
         $deal = Deal::create([
             'external_id' => Uuid::uuid4()->toString(),
             'lead_id' => $request->lead_id ?? null,
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
+            'client_id' => $client->id ?? null,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,
@@ -55,11 +56,12 @@ class DealService
         return $deal;
     }
 
-    public function update($request, Deal $deal, $person = null, $organisation = null)
+    public function update($request, Deal $deal, $person = null, $organisation = null, $client = null)
     {
         $deal->update([
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
+            'client_id' => $client->id ?? null,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,
