@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
+use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -96,7 +97,32 @@ class LeadController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
 
-        $lead = $this->leadService->create($request, $person ?? null, $organisation ?? null);
+        if ($request->client_name && ! $request->client_id) {
+            $client = Client::create([
+                'name' => $request->client_name,
+                'user_owner_id' => $request->user_owner_id,
+            ]);
+        } elseif ($request->client_id) {
+            $client = Client::find($request->client_id);
+        }
+
+        if (isset($client)) {
+            if (isset($organisation)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $organisation->getMorphClass(),
+                    'entityable_id' => $organisation->id,
+                ]);
+            }
+
+            if (isset($person)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+            }
+        }
+
+        $lead = $this->leadService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_stored')))->success()->important();
         
@@ -164,7 +190,32 @@ class LeadController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
 
-        $lead = $this->leadService->update($request, $lead, $person ?? null, $organisation ?? null);
+        if ($request->client_name && ! $request->client_id) {
+            $client = Client::create([
+                'name' => $request->client_name,
+                'user_owner_id' => $request->user_owner_id,
+            ]);
+        } elseif ($request->client_id) {
+            $client = Client::find($request->client_id);
+        }
+
+        if (isset($client)) {
+            if (isset($organisation)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $organisation->getMorphClass(),
+                    'entityable_id' => $organisation->id,
+                ]);
+            }
+
+            if (isset($person)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+            }
+        }
+
+        $lead = $this->leadService->update($request, $lead, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_updated')))->success()->important();
         

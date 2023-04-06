@@ -40,6 +40,12 @@ class LiveOrderForm extends Component
             $this->getClientOrganisations();
 
             $this->getClientPeople();
+        } else {
+            $this->clientHasOrganisations = false;
+
+            $this->clientHasPeople = false;
+
+            $this->dispatchBrowserEvent('clientNameUpdated');
         }
     }
     

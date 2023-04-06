@@ -27,6 +27,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.value')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.client')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact_person')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
@@ -43,6 +44,7 @@
                             'limit' => 3
                         ])</td>
                     <td>{{ money($lead->amount, $lead->currency) }}</td>
+                    <td>{{ $lead->client->name ?? null}}</td>
                     <td>{{ $lead->organisation->name ?? null}}</td>
                     <td>{{ $lead->person->name ??  null }}</td>
                     <td>{{ $lead->ownerUser->name ?? null }}</td>

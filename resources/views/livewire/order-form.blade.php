@@ -64,8 +64,7 @@
     </span>
         
     @endif
-
-
+    
     @if($clientHasPeople)
 
         @include('laravel-crm::partials.form.select',[
@@ -115,6 +114,11 @@
                 bindClientAutocomplete();
                 bindPersonAutocomplete();
                 bindOrganisationAutocomplete();
+
+                window.addEventListener('clientNameUpdated', event => {
+                    bindPersonAutocomplete();
+                    bindOrganisationAutocomplete();
+                });
 
                 function bindClientAutocomplete(){
 

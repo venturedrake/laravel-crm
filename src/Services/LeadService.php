@@ -22,12 +22,13 @@ class LeadService
         $this->leadRepository = $leadRepository;
     }
 
-    public function create($request, $person = null, $organisation = null)
+    public function create($request, $person = null, $organisation = null, $client = null)
     {
         $lead = Lead::create([
             'external_id' => Uuid::uuid4()->toString(),
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
+            'client_id' => $client->id ?? null,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,
@@ -41,11 +42,12 @@ class LeadService
         return $lead;
     }
 
-    public function update($request, Lead $lead, $person = null, $organisation = null)
+    public function update($request, Lead $lead, $person = null, $organisation = null, $client = null)
     {
         $lead->update([
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
+            'client_id' => $client->id ?? null,
             'title' => $request->title,
             'description' => $request->description,
             'amount' => $request->amount,
