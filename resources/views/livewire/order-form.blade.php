@@ -125,26 +125,13 @@
                     $('input[name="client_name"]').autocomplete({
                         source: clients,
                         onSelectItem: function (item, element) {
-                        @this.set('client_id',item.value);
-                        @this.set('client_name',item.label);
-                        @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
-                        @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
-                        @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
-                        @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
-
+                            @this.set('client_id',item.value);
+                            @this.set('client_name',item.label);
+                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
+                            @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
+                            @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
+                            @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             $(element).closest('.autocomplete').find('input[name="client_id"]').val(item.value).trigger('change');
-
-                            $.ajax({
-                                url: "/crm/clients/" +  item.value + "/autocomplete",
-                                cache: false
-                            }).done(function( data ) {
-
-                               /* $('.autocomplete-person').find('input[name="phone"]').val(data.phone);
-                                $('.autocomplete-person').find('select[name="phone_type"]').val(data.phone_type);
-                                $('.autocomplete-person').find('input[name="email"]').val(data.email);
-                                $('.autocomplete-person').find('select[name="email_type"]').val(data.email_type);
-*/
-                            });
                         },
                         highlightClass: 'text-danger',
                         treshold: 2,
@@ -247,20 +234,7 @@
                             @this.set('person_name',item.label);
                             @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
                             @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
-
                             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
-
-                            $.ajax({
-                                url: "/crm/people/" +  item.value + "/autocomplete",
-                                cache: false
-                            }).done(function( data ) {
-
-                                $('.autocomplete-person').find('input[name="phone"]').val(data.phone);
-                                $('.autocomplete-person').find('select[name="phone_type"]').val(data.phone_type);
-                                $('.autocomplete-person').find('input[name="email"]').val(data.email);
-                                $('.autocomplete-person').find('select[name="email_type"]').val(data.email_type);
-
-                            });
                         },
                         highlightClass: 'text-danger',
                         treshold: 2,

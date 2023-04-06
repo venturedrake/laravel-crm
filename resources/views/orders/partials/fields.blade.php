@@ -4,44 +4,6 @@
              'name' => 'lead_id',
              'value' => old('lead_id', $order->lead->id ?? $lead->id ?? null),
         ])
-        {{--<span class="autocomplete">
-             @include('laravel-crm::partials.form.hidden',[
-               'name' => 'person_id',
-               'value' => old('person_id', $order->person->id ?? $person->id ?? null),
-            ])
-            <script type="text/javascript">
-                let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
-            </script>
-            @include('laravel-crm::partials.form.text',[
-               'name' => 'person_name',
-               'label' => ucfirst(__('laravel-crm::lang.contact_person')),
-               'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-               'value' => old('person_name', $order->person->name ?? $person->name ?? null),
-               'attributes' => [
-                  'autocomplete' => \Illuminate\Support\Str::random()
-               ],
-               'required' => 'true'
-            ])
-        </span>
-        <span class="autocomplete">
-            @include('laravel-crm::partials.form.hidden',[
-              'name' => 'organisation_id',
-              'value' => old('organisation_id', $order->organisation->id ?? $organisation->id ??  null),
-            ])
-            <script type="text/javascript">
-                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
-            </script>
-            @include('laravel-crm::partials.form.text',[
-                'name' => 'organisation_name',
-                'label' => ucfirst(__('laravel-crm::lang.organization')),
-                'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$order->organisation->name ?? $organisation->name ?? null),
-                'attributes' => [
-                  'autocomplete' => \Illuminate\Support\Str::random()
-               ],
-               'required' => 'true'
-            ])
-        </span>--}}
 
         @livewire('order-form',[
             'order' => $order ?? null
@@ -85,9 +47,9 @@
               ])
 
         @livewire('address-edit', [
-        'addresses' => $addresses ?? null,
-        'old' => old('addresses'),
-        'model' => 'order'
+            'addresses' => $addresses ?? null,
+            'old' => old('addresses'),
+            'model' => 'order'
         ])
     </div>
     <div class="col-sm-7">

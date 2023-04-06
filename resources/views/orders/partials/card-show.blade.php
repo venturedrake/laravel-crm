@@ -67,7 +67,13 @@
                     <dt class="col-sm-4 text-right">Owner</dt>
                     <dd class="col-sm-8">{{ $order->ownerUser->name ?? null }}</dd>
                 </dl>
-
+                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.client')) }}</h6>
+                <hr />
+                <p><span class="fa fa-address-card" aria-hidden="true"></span> @if($order->client)<a href="{{ route('laravel-crm.clients.show',$order->client) }}">{{ $order->client->name }}</a>@endif </p>
+                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
+                <hr />
+                <p><span class="fa fa-building" aria-hidden="true"></span> @if($order->organisation)<a href="{{ route('laravel-crm.organisations.show',$order->organisation) }}">{{ $order->organisation->name }}</a>@endif</p>
+                <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
                 <p><span class="fa fa-user" aria-hidden="true"></span> @if($order->person)<a href="{{ route('laravel-crm.people.show',$order->person) }}">{{ $order->person->name }}</a>@endif </p>
@@ -77,10 +83,6 @@
                 @isset($phone)
                     <p><span class="fa fa-phone" aria-hidden="true"></span> <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})</p>
                 @endisset
-                <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
-                <hr />
-                <p><span class="fa fa-building" aria-hidden="true"></span> @if($order->organisation)<a href="{{ route('laravel-crm.organisations.show',$order->organisation) }}">{{ $order->organisation->name }}</a>@endif</p>
-                <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
                 @can('view crm products')
                 <h6 class="text-uppercase mt-4 section-h6-title-table"><span>{{ ucfirst(__('laravel-crm::lang.order_items')) }} ({{ $order->orderProducts->count() }})</span></h6>
                 <table class="table table-hover">
