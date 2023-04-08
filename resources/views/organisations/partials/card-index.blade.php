@@ -52,11 +52,14 @@
                     <td></td>
                     <td>{{ $organisation->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
+                        @can('create crm leads')
+                        <a href="{{ route('laravel-crm.leads.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
+                        @endcan    
                         @can('view crm organisations')
-                        <a href="{{  route('laravel-crm.organisations.show',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        <a href="{{ route('laravel-crm.organisations.show',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
                         @can('edit crm organisations')
-                        <a href="{{  route('laravel-crm.organisations.edit',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                        <a href="{{ route('laravel-crm.organisations.edit',$organisation) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                         @endcan
                         @can('delete crm organisations')    
                         <form action="{{ route('laravel-crm.organisations.destroy',$organisation) }}" method="POST" class="form-check-inline mr-0 form-delete-button">

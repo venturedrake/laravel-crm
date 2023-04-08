@@ -22,14 +22,14 @@ class LiveLeadForm extends Component
     public $title;
     public $generateTitle;
 
-    public function mount($lead, $generateTitle = true)
+    public function mount($lead, $generateTitle = true, $client = null, $organisation = null, $person = null)
     {
-        $this->client_id = old('client_id') ?? $lead->client->id ?? null;
-        $this->client_name = old('client_name') ?? $lead->client->name ?? null;
-        $this->person_id = old('person_id') ?? $lead->person->id ?? null;
-        $this->person_name = old('person_name') ?? $lead->person->name ?? null;
-        $this->organisation_id = old('organisation_id') ?? $lead->organisation->id ?? null;
-        $this->organisation_name = old('organisation_name') ?? $lead->organisation->name ?? null;
+        $this->client_id = old('client_id') ?? $lead->client->id ?? $client->id ?? null;
+        $this->client_name = old('client_name') ?? $lead->client->name ?? $client->name ?? null;
+        $this->person_id = old('person_id') ?? $lead->person->id ?? $person->id ?? null;
+        $this->person_name = old('person_name') ?? $lead->person->name ?? $person->name ?? null;
+        $this->organisation_id = old('organisation_id') ?? $lead->organisation->id ?? $organisation->id ?? null;
+        $this->organisation_name = old('organisation_name') ?? $lead->organisation->name ?? $organisation->name ?? null;
 
         if ($this->client_id) {
             $this->getClientOrganisations();

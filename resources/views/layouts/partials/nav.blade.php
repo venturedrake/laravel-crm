@@ -50,11 +50,11 @@
             @can('view crm clients')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.clients') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.clients.index')) }}"><i class="fa fa-address-card"></i> {{ ucfirst(__('laravel-crm::lang.clients')) }}</a></li>
             @endcan
-            @can('view crm people')
-            <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.people') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.people.index')) }}"><i class="fa fa-user-circle"></i> {{ ucfirst(__('laravel-crm::lang.people')) }}</a></li>
-            @endcan
             @can('view crm organisations')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.organisations') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.organisations.index')) }}"><i class="fa fa-building"></i> {{ ucfirst(__('laravel-crm::lang.organizations')) }}</a></li>
+            @endcan
+            @can('view crm people')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.people') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.people.index')) }}"><i class="fa fa-user-circle"></i> {{ ucfirst(__('laravel-crm::lang.people')) }}</a></li>
             @endcan
             @can('view crm users')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.users') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.users.index')) }}"><i class="fa fa-user"></i> {{ ucfirst(__('laravel-crm::lang.users')) }}</a></li>

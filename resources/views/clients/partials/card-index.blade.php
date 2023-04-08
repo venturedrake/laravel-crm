@@ -39,6 +39,9 @@
                         ])</td>
                     <td>{{ $client->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
+                        @can('create crm leads')
+                            <a href="{{ route('laravel-crm.leads.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
+                        @endcan
                         @can('view crm clients')
                             <a href="{{  route('laravel-crm.clients.show',$client) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan

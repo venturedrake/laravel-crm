@@ -72,9 +72,30 @@ class LeadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('laravel-crm::leads.create');
+        switch ($request->model) {
+            case 'client':
+                $client = Client::find($request->id);
+
+                break;
+                
+            case 'organisation':
+                $organisation = Organisation::find($request->id);
+
+                break;
+                
+            case 'person':
+                $person = Person::find($request->id);
+
+                break;
+        }
+
+        return view('laravel-crm::leads.create', [
+            'client' => $client ?? null,
+            'organisation' => $organisation ?? null,
+            'person' => $person ?? null,
+        ]);
     }
 
     /**

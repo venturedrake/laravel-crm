@@ -14,8 +14,8 @@
                     'model' => $organisation,
                     'route' => 'organisations'
                 ]) | 
-                @can('create crm deals')
-                <a href="{{ url(route('laravel-crm.deals.create',['model' => 'organisation', 'id' => $organisation->id])) }}" alt="Add deal" class="btn btn-success btn-sm"><span class="fa fa-plus" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.add_new_deal')) }}</a>
+                @can('create crm leads')
+                    <a href="{{ route('laravel-crm.leads.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
                 @endcan
                 @include('laravel-crm::partials.navs.activities') | 
                 @can('edit crm organisations')
