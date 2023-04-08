@@ -3,6 +3,8 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use VentureDrake\LaravelCrm\Http\Requests\StoreClientRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateClientRequest;
 use VentureDrake\LaravelCrm\Models\Client;
 
 class ClientController extends Controller
@@ -62,16 +64,7 @@ class ClientController extends Controller
      */
     public function create(Request $request)
     {
-        /*switch ($request->model) {
-            case "organisation":
-                $organisation = Client::find($request->id);
-
-                break;
-        }
-
-        return view('laravel-crm::people.create', [
-            'organisation' => $organisation ?? null,
-        ]);*/
+        return view('laravel-crm::clients.create');
     }
 
     /**
@@ -82,27 +75,16 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        /* $person = $this->personService->create($request);
+        $client = Client::create([
+             'name' => $request->name,
+             'user_owner_id' => $request->user_owner_id,
+         ]);
 
-         $person->labels()->sync($request->labels ?? []);
+        $client->labels()->sync($request->labels ?? []);
 
-         if ($request->organisation_name) {
-             if (! $request->organisation_id) {
-                 $organisation = Client::create([
-                     'external_id' => Uuid::uuid4()->toString(),
-                     'name' => $request->organisation_name,
-                     'user_owner_id' => $request->user_owner_id,
-                 ]);
-                 $person->organisation()->associate($organisation);
-             } else {
-                 $person->organisation()->associate(Client::find($request->organisation_id));
-             }
-             $person->save();
-         }
+        flash(ucfirst(trans('laravel-crm::lang.client_stored')))->success()->important();
 
-         flash(ucfirst(trans('laravel-crm::lang.person_stored')))->success()->important();
-
-         return redirect(route('laravel-crm.people.index'));*/
+        return redirect(route('laravel-crm.clients.index'));
     }
 
     /**
@@ -126,12 +108,9 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        /* return view('laravel-crm::people.edit', [
-             'person' => $person,
-             'emails' => $person->emails,
-             'phones' => $person->phones,
-             'addresses' => $person->addresses,
-         ]);*/
+        return view('laravel-crm::clients.edit', [
+             'client' => $client,
+         ]);
     }
 
     /**
@@ -143,30 +122,16 @@ class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, Client $client)
     {
-        /* $person = $this->personService->update($person, $request);
+        $client->update([
+             'name' => $request->name,
+             'user_owner_id' => $request->user_owner_id,
+         ]);
 
-         $person->labels()->sync($request->labels ?? []);
+        $client->labels()->sync($request->labels ?? []);
 
-         if ($request->organisation_name) {
-             if (! $request->organisation_id) {
-                 $organisation = Client::create([
-                     'external_id' => Uuid::uuid4()->toString(),
-                     'name' => $request->organisation_name,
-                     'user_owner_id' => $request->user_owner_id,
-                 ]);
-                 $person->organisation()->associate($organisation);
-             } else {
-                 $person->organisation()->associate(Client::find($request->organisation_id));
-             }
-             $person->save();
-         } elseif (trim($request->organisation_name) == '' && $person->organisation) {
-             $person->organisation()->dissociate();
-             $person->save();
-         }
+        flash(ucfirst(trans('laravel-crm::lang.client_updated')))->success()->important();
 
-         flash(ucfirst(trans('laravel-crm::lang.person_updated')))->success()->important();
-
-         return redirect(route('laravel-crm.people.show', $person));*/
+        return redirect(route('laravel-crm.clients.show', $client));
     }
 
     /**
@@ -177,11 +142,11 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
-        /* $person->delete();
+        $client->delete();
 
-         flash(ucfirst(trans('laravel-crm::lang.person_deleted')))->success()->important();
+        flash(ucfirst(trans('laravel-crm::lang.client_deleted')))->success()->important();
 
-         return redirect(route('laravel-crm.people.index'));*/
+        return redirect(route('laravel-crm.clients.index'));
     }
 
     public function search(Request $request)

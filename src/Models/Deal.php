@@ -78,6 +78,7 @@ class Deal extends Model
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Client::class);
     }
+
     public function dealProducts()
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\DealProduct::class);

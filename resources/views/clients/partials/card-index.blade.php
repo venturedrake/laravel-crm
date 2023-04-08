@@ -11,9 +11,9 @@
                 'action' => route('laravel-crm.clients.filter'),
                 'model' => '\VentureDrake\LaravelCrm\Models\Client'
             ])
-           {{-- @can('create crm clients')
-            <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.clients.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_client')) }}</a></span>
-            @endcan--}}
+            @can('create crm clients')
+                <span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.clients.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_client')) }}</a></span>
+            @endcan
         @endslot
 
     @endcomponent

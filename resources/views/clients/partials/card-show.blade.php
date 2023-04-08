@@ -18,9 +18,9 @@
                 <a href="{{ url(route('laravel-crm.deals.create',['model' => 'client', 'id' => $client->id])) }}" alt="Add deal" class="btn btn-success btn-sm"><span class="fa fa-plus" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.add_new_deal')) }}</a>
                 @endcan--}}
                 @include('laravel-crm::partials.navs.activities') | 
-                {{--@can('edit crm clients')
+                @can('edit crm clients')
                 <a href="{{ url(route('laravel-crm.clients.edit', $client)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                @endcan--}}
+                @endcan
                 @can('delete crm clients')
                 <form action="{{ route('laravel-crm.clients.destroy',$client) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}

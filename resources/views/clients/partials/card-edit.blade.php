@@ -1,4 +1,4 @@
-<form method="POST" action="{{ url(route('laravel-crm.organisations.update', $organisation)) }}">
+<form method="POST" action="{{ url(route('laravel-crm.clients.update', $client)) }}">
     @csrf
     @method('PUT')
     @component('laravel-crm::components.card')
@@ -6,13 +6,13 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                {{ ucfirst(__('laravel-crm::lang.edit_organization')) }}
+                {{ ucfirst(__('laravel-crm::lang.edit_client')) }}
             @endslot
 
             @slot('actions')
                 @include('laravel-crm::partials.return-button',[
-                    'model' => $organisation,
-                    'route' => 'organisations'
+                    'model' => $client,
+                    'route' => 'clients'
                 ])
             @endslot
 
@@ -20,12 +20,12 @@
 
         @component('laravel-crm::components.card-body')
 
-            @include('laravel-crm::organisations.partials.fields')
+            @include('laravel-crm::clients.partials.fields')
 
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.organisations.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+            <a href="{{ url(route('laravel-crm.clients.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
             <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
         @endcomponent
 

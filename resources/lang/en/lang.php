@@ -403,4 +403,10 @@ return [
     'contact_phone' => 'contact phone',
     'delivery_expected' => 'delivery expected',
     'delivered_on' => 'delivered on',
+    'client_deleted' => 'client deleted',
+    'edit_client' => 'edit client',
+    'client_updated' => 'client updated',
+    'client_stored' => 'client stored',
+    'add_client' => 'add client',
+    'create_client' => 'create client',
 ];
