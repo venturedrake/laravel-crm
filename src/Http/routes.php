@@ -220,7 +220,7 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.quotes.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
 
-    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@create')
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@create')
         ->name('laravel-crm.quotes.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Quote']);
 
@@ -309,7 +309,7 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.orders.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Order']);
 
-    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@create')
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@create')
         ->name('laravel-crm.orders.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Order']);
 

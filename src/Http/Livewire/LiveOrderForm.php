@@ -18,14 +18,14 @@ class LiveOrderForm extends Component
     public $organisation_id;
     public $organisation_name;
 
-    public function mount($order)
+    public function mount($order, $client = null, $organisation = null, $person = null)
     {
-        $this->client_id = old('client_id') ?? $order->client->id ?? null;
-        $this->client_name = old('client_name') ?? $order->client->name ?? null;
-        $this->person_id = old('person_id') ?? $order->person->id ?? null;
-        $this->person_name = old('person_name') ?? $order->person->name ?? null;
-        $this->organisation_id = old('organisation_id') ?? $order->organisation->id ?? null;
-        $this->organisation_name = old('organisation_name') ?? $order->organisation->name ?? null;
+        $this->client_id = old('client_id') ?? $order->client->id ?? $client->id ?? null;
+        $this->client_name = old('client_name') ?? $order->client->name ?? $client->name ?? null;
+        $this->person_id = old('person_id') ?? $order->person->id ?? $person->id ?? null;
+        $this->person_name = old('person_name') ?? $order->person->name ?? $person->name ?? null;
+        $this->organisation_id = old('organisation_id') ?? $order->organisation->id ?? $organisation->id ?? null;
+        $this->organisation_name = old('organisation_name') ?? $order->organisation->name ?? $organisation->name ?? null;
 
         if ($this->client_id) {
             $this->getClientOrganisations();

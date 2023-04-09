@@ -6,7 +6,10 @@
         ])
 
         @livewire('order-form',[
-            'order' => $order ?? null
+            'order' => $order ?? null,
+            'client' => $client ?? null,
+            'organisation' => $organisation ?? null,
+            'person' => $person ?? null
         ])
         
         @include('laravel-crm::partials.form.textarea',[
