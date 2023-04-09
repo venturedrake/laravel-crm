@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreQuoteRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateQuoteRequest;
+use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
@@ -84,13 +85,18 @@ class QuoteController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case "person":
-                $person = Person::find($request->id);
+            case 'client':
+                $client = Client::find($request->id);
 
                 break;
 
-            case "organisation":
+            case 'organisation':
                 $organisation = Organisation::find($request->id);
+
+                break;
+
+            case 'person':
+                $person = Person::find($request->id);
 
                 break;
         }
@@ -98,8 +104,9 @@ class QuoteController extends Controller
         $quoteTerms = $this->settingService->get('quote_terms');
 
         return view('laravel-crm::quotes.create', [
-            'person' => $person ?? null,
+            'client' => $client ?? null,
             'organisation' => $organisation ?? null,
+            'person' => $person ?? null,
             'quoteTerms' => $quoteTerms,
         ]);
     }

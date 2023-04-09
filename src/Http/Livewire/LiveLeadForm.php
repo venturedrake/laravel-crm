@@ -39,13 +39,17 @@ class LiveLeadForm extends Component
         
         $this->title = old('title') ?? $lead->title ?? null;
         $this->generateTitle = $generateTitle;
+
+        if (old('title') || (isset($lead) && $lead->title)) {
+            $this->generateTitle = false;
+        } else {
+            $this->generateTitle();
+        }
     }
 
     public function updatedClientName($value)
     {
-        if ($this->generateTitle) {
-            $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
-        }
+        $this->generateTitle();
         
         if ($this->client_id) {
             $this->getClientOrganisations();
@@ -89,9 +93,7 @@ class LiveLeadForm extends Component
 
     public function updatedOrganisationName($value)
     {
-        if ($this->generateTitle && ! $this->client_name) {
-            $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
-        }
+        $this->generateTitle();
     }
 
     public function updatedPersonId($value)
@@ -113,8 +115,19 @@ class LiveLeadForm extends Component
 
     public function updatedPersonName($value)
     {
-        if ($this->generateTitle && ! $this->organisation_name && ! $this->client_name) {
-            $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
+        $this->generateTitle();
+    }
+    
+    public function generateTitle()
+    {
+        if ($this->generateTitle) {
+            if ($this->client_name) {
+                $this->title = $this->client_name . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
+            } elseif ($this->organisation_name) {
+                $this->title = $this->organisation_name . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
+            } elseif ($this->person_name) {
+                $this->title = $this->person_name . ' ' . ucfirst(trans('laravel-crm::lang.lead'));
+            }
         }
     }
 

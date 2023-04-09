@@ -68,20 +68,26 @@ class DealController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case "person":
-                $person = Person::find($request->id);
+            case 'client':
+                $client = Client::find($request->id);
 
                 break;
-                
-            case "organisation":
+
+            case 'organisation':
                 $organisation = Organisation::find($request->id);
 
                 break;
+
+            case 'person':
+                $person = Person::find($request->id);
+
+                break;
         }
-        
+
         return view('laravel-crm::deals.create', [
-            'person' => $person ?? null,
+            'client' => $client ?? null,
             'organisation' => $organisation ?? null,
+            'person' => $person ?? null,
         ]);
     }
 

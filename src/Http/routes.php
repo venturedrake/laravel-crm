@@ -143,7 +143,7 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
         ->name('laravel-crm.deals.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
 
-    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@create')
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@create')
         ->name('laravel-crm.deals.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Deal']);
 

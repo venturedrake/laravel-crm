@@ -7,7 +7,10 @@
 
         @livewire('deal-form',[
             'deal' => $deal ?? null,
-            'generateTitle' => $generateTitle ?? true
+            'generateTitle' => $generateTitle ?? true,
+            'client' => $client ?? null,
+            'organisation' => $organisation ?? null,
+            'person' => $person ?? null
         ])
         
         @include('laravel-crm::partials.form.textarea',[

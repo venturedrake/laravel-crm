@@ -22,14 +22,14 @@ class LiveDealForm extends Component
     public $title;
     public $generateTitle;
 
-    public function mount($deal, $generateTitle = true)
+    public function mount($deal, $generateTitle = true, $client = null, $organisation = null, $person = null)
     {
-        $this->client_id = old('client_id') ?? $deal->client->id ?? null;
-        $this->client_name = old('client_name') ?? $deal->client->name ?? null;
-        $this->person_id = old('person_id') ?? $deal->person->id ?? null;
-        $this->person_name = old('person_name') ?? $deal->person->name ?? null;
-        $this->organisation_id = old('organisation_id') ?? $deal->organisation->id ?? null;
-        $this->organisation_name = old('organisation_name') ?? $deal->organisation->name ?? null;
+        $this->client_id = old('client_id') ?? $deal->client->id ?? $client->id ?? null;
+        $this->client_name = old('client_name') ?? $deal->client->name ?? $client->name ?? null;
+        $this->person_id = old('person_id') ?? $deal->person->id ?? $person->id ?? null;
+        $this->person_name = old('person_name') ?? $deal->person->name ?? $person->name ?? null;
+        $this->organisation_id = old('organisation_id') ?? $deal->organisation->id ?? $organisation->id ?? null;
+        $this->organisation_name = old('organisation_name') ?? $deal->organisation->name ?? $organisation->name ?? null;
 
         if ($this->client_id) {
             $this->getClientOrganisations();
@@ -39,13 +39,17 @@ class LiveDealForm extends Component
         
         $this->title = old('title') ?? $deal->title ?? null;
         $this->generateTitle = $generateTitle;
+
+        if (old('title') || (isset($deal) && $deal->title)) {
+            $this->generateTitle = false;
+        } else {
+            $this->generateTitle();
+        }
     }
 
     public function updatedClientName($value)
     {
-        if ($this->generateTitle) {
-            $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
-        }
+        $this->generateTitle();
         
         if ($this->client_id) {
             $this->getClientOrganisations();
@@ -89,9 +93,7 @@ class LiveDealForm extends Component
 
     public function updatedOrganisationName($value)
     {
-        if ($this->generateTitle && ! $this->client_name) {
-            $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
-        }
+        $this->generateTitle();
     }
 
     public function updatedPersonId($value)
@@ -113,8 +115,19 @@ class LiveDealForm extends Component
 
     public function updatedPersonName($value)
     {
-        if ($this->generateTitle && ! $this->organisation_name && ! $this->client_name) {
-            $this->title = $value . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
+        $this->generateTitle();
+    }
+
+    public function generateTitle()
+    {
+        if ($this->generateTitle) {
+            if ($this->client_name) {
+                $this->title = $this->client_name . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
+            } elseif ($this->organisation_name) {
+                $this->title = $this->organisation_name . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
+            } elseif ($this->person_name) {
+                $this->title = $this->person_name . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
+            }
         }
     }
 
