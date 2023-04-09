@@ -17,8 +17,7 @@
                 'attributes' => [
                     'autocomplete' => \Illuminate\Support\Str::random(),
                     'wire:model' => 'client_name'  
-               ],
-               'required' => 'true'
+               ],   
             ])  
         </span>    
     </span>

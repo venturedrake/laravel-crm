@@ -145,15 +145,21 @@ class OrderController extends Controller
             $client = Client::find($request->client_id);
         }
 
-        $client->contacts()->firstOrCreate([
-            'entityable_type' => $organisation->getMorphClass(),
-            'entityable_id' => $organisation->id,
-        ]);
+        if (isset($client)) {
+            if (isset($organisation)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $organisation->getMorphClass(),
+                    'entityable_id' => $organisation->id,
+                ]);
+            }
 
-        $client->contacts()->firstOrCreate([
-            'entityable_type' => $person->getMorphClass(),
-            'entityable_id' => $person->id,
-        ]);
+            if (isset($person)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+            }
+        }
 
         $this->orderService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
@@ -244,15 +250,21 @@ class OrderController extends Controller
             $client = Client::find($request->client_id);
         }
 
-        $client->contacts()->firstOrCreate([
-            'entityable_type' => $organisation->getMorphClass(),
-            'entityable_id' => $organisation->id,
-        ]);
+        if (isset($client)) {
+            if (isset($organisation)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $organisation->getMorphClass(),
+                    'entityable_id' => $organisation->id,
+                ]);
+            }
 
-        $client->contacts()->firstOrCreate([
-            'entityable_type' => $person->getMorphClass(),
-            'entityable_id' => $person->id,
-        ]);
+            if (isset($person)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+            }
+        }
 
         $order = $this->orderService->update($request, $order, $person ?? null, $organisation ?? null, $client ?? null);
 
