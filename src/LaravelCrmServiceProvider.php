@@ -41,6 +41,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveNotes;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactPerson;
@@ -389,6 +390,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_client_to_laravel_crm_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_client_to_laravel_crm_orders_table.php', 71),
                 __DIR__ . '/../database/migrations/add_client_to_laravel_crm_leads_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_client_to_laravel_crm_leads_table.php', 72),
                 __DIR__ . '/../database/migrations/add_client_to_laravel_crm_deals_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_client_to_laravel_crm_deals_table.php', 73),
+                __DIR__ . '/../database/migrations/add_client_to_laravel_crm_quotes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_client_to_laravel_crm_quotes_table.php', 74),
             ], 'migrations');
 
             // Publishing the seeders
@@ -446,6 +448,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('related-people', LiveRelatedPerson::class);
         Livewire::component('live-lead-form', LiveLeadForm::class);
         Livewire::component('deal-form', LiveDealForm::class);
+        Livewire::component('quote-form', LiveQuoteForm::class);
         Livewire::component('notify-toast', NotifyToast::class);
         Livewire::component('quote-items', LiveQuoteItems::class);
         Livewire::component('order-form', LiveOrderForm::class);

@@ -119,6 +119,11 @@ class Quote extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
     }
 
+    public function client()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Client::class);
+    }
+
     public function quoteProducts()
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\QuoteProduct::class);

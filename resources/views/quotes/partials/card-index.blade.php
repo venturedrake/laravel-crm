@@ -50,8 +50,19 @@
                             'limit' => 3
                         ])</td>
                    <td>
-                       {{ $quote->organisation->name ?? null }}<br />
-                       <small>{{ $quote->person->name ?? null }}</small>
+                       @if($quote->client)
+                           {{ $quote->client->name }}
+                       @endif
+                       @if($quote->organisation)
+                           @if($quote->client)<br /><small>@endif
+                               {{ $quote->organisation->name }}
+                               @if($quote->client)</small>@endif
+                       @endif
+                       @if($quote->organisation && $quote->person)
+                           <br /><small>{{ $quote->person->name }}</small>
+                       @elseif($quote->person)
+                           {{ $quote->person->name }}
+                       @endif
                    </td>
                   
                    {{--<td>{{ money($quote->subtotal, $quote->currency) }}</td>

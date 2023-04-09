@@ -131,7 +131,32 @@ class QuoteController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
 
-        $this->quoteService->create($request, $person ?? null, $organisation ?? null);
+        if ($request->client_name && ! $request->client_id) {
+            $client = Client::create([
+                'name' => $request->client_name,
+                'user_owner_id' => $request->user_owner_id,
+            ]);
+        } elseif ($request->client_id) {
+            $client = Client::find($request->client_id);
+        }
+
+        if (isset($client)) {
+            if (isset($organisation)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $organisation->getMorphClass(),
+                    'entityable_id' => $organisation->id,
+                ]);
+            }
+
+            if (isset($person)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+            }
+        }
+
+        $this->quoteService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_stored')))->success()->important();
 
@@ -211,7 +236,32 @@ class QuoteController extends Controller
             $organisation = Organisation::find($request->organisation_id);
         }
 
-        $quote = $this->quoteService->update($request, $quote, $person ?? null, $organisation ?? null);
+        if ($request->client_name && ! $request->client_id) {
+            $client = Client::create([
+                'name' => $request->client_name,
+                'user_owner_id' => $request->user_owner_id,
+            ]);
+        } elseif ($request->client_id) {
+            $client = Client::find($request->client_id);
+        }
+
+        if (isset($client)) {
+            if (isset($organisation)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $organisation->getMorphClass(),
+                    'entityable_id' => $organisation->id,
+                ]);
+            }
+
+            if (isset($person)) {
+                $client->contacts()->firstOrCreate([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ]);
+            }
+        }
+
+        $quote = $this->quoteService->update($request, $quote, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_updated')))->success()->important();
 
