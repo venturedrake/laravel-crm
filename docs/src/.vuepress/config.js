@@ -76,11 +76,37 @@ module.exports = {
         ]
       },
       {
-        title: 'Guide',
+        title: 'Reference',
         collapsable: false, // optional, defaults to true
         children: [
-          '/guide/addresses',
-          '/guide/custom-fields',
+          '/reference/activity',
+          '/reference/addresses',
+          '/reference/customers',
+          '/reference/custom-fields',
+          '/reference/custom-field-groups',
+          '/reference/deals',
+          '/reference/deliveries',
+          '/reference/invoices',
+          '/reference/labels',
+          '/reference/leads',
+          '/reference/orders',
+          '/reference/organisations',
+          '/reference/people',
+          '/reference/permissions',
+          '/reference/products',
+          '/reference/product-attributes',
+          '/reference/product-categories',
+          '/reference/quotes',
+          '/reference/roles',
+          '/reference/teams',
+          '/reference/users',
+        ]
+      },
+      {
+        title: 'Integrations',
+        collapsable: false, // optional, defaults to true
+        children: [
+          '/integrations/xero',
         ]
       },
     ]
