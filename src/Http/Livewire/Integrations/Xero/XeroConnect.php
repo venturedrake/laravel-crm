@@ -1,5 +1,5 @@
 <?php
- 
+
 namespace VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero;
 
 use Dcblogdev\Xero\Facades\Xero;

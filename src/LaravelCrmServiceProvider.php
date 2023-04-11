@@ -458,7 +458,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('activities', LiveActivities::class);
         Livewire::component('send-quote', SendQuote::class);
         Livewire::component('invoice-lines', LiveInvoiceLines::class);
-        Livewire::component('send-invoice',  SendInvoice::class);
+        Livewire::component('send-invoice', SendInvoice::class);
         Livewire::component('pay-invoice', PayInvoice::class);
 
         if ($this->app->runningInConsole()) {
