@@ -54,7 +54,7 @@ class LiveOrderForm extends Component
     {
         if ($organisation = Organisation::find($value)) {
             $this->organisation_name = $organisation->name;
-        } 
+        }
     }
     
     public function getClientOrganisations()
