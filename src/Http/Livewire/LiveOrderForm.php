@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Organisation;
 
 class LiveOrderForm extends Component
 {
@@ -47,6 +48,13 @@ class LiveOrderForm extends Component
 
             $this->dispatchBrowserEvent('clientNameUpdated');
         }
+    }
+
+    public function updatedOrganisationId($value)
+    {
+        if ($organisation = Organisation::find($value)) {
+            $this->organisation_name = $organisation->name;
+        } 
     }
     
     public function getClientOrganisations()

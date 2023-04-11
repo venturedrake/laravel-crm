@@ -171,7 +171,6 @@
                             @this.set('client_id',item.value);
                             @this.set('client_name',item.label);
                             @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
-                            @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             $(element).closest('.autocomplete').find('input[name="client_id"]').val(item.value).trigger('change');
@@ -215,7 +214,6 @@
                             @this.set('person_id',item.value);
                             @this.set('person_name',item.label);
                             @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
-                            @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
 
                             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
 
@@ -269,7 +267,6 @@
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             @this.set('organisation_id', item.value);
-                            @this.set('organisation_name', item.label);
 
                             $(element).closest('.autocomplete').find('input[name="organisation_id"]').val(item.value).trigger('change');
 

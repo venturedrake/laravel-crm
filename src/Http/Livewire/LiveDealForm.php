@@ -86,6 +86,7 @@ class LiveDealForm extends Component
                 'address_code' => $address->code ?? null,
                 'address_country' => $address->country ?? null,
             ]);
+            $this->organisation_name = $organisation->name;
         } else {
             $this->dispatchBrowserEvent('selectedOrganisation');
         }
