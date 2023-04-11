@@ -1,6 +1,6 @@
 {
   "name": "venturedrake/laravel-crm",
-  "version": "0.14.1",
+  "version": "0.16.0",
   "description": "A free open source CRM built as a package for laravel projects",
   "main": "index.js",
   "authors": {
@@ -14,6 +14,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "vuepress": "^1.5.3"
+    "vuepress": "^0.14.11"
   }
 }
