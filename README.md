@@ -27,7 +27,7 @@ The free Laravel CRM you have been looking for, this package will add CRM functi
  - Send quotes with accept/reject functionality
  - Orders & Invoicing
  - Deliveries
- - Client management
+ - Customer management
  - Contact database management
  - Products & Product Categories
  - Notes & Tasks

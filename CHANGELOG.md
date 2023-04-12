@@ -20,6 +20,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.17.0 - 2023-04-21
+### Added
+- Number formatting on quotes, orders & invoice items
+- Add products to xero when adding to crm
+- Add reference to xero invoice
+- Row delete on quote, order & invoice items
+- Added received by on deliveries
+- Added delivery contact to delivery pdf
+- Added pdf attachment to send quotes email
+- Added pdf attachment to send invoices email
+- Indicate if a contact is in xero
+- Indicate required fields
+- Customer on orders
+- Added expected and actual delivery dates
+- Added customer to leads, deals, quotes & orders
+- Create leads, deals, quotes & orders from customers, organisations & people
+### Changed
+- Load select2 options from data array
+- Quote, Orders & Invoice PDF formatting
+- Improved title generation on leads & orders
+- Client now called customer
+- Invoice number not required when using xero integration
+### Fixed
+- Fixed quote to order error
+- Fixed error on pdf when contact person not set
+- Fixed organisation name on invoice pdf
+- Fixed support for db seeder when using teams
+- Fixed bug showing delivery when order is deleted
+- Fixed bug on lead form fields
+
 ## 0.16.0 - 2023-03-12
 ### Added
 - Menu icons
