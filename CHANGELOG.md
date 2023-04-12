@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
-## 0.17.0 - 2023-04-21
+## 0.17.0 - 2023-04-12
 ### Added
 - Number formatting on quotes, orders & invoice items
 - Add products to xero when adding to crm
