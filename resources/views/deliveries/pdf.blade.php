@@ -5,11 +5,23 @@
     <table class="table table-sm table-items">
         <tbody>
             <tr>
-                <td width="50%"> 
+                <p width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.delivery')) }}</h1>
+                    @if($order->reference || $delivery->delivery_expected)
+                    <p>
+                    @endif    
                     @if($order->reference)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $order->reference }}</p>
+                        <strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $order->reference }}
                     @endif
+                    @if($delivery->delivery_expected)
+                        @if($order->reference)
+                            <br />
+                        @endif    
+                        <strong>{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</strong> {{ \Carbon\Carbon::parse($delivery->delivery_expected)->toFormattedDateString() }}
+                    @endif
+                    @if($order->reference || $delivery->delivery_expected)
+                    </p>
+                   @endif
                 </td>
                 <td width="50%" style="text-align: right">
                     @if($logo)

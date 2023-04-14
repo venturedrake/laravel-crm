@@ -63,10 +63,10 @@
                         @endif    
                     </td>
                     <td>
-                        {{ $delivery->delivery_expected  ?? null }}
+                        {{ $delivery->delivery_expected ?? null }}
                     </td>
                     <td>
-                        {{ $delivery->delivered_on  ?? null }}
+                        {{ $delivery->delivered_on ?? null }}
                     </td>
                     <td>{{ $delivery->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">

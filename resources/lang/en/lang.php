@@ -409,4 +409,5 @@ return [
     'client_stored' => 'customer stored',
     'add_client' => 'add customer',
     'create_client' => 'create customer',
+    'delivery_date' => 'delivery date',
 ];
