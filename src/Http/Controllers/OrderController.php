@@ -189,7 +189,7 @@ class OrderController extends Controller
             'order' => $order,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'organisation_address' => $address,
+            'organisation_address' => $address ?? null,
             'addresses' => $order->addresses,
         ]);
     }
@@ -215,7 +215,7 @@ class OrderController extends Controller
             'order' => $order,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'organisation_address' => $address,
+            'organisation_address' => $address ?? null,
             'addresses' => $order->addresses,
         ]);
     }
