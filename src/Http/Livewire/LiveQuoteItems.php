@@ -112,11 +112,15 @@ class LiveQuoteItems extends Component
         
         for ($i = 1; $i <= $this->i; $i++) {
             if (isset($this->product_id[$i]) && $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
-                $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
+                if (is_numeric($this->unit_price[$i]) && is_numeric($this->quantity[$i])) {
+                    $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
+                    $this->unit_price[$i] = $this->currencyFormat($this->unit_price[$i]);
+                } else {
+                    $this->amount[$i] = 0;
+                }
+                
                 $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
-
-                $this->unit_price[$i] = $this->currencyFormat($this->unit_price[$i]);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
             }
         }
