@@ -54,9 +54,12 @@ class LiveOrderForm extends Component
     {
         if ($organisation = Organisation::find($value)) {
             $this->organisation_name = $organisation->name;
+            $this->emit('orderOrganisationSelected', [
+                'id' => $this->organisation_id
+            ]);
         }
     }
-    
+
     public function getClientOrganisations()
     {
         foreach (Client::find($this->client_id)->contacts()
@@ -76,7 +79,7 @@ class LiveOrderForm extends Component
             $this->clientHasPeople = true;
         }
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.order-form');

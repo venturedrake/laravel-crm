@@ -205,6 +205,7 @@
                         if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){
                             $(this).closest('.autocomplete').find(".autocomplete-new").show()
                             $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+                            Livewire.emit('orderOrganisationDeselected');
                         }else{
                             $(this).closest('.autocomplete').find(".autocomplete-new").hide()
                             $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
