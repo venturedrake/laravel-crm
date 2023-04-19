@@ -1,7 +1,10 @@
-# Welcome to Laravel CRM!
+# User Interface
 
-Thanks for considering the Laravel CRM package for your Laravel business and projects. 
+## Overview
 
-## What is Laravel CRM?
+Use the Laravel CRM with a complete user interface you can use instantly.
 
-Laravel CRM is a free open-source [Laravel crm package](https://laravelcrm.com) which brings the functionality of expensive platforms such as Salesforce, HubSpot, Zoho, Pipedrive and many other CRM platforms to your Laravel projects and business.
+## Accessing the user interface
+
+Once installed, just head to http://<yoursite>/crm and you should see the login screen.
+

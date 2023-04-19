@@ -55,7 +55,7 @@ class LiveOrderForm extends Component
         if ($organisation = Organisation::find($value)) {
             $this->organisation_name = $organisation->name;
             $this->emit('orderOrganisationSelected', [
-                'id' => $this->organisation_id
+                'id' => $this->organisation_id,
             ]);
         }
     }
