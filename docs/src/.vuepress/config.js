@@ -35,7 +35,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    logo: '../img/laravel-crm-icon.png',
+    logo: '/img/laravel-crm-icon.png',
     repo: 'venturedrake/laravel-crm',
     docsDir: 'docs/src',
     docsRepo: 'venturedrake/laravel-crm',

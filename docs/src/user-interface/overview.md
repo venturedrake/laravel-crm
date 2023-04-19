@@ -1,6 +1,4 @@
-# User Interface
-
-## Overview
+# Overview
 
 Use the Laravel CRM with a complete user interface you can use instantly.
 
