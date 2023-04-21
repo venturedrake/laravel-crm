@@ -3,12 +3,14 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Models\AddressType;
 
 class LiveAddressEdit extends Component
 {
     public $addresses;
     public $address;
     public $type;
+    public $type_name;
     public $contact;
     public $phone;
     public $line1;
@@ -37,6 +39,7 @@ class LiveAddressEdit extends Component
                 $this->add($this->i);
                 $this->address[$this->i] = $address['address'] ?? null;
                 $this->type[$this->i] = $address['type'] ?? null;
+                $this->type_name[$this->i] = $address['type_name'] ?? null;
                 $this->contact[$this->i] = $address['contact'] ?? null;
                 $this->phone[$this->i] = $address['phone'] ?? null;
                 $this->line1[$this->i] = $address['line1'] ?? null;
@@ -54,6 +57,7 @@ class LiveAddressEdit extends Component
                 $this->add($this->i);
                 $this->address[$this->i] = $address->address;
                 $this->type[$this->i] = $address->addressType->id ?? null;
+                $this->type_name[$this->i] = $address->addressType->name ?? null;
                 $this->contact[$this->i] = $address->contact;
                 $this->phone[$this->i] = $address->phone;
                 $this->line1[$this->i] = $address->line1;
@@ -70,21 +74,25 @@ class LiveAddressEdit extends Component
             $this->add($this->i);
             
             if ($model == 'order') {
-                if(count($show) > 0){
-                    foreach($show as $key => $address){
+                if (count($show) > 0) {
+                    foreach ($show as $key => $address) {
                         $this->type[$this->i] = $address;
+                        $this->type_name[$this->i] = AddressType::find($address)->name;
                         
-                        if(array_key_last($show) != $key){
+                        if (array_key_last($show) != $key) {
                             $this->add($this->i);
                         }
                     }
-                }else{
+                } else {
                     $this->type[$this->i] = 5;
+                    $this->type_name[$this->i] = AddressType::find(5)->name;
                     $this->add($this->i);
-                    $this->type[$this->i] = 6; 
+                    $this->type[$this->i] = 6;
+                    $this->type_name[$this->i] = AddressType::find(6)->name;
                 }
             } elseif ($model == 'delivery') {
                 $this->type[$this->i] = 6;
+                $this->type_name[$this->i] = AddressType::find(6)->name;
             }
         }
     }

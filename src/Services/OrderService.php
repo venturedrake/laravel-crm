@@ -136,24 +136,7 @@ class OrderService
         $addressIds = [];
 
         if ($addresses) {
-            $i = 0;
-            
             foreach ($addresses as $addressRequest) {
-                if ($i == 0) {
-                    $addressRequest['type'] = 5;
-                } else {
-                    $addressRequest['type'] = 6;
-                }
-                if ($i == 0) {
-                    $addressRequest['type'] = 5;
-                } else {
-                    $addressRequest['type'] = 6;
-                }
-
-                $i++;
-
-                $i++;
-                
                 if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
                     $address->update([
                         'address_type_id' => $addressRequest['type'] ?? null,
