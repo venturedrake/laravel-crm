@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Helpers\SelectOptions;
 
 use \App\User;
+use Carbon\Carbon;
 use Rinvex\Country\CountryLoader;
 use Rinvex\Country\CurrencyLoader;
 use VentureDrake\LaravelCrm\Models\Timezone;
@@ -135,6 +136,33 @@ function timezones()
     }
     
     return $items;
+}
+
+function dateFormats()
+{
+    $now = Carbon::now();
+    
+    return [
+        'j F Y' => $now->format('j F Y'),
+        'Y-m-d' => $now->format('Y-m-d'),
+        'Y/m/d' => $now->format('Y/m/d'),
+        'm/d/Y' => $now->format('m/d/Y'),
+        'd/m/Y' => $now->format('d/m/Y'),
+        'F j, Y' => $now->format('F j, Y'),
+        'M j, Y' => $now->format('M j, Y'),
+    ];
+}
+
+function timeFormats()
+{
+    $now = Carbon::now();
+    
+    return [
+        'g:i a' => $now->format('g:i a'),
+        'g:i A' => $now->format('g:i A'),
+        'H:i' => $now->format('H:i'),
+        'H:i:s' => $now->format('H:i:s'),
+    ];
 }
 
 function fieldModels()

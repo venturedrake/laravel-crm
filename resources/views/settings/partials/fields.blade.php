@@ -68,5 +68,19 @@
             'value' => old('timezone', $timezone->value ?? null),
             'required' => 'true'
        ])
+        @include('laravel-crm::partials.form.select',[
+            'name' => 'date_format',
+            'label' => ucfirst(trans('laravel-crm::lang.date_format')),
+            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\dateFormats(),
+            'value' => old('date_format', $dateFormat->value ?? null),
+            'required' => 'true'
+       ])
+        @include('laravel-crm::partials.form.select',[
+            'name' => 'time_format',
+            'label' => ucfirst(trans('laravel-crm::lang.time_format')),
+            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timeFormats(),
+            'value' => old('time_format', $timeFormat->value ?? null),
+            'required' => 'true'
+       ])
     </div>
 </div>

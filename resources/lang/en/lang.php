@@ -410,4 +410,6 @@ return [
     'add_client' => 'add customer',
     'create_client' => 'create customer',
     'delivery_date' => 'delivery date',
+    'date_format' => 'date format',
+    'time_format' => 'time format',
 ];
