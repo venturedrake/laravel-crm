@@ -26,7 +26,7 @@ class LiveAddressEdit extends Component
     public $inputs = [];
     public $i = 0;
 
-    public function mount($addresses, $old, $model = null)
+    public function mount($addresses, $old, $model = null, $show = [])
     {
         $this->addresses = $addresses;
         $this->old = $old;
@@ -70,9 +70,19 @@ class LiveAddressEdit extends Component
             $this->add($this->i);
             
             if ($model == 'order') {
-                $this->type[$this->i] = 5;
-                $this->add($this->i);
-                $this->type[$this->i] = 6;
+                if(count($show) > 0){
+                    foreach($show as $key => $address){
+                        $this->type[$this->i] = $address;
+                        
+                        if(array_key_last($show) != $key){
+                            $this->add($this->i);
+                        }
+                    }
+                }else{
+                    $this->type[$this->i] = 5;
+                    $this->add($this->i);
+                    $this->type[$this->i] = 6; 
+                }
             } elseif ($model == 'delivery') {
                 $this->type[$this->i] = 6;
             }
