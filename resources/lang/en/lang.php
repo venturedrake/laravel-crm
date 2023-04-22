@@ -412,4 +412,5 @@ return [
     'delivery_date' => 'delivery date',
     'date_format' => 'date format',
     'time_format' => 'time format',
+    'invoice_date' => 'invoice date',
 ];

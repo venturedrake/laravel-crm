@@ -48,7 +48,7 @@
                     <td>{{ $deal->client->name ?? null }}</td>
                     <td>{{ $deal->organisation->name ?? null }}</td>
                     <td>{{ $deal->person->name ?? null }}</td>
-                    <td>{{ ($deal->expected_close) ? $deal->expected_close->toFormattedDateString() : null }}</td>
+                    <td>{{ ($deal->expected_close) ? $deal->expected_close->format($dateFormat) : null }}</td>
                     <td>{{ $deal->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm deals')

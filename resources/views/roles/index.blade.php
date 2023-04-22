@@ -29,8 +29,8 @@
                                         <br /><small>{{ $role->description }}</small>
                                     @endif    
                                     </td>
-                                    <td>{{ $role->created_at->toFormattedDateString() }}</td>
-                                    <td>{{ $role->updated_at->toFormattedDateString() }}</td>
+                                    <td>{{ $role->created_at->format($dateFormat) }}</td>
+                                    <td>{{ $role->updated_at->format($dateFormat) }}</td>
                                     <td>{{ $role->users->count() }}</td>
                                     <td class="disable-link text-right">
                                         @can('view crm roles')

@@ -58,11 +58,11 @@
             function bindDateTimePicker_Call(){
                 $('.calls input[name="start_at"]').datetimepicker({
                     timepicker:true,
-                    format: 'Y/m/d H:i',
+                    format: '{{ $dateFormat }} H:i',
                 });
                 $('.calls input[name="finish_at"]').datetimepicker({
                     timepicker:true,
-                    format: 'Y/m/d H:i',
+                    format: '{{ $dateFormat }} H:i',
                 });
             }
             

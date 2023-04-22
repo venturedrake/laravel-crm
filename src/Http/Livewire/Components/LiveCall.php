@@ -5,11 +5,13 @@ namespace VentureDrake\LaravelCrm\Http\Livewire\Components;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveCall extends Component
 {
     use NotifyToast;
+    use HasGlobalSettings;
 
     public $call;
     public $editMode = false;
@@ -30,8 +32,8 @@ class LiveCall extends Component
         $this->call = $call;
         $this->name = $call->name;
         $this->description = $call->description;
-        $this->start_at = ($call->start_at) ? $call->start_at->format('Y/m/d H:i') : null;
-        $this->finish_at = ($call->finish_at) ? $call->finish_at->format('Y/m/d H:i') : null;
+        $this->start_at = ($call->start_at) ? $call->start_at->format($this->dateFormat().' H:i') : null;
+        $this->finish_at = ($call->finish_at) ? $call->finish_at->format($this->dateFormat().' H:i') : null;
         $this->guests = $call->contacts()->pluck('entityable_id')->toArray();
         $this->location = $call->location;
         $this->view = $view;

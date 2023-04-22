@@ -40,7 +40,7 @@
         @include('laravel-crm::partials.form.text',[
              'name' => 'expected_close',
              'label' => ucfirst(__('laravel-crm::lang.expected_close_date')),
-             'value' => old('expected_close', (isset($deal->expected_close)) ? \Carbon\Carbon::parse($deal->expected_close)->format('Y/m/d') : null),
+             'value' => old('expected_close', (isset($deal->expected_close)) ? \Carbon\Carbon::parse($deal->expected_close)->format($dateFormat) : null),
              'attributes' => [
                  'autocomplete' => \Illuminate\Support\Str::random()
               ]

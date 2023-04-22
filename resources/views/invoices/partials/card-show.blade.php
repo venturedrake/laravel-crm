@@ -50,9 +50,9 @@
                     <dt class="col-sm-3 text-right">Number</dt>
                     <dd class="col-sm-9">{{ $invoice->invoice_id }}</dd>
                     <dt class="col-sm-3 text-right">Issue Date</dt>
-                    <dd class="col-sm-9">{{ ($invoice->issue_date) ? $invoice->issue_date->toFormattedDateString() : null }}</dd>
+                    <dd class="col-sm-9">{{ ($invoice->issue_date) ? $invoice->issue_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Due Date</dt>
-                    <dd class="col-sm-9">{{ ($invoice->due_date) ? $invoice->due_date->toFormattedDateString() : null }}</dd>
+                    <dd class="col-sm-9">{{ ($invoice->due_date) ? $invoice->due_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Terms</dt>
                     <dd class="col-sm-9">{{ $invoice->terms }}</dd>
                 </dl>

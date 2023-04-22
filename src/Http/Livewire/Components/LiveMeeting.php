@@ -5,11 +5,13 @@ namespace VentureDrake\LaravelCrm\Http\Livewire\Components;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Meeting;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveMeeting extends Component
 {
     use NotifyToast;
+    use HasGlobalSettings;
 
     public $meeting;
     public $editMode = false;
@@ -30,8 +32,8 @@ class LiveMeeting extends Component
         $this->meeting = $meeting;
         $this->name = $meeting->name;
         $this->description = $meeting->description;
-        $this->start_at = ($meeting->start_at) ? $meeting->start_at->format('Y/m/d H:i') : null;
-        $this->finish_at = ($meeting->finish_at) ? $meeting->finish_at->format('Y/m/d H:i') : null;
+        $this->start_at = ($meeting->start_at) ? $meeting->start_at->format($this->dateFormat().' H:i') : null;
+        $this->finish_at = ($meeting->finish_at) ? $meeting->finish_at->format($this->dateFormat().' H:i') : null;
         $this->guests = $meeting->contacts()->pluck('entityable_id')->toArray();
         $this->location = $meeting->location;
         $this->view = $view;

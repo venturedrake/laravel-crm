@@ -58,11 +58,11 @@
             function bindDateTimePicker_Meeting(){
                 $('.meetings input[name="start_at"]').datetimepicker({
                     timepicker:true,
-                    format: 'Y/m/d H:i',
+                    format: '{{ $dateFormat }} H:i',
                 });
                 $('.meetings input[name="finish_at"]').datetimepicker({
                     timepicker:true,
-                    format: 'Y/m/d H:i',
+                    format: '{{ $dateFormat }} H:i',
                 });
             }
 

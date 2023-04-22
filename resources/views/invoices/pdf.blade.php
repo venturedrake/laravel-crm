@@ -10,6 +10,9 @@
                     @if($invoice->reference)
                         <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $invoice->reference }}</p>
                     @endif
+                    <p><strong>{{ ucfirst(__('laravel-crm::lang.invoice_date')) }}</strong> {{ $invoice->issue_date->format($dateFormat) }}</p>
+                    <p><strong>{{ ucfirst(__('laravel-crm::lang.invoice_number')) }}</strong> {{ $invoice->invoice_id  }}</p>
+                    <p><strong>{{ ucfirst(__('laravel-crm::lang.due_date')) }}</strong> {{ $invoice->due_date->format($dateFormat) }}</p>
                 </td>
                 <td width="50%" style="text-align: right">
                     @if($logo)

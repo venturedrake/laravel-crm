@@ -25,8 +25,8 @@
                             @foreach($productCategories as $productCategory)
                                 <tr class="has-link" data-url="{{ url(route('laravel-crm.product-categories.show',$productCategory)) }}">
                                     <td>{{ $productCategory->name }}</td>
-                                    <td>{{ $productCategory->created_at->toFormattedDateString() }}</td>
-                                    <td>{{ $productCategory->updated_at->toFormattedDateString() }}</td>
+                                    <td>{{ $productCategory->created_at->format($dateFormat) }}</td>
+                                    <td>{{ $productCategory->updated_at->format($dateFormat) }}</td>
                                     <td>{{ $productCategory->products->count() }}</td>
                                     <td class="disable-link text-right">
                                         @can('view crm product categories')

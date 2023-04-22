@@ -28,7 +28,7 @@
                     bsCustomFileInput.init()
                     $('input[name="due_at"]').datetimepicker({
                      timepicker:true,
-                     format: 'Y/m/d H:i',
+                     format: '{{ $dateFormat }} H:i',
                     });
                 });
 
@@ -36,7 +36,7 @@
                     $('.nav-activities li a#tab-tasks').tab('show')
                     $('input[name="due_at"]').datetimepicker({
                         timepicker:true,
-                        format: 'Y/m/d H:i',
+                        format: '{{ $dateFormat }} H:i',
                     });
                 });
             });

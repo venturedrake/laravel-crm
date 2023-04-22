@@ -26,8 +26,8 @@
                                 <tr class="has-link" data-url="{{ url(route('laravel-crm.field-groups.show',$fieldGroup)) }}">
                                     <td>{{ $fieldGroup->name }}</td>
                                     <td>{{ ($fieldGroup->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
-                                    <td>{{ $fieldGroup->created_at->toFormattedDateString() }}</td>
-                                    <td>{{ $fieldGroup->updated_at->toFormattedDateString() }}</td>
+                                    <td>{{ $fieldGroup->created_at->format($dateFormat) }}</td>
+                                    <td>{{ $fieldGroup->updated_at->format($dateFormat) }}</td>
                                     <td class="disable-link text-right">
                                         @can('view crm fields')
                                         <a href="{{  route('laravel-crm.field-groups.show', $fieldGroup) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

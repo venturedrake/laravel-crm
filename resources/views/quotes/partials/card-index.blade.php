@@ -70,8 +70,8 @@
                    <td>{{ money($quote->tax, $quote->currency) }}</td>
                    <td>{{ money($quote->adjustments, $quote->currency) }}</td>--}}
                    <td>{{ money($quote->total, $quote->currency) }}</td>
-                   <td>{{ ($quote->issue_at) ? $quote->issue_at->toFormattedDateString() : null }}</td>
-                   <td>{{ ($quote->expire_at) ? $quote->expire_at->toFormattedDateString() : null }}</td>
+                   <td>{{ ($quote->issue_at) ? $quote->issue_at->format($dateFormat) : null }}</td>
+                   <td>{{ ($quote->expire_at) ? $quote->expire_at->format($dateFormat) : null }}</td>
                    <td>{{ $quote->ownerUser->name ?? null }}</td>
                    <td class="disable-link text-right">
                        @if(! $quote->order)

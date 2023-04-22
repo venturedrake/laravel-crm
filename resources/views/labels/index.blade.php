@@ -30,8 +30,8 @@
                                             #{{ $label->hex }}
                                         </span>
                                     </td>
-                                    <td>{{ $label->created_at->toFormattedDateString() }}</td>
-                                    <td>{{ $label->updated_at->toFormattedDateString() }}</td>
+                                    <td>{{ $label->created_at->format($dateFormat) }}</td>
+                                    <td>{{ $label->updated_at->format($dateFormat) }}</td>
                                     <td class="disable-link text-right">
                                         @can('view crm labels')
                                         <a href="{{  route('laravel-crm.labels.show',$label) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

@@ -72,7 +72,7 @@
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'issue_date',
                       'label' => ucfirst(__('laravel-crm::lang.issue_date')),
-                      'value' => old('issue_date', (isset($invoice->issue_date)) ? \Carbon\Carbon::parse($invoice->issue_date)->format('Y/m/d') : null),
+                      'value' => old('issue_date', (isset($invoice->issue_date)) ? \Carbon\Carbon::parse($invoice->issue_date)->format($dateFormat) : null),
                        'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
                        ],
@@ -83,7 +83,7 @@
                 @include('laravel-crm::partials.form.text',[
                        'name' => 'due_date',
                        'label' => ucfirst(__('laravel-crm::lang.due_date')),
-                       'value' => old('due_date', (isset($invoice->due_date)) ? \Carbon\Carbon::parse($invoice->due_date)->format('Y/m/d') : null),
+                       'value' => old('due_date', (isset($invoice->due_date)) ? \Carbon\Carbon::parse($invoice->due_date)->format($dateFormat) : null),
                        'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
                        ],

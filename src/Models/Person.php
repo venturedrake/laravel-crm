@@ -8,6 +8,7 @@ use Kyslik\ColumnSortable\Sortable;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
@@ -20,6 +21,7 @@ class Person extends Model
     use SearchFilters;
     use Sortable;
     use HasCrmActivities;
+    use HasGlobalSettings;
 
     protected $guarded = ['id'];
 
@@ -69,14 +71,14 @@ class Person extends Model
     public function setBirthdayAttribute($value)
     {
         if ($value) {
-            $this->attributes['birthday'] = Carbon::createFromFormat('Y/m/d', $this->decryptField($value));
+            $this->attributes['birthday'] = Carbon::createFromFormat($this->dateFormat(), $this->decryptField($value));
         }
     }
 
     public function getBirthdayAttribute($value)
     {
         if ($value) {
-            return Carbon::parse($this->decryptField($value))->format('Y/m/d');
+            return Carbon::parse($this->decryptField($value))->format($this->dateFormat());
         }
     }
 

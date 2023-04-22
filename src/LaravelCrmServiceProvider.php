@@ -11,6 +11,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
@@ -476,6 +477,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
                         ->withoutOverlapping();
                 }
             });
+        }
+
+        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
+            view()->share('dateFormat', Setting::where('name', 'date_format')->first()->value ?? 'Y/m/d');
+            view()->share('timeFormat', Setting::where('name', 'time_format')->first()->value ?? 'H:i');
+        } else {
+            view()->share('dateFormat', 'Y/m/d');
+            view()->share('timeFormat', 'H:i');
         }
     }
 

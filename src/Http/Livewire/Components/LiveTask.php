@@ -5,11 +5,13 @@ namespace VentureDrake\LaravelCrm\Http\Livewire\Components;
 use Carbon\Carbon;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Task;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveTask extends Component
 {
     use NotifyToast;
+    use HasGlobalSettings;
     
     public $task;
     public $editMode = false;
@@ -27,7 +29,7 @@ class LiveTask extends Component
         $this->task = $task;
         $this->name = $task->name;
         $this->description = $task->description;
-        $this->due_at = ($task->due_at) ? $task->due_at->format('Y/m/d H:i') : null;
+        $this->due_at = ($task->due_at) ? $task->due_at->format($this->dateFormat().' H:i') : null;
         $this->view = $view;
     }
 

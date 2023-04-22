@@ -5,11 +5,13 @@ namespace VentureDrake\LaravelCrm\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 
 class Note extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
+    use HasGlobalSettings;
     
     protected $guarded = ['id'];
 
@@ -30,7 +32,7 @@ class Note extends Model
     public function setNotedAtAttribute($value)
     {
         if ($value) {
-            $this->attributes['noted_at'] = Carbon::createFromFormat('Y/m/d H:i', $value);
+            $this->attributes['noted_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
         }
     }
 

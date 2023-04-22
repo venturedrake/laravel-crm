@@ -46,14 +46,14 @@
                            <br /><small>{{ $invoice->person->name }}</small>
                        @endif    
                    </td>
-                   <td>{{ $invoice->issue_date->format('d M Y') }}</td>
-                   <td>{{ $invoice->due_date->format('d M Y') }}</td>
+                   <td>{{ $invoice->issue_date->format($dateFormat) }}</td>
+                   <td>{{ $invoice->due_date->format($dateFormat) }}</td>
                    <td class="text-danger">
                        @if(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
                            {{ $invoice->due_date->diffForHumans() }}
                        @endif    
                    </td>
-                   <td>{{ ($invoice->fully_paid_at) ? $invoice->fully_paid_at->format('d M Y') : null }}</td>
+                   <td>{{ ($invoice->fully_paid_at) ? $invoice->fully_paid_at->format($dateFormat) : null }}</td>
                    <td>{{ money($invoice->amount_paid, $invoice->currency) }}</td>
                    <td>{{ money($invoice->amount_due, $invoice->currency) }}</td>
                    <td></td>

@@ -59,9 +59,9 @@
                     <dt class="col-sm-3 text-right">Reference</dt>
                     <dd class="col-sm-9">{{ $quote->reference }}</dd>
                     <dt class="col-sm-3 text-right">Issue Date</dt>
-                    <dd class="col-sm-9">{{ ($quote->issue_at) ? $quote->issue_at->toFormattedDateString() : null }}</dd>
+                    <dd class="col-sm-9">{{ ($quote->issue_at) ? $quote->issue_at->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Expiry Date</dt>
-                    <dd class="col-sm-9">{{ ($quote->expire_at) ? $quote->expire_at->toFormattedDateString() : null }}</dd>
+                    <dd class="col-sm-9">{{ ($quote->expire_at) ? $quote->expire_at->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Description</dt>
                     <dd class="col-sm-9">{{ $quote->description }}</dd>
                     <dt class="col-sm-3 text-right">Labels</dt>

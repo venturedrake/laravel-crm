@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Invoice extends Model
@@ -16,6 +17,7 @@ class Invoice extends Model
     use BelongsToTeams;
     use SearchFilters;
     use HasCrmActivities;
+    use HasGlobalSettings;
 
     protected $guarded = ['id'];
 
@@ -52,21 +54,21 @@ class Invoice extends Model
     public function setIssueDateAttribute($value)
     {
         if ($value) {
-            $this->attributes['issue_date'] = Carbon::createFromFormat('Y/m/d', $value);
+            $this->attributes['issue_date'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }
     }
 
     public function setDueDateAttribute($value)
     {
         if ($value) {
-            $this->attributes['due_date'] = Carbon::createFromFormat('Y/m/d', $value);
+            $this->attributes['due_date'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }
     }
 
     public function setFullyPaidAtAttribute($value)
     {
         if ($value) {
-            $this->attributes['fully_paid_at'] = Carbon::createFromFormat('Y/m/d', $value);
+            $this->attributes['fully_paid_at'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }
     }
 

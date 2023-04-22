@@ -29,6 +29,12 @@
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
                     <dd class="col-sm-9">{{ $team->name }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.created_by')) }}</dt>
+                    <dd class="col-sm-9">{{ $team->userCreated->name }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.created')) }}</dt>
+                    <dd class="col-sm-9">{{ $team->created_at->format($dateFormat)}}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.updated')) }}</dt>
+                    <dd class="col-sm-9">{{ $team->updated_at->format($dateFormat)}}</dd>
                 </dl>
                 <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.users')) }} ({{ $team->users->count() }})</span></h6>
                 <hr />

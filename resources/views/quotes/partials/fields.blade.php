@@ -41,7 +41,7 @@
                 @include('laravel-crm::partials.form.text',[
                      'name' => 'issue_at',
                      'label' => ucfirst(__('laravel-crm::lang.issue_date')),
-                     'value' => old('issue_at', (isset($quote->issue_at)) ? \Carbon\Carbon::parse($quote->issue_at)->format('Y/m/d') : null),
+                     'value' => old('issue_at', (isset($quote->issue_at)) ? \Carbon\Carbon::parse($quote->issue_at)->format($dateFormat) : null),
                      'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
                       ]
@@ -51,7 +51,7 @@
                 @include('laravel-crm::partials.form.text',[
                      'name' => 'expire_at',
                      'label' => ucfirst(__('laravel-crm::lang.expiry_date')),
-                     'value' => old('expire_at', (isset($quote->expire_at)) ? \Carbon\Carbon::parse($quote->expire_at)->format('Y/m/d') : null),
+                     'value' => old('expire_at', (isset($quote->expire_at)) ? \Carbon\Carbon::parse($quote->expire_at)->format($dateFormat) : null),
                      'attributes' => [
                          'autocomplete' => \Illuminate\Support\Str::random()
                       ]

@@ -5,11 +5,13 @@ namespace VentureDrake\LaravelCrm\Http\Livewire\Components;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveLunch extends Component
 {
     use NotifyToast;
+    use HasGlobalSettings;
 
     public $lunch;
     public $editMode = false;
@@ -30,8 +32,8 @@ class LiveLunch extends Component
         $this->lunch = $lunch;
         $this->name = $lunch->name;
         $this->description = $lunch->description;
-        $this->start_at = ($lunch->start_at) ? $lunch->start_at->format('Y/m/d H:i') : null;
-        $this->finish_at = ($lunch->finish_at) ? $lunch->finish_at->format('Y/m/d H:i') : null;
+        $this->start_at = ($lunch->start_at) ? $lunch->start_at->format($this->dateFormat().' H:i') : null;
+        $this->finish_at = ($lunch->finish_at) ? $lunch->finish_at->format($this->dateFormat().' H:i') : null;
         $this->guests = $lunch->contacts()->pluck('entityable_id')->toArray();
         $this->location = $lunch->location;
         $this->view = $view;

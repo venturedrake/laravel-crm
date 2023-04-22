@@ -31,7 +31,7 @@
                         $('.nav-activities li a#tab-notes').tab('show')
                         $('input[name="noted_at"]').datetimepicker({
                             timepicker:true,
-                            format: 'Y/m/d H:i',
+                            format: '{{ $dateFormat }} H:i',
                         });
                     });
 
@@ -39,7 +39,7 @@
                         bsCustomFileInput.init()
                         $('input[name="noted_at"]').datetimepicker({
                             timepicker:true,
-                            format: 'Y/m/d H:i',
+                            format: '{{ $dateFormat }} H:i',
                         });
                     });
                 });

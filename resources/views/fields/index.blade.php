@@ -34,8 +34,8 @@
                                     <td>{{ ($field->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
                                     <td>{{ $field->default }}</td>
                                     <td>{{ ($field->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
-                                    <td>{{ $field->created_at->toFormattedDateString() }}</td>
-                                    <td>{{ $field->updated_at->toFormattedDateString() }}</td>
+                                    <td>{{ $field->created_at->format($dateFormat) }}</td>
+                                    <td>{{ $field->updated_at->format($dateFormat) }}</td>
                                     <td class="disable-link text-right">
                                         @can('view crm fields')
                                         <a href="{{  route('laravel-crm.fields.show', $field) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

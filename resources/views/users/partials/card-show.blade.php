@@ -35,10 +35,16 @@
                     <dd class="col-sm-9">{{ $user->name }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email')) }}</dt>
                     <dd class="col-sm-9">{{ $user->email }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.email_verified')) }}</dt>
+                    <dd class="col-sm-9">{{ ($user->email_verified_at) ? $user->email_verified_at->format($dateFormat.' '.$timeFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.CRM_Access')) }}</dt>
                     <dd class="col-sm-9">{{ ($user->crm_access) ? 'Yes' : 'No' }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.CRM_Role')) }}</dt>
                     <dd class="col-sm-9">{{ $user->roles()->first()->name ?? null }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.created')) }}</dt>
+                    <dd class="col-sm-9">{{ $user->created_at->format($dateFormat) }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.last_online')) }}</dt>
+                    <dd class="col-sm-9">{{ ($user->last_online_at) ?  \Carbon\Carbon::parse($user->last_online_at)->diffForHumans() :  'Never' }}</dd>
                 </dl>
             </div>
             <div class="col-sm-6">

@@ -25,11 +25,11 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.name')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.email')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.email_verified')) }}</th>
+                <th scope="col">{{ __('laravel-crm::lang.CRM_Access') }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.role')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
                 {{-- <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>--}}
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.last_online')) }}</th>
-                <th scope="col">{{ __('laravel-crm::lang.CRM_Access') }}</th>
                 <th scope="col" width="150"></th>
             </tr>
             </thead>
@@ -38,14 +38,14 @@
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.users.show',$user)) }}">
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ ($user->email_verified_at) ? $user->email_verified_at->toDayDateTimeString() : null }}</td>
+                    <td>{{ ($user->email_verified_at) ? $user->email_verified_at->format($dateFormat.' '.$timeFormat) : null }}</td>
+                    <td>{{ ($user->crm_access) ? 'Yes' : 'No' }}</td>
                     <td>
                         {{ $user->roles()->first()->name ?? null }}
                     </td>
-                    <td>{{ $user->created_at->toFormattedDateString() }}</td>
-                    {{-- <td>{{ $user->updated_at->toFormattedDateString() }}</td>--}}
+                    <td>{{ $user->created_at->format($dateFormat) }}</td>
+                    {{-- <td>{{ $user->updated_at->format($dateFormat) }}</td>--}}
                     <td>{{ ($user->last_online_at) ?  \Carbon\Carbon::parse($user->last_online_at)->diffForHumans() :  'Never' }}</td>
-                    <td>{{ ($user->crm_access) ? 'Yes' : 'No' }}</td>
                     <td class="disable-link text-right">
                         @can('view crm users')
                         <a href="{{  route('laravel-crm.users.show',$user) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

@@ -11,10 +11,10 @@
                         <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $quote->reference }}</p>
                     @endif
                     @if($quote->issue_at)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.issue_date')) }}</strong> {{ $quote->issue_at->toFormattedDateString() }}</p>
+                        <p><strong>{{ ucfirst(__('laravel-crm::lang.issue_date')) }}</strong> {{ $quote->issue_at->format($dateFormat) }}</p>
                     @endif
                     @if($quote->expire_at)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.expiry_date')) }}</strong>  {{ $quote->expire_at->toFormattedDateString() }}</p>
+                        <p><strong>{{ ucfirst(__('laravel-crm::lang.expiry_date')) }}</strong>  {{ $quote->expire_at->format($dateFormat) }}</p>
                     @endif
                 </td>
                 <td width="50%" style="text-align: right">

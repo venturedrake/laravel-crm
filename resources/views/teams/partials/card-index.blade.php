@@ -32,8 +32,8 @@
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.teams.show',$team)) }}">
                     <td>{{ $team->name }}</td>
                     <td>{{ $team->userCreated->name }}</td>
-                    <td>{{ $team->created_at->toFormattedDateString() }}</td>
-                    <td>{{ $team->updated_at->toFormattedDateString() }}</td>
+                    <td>{{ $team->created_at->format($dateFormat) }}</td>
+                    <td>{{ $team->updated_at->format($dateFormat) }}</td>
                     <td>{{ $team->users->count() }}</td>
                     <td class="disable-link text-right">
                         @can('view crm teams')

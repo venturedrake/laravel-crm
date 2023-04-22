@@ -2,9 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Meeting extends Model
@@ -13,6 +15,7 @@ class Meeting extends Model
     use HasCrmFields;
     use BelongsToTeams;
     use SearchFilters;
+    use HasGlobalSettings;
 
     protected $guarded = ['id'];
 
@@ -34,6 +37,20 @@ class Meeting extends Model
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'meetings';
+    }
+
+    public function setStartAtAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['start_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
+        }
+    }
+
+    public function setFinishAtAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['finish_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
+        }
     }
 
     /**

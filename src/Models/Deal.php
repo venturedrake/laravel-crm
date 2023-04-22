@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Deal extends Model
@@ -16,6 +17,7 @@ class Deal extends Model
     use BelongsToTeams;
     use SearchFilters;
     use HasCrmActivities;
+    use HasGlobalSettings;
 
     protected $guarded = ['id'];
 
@@ -60,7 +62,7 @@ class Deal extends Model
     public function setExpectedCloseAttribute($value)
     {
         if ($value) {
-            $this->attributes['expected_close'] = Carbon::createFromFormat('Y/m/d', $value);
+            $this->attributes['expected_close'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }
     }
 
