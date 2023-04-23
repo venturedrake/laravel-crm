@@ -134,7 +134,6 @@ use VentureDrake\LaravelCrm\Observers\XeroInvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
-use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {

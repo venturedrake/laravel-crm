@@ -20,6 +20,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.17.1 - 2023-04-23
+### Added
+- Date & time format setting
+- Option to show specific addresses on orders
+### Fixed
+- Missing invoice number, issue and due date on PDF
+- Missing delivery date on delivery PDF
+- Bug with non numeric values in price & quantity on quote, order, invoice items
+- Bug when missing address and creating or editing orders
+- Bug when settings have no value
+
 ## 0.17.0 - 2023-04-12
 ### Added
 - Number formatting on quotes, orders & invoice items
