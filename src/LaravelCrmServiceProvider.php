@@ -11,7 +11,6 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
@@ -134,6 +133,7 @@ use VentureDrake\LaravelCrm\Observers\XeroInvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
+use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -479,13 +479,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
             });
         }
 
-        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
-            view()->share('dateFormat', Setting::where('name', 'date_format')->first()->value ?? 'Y/m/d');
-            view()->share('timeFormat', Setting::where('name', 'time_format')->first()->value ?? 'H:i');
-        } else {
-            view()->share('dateFormat', 'Y/m/d');
-            view()->share('timeFormat', 'H:i');
-        }
+        view()->composer('laravel-crm::layouts.app', SettingsComposer::class);
+        view()->composer('laravel-crm::layouts.document', SettingsComposer::class);
+        view()->composer('laravel-crm::layouts.portal', SettingsComposer::class);
     }
 
     /**
