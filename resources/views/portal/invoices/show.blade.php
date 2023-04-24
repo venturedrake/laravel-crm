@@ -109,7 +109,7 @@
                                     <strong>{{ ucfirst(__('laravel-crm::lang.issued')) }}</strong>
                                 </div>
                                 <div class="col">
-                                    {{ $invoice->issue_date->toFormattedDateString() }}
+                                    {{ $invoice->issue_date->format($dateFormat) }}
                                 </div>
                             </div>
                             @endif
@@ -119,7 +119,7 @@
                                     <strong>{{ ucfirst(__('laravel-crm::lang.due')) }}</strong>
                                 </div>
                                 <div class="col">
-                                    {{ $invoice->due_date->toFormattedDateString() }}
+                                    {{ $invoice->due_date->format($dateFormat) }}
                                     @if(! $invoice->fully_paid_at && $invoice->due_date >= \Carbon\Carbon::now())
                                         <small class="text-secondary"> ({{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans() }})</small>
                                     @elseif(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
