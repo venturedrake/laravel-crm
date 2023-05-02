@@ -101,7 +101,12 @@
                     <tbody>
                     @foreach($quote->quoteProducts()->whereNotNull('product_id')->get() as $quoteProduct)
                         <tr>
-                            <td>{{ $quoteProduct->product->name }}</td>
+                            <td>
+                                {{ $quoteProduct->product->name }}
+                                @if($quoteProduct->product->code)
+                                    <br /><small>{{ $quoteProduct->product->code }}</small>
+                                @endif
+                            </td>
                             <td>{{ money($quoteProduct->price ?? null, $quoteProduct->currency) }}</td>
                             <td>{{ $quoteProduct->quantity }}</td>
                             <td>{{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}</td>

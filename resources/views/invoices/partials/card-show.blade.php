@@ -83,7 +83,12 @@
                     <tbody>
                     @foreach($invoice->invoiceLines()->whereNotNull('product_id')->get() as $invoiceLine)
                         <tr>
-                            <td>{{ $invoiceLine->product->name }}</td>
+                            <td>
+                                {{ $invoiceLine->product->name }}
+                                @if($invoiceLine->product->code)
+                                    <br /><small>{{ $orderProduct->product->code }}</small>
+                                @endif
+                            </td>
                             <td>{{ money($invoiceLine->price ?? null, $invoiceLine->currency) }}</td>
                             <td>{{ $invoiceLine->quantity }}</td>
                             <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>

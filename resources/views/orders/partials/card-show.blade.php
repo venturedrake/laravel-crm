@@ -97,7 +97,12 @@
                     <tbody>
                     @foreach($order->orderProducts()->whereNotNull('product_id')->get() as $orderProduct)
                         <tr>
-                            <td>{{ $orderProduct->product->name }}</td>
+                            <td>
+                                {{ $orderProduct->product->name }}
+                                @if($orderProduct->product->code)
+                                    <br /><small>{{ $orderProduct->product->code }}</small>
+                                @endif    
+                            </td>
                             <td>{{ money($orderProduct->price ?? null, $orderProduct->currency) }}</td>
                             <td>{{ $orderProduct->quantity }}</td>
                             <td>{{ money($orderProduct->amount ?? null, $orderProduct->currency) }}</td>
