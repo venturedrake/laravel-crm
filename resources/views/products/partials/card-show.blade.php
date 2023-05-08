@@ -38,6 +38,10 @@
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.product_code')) }}</dt>
                     <dd class="col-sm-9">{{ $product->code }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.purchase_account')) }}</dt>
+                    <dd class="col-sm-9">{{ $product->purchase_account }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.sales_account')) }}</dt>
+                    <dd class="col-sm-9">{{ $product->sales_account }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.unit')) }}</dt>
                     <dd class="col-sm-9">{{ $product->unit }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.tax')) }} %</dt>
