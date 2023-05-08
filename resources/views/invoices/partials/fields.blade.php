@@ -47,7 +47,7 @@
                 @include('laravel-crm::partials.form.text',[
                       'name' => 'reference',
                       'label' => ucfirst(__('laravel-crm::lang.reference')),
-                      'value' => old('reference', $invoice->reference ?? null)
+                      'value' => old('reference', $invoice->reference ?? $order->reference ?? null)
                   ])
             </div>
             <div class="col-sm-6">
