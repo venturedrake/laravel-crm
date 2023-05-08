@@ -125,6 +125,8 @@ class LaravelCrmXero extends Command
                                 if (! $product) {
                                     $product = Product::create([
                                         'code' => $item['Code'],
+                                        'purchase_account' => (isset($item['PurchaseDetails']['AccountCode'])) ? $item['PurchaseDetails']['AccountCode'] : null,
+                                        'sales_account' => (isset($item['SalesDetails']['AccountCode'])) ? $item['SalesDetails']['AccountCode'] : null,
                                         'tax_rate' => $this->taxTypePercentage($item),
                                         'name' => $item['Name'],
                                         'description' => $item['Description'] ?? null,
@@ -133,6 +135,8 @@ class LaravelCrmXero extends Command
                                 } else {
                                     $product->update([
                                         'code' => $item['Code'],
+                                        'purchase_account' => (isset($item['PurchaseDetails']['AccountCode'])) ? $item['PurchaseDetails']['AccountCode'] : null,
+                                        'sales_account' => (isset($item['SalesDetails']['AccountCode'])) ? $item['SalesDetails']['AccountCode'] : null,
                                         'tax_rate' => $this->taxTypePercentage($item),
                                         'name' => $item['Name'],
                                         'description' => $item['Description'] ?? null,
@@ -174,11 +178,11 @@ class LaravelCrmXero extends Command
                                 'Name' => $product->name,
                                 'Description' => $product->description,
                                 'PurchaseDetails' => [
-                                    'AccountCode' => 310,
+                                    'AccountCode' => $product->purchase_account ?? 310,
                                 ],
                                 'SalesDetails' => [
                                     'UnitPrice' => ($product->getDefaultPrice()->unit_price) ? $product->getDefaultPrice()->unit_price / 100 : null,
-                                    'AccountCode' => 200,
+                                    'AccountCode' => $product->sales_account ?? 200,
                                 ],
                             ]);
 

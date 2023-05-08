@@ -20,9 +20,27 @@
                    'label' => ucfirst(__('laravel-crm::lang.category')),
                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\ProductCategory::all(), true),
                    'value' => old('product_category', $product->productCategory->id ?? null)
-               ])
+                ])
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                @include('laravel-crm::partials.form.text',[
+                   'name' => 'purchase_account',
+                   'label' => ucfirst(__('laravel-crm::lang.purchase_account')),
+                   'value' => old('purchase_account', $product->purchase_account ?? null)
+               ])
+            </div>
+            <div class="col-sm-6">
+                @include('laravel-crm::partials.form.text',[
+                  'name' => 'sales_account',
+                  'label' => ucfirst(__('laravel-crm::lang.sales_account')),
+                  'value' => old('sales_account', $product->sales_account ?? null)
+              ])
+            </div>
+        </div>
+        
         @include('laravel-crm::partials.form.textarea',[
             'name' => 'description',
             'label' => ucfirst(__('laravel-crm::lang.description')),

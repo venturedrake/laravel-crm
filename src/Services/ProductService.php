@@ -27,6 +27,8 @@ class ProductService
         $product = Product::create([
             'name' => $request->name,
             'code' => $request->code ?? null,
+            'purchase_account' => $request->purchase_account ?? null,
+            'sales_account' => $request->sales_account ?? null,
             'product_category_id' => $request->product_category,
             'unit' => $request->unit ?? null,
             'tax_rate' => $request->tax_rate ?? null,
@@ -45,11 +47,11 @@ class ProductService
                 'Name' => $product->name,
                 'Description' => $product->description,
                 'PurchaseDetails' => [
-                    'AccountCode' => 310,
+                    'AccountCode' => $product->purchase_account ?? 310,
                 ],
                 'SalesDetails' => [
                     'UnitPrice' => ($product->getDefaultPrice()->unit_price) ? $product->getDefaultPrice()->unit_price / 100 : null,
-                    'AccountCode' => 200,
+                    'AccountCode' => $product->sales_account ?? 200,
                 ],
             ]);
 
@@ -77,6 +79,8 @@ class ProductService
         $product->update([
             'name' => $request->name,
             'code' => $request->code ?? null,
+            'purchase_account' => $request->purchase_account ?? null,
+            'sales_account' => $request->sales_account ?? null,
             'product_category_id' => $request->product_category,
             'unit' => $request->unit ?? null,
             'tax_rate' => $request->tax_rate ?? null,
@@ -104,11 +108,11 @@ class ProductService
                 'Name' => $product->name,
                 'Description' => $product->description,
                 'PurchaseDetails' => [
-                    'AccountCode' => 310,
+                    'AccountCode' => $product->purchase_account ?? 310,
                 ],
                 'SalesDetails' => [
                     'UnitPrice' => ($product->getDefaultPrice()->unit_price) ? $product->getDefaultPrice()->unit_price / 100 : null,
-                    'AccountCode' => 200,
+                    'AccountCode' => $product->sales_account ?? 200,
                 ],
             ]);
 

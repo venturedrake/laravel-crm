@@ -413,4 +413,6 @@ return [
     'date_format' => 'date format',
     'time_format' => 'time format',
     'invoice_date' => 'invoice date',
+    'purchase_account' => 'purchase account',
+    'sales_account' => 'sales account',
 ];
