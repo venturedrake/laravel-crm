@@ -96,7 +96,7 @@
         <tr>
             <td></td>
             <td></td>
-            <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
+            <td class="strong">{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</td>
             <td>{{ money($order->subtotal, $order->currency) }}</td>
             <td></td>
         </tr>
@@ -104,7 +104,7 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
+                <td class="strong">{{ ucfirst(__('laravel-crm::lang.discount')) }}</td>
                 <td>{{ money($order->discount, $order->currency) }}</td>
                 <td></td>
             </tr>
@@ -112,21 +112,21 @@
         <tr>
             <td></td>
             <td></td>
-            <td><strong>{{ ucfirst(__('laravel-crm::lang.tax')) }}</strong></td>
+            <td class="strong">{{ ucfirst(__('laravel-crm::lang.tax')) }}</td>
             <td>{{ money($order->tax, $order->currency) }}</td>
             <td></td>
         </tr>
         {{--<tr>
             <td></td>
             <td></td>
-            <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
+            <td class="strong">{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</td>
             <td>{{ money($order->adjustments, $order->currency) }}</td>
             <td></td>
         </tr>--}}
         <tr>
             <td></td>
             <td></td>
-            <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
+            <td class="strong">{{ ucfirst(__('laravel-crm::lang.total')) }}</td>
             <td>{{ money($order->total, $order->currency) }}</td>
             <td></td>
         </tr>

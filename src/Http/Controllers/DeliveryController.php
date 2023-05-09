@@ -243,8 +243,8 @@ class DeliveryController extends Controller
             'order' => $delivery->order,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'address' => $delivery->getShippingAddress() ?? null,
+            'organisation_address' => $delivery->order->getShippingAddress() ?? $organisation_address ?? null,
             'fromName' => $this->settingService->get('organisation_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ]);*/

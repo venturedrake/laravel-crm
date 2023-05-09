@@ -21,9 +21,30 @@ $cyan: #6cb2eb;
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+span.strong{
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+h4{
+  line-height: 1;
+  padding-top: 0;
+  margin-top: 0;
+}
+
 .table-sm.table-items td, .table-sm.table-items th{
   padding: 0.4rem 0.5rem;
+  line-height: 0.7;
+}
+.table-sm.table-items td.strong{
+  font-weight: bold;
+  line-height: 1;
 }
 .table-sm.table-delivery td, .table-sm.table-delivery th{
-  padding: 1.2rem 0.5rem
+  padding: 1.2rem 0.5rem;
+  line-height: 0.7;
+}
+.table-sm.table-delivery td.strong{
+  font-weight: bold;
+  line-height: 1;
 }

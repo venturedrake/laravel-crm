@@ -10,15 +10,15 @@
                     @if($order->reference || $delivery->delivery_expected)
                     <p>
                     @endif    
-                    @if($order->reference)
-                        <strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $order->reference }}
-                    @endif
-                    @if($delivery->delivery_expected)
                         @if($order->reference)
-                            <br />
-                        @endif    
-                        <strong>{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $delivery->delivery_expected }}
-                    @endif
+                            <strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $order->reference }}
+                        @endif
+                        @if($delivery->delivery_expected)
+                            @if($order->reference)
+                                <br />
+                            @endif    
+                            <strong>{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $delivery->delivery_expected }}
+                        @endif
                     @if($order->reference || $delivery->delivery_expected)
                     </p>
                    @endif

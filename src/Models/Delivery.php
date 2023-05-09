@@ -34,6 +34,13 @@ class Delivery extends Model
         return config('laravel-crm.db_table_prefix').'deliveries';
     }
 
+    public function getTitleAttribute()
+    {
+        if($this->order){
+            return money($this->order->total, $this->order->currency).' - '.($this->order->client->name ?? $this->order->organisation->name ?? $this->order->organisation->person->name ?? null);
+        }
+    }
+
     public function setDeliveryExpectedAttribute($value)
     {
         if ($value) {
