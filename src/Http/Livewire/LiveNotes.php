@@ -59,50 +59,6 @@ class LiveNotes extends Component
             'recordable_id' => $note->id,
         ]);
 
-        // Add to any upstream related models
-        if ($this->model instanceof Person) {
-            if ($this->model->organisation) {
-                $note = $this->model->organisation->notes()->create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'content' => $data['content'],
-                    'noted_at' => $this->noted_at,
-                    'related_note_id' => $note->id,
-                ]);
-
-                $this->model->activities()->create([
-                    'causable_type' => auth()->user()->getMorphClass(),
-                    'causable_id' => auth()->user()->id,
-                    'timelineable_type' => $this->model->organisation->getMorphClass(),
-                    'timelineable_id' => $this->model->organisation->id,
-                    'recordable_type' => $note->getMorphClass(),
-                    'recordable_id' => $note->id,
-                ]);
-            }
-        }
-
-        if ($this->model instanceof Organisation || $this->model instanceof Person) {
-            foreach (Contact::where([
-                'entityable_type' => $this->model->getMorphClass(),
-                'entityable_id' => $this->model->id,
-            ])->get() as $contact) {
-                $note = $contact->contactable->notes()->create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'content' => $data['content'],
-                    'noted_at' => $this->noted_at,
-                    'related_note_id' => $note->id,
-                ]);
-
-                $this->model->activities()->create([
-                    'causable_type' => auth()->user()->getMorphClass(),
-                    'causable_id' => auth()->user()->id,
-                    'timelineable_type' => $contact->contactable->getMorphClass(),
-                    'timelineable_id' => $contact->contactable->id,
-                    'recordable_type' => $note->getMorphClass(),
-                    'recordable_id' => $note->id,
-                ]);
-            }
-        }
-
         $this->emit('noteAdded');
 
         $this->notify(

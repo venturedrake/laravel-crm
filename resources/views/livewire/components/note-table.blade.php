@@ -3,7 +3,7 @@
         {{ $note->created_at->diffForHumans() }}
     </td>
     <td>{{ $note->content }}<br />
-        @include('laravel-crm::notes.partials.note-model', ['note' => $note])
+        @include('laravel-crm::notes.partials.note-model', ['note' => $note]) 
     </td>
     <td>
         @if($note->noted_at)
