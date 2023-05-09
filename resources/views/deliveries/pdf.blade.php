@@ -5,7 +5,7 @@
     <table class="table table-sm table-items">
         <tbody>
             <tr>
-                <p width="50%"> 
+                <td width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.delivery')) }}</h1>
                     @if($order->reference || $delivery->delivery_expected)
                     <p>
