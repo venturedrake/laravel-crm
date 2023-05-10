@@ -88,7 +88,7 @@
         <tr>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
-            <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
+            <th scope="col">{{ ucfirst(__('laravel-crm::lang.qty')) }}</th>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.comments')) }}</th>
         </tr>

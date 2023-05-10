@@ -237,8 +237,8 @@ class DeliveryController extends Controller
         if(!File::exists($pdfLocation)){
             Storage::makeDirectory($pdfLocation);
         }*/
-
-        /*return view('laravel-crm::deliveries.pdf', [
+        
+      /*  return view('laravel-crm::deliveries.pdf', [
             'delivery' => $delivery,
             'order' => $delivery->order,
             'email' => $email ?? null,
