@@ -69,8 +69,8 @@ class TaskObserver
             $task->user_deleted_id = auth()->user()->id ?? null;
             $task->saveQuietly();
 
-            if($task->activity) {
-                $task->activity->delete(); 
+            if ($task->activity) {
+                $task->activity->delete();
             }
         }
     }

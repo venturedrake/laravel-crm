@@ -72,6 +72,18 @@ class Settings
             ]);
 
             Setting::firstOrCreate([
+                'name' => 'quote_prefix',
+            ], [
+                'value' => 'QU-',
+            ]);
+
+            Setting::firstOrCreate([
+                'name' => 'order_prefix',
+            ], [
+                'value' => 'ORD-',
+            ]);
+
+            Setting::firstOrCreate([
                 'name' => 'invoice_prefix',
             ], [
                 'value' => 'INV-',

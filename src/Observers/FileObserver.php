@@ -69,7 +69,7 @@ class FileObserver
             $file->user_deleted_id = auth()->user()->id ?? null;
             $file->saveQuietly();
 
-            if($file->activity) {
+            if ($file->activity) {
                 $file->activity->delete();
             }
         }

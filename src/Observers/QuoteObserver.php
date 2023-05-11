@@ -20,6 +20,10 @@ class QuoteObserver
         if (! app()->runningInConsole()) {
             $quote->user_created_id = auth()->user()->id ?? null;
         }
+
+        if (! $quote->number) {
+            $quote->number = Quote::orderBy('number', 'DESC')->first()->number + 1;
+        }
     }
     
     /**

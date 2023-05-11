@@ -19,6 +19,18 @@
          ])
 
         @include('laravel-crm::partials.form.text',[
+         'name' => 'quote_prefix',
+         'label' => ucfirst(trans('laravel-crm::lang.quote_prefix')),
+         'value' => old('quote_prefix', $quotePrefix->value ?? null)
+        ])
+
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'order_prefix',
+         'label' => ucfirst(trans('laravel-crm::lang.order_prefix')),
+         'value' => old('order_prefix', $orderPrefix->value ?? null)
+        ])
+
+        @include('laravel-crm::partials.form.text',[
          'name' => 'invoice_prefix',
          'label' => ucfirst(trans('laravel-crm::lang.invoice_prefix')),
          'value' => old('invoice_prefix', $invoicePrefix->value ?? null)

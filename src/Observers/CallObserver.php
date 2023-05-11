@@ -69,7 +69,7 @@ class CallObserver
             $call->user_deleted_id = auth()->user()->id ?? null;
             $call->saveQuietly();
 
-            if($call->activity) {
+            if ($call->activity) {
                 $call->activity->delete();
             }
         }

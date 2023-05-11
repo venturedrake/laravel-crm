@@ -20,6 +20,10 @@ class OrderObserver
         if (! app()->runningInConsole()) {
             $order->user_created_id = auth()->user()->id ?? null;
         }
+
+        if (! $order->number) {
+            $order->number = Order::orderBy('number', 'DESC')->first()->number + 1;
+        }
     }
 
     /**

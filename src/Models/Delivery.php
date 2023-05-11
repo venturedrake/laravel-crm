@@ -36,7 +36,7 @@ class Delivery extends Model
 
     public function getTitleAttribute()
     {
-        if($this->order){
+        if ($this->order) {
             return money($this->order->total, $this->order->currency).' - '.($this->order->client->name ?? $this->order->organisation->name ?? $this->order->organisation->person->name ?? null);
         }
     }

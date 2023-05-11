@@ -415,5 +415,7 @@ return [
     'invoice_date' => 'invoice date',
     'purchase_account' => 'purchase account',
     'sales_account' => 'sales account',
-    'qty' => 'qty'
+    'qty' => 'qty',
+    'quote_prefix' => 'quote prefix',
+    'order_prefix' => 'order prefix',
 ];

@@ -69,7 +69,7 @@ class MeetingObserver
             $meeting->user_deleted_id = auth()->user()->id ?? null;
             $meeting->saveQuietly();
 
-            if($meeting->activity) {
+            if ($meeting->activity) {
                 $meeting->activity->delete();
             }
         }
