@@ -85,17 +85,17 @@
                 @livewire('related-people',[
                     'model' => $organisation
                 ])
-                @can('view crm deals')
-                <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $organisation->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'organisation', 'id' => $organisation->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
-                <hr />
-                @foreach($organisation->deals as $deal)
-                    <p>{{ $deal->title }}<br />
-                        <small>{{ money($deal->amount, $deal->currency) }}</small></p>
-                @endforeach
-                @endcan
                 @livewire('related-contact-organisations',[
                     'model' => $organisation
                 ])
+                @can('view crm deals')
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $organisation->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'organisation', 'id' => $organisation->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+                    <hr />
+                    @foreach($organisation->deals as $deal)
+                        <p>{{ $deal->title }}<br />
+                            <small>{{ money($deal->amount, $deal->currency) }}</small></p>
+                    @endforeach
+                @endcan
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.activities', [

@@ -61,7 +61,6 @@
                 @livewire('related-contact-people',[
                     'model' => $client
                 ])
-               
                 @livewire('related-contact-organisations',[
                     'model' => $client
                 ])

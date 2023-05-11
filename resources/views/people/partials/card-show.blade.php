@@ -98,6 +98,9 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.address')) }}</dt>
                     <dd class="col-sm-9">{{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }}</dd>
                 </dl>
+                @livewire('related-contact-people',[
+                    'model' => $person
+                ])
                 @can('view crm deals')
                     <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $person->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
                     <hr />
@@ -106,9 +109,6 @@
                             <small>{{ money($deal->amount, $deal->currency) }}</small></p>
                     @endforeach
                 @endcan
-                @livewire('related-contact-people',[
-                    'model' => $person
-                ])
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.activities', [
