@@ -83,8 +83,8 @@ class InvoiceService
                         'ContactID' => $invoice->organisation->xeroContact->contact_id,
                     ],
                     'LineItems' => $lineItems ?? [],
-                    'Date' => Carbon::now()->format('Y-m-d'),
-                    'DueDate' => Carbon::now()->addDays(30)->format('Y-m-d'),
+                    'Date' => ($invoice->issue_date) ? $invoice->issue_date->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
+                    'DueDate' => ($invoice->due_date) ? $invoice->due_date->format('Y-m-d') : Carbon::now()->addDays(30)->format('Y-m-d'),
                     'Reference' => $invoice->reference,
                 ]);
 
