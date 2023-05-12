@@ -24,7 +24,8 @@
             <thead>
             <tr>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
-                <th scope="col">#</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.number')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.title')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.customer')) }}</th>
@@ -43,6 +44,7 @@
             @foreach($quotes as $quote)
                <tr class="has-link @if($quote->accepted_at) table-success @elseif($quote->rejected_at) table-danger @endif" data-url="{{ url(route('laravel-crm.quotes.show',$quote)) }}">
                    <td>{{ $quote->created_at->diffForHumans() }}</td>
+                   <td>{{ $order->order_id }}</td>
                    <td>{{ $quote->reference }}</td>
                    <td>{{ $quote->title }}</td>
                    <td>@include('laravel-crm::partials.labels',[

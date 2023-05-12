@@ -27,11 +27,17 @@
                   ])
             </div>
             <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
-                    'name' => 'currency',
-                    'label' => ucfirst(__('laravel-crm::lang.currency')),
-                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-                    'value' => old('currency', $order->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
+                @include('laravel-crm::partials.form.hidden',[
+                    'name' => 'prefix',
+                    'value' => old('prefix', ($order->prefix ?? $prefix->value ?? 'ORD-')),
+               ])
+                
+                @include('laravel-crm::partials.form.text',[
+                    'name' => 'number',
+                    'label' => ucfirst(__('laravel-crm::lang.order_number')),
+                    'value' => old('number', $order->number ?? $number ?? null),
+                    'prepend' => '<span aria-hidden="true">'.($order->prefix ?? $orderPrefix->value ?? 'ORD-').'</span>',
+                    'required' => 'true'
                 ])
             </div>
         </div>
@@ -43,11 +49,18 @@
         ])
 
         @include('laravel-crm::partials.form.select',[
-                 'name' => 'user_owner_id',
-                 'label' => ucfirst(__('laravel-crm::lang.owner')),
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                 'value' =>  old('user_owner_id', $order->user_owner_id ?? auth()->user()->id),
-              ])
+                    'name' => 'currency',
+                    'label' => ucfirst(__('laravel-crm::lang.currency')),
+                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
+                    'value' => old('currency', $order->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
+                ])
+
+        @include('laravel-crm::partials.form.select',[
+             'name' => 'user_owner_id',
+             'label' => ucfirst(__('laravel-crm::lang.owner')),
+             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+             'value' =>  old('user_owner_id', $order->user_owner_id ?? auth()->user()->id),
+          ])
 
         @livewire('address-edit', [
             'addresses' => $addresses ?? null,

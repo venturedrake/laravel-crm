@@ -112,6 +112,8 @@ class OrderController extends Controller
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
+            'prefix' => $this->settingService->get('order_prefix'),
+            'number' => (Order::latest()->first()->number ?? 1000) + 1,
             'quoteTerms' => $quoteTerms,
         ]);
     }

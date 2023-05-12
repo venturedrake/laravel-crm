@@ -29,7 +29,7 @@ class AddPrefixToLaravelCrmQuotesTable extends Migration
     {
         Schema::table(config('laravel-crm.db_table_prefix').'orders', function (Blueprint $table) {
             $table->dropColumn([
-                'quote_id'
+                'quote_id',
                 'prefix',
                 'number'
             ]);     
