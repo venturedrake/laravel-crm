@@ -106,7 +106,7 @@ class OrderController extends Controller
                 break;
         }
 
-        $quoteTerms = $this->settingService->get('quote_terms');
+        $orderTerms = $this->settingService->get('orde_terms');
 
         return view('laravel-crm::orders.create', [
             'client' => $client ?? null,
@@ -114,7 +114,7 @@ class OrderController extends Controller
             'person' => $person ?? null,
             'prefix' => $this->settingService->get('order_prefix'),
             'number' => (Order::latest()->first()->number ?? 1000) + 1,
-            'quoteTerms' => $quoteTerms,
+            'orderTerms' => $orderTerms,
         ]);
     }
 

@@ -418,5 +418,6 @@ return [
     'qty' => 'qty',
     'quote_prefix' => 'quote prefix',
     'order_prefix' => 'order prefix',
-    'order_number' => 'order number'
+    'order_number' => 'order number',
+    'quote_number' => 'quote number'
 ];

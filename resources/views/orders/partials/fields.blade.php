@@ -41,20 +41,21 @@
                 ])
             </div>
         </div>
+
+        @include('laravel-crm::partials.form.select',[
+            'name' => 'currency',
+            'label' => ucfirst(__('laravel-crm::lang.currency')),
+            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
+            'value' => old('currency', $order->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
+        ])
+        
         @include('laravel-crm::partials.form.multiselect',[
             'name' => 'labels',
             'label' => ucfirst(__('laravel-crm::lang.labels')),
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all(), false),
             'value' =>  old('labels', (isset($order)) ? $order->labels->pluck('id')->toArray() : null)
         ])
-
-        @include('laravel-crm::partials.form.select',[
-                    'name' => 'currency',
-                    'label' => ucfirst(__('laravel-crm::lang.currency')),
-                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-                    'value' => old('currency', $order->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
-                ])
-
+        
         @include('laravel-crm::partials.form.select',[
              'name' => 'user_owner_id',
              'label' => ucfirst(__('laravel-crm::lang.owner')),
