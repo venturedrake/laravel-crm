@@ -19,6 +19,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
+use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveCall;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
@@ -417,6 +418,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             // Registering package commands.
             $this->commands([
                 LaravelCrmInstall::class,
+                LaravelCrmUpdate::class,
                 LaravelCrmPermissions::class,
                 LaravelCrmLabels::class,
                 LaravelCrmAddressTypes::class,

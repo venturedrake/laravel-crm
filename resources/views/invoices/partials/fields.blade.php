@@ -61,7 +61,7 @@
                         'name' => 'number',
                         'label' => ucfirst(__('laravel-crm::lang.invoice_number')),
                         'value' => old('number', $invoice->number ?? $number ?? null),
-                        'prepend' => '<span aria-hidden="true">'.($invoice->prefix ?? $invoicePrefix->value ?? 'INV-').'</span>',
+                        'prepend' => '<span aria-hidden="true">'.($invoice->prefix ?? $prefix->value ?? 'INV-').'</span>',
                         'required' => 'true'
                     ])
                 @endif    

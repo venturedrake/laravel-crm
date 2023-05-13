@@ -107,6 +107,8 @@ class QuoteController extends Controller
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
+            'prefix' => $this->settingService->get('quote_prefix'),
+            'number' => (Quote::latest()->first()->number ?? 1000) + 1,
             'quoteTerms' => $quoteTerms,
         ]);
     }

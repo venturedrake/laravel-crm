@@ -34,9 +34,9 @@
                 
                 @include('laravel-crm::partials.form.text',[
                     'name' => 'number',
-                    'label' => ucfirst(__('laravel-crm::lang.order_number')),
+           w         'label' => ucfirst(__('laravel-crm::lang.order_number')),
                     'value' => old('number', $order->number ?? $number ?? null),
-                    'prepend' => '<span aria-hidden="true">'.($order->prefix ?? $orderPrefix->value ?? 'ORD-').'</span>',
+                    'prepend' => '<span aria-hidden="true">'.($order->prefix ?? $prefix->value ?? 'ORD-').'</span>',
                     'required' => 'true'
                 ])
             </div>

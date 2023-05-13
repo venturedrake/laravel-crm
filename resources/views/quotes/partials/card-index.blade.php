@@ -44,7 +44,7 @@
             @foreach($quotes as $quote)
                <tr class="has-link @if($quote->accepted_at) table-success @elseif($quote->rejected_at) table-danger @endif" data-url="{{ url(route('laravel-crm.quotes.show',$quote)) }}">
                    <td>{{ $quote->created_at->diffForHumans() }}</td>
-                   <td>{{ $order->order_id }}</td>
+                   <td>{{ $quote->quote_id }}</td>
                    <td>{{ $quote->reference }}</td>
                    <td>{{ $quote->title }}</td>
                    <td>@include('laravel-crm::partials.labels',[

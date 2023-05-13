@@ -419,5 +419,5 @@ return [
     'quote_prefix' => 'quote prefix',
     'order_prefix' => 'order prefix',
     'order_number' => 'order number',
-    'quote_number' => 'quote number'
+    'quote_number' => 'quote number',
 ];

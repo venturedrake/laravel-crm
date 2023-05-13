@@ -41,6 +41,15 @@ class Order extends Model
         return config('laravel-crm.db_table_prefix').'orders';
     }
 
+    public function getNumberAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        } else {
+            return 1000 + $this->id;
+        }
+    }
+
     public function getTitleAttribute()
     {
         return money($this->total, $this->currency).' - '.($this->client->name ?? $this->organisation->name ?? $this->organisation->person->name ?? null);

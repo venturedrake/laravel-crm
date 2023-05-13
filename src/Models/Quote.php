@@ -52,6 +52,15 @@ class Quote extends Model
         return config('laravel-crm.db_table_prefix').'quotes';
     }
 
+    public function getNumberAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        } else {
+            return 1000 + $this->id;
+        }
+    }
+
     public function setIssueAtAttribute($value)
     {
         if ($value) {
