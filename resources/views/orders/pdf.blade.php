@@ -7,6 +7,9 @@
             <tr>
                 <td width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.order')) }}</h1>
+                    @if($order->order_id)
+                        <strong>{{ ucfirst(__('laravel-crm::lang.number')) }}</strong> {{ $order->order_id }}<br />
+                    @endif
                     @if($order->reference)
                         <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $order->reference }}</p>
                     @endif

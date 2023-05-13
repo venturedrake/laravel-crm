@@ -7,9 +7,12 @@
             <tr>
                 <td width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.quote')) }}</h1>
-                    @if($quote->reference || $quote->issue_at || $quote->expire_at)
+                    @if($quote->reference || $quote->issue_at || $quote->expire_at || $quote->quote_id)
                         <p>
-                    @endif    
+                    @endif
+                        @if($quote->quote_id)
+                            <strong>{{ ucfirst(__('laravel-crm::lang.number')) }}</strong> {{ $quote->quote_id }}<br />
+                        @endif
                         @if($quote->reference)
                             <strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $quote->reference }}<br />
                         @endif
