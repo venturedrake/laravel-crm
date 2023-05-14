@@ -19,6 +19,8 @@ class Order extends Model
     protected $guarded = ['id'];
 
     protected $searchable = [
+        'reference',
+        'order_id',
         'person.first_name',
         'person.middle_name',
         'person.last_name',

@@ -30,6 +30,8 @@ class Quote extends Model
 
     protected $searchable = [
         'title',
+        'reference',
+        'quote_id',
         'person.first_name',
         'person.middle_name',
         'person.last_name',
