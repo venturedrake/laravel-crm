@@ -32,9 +32,9 @@ class InvoiceService
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'reference' => $request->reference,
-            'invoice_id' => $request->prefix.$request->number,
+            /*'invoice_id' => $request->prefix.$request->number,
             'prefix' => $request->prefix,
-            'number' => $request->number,
+            'number' => $request->number,*/
             'issue_date' => $request->issue_date,
             'due_date' => $request->due_date,
             'currency' => $request->currency,
@@ -110,9 +110,9 @@ class InvoiceService
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'reference' => $request->reference,
-            'invoice_id' => $request->prefix.$request->number,
+            /*'invoice_id' => $request->prefix.$request->number,
             'prefix' => $request->prefix,
-            'number' => $request->number,
+            'number' => $request->number,*/
             'issue_date' => $request->issue_date,
             'due_date' => $request->due_date,
             'currency' => $request->currency,

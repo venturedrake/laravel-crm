@@ -28,26 +28,15 @@
                   ])
             </div>
             <div class="col-sm-6">
-                @include('laravel-crm::partials.form.hidden',[
-                   'name' => 'prefix',
-                   'value' => old('prefix', ($quote->prefix ?? $prefix->value ?? 'ORD-')),
-                ])
-
-                @include('laravel-crm::partials.form.text',[
-                    'name' => 'number',
-                    'label' => ucfirst(__('laravel-crm::lang.quote_number')),
-                    'value' => old('number', $quote->number ?? $number ?? null),
-                    'prepend' => '<span aria-hidden="true">'.($quote->prefix ?? $prefix->value ?? 'QU-').'</span>',
-                    'required' => 'true'
+                @include('laravel-crm::partials.form.select',[
+                    'name' => 'currency',
+                    'label' => ucfirst(__('laravel-crm::lang.currency')),
+                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
+                    'value' => old('currency', $quote->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
                 ])
             </div>
         </div>
-        @include('laravel-crm::partials.form.select',[
-            'name' => 'currency',
-            'label' => ucfirst(__('laravel-crm::lang.currency')),
-            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-            'value' => old('currency', $quote->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
-        ])
+        
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[

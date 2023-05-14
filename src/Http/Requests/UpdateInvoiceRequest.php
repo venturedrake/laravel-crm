@@ -35,9 +35,9 @@ class UpdateInvoiceRequest extends FormRequest
             'currency' => 'required',
         ];
 
-        if (! Xero::isConnected()) {
+        /*if (! Xero::isConnected()) {
             $rules['number'] = 'required|integer|unique:VentureDrake\LaravelCrm\Models\Invoice,number,'.$this->invoice->id;
-        }
+        }*/
 
         return $rules;
     }

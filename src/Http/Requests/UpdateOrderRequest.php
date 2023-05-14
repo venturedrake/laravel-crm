@@ -30,7 +30,6 @@ class UpdateOrderRequest extends FormRequest
             'organisation_name' => 'required_without_all:person_name,person_id|max:255',
             'organisation_id' => 'required_without_all:person_name,person_id,organisation_name|max:255',
             'user_owner_id' => 'required',
-            'number' => 'required|integer|unique:VentureDrake\LaravelCrm\Models\Order,number,'.$this->order->id,
         ];
     }
 

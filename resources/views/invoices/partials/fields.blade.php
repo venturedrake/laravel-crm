@@ -51,7 +51,13 @@
                   ])
             </div>
             <div class="col-sm-6">
-                @include('laravel-crm::partials.form.hidden',[
+                @include('laravel-crm::partials.form.select',[
+                     'name' => 'currency',
+                     'label' => ucfirst(__('laravel-crm::lang.currency')),
+                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
+                     'value' => old('currency', $invoice->currency ?? $order->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
+                 ])
+               {{-- @include('laravel-crm::partials.form.hidden',[
                      'name' => 'prefix',
                      'value' => old('prefix', ($invoice->prefix ?? $prefix->value ?? 'INV-')),
                 ])
@@ -64,7 +70,7 @@
                         'prepend' => '<span aria-hidden="true">'.($invoice->prefix ?? $prefix->value ?? 'INV-').'</span>',
                         'required' => 'true'
                     ])
-                @endif    
+                @endif --}}   
             </div>
         </div>
         <div class="row">
@@ -91,12 +97,6 @@
                    ])
             </div>
         </div>
-        @include('laravel-crm::partials.form.select',[
-                     'name' => 'currency',
-                     'label' => ucfirst(__('laravel-crm::lang.currency')),
-                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-                     'value' => old('currency', $invoice->currency ?? $order->currency ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
-                 ])
         @include('laravel-crm::partials.form.textarea',[
              'name' => 'terms',
              'label' => ucfirst(__('laravel-crm::lang.terms')),

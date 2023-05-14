@@ -4,9 +4,20 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\SettingService;
 
 class QuoteObserver
 {
+    /**
+     * @var SettingService
+     */
+    private $settingService;
+
+    public function __construct(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
+    
     /**
      * Handle the quote "creating" event.
      *
@@ -21,9 +32,9 @@ class QuoteObserver
             $quote->user_created_id = auth()->user()->id ?? null;
         }
 
-        if (! $quote->number) {
-            $quote->number = Quote::orderBy('number', 'DESC')->first()->number + 1;
-        }
+        $quote->number = Quote::orderBy('number', 'DESC')->first()->number + 1;
+        $quote->prefix = $this->settingService->get('quote_prefix')->value;
+        $quote->quote_id = $quote->prefix.$quote->number;
     }
     
     /**
