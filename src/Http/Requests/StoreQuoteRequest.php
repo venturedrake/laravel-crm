@@ -30,6 +30,7 @@ class StoreQuoteRequest extends FormRequest
             'organisation_id' => 'required_without_all:person_name,person_id,organisation_name|max:255',
             'title' => 'required|max:255',
             'user_owner_id' => 'required',
+            'number' => 'required|integer|unique:VentureDrake\LaravelCrm\Models\Quote,number',
         ];
     }
 
