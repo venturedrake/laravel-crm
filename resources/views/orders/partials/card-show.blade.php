@@ -50,6 +50,8 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
+                    <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.number')) }}</dt>
+                    <dd class="col-sm-8">{{ $order->order_id }}</dd>
                     <dt class="col-sm-4 text-right">Reference</dt>
                     <dd class="col-sm-8">{{ $order->reference }}</dd>
                     <dt class="col-sm-4 text-right">Description</dt>
