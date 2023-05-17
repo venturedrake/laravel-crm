@@ -71,7 +71,15 @@
                    <td>{{ money($quote->discount, $quote->currency) }}</td>
                    <td>{{ money($quote->tax, $quote->currency) }}</td>
                    <td>{{ money($quote->adjustments, $quote->currency) }}</td>--}}
-                   <td>{{ money($quote->total, $quote->currency) }}</td>
+                   <td>
+                       @if(\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote))
+                           <span data-toggle="tooltip" data-placement="top" title="Please check amounts" class="text-danger">
+                           {{ money($quote->total, $quote->currency) }}
+                       </span>
+                       @else
+                           {{ money($quote->total, $quote->currency) }}
+                       @endif
+                   </td>
                    <td>{{ ($quote->issue_at) ? $quote->issue_at->format($dateFormat) : null }}</td>
                    <td>{{ ($quote->expire_at) ? $quote->expire_at->format($dateFormat) : null }}</td>
                    <td>{{ $quote->ownerUser->name ?? null }}</td>
