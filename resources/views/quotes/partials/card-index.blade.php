@@ -72,8 +72,8 @@
                    <td>{{ money($quote->tax, $quote->currency) }}</td>
                    <td>{{ money($quote->adjustments, $quote->currency) }}</td>--}}
                    <td>
-                       @if(\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote))
-                           <span data-toggle="tooltip" data-placement="top" title="Please check amounts" class="text-danger">
+                       @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote))
+                           <span data-toggle="tooltip" data-placement="top" title="Error with total" class="text-danger">
                            {{ money($quote->total, $quote->currency) }}
                        </span>
                        @else

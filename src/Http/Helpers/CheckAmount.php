@@ -4,13 +4,13 @@ namespace VentureDrake\LaravelCrm\Http\Helpers\CheckAmount;
 
 function subTotal($model)
 {
-    return false;
+    $total = 0;
     
     foreach(\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\getItems($model) as $item){
-        // 
+        $total += $item->quantity * $item->price;
     }
     
-    if($model->subtotal == 0){
+    if($model->subtotal == $total){
         return true;
     }
 }
