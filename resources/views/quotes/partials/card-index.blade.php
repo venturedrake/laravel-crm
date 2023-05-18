@@ -72,10 +72,10 @@
                    <td>{{ money($quote->tax, $quote->currency) }}</td>
                    <td>{{ money($quote->adjustments, $quote->currency) }}</td>--}}
                    <td>
-                       @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote))
+                       @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote))
                            <span data-toggle="tooltip" data-placement="top" title="Error with total" class="text-danger">
-                           {{ money($quote->total, $quote->currency) }}
-                       </span>
+                            {{ money($quote->total, $quote->currency) }}
+                           </span>
                        @else
                            {{ money($quote->total, $quote->currency) }}
                        @endif

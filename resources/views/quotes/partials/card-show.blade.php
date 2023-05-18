@@ -111,7 +111,15 @@
                             </td>
                             <td>{{ money($quoteProduct->price ?? null, $quoteProduct->currency) }}</td>
                             <td>{{ $quoteProduct->quantity }}</td>
-                            <td>{{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}</td>
+                            <td>
+                                @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\lineAmount($quoteProduct))
+                                    <span data-toggle="tooltip" data-placement="top" title="Error with amount" class="text-danger">
+                                    {{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}
+                                    </span>
+                                @else
+                                    {{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}
+                                @endif
+                            </td>
                         </tr>
                         @if($quoteProduct->comments)
                         <tr>
@@ -128,7 +136,15 @@
                             <td></td>
                             <td></td>
                             <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
-                            <td>{{ money($quote->subtotal, $quote->currency) }}</td>
+                            <td>
+                                @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote))
+                                    <span data-toggle="tooltip" data-placement="top" title="Error with sub total" class="text-danger">
+                                     {{ money($quote->subtotal, $quote->currency) }}
+                                    </span>
+                                @else
+                                    {{ money($quote->subtotal, $quote->currency) }}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
@@ -152,7 +168,15 @@
                             <td></td>
                             <td></td>
                             <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
-                            <td>{{ money($quote->total, $quote->currency) }}</td>
+                            <td>
+                                @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote))
+                                    <span data-toggle="tooltip" data-placement="top" title="Error with total" class="text-danger">
+                                    {{ money($quote->total, $quote->currency) }}
+                                    </span>
+                                @else
+                                    {{ money($quote->total, $quote->currency) }}
+                                @endif
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

@@ -62,11 +62,27 @@
                             {{ $order->person->name }}
                         @endif
                     </td>
-                    <td>{{ money($order->subtotal, $order->currency) }}</td>
+                    <td>
+                        @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($order))
+                            <span data-toggle="tooltip" data-placement="top" title="Error with sub total" class="text-danger">
+                             {{ money($order->subtotal, $order->currency) }}
+                            </span>
+                        @else
+                            {{ money($order->subtotal, $order->currency) }}
+                        @endif
+                    </td>
                     <td>{{ money($order->discount, $order->currency) }}</td>
                     <td>{{ money($order->tax, $order->currency) }}</td>
                     <td>{{ money($order->adjustments, $order->currency) }}</td>
-                    <td>{{ money($order->total, $order->currency) }}</td>
+                    <td>
+                        @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($order))
+                            <span data-toggle="tooltip" data-placement="top" title="Error with total" class="text-danger">
+                             {{ money($order->total, $order->currency) }}
+                            </span>
+                        @else 
+                            {{ money($order->total, $order->currency) }}
+                        @endif
+                    </td>
                     <td>{{ $order->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm orders')
