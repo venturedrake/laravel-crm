@@ -57,6 +57,7 @@ class OrderService
                         'amount' => $product['amount'],
                         'currency' => $request->currency,
                         'comments' => $product['comments'],
+                        'quote_product_id' => $product['quote_product_id'] ?? null,
                     ]);
                 }
             }

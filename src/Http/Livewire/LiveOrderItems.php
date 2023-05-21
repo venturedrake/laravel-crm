@@ -14,6 +14,7 @@ class LiveOrderItems extends Component
 
     public $products;
 
+    public $quote_product_id;
     public $order_product_id;
 
     public $product_id;
@@ -22,6 +23,8 @@ class LiveOrderItems extends Component
 
     public $unit_price;
 
+    public $quote_quantities;
+    
     public $quantity;
 
     public $amount;
@@ -43,22 +46,35 @@ class LiveOrderItems extends Component
     public $adjustment = 0;
 
     public $total = 0;
+    
+    public $fromQuote;
 
     protected $listeners = ['loadItemDefault'];
 
-    public function mount($order, $products, $old = null)
+    public function mount($order, $products, $old = null, $fromQuote = false)
     {
         $this->order = $order;
         $this->products = $products;
         $this->old = $old;
+        $this->fromQuote = $fromQuote;
 
         if ($this->old) {
             foreach ($this->old as $old) {
                 $this->add($this->i);
+                $this->quote_product_id[$this->i] = $old['quote_product_id'] ?? null;
                 $this->order_product_id[$this->i] = $old['order_product_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
+
+                if ($this->fromQuote) {
+                    foreach ($this->products as $orderProduct) {
+                        for ($i = 0; $i <= $this->getRemainQuoteQuantity($orderProduct); $i++) {
+                            $this->quote_quantities[$this->i][$i] = $i;
+                        }
+                    }
+                }
+                
                 $this->unit_price[$this->i] = $old['unit_price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
                 $this->comments[$this->i] = $old['comments'] ?? null;
@@ -66,10 +82,24 @@ class LiveOrderItems extends Component
         } elseif ($this->products && $this->products->count() > 0) {
             foreach ($this->products as $orderProduct) {
                 $this->add($this->i);
-                $this->order_product_id[$this->i] = $orderProduct->id;
+
+                if ($this->fromQuote) {
+                    $this->quote_product_id[$this->i] = $orderProduct->id;
+                } else {
+                    $this->order_product_id[$this->i] = $orderProduct->id;
+                }
+                
                 $this->product_id[$this->i] = $orderProduct->product->id ?? null;
                 $this->name[$this->i] = $orderProduct->product->name ?? null;
                 $this->quantity[$this->i] = $orderProduct->quantity;
+                
+                if ($this->fromQuote) {
+                    for ($i = 0; $i <= $this->getRemainQuoteQuantity($orderProduct); $i++) {
+                        $this->quote_quantities[$this->i][$i] = $i;
+                        $this->quantity[$this->i] = $i;
+                    }
+                }
+                
                 $this->unit_price[$this->i] = $orderProduct->price / 100;
                 $this->amount[$this->i] = $orderProduct->amount / 100;
                 $this->comments[$this->i] = $orderProduct->comments;
@@ -104,6 +134,18 @@ class LiveOrderItems extends Component
         }
         
         $this->calculateAmounts();
+    }
+    
+    public function getRemainQuoteQuantity($quoteProduct)
+    {
+        $quantity = $quoteProduct->quantity;
+        foreach ($this->fromQuote->orders as $order) {
+            if ($orderProduct = $order->orderProducts()->where('quote_product_id', $quoteProduct->id)->first()) {
+                $quantity -= $orderProduct->quantity;
+            }
+        }
+        
+        return $quantity;
     }
 
     public function calculateAmounts()

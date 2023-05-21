@@ -84,7 +84,7 @@ const appJquery = function() {
             });
 
             if(typeof products !== 'undefined'){
-                $("select[name^='products']").select2({
+                $("td.bind-select2 select[name^='products']").select2({
                     data: products
                 });
 

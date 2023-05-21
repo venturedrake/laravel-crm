@@ -5,7 +5,7 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                {{ ucfirst(__('laravel-crm::lang.create_order')) }}
+                {{ ucfirst(__('laravel-crm::lang.create_order')) }} @isset($quote){{ __('laravel-crm::lang.from_quote') }} {{ $quote->quote_id }} @endisset
             @endslot
 
             @slot('actions')

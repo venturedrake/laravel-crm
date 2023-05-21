@@ -193,8 +193,27 @@ class Quote extends Model
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
-    public function order()
+    public function orders()
     {
-        return $this->hasOne(\VentureDrake\LaravelCrm\Models\Order::class);
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Order::class);
+    }
+    
+    public function orderComplete()
+    {
+        foreach ($this->quoteProducts as $quoteProduct) {
+            $quantity = $quoteProduct->quantity;
+            
+            foreach ($this->orders as $order) {
+                if ($orderProduct = $order->orderProducts()->where('quote_product_id', $quoteProduct->id)->first()) {
+                    $quantity -= $orderProduct->quantity;
+                }
+            }
+            
+            if ($quantity > 0) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

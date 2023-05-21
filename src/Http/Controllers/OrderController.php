@@ -8,10 +8,12 @@ use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrderRequest;
+use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\DeliveryService;
 use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Services\OrderService;
@@ -104,14 +106,36 @@ class OrderController extends Controller
                 $person = Person::find($request->id);
 
                 break;
+
+            case 'quote':
+                $quote = Quote::find($request->id);
+                $client = $quote->client;
+                $organisation = $quote->organisation;
+                $person = $quote->person;
+
+                $addressIds = [];
+
+                if ($address = $quote->organisation->getBillingAddress()) {
+                    $addressIds[] = $address->id;
+                }
+
+                if ($address = $quote->organisation->getShippingAddress()) {
+                    $addressIds[] = $address->id;
+                }
+                
+                $addresses = Address::whereIn('id', $addressIds)->get();
+
+                break;
         }
 
-        $orderTerms = $this->settingService->get('orde_terms');
+        $orderTerms = $this->settingService->get('order_terms');
 
         return view('laravel-crm::orders.create', [
+            'quote' => $quote ?? null,
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
+            'addresses' => $addresses ?? null,
             'prefix' => $this->settingService->get('order_prefix'),
             'number' => (Order::latest()->first()->number ?? 1000) + 1,
             'orderTerms' => $orderTerms,

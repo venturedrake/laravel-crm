@@ -50,6 +50,10 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
+                    @if($order->quote)
+                        <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.quote')) }}</dt>
+                        <dd class="col-sm-8"><a href="{{ route('laravel-crm.quotes.show', $order->quote) }}">{{ $order->quote->quote_id }}</a></dd>
+                    @endif
                     <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.number')) }}</dt>
                     <dd class="col-sm-8">{{ $order->order_id }}</dd>
                     <dt class="col-sm-4 text-right">Reference</dt>

@@ -420,4 +420,5 @@ return [
     'order_prefix' => 'order prefix',
     'order_number' => 'order number',
     'quote_number' => 'quote number',
+    'from_quote' => 'from quote',
 ];
