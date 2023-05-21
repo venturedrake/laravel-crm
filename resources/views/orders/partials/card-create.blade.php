@@ -5,14 +5,21 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                {{ ucfirst(__('laravel-crm::lang.create_order')) }} @isset($quote){{ __('laravel-crm::lang.from_quote') }} {{ $quote->quote_id }} @endisset
+                {{ ucfirst(__('laravel-crm::lang.create_order')) }} @isset($quote){{ __('laravel-crm::lang.from_quote') }} <a href="{{ route('laravel-crm.quotes.show', $quote) }}">{{ $quote->quote_id }}</a> @endisset
             @endslot
 
             @slot('actions')
-                @include('laravel-crm::partials.return-button',[
-                    'model' => new \VentureDrake\LaravelCrm\Models\Order(),
-                    'route' => 'orders'
-                ])
+                @if(isset($quote))
+                    @include('laravel-crm::partials.return-button',[
+                        'model' => new \VentureDrake\LaravelCrm\Models\Quote(),
+                        'route' => 'quotes'
+                    ])
+                @else    
+                    @include('laravel-crm::partials.return-button',[
+                        'model' => new \VentureDrake\LaravelCrm\Models\Order(),
+                        'route' => 'orders'
+                    ])
+                @endif    
             @endslot
 
         @endcomponent
