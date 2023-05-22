@@ -6,10 +6,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDeliveryRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDeliveryRequest;
+use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\DeliveryService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -86,6 +88,7 @@ class DeliveryController extends Controller
 
             case "order":
                 $order = Order::find($request->id);
+                $client = $order->client;
                 $person = $order->person;
                 $organisation = $order->organisation;
 
@@ -93,9 +96,11 @@ class DeliveryController extends Controller
         }
 
         return view('laravel-crm::deliveries.create', [
+            'client' => $client ?? null,
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
             'order' => $order ?? null,
+            'addresses' => $order->addresses ?? null,
         ]);
     }
 
@@ -107,19 +112,7 @@ class DeliveryController extends Controller
      */
     public function store(StoreDeliveryRequest $request)
     {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
-        }
-
-        $this->deliveryService->create($request, $person ?? null, $organisation ?? null);
+        $this->deliveryService->create($request);
 
         flash(ucfirst(trans('laravel-crm::lang.delivery_created')))->success()->important();
 
@@ -187,19 +180,7 @@ class DeliveryController extends Controller
      */
     public function update(UpdateDeliveryRequest $request, Delivery $delivery)
     {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
-        }
-
-        $delivery = $this->deliveryService->update($request, $delivery, $person ?? null, $organisation ?? null);
+        $delivery = $this->deliveryService->update($request, $delivery);
 
         flash(ucfirst(trans('laravel-crm::lang.delivery_updated')))->success()->important();
 

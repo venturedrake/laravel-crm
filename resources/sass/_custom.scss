@@ -141,32 +141,20 @@ dt {
   border-bottom-color: #ffffff !important;
 }
 
-#dealProducts .row:not(:first-child) label{
+#dealProductsTotals label,
+#quoteProductsTotals label,
+#orderProductsTotals label,
+#invoiceLinesTotals label,
+#deliveryProductsTotals label{
   display: none;
 }
 
-#quoteProducts .row:not(:first-child) label{
-  display: none;
-}
-
-#quoteProductsTotals label{
-  display: none;
-}
-
-#orderProducts .row:not(:first-child) label{
+#dealProducts .row:not(:first-child) label,
+#quoteProducts .row:not(:first-child) label,
+#orderProducts .row:not(:first-child) label,
+#invoiceLines .row:not(:first-child) label,
+#deliveryProducts .row:not(:first-child) label{
     display: none;
-}
-
-#orderProductsTotals label{
-    display: none;
-}
-
-#invoiceLines .row:not(:first-child) label{
-  display: none;
-}
-
-#invoiceLinesTotals label{
-  display: none;
 }
 
 .bootstrap-duallistbox-container .btn-outline-secondary,

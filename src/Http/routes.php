@@ -430,7 +430,7 @@ Route::group(['prefix' => 'deliveries', 'middleware' => 'auth.laravel-crm'], fun
         ->name('laravel-crm.deliveries.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Delivery']);
 
-    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@create')
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@create')
         ->name('laravel-crm.deliveries.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Delivery']);
 

@@ -33,6 +33,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveCalls;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDealForm;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveInvoiceLines;
@@ -460,6 +461,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('quote-items', LiveQuoteItems::class);
         Livewire::component('order-form', LiveOrderForm::class);
         Livewire::component('order-items', LiveOrderItems::class);
+        Livewire::component('delivery-items', LiveDeliveryItems::class);
         Livewire::component('activity-menu', LiveActivityMenu::class);
         Livewire::component('xero-connect', XeroConnect::class);
         Livewire::component('activities', LiveActivities::class);

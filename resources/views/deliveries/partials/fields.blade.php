@@ -24,11 +24,11 @@
         ])
     </div>
     <div class="col-sm-7">
-     {{--   
         @livewire('delivery-items',[
-            'order' => $order ?? null,
-            'products' => $order->orderProducts ?? null,
-            'old' => old('products')
-        ])--}}
+            'delivery' => $delivery ?? null,
+            'products' => $delivery->deliveryProducts ?? $order->orderProducts ?? null,
+            'old' => old('deliveries'),
+            'fromOrder' => (isset($order)) ? $order : false
+        ])
     </div>
 </div>

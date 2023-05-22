@@ -9,8 +9,8 @@
              'name' => 'quote_id',
              'value' => old('quote_id', $order->quote->id ?? $quote->id ?? null),
         ])
-        
-        @if($quote)
+
+        @if(isset($quote))
 
             @include('laravel-crm::partials.form.hidden',[
                 'name' => 'client_id',
