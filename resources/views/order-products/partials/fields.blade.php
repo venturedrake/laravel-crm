@@ -68,7 +68,7 @@
        ])
     </td>
     <td class="border-0 pt-0">
-        @if(isset($fromQuote))
+        @if($fromQuote)
             @include('laravel-crm::partials.form.select',[
                 'name' => 'products['.$value.'][quantity]',
                 'label' => ucfirst(__('laravel-crm::lang.quantity')),

@@ -1,5 +1,5 @@
 <div>
-    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.order_items')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
+    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.order_items')) }} @if(!isset($fromQuote))<span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span>@endif</h6>
     <hr class="mb-0" />
     <script type="text/javascript">
         let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\productsSelect2() !!}
@@ -21,6 +21,7 @@
                 @endforeach
                 </tbody>
                 <tfoot id="orderProductsTotals" class="tfoot">
+                    @if(!isset($fromQuote))
                     <tr>
                         <td></td>
                         <td></td>
@@ -30,6 +31,7 @@
                             <button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button>
                         </td>
                     </tr>
+                    @endif
                     <tr>
                         <td></td>
                         <td></td>
