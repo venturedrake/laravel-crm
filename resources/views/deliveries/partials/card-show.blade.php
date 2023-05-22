@@ -77,19 +77,13 @@
                     <thead>
                     <tr>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
-                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
-                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
-                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
-                    </tr>
+                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th></tr>
                     </thead>
                     <tbody>
                     @foreach($delivery->deliveryProducts()->get() as $deliveryProduct)
                         <tr>
                             <td>{{ $deliveryProduct->orderProduct->product->name }}</td>
-                            <td>{{ money($deliveryProduct->orderProduct->price ?? null, $deliveryProduct->orderProduct->currency) }}</td>
-                            <td>{{ $deliveryProduct->orderProduct->quantity }}</td>
-                            <td>{{ money($deliveryProduct->orderProduct->amount ?? null, $deliveryProduct->orderProduct->currency) }}</td>
-                        </tr>
+                            <td>{{ $deliveryProduct->quantity }}</td></tr>
                         @if($deliveryProduct->orderProduct->comments)
                             <tr>
                                 <td colspan="4" class="b-0 pt-0">

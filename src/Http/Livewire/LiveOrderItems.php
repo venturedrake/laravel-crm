@@ -104,7 +104,7 @@ class LiveOrderItems extends Component
                 $this->amount[$this->i] = $orderProduct->amount / 100;
                 $this->comments[$this->i] = $orderProduct->comments;
             }
-        } elseif(! $this->fromQuote) {
+        } elseif (! $this->fromQuote) {
             $this->add($this->i);
         }
 

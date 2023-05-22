@@ -202,4 +202,23 @@ class Order extends Model
     {
         return $this->addresses()->where('address_type_id', 6)->first();
     }
+    
+    public function deliveryComplete()
+    {
+        foreach ($this->orderProducts as $orderProduct) {
+            $quantity = $orderProduct->quantity;
+
+            foreach ($this->deliveries as $delivery) {
+                if ($deliveryProduct = $delivery->deliveryProducts()->where('order_product_id', $orderProduct->id)->first()) {
+                    $quantity -= $deliveryProduct->quantity;
+                }
+            }
+
+            if ($quantity > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

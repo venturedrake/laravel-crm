@@ -80,7 +80,7 @@ class LiveDeliveryItems extends Component
                     }
                 }
             }
-        } elseif(! $this->fromOrder) {
+        } elseif (! $this->fromOrder) {
             $this->add($this->i);
         }
     }

@@ -1,5 +1,10 @@
 <div class="row">
     <div class="col-sm-5 border-right">
+        @include('laravel-crm::partials.form.hidden',[
+             'name' => 'order_id',
+             'value' => old('order_id', $delivery->order->id ?? $order->id ?? null),
+        ])
+        
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[

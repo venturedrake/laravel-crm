@@ -421,5 +421,5 @@ return [
     'order_number' => 'order number',
     'quote_number' => 'quote number',
     'from_quote' => 'from quote',
-    'from_order' => 'from order'
+    'from_order' => 'from order',
 ];

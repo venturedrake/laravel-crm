@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StoreQuoteRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateQuoteRequest;
 use VentureDrake\LaravelCrm\Models\Client;

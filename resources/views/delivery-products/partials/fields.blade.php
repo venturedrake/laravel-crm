@@ -64,7 +64,6 @@
                 'attributes' => [
                     'wire:model' => 'quantity.'.$value,
                     'data-value' => $value,
-                    'wire:change' => 'calculateAmounts'
                 ]
             ])
         @else    
