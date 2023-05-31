@@ -12,13 +12,15 @@
         <hr/>
         @endif
     @endif
-    <ul class="list-unstyled">
-        @foreach($notes as $note)
-            @livewire('note',[
-                'note' => $note
-            ], key($note->id))
-        @endforeach
-    </ul>
+    @if($notes && $notes->count() > 0)
+        <ul class="list-unstyled">
+            @foreach($notes as $note)
+                @livewire('note',[
+                    'note' => $note
+                ], key($note->id))
+            @endforeach
+        </ul>
+    @endif
     @if(! $pinned)
         @push('livewire-js')
             <script>
