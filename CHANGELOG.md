@@ -20,6 +20,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.18.0 - 2023-06-02
+### Added
+- Show product code on quote, order & invoice lines
+- Default sales account for xero integration
+- Purchase & sales account codes on products
+- Quote prefix setting
+- Order prefix setting
+- Indicate related invoice order
+- Indicate related quote on order
+- Split quote into multiple orders
+- Split order into multiple deliveries
+- Added checks on totals and indicted when errors
+### Changed
+- Activate select2 when adding quote, order & invoice items
+- Improved PDF formatting
+### Fixed
+- Copy reference to invoice created from order
+- Bug with deleting notes & related activity
+- Bug with issue & due dates on xero invoices
+- Fixed error when creating order without a quote
+- Don't show unordered list when zero notes, removes extra padding above tabs
+
 ## 0.17.1 - 2023-04-23
 ### Added
 - Date & time format setting
