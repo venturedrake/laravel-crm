@@ -96,7 +96,7 @@ class Settings
             if ($versionSetting && ($versionSetting->updated_at < Carbon::now()->subDays(3) || ! $installIdSetting)) {
                 try {
                     $client = new Client();
-                    $url = "https://beta.laravelcrm.com/api/public/version";
+                    $url = "https://api.laravelcrm.com/api/v1/public/version";
 
                     if (Schema::hasColumn('users', 'crm_access')) {
                         $userCount = User::where('crm_access', 1)->count();
