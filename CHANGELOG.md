@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.18.1 - 2023-06-04
+### Added
+- Laravel 10 support
+
 ## 0.18.0 - 2023-06-02
 ### Added
 - Show product code on quote, order & invoice lines
