@@ -26,7 +26,6 @@
                 <th scope="col" colspan="2">@sortablelink('name', ucwords(__('laravel-crm::lang.name')))</th>
                 <th scope="col">@sortablelink('organisationType.name', ucwords(__('laravel-crm::lang.type')))</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.contact')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.open_deals')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.lost_deals')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.won_deals')) }}</th>
@@ -45,7 +44,6 @@
                             'labels' => $organisation->labels,
                             'limit' => 3
                         ])</td>
-                    <td></td>
                     <td>{{ $organisation->deals->whereNull('closed_at')->count() }}</td>
                     <td>{{ $organisation->deals->where('closed_status', 'lost')->count() }}</td>
                     <td>{{ $organisation->deals->where('closed_status', 'won')->count() }}</td>

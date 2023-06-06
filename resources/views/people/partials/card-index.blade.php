@@ -25,7 +25,6 @@
             <tr>
                 <th scope="col">@sortablelink('first_name', ucwords(__('laravel-crm::lang.name')))</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
-                <th scope="col">@sortablelink('organisation.name', ucwords(__('laravel-crm::lang.organization')))</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.email')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.phone')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.open_deals')) }}</th>
@@ -44,7 +43,6 @@
                             'labels' => $person->labels,
                             'limit' => 3
                         ])</td>
-                    <td>{{ $person->organisation->name ?? null }}</td>
                     <td>{{ $person->getPrimaryEmail()->address ?? null }}</td>
                     <td>{{ $person->getPrimaryPhone()->number ?? null }}</td>
                     <td>{{ $person->deals->whereNull('closed_at')->count() }}</td>
