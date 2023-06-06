@@ -4,7 +4,9 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
@@ -56,35 +58,56 @@ class LaravelCrmUpdate extends Command
     public function handle()
     {
         $this->info('Updating Laravel CRM...');
-
-        $this->info('Updating Laravel CRM quote numbers...');
         
-        foreach (Quote::whereNull('number')->get() as $quote) {
-            $this->info('Updating Laravel CRM quote #'.$quote->id);
-            
-            $quote->update([
-                'quote_id' => $this->settingService->get('quote_prefix')->value.(1000 + $quote->id),
-                'prefix' => $this->settingService->get('quote_prefix')->value,
-                'number' => 1000 + $quote->id,
-            ]);
+        if($this->settingService->get('db_update_0180')->value == 0){
+            $this->info('Updating Laravel CRM quote numbers...');
+
+            foreach (Quote::whereNull('number')->get() as $quote) {
+                $this->info('Updating Laravel CRM quote #'.$quote->id);
+
+                $quote->update([
+                    'quote_id' => $this->settingService->get('quote_prefix')->value.(1000 + $quote->id),
+                    'prefix' => $this->settingService->get('quote_prefix')->value,
+                    'number' => 1000 + $quote->id,
+                ]);
+            }
+
+            $this->info('Updating Laravel CRM quote numbers complete');
+
+            $this->info('Updating Laravel CRM order numbers...');
+
+            foreach (Order::whereNull('number')->get() as $order) {
+                $this->info('Updating Laravel CRM order #'.$order->id);
+
+                $order->update([
+                    'order_id' => $this->settingService->get('order_prefix')->value.(1000 + $order->id),
+                    'prefix' => $this->settingService->get('order_prefix')->value,
+                    'number' => 1000 + $order->id,
+                ]);
+            }
+
+            $this->settingService->set('db_update_0180', 1);
+            $this->info('Updating Laravel CRM orders numbers complete');
         }
 
-        $this->info('Updating Laravel CRM quote numbers complete');
+        if($this->settingService->get('db_update_0181')->value == 0){
+            $this->info('Updating Laravel CRM organisation linked to person...');
 
-        $this->info('Updating Laravel CRM order numbers...');
+            foreach (Person::whereNotNull('organisation_id')->get() as $person) {
+                if($contact = $person->contacts()->create([
+                    'entityable_type' => $person->organisation->getMorphClass(),
+                    'entityable_id' => $person->organisation->id,
+                ])){
+                    $person->update([
+                        'organisation_id' => null
+                    ]);
+                }
+            }
 
-        foreach (Order::whereNull('number')->get() as $order) {
-            $this->info('Updating Laravel CRM order #'.$order->id);
-
-            $order->update([
-                'order_id' => $this->settingService->get('order_prefix')->value.(1000 + $order->id),
-                'prefix' => $this->settingService->get('order_prefix')->value,
-                'number' => 1000 + $order->id,
-            ]);
+            $this->settingService->set('db_update_0181', 1);
+            $this->info('Updating Laravel CRM organisation linked to person complete.');
         }
-
-        $this->info('Updating Laravel CRM orders numbers complete');
-
+        
         $this->info('Laravel CRM is now updated.');
     }
 }
