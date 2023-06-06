@@ -18,7 +18,7 @@ class LeadPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view crm leads')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm leads')) {
             return true;
         }
     }
@@ -32,7 +32,7 @@ class LeadPolicy
      */
     public function view(User $user, Lead $lead)
     {
-        if ($user->hasPermissionTo('view crm leads')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm leads')) {
             return true;
         }
     }
@@ -45,7 +45,7 @@ class LeadPolicy
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('create crm leads')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('create crm leads')) {
             return true;
         }
     }
@@ -59,7 +59,7 @@ class LeadPolicy
      */
     public function update(User $user, Lead $lead)
     {
-        if ($user->hasPermissionTo('edit crm leads')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('edit crm leads')) {
             return true;
         }
     }
@@ -73,7 +73,7 @@ class LeadPolicy
      */
     public function delete(User $user, Lead $lead)
     {
-        if ($user->hasPermissionTo('delete crm leads')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm leads')) {
             return true;
         }
     }
@@ -87,7 +87,7 @@ class LeadPolicy
      */
     public function restore(User $user, Lead $lead)
     {
-        if ($user->hasPermissionTo('delete crm leads')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm leads')) {
             return true;
         }
     }
@@ -102,5 +102,14 @@ class LeadPolicy
     public function forceDelete(User $user, Lead $lead)
     {
         return false;
+    }
+    
+    protected function isEnabled()
+    {
+        if(is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))){
+            return true;
+        }elseif(! config('laravel-crm.modules')){
+            return true;
+        }
     }
 }
