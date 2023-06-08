@@ -18,7 +18,7 @@ class TeamPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view crm teams')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm teams')) {
             return true;
         }
     }
@@ -32,7 +32,7 @@ class TeamPolicy
      */
     public function view(User $user, Team $team)
     {
-        if ($user->hasPermissionTo('view crm teams')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm teams')) {
             return true;
         }
     }
@@ -45,7 +45,7 @@ class TeamPolicy
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('create crm teams')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('create crm teams')) {
             return true;
         }
     }
@@ -59,7 +59,7 @@ class TeamPolicy
      */
     public function update(User $user, Team $team)
     {
-        if ($user->hasPermissionTo('edit crm teams')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('edit crm teams')) {
             return true;
         }
     }
@@ -73,7 +73,7 @@ class TeamPolicy
      */
     public function delete(User $user, Team $team)
     {
-        if ($user->hasPermissionTo('delete crm teams')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm teams')) {
             return true;
         }
     }
@@ -87,7 +87,7 @@ class TeamPolicy
      */
     public function restore(User $user, Team $team)
     {
-        if ($user->hasPermissionTo('delete crm teams')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm teams')) {
             return true;
         }
     }
@@ -102,5 +102,14 @@ class TeamPolicy
     public function forceDelete(User $user, Team $team)
     {
         return false;
+    }
+
+    protected function isEnabled()
+    {
+        if(is_array(config('laravel-crm.modules')) && in_array('teams', config('laravel-crm.modules'))){
+            return true;
+        }elseif(! config('laravel-crm.modules')){
+            return true;
+        }
     }
 }

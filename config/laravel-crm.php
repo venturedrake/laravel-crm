@@ -165,6 +165,7 @@ return [
         'orders',
         'invoices',
         'deliveries',
+        'teams',
     ],
     
 ];

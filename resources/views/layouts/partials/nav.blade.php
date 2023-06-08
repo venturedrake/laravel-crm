@@ -71,9 +71,11 @@
             @can('view crm users')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.users') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.users.index')) }}"><i class="fa fa-user"></i> {{ ucfirst(__('laravel-crm::lang.users')) }}</a></li>
             @endcan
+            @hasteamsenabled
             @can('view crm teams')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.teams') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.teams.index')) }}"><i class="fa fa-users"></i> {{ ucfirst(__('laravel-crm::lang.teams')) }}</a></li>
             @endcan
+            @endhasteamsenabled
             @canany(['view crm products'])
                 <li class="dropdown-divider"></li>
             @endcan

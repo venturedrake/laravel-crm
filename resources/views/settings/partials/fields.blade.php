@@ -17,39 +17,43 @@
              'label' => ucfirst(trans('laravel-crm::lang.logo')),
              'value' => old('logo', $timezone ?? null)
          ])
-
+        @hasquotesenabled
         @include('laravel-crm::partials.form.text',[
          'name' => 'quote_prefix',
          'label' => ucfirst(trans('laravel-crm::lang.quote_prefix')),
          'value' => old('quote_prefix', $quotePrefix->value ?? null)
         ])
-
+        @endhasquotesenabled
+        @hasordersenabled
         @include('laravel-crm::partials.form.text',[
          'name' => 'order_prefix',
          'label' => ucfirst(trans('laravel-crm::lang.order_prefix')),
          'value' => old('order_prefix', $orderPrefix->value ?? null)
         ])
-
+        @endhasordersenabled
+        @hasinvoicesenabled
         @include('laravel-crm::partials.form.text',[
          'name' => 'invoice_prefix',
          'label' => ucfirst(trans('laravel-crm::lang.invoice_prefix')),
          'value' => old('invoice_prefix', $invoicePrefix->value ?? null)
         ])
-
+        @endhasinvoicesenabled
+        @hasquotesenabled
         @include('laravel-crm::partials.form.textarea',[
          'name' => 'quote_terms',
          'label' => ucfirst(trans('laravel-crm::lang.quote_terms')),
          'rows' => 5,
          'value' => old('quote_terms', $quoteTerms->value ?? null)
         ])
-
+        @endhasquotesenabled
+        @hasinvoicesenabled
         @include('laravel-crm::partials.form.textarea',[
          'name' => 'invoice_terms',
          'label' => ucfirst(trans('laravel-crm::lang.invoice_terms')),
          'rows' => 5,
          'value' => old('invoice_terms', $invoiceTerms->value ?? null)
         ])
-
+        @endhasinvoicesenabled
     </div>
     <div class="col">
         @include('laravel-crm::partials.form.select',[

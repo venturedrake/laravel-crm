@@ -547,6 +547,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 return true;
             }
         });
+
+        Blade::if('hasteamsenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('teams', config('laravel-crm.modules'))){
+                return true;
+            }elseif(! config('laravel-crm.modules')){
+                return true;
+            }
+        });
     }
 
     /**

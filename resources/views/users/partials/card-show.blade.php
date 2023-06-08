@@ -48,6 +48,7 @@
                 </dl>
             </div>
             <div class="col-sm-6">
+                @hasteamsenabled
                 @can('view crm teams')
                     <h6 class="text-uppercase section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.teams')) }} ({{ $user->crmTeams->count() }})</span></h6>
                     <hr />
@@ -55,6 +56,7 @@
                         <p><span class="fa fa-users" aria-hidden="true"></span> {{ $team->name }}</p>
                     @endforeach
                 @endcan
+                @endhasteamsenabled
             </div>
         </div>
         
