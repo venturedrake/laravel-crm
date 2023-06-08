@@ -19,6 +19,15 @@
                 @else
                     <h5 class="mt-0 mb-1">{{ $note->created_at->diffForHumans() }}
                         - {{ $note->createdByUser->name }} @include('laravel-crm::livewire.components.partials.note.actions', ['note' => $note])</h5>
+                    <p class="pb-0 mb-2">
+                    @if($note->noteable instanceof \VentureDrake\LaravelCrm\Models\Person)
+                        <span class="fa fa-user-circle" aria-hidden="true"></span> <a
+                                href="{{ route('laravel-crm.people.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
+                    @elseif($note->noteable instanceof \VentureDrake\LaravelCrm\Models\Organisation)
+                        <span class="fa fa-building" aria-hidden="true"></span> <a
+                                href="{{ route('laravel-crm.organisations.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
+                    @endif   
+                    </p>
                     @include('laravel-crm::livewire.components.partials.note.content', ['note' => $note])
                 @endif
             </div>

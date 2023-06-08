@@ -98,5 +98,11 @@
             'value' => old('time_format', $timeFormat->value ?? null),
             'required' => 'true'
        ])
+        <div class="form-group">
+            <label for="crm_access">{{ ucfirst(__('laravel-crm::lang.show_related_contact_activity')) }}</label>
+            <span class="form-control-toggle">
+                 <input id="show_related_activity" type="checkbox" name="show_related_activity" {{ (isset($showRelatedActivity->value) && ($showRelatedActivity->value == 1)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+            </span>
+        </div>
     </div>
 </div>

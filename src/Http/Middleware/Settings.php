@@ -89,6 +89,12 @@ class Settings
             ], [
                 'value' => 'INV-',
             ]);
+
+            Setting::firstOrCreate([
+                'name' => 'show_related_activity',
+            ], [
+                'value' => '0',
+            ]);
             
             if((int) Str::replace('.', '', config('laravel-crm.version')) >= 180){
                 Setting::firstOrCreate([

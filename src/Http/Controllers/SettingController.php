@@ -38,6 +38,7 @@ class SettingController extends Controller
         $invoiceTerms = $this->settingService->get('invoice_terms');
         $dateFormat = $this->settingService->get('date_format');
         $timeFormat = $this->settingService->get('time_format');
+        $showRelatedActivity = $this->settingService->get('show_related_activity');
 
         return view('laravel-crm::settings.edit', [
             'organisationName' => $organisationName,
@@ -53,6 +54,7 @@ class SettingController extends Controller
             'invoiceTerms' => $invoiceTerms,
             'dateFormat' => $dateFormat,
             'timeFormat' => $timeFormat,
+            'showRelatedActivity' => $showRelatedActivity
         ]);
     }
 
@@ -102,6 +104,8 @@ class SettingController extends Controller
                 ->where("id", auth()->user()->currentTeam->id)
                 ->update(["name" => $request->organisation_name]);
         }
+
+        $this->settingService->set('show_related_activity', (($request->show_related_activity == 'on') ? 1 : 0));
 
         flash(ucfirst(trans('laravel-crm::lang.settings_updated')))->success()->important();
 
