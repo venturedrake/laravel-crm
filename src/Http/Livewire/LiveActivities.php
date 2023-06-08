@@ -10,7 +10,7 @@ class LiveActivities extends Component
 {
     private $settingService;
     public $model;
-    public $activities;
+    public $activities = [];
 
     protected $listeners = [
         'refreshActivities' => 'getActivities',

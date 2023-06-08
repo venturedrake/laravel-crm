@@ -14,7 +14,7 @@ class LiveNotes extends Component
 
     private $settingService;
     public $model;
-    public $notes;
+    public $notes = [];
     public $pinned;
     public $content;
     public $noted_at;
