@@ -18,7 +18,7 @@ class InvoicePolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view crm invoices')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm invoices')) {
             return true;
         }
     }
@@ -32,7 +32,7 @@ class InvoicePolicy
      */
     public function view(User $user, Invoice $invoice)
     {
-        if ($user->hasPermissionTo('view crm invoices')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm invoices')) {
             return true;
         }
     }
@@ -45,7 +45,7 @@ class InvoicePolicy
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('create crm invoices')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('create crm invoices')) {
             return true;
         }
     }
@@ -59,7 +59,7 @@ class InvoicePolicy
      */
     public function update(User $user, Invoice $invoice)
     {
-        if ($user->hasPermissionTo('edit crm invoices')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('edit crm invoices')) {
             return true;
         }
     }
@@ -73,7 +73,7 @@ class InvoicePolicy
      */
     public function delete(User $user, Invoice $invoice)
     {
-        if ($user->hasPermissionTo('delete crm invoices')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm invoices')) {
             return true;
         }
     }
@@ -87,7 +87,7 @@ class InvoicePolicy
      */
     public function restore(User $user, Invoice $invoice)
     {
-        if ($user->hasPermissionTo('delete crm invoices')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm invoices')) {
             return true;
         }
     }
@@ -102,5 +102,14 @@ class InvoicePolicy
     public function forceDelete(User $user, Invoice $invoice)
     {
         return false;
+    }
+
+    protected function isEnabled()
+    {
+        if(is_array(config('laravel-crm.modules')) && in_array('invoices', config('laravel-crm.modules'))){
+            return true;
+        }elseif(! config('laravel-crm.modules')){
+            return true;
+        }
     }
 }

@@ -49,6 +49,14 @@
                     <dd class="col-sm-9">{{ $invoice->reference }}</dd>
                     <dt class="col-sm-3 text-right">Number</dt>
                     <dd class="col-sm-9">{{ $invoice->invoice_id }}</dd>
+                    @hasordersenabled
+                        @if($invoice->order)
+                            <dt class="col-sm-3 text-right">Order</dt>
+                            <dd class="col-sm-9">
+                                <a href="{{ route('laravel-crm.orders.show', $invoice->order) }}">{{ $invoice->order->order_id }}</a>
+                            </dd>
+                        @endif
+                    @endhasordersenabled
                     <dt class="col-sm-3 text-right">Issue Date</dt>
                     <dd class="col-sm-9">{{ ($invoice->issue_date) ? $invoice->issue_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Due Date</dt>
@@ -86,7 +94,7 @@
                             <td>
                                 {{ $invoiceLine->product->name }}
                                 @if($invoiceLine->product->code)
-                                    <br /><small>{{ $orderProduct->product->code }}</small>
+                                    <br /><small>{{ $invoiceLine->product->code }}</small>
                                 @endif
                             </td>
                             <td>{{ money($invoiceLine->price ?? null, $invoiceLine->currency) }}</td>

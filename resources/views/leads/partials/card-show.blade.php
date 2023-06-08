@@ -11,10 +11,12 @@
                 @include('laravel-crm::partials.return-button',[
                     'model' => $lead,
                     'route' => 'leads'
-                ]) | 
-                @can('edit crm leads')
-                <a href="{{ route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.convert')) }}</a>
-                @endcan
+                ]) 
+                @hasdealsenabled
+                    @can('edit crm leads')
+                    | <a href="{{ route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.convert')) }}</a>
+                    @endcan
+                @endhasdealsenabled
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm leads')
                 <a href="{{ url(route('laravel-crm.leads.edit', $lead)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>

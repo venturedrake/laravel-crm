@@ -4,6 +4,7 @@
 
     <div class="container-content">
         <div class="row">
+            @hasleadsenabled
             <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
@@ -15,6 +16,8 @@
                     </div>
                 </div>
             </div>
+            @endhasleadsenabled
+            @hasdealsenabled
             <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
@@ -26,6 +29,7 @@
                     </div>
                 </div>
             </div>
+            @endhasdealsenabled
             <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">

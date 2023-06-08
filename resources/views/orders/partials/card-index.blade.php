@@ -24,9 +24,11 @@
             <thead>
             <tr>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.quote')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.number')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
+                @hasquotesenabled
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.quote')) }}</th>
+                @endhasquotesenabled
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.labels')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.customer')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.sub_total')) }}</th>
@@ -42,13 +44,15 @@
             @foreach($orders as $order)
                <tr class="has-link" data-url="{{ url(route('laravel-crm.orders.show', $order)) }}">
                    <td>{{ $order->created_at->diffForHumans() }}</td>
+                   <td>{{ $order->order_id }}</td>
+                   <td>{{ $order->reference }}</td>
+                   @hasquotesenabled
                    <td>
                        @if($order->quote)
                            <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}">{{ $order->quote->quote_id }}</a>
                        @endif
                    </td>
-                   <td>{{ $order->order_id }}</td>
-                   <td>{{ $order->reference }}</td>
+                   @endhasquotesenabled
                    <td>@include('laravel-crm::partials.labels',[
                             'labels' => $order->labels,
                             'limit' => 3
@@ -93,12 +97,18 @@
                     <td class="disable-link text-right">
                         @can('edit crm orders')
                             @if($order->invoices()->count() < 1)
-                                <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                                @hasinvoicesenabled
+                                    <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                                @endhasinvoicesenabled
                             @else
+                                @hasinvoicesenabled
                                 <a href="{{ route('laravel-crm.invoices.show',$order->invoices()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.invoiced')) }}</a>
+                                @endhasinvoicesenabled
                             @endif
-                            @if(! $order->deliveryComplete()) 
-                                <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                            @if(! $order->deliveryComplete())
+                                @hasdeliveriesenabled
+                                    <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                                @endhasdeliveriesenabled
                             @endif
                         @endcan
                         @can('view crm orders')

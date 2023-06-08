@@ -94,10 +94,14 @@
                                <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
                                <a href="{{ route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.reject')) }}</a>
                            @elseif($quote->accepted_at && $quote->orders()->count() > 0 && ! $quote->orderComplete())
-                               <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
+                               @hasordersenabled
+                                   <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
+                               @endhasordersenabled
                            @elseif($quote->accepted_at && $quote->orders()->count() < 1)
                                <a href="{{ route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
-                               <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
+                               @hasordersenabled
+                                   <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
+                               @endhasordersenabled
                            @endif
                         @endcan
                         @can('view crm quotes')

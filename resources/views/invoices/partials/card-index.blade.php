@@ -24,6 +24,9 @@
             <tr>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.number')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
+                @hasordersenabled
+                    <th scope="col">{{ ucwords(__('laravel-crm::lang.order')) }}</th>
+                @endhasordersenabled
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.to')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.date')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.due_date')) }}</th>
@@ -40,6 +43,13 @@
                <tr @if(! $invoice->xeroInvoice) class="has-link" data-url="{{ url(route('laravel-crm.invoices.show', $invoice)) }}" @endif>
                    <td>{{ $invoice->xeroInvoice->number ?? $invoice->invoice_id }}</td>
                    <td>{{ $invoice->xeroInvoice->reference ?? $invoice->reference }}</td>
+                   @hasordersenabled
+                   <td>
+                       @if($invoice->order)
+                           <a href="{{ route('laravel-crm.orders.show', $invoice->order) }}">{{ $invoice->order->order_id }}</a>
+                       @endif
+                   </td>
+                   @endhasordersenabled
                    <td>
                        {{ $invoice->organisation->name ?? null }}
                        @if($invoice->person)

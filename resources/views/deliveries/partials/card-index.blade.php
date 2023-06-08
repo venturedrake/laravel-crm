@@ -23,8 +23,10 @@
             <thead>
             <tr>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.created')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.order')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.reference')) }}</th>
+                @hasordersenabled
+                    <th scope="col">{{ ucwords(__('laravel-crm::lang.order')) }}</th>
+                @endhasordersenabled
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.customer')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.shipping_address')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.delivery_expected')) }}</th>
@@ -39,14 +41,16 @@
                     <td>{{ $delivery->created_at->diffForHumans() }}</td>
                     <td>
                         @if($delivery->order)
-                            <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}">{{ $delivery->order->order_id }}</a>
-                        @endif    
-                    </td>
-                    <td>
-                        @if($delivery->order)
                             <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}">{{ $delivery->order->reference }}</a>
                         @endif    
                     </td>
+                    @hasordersenabled
+                    <td>
+                        @if($delivery->order)
+                            <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}">{{ $delivery->order->order_id }}</a>
+                        @endif
+                    </td>
+                    @endhasordersenabled
                     <td>
                         {{ $delivery->order->organisation->name ?? null }}<br />
                         <small>{{ $delivery->order->person->name ?? null }}</small>

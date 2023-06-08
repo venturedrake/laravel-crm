@@ -13,13 +13,19 @@
                     'route' => 'orders'
                 ]) |
                 @can('edit crm orders')
-                    @if($order->invoices()->count() < 1) 
+                    @if($order->invoices()->count() < 1)
+                        @hasinvoicesenabled
                         <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id])}}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_invoice')) }}</a>
+                        @endhasinvoicesenabled
                     @else
+                        @hasinvoicesenabled
                         <a href="{{ route('laravel-crm.invoices.show',$order->invoices()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.invoiced')) }}</a>
+                        @endhasinvoicesenabled
                     @endif
                     @if(! $order->deliveryComplete())
-                        <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                        @hasdeliveriesenabled
+                            <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                        @endhasdeliveriesenabled
                     @endif
                 @endcan
                 @can('view crm orders')
@@ -48,14 +54,16 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
-                    @if($order->quote)
-                        <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.quote')) }}</dt>
-                        <dd class="col-sm-8"><a href="{{ route('laravel-crm.quotes.show', $order->quote) }}">{{ $order->quote->quote_id }}</a></dd>
-                    @endif
                     <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.number')) }}</dt>
                     <dd class="col-sm-8">{{ $order->order_id }}</dd>
                     <dt class="col-sm-4 text-right">Reference</dt>
                     <dd class="col-sm-8">{{ $order->reference }}</dd>
+                    @hasquotesenabled
+                    @if($order->quote)
+                        <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.quote')) }}</dt>
+                        <dd class="col-sm-8"><a href="{{ route('laravel-crm.quotes.show', $order->quote) }}">{{ $order->quote->quote_id }}</a></dd>
+                    @endif
+                    @endhasquotesenabled
                     <dt class="col-sm-4 text-right">Description</dt>
                     <dd class="col-sm-8">{{ $order->description }}</dd>
                     @foreach($addresses as $address)

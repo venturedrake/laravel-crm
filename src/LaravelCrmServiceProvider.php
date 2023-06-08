@@ -9,6 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -498,6 +499,54 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 view()->share('timeFormat', 'H:i');
             }
         }
+        
+        Blade::if('hasleadsenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))){
+                return true;
+            }elseif(! config('laravel-crm.modules')){
+                return true;
+            }
+        });
+
+        Blade::if('hasdealsenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('deals', config('laravel-crm.modules'))){
+                return true;
+            }elseif(! config('laravel-crm.modules')){
+                return true;
+            }
+        });
+
+        Blade::if('hasquotesenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('quotes', config('laravel-crm.modules'))){
+                return true;
+            }elseif(! config('laravel-crm.modules')){
+                return true;
+            }
+        });
+
+        Blade::if('hasordersenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('orders', config('laravel-crm.modules'))){
+                return true;
+            }elseif(! config('laravel-crm.modules')){
+                return true;
+            }
+        });
+
+        Blade::if('hasinvoicesenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('invoices', config('laravel-crm.modules'))){
+                return true;
+            }elseif(! config('laravel-crm.modules')){
+                return true;
+            }
+        });
+
+        Blade::if('hasdeliveriesenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('deliveries', config('laravel-crm.modules'))){
+                return true;
+            }elseif(! config('laravel-crm.modules')){
+                return true;
+            }
+        });
     }
 
     /**

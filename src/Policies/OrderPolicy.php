@@ -18,7 +18,7 @@ class OrderPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view crm orders')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm orders')) {
             return true;
         }
     }
@@ -32,7 +32,7 @@ class OrderPolicy
      */
     public function view(User $user, Order $order)
     {
-        if ($user->hasPermissionTo('view crm orders')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm orders')) {
             return true;
         }
     }
@@ -45,7 +45,7 @@ class OrderPolicy
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('create crm orders')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('create crm orders')) {
             return true;
         }
     }
@@ -59,7 +59,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order)
     {
-        if ($user->hasPermissionTo('edit crm orders')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('edit crm orders')) {
             return true;
         }
     }
@@ -73,7 +73,7 @@ class OrderPolicy
      */
     public function delete(User $user, Order $order)
     {
-        if ($user->hasPermissionTo('delete crm orders')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm orders')) {
             return true;
         }
     }
@@ -87,7 +87,7 @@ class OrderPolicy
      */
     public function restore(User $user, Order $order)
     {
-        if ($user->hasPermissionTo('delete crm orders')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm orders')) {
             return true;
         }
     }
@@ -102,5 +102,14 @@ class OrderPolicy
     public function forceDelete(User $user, Order $order)
     {
         return false;
+    }
+
+    protected function isEnabled()
+    {
+        if(is_array(config('laravel-crm.modules')) && in_array('orders', config('laravel-crm.modules'))){
+            return true;
+        }elseif(! config('laravel-crm.modules')){
+            return true;
+        }
     }
 }

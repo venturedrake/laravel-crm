@@ -49,14 +49,16 @@
                     <td>{{ $lead->person->name ??  null }}</td>
                     <td>{{ $lead->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
-                        @can('edit crm leads')
-                        <a href="{{  route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm"> {{ ucfirst(__('laravel-crm::lang.convert')) }}</a>
-                        @endcan
+                        @hasdealsenabled
+                            @can('edit crm leads')
+                            <a href="{{ route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn btn-success btn-sm"> {{ ucfirst(__('laravel-crm::lang.convert')) }}</a>
+                            @endcan
+                        @endhasdealsenabled
                         @can('view crm leads')
-                        <a href="{{  route('laravel-crm.leads.show',$lead) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        <a href="{{ route('laravel-crm.leads.show',$lead) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
                         @can('edit crm leads')
-                        <a href="{{  route('laravel-crm.leads.edit',$lead) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                        <a href="{{ route('laravel-crm.leads.edit',$lead) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                         @endcan
                         @can('delete crm leads')
                         <form action="{{ route('laravel-crm.leads.destroy',$lead) }}" method="POST" class="form-check-inline mr-0 form-delete-button">

@@ -18,7 +18,7 @@ class DeliveryPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view crm deliveries')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm deliveries')) {
             return true;
         }
     }
@@ -32,7 +32,7 @@ class DeliveryPolicy
      */
     public function view(User $user, Delivery $delivery)
     {
-        if ($user->hasPermissionTo('view crm deliveries')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('view crm deliveries')) {
             return true;
         }
     }
@@ -45,7 +45,7 @@ class DeliveryPolicy
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('create crm deliveries')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('create crm deliveries')) {
             return true;
         }
     }
@@ -59,7 +59,7 @@ class DeliveryPolicy
      */
     public function update(User $user, Delivery $delivery)
     {
-        if ($user->hasPermissionTo('edit crm deliveries')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('edit crm deliveries')) {
             return true;
         }
     }
@@ -73,7 +73,7 @@ class DeliveryPolicy
      */
     public function delete(User $user, Delivery $delivery)
     {
-        if ($user->hasPermissionTo('delete crm deliveries')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm deliveries')) {
             return true;
         }
     }
@@ -87,7 +87,7 @@ class DeliveryPolicy
      */
     public function restore(User $user, Delivery $delivery)
     {
-        if ($user->hasPermissionTo('delete crm deliveries')) {
+        if ($this->isEnabled() && $user->hasPermissionTo('delete crm deliveries')) {
             return true;
         }
     }
@@ -102,5 +102,14 @@ class DeliveryPolicy
     public function forceDelete(User $user, Delivery $delivery)
     {
         return false;
+    }
+
+    protected function isEnabled()
+    {
+        if(is_array(config('laravel-crm.modules')) && in_array('deliveries', config('laravel-crm.modules'))){
+            return true;
+        }elseif(! config('laravel-crm.modules')){
+            return true;
+        }
     }
 }
