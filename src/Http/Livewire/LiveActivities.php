@@ -37,8 +37,20 @@ class LiveActivities extends Component
 
         if($this->settingService->get('show_related_activity')->value == 1){
             foreach($this->model->contacts as $contact) {
-                foreach ($contact->entityable->activities()->latest()->get() as $activity) {
-                    $activityIds[] = $activity->id;
+                switch(class_basename($contact->entityable)){
+                    case "Person":
+                        $person = Person::find($contact->entityable->id);
+                        foreach ($person->activities()->latest()->get() as $activity) {
+                            $activityIds[] = $activity->id;
+                        }
+                        break;
+
+                    case "Organisation":
+                        $organisation = Organisation::find($contact->entityable->id);
+                        foreach ($organisation->activities()->latest()->get() as $activity) {
+                            $activityIds[] = $activity->id;
+                        }
+                        break;
                 }
             }
         }

@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
+use App\Models\Organisation;
+use App\Models\Person;
 use Livewire\Component;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Note;
@@ -86,8 +88,20 @@ class LiveNotes extends Component
             
             if($this->settingService->get('show_related_activity')->value == 1){
                 foreach($this->model->contacts as $contact) {
-                    foreach ($contact->entityable->notes()->latest()->get() as $note) {
-                        $noteIds[] = $note->id;
+                    switch(class_basename($contact->entityable)){
+                        case "Person":
+                            $person = Person::find($contact->entityable->id);
+                            foreach ($person->notes()->latest()->get() as $note) {
+                                $noteIds[] = $note->id;
+                            }
+                            break;
+
+                        case "Organisation":
+                            $organisation = Organisation::find($contact->entityable->id);
+                            foreach ($organisation->notes()->latest()->get() as $note) {
+                                $noteIds[] = $note->id;
+                            }
+                            break;
                     }
                 }
             }
