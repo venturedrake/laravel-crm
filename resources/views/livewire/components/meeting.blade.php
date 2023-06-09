@@ -4,6 +4,17 @@
             {{--<img src="..." class="mr-3" alt="...">--}}
             <div class="media-body">
                 <h5 class="mt-0 mb-1">{{ $meeting->name }} @include('laravel-crm::livewire.components.partials.meeting.actions', ['meeting' => $meeting])</h5>
+                @if($showRelated)
+                    <p class="pb-0 mb-2">
+                        @if($meeting->meetingable instanceof \VentureDrake\LaravelCrm\Models\Person)
+                            <span class="fa fa-user-circle" aria-hidden="true"></span> <a
+                                    href="{{ route('laravel-crm.people.show', $meeting->meetingable) }}">{{ $meeting->meetingable->name }}</a>
+                        @elseif($meeting->meetingable instanceof \VentureDrake\LaravelCrm\Models\Organisation)
+                            <span class="fa fa-building" aria-hidden="true"></span> <a
+                                    href="{{ route('laravel-crm.organisations.show', $meeting->meetingable) }}">{{ $meeting->meetingable->name }}</a>
+                        @endif
+                    </p>
+                @endif
                 @include('laravel-crm::livewire.components.partials.meeting.content', ['meeting' => $meeting])
             </div>
         </div>

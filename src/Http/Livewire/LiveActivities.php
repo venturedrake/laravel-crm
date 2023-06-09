@@ -37,22 +37,10 @@ class LiveActivities extends Component
             $activityIds[] =  $activity->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1){
+        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
             foreach($this->model->contacts as $contact) {
-                switch(class_basename($contact->entityable)){
-                    case "Person":
-                        $person = Person::find($contact->entityable->id);
-                        foreach ($person->activities()->latest()->get() as $activity) {
-                            $activityIds[] = $activity->id;
-                        }
-                        break;
-
-                    case "Organisation":
-                        $organisation = Organisation::find($contact->entityable->id);
-                        foreach ($organisation->activities()->latest()->get() as $activity) {
-                            $activityIds[] = $activity->id;
-                        }
-                        break;
+                foreach ($contact->entityable->activities()->latest()->get() as $activity) {
+                    $activityIds[] = $activity->id;
                 }
             }
         }

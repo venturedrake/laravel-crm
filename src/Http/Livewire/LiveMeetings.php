@@ -3,13 +3,17 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Models\Call;
+use VentureDrake\LaravelCrm\Models\Meeting;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveMeetings extends Component
 {
     use NotifyToast;
 
+    private $settingService;
     public $model;
     public $meetings;
     public $name;
@@ -26,12 +30,17 @@ class LiveMeetings extends Component
         'meetingCompleted' => 'getMeetings',
      ];
 
+    public function boot(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
+
     public function mount($model)
     {
         $this->model = $model;
         $this->getMeetings();
 
-        if ($this->meetings->count() < 1) {
+        if (!$this->meetings || ($this->meetings && $this->meetings->count() < 1)) {
             $this->showForm = true;
         }
     }
@@ -84,7 +93,24 @@ class LiveMeetings extends Component
 
     public function getMeetings()
     {
-        $this->meetings = $this->model->meetings()->where('user_assigned_id', auth()->user()->id)->latest()->get();
+        $meetingIds = [];
+
+        foreach($this->model->meetings()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $meeting){
+            $meetingIds[] =  $meeting->id;
+        }
+
+        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
+            foreach($this->model->contacts as $contact) {
+                foreach ($contact->entityable->meetings()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $meeting) {
+                    $meetingIds[] = $meeting->id;
+                }
+            }
+        }
+
+        if(count($meetingIds) > 0){
+            $this->meetings = Meeting::whereIn('id', $meetingIds)->latest()->get();
+        }
+        
         $this->emit('refreshActivities');
     }
 

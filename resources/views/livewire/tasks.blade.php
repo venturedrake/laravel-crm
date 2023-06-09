@@ -10,6 +10,7 @@
         </form>
         <hr/>
     @endif
+    @if($tasks && $tasks->count() > 0)
     <ul class="list-unstyled">
         @foreach($tasks as $task)
             @livewire('task',[
@@ -17,6 +18,7 @@
             ], key($task->id))
         @endforeach
     </ul>
+    @endif
     @push('livewire-js')
         <script>
             $(document).ready(function () {

@@ -26,6 +26,7 @@
             });
         </script>
     @endpush
+    @if($files && $files->count() > 0)
     <ul class="list-unstyled">
         @foreach($files as $file)
             @livewire('file',[
@@ -33,6 +34,7 @@
             ], key($file->id))
         @endforeach
     </ul>
+    @endif
 </div>
 
 

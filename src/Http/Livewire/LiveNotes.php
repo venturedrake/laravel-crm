@@ -40,7 +40,7 @@ class LiveNotes extends Component
         $this->pinned = $pinned;
         $this->getNotes();
 
-        if ($this->notes && $this->notes->count() < 1) {
+        if (! $this->notes || ($this->notes && $this->notes->count() < 1 )) {
             $this->showForm = true;
         }
     }
@@ -86,22 +86,10 @@ class LiveNotes extends Component
                 $noteIds[] =  $note->id;
             }
             
-            if($this->settingService->get('show_related_activity')->value == 1){
+            if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
                 foreach($this->model->contacts as $contact) {
-                    switch(class_basename($contact->entityable)){
-                        case "Person":
-                            $person = Person::find($contact->entityable->id);
-                            foreach ($person->notes()->latest()->get() as $note) {
-                                $noteIds[] = $note->id;
-                            }
-                            break;
-
-                        case "Organisation":
-                            $organisation = Organisation::find($contact->entityable->id);
-                            foreach ($organisation->notes()->latest()->get() as $note) {
-                                $noteIds[] = $note->id;
-                            }
-                            break;
+                    foreach ($contact->entityable->notes()->latest()->get() as $note) {
+                        $noteIds[] = $note->id;
                     }
                 }
             }

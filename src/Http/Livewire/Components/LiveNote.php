@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Livewire\Components;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Note;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
@@ -11,11 +12,13 @@ class LiveNote extends Component
 {
     use NotifyToast;
     use HasGlobalSettings;
-    
+
+    private $settingService;
     public $note;
     public $editMode = false;
     public $content;
     public $noted_at;
+    public $showRelated = false;
     public $view;
 
     protected $listeners = [
@@ -23,12 +26,22 @@ class LiveNote extends Component
         'notePinned' => '$refresh',
         'noteUnpinned' => '$refresh',
     ];
+
+    public function boot(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
     
     public function mount(Note $note, $view = 'note')
     {
         $this->note = $note;
         $this->content = $note->content;
         $this->noted_at = ($note->noted_at) ? $note->noted_at->format($this->dateFormat().' H:i') : null;
+
+        if($this->settingService->get('show_related_activity')->value == 1){
+            $this->showRelated = true;
+        }
+        
         $this->view = $view;
     }
 

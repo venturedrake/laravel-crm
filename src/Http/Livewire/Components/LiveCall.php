@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Livewire\Components;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
@@ -13,6 +14,7 @@ class LiveCall extends Component
     use NotifyToast;
     use HasGlobalSettings;
 
+    private $settingService;
     public $call;
     public $editMode = false;
     public $name;
@@ -21,11 +23,17 @@ class LiveCall extends Component
     public $finish_at;
     public $guests = [];
     public $location;
+    public $showRelated = false;
     public $view;
 
     protected $listeners = [
         'refreshComponent' => '$refresh',
     ];
+
+    public function boot(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
 
     public function mount(Call $call, $view = 'call')
     {
@@ -36,6 +44,11 @@ class LiveCall extends Component
         $this->finish_at = ($call->finish_at) ? $call->finish_at->format($this->dateFormat().' H:i') : null;
         $this->guests = $call->contacts()->pluck('entityable_id')->toArray();
         $this->location = $call->location;
+
+        if($this->settingService->get('show_related_activity')->value == 1){
+            $this->showRelated = true;
+        }
+        
         $this->view = $view;
     }
 
