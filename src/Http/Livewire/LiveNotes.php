@@ -2,8 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
-use App\Models\Organisation;
-use App\Models\Person;
+use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
 use Livewire\Component;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Note;

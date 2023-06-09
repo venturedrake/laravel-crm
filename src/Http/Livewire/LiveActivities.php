@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
+use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Services\SettingService;
