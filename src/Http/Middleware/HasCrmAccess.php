@@ -30,7 +30,7 @@ class HasCrmAccess
             auth()->user()->forceFill([
                 'crm_access' => 1,
             ])->save();
-        } elseif (config('laravel-crm.teams') && auth()->user()->currentTeam->user_id == auth()->user()->id && ! auth()->user()->hasRole('Owner')) {
+        } elseif (config('laravel-crm.teams') && auth()->user()->currentTeam && auth()->user()->currentTeam->user_id == auth()->user()->id && ! auth()->user()->hasRole('Owner')) {
             if ($role = Role::where([
                 'name' => 'Owner',
                 'team_id' => auth()->user()->currentTeam->id,
