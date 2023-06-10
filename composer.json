@@ -44,6 +44,7 @@
         "kyslik/column-sortable": "^6.4",
         "lab404/laravel-auth-checker": "^1.6|^1.7|^2.0",
         "laracasts/flash": "^3.2",
+        "laravel/legacy-factories": "^1.3",
         "livewire/livewire": "^1.0|^2.0",
         "mpdf/mpdf": "^7.0|^8.0",
         "owen-it/laravel-auditing": "^12.0|^13.0",
