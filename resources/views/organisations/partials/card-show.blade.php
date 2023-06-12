@@ -14,18 +14,26 @@
                     'model' => $organisation,
                     'route' => 'organisations'
                 ]) | 
+                @hasleadsenabled
                 @can('create crm leads')
                     <a href="{{ route('laravel-crm.leads.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
                 @endcan
+                @endhasleadsenabled
+                @hasdealsenabled
                 @can('create crm deals')
                     <a href="{{ route('laravel-crm.deals.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
                 @endcan
+                @endhasdealsenabled
+                @hasquotesenabled
                 @can('create crm quotes')
                     <a href="{{ route('laravel-crm.quotes.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
                 @endcan
+                @endhasquotesenabled
+                @hasordersenabled
                 @can('create crm orders')
                     <a href="{{ route('laravel-crm.orders.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
                 @endcan
+                @endhasordersenabled
                 @include('laravel-crm::partials.navs.activities') | 
                 @can('edit crm organisations')
                 <a href="{{ url(route('laravel-crm.organisations.edit', $organisation)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>

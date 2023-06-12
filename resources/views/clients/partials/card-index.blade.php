@@ -39,18 +39,24 @@
                         ])</td>
                     <td>{{ $client->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
+                        @hasleadsenabled
                         @can('create crm leads')
                             <a href="{{ route('laravel-crm.leads.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
                         @endcan
+                        @endhasleadsenabled
+                        @hasdealsenabled
                         @can('create crm deals')
                             <a href="{{ route('laravel-crm.deals.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
                         @endcan
+                        @endhasdealsenabled
                         @can('create crm quotes')
                             <a href="{{ route('laravel-crm.quotes.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
                         @endcan
+                        @hasordersenabled
                         @can('create crm orders')
                             <a href="{{ route('laravel-crm.orders.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
-                        @endcan    
+                        @endcan
+                        @endhasordersenabled
                         @can('view crm clients')
                             <a href="{{  route('laravel-crm.clients.show',$client) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
