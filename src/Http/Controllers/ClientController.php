@@ -151,15 +151,15 @@ class ClientController extends Controller
 
     public function search(Request $request)
     {
-        /* $searchValue = Person::searchValue($request);
+         $searchValue = Client::searchValue($request);
 
          if (! $searchValue || trim($searchValue) == '') {
-             return redirect(route('laravel-crm.people.index'));
+             return redirect(route('laravel-crm.clients.index'));
          }
 
-         $params = Person::filters($request, 'search');
+         $params = Client::filters($request, 'search');
 
-         $people = Person::filter($params)->get()->filter(function ($record) use ($searchValue) {
+         $clients = Client::filter($params)->get()->filter(function ($record) use ($searchValue) {
              foreach ($record->getSearchable() as $field) {
                  if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
                      return $record;
@@ -167,15 +167,15 @@ class ClientController extends Controller
              }
          });
 
-         return view('laravel-crm::people.index', [
-             'people' => $people,
+         return view('laravel-crm::clients.index', [
+             'clients' => $clients,
              'searchValue' => $searchValue ?? null,
-         ]);*/
+         ]);
     }
 
     public function autocomplete(Client $client)
     {
-        /* $email = $person->getPrimaryEmail();
+         /*$email = $person->getPrimaryEmail();
          $phone = $person->getPrimaryPhone();
 
          return response()->json([
