@@ -95,6 +95,7 @@ class LaravelCrmUpdate extends Command
 
             foreach (Person::whereNotNull('organisation_id')->get() as $person) {
                 if($contact = $person->contacts()->create([
+                    'team_id' => $person->team_id,
                     'entityable_type' => $person->organisation->getMorphClass(),
                     'entityable_id' => $person->organisation->id,
                 ])){
