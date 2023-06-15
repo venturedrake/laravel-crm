@@ -36,9 +36,13 @@ class LiveRelatedContactOrganisation extends Component
         }
         
         $this->model->contacts()->create([
-            'external_id' => Uuid::uuid4()->toString(),
             'entityable_type' => $organisation->getMorphClass(),
             'entityable_id' => $organisation->id,
+        ]);
+
+        $organisation->contacts()->create([
+            'entityable_type' => $this->model->getMorphClass(),
+            'entityable_id' => $this->model->id,
         ]);
 
         $this->resetFields();
@@ -55,6 +59,13 @@ class LiveRelatedContactOrganisation extends Component
                 ->where([
                     'entityable_type' => $organisation->getMorphClass(),
                     'entityable_id' => $organisation->id,
+                ])
+                ->delete();
+
+            $organisation->contacts()
+                ->where([
+                    'entityable_type' => $this->model->getMorphClass(),
+                    'entityable_id' => $this->model->id,
                 ])
                 ->delete();
         }

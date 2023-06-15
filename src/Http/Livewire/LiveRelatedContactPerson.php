@@ -41,6 +41,11 @@ class LiveRelatedContactPerson extends Component
             'entityable_id' => $person->id,
         ]);
 
+        $person->contacts()->create([
+            'entityable_type' => $this->model->getMorphClass(),
+            'entityable_id' => $this->model->id,
+        ]);
+
         $this->resetFields();
 
         $this->getContacts();
@@ -55,6 +60,13 @@ class LiveRelatedContactPerson extends Component
                 ->where([
                     'entityable_type' => $person->getMorphClass(),
                     'entityable_id' => $person->id,
+                ])
+                ->delete();
+
+            $person->contacts()
+                ->where([
+                    'entityable_type' => $this->model->getMorphClass(),
+                    'entityable_id' => $this->model->id,
                 ])
                 ->delete();
         }
