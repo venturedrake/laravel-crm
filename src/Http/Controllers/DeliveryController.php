@@ -241,6 +241,6 @@ class DeliveryController extends Controller
                 'organisation_address' => $delivery->order->getShippingAddress() ?? $organisation_address ?? null,
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
-            ])->download('delivery-'.$delivery->id.'.pdf');
+            ])->download('delivery-'.strtolower($delivery->delivery_id).'.pdf');
     }
 }
