@@ -32,12 +32,13 @@ class InvoiceObserver
         if (! app()->runningInConsole()) {
             $invoice->user_created_id = auth()->user()->id ?? null;
         }
-
-        /*if (Xero::isConnected() && ! $invoice->number) {
-            $invoice->number = Invoice::orderBy('number', 'DESC')->first()->number + 1;
-        }*/
-
-        $invoice->number = Invoice::orderBy('number', 'DESC')->first()->number + 1;
+        
+        if($lastInvoice = Invoice::orderBy('number', 'DESC')->first()){
+            $invoice->number = $lastInvoice->number + 1;
+        }else{
+            $invoice->number = 1000; 
+        }
+        
         $invoice->prefix = $this->settingService->get('invoice_prefix')->value;
         $invoice->invoice_id = $invoice->prefix.$invoice->number;
     }
