@@ -7,7 +7,7 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 class Setting extends Model
 {
     use BelongsToTeams;
-    
+
     protected $guarded = ['id'];
 
     protected static function boot()
@@ -29,7 +29,7 @@ class Setting extends Model
             }
         });
     }
-    
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'settings';

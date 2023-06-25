@@ -17,7 +17,7 @@ class QuoteObserver
     {
         $this->settingService = $settingService;
     }
-    
+
     /**
      * Handle the quote "creating" event.
      *
@@ -27,7 +27,7 @@ class QuoteObserver
     public function creating(Quote $quote)
     {
         $quote->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $quote->user_created_id = auth()->user()->id ?? null;
         }
@@ -36,7 +36,7 @@ class QuoteObserver
         $quote->prefix = $this->settingService->get('quote_prefix')->value;
         $quote->quote_id = $quote->prefix.$quote->number;
     }
-    
+
     /**
      * Handle the quote "created" event.
      *

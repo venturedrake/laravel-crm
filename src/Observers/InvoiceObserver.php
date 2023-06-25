@@ -17,7 +17,7 @@ class InvoiceObserver
     {
         $this->settingService = $settingService;
     }
-    
+
     /**
      * Handle the invoice "creating" event.
      *
@@ -31,13 +31,13 @@ class InvoiceObserver
         if (! app()->runningInConsole()) {
             $invoice->user_created_id = auth()->user()->id ?? null;
         }
-        
+
         if($lastInvoice = Invoice::orderBy('number', 'DESC')->first()) {
             $invoice->number = $lastInvoice->number + 1;
         } else {
             $invoice->number = 1000;
         }
-        
+
         $invoice->prefix = $this->settingService->get('invoice_prefix')->value;
         $invoice->invoice_id = $invoice->prefix.$invoice->number;
     }

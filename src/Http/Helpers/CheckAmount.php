@@ -5,11 +5,11 @@ namespace VentureDrake\LaravelCrm\Http\Helpers\CheckAmount;
 function subTotal($model)
 {
     $total = 0;
-    
+
     foreach (\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\getItems($model) as $item) {
         $total += $item->quantity * $item->price;
     }
-    
+
     if ($model->subtotal == $total) {
         return true;
     }
@@ -22,7 +22,7 @@ function total($model)
     foreach (\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\getItems($model) as $item) {
         $total += $item->quantity * $item->price;
     }
-    
+
     $total = $total - $model->discount + $model->tax + $model->adjustments;
 
     if ($model->total == $total) {

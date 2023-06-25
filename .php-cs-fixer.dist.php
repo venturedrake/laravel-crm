@@ -4,8 +4,8 @@ use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
 $rules = [
-    '@PSR2' => true,
-    'array_syntax' => ['syntax' => 'short'],
+    '@PSR12' => true,
+    /*'array_syntax' => ['syntax' => 'short'],
     'ordered_imports' => ['sort_algorithm' => 'alpha'],
     'no_unused_imports' => true,
     'not_operator_with_successor_space' => true,
@@ -22,7 +22,7 @@ $rules = [
         'on_multiline' => 'ensure_fully_multiline',
         'keep_multiple_spaces_after_comma' => true,
     ],
-    'single_trait_insert_per_statement' => true,
+    'single_trait_insert_per_statement' => true,*/
 ];
 
 $finder = Finder::create()

@@ -17,7 +17,7 @@ class QuoteProductObserver
     {
         $quoteProduct->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the quoteProduct "created" event.
      *

@@ -18,7 +18,7 @@ class PhoneObserver
             $phone->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the phone "created" event.
      *

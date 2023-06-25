@@ -23,7 +23,7 @@ class Delivery extends Model
     protected $filterable = [
         'user_owner_id',
     ];
-    
+
     public function getSearchable()
     {
         return $this->searchable;
@@ -113,7 +113,7 @@ class Delivery extends Model
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
     }
-    
+
     public function getShippingAddress()
     {
         return $this->addresses()->where('address_type_id', 6)->first();

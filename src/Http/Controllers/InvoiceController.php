@@ -44,7 +44,7 @@ class InvoiceController extends Controller
         $this->organisationService = $organisationService;
         $this->invoiceService = $invoiceService;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -220,7 +220,7 @@ class InvoiceController extends Controller
     public function destroy(Invoice $invoice)
     {
         $invoice->delete();
-        
+
         flash(ucfirst(trans('laravel-crm::lang.invoice_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.invoices.index'));

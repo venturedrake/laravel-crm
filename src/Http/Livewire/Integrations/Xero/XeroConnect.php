@@ -10,13 +10,13 @@ use VentureDrake\LaravelCrm\Traits\NotifyToast;
 class XeroConnect extends Component
 {
     use NotifyToast;
-    
+
     public $tennantName;
 
     public $invoices;
 
     public $contacts;
-    
+
     public $setting_contacts;
 
     public $setting_products;
@@ -36,7 +36,7 @@ class XeroConnect extends Component
             $this->tenantName = Xero::getTenantName();
             /*$this->invoices = Xero::invoices()->get();
             $this->contacts = Xero::contacts()->get();*/
-            
+
             $this->setting_contacts = $this->trueFalse(Setting::where('name', 'xero_contacts')->first()->value ?? 0);
             $this->setting_products = $this->trueFalse(Setting::where('name', 'xero_products')->first()->value ?? 0);
             $this->setting_quotes = $this->trueFalse(Setting::where('name', 'xero_quotes')->first()->value ?? 0);
@@ -75,7 +75,7 @@ class XeroConnect extends Component
             'Updated settings',
         );
     }
-    
+
     protected function trueFalse($value)
     {
         if ($value == 1) {

@@ -52,7 +52,7 @@ class DeliveryService
             'delivery_expected' => $request->delivery_expected,
             'delivered_on' => $request->delivered_on,
         ]);
-        
+
         $this->updateDeliveryAddresses($delivery, $request->addresses);
 
         return $delivery;

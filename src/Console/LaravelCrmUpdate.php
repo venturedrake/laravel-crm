@@ -15,7 +15,7 @@ class LaravelCrmUpdate extends Command
      * @var SettingService
      */
     private $settingService;
-    
+
     /**
      * The name and signature of the console command.
      *
@@ -57,7 +57,7 @@ class LaravelCrmUpdate extends Command
     public function handle()
     {
         $this->info('Updating Laravel CRM...');
-        
+
         if($this->settingService->get('db_update_0180')->value == 0) {
             $this->info('Updating Laravel CRM quote numbers...');
 
@@ -107,7 +107,7 @@ class LaravelCrmUpdate extends Command
             $this->settingService->set('db_update_0181', 1);
             $this->info('Updating Laravel CRM organisation linked to person complete.');
         }
-        
+
         $this->info('Laravel CRM is now updated.');
     }
 }

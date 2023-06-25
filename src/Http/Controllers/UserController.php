@@ -35,7 +35,7 @@ class UserController extends Controller
                 $users = User::latest()->paginate(30);
             }
         }
-        
+
         return view('laravel-crm::users.index', [
             'users' => $users ?? [],
         ]);
@@ -72,7 +72,7 @@ class UserController extends Controller
     public function create()
     {
         $teams = Team::orderBy('name', 'ASC')->get();
-        
+
         return view('laravel-crm::users.create', [
             'teams' => $teams,
         ]);
@@ -92,13 +92,13 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
-        
+
         if ($request->role) {
             if ($role = Role::find($request->role)) {
                 if ($removeRole = $user->roles()->where('crm_role', 1)->first()) { // THIS COULD BE A BUG
                     $user->removeRole($removeRole);
                 }
-                
+
                 $user->assignRole($role);
             }
         }
@@ -110,7 +110,7 @@ class UserController extends Controller
                     'user_id' => $user->id,
                     'role' => 'editor', // Default Jetstream role
                 ]);
-                
+
                 $user->forceFill([
                     'current_team_id' => $team->id,
                 ])->save();
@@ -122,7 +122,7 @@ class UserController extends Controller
         } else {
             $user->crmTeams()->sync([]);
         }
-        
+
         flash(ucfirst(trans('laravel-crm::lang.user_stored')))->success()->important();
 
         return redirect(route('laravel-crm.users.index'));
@@ -150,7 +150,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $teams = Team::orderBy('name', 'ASC')->get();
-        
+
         return view('laravel-crm::users.edit', [
             'user' => $user,
             'teams' => $teams,
@@ -187,7 +187,7 @@ class UserController extends Controller
         } else {
             $user->crmTeams()->sync([]);
         }
-        
+
         flash(ucfirst(trans('laravel-crm::lang.user_updated')))->success()->important();
 
         return redirect(route('laravel-crm.users.show', $user));

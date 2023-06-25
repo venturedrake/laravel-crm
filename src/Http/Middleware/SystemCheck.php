@@ -23,20 +23,20 @@ class SystemCheck
             // Delete views/vendor/laravel-crm folder or re-publish views
             flash('<strong>Important:</strong> your Laravel CRM version requires some updates to function correctly. Please see the <a href="https://github.com/venturedrake/laravel-crm" target="_blank">upgrade section</a> in the documentation.')->warning()->important();
         }
-        
+
         // Since version 0.1.2
         if (! Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
             // settings table missing, need to publish migrations and run migrate
             // Delete views/vendor/laravel-crm folder or re-publish views
             flash('<strong>Important:</strong> your Laravel CRM version requires some updates to function correctly. Please see the <a href="https://github.com/venturedrake/laravel-crm" target="_blank">upgrade section</a> in the documentation.')->warning()->important();
         }
-        
+
         // Since version 0.2.0
         // Roles are missing, redirect to must update page
         // Run db seeder to add roles/permissions
         // Delete views/vendor/laravel-crm folder or re-publish views
 
-       
+
         return $next($request);
     }
 }

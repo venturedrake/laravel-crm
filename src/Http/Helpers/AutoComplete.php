@@ -21,7 +21,7 @@ function clients()
 function people()
 {
     $data = [];
-    
+
     foreach (Person::all() as $person) {
         $data[$person->name] = $person->id;
     }
@@ -63,7 +63,7 @@ function productsSelect2()
         'id' => -1,
         'text' => null,
     ];*/
-    
+
     foreach (Product::all() as $product) {
         $data[] = [
             'id' => $product->id,

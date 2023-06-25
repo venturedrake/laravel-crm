@@ -19,7 +19,7 @@ class Product extends Model
     protected $searchable = [
         'name',
     ];
-    
+
     protected $filterable = [
         'user_owner_id',
         'labels.id',
@@ -39,7 +39,7 @@ class Product extends Model
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\ProductPrice::class);
     }
-    
+
     public function getDefaultPrice()
     {
         return $this->productPrices()->where('currency', Setting::currency()->value ?? 'USD')->first();

@@ -42,7 +42,7 @@ class QuoteController extends Controller
         if (! $request->hasValidSignature()) {
             abort(401);
         }
-        
+
         if ($quote->person) {
             $email = $quote->person->getPrimaryEmail();
             $phone = $quote->person->getPrimaryPhone();
@@ -75,7 +75,7 @@ class QuoteController extends Controller
         if (! $request->hasValidSignature()) {
             abort(401);
         }
-        
+
         switch ($request->action) {
             case "accept":
                 $quote->update([
@@ -94,7 +94,7 @@ class QuoteController extends Controller
                 flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
 
                 break;
-                
+
             case "download":
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
@@ -108,7 +108,7 @@ class QuoteController extends Controller
                         'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                         'logo' => $this->settingService->get('logo_file')->value ?? null,
                     ])->download('quote-'.$quote->id.'.pdf');
-                
+
                 break;
         }
 

@@ -8,7 +8,7 @@ trait HasCrmAccess
     {
         return $this->crm_access;
     }
-    
+
     public function isCrmOwner()
     {
         return config('laravel-crm.crm_owner') == $this->email;

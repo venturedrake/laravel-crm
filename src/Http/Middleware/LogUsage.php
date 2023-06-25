@@ -33,7 +33,7 @@ class LogUsage
             'day' => date('l', $requestTime->timestamp),
             'hour' => $requestTime->hour,
         ]);
-        
+
         return $response;
     }
 }

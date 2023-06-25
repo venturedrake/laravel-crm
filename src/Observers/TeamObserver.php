@@ -20,7 +20,7 @@ class TeamObserver
     {
         //
     }
-    
+
     /**
      * Handle the team "created" event.
      *
@@ -32,7 +32,7 @@ class TeamObserver
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $tableNames = config('permission.table_names');
-        
+
         if (config('laravel-crm.teams')) {
             // Get the roles
             foreach (DB::table($tableNames['roles'])

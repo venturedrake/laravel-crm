@@ -38,7 +38,7 @@ class LeadService
         ]);
 
         $lead->labels()->sync($request->labels ?? []);
-        
+
         return $lead;
     }
 
@@ -56,7 +56,7 @@ class LeadService
         ]);
 
         $lead->labels()->sync($request->labels ?? []);
-        
+
         return $lead;
     }
 }

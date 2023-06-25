@@ -72,13 +72,13 @@ class LiveAddressEdit extends Component
             }
         } else {
             $this->add($this->i);
-            
+
             if ($model == 'order') {
                 if (count($show) > 0) {
                     foreach ($show as $key => $address) {
                         $this->type[$this->i] = $address;
                         $this->type_name[$this->i] = AddressType::find($address)->name;
-                        
+
                         if (array_key_last($show) != $key) {
                             $this->add($this->i);
                         }
@@ -110,7 +110,7 @@ class LiveAddressEdit extends Component
     {
         unset($this->inputs[$i]);
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.address-edit');

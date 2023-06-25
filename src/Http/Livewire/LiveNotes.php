@@ -79,11 +79,11 @@ class LiveNotes extends Component
             $this->notes = $this->model->notes()->where('pinned', 1)->latest()->get();
         } else {
             $noteIds = [];
-            
+
             foreach($this->model->notes()->latest()->get() as $note) {
                 $noteIds[] = $note->id;
             }
-            
+
             if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
                 foreach($this->model->contacts as $contact) {
                     foreach ($contact->entityable->notes()->latest()->get() as $note) {

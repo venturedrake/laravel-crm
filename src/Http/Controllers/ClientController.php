@@ -1,4 +1,5 @@
 <?php
+
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class ClientController extends Controller
     {
         //
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -51,7 +52,7 @@ class ClientController extends Controller
                 $clients = $clients->sortable(['created_at' => 'desc'])->paginate(30);
             }
         }
-        
+
         return view('laravel-crm::clients.index', [
             'clients' => $clients,
         ]);

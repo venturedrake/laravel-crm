@@ -122,7 +122,7 @@ class OrderController extends Controller
                 if ($address = $quote->organisation->getShippingAddress()) {
                     $addressIds[] = $address->id;
                 }
-                
+
                 $addresses = Address::whereIn('id', $addressIds)->get();
 
                 break;
@@ -161,7 +161,7 @@ class OrderController extends Controller
         } elseif ($request->organisation_id) {
             $organisation = Organisation::find($request->organisation_id);
         }
-        
+
         if ($request->client_name && ! $request->client_id) {
             $client = Client::create([
                 'name' => $request->client_name,

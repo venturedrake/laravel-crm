@@ -16,12 +16,12 @@ class OrganisationObserver
     public function creating(Organisation $organisation)
     {
         $organisation->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $organisation->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the organisation "created" event.
      *

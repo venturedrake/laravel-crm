@@ -18,7 +18,7 @@ class NoteObserver
             $note->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the note "created" event.
      *
@@ -65,7 +65,7 @@ class NoteObserver
         if (! app()->runningInConsole()) {
             $note->user_deleted_id = auth()->user()->id ?? null;
             $note->saveQuietly();
-            
+
             if ($note->activity) {
                 $note->activity->delete();
             }

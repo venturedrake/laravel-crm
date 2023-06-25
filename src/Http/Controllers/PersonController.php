@@ -1,4 +1,5 @@
 <?php
+
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class PersonController extends Controller
     {
         $this->personService = $personService;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -32,25 +33,25 @@ class PersonController extends Controller
         Person::resetSearchValue($request);
         $params = Person::filters($request);
         $people = Person::filter($params);
-        
+
         // This is  not the best, will refactor. Problem with trying to sort encryoted fields
         if (request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')) {
             $people = $people->get();
-            
+
             foreach ($people as $key => $person) {
                 $people[$key]->first_name_decrypted = $person->first_name;
                 $people[$key]->last_name_decrypted = $person->last_name;
                 $people[$key]->organisation_name_decrypted = $person->organisation->name ?? null;
             }
-            
+
             $sortField = Str::replace('.', '_', request()->only(['sort', 'direction'])['sort']).'_decrypted';
-            
+
             if (request()->only(['sort', 'direction'])['direction'] == 'asc') {
                 $people = $people->sortBy($sortField);
             } else {
                 $people = $people->sortByDesc($sortField);
             }
-            
+
             if ($people->count() > 30) {
                 $people = $people->paginate(30);
             }
@@ -61,7 +62,7 @@ class PersonController extends Controller
                 $people = $people->sortable(['created_at' => 'desc'])->paginate(30);
             }
         }
-        
+
         return view('laravel-crm::people.index', [
             'people' => $people,
         ]);
@@ -80,7 +81,7 @@ class PersonController extends Controller
 
                 break;
         }
-        
+
         return view('laravel-crm::people.create', [
             'organisation' => $organisation ?? null,
         ]);
@@ -97,7 +98,7 @@ class PersonController extends Controller
         $person = $this->personService->create($request);
 
         $person->labels()->sync($request->labels ?? []);
-        
+
         if ($request->organisation_name) {
             if (! $request->organisation_id) {
                 $organisation = Organisation::create([
@@ -111,7 +112,7 @@ class PersonController extends Controller
             }
             $person->save();
         }
-        
+
         flash(ucfirst(trans('laravel-crm::lang.person_stored')))->success()->important();
 
         return redirect(route('laravel-crm.people.index'));
@@ -129,7 +130,7 @@ class PersonController extends Controller
         if ($organisation) {
             $organisationAddress = $organisation->getPrimaryAddress();
         }
-        
+
         return view('laravel-crm::people.show', [
             'person' => $person,
             'emails' => $person->emails,
@@ -185,7 +186,7 @@ class PersonController extends Controller
             $person->organisation()->dissociate();
             $person->save();
         }
-        
+
         flash(ucfirst(trans('laravel-crm::lang.person_updated')))->success()->important();
 
         return redirect(route('laravel-crm.people.show', $person));

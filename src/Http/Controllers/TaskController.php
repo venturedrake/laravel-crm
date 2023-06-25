@@ -22,7 +22,7 @@ class TaskController extends Controller
         } else {
             $tasks = $tasks->paginate(30);
         }
-        
+
         return view('laravel-crm::tasks.index', [
             'tasks' => $tasks ?? [],
         ]);

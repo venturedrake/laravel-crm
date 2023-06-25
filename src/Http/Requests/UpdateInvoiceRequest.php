@@ -9,7 +9,7 @@ use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 class UpdateInvoiceRequest extends FormRequest
 {
     use HasGlobalSettings;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *

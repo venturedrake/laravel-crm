@@ -202,7 +202,7 @@ class Order extends Model
     {
         return $this->addresses()->where('address_type_id', 6)->first();
     }
-    
+
     public function deliveryComplete()
     {
         foreach ($this->orderProducts as $orderProduct) {

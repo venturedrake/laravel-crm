@@ -27,7 +27,7 @@ trait HasCrmFields
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\FieldValue::class, 'field_valueable');
     }
-    
+
     /*public function metas()
     {
         return $this->hasMany(Field::class, 'model_id');

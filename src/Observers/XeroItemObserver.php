@@ -17,7 +17,7 @@ class XeroItemObserver
     {
         $xeroItem->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the xeroItem "created" event.
      *

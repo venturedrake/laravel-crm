@@ -16,12 +16,12 @@ class PersonObserver
     public function creating(Person $person)
     {
         $person->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $person->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the person "created" event.
      *

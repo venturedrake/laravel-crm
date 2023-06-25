@@ -32,7 +32,7 @@ class DashboardController extends Controller
         } else {
             $usersOnline = \App\User::whereDate('last_online_at', '>=', Carbon::now()->subMinutes(20)->toDateString())->get();
         }
-        
+
 
         $today = today();
         $startDate = today()->subdays(14);
@@ -47,7 +47,7 @@ class DashboardController extends Controller
             $datasheet[$date->format('d/m/Y')]["daily"]["leads"] = 0;
             $datasheet[$date->format('d/m/Y')]["daily"]["deals"] = 0;
         }
-        
+
         $leads = Lead::whereBetween('created_at', [$startDate, now()])->get();
 
         foreach ($leads as $lead) {
@@ -59,7 +59,7 @@ class DashboardController extends Controller
         foreach ($deals as $deal) {
             $datasheet[$deal->created_at->format('d/m/Y')]["daily"]["deals"]++;
         }
-        
+
         return view('laravel-crm::index', [
             'totalLeadsCount' => Lead::count(),
             'totalDealsCount' => Deal::count(),

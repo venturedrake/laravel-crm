@@ -9,14 +9,14 @@ class Team extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
-    
+
     /**
      * The table associated with the team model.
      *
      * @var string
      */
     protected $table = 'crm_teams';
-    
+
     /**
      * The attributes that are mass assignable.
      *

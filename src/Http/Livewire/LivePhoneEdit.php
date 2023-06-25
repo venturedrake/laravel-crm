@@ -54,7 +54,7 @@ class LivePhoneEdit extends Component
     {
         unset($this->inputs[$i]);
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.phone-edit');

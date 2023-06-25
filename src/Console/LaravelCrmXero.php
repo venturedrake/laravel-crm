@@ -168,11 +168,11 @@ class LaravelCrmXero extends Command
                     } else {
                         $this->info('LaravelCRM Xero Integration '.ucfirst($this->argument('model')).' disabled');
                     }
-                    
+
                     foreach (Product::all() as $product) {
                         if (! $product->xeroItem) {
                             $this->info('LaravelCRM Xero Integration Adding product '.$product->name.' to Xero');
-                            
+
                             $xeroProduct = Xero::post('Items', [
                                 'Code' => $product->code,
                                 'Name' => $product->name,
@@ -202,7 +202,7 @@ class LaravelCrmXero extends Command
                             ]);
                         }
                     }
-                    
+
                     break;
 
                 case "quotes":
@@ -221,10 +221,10 @@ class LaravelCrmXero extends Command
         } else {
             $this->error('LaravelCRM Xero integration not connected');
         }
-        
+
         $this->info('Updating LaravelCRM Xero Integration Complete.');
     }
-    
+
     protected function taxTypePercentage($item)
     {
         if (isset($item['SalesDetails']['TaxType'])) {
@@ -250,7 +250,7 @@ class LaravelCrmXero extends Command
                     break;
             }
         }
-        
+
         return null;
     }
 }

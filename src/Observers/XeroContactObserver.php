@@ -17,7 +17,7 @@ class XeroContactObserver
     {
         $xeroContact->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the xeroContact "created" event.
      *

@@ -17,7 +17,7 @@ class XeroInvoiceObserver
     {
         $xeroInvoice->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the xeroInvoice "created" event.
      *

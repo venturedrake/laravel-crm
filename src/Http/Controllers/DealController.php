@@ -21,7 +21,7 @@ class DealController extends Controller
      * @var DealService
      */
     private $dealService;
-    
+
     /**
      * @var PersonService
      */
@@ -38,7 +38,7 @@ class DealController extends Controller
         $this->personService = $personService;
         $this->organisationService = $organisationService;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -48,7 +48,7 @@ class DealController extends Controller
     {
         Deal::resetSearchValue($request);
         $params = Deal::filters($request);
-        
+
         if (Deal::filter($params)->get()->count() < 30) {
             $deals = Deal::filter($params)->latest()->get();
         } else {
@@ -135,9 +135,9 @@ class DealController extends Controller
                 ]);
             }
         }
-        
+
         $this->dealService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.deal_stored')))->success()->important();
 
         return redirect(route('laravel-crm.deals.index'));
@@ -156,11 +156,11 @@ class DealController extends Controller
             $phone = $deal->person->getPrimaryPhone();
             $address = $deal->person->getPrimaryAddress();
         }
-        
+
         if ($deal->organisation) {
             $organisation_address = $deal->organisation->getPrimaryAddress();
         }
-        
+
         return view('laravel-crm::deals.show', [
             'deal' => $deal,
             'email' => $email ?? null,
@@ -186,7 +186,7 @@ class DealController extends Controller
         if ($deal->organisation) {
             $address = $deal->organisation->getPrimaryAddress();
         }
-        
+
         return view('laravel-crm::deals.edit', [
             'deal' => $deal,
             'email' => $email ?? null,
@@ -242,7 +242,7 @@ class DealController extends Controller
         }
 
         $deal = $this->dealService->update($request, $deal, $person ?? null, $organisation ?? null, $client ?? null);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.deal_updated')))->success()->important();
 
         return redirect(route('laravel-crm.deals.show', $deal));
@@ -266,7 +266,7 @@ class DealController extends Controller
     public function search(Request $request)
     {
         $searchValue = Deal::searchValue($request);
-        
+
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.deals.index'));
         }
@@ -307,7 +307,7 @@ class DealController extends Controller
             'searchValue' => $searchValue ?? null,
         ]);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -320,7 +320,7 @@ class DealController extends Controller
             'closed_status' => 'won',
             'closed_at' => Carbon::now(),
         ]);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.deal_won')))->success()->important();
 
         return back();
@@ -338,7 +338,7 @@ class DealController extends Controller
             'closed_status' => 'lost',
             'closed_at' => Carbon::now(),
         ]);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.deal_lost')))->success()->important();
 
         return back();
@@ -356,7 +356,7 @@ class DealController extends Controller
             'closed_status' => null,
             'closed_at' => null,
         ]);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.deal_reopened')))->success()->important();
 
         return back();

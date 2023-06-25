@@ -30,7 +30,7 @@ class OrderProductController extends Controller
             'external_id' => Uuid::uuid4()->toString(),
             'currency' => $order->currency,
         ]);
-        
+
         return view('laravel-crm::order-products.create', [
             'orderProduct' => $orderProduct,
             'index' => $order->orderProducts->count() - 1,

@@ -9,7 +9,7 @@ class LeadStatus extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
-    
+
     protected $guarded = ['id'];
 
     public function getTable()

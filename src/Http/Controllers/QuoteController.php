@@ -390,7 +390,7 @@ class QuoteController extends Controller
         if ($quote->organisation) {
             $organisation_address = $quote->organisation->getPrimaryAddress();
         }
-        
+
         return Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
         ])

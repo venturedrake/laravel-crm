@@ -92,7 +92,7 @@ class LiveInvoiceLines extends Component
             $this->quantity[$id] = null;
             $this->amount[$id] = null;
         }
-       
+
         $this->calculateAmounts();
     }
 
@@ -110,7 +110,7 @@ class LiveInvoiceLines extends Component
                 } else {
                     $this->amount[$i] = 0;
                 }
-                
+
                 $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);

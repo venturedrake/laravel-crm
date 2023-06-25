@@ -11,9 +11,9 @@ class PayInvoice extends Component
 {
     use NotifyToast;
     use HasGlobalSettings;
-    
+
     public $invoice;
-    
+
     public $amount_paid;
 
     public $amount_due;
@@ -23,7 +23,7 @@ class PayInvoice extends Component
         $this->invoice = $invoice;
         $this->amount_due = $invoice->amount_due / 100;
         $this->amount_paid = $invoice->amount_paid / 100;
-        
+
         if ($this->amount_due > 0) {
             $this->amount_paid = $this->amount_due;
         }
@@ -56,7 +56,7 @@ class PayInvoice extends Component
         $this->notify(
             'Invoice paid',
         );
-        
+
         $this->resetFields();
 
         $this->dispatchBrowserEvent('invoicePaid');

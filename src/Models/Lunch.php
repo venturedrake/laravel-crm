@@ -16,7 +16,7 @@ class Lunch extends Model
     use BelongsToTeams;
     use SearchFilters;
     use HasGlobalSettings;
-    
+
     protected $guarded = ['id'];
 
     protected $casts = [

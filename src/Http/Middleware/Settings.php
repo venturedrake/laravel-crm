@@ -95,7 +95,7 @@ class Settings
             ], [
                 'value' => '0',
             ]);
-            
+
             if((int) Str::replace('.', '', config('laravel-crm.version')) >= 180) {
                 Setting::firstOrCreate([
                     'global' => 1,

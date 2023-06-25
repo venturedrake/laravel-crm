@@ -9,14 +9,14 @@ class File extends Model
 {
     use SoftDeletes;
     use BelongsToTeams;
-    
+
     protected $guarded = ['id'];
 
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'files';
     }
-    
+
     /**
      * Get all of the owning fileable models.
      */

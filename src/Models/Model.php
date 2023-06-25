@@ -8,7 +8,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Model extends EloquentModel implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
-    
+
     public function saveQuietly(array $options = [])
     {
         return static::withoutEvents(function () use ($options) {

@@ -31,7 +31,7 @@ class LiveTask extends Component
     {
         $this->settingService = $settingService;
     }
-    
+
     public function mount(Task $task, $view = 'task')
     {
         $this->task = $task;
@@ -42,7 +42,7 @@ class LiveTask extends Component
         if($this->settingService->get('show_related_activity')->value == 1) {
             $this->showRelated = true;
         }
-        
+
         $this->view = $view;
     }
 
@@ -100,10 +100,10 @@ class LiveTask extends Component
     public function toggleEditMode()
     {
         $this->editMode = ! $this->editMode;
-        
+
         $this->dispatchBrowserEvent('taskEditModeToggled');
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.components.'.$this->view);

@@ -17,7 +17,7 @@ class SettingObserver
     {
         $this->setGlobal($setting);
     }
-    
+
     /**
      * Handle the Setting "created" event.
      *
@@ -83,7 +83,7 @@ class SettingObserver
     {
         //
     }
-    
+
     protected function setGlobal(Setting $setting)
     {
         if (Schema::hasColumn($setting->getTable(), 'global')) {

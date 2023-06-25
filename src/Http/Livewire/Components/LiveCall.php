@@ -48,7 +48,7 @@ class LiveCall extends Component
         if($this->settingService->get('show_related_activity')->value == 1) {
             $this->showRelated = true;
         }
-        
+
         $this->view = $view;
     }
 
@@ -86,7 +86,7 @@ class LiveCall extends Component
                     'entityable_type' => $person->getMorphClass(),
                     'entityable_id' => $person->id,
                 ]);
-                
+
                 foreach ($this->call->contacts as $contact) {
                     if (! in_array($contact->entityable_id, $this->guests)) {
                         $contact->delete();
@@ -94,7 +94,7 @@ class LiveCall extends Component
                 }
             }
         }
-        
+
         $this->toggleEditMode();
         $this->emit('refreshComponent');
         $this->notify(

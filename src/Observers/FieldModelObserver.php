@@ -17,7 +17,7 @@ class FieldModelObserver
     {
         $fieldModel->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the fieldModel "created" event.
      *

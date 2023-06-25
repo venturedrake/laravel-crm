@@ -24,7 +24,7 @@ class LiveOrderItems extends Component
     public $unit_price;
 
     public $quote_quantities;
-    
+
     public $quantity;
 
     public $amount;
@@ -34,7 +34,7 @@ class LiveOrderItems extends Component
     public $inputs = [];
 
     public $i = 0;
-    
+
     public $removed = [];
 
     public $sub_total = 0;
@@ -46,7 +46,7 @@ class LiveOrderItems extends Component
     public $adjustment = 0;
 
     public $total = 0;
-    
+
     public $fromQuote;
 
     protected $listeners = ['loadItemDefault'];
@@ -74,7 +74,7 @@ class LiveOrderItems extends Component
                         }
                     }
                 }
-                
+
                 $this->unit_price[$this->i] = $old['unit_price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
                 $this->comments[$this->i] = $old['comments'] ?? null;
@@ -88,18 +88,18 @@ class LiveOrderItems extends Component
                 } else {
                     $this->order_product_id[$this->i] = $orderProduct->id;
                 }
-                
+
                 $this->product_id[$this->i] = $orderProduct->product->id ?? null;
                 $this->name[$this->i] = $orderProduct->product->name ?? null;
                 $this->quantity[$this->i] = $orderProduct->quantity;
-                
+
                 if ($this->fromQuote) {
                     for ($i = 0; $i <= $this->getRemainQuoteQuantity($orderProduct); $i++) {
                         $this->quote_quantities[$this->i][$i] = $i;
                         $this->quantity[$this->i] = $i;
                     }
                 }
-                
+
                 $this->unit_price[$this->i] = $orderProduct->price / 100;
                 $this->amount[$this->i] = $orderProduct->amount / 100;
                 $this->comments[$this->i] = $orderProduct->comments;
@@ -132,10 +132,10 @@ class LiveOrderItems extends Component
             $this->quantity[$id] = null;
             $this->amount[$id] = null;
         }
-        
+
         $this->calculateAmounts();
     }
-    
+
     public function getRemainQuoteQuantity($quoteProduct)
     {
         $quantity = $quoteProduct->quantity;
@@ -144,7 +144,7 @@ class LiveOrderItems extends Component
                 $quantity -= $orderProduct->quantity;
             }
         }
-        
+
         return $quantity;
     }
 
@@ -162,7 +162,7 @@ class LiveOrderItems extends Component
                 } else {
                     $this->amount[$i] = 0;
                 }
-                
+
                 $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
@@ -181,9 +181,9 @@ class LiveOrderItems extends Component
     public function remove($id)
     {
         unset($this->inputs[$id - 1], $this->product_id[$id], $this->name[$id]);
-        
+
         $this->dispatchBrowserEvent('removedItem', ['id' => $id]);
-        
+
         $this->calculateAmounts();
     }
 
@@ -191,7 +191,7 @@ class LiveOrderItems extends Component
     {
         return number_format($number, 2, '.', '');
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.order-items');

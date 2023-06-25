@@ -22,7 +22,7 @@ class FieldController extends Controller
         } else {
             $fields = Field::latest()->paginate(30);
         }
-        
+
         return view('laravel-crm::fields.index', [
             'fields' => $fields,
         ]);
@@ -103,7 +103,7 @@ class FieldController extends Controller
             'required' => (($request->required == 'on') ? 1 : 0),
             'default' => $request->default,
         ]);
-        
+
         $this->syncFieldModels($request, $field);
 
         flash(ucfirst(trans('laravel-crm::lang.field_updated')))->success()->important();
@@ -125,7 +125,7 @@ class FieldController extends Controller
 
         return redirect(route('laravel-crm.fields.index'));
     }
-    
+
     protected function syncFieldModels($request, $field)
     {
         if ($request->field_models) {

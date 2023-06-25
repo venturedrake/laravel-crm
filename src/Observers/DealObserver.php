@@ -18,7 +18,7 @@ class DealObserver
             $deal->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the deal "created" event.
      *

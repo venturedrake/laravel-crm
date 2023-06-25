@@ -16,12 +16,12 @@ class ContactObserver
     public function creating(Contact $contact)
     {
         $contact->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $contact->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the contact "created" event.
      *

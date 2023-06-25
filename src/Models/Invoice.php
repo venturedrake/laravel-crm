@@ -80,7 +80,7 @@ class Invoice extends Model
             $this->attributes['subtotal'] = null;
         }
     }
-    
+
     public function setTaxAttribute($value)
     {
         if (isset($value)) {

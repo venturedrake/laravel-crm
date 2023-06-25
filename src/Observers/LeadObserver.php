@@ -18,7 +18,7 @@ class LeadObserver
             $lead->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the lead "created" event.
      *

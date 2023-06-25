@@ -8,7 +8,7 @@ class NotifyToast extends Component
 {
     public $level = 'success';
     public $message;
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.notify-toast');

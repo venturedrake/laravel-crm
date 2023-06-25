@@ -22,7 +22,7 @@ class LeadController extends Controller
      * @var LeadService
      */
     private $leadService;
-    
+
     /**
      * @var DealService
      */
@@ -37,7 +37,7 @@ class LeadController extends Controller
      * @var OrganisationService
      */
     private $organisationService;
-    
+
     public function __construct(LeadService $leadService, DealService $dealService, PersonService $personService, OrganisationService $organisationService)
     {
         $this->leadService = $leadService;
@@ -45,7 +45,7 @@ class LeadController extends Controller
         $this->personService = $personService;
         $this->organisationService = $organisationService;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -55,13 +55,13 @@ class LeadController extends Controller
     {
         Lead::resetSearchValue($request);
         $params = Lead::filters($request);
-        
+
         if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
             $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
         } else {
             $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
         }
-        
+
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
         ]);
@@ -79,12 +79,12 @@ class LeadController extends Controller
                 $client = Client::find($request->id);
 
                 break;
-                
+
             case 'organisation':
                 $organisation = Organisation::find($request->id);
 
                 break;
-                
+
             case 'person':
                 $person = Person::find($request->id);
 
@@ -146,7 +146,7 @@ class LeadController extends Controller
         $lead = $this->leadService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_stored')))->success()->important();
-        
+
         return redirect(route('laravel-crm.leads.index'));
     }
 
@@ -161,7 +161,7 @@ class LeadController extends Controller
         $email = $lead->getPrimaryEmail();
         $phone = $lead->getPrimaryPhone();
         $address = $lead->getPrimaryAddress();
-        
+
         return view('laravel-crm::leads.show', [
             'lead' => $lead,
             'email' => $email ?? null,
@@ -181,7 +181,7 @@ class LeadController extends Controller
         $email = $lead->getPrimaryEmail();
         $phone = $lead->getPrimaryPhone();
         $address = $lead->getPrimaryAddress();
-        
+
         return view('laravel-crm::leads.edit', [
             'lead' => $lead,
             'email' => $email ?? null,
@@ -239,7 +239,7 @@ class LeadController extends Controller
         $lead = $this->leadService->update($request, $lead, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_updated')))->success()->important();
-        
+
         return redirect(route('laravel-crm.leads.show', $lead));
     }
 
@@ -252,22 +252,22 @@ class LeadController extends Controller
     public function destroy(Lead $lead)
     {
         $lead->delete();
-        
+
         flash(ucfirst(trans('laravel-crm::lang.lead_deleted')))->success()->important();
-        
+
         return redirect(route('laravel-crm.leads.index'));
     }
 
     public function search(Request $request)
     {
         $searchValue = Lead::searchValue($request);
-        
+
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.leads.index'));
         }
 
         $params = Lead::filters($request, 'search');
-        
+
         $leads = Lead::filter($params)
             ->select(
                 config('laravel-crm.db_table_prefix').'leads.*',
@@ -348,7 +348,7 @@ class LeadController extends Controller
         $lead->update([
             'converted_at' => Carbon::now(),
         ]);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.lead_converted_to_deal')))->success()->important();
 
         return redirect(route('laravel-crm.leads.index'));

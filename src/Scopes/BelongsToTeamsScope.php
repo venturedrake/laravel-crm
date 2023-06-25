@@ -15,12 +15,12 @@ class BelongsToTeamsScope implements Scope
      * @var string[]
      */
     protected $extensions = ['AllTeams'];
-    
+
     public function apply(Builder $builder, Model $model)
     {
         if (config('laravel-crm.teams') && auth()->hasUser() && auth()->user()->currentTeam) {
             $this->extend($builder);
-            
+
             if (Schema::hasColumn($model->getTable(), 'global')) {
                 $builder->where(function ($query) use ($model) {
                     $query->orWhere($model->getTable().'.team_id', auth()->user()->currentTeam->id)

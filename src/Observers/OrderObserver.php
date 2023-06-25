@@ -17,7 +17,7 @@ class OrderObserver
     {
         $this->settingService = $settingService;
     }
-    
+
     /**
      * Handle the order "creating" event.
      *
@@ -31,7 +31,7 @@ class OrderObserver
         if (! app()->runningInConsole()) {
             $order->user_created_id = auth()->user()->id ?? null;
         }
-        
+
         $order->number = Order::orderBy('number', 'DESC')->first()->number + 1;
         $order->prefix = $this->settingService->get('order_prefix')->value;
         $order->order_id = $order->prefix.$order->number;

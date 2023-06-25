@@ -17,7 +17,7 @@ class XeroPersonObserver
     {
         $xeroPerson->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the xeroPerson "created" event.
      *

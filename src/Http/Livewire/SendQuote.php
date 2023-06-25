@@ -16,17 +16,17 @@ class SendQuote extends Component
     use NotifyToast;
 
     private $settingService;
-    
+
     public $quote;
 
     public $to;
 
     public $subject;
-    
+
     public $message;
 
     public $cc;
-    
+
     public $pdf;
 
     public $signedUrl;
@@ -61,7 +61,7 @@ class SendQuote extends Component
     public function send()
     {
         $this->validate();
-        
+
         $this->generateUrl();
 
         if ($this->quote->person) {
@@ -79,7 +79,7 @@ class SendQuote extends Component
         if (! File::exists($pdfLocation)) {
             Storage::makeDirectory($pdfLocation);
         }
-        
+
         $this->pdf = 'app/'.$pdfLocation.'quote-'.$this->quote->id.'.pdf';
 
         Pdf::setOption([
@@ -107,7 +107,7 @@ class SendQuote extends Component
         $this->notify(
             'Quote sent',
         );
-        
+
         $this->resetFields();
 
         $this->dispatchBrowserEvent('quoteSent');

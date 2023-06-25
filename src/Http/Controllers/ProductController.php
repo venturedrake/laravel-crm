@@ -20,7 +20,7 @@ class ProductController extends Controller
     {
         $this->productService = $productService;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -30,13 +30,13 @@ class ProductController extends Controller
     {
         Product::resetSearchValue($request);
         $params = $request->except('_token');
-        
+
         if (Product::filter($params)->get()->count() < 30) {
             $products = Product::filter($params)->latest()->get();
         } else {
             $products = Product::filter($params)->latest()->paginate(30);
         }
-        
+
         return view('laravel-crm::products.index', [
             'products' => $products,
         ]);
@@ -61,7 +61,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $product = $this->productService->create($request);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.product_stored')))->success()->important();
 
         return redirect(route('laravel-crm.products.index'));
@@ -103,7 +103,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $product = $this->productService->update($product, $request);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.product_updated')))->success()->important();
 
         return redirect(route('laravel-crm.products.show', $product));
@@ -149,7 +149,7 @@ class ProductController extends Controller
     public function autocomplete(Product $product)
     {
         $productPrice = $product->getDefaultPrice();
-            
+
         return response()->json([
             'price' => ($productPrice->unit_price) ? $productPrice->unit_price / 100 : null,
         ]);

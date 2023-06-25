@@ -21,7 +21,7 @@ class RoleController extends Controller
                 return $query->where('team_id', auth()->user()->currentTeam->id);
             })
             ->get();
-        
+
         return view('laravel-crm::roles.index', [
             'roles' => $roles,
         ]);
@@ -68,9 +68,9 @@ class RoleController extends Controller
                 'crm_role' => 1,
             ]);
         }
-        
+
         $role->syncPermissions($permissionsArray);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.role_stored')))->success()->important();
 
         return redirect(route('laravel-crm.roles.index'));
@@ -128,7 +128,7 @@ class RoleController extends Controller
         } else {
             flash(ucfirst(trans('laravel-crm::lang.role_cant_be_updated')))->error()->important();
         }
-        
+
         return redirect(route('laravel-crm.roles.show', $role));
     }
 
@@ -146,7 +146,7 @@ class RoleController extends Controller
             }
 
             $role->delete();
-            
+
             flash(ucfirst(trans('laravel-crm::lang.role_deleted')))->success()->important();
         } else {
             flash(ucfirst(trans('laravel-crm::lang.role_cant_be_deleted')))->error()->important();

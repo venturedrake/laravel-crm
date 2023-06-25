@@ -17,7 +17,7 @@ class LeadSourceObserver
     {
         $leadSource->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the leadSource "created" event.
      *

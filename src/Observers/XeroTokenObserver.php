@@ -18,7 +18,7 @@ class XeroTokenObserver
             $xeroToken->team_id = auth()->user()->currentTeam->id;
         }
     }
-    
+
     /**
      * Handle the xeroToken "created" event.
      *

@@ -49,7 +49,7 @@ class LiveFiles extends Component
         ]);
 
         $file = $this->file->store('laravel-crm/'.strtolower(class_basename($this->model)).'/'.$this->model->id.'/files');
-        
+
         $fileModel = $this->model->files()->create([
             'external_id' => Uuid::uuid4()->toString(),
             'file' => $file,
@@ -75,7 +75,7 @@ class LiveFiles extends Component
 
         $this->resetFields();
     }
-    
+
     public function getFiles()
     {
         $fileIds = [];
@@ -95,7 +95,7 @@ class LiveFiles extends Component
         if(count($fileIds) > 0) {
             $this->files = File::whereIn('id', $fileIds)->latest()->get();
         }
-        
+
         $this->emit('refreshActivities');
     }
 
@@ -117,7 +117,7 @@ class LiveFiles extends Component
         $this->random = rand();
         $this->getFiles();
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.files');

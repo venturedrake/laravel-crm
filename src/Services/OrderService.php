@@ -89,7 +89,7 @@ class OrderService
 
         if (isset($request->products)) {
             $orderProductIds = [];
-            
+
             foreach ($request->products as $product) {
                 if (isset($product['order_product_id']) && $orderProduct = OrderProduct::find($product['order_product_id'])) {
                     $orderProductIds[] = $product['order_product_id'];

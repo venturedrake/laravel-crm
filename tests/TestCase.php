@@ -22,12 +22,12 @@ class TestCase extends OrchestraTestCase
             'LaravelCrm' => LaravelCrmFacade::class,
         ];
     }
-    
+
     protected function getEnvironmentSetUp($app)
     {
         include_once(__DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub');
-        
-        (new \CreateLaravelCrmTables)->up();
+
+        (new \CreateLaravelCrmTables())->up();
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class TestCase extends OrchestraTestCase
             ->assertViewIs('laravel-crm::index')
             ->assertStatus(200);
     }
-    
+
     /** @test */
     public function it_can_access_the_database()
     {

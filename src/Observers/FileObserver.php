@@ -16,12 +16,12 @@ class FileObserver
     public function creating(File $file)
     {
         $file->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $file->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the file "created" event.
      *

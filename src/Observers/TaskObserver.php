@@ -16,12 +16,12 @@ class TaskObserver
     public function creating(Task $task)
     {
         $task->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $task->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the task "created" event.
      *

@@ -475,7 +475,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
-                
+
                 if (config('xero.clientId') && config('xero.clientSecret')) {
                     $schedule->command('xero:keep-alive')
                         ->everyFiveMinutes();
@@ -499,7 +499,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 view()->share('timeFormat', 'H:i');
             }
         }
-        
+
         Blade::if('hasleadsenabled', function () {
             if(is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {
                 return true;
@@ -568,7 +568,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Register the main class to use with the facade
         $this->app->singleton('laravel-crm', function () {
-            return new LaravelCrm;
+            return new LaravelCrm();
         });
 
         $this->app->register(LaravelCrmEventServiceProvider::class);

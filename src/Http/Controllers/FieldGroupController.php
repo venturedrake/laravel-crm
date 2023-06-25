@@ -21,7 +21,7 @@ class FieldGroupController extends Controller
         } else {
             $fieldGroups = FieldGroup::latest()->paginate(30);
         }
-        
+
         return view('laravel-crm::field-groups.index', [
             'fieldGroups' => $fieldGroups,
         ]);

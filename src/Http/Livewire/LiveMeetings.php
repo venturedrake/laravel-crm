@@ -109,7 +109,7 @@ class LiveMeetings extends Component
         if(count($meetingIds) > 0) {
             $this->meetings = Meeting::whereIn('id', $meetingIds)->latest()->get();
         }
-        
+
         $this->emit('refreshActivities');
     }
 
@@ -134,7 +134,7 @@ class LiveMeetings extends Component
         $this->dispatchBrowserEvent('meetingFieldsReset');
 
         $this->addMeetingToggle();
-        
+
         $this->getMeetings();
     }
 

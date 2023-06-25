@@ -82,12 +82,12 @@ class LaravelCrmInstall extends Command
         }
 
         $this->info('Checking user authentication passed.');
-        
+
         // TBC: Check if audits table exists already
         // TBC: Check if spatie permissions tables exists already
 
         $this->info('Checking requirements passed.');
-        
+
         $this->info('Installing Laravel CRM...');
 
         $this->info('Publishing configuration...');
@@ -104,7 +104,7 @@ class LaravelCrmInstall extends Command
         }
 
         $this->info('Publishing migrations...');
-        
+
         $this->callSilent('vendor:publish', [
             '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
             '--tag' => 'migrations',
@@ -126,7 +126,7 @@ class LaravelCrmInstall extends Command
         $this->callSilent('db:seed', [
             '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
         ]);
-        
+
         if (\App\User::where('crm_access')->count() < 1) {
             $this->info('Create your default owner user');
 
@@ -134,18 +134,18 @@ class LaravelCrmInstall extends Command
             $lastname = $this->ask('Whats your last name?');
             $email = $this->ask('Whats your email address?');
             $password = $this->secret('Enter a password');
-            
+
             if ($user = \App\User::where('email', $email)->first()) {
                 $this->info('User already exists, granting crm access...');
 
                 $user->update([
                     'crm_access' => 1,
                 ]);
-              
+
                 if (! $user->hasRole('Owner')) {
                     $user->assignRole('Owner');
                 }
-                
+
                 $this->info('User access and role updated.');
             } else {
                 $user = \App\User::forceCreate([

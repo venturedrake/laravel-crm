@@ -12,7 +12,7 @@ class Note extends Model
     use SoftDeletes;
     use BelongsToTeams;
     use HasGlobalSettings;
-    
+
     protected $guarded = ['id'];
 
     /**

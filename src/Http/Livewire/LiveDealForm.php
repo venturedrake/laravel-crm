@@ -36,7 +36,7 @@ class LiveDealForm extends Component
 
             $this->getClientPeople();
         }
-        
+
         $this->title = old('title') ?? $deal->title ?? null;
         $this->generateTitle = $generateTitle;
 
@@ -50,18 +50,18 @@ class LiveDealForm extends Component
     public function updatedClientName($value)
     {
         $this->generateTitle();
-        
+
         if ($this->client_id) {
             $this->getClientOrganisations();
 
             $this->getClientPeople();
         } else {
             $this->clientHasOrganisations = false;
-            
+
             $this->clientHasPeople = false;
 
             $this->dispatchBrowserEvent('clientNameUpdated');
-            
+
             if (! $this->organisation_id) {
                 $this->dispatchBrowserEvent('selectedOrganisation');
             }
@@ -156,7 +156,7 @@ class LiveDealForm extends Component
             $this->clientHasPeople = true;
         }
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.deal-form');

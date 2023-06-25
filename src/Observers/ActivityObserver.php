@@ -17,7 +17,7 @@ class ActivityObserver
     {
         $activity->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the activity "created" event.
      *

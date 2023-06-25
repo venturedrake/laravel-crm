@@ -30,7 +30,7 @@ class QuoteProductController extends Controller
             'external_id' => Uuid::uuid4()->toString(),
             'currency' => $quote->currency,
         ]);
-        
+
         return view('laravel-crm::quote-products.create', [
             'quoteProduct' => $quoteProduct,
             'index' => $quote->quoteProducts->count() - 1,

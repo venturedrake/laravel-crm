@@ -62,7 +62,7 @@ class Client extends Model
             return $this->clientable->name ?? null;
         }
     }
-    
+
     /**
      * Get all of the owning clientable models.
      */

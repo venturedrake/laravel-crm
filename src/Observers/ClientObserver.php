@@ -16,12 +16,12 @@ class ClientObserver
     public function creating(Client $client)
     {
         $client->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $client->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the client "created" event.
      *

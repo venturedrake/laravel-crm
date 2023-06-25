@@ -16,12 +16,12 @@ class EmailObserver
     public function creating(Email $email)
     {
         $email->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $email->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the email "created" event.
      *

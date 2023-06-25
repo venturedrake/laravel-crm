@@ -119,7 +119,7 @@ class LaravelCrmTablesSeeder extends Seeder
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\OrganisationType::firstOrCreate($item[0], $item[1]);
         }
-        
+
         // Address types
         $items = [
             [
@@ -175,7 +175,7 @@ class LaravelCrmTablesSeeder extends Seeder
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\AddressType::firstOrCreate($item[0], $item[1]);
         }
-        
+
         // Contact types
         $items = [
             [
@@ -195,7 +195,7 @@ class LaravelCrmTablesSeeder extends Seeder
                 ],
             ],
         ];
-        
+
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\ContactType::firstOrCreate($item[0], $item[1]);
         }
@@ -260,7 +260,7 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm teams', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm teams', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm teams', 'crm_permission' => 1]);
-        
+
         Permission::firstOrCreate(['name' => 'view crm settings', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm settings', 'crm_permission' => 1]);
 
@@ -345,7 +345,7 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm clients', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm clients', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm clients', 'crm_permission' => 1]);
-        
+
         if (config('permission.teams')) {
             $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
         } else {
@@ -360,7 +360,7 @@ class LaravelCrmTablesSeeder extends Seeder
         } else {
             $roleArray = ['name' => 'Admin', 'crm_role' => 1];
         }
-        
+
         $role = Role::firstOrCreate($roleArray)
             ->givePermissionTo(Permission::all());
 
@@ -369,7 +369,7 @@ class LaravelCrmTablesSeeder extends Seeder
         } else {
             $roleArray = ['name' => 'Manager', 'crm_role' => 1];
         }
-        
+
         $role = Role::firstOrCreate($roleArray)
             ->givePermissionTo([
                 'create crm leads',
@@ -447,7 +447,7 @@ class LaravelCrmTablesSeeder extends Seeder
         } else {
             $roleArray = ['name' => 'Employee', 'crm_role' => 1];
         }
-        
+
         $role = Role::firstOrCreate($roleArray)
             ->givePermissionTo([
                 'create crm leads',

@@ -103,7 +103,7 @@ class LeadPolicy
     {
         return false;
     }
-    
+
     protected function isEnabled()
     {
         if(is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {

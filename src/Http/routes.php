@@ -336,7 +336,7 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
     Route::get('{order}/download', 'VentureDrake\LaravelCrm\Http\Controllers\OrderController@download')
         ->name('laravel-crm.orders.download')
         ->middleware(['can:view,order']);
-    
+
     /* Order Products */
 
     Route::group(['prefix' => '{order}/products', 'middleware' => 'auth.laravel-crm'], function () {

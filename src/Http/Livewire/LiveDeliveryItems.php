@@ -22,15 +22,15 @@ class LiveDeliveryItems extends Component
     public $name;
 
     public $order_quantities;
-    
+
     public $quantity;
 
     public $inputs = [];
 
     public $i = 0;
-    
+
     public $removed = [];
-    
+
     public $fromOrder;
 
     protected $listeners = ['loadItemDefault'];
@@ -68,11 +68,11 @@ class LiveDeliveryItems extends Component
                 } else {
                     $this->delivery_product_id[$this->i] = $deliveryProduct->id;
                 }
-                
+
                 $this->product_id[$this->i] = $deliveryProduct->product->id ?? null;
                 $this->name[$this->i] = $deliveryProduct->product->name ?? null;
                 $this->quantity[$this->i] = $deliveryProduct->quantity;
-                
+
                 if ($this->fromOrder) {
                     for ($i = 0; $i <= $this->getRemainOrderQuantity($deliveryProduct); $i++) {
                         $this->order_quantities[$this->i][$i] = $i;
@@ -103,7 +103,7 @@ class LiveDeliveryItems extends Component
             $this->quantity[$id] = null;
         }
     }
-    
+
     public function getRemainOrderQuantity($orderProduct)
     {
         $quantity = $orderProduct->quantity;
@@ -112,10 +112,10 @@ class LiveDeliveryItems extends Component
                 $quantity -= $deliveryProduct->quantity;
             }
         }
-        
+
         return $quantity;
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.delivery-items');

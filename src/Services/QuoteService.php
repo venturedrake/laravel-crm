@@ -60,7 +60,7 @@ class QuoteService
                 }
             }
         }
-        
+
         return $quote;
     }
 
@@ -86,14 +86,14 @@ class QuoteService
         ]);
 
         $quote->labels()->sync($request->labels ?? []);
-        
+
         if (isset($request->products)) {
             $quoteProductIds = [];
-            
+
             foreach ($request->products as $product) {
                 if (isset($product['quote_product_id']) && $quoteProduct = QuoteProduct::find($product['quote_product_id'])) {
                     $quoteProductIds[] = $product['quote_product_id'];
-                    
+
                     if (! isset($product['product_id']) || $product['quantity'] == 0) {
                         $quoteProduct->delete();
                     } else {
@@ -126,7 +126,7 @@ class QuoteService
                 }
             }
         }
-        
+
         return $quote;
     }
 }

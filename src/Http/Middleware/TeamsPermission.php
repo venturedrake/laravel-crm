@@ -1,4 +1,5 @@
 <?php
+
 namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Closure;
@@ -17,7 +18,7 @@ class TeamsPermission
         if (auth()->guest()) {
             return $next($request);
         }
-        
+
         if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
             app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->currentTeam->id);
         }

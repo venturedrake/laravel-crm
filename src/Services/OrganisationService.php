@@ -38,7 +38,7 @@ class OrganisationService
         $this->updateOrganisationPhones($organisation, $request->phones);
         $this->updateOrganisationEmails($organisation, $request->emails);
         $this->updateOrganisationAddresses($organisation, $request->addresses);
-        
+
         return $organisation;
     }
 
@@ -77,7 +77,7 @@ class OrganisationService
         $this->updateOrganisationPhones($organisation, $request->phones);
         $this->updateOrganisationEmails($organisation, $request->emails);
         $this->updateOrganisationAddresses($organisation, $request->addresses);
-        
+
         return $organisation;
     }
 
@@ -115,7 +115,7 @@ class OrganisationService
     protected function updateOrganisationEmails($organisation, $emails)
     {
         $emailIds = [];
-        
+
         if ($emails) {
             foreach ($emails as $emailRequest) {
                 if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {

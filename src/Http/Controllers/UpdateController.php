@@ -54,7 +54,7 @@ class UpdateController extends Controller
                 //
             }
         }
-        
+
         return view('laravel-crm::updates.index');
     }
 

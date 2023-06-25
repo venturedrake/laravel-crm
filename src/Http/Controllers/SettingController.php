@@ -72,27 +72,27 @@ class SettingController extends Controller
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
         $this->settingService->set('timezone', $request->timezone);
-        
+
         if($request->quote_prefix) {
             $this->settingService->set('quote_prefix', $request->quote_prefix);
         }
-        
+
         if($request->order_prefix) {
             $this->settingService->set('order_prefix', $request->order_prefix);
         }
-        
+
         if($request->invoice_prefix) {
             $this->settingService->set('invoice_prefix', $request->invoice_prefix);
         }
-        
+
         if ($request->quote_terms) {
             $this->settingService->set('quote_terms', $request->quote_terms);
         }
-        
+
         if ($request->invoice_terms) {
             $this->settingService->set('invoice_terms', $request->invoice_terms);
         }
-        
+
         $this->settingService->set('date_format', $request->date_format);
         $this->settingService->set('time_format', $request->time_format);
 

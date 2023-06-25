@@ -16,12 +16,12 @@ class ProductObserver
     public function creating(Product $product)
     {
         $product->external_id = Uuid::uuid4()->toString();
-        
+
         if (! app()->runningInConsole()) {
             $product->user_created_id = auth()->user()->id ?? null;
         }
     }
-    
+
     /**
      * Handle the product "created" event.
      *

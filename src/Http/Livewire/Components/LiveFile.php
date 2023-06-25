@@ -24,7 +24,7 @@ class LiveFile extends Component
     {
         $this->settingService = $settingService;
     }
-    
+
     public function mount(File $file)
     {
         $this->file = $file;
@@ -42,13 +42,13 @@ class LiveFile extends Component
     public function delete()
     {
         $this->file->delete();
-        
+
         $this->emit('fileDeleted');
         $this->notify(
             'File deleted.'
         );
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.components.file');

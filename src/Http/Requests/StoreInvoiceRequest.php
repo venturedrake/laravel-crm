@@ -9,7 +9,7 @@ use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 class StoreInvoiceRequest extends FormRequest
 {
     use HasGlobalSettings;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -38,7 +38,7 @@ class StoreInvoiceRequest extends FormRequest
         /*if (! Xero::isConnected()) {
             $rules['number'] = 'required|integer|unique:VentureDrake\LaravelCrm\Models\Invoice,number';
         }*/
-        
+
         return $rules;
     }
 }

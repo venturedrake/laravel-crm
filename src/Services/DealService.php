@@ -52,7 +52,7 @@ class DealService
                 ]);
             }
         }
-        
+
         return $deal;
     }
 
@@ -71,11 +71,11 @@ class DealService
         ]);
 
         $deal->labels()->sync($request->labels ?? []);
-        
+
         if (isset($request->item_deal_product_id)) {
             foreach ($request->item_deal_product_id as $dealProductKey => $dealProductValue) {
                 $dealProduct = DealProduct::find($dealProductValue);
-                
+
                 if ($dealProduct) {
                     $dealProduct->update([
                         'product_id' => $request->item_product_id[$dealProductKey],
@@ -86,7 +86,7 @@ class DealService
                 }
             }
         }
-        
+
         return $deal;
     }
 }

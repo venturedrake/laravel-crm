@@ -16,13 +16,13 @@ class SendInvoice extends Component
     use NotifyToast;
 
     private $settingService;
-    
+
     public $invoice;
 
     public $to;
 
     public $subject;
-    
+
     public $message;
 
     public $cc;
@@ -61,7 +61,7 @@ class SendInvoice extends Component
     public function send()
     {
         $this->validate();
-        
+
         $this->generateUrl();
 
         $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->invoice)).'/'.$this->invoice->id.'/';
@@ -71,7 +71,7 @@ class SendInvoice extends Component
         }
 
         $this->pdf = 'app/'.$pdfLocation.'invoice-'.$this->invoice->id.'.pdf';
-        
+
         Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
         ])
@@ -98,7 +98,7 @@ class SendInvoice extends Component
         $this->notify(
             'Invoice sent',
         );
-        
+
         $this->resetFields();
 
         $this->dispatchBrowserEvent('invoiceSent');

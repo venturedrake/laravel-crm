@@ -1,4 +1,5 @@
 <?php
+
 namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Closure;
@@ -19,7 +20,7 @@ class XeroTenant
         if (auth()->guest()) {
             return $next($request);
         }
-        
+
         if (config('laravel-crm.teams') && auth()->hasUser() && auth()->user()->currentTeam) {
             if ($xeroToken = XeroToken::where('team_id', auth()->user()->currentTeam->id)->first()) {
                 Xero::setTenantId($xeroToken->id);

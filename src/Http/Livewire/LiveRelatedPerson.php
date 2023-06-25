@@ -24,7 +24,7 @@ class LiveRelatedPerson extends Component
         $data = $this->validate([
             'person_name' => 'required',
         ]);
-        
+
         if ($this->person_id) {
             $person = Person::find($this->person_id);
             $person->update([
@@ -61,12 +61,12 @@ class LiveRelatedPerson extends Component
 
         $this->dispatchBrowserEvent('linkedPerson');
     }
-    
+
     public function updatedPersonName($value)
     {
         $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
     }
-    
+
     private function getPeople()
     {
         $this->people = $this->model->people()->get();
@@ -76,7 +76,7 @@ class LiveRelatedPerson extends Component
     {
         $this->reset('person_id', 'person_name');
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.related-people');

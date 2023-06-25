@@ -10,7 +10,7 @@ class SendQuote extends Mailable
 {
     use Queueable;
     use SerializesModels;
-    
+
     public $emailTo;
 
     public $subject;
@@ -18,9 +18,9 @@ class SendQuote extends Mailable
     public $content;
 
     public $copyMe = false;
-    
+
     public $onlineQuoteLink;
-    
+
     public $pdf;
 
     /**
@@ -48,7 +48,7 @@ class SendQuote extends Mailable
         $this->content = str_replace('[Online Quote Link]', '<a href="'.$this->onlineQuoteLink.'">'.$this->onlineQuoteLink.'</a>', $this->content);
 
         $this->content = nl2br($this->content);
-        
+
         $mailable = $this->subject($this->subject)
             ->from(auth()->user()->email, auth()->user()->name)
             ->to($this->emailTo)
@@ -57,7 +57,7 @@ class SendQuote extends Mailable
         if ($this->copyMe == 1) {
             $mailable->cc(auth()->user()->email);
         }
-        
+
         $mailable->attach(storage_path($this->pdf));
 
         return $mailable;

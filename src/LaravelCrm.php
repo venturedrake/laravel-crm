@@ -10,7 +10,7 @@ class LaravelCrm
     {
         //
     }
-    
+
     public function getLeads()
     {
         // return Lead::all();

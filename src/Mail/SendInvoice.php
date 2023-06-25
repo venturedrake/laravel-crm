@@ -10,15 +10,15 @@ class SendInvoice extends Mailable
 {
     use Queueable;
     use SerializesModels;
-    
+
     public $emailTo;
 
     public $subject;
 
     public $content;
-    
+
     public $onlineInvoiceLink;
-    
+
     public $copyMe = false;
 
     public $pdf;
@@ -48,7 +48,7 @@ class SendInvoice extends Mailable
         $this->content = str_replace('[Online Invoice Link]', '<a href="'.$this->onlineInvoiceLink.'">'.$this->onlineInvoiceLink.'</a>', $this->content);
 
         $this->content = nl2br($this->content);
-        
+
         $mailable = $this->subject($this->subject)
             ->from(auth()->user()->email, auth()->user()->name)
             ->to($this->emailTo)

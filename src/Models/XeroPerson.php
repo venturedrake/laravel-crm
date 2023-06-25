@@ -11,7 +11,7 @@ class XeroPerson extends Model
     use BelongsToTeams;
 
     protected $guarded = ['id'];
-    
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'xero_people';

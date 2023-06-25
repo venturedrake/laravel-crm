@@ -70,7 +70,7 @@ class ProductService
                 'purchase_description' => $item['PurchaseDescription'] ?? null,
             ]);
         }
-        
+
         return $product;
     }
 
@@ -131,7 +131,7 @@ class ProductService
                 'purchase_description' => $item['PurchaseDescription'] ?? null,
             ]);
         }
-        
+
         return $product;
     }
 }

@@ -22,7 +22,7 @@ class TeamController extends Controller
         } else {
             $teams = Team::latest()->paginate(30);
         }
-        
+
         return view('laravel-crm::teams.index', [
             'teams' => $teams,
         ]);
@@ -42,7 +42,7 @@ class TeamController extends Controller
         } else {
             $users = User::orderBy('name', 'ASC')->get();
         }
-        
+
         return view('laravel-crm::teams.create', [
             'users' => $users,
         ]);
@@ -66,7 +66,7 @@ class TeamController extends Controller
         } else {
             $team->users()->sync([]);
         }
-        
+
         flash(ucfirst(trans('laravel-crm::lang.team_stored')))->success()->important();
 
         return redirect(route('laravel-crm.teams.index'));
@@ -100,7 +100,7 @@ class TeamController extends Controller
         } else {
             $users = User::orderBy('name', 'ASC')->get();
         }
-        
+
         return view('laravel-crm::teams.edit', [
             'team' => $team,
             'users' => $users,
@@ -119,13 +119,13 @@ class TeamController extends Controller
         $team->update([
             'name' => $request->name,
         ]);
-        
+
         if ($request->team_users) {
             $team->users()->sync($request->team_users);
         } else {
             $team->users()->sync([]);
         }
-        
+
         flash(ucfirst(trans('laravel-crm::lang.team_updated')))->success()->important();
 
         return redirect(route('laravel-crm.teams.show', $team));

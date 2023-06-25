@@ -20,7 +20,7 @@ class LiveActivities extends Component
     {
         $this->settingService = $settingService;
     }
-    
+
     public function mount($model)
     {
         $this->model = $model;

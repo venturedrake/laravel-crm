@@ -20,7 +20,7 @@ class LastOnlineAt
         if (auth()->guest()) {
             return $next($request);
         }
-        
+
         if (auth()->user()->last_online_at && Carbon::parse(auth()->user()->last_online_at)->diffInHours(now()) !== 0) {
             DB::table("users")
                 ->where("id", auth()->user()->id)

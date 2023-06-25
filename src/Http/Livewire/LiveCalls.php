@@ -109,7 +109,7 @@ class LiveCalls extends Component
         if(count($callIds) > 0) {
             $this->calls = Call::whereIn('id', $callIds)->latest()->get();
         }
-        
+
         $this->emit('refreshActivities');
     }
 
@@ -130,11 +130,11 @@ class LiveCalls extends Component
     private function resetFields()
     {
         $this->reset('name', 'description', 'start_at', 'finish_at', 'guests', 'location');
-        
+
         $this->dispatchBrowserEvent('callFieldsReset');
-        
+
         $this->addCallToggle();
-        
+
         $this->getCalls();
     }
 

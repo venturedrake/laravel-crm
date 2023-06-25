@@ -55,14 +55,14 @@ class LaravelCrmPermissions extends Command
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $tableNames = config('permission.table_names');
-        
+
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table($tableNames['roles'])
                          ->where('crm_role', 1)
                          ->whereNull('team_id')
                          ->get() as $role) {
                 $this->info('Inserting role '.$role->name.' for team '.$team->name);
-                
+
                 DB::table($tableNames['roles'])->updateOrInsert([
                     'name' => $role->name,
                     'guard_name' => $role->guard_name,
@@ -95,7 +95,7 @@ class LaravelCrmPermissions extends Command
                 }
             }
         }
-        
+
         $this->info('LaravelCRM Permissions Update Complete.');
     }
 }

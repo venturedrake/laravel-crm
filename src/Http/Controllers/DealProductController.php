@@ -30,7 +30,7 @@ class DealProductController extends Controller
             'external_id' => Uuid::uuid4()->toString(),
             'currency' => $deal->currency,
         ]);
-        
+
         return view('laravel-crm::deal-products.create', [
             'dealProduct' => $dealProduct,
             'index' => $deal->dealProducts->count() - 1,

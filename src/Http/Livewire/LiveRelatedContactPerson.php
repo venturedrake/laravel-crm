@@ -35,7 +35,7 @@ class LiveRelatedContactPerson extends Component
                 'user_owner_id' => auth()->user()->id,
             ]);
         }
-        
+
         $this->model->contacts()->create([
             'entityable_type' => $person->getMorphClass(),
             'entityable_id' => $person->id,
@@ -93,7 +93,7 @@ class LiveRelatedContactPerson extends Component
     {
         $this->reset('person_id', 'person_name');
     }
-    
+
     public function render()
     {
         return view('laravel-crm::livewire.related-contact-people');

@@ -41,7 +41,7 @@ class InvoiceController extends Controller
         if (! $request->hasValidSignature()) {
             abort(401);
         }
-        
+
         if ($invoice->person) {
             $email = $invoice->person->getPrimaryEmail();
             $phone = $invoice->person->getPrimaryPhone();

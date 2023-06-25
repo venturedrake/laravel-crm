@@ -58,7 +58,7 @@ class OrganisationController extends Controller
                 $organisations = $organisations->sortable(['created_at' => 'desc'])->paginate(30);
             }
         }
-        
+
         return view('laravel-crm::organisations.index', [
             'organisations' => $organisations,
         ]);
@@ -85,7 +85,7 @@ class OrganisationController extends Controller
         $organisation = $this->organisationService->create($request);
 
         $organisation->labels()->sync($request->labels ?? []);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.organization_stored')))->success()->important();
 
         return redirect(route('laravel-crm.organisations.index'));
@@ -135,7 +135,7 @@ class OrganisationController extends Controller
         $this->organisationService->update($organisation, $request);
 
         $organisation->labels()->sync($request->labels ?? []);
-        
+
         flash(ucfirst(trans('laravel-crm::lang.organization_updated')))->success()->important();
 
         return redirect(route('laravel-crm.organisations.show', $organisation));
@@ -163,7 +163,7 @@ class OrganisationController extends Controller
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.organisations.index'));
         }
-        
+
         $params = Organisation::filters($request, 'search');
 
         $organisations = Organisation::filter($params)->get()->filter(function ($record) use ($searchValue) {
@@ -183,7 +183,7 @@ class OrganisationController extends Controller
     public function autocomplete(Organisation $organisation)
     {
         $address = $organisation->getPrimaryAddress();
-        
+
         return response()->json([
             'address_line1' => $address->line1 ?? null,
             'address_line2' => $address->line2 ?? null,

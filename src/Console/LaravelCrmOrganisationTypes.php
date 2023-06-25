@@ -49,7 +49,7 @@ class LaravelCrmOrganisationTypes extends Command
     public function handle()
     {
         $this->info('Updating LaravelCRM Organisation Types...');
-        
+
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('organisation_types')
                          ->whereNull('team_id')
@@ -61,7 +61,7 @@ class LaravelCrmOrganisationTypes extends Command
                     'description' => $organisationType->description,
                     'team_id' => $team->id,
                 ])->first();
-                
+
                 if (! $teamOrganisationType) {
                     DB::table('organisation_types')->insert([
                         'name' => $organisationType->name,
@@ -73,7 +73,7 @@ class LaravelCrmOrganisationTypes extends Command
                 }
             }
         }
-        
+
         $this->info('LaravelCRM Organisation Types Update Complete.');
     }
 }

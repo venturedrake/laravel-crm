@@ -17,7 +17,7 @@ class FieldGroupObserver
     {
         $fieldGroup->external_id = Uuid::uuid4()->toString();
     }
-    
+
     /**
      * Handle the fieldGroup "created" event.
      *

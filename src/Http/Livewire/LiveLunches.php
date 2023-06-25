@@ -109,7 +109,7 @@ class LiveLunches extends Component
         if(count($lunchIds) > 0) {
             $this->lunches = Lunch::whereIn('id', $lunchIds)->latest()->get();
         }
-        
+
         $this->emit('refreshActivities');
     }
 
@@ -134,7 +134,7 @@ class LiveLunches extends Component
         $this->dispatchBrowserEvent('lunchFieldsReset');
 
         $this->addLunchToggle();
-        
+
         $this->getLunches();
     }
 
