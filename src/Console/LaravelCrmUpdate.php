@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
@@ -59,7 +58,7 @@ class LaravelCrmUpdate extends Command
     {
         $this->info('Updating Laravel CRM...');
         
-        if($this->settingService->get('db_update_0180')->value == 0){
+        if($this->settingService->get('db_update_0180')->value == 0) {
             $this->info('Updating Laravel CRM quote numbers...');
 
             foreach (Quote::whereNull('number')->get() as $quote) {
@@ -90,7 +89,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM orders numbers complete');
         }
 
-        if($this->settingService->get('db_update_0181')->value == 0){
+        if($this->settingService->get('db_update_0181')->value == 0) {
             $this->info('Updating Laravel CRM organisation linked to person...');
 
             foreach (Person::whereNotNull('organisation_id')->get() as $person) {
@@ -98,9 +97,9 @@ class LaravelCrmUpdate extends Command
                     'team_id' => $person->team_id,
                     'entityable_type' => $person->organisation->getMorphClass(),
                     'entityable_id' => $person->organisation->id,
-                ])){
+                ])) {
                     $person->update([
-                        'organisation_id' => null
+                        'organisation_id' => null,
                     ]);
                 }
             }

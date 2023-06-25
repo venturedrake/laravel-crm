@@ -5,7 +5,6 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
@@ -38,7 +37,7 @@ class LiveFiles extends Component
         $this->random = rand();
         $this->getFiles();
 
-        if (!$this->files || ($this->files && $this->files->count() < 1)) {
+        if (! $this->files || ($this->files && $this->files->count() < 1)) {
             $this->showForm = true;
         }
     }
@@ -81,11 +80,11 @@ class LiveFiles extends Component
     {
         $fileIds = [];
 
-        foreach($this->model->files()->latest()->get() as $file){
-            $fileIds[] =  $file->id;
+        foreach($this->model->files()->latest()->get() as $file) {
+            $fileIds[] = $file->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
+        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
             foreach($this->model->contacts as $contact) {
                 foreach ($contact->entityable->files()->latest()->get() as $file) {
                     $fileIds[] = $file->id;
@@ -93,7 +92,7 @@ class LiveFiles extends Component
             }
         }
 
-        if(count($fileIds) > 0){
+        if(count($fileIds) > 0) {
             $this->files = File::whereIn('id', $fileIds)->latest()->get();
         }
         

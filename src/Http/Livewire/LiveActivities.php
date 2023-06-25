@@ -2,8 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
-use VentureDrake\LaravelCrm\Models\Organisation;
-use VentureDrake\LaravelCrm\Models\Person;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -33,11 +31,11 @@ class LiveActivities extends Component
     {
         $activityIds = [];
 
-        foreach($this->model->activities()->latest()->get() as $activity){
-            $activityIds[] =  $activity->id;
+        foreach($this->model->activities()->latest()->get() as $activity) {
+            $activityIds[] = $activity->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
+        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
             foreach($this->model->contacts as $contact) {
                 foreach ($contact->entityable->activities()->latest()->get() as $activity) {
                     $activityIds[] = $activity->id;
@@ -45,7 +43,7 @@ class LiveActivities extends Component
             }
         }
 
-        if(count($activityIds) > 0){
+        if(count($activityIds) > 0) {
             $this->activities = Activity::whereIn('id', $activityIds)->latest()->get();
         }
     }

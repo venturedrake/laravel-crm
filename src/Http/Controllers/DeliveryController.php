@@ -6,7 +6,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDeliveryRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDeliveryRequest;
-use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;

@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
-use Dcblogdev\Xero\Facades\Xero;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -33,10 +32,10 @@ class InvoiceObserver
             $invoice->user_created_id = auth()->user()->id ?? null;
         }
         
-        if($lastInvoice = Invoice::orderBy('number', 'DESC')->first()){
+        if($lastInvoice = Invoice::orderBy('number', 'DESC')->first()) {
             $invoice->number = $lastInvoice->number + 1;
-        }else{
-            $invoice->number = 1000; 
+        } else {
+            $invoice->number = 1000;
         }
         
         $invoice->prefix = $this->settingService->get('invoice_prefix')->value;

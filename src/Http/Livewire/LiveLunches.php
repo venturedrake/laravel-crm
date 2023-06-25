@@ -39,7 +39,7 @@ class LiveLunches extends Component
         $this->model = $model;
         $this->getLunches();
 
-        if (!$this->lunches || ($this->lunches && $this->lunches->count() < 1)) {
+        if (! $this->lunches || ($this->lunches && $this->lunches->count() < 1)) {
             $this->showForm = true;
         }
     }
@@ -94,11 +94,11 @@ class LiveLunches extends Component
     {
         $lunchIds = [];
 
-        foreach($this->model->lunches()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $lunch){
-            $lunchIds[] =  $lunch->id;
+        foreach($this->model->lunches()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $lunch) {
+            $lunchIds[] = $lunch->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
+        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
             foreach($this->model->contacts as $contact) {
                 foreach ($contact->entityable->lunches()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $lunch) {
                     $lunchIds[] = $lunch->id;
@@ -106,7 +106,7 @@ class LiveLunches extends Component
             }
         }
 
-        if(count($lunchIds) > 0){
+        if(count($lunchIds) > 0) {
             $this->lunches = Lunch::whereIn('id', $lunchIds)->latest()->get();
         }
         

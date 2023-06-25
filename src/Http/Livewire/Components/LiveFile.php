@@ -29,7 +29,7 @@ class LiveFile extends Component
     {
         $this->file = $file;
 
-        if($this->settingService->get('show_related_activity')->value == 1){
+        if($this->settingService->get('show_related_activity')->value == 1) {
             $this->showRelated = true;
         }
     }

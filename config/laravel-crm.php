@@ -150,9 +150,9 @@ return [
     |--------------------------------------------------------------------------
     |
     | Some of the features of the CRM package be disabled by removing them here
-    | if they are not necessary for the business. An example of the deliveries 
+    | if they are not necessary for the business. An example of the deliveries
     | model which would not be useful if you sell digital only products or
-    | services. 
+    | services.
     |
     | Modules: "leads", "deals", "quotes", "orders", "invoices", "deliveries"
     |

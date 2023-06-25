@@ -54,7 +54,7 @@ class SettingController extends Controller
             'invoiceTerms' => $invoiceTerms,
             'dateFormat' => $dateFormat,
             'timeFormat' => $timeFormat,
-            'showRelatedActivity' => $showRelatedActivity
+            'showRelatedActivity' => $showRelatedActivity,
         ]);
     }
 
@@ -73,15 +73,15 @@ class SettingController extends Controller
         $this->settingService->set('currency', $request->currency);
         $this->settingService->set('timezone', $request->timezone);
         
-        if($request->quote_prefix){
+        if($request->quote_prefix) {
             $this->settingService->set('quote_prefix', $request->quote_prefix);
         }
         
-        if($request->order_prefix){
+        if($request->order_prefix) {
             $this->settingService->set('order_prefix', $request->order_prefix);
         }
         
-        if($request->invoice_prefix){
+        if($request->invoice_prefix) {
             $this->settingService->set('invoice_prefix', $request->invoice_prefix);
         }
         

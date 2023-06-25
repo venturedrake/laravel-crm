@@ -94,11 +94,11 @@ class LiveCalls extends Component
     {
         $callIds = [];
 
-        foreach($this->model->calls()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $call){
-            $callIds[] =  $call->id;
+        foreach($this->model->calls()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $call) {
+            $callIds[] = $call->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
+        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
             foreach($this->model->contacts as $contact) {
                 foreach ($contact->entityable->calls()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $call) {
                     $callIds[] = $call->id;
@@ -106,7 +106,7 @@ class LiveCalls extends Component
             }
         }
 
-        if(count($callIds) > 0){
+        if(count($callIds) > 0) {
             $this->calls = Call::whereIn('id', $callIds)->latest()->get();
         }
         

@@ -2,8 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
-use VentureDrake\LaravelCrm\Models\Organisation;
-use VentureDrake\LaravelCrm\Models\Person;
 use Livewire\Component;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Note;
@@ -40,7 +38,7 @@ class LiveNotes extends Component
         $this->pinned = $pinned;
         $this->getNotes();
 
-        if (! $this->notes || ($this->notes && $this->notes->count() < 1 )) {
+        if (! $this->notes || ($this->notes && $this->notes->count() < 1)) {
             $this->showForm = true;
         }
     }
@@ -82,11 +80,11 @@ class LiveNotes extends Component
         } else {
             $noteIds = [];
             
-            foreach($this->model->notes()->latest()->get() as $note){
-                $noteIds[] =  $note->id;
+            foreach($this->model->notes()->latest()->get() as $note) {
+                $noteIds[] = $note->id;
             }
             
-            if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')){
+            if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
                 foreach($this->model->contacts as $contact) {
                     foreach ($contact->entityable->notes()->latest()->get() as $note) {
                         $noteIds[] = $note->id;
@@ -94,7 +92,7 @@ class LiveNotes extends Component
                 }
             }
 
-            if(count($noteIds) > 0){
+            if(count($noteIds) > 0) {
                 $this->notes = Note::whereIn('id', $noteIds)->latest()->get();
             }
         }

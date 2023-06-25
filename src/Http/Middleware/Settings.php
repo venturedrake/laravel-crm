@@ -7,8 +7,8 @@ use Carbon\Carbon;
 use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Schema;
-use VentureDrake\LaravelCrm\Models\Setting;
 use Illuminate\Support\Str;
+use VentureDrake\LaravelCrm\Models\Setting;
 
 class Settings
 {
@@ -96,7 +96,7 @@ class Settings
                 'value' => '0',
             ]);
             
-            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 180){
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 180) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0180',
@@ -105,7 +105,7 @@ class Settings
                 ]);
             }
 
-            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 181){
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 181) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0181',

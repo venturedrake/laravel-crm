@@ -106,9 +106,9 @@ class QuotePolicy
 
     protected function isEnabled()
     {
-        if(is_array(config('laravel-crm.modules')) && in_array('quotes', config('laravel-crm.modules'))){
+        if(is_array(config('laravel-crm.modules')) && in_array('quotes', config('laravel-crm.modules'))) {
             return true;
-        }elseif(! config('laravel-crm.modules')){
+        } elseif(! config('laravel-crm.modules')) {
             return true;
         }
     }
