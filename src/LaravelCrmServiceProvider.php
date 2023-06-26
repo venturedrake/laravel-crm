@@ -494,6 +494,15 @@ class LaravelCrmServiceProvider extends ServiceProvider
             if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
                 view()->share('dateFormat', Setting::where('name', 'date_format')->first()->value ?? 'Y/m/d');
                 view()->share('timeFormat', Setting::where('name', 'time_format')->first()->value ?? 'H:i');
+                if($setting = Setting::where('name', 'dynamic_products')->first()){
+                    if($setting->value == 1){
+                        view()->share('dynamicProducts', 'true');
+                    }else{
+                        view()->share('dynamicProducts', 'false');
+                    }
+                }else{
+                    view()->share('dynamicProducts', 'true');
+                }
             } else {
                 view()->share('dateFormat', 'Y/m/d');
                 view()->share('timeFormat', 'H:i');

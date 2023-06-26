@@ -84,12 +84,20 @@ const appJquery = function() {
             });
 
             if(typeof products !== 'undefined'){
+                if($('meta[name=dynamic_products]').length > 0){
+                    var tags = $('meta[name=dynamic_products]').attr('content');
+                }else{
+                    var tags = 'true';
+                }
+                
                 $("td.bind-select2 select[name^='products']").select2({
-                    data: products
+                    data: products,
+                    tags: tags
                 });
 
                 $("select[name^='invoiceLines']").select2({
                     data: products,
+                    tags: tags
                 });
             }
 

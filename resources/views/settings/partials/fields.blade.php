@@ -99,7 +99,13 @@
             'required' => 'true'
        ])
         <div class="form-group">
-            <label for="crm_access">{{ ucfirst(__('laravel-crm::lang.show_related_contact_activity')) }}</label>
+            <label for="dynamic_products">{{ ucfirst(__('laravel-crm::lang.allow_creating_products_when_creating_quotes_orders_and_invoices')) }}</label>
+            <span class="form-control-toggle">
+                 <input id="dynamic_products" type="checkbox" name="dynamic_products" {{ (isset($dynamicProducts->value) && ($dynamicProducts->value == 1)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+            </span>
+        </div>
+        <div class="form-group">
+            <label for="show_related_activity">{{ ucfirst(__('laravel-crm::lang.show_related_contact_activity')) }}</label>
             <span class="form-control-toggle">
                  <input id="show_related_activity" type="checkbox" name="show_related_activity" {{ (isset($showRelatedActivity->value) && ($showRelatedActivity->value == 1)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
             </span>

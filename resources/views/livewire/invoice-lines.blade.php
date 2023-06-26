@@ -112,7 +112,7 @@
 
                 window.addEventListener('addedItem', event => {
                     $("tr[data-number='" + event.detail.id + "'] select[name^='invoiceLines']").select2({
-                        data: products,
+                        data: products
                     }).select2('open')
                         .on('change', function (e) {
                             @this.set('product_id.' + $(this).data('value'), $(this).val());

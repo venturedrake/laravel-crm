@@ -91,6 +91,12 @@ class Settings
             ]);
 
             Setting::firstOrCreate([
+                'name' => 'dynamic_products',
+            ], [
+                'value' => '1',
+            ]);
+
+            Setting::firstOrCreate([
                 'name' => 'show_related_activity',
             ], [
                 'value' => '0',
