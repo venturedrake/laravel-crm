@@ -82,7 +82,7 @@
             </div>
         </footer>
     </div>
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=54356326653"></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=563899465348"></script>
     <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     @livewireScripts

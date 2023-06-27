@@ -98,6 +98,24 @@
             'value' => old('time_format', $timeFormat->value ?? null),
             'required' => 'true'
        ])
+        @include('laravel-crm::partials.form.select',[
+            'name' => 'time_format',
+            'label' => ucfirst(trans('laravel-crm::lang.time_format')),
+            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timeFormats(),
+            'value' => old('time_format', $timeFormat->value ?? null),
+            'required' => 'true'
+       ])
+        @include('laravel-crm::partials.form.text',[
+            'name' => 'tax_name',
+            'label' => ucfirst(trans('laravel-crm::lang.tax_name')),
+            'value' => old('tax_name', $taxName->value ?? null)
+       ])
+        @include('laravel-crm::partials.form.text',[
+            'name' => 'tax_rate',
+            'label' => ucfirst(trans('laravel-crm::lang.tax_rate')),
+            'value' => old('tax_rate', $taxRate->value ?? null),
+            'append' => '%'
+       ])
         <div class="form-group">
             <label for="dynamic_products">{{ ucfirst(__('laravel-crm::lang.allow_creating_products_when_creating_quotes_orders_and_invoices')) }}</label>
             <span class="form-control-toggle">

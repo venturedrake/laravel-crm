@@ -4,11 +4,14 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveOrderItems extends Component
 {
     use NotifyToast;
+
+    private $settingService;
 
     public $order;
 
@@ -50,6 +53,11 @@ class LiveOrderItems extends Component
     public $fromQuote;
 
     protected $listeners = ['loadItemDefault'];
+
+    public function boot(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
 
     public function mount($order, $products, $old = null, $fromQuote = false)
     {
@@ -155,7 +163,15 @@ class LiveOrderItems extends Component
         $this->total = 0;
 
         for ($i = 1; $i <= $this->i; $i++) {
-            if (isset($this->product_id[$i]) && $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+            if (isset($this->product_id[$i])) {
+                if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])){
+                    $taxRate = $product->tax_rate;
+                }elseif($taxRate = $this->settingService->get('tax_rate')){
+                    $taxRate = $taxRate->value;
+                }else{
+                    $taxRate = 0;
+                }
+                
                 if (is_numeric($this->unit_price[$i]) && is_numeric($this->quantity[$i])) {
                     $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
                     $this->unit_price[$i] = $this->currencyFormat($this->unit_price[$i]);
@@ -164,7 +180,7 @@ class LiveOrderItems extends Component
                 }
 
                 $this->sub_total += $this->amount[$i];
-                $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
+                $this->tax += $this->amount[$i] * ($taxRate / 100);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
             }
         }

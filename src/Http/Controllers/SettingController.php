@@ -40,6 +40,8 @@ class SettingController extends Controller
         $timeFormat = $this->settingService->get('time_format');
         $showRelatedActivity = $this->settingService->get('show_related_activity');
         $dynamicProducts = $this->settingService->get('dynamic_products');
+        $taxName = $this->settingService->get('tax_name');
+        $taxRate = $this->settingService->get('tax_rate');
 
         return view('laravel-crm::settings.edit', [
             'organisationName' => $organisationName,
@@ -56,7 +58,9 @@ class SettingController extends Controller
             'dateFormat' => $dateFormat,
             'timeFormat' => $timeFormat,
             'showRelatedActivity' => $showRelatedActivity,
-            'dynamicProducts' => $dynamicProducts
+            'dynamicProducts' => $dynamicProducts,
+            'taxName' => $taxName,
+            'taxRate' => $taxRate
         ]);
     }
 
@@ -74,6 +78,8 @@ class SettingController extends Controller
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
         $this->settingService->set('timezone', $request->timezone);
+        $this->settingService->set('tax_name', $request->tax_name);
+        $this->settingService->set('tax_rate', $request->tax_rate);
 
         if($request->quote_prefix) {
             $this->settingService->set('quote_prefix', $request->quote_prefix);
