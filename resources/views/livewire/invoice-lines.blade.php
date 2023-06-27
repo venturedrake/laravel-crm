@@ -96,23 +96,16 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                /*$(document).delegate("input[name^='invoiceLines']", "focus", function() {
-                    var number = $(this).attr('value')
-                    $(this).autocomplete({
-                        source: products,
-                        onSelectItem: function(item, element){
-                            @this.set('product_id.' + number,item.value);
-                            @this.set('name.' + number,item.label);
-                            Livewire.emit('loadInvoiceLineDefault', number)
-                        },
-                        highlightClass: 'text-danger',
-                        treshold: 2,
-                    });
-                })*/
-
                 window.addEventListener('addedItem', event => {
+                    if($('meta[name=dynamic_products]').length > 0){
+                        var tags = $('meta[name=dynamic_products]').attr('content');
+                    }else{
+                        var tags = 'true';
+                    }
+                    
                     $("tr[data-number='" + event.detail.id + "'] select[name^='invoiceLines']").select2({
-                        data: products
+                        data: products,
+                        tags: tags
                     }).select2('open')
                         .on('change', function (e) {
                             @this.set('product_id.' + $(this).data('value'), $(this).val());
@@ -120,10 +113,6 @@
                             Livewire.emit('loadInvoiceLineDefault', $(this).data('value'))
                         });
                 });
-
-                /*window.addEventListener('removedItem', event => {
-                    $("tr[data-number='" + event.detail.id + "']").remove()
-                });*/
 
                 $("select[name^='invoiceLines']").on('change', function (e) {
                     @this.set('product_id.' + $(this).data('value'), $(this).val());

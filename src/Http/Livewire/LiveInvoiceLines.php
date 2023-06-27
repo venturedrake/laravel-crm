@@ -4,11 +4,14 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveInvoiceLines extends Component
 {
     use NotifyToast;
+
+    private $settingService;
 
     public $invoice;
 
@@ -38,6 +41,11 @@ class LiveInvoiceLines extends Component
 
     protected $listeners = ['loadInvoiceLineDefault'];
 
+    public function boot(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
+
     public function mount($invoice, $invoiceLines, $old = null)
     {
         $this->invoice = $invoice;
@@ -49,6 +57,8 @@ class LiveInvoiceLines extends Component
                 $this->add($this->i);
                 $this->invoice_line_id[$this->i] = $old['invoice_line_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
+
+
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
                 $this->price[$this->i] = $old['price'] ?? null;
@@ -103,7 +113,15 @@ class LiveInvoiceLines extends Component
         $this->total = 0;
 
         for ($i = 1; $i <= $this->i; $i++) {
-            if (isset($this->product_id[$i]) && $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+            if (isset($this->product_id[$i])) {
+                if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+                    $taxRate = $product->tax_rate;
+                } elseif($taxRate = $this->settingService->get('tax_rate')) {
+                    $taxRate = $taxRate->value;
+                } else {
+                    $taxRate = 0;
+                }
+
                 if (is_numeric($this->price[$i]) && is_numeric($this->quantity[$i])) {
                     $this->amount[$i] = $this->price[$i] * $this->quantity[$i];
                     $this->price[$i] = $this->currencyFormat($this->price[$i]);
@@ -112,7 +130,7 @@ class LiveInvoiceLines extends Component
                 }
 
                 $this->sub_total += $this->amount[$i];
-                $this->tax += $this->amount[$i] * ($product->tax_rate / 100);
+                $this->tax += $this->amount[$i] * ($taxRate / 100);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
             }
         }

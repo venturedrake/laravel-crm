@@ -1,5 +1,5 @@
 <div>
-    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.order_items')) }} @if(!isset($fromQuote))<span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span>@endif</h6>
+    <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.order_items')) }} @if(!$fromQuote)<span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span>@endif</h6>
     <hr class="mb-0" />
     <script type="text/javascript">
         let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\productsSelect2() !!}
@@ -21,7 +21,7 @@
                 @endforeach
                 </tbody>
                 <tfoot id="orderProductsTotals" class="tfoot">
-                    @if(!isset($fromQuote))
+                    @if(!$fromQuote)
                     <tr>
                         <td></td>
                         <td></td>
@@ -139,23 +139,16 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
-                /*$(document).delegate("input[name^='products']", "focus", function() {
-                    var number = $(this).attr('value')
-                    $(this).autocomplete({
-                        source: products,
-                        onSelectItem: function(item, element){
-                            @this.set('product_id.' + number,item.value);
-                            @this.set('name.' + number,item.label);
-                            Livewire.emit('loadItemDefault', number)
-                        },
-                        highlightClass: 'text-danger',
-                        treshold: 2,
-                    });
-                })*/
-
                 window.addEventListener('addedItem', event => {
+                    if($('meta[name=dynamic_products]').length > 0){
+                        var tags = $('meta[name=dynamic_products]').attr('content');
+                    }else{
+                        var tags = 'true';
+                    }
+                    
                     $("tr[data-number='" + event.detail.id + "'] td.bind-select2 select[name^='products']").select2({
                         data: products,
+                        tags: tags
                     }).select2('open')
                         .on('change', function (e) {
                             @this.set('product_id.' + $(this).data('value'), $(this).val());
@@ -163,10 +156,6 @@
                             Livewire.emit('loadItemDefault', $(this).data('value'))
                         });
                 });
-
-                /*window.addEventListener('removedItem', event => {
-                     $("tr[data-number='" + event.detail.id + "']").remove()
-                });*/
 
                 $("td.bind-select2 select[name^='products']").on('change', function (e) {
                     @this.set('product_id.' + $(this).data('value'), $(this).val());

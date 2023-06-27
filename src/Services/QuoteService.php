@@ -2,8 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
+use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Repositories\QuoteRepository;
 
 class QuoteService
@@ -48,6 +50,13 @@ class QuoteService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
+                if(isset($product['product_id']) && $product['quantity'] > 0) {
+                    if(! Product::find($product['product_id'])) {
+                        $newProduct = $this->addProduct($product, $request);
+                        $product['product_id'] = $newProduct->id;
+                    }
+                }
+
                 if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
                     $quote->quoteProducts()->create([
                         'product_id' => $product['product_id'],
@@ -106,17 +115,24 @@ class QuoteService
                             'comments' => $product['comments'],
                         ]);
                     }
-                } elseif (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
-                    $quoteProduct = $quote->quoteProducts()->create([
-                        'product_id' => $product['product_id'],
-                        'quantity' => $product['quantity'],
-                        'price' => $product['unit_price'],
-                        'amount' => $product['amount'],
-                        'currency' => $request->currency,
-                        'comments' => $product['comments'],
-                    ]);
+                } elseif(isset($product['product_id']) && $product['quantity'] > 0) {
+                    if(! Product::find($product['product_id'])) {
+                        $newProduct = $this->addProduct($product, $request);
+                        $product['product_id'] = $newProduct->id;
+                    }
 
-                    $quoteProductIds[] = $quoteProduct->id;
+                    if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
+                        $quoteProduct = $quote->quoteProducts()->create([
+                            'product_id' => $product['product_id'],
+                            'quantity' => $product['quantity'],
+                            'price' => $product['unit_price'],
+                            'amount' => $product['amount'],
+                            'currency' => $request->currency,
+                            'comments' => $product['comments'],
+                        ]);
+
+                        $quoteProductIds[] = $quoteProduct->id;
+                    }
                 }
             }
 
@@ -128,5 +144,21 @@ class QuoteService
         }
 
         return $quote;
+    }
+
+    protected function addProduct($product, $request)
+    {
+        $newProduct = Product::create([
+            'name' => $product['product_id'],
+            'tax_rate' => Setting::where('name', 'tax_rate')->first()->value ?? null,
+            'user_owner_id' => $request->user_owner_id,
+        ]);
+
+        $newProduct->productPrices()->create([
+            'unit_price' => $product['unit_price'],
+            'currency' => $request->currency,
+        ]);
+
+        return $newProduct;
     }
 }

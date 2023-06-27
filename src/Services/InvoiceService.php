@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Dcblogdev\Xero\Facades\Xero;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
+use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
 
@@ -47,6 +49,13 @@ class InvoiceService
 
         if (isset($request->invoiceLines)) {
             foreach ($request->invoiceLines as $invoiceLine) {
+                if(isset($invoiceLine['product_id']) && $invoiceLine['quantity'] > 0) {
+                    if(! Product::find($invoiceLine['product_id'])) {
+                        $newProduct = $this->addProduct($invoiceLine, $request);
+                        $invoiceLine['product_id'] = $newProduct->id;
+                    }
+                }
+
                 if (isset($invoiceLine['product_id']) && $invoiceLine['product_id'] > 0 && $invoiceLine['quantity'] > 0) {
                     $invoice->invoiceLines()->create([
                         'product_id' => $invoiceLine['product_id'],
@@ -134,18 +143,41 @@ class InvoiceService
                         'amount' => $line['amount'],
                         'currency' => $request->currency,
                     ]);
-                } elseif (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                    $invoice->invoiceLines()->create([
-                        'product_id' => $line['product_id'],
-                        'quantity' => $line['quantity'],
-                        'price' => $line['price'],
-                        'amount' => $line['amount'],
-                        'currency' => $request->currency,
-                    ]);
+                } elseif(isset($invoiceLine['product_id']) && $invoiceLine['quantity'] > 0) {
+                    if(! Product::find($invoiceLine['product_id'])) {
+                        $newProduct = $this->addProduct($invoiceLine, $request);
+                        $invoiceLine['product_id'] = $newProduct->id;
+                    }
+
+                    if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
+                        $invoice->invoiceLines()->create([
+                            'product_id' => $line['product_id'],
+                            'quantity' => $line['quantity'],
+                            'price' => $line['price'],
+                            'amount' => $line['amount'],
+                            'currency' => $request->currency,
+                        ]);
+                    }
                 }
             }
         }
 
         return $invoice;
+    }
+
+    protected function addProduct($product, $request)
+    {
+        $newProduct = Product::create([
+            'name' => $product['product_id'],
+            'tax_rate' => Setting::where('name', 'tax_rate')->first()->value ?? null,
+            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
+        ]);
+
+        $newProduct->productPrices()->create([
+            'unit_price' => $product['price'],
+            'currency' => $request->currency,
+        ]);
+
+        return $newProduct;
     }
 }

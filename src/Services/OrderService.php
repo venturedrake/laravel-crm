@@ -6,6 +6,8 @@ use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
+use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Repositories\OrderRepository;
 
 class OrderService
@@ -49,6 +51,13 @@ class OrderService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
+                if(isset($product['product_id']) && $product['quantity'] > 0) {
+                    if(! Product::find($product['product_id'])) {
+                        $newProduct = $this->addProduct($product, $request);
+                        $product['product_id'] = $newProduct->id;
+                    }
+                }
+
                 if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
                     $order->orderProducts()->create([
                         'product_id' => $product['product_id'],
@@ -106,17 +115,24 @@ class OrderService
                             'comments' => $product['comments'],
                         ]);
                     }
-                } elseif (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
-                    $orderProduct = $order->orderProducts()->create([
-                        'product_id' => $product['product_id'],
-                        'quantity' => $product['quantity'],
-                        'price' => $product['unit_price'],
-                        'amount' => $product['amount'],
-                        'currency' => $request->currency,
-                        'comments' => $product['comments'],
-                    ]);
+                } elseif(isset($product['product_id']) && $product['quantity'] > 0) {
+                    if(! Product::find($product['product_id'])) {
+                        $newProduct = $this->addProduct($product, $request);
+                        $product['product_id'] = $newProduct->id;
+                    }
 
-                    $orderProductIds[] = $orderProduct->id;
+                    if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
+                        $orderProduct = $order->orderProducts()->create([
+                            'product_id' => $product['product_id'],
+                            'quantity' => $product['quantity'],
+                            'price' => $product['unit_price'],
+                            'amount' => $product['amount'],
+                            'currency' => $request->currency,
+                            'comments' => $product['comments'],
+                        ]);
+
+                        $orderProductIds[] = $orderProduct->id;
+                    }
                 }
             }
 
@@ -184,5 +200,21 @@ class OrderService
                 $address->delete();
             }
         }
+    }
+
+    protected function addProduct($product, $request)
+    {
+        $newProduct = Product::create([
+            'name' => $product['product_id'],
+            'tax_rate' => Setting::where('name', 'tax_rate')->first()->value ?? null,
+            'user_owner_id' => $request->user_owner_id,
+        ]);
+
+        $newProduct->productPrices()->create([
+            'unit_price' => $product['unit_price'],
+            'currency' => $request->currency,
+        ]);
+
+        return $newProduct;
     }
 }
