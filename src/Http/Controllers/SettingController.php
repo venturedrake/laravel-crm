@@ -35,6 +35,7 @@ class SettingController extends Controller
         $orderPrefix = $this->settingService->get('order_prefix');
         $invoicePrefix = $this->settingService->get('invoice_prefix');
         $quoteTerms = $this->settingService->get('quote_terms');
+        $invoiceContactDetails = $this->settingService->get('invoice_contact_details');
         $invoiceTerms = $this->settingService->get('invoice_terms');
         $dateFormat = $this->settingService->get('date_format');
         $timeFormat = $this->settingService->get('time_format');
@@ -54,6 +55,7 @@ class SettingController extends Controller
             'orderPrefix' => $orderPrefix,
             'invoicePrefix' => $invoicePrefix,
             'quoteTerms' => $quoteTerms,
+            'invoiceContactDetails' => $invoiceContactDetails,
             'invoiceTerms' => $invoiceTerms,
             'dateFormat' => $dateFormat,
             'timeFormat' => $timeFormat,
@@ -95,6 +97,10 @@ class SettingController extends Controller
 
         if ($request->quote_terms) {
             $this->settingService->set('quote_terms', $request->quote_terms);
+        }
+
+        if ($request->invoice_contact_details) {
+            $this->settingService->set('invoice_contact_details', $request->invoice_contact_details);
         }
 
         if ($request->invoice_terms) {

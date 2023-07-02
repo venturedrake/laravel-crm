@@ -48,6 +48,12 @@
         @endhasquotesenabled
         @hasinvoicesenabled
         @include('laravel-crm::partials.form.textarea',[
+         'name' => 'invoice_contact_details',
+         'label' => ucfirst(trans('laravel-crm::lang.invoice_contact_details')),
+         'rows' => 5,
+         'value' => old('invoice_contact_details', $invoiceContactDetails->value ?? null)
+        ])
+        @include('laravel-crm::partials.form.textarea',[
          'name' => 'invoice_terms',
          'label' => ucfirst(trans('laravel-crm::lang.invoice_terms')),
          'rows' => 5,
