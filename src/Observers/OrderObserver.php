@@ -31,8 +31,13 @@ class OrderObserver
         if (! app()->runningInConsole()) {
             $order->user_created_id = auth()->user()->id ?? null;
         }
-
-        $order->number = Order::orderBy('number', 'DESC')->first()->number + 1;
+        
+        if($lastOrder = Order::orderBy('number', 'DESC')->first()) {
+            $order->number = $lastOrder->number + 1;
+        } else {
+            $order->number = 1000;
+        }
+        
         $order->prefix = $this->settingService->get('order_prefix')->value;
         $order->order_id = $order->prefix.$order->number;
     }

@@ -31,8 +31,13 @@ class QuoteObserver
         if (! app()->runningInConsole()) {
             $quote->user_created_id = auth()->user()->id ?? null;
         }
-
-        $quote->number = Quote::orderBy('number', 'DESC')->first()->number + 1;
+        
+        if($lastQuote = Quote::orderBy('number', 'DESC')->first()) {
+            $quote->number = $lastQuote->number + 1;
+        } else {
+            $quote->number = 1000;
+        }
+        
         $quote->prefix = $this->settingService->get('quote_prefix')->value;
         $quote->quote_id = $quote->prefix.$quote->number;
     }

@@ -46,6 +46,15 @@ class Invoice extends Model
         return config('laravel-crm.db_table_prefix').'invoices';
     }
 
+    public function getNumberAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        } else {
+            return (Setting::where('name', 'invoice_prefix')->first()->value ?? null) . $this->id;
+        }
+    }
+
     public function getTitleAttribute()
     {
         return money($this->total, $this->currency).' - '.($this->organisation->name ?? $this->organisation->person->name ?? null);

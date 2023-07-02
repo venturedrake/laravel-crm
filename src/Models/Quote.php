@@ -59,7 +59,7 @@ class Quote extends Model
         if ($value) {
             return $value;
         } else {
-            return 1000 + $this->id;
+            return (Setting::where('name', 'quote_prefix')->first()->value ?? null) . $this->id;
         }
     }
 

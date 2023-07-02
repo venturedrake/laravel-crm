@@ -48,7 +48,7 @@ class Order extends Model
         if ($value) {
             return $value;
         } else {
-            return 1000 + $this->id;
+            return (Setting::where('name', 'order_prefix')->first()->value ?? null) . $this->id;
         }
     }
 
