@@ -135,10 +135,11 @@
                                     <strong>{{ ucfirst(__('laravel-crm::lang.from')) }}</strong>
                                 </div>
                                 <div class="col">
-                                    {{ $fromName }}<br />
-                                   {{-- 19-21 South Steyne<br />
-                                    MANLY NSW 2095<br />
-                                    Australia--}}
+                                    @if($contactDetails)
+                                        {{ nl2br($contactDetails) }}
+                                    @else
+                                        {{ $fromName }}
+                                    @endif
                                 </div>
                             </div>
                         </div>
