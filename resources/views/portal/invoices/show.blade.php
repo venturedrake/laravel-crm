@@ -65,7 +65,7 @@
                                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong>
                                 </div>
                                 <div class="col">
-                                    {{ $invoice->organisation->name ?? $invoice->organisation->person->name ?? null }}<br />
+                                    {{ $invoice->organisation->name ?? $invoice->person->name ?? null }}<br />
                                     @if(isset($organisation_address))
                                         @if($organisation_address->line2)
                                         {{ $organisation_address->line1 }}<br />

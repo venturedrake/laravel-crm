@@ -25,7 +25,9 @@
             <tr>
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
-                    {{ $invoice->organisation->name ?? $invoice->organisation->person->name }}<br />
+                    @if($invoice->organisation)
+                        {{ $invoice->organisation->name }}<br />
+                    @endif
                     @isset($invoice->person)
                         {{ $invoice->person->name }}<br />
                     @endisset
