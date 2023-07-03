@@ -66,7 +66,7 @@ class Invoice extends Model
 
     public function getTitleAttribute()
     {
-        return money($this->total, $this->currency).' - '.($this->organisation->name ?? $this->organisation->person->name ?? null);
+        return money($this->total, $this->currency).' - '.($this->organisation->name ?? $this->person->name ?? null);
     }
 
     public function setIssueDateAttribute($value)
