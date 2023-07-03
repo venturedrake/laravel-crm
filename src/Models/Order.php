@@ -43,12 +43,21 @@ class Order extends Model
         return config('laravel-crm.db_table_prefix').'orders';
     }
 
+    public function getOrderIdAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        } else {
+            return (Setting::where('name', 'order_prefix')->first()->value ?? null) . $this->number;
+        }
+    }
+
     public function getNumberAttribute($value)
     {
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'order_prefix')->first()->value ?? null) . $this->id;
+            return $this->id;
         }
     }
 
