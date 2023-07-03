@@ -136,7 +136,7 @@
                                 </div>
                                 <div class="col">
                                     @if($contactDetails)
-                                        {{ nl2br($contactDetails) }}
+                                        {!! nl2br($contactDetails) !!}
                                     @else
                                         {{ $fromName }}
                                     @endif
