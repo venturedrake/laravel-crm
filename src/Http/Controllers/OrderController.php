@@ -455,6 +455,6 @@ class OrderController extends Controller
                 'organisation_address' => $organisation_address ?? null,
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
-            ])->download('order-'.strtolower($order->number).'.pdf');
+            ])->download('order-'.strtolower($order->order_id).'.pdf');
     }
 }

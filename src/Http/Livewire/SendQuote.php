@@ -80,7 +80,7 @@ class SendQuote extends Component
             Storage::makeDirectory($pdfLocation);
         }
 
-        $this->pdf = 'app/'.$pdfLocation.'quote-'.$this->quote->id.'.pdf';
+        $this->pdf = 'app/'.$pdfLocation.'quote-'.strtolower($this->quote->quote_id).'.pdf';
 
         Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),

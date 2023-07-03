@@ -70,7 +70,7 @@ class SendInvoice extends Component
             Storage::makeDirectory($pdfLocation);
         }
 
-        $this->pdf = 'app/'.$pdfLocation.'invoice-'.$this->invoice->id.'.pdf';
+        $this->pdf = 'app/'.$pdfLocation.'invoice-'.strtolower($this->invoice->invoice_id).'.pdf';
 
         Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
