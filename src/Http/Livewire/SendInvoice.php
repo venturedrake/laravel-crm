@@ -77,6 +77,7 @@ class SendInvoice extends Component
         ])
             ->loadView('laravel-crm::invoices.pdf', [
                 'invoice' => $this->invoice,
+                'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

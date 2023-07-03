@@ -243,6 +243,7 @@ class InvoiceController extends Controller
         ])
             ->loadView('laravel-crm::invoices.pdf', [
                 'invoice' => $invoice,
+                'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
