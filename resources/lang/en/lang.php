@@ -426,5 +426,6 @@ return [
     'allow_creating_products_when_creating_quotes_orders_and_invoices' => 'allow creating new products when creating or editing quotes orders & invoices',
     'tax_rate' => 'tax rate',
     'tax_name' => 'tax name',
-    'invoice_contact_details' => 'invoice contact details'
+    'invoice_contact_details' => 'invoice contact details',
+    'overdue' => 'overdue'
 ];
