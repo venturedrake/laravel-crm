@@ -126,6 +126,15 @@ class Invoice extends Model
         }
     }
 
+    public function getAmountDueAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        } else {
+            return $this->total;
+        }
+    }
+
     public function setAmountPaidAttribute($value)
     {
         if (isset($value)) {
