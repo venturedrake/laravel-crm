@@ -104,13 +104,6 @@
             'value' => old('time_format', $timeFormat->value ?? null),
             'required' => 'true'
        ])
-        @include('laravel-crm::partials.form.select',[
-            'name' => 'time_format',
-            'label' => ucfirst(trans('laravel-crm::lang.time_format')),
-            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timeFormats(),
-            'value' => old('time_format', $timeFormat->value ?? null),
-            'required' => 'true'
-       ])
         @include('laravel-crm::partials.form.text',[
             'name' => 'tax_name',
             'label' => ucfirst(trans('laravel-crm::lang.tax_name')),
