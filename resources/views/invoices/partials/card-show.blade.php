@@ -109,16 +109,19 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
                         <td>{{ money($invoice->subtotal, $invoice->currency) }}</td>
                     </tr>
                     <tr>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td><strong>{{ $taxName }}</strong></td>
                         <td>{{ money($invoice->tax, $invoice->currency) }}</td>
                     </tr>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>

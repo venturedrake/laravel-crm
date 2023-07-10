@@ -106,12 +106,14 @@
         <tr>
             <td></td>
             <td></td>
+            <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
             <td>{{ money($invoice->subtotal, $invoice->currency) }}</td>
             <td></td>
         </tr>
         @if($invoice->discount > 0)
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
@@ -122,6 +124,7 @@
         <tr>
             <td></td>
             <td></td>
+            <td></td>
             <td><strong>{{ $taxName }}</strong></td>
             <td>{{ money($invoice->tax, $invoice->currency) }}</td>
             <td></td>
@@ -129,11 +132,13 @@
         {{--<tr>
             <td></td>
             <td></td>
+            <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
             <td>{{ money($invoice->adjustments, $invoice->currency) }}</td>
             <td></td>
         </tr>--}}
         <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
