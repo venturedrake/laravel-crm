@@ -126,9 +126,9 @@
                                 <div class="col">
                                     {{ $invoice->due_date->format($dateFormat) }}
                                     @if(! $invoice->fully_paid_at && $invoice->due_date >= \Carbon\Carbon::now())
-                                        <small class="text-secondary"> ({{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans() }})</small>
+                                        <small class="text-secondary"> ({{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans(false, true) }})</small>
                                     @elseif(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
-                                        <small class="text-danger"> ({{ $invoice->due_date->diffForHumans() }} {{ ucfirst(__('laravel-crm::lang.overdue')) }})</small>
+                                        <small class="text-danger"> ({{ $invoice->due_date->diffForHumans(false, true) }} {{ __('laravel-crm::lang.overdue') }})</small>
                                     @endif
                                 </div>
                             </div>
