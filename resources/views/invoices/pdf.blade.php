@@ -61,7 +61,7 @@
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.from')) }}</strong><br />
                     @if($contactDetails)
-                        {{ nl2br($contactDetails) }}
+                        {!! nl2br($contactDetails) !!}
                     @else
                         {{ $fromName }}
                     @endif

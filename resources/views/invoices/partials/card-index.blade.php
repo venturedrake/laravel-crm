@@ -66,7 +66,11 @@
                    <td>{{ ($invoice->fully_paid_at) ? $invoice->fully_paid_at->format($dateFormat) : null }}</td>
                    <td>{{ money($invoice->amount_paid, $invoice->currency) }}</td>
                    <td>{{ money($invoice->amount_due, $invoice->currency) }}</td>
-                   <td></td>
+                   <td>
+                       @if($invoice->sent == 1){
+                           <span class="text-success">Sent</span>
+                       @endif
+                   </td>
                     <td class="disable-link text-right">
                         @if(! $invoice->xeroInvoice)
                             @livewire('send-invoice',[

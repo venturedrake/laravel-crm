@@ -4,6 +4,9 @@
 
         @slot('title')
             {{ $invoice->title }}
+            @if($invoice->sent == 1)
+                <small><span class="badge badge-success">{{ ucfirst(__('laravel-crm::lang.sent')) }}</span></small>
+            @endif
             @if($invoice->fully_paid_at)
                 <small><span class="badge badge-success">{{ ucfirst(__('laravel-crm::lang.paid')) }}</span></small>
             @elseif(! $invoice->fully_paid_at && $invoice->due_date >= \Carbon\Carbon::now())
@@ -52,10 +55,10 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
-                    <dt class="col-sm-3 text-right">Reference</dt>
-                    <dd class="col-sm-9">{{ $invoice->reference }}</dd>
                     <dt class="col-sm-3 text-right">Number</dt>
                     <dd class="col-sm-9">{{ $invoice->invoice_id }}</dd>
+                    <dt class="col-sm-3 text-right">Reference</dt>
+                    <dd class="col-sm-9">{{ $invoice->reference }}</dd>
                     @hasordersenabled
                         @if($invoice->order)
                             <dt class="col-sm-3 text-right">Order</dt>
