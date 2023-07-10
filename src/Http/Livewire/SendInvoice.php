@@ -100,6 +100,10 @@ class SendInvoice extends Component
             'Invoice sent',
         );
 
+        $this->invoice->update([
+            'sent' => 1
+        ]);
+
         $this->resetFields();
 
         $this->dispatchBrowserEvent('invoiceSent');
