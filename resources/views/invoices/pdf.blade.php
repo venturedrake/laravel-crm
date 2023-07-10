@@ -85,6 +85,7 @@
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
+            <th scope="col">{{ $taxName }}</th>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
             <th scope="col">{{ ucfirst(__('laravel-crm::lang.comments')) }}</th>
         </tr>
@@ -95,6 +96,7 @@
                 <td>{{ $invoiceLine->product->name ?? null}}</td>
                 <td>{{ money($invoiceLine->price ?? null, $invoiceLine->currency) }}</td>
                 <td>{{ $invoiceLine->quantity }}</td>
+                <td>{{ money($invoiceLine->tax ?? null, $invoiceLine->currency) }}</td>
                 <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>
                 <td>{{ $invoiceLine->comments }}</td>
             </tr>
@@ -120,7 +122,7 @@
         <tr>
             <td></td>
             <td></td>
-            <td><strong>{{ ucfirst(__('laravel-crm::lang.tax')) }}</strong></td>
+            <td><strong>{{ $taxName }}</strong></td>
             <td>{{ money($invoice->tax, $invoice->currency) }}</td>
             <td></td>
         </tr>
