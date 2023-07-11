@@ -67,7 +67,7 @@
                    <td>{{ money($invoice->amount_paid, $invoice->currency) }}</td>
                    <td>{{ money($invoice->amount_due, $invoice->currency) }}</td>
                    <td>
-                       @if($invoice->sent == 1){
+                       @if($invoice->sent == 1)
                            <span class="text-success">Sent</span>
                        @endif
                    </td>
