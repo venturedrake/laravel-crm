@@ -9,9 +9,11 @@
             @endif
             @if($invoice->fully_paid_at)
                 <small><span class="badge badge-success">{{ ucfirst(__('laravel-crm::lang.paid')) }}</span></small>
-            @elseif(! $invoice->fully_paid_at && $invoice->due_date >= \Carbon\Carbon::now())
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() > 0  && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
                 <small><span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans(false, true) }} </span></small>
-            @elseif(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() <= 0  && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
+                <small><span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.due_tomorrow')) }}</span></small>
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() > 0  && $invoice->due_date < \Carbon\Carbon::now()->timezone($timezone))
                 <small><span class="badge badge-danger">{{ $invoice->due_date->diffForHumans(false, true) }} {{ ucfirst(__('laravel-crm::lang.overdue')) }} </span></small>
             @endif
         @endslot

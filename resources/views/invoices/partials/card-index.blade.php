@@ -59,9 +59,9 @@
                    <td>{{ $invoice->issue_date->format($dateFormat) }}</td>
                    <td>{{ $invoice->due_date->format($dateFormat) }}</td>
                    <td class="text-danger">
-                       @if(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now())
+                       @if(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() > 0 && $invoice->due_date < \Carbon\Carbon::now()->timezone($timezone))
                            {{ $invoice->due_date->diffForHumans(false, true) }}
-                       @endif    
+                       @endif
                    </td>
                    <td>{{ ($invoice->fully_paid_at) ? $invoice->fully_paid_at->format($dateFormat) : null }}</td>
                    <td>{{ money($invoice->amount_paid, $invoice->currency) }}</td>
