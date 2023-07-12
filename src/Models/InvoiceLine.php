@@ -26,6 +26,15 @@ class InvoiceLine extends Model
         }
     }
 
+    public function setTaxAmountAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['amount'] = $value * 100;
+        } else {
+            $this->attributes['amount'] = null;
+        }
+    }
+
     public function setAmountAttribute($value)
     {
         if (isset($value)) {

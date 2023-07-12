@@ -112,7 +112,7 @@
                             </td>
                             <td>{{ money($invoiceLine->price ?? null, $invoiceLine->currency) }}</td>
                             <td>{{ $invoiceLine->quantity }}</td>
-                            <td>{{ money($invoiceLine->tax ?? null, $invoiceLine->currency) }}</td>
+                            <td>{{ money($invoiceLine->tax_amount ?? null, $invoiceLine->currency) }}</td>
                             <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>
                         </tr>
                     @endforeach
