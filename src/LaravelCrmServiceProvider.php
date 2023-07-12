@@ -494,6 +494,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
                 view()->share('dateFormat', Setting::where('name', 'date_format')->first()->value ?? 'Y/m/d');
                 view()->share('timeFormat', Setting::where('name', 'time_format')->first()->value ?? 'H:i');
+                view()->share('timezone', Setting::where('name', 'timezone')->first()->value ?? 'UTC');
                 view()->share('taxName', Setting::where('name', 'tax_name')->first()->value ?? 'Tax');
 
                 if($setting = Setting::where('name', 'dynamic_products')->first()) {
@@ -508,6 +509,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             } else {
                 view()->share('dateFormat', 'Y/m/d');
                 view()->share('timeFormat', 'H:i');
+                view()->share('timezone', 'UTC');
                 view()->share('taxName', 'Tax');
             }
         }
