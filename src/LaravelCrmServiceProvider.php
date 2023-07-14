@@ -60,6 +60,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Http\Middleware\LogUsage;
+use VentureDrake\LaravelCrm\Http\Middleware\RouteSubdomain;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
@@ -206,6 +207,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
             $router->pushMiddlewareToGroup('crm-api', TeamsPermission::class);
             $router->pushMiddlewareToGroup('web', XeroTenant::class);
             $router->pushMiddlewareToGroup('crm-api', XeroTenant::class);
+        }
+
+        if(config('laravel-crm.route_subdomain')) {
+            $router->pushMiddlewareToGroup('crm', RouteSubdomain::class);
         }
 
         $router->pushMiddlewareToGroup('crm', Settings::class);
@@ -610,7 +615,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         return [
             'domain' => $domain ?? null,
-            'prefix' => (config('laravel-crm.user_interface')) ? config('laravel-crm.route_prefix') : 'laravel-crm',
+            'prefix' => (config('laravel-crm.route_prefix')) ? config('laravel-crm.route_prefix') : null,
             'middleware' => array_unique(array_merge(['web','crm','crm-api'], config('laravel-crm.route_middleware') ?? [])),
         ];
     }
