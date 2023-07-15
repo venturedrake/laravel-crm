@@ -60,6 +60,16 @@ return [
 
     'language' => env('LARAVEL_CRM_LANGUAGE', 'english'),
 
+    'timezone' => env('LARAVEL_CRM_TIMEZONE', 'UTC'),
+
+    'date_format' => env('LARAVEL_CRM_DATE_FORMAT', 'Y-m-d'),
+
+    'time_format' => env('LARAVEL_CRM_TIME_FORMAT', 'g:i A'),
+
+    'tax_name' => env('LARAVEL_CRM_TAX_NAME', 'Tax'),
+
+    'tax_rate' => env('LARAVEL_CRM_TAX_RATE', null),
+
     /*
     |--------------------------------------------------------------------------
     | Route Subdomain
