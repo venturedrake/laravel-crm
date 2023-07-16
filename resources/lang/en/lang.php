@@ -428,5 +428,7 @@ return [
     'tax_name' => 'tax name',
     'invoice_contact_details' => 'invoice contact details',
     'overdue' => 'overdue',
-    'due_tomorrow' => 'due tomorrow'
+    'due_tomorrow' => 'due tomorrow',
+    'total_invoices' => 'total invoices',
+    'total_clients' => 'total customers'
 ];
