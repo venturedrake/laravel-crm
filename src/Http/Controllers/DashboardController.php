@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Quote;
 
 class DashboardController extends Controller
 {
