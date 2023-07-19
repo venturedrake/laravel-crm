@@ -26,6 +26,14 @@ class StorePersonRequest extends FormRequest
         return [
             'first_name' => 'required|max:255',
             'user_owner_id' => 'required',
+            'phones.*.type' => 'required_with:phones.*.number'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'phones.*.type.required_with' => 'The type field is required'
         ];
     }
 }
