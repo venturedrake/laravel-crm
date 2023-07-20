@@ -26,6 +26,16 @@ class StoreOrganisationRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'user_owner_id' => 'required',
+            'phones.*.type' => 'required_with:phones.*.number',
+            'emails.*.type' => 'required_with:emails.*.address'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'phones.*.type.required_with' => 'The type field is required',
+            'emails.*.type.required_with' => 'The type field is required'
         ];
     }
 }

@@ -5,21 +5,21 @@
         <input type="hidden" wire:model="phoneId.{{ $value }}" name="phones[{{ $value }}][id]">
         <div class="form-row">
             <div class="col-sm-6">
-                <div class="form-group">
+                <div class="form-group @error('phones.'.$value.'.number') text-danger @enderror">
                     <label>{{ ucfirst(__('laravel-crm::lang.phone')) }}</label>
-                    <input type="text" class="form-control" wire:model="number.{{ $value }}" name="phones[{{ $value }}][number]">
-                    @error('number.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                    <input type="text" class="form-control @error('phones.'.$value.'.number') is-invalid @enderror" wire:model="number.{{ $value }}" name="phones[{{ $value }}][number]">
+                    @error('phones.'.$value.'.number') <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="col-sm-4">
-                <div class="form-group">
+                <div class="form-group @error('phones.'.$value.'.type') text-danger @enderror">
                     <label>{{ ucfirst(__('laravel-crm::lang.type')) }}</label>
-                    <select class="form-control custom-select" wire:model="type.{{ $value }}" name="phones[{{ $value }}][type]">
+                    <select class="form-control custom-select @error('phones.'.$value.'.type') is-invalid @enderror" wire:model="type.{{ $value }}" name="phones[{{ $value }}][type]">
                         @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes() as $optionKey => $optionName)
                             <option value="{{ $optionKey }}">{{ $optionName }}</option>
                         @endforeach
                     </select>
-                    @error('type.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                    @error('phones.'.$value.'.type') <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="col-sm-1">

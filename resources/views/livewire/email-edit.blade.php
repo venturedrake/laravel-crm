@@ -5,21 +5,21 @@
         <input type="hidden" wire:model="emailId.{{ $value }}" name="emails[{{ $value }}][id]">
         <div class="form-row">
             <div class="col-sm-6">
-                <div class="form-group">
+                <div class="form-group @error('emails.'.$value.'.address') text-danger @enderror">
                     <label>{{ ucfirst(__('laravel-crm::lang.email')) }}</label>
-                    <input type="text" class="form-control" wire:model="address.{{ $value }}" name="emails[{{ $value }}][address]">
-                    @error('address.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                    <input type="text" class="form-control @error('emails.'.$value.'.address') is-invalid @enderror" wire:model="address.{{ $value }}" name="emails[{{ $value }}][address]">
+                    @error('emails.'.$value.'.address') <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="col-sm-4">
-                <div class="form-group">
+                <div class="form-group @error('emails.'.$value.'.type') text-danger @enderror">
                     <label>{{ ucfirst(__('laravel-crm::lang.type')) }}</label>
-                    <select class="form-control custom-select" wire:model="type.{{ $value }}" name="emails[{{ $value }}][type]">
+                    <select class="form-control custom-select @error('emails.'.$value.'.type') is-invalid @enderror" wire:model="type.{{ $value }}" name="emails[{{ $value }}][type]">
                         @foreach(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes() as $optionKey => $optionName)
                             <option value="{{ $optionKey }}">{{ $optionName }}</option>
                         @endforeach
                     </select>
-                    @error('type.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                    @error('emails.'.$value.'.type') <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="col-sm-1">

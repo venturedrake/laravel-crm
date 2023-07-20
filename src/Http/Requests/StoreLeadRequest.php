@@ -30,7 +30,7 @@ class StoreLeadRequest extends FormRequest
             'organisation_id' => 'required_without_all:person_name,person_id,organisation_name|max:255',
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
-            'user_owner_id' => 'required',
+            'user_owner_id' => 'required'
         ];
     }
 
@@ -40,7 +40,7 @@ class StoreLeadRequest extends FormRequest
             'person_name.required_without_all' => 'The contact person field is required if no organisation.',
             'organisation_name.required_without_all' => 'The organisation field is required if no contact person.',
             'person_id.required_without_all' => 'The contact person field is required if no organisation.',
-            'organisation_id.required_without_all' => 'The organisation field is required of no contact person.',
+            'organisation_id.required_without_all' => 'The organisation field is required of no contact person.'
         ];
     }
 }
