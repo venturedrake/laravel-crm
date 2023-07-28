@@ -30,7 +30,7 @@
         <header>
             <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="{{ url(route('laravel-crm.dashboard')) }}" data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}">{{ config('app.name', 'Laravel ') }} CRM</a>
+                    <a class="navbar-brand" href="{{ url(route('laravel-crm.dashboard')) }}" @can('view crm updates')data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}"@endcan>{{ config('app.name', 'Laravel ') }} CRM</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                         <span class="navbar-toggler-icon"></span>
                     </button>

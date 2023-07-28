@@ -32,11 +32,25 @@ class SystemCheck
         }
 
         // Since version 0.2.0
-        // Roles are missing, redirect to must update page
-        // Run db seeder to add roles/permissions
-        // Delete views/vendor/laravel-crm folder or re-publish views
+        if(! auth()->guest() && Schema::hasTable(config('laravel-crm.db_table_prefix').'settings') && auth()->user()->hasPermissionTo('view crm updates')){
+            if(\VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value < \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()->value){
+                flash('There is a new version of Laravel CRM software available. <a href="https://github.com/venturedrake/laravel-crm" target="_blank">View version '.\VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()->value.' details</a> or <a href="https://github.com/venturedrake/laravel-crm" target="_blank">update now</a>.')->warning()->important();
+            }
+            
+            // Check if DB database required
+            if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0180')->first()){
+                if($setting->value == 0){
+                    flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="#">update database</a>')->info()->important();
+                }
+            }
 
-
+            if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0181')->first()){
+                if($setting->value == 0){
+                    flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="#">update database</a>')->info()->important();
+                }
+            }
+        }
+        
         return $next($request);
     }
 }
