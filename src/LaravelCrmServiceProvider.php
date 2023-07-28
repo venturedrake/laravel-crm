@@ -20,6 +20,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
+use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
 use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveCall;
@@ -433,6 +434,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmAddressTypes::class,
                 LaravelCrmOrganisationTypes::class,
                 LaravelCrmXero::class,
+                LaravelCrmReminders::class
             ]);
 
             // Register the model factories
@@ -481,13 +483,21 @@ class LaravelCrmServiceProvider extends ServiceProvider
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
 
+                $schedule->command('laravelcrm:reminders')
+                    ->name('laravelCrmReminders')
+                    ->everyMinute()
+                    ->withoutOverlapping();
+
                 if (config('xero.clientId') && config('xero.clientSecret')) {
                     $schedule->command('xero:keep-alive')
+                        ->name('laravelCrmXeroKeepAlive')
                         ->everyFiveMinutes();
                     $schedule->command('laravelcrm:xero contacts')
+                        ->name('laravelCrmXeroContacts')
                         ->everyTenMinutes()
                         ->withoutOverlapping();
                     $schedule->command('laravelcrm:xero products')
+                        ->name('laravelCrmXeroProducts')
                         ->everyTenMinutes()
                         ->withoutOverlapping();
                 }

@@ -67,6 +67,8 @@ class LiveTask extends Component
             'name' => $this->name,
             'description' => $this->description,
             'due_at' => $this->due_at,
+            'reminder_email' => 0,
+            'reminder_sms' => 0,
         ]);
         $this->toggleEditMode();
         $this->emit('refreshComponent');
