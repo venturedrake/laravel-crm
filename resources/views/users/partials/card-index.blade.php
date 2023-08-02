@@ -10,7 +10,7 @@
             @can('create crm users')
             <span class="float-right">
                 <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.create')) }}"><span class="fa fa-plus"></span> {{ ucfirst(__('laravel-crm::lang.add_user')) }}</a>
-                <a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.invite')) }}"><span class="fa fa-paper-plane"></span> {{ ucfirst(__('laravel-crm::lang.invite_user')) }}</a>
+                {{--<a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.users.invite')) }}"><span class="fa fa-paper-plane"></span> {{ ucfirst(__('laravel-crm::lang.invite_user')) }}</a>--}}
             </span>
             @endcan
         @endslot
