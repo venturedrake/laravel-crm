@@ -68,27 +68,40 @@
         </div>
         <div class="row">
             <div class="col-sm-6">
+                @include('laravel-crm::partials.form.select',[
+                      'name' => 'currency',
+                      'label' => ucfirst(__('laravel-crm::lang.tax_rate')),
+                      'options' => ['' => ''] + \VentureDrake\LaravelCrm\Models\TaxRate::pluck('name', 'id')->toArray(),
+                      'value' => old('tax_rate', (isset($product) ? $product->taxRate->id ?? null : null))
+                  ])
+            </div>
+            <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
-                     'name' => 'tax_rate',
-                     'label' => ucfirst(__('laravel-crm::lang.tax')),
-                     'append' => '<span class="fa fa-percent" aria-hidden="true"></span>',
-                     'value' => old('tax_rate', $product->tax_rate ?? null)
+                      'name' => 'tax_rate',
+                      'label' => ucfirst(__('laravel-crm::lang.tax')),
+                      'append' => '<span class="fa fa-percent" aria-hidden="true"></span>',
+                      'value' => old('tax_rate', $product->tax_rate ?? null)
+                  ])
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                @include('laravel-crm::partials.form.select',[
+                     'name' => 'currency',
+                     'label' => ucfirst(__('laravel-crm::lang.currency')),
+                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
+                     'value' => old('currency', (isset($product) && (isset($product->getDefaultPrice()->currency)) ? $product->getDefaultPrice()->currency : null) ?? null ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
                  ])
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.select',[
-                    'name' => 'currency',
-                    'label' => ucfirst(__('laravel-crm::lang.currency')),
-                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies(),
-                    'value' => old('currency', (isset($product) && (isset($product->getDefaultPrice()->currency)) ? $product->getDefaultPrice()->currency : null) ?? null ?? \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD')
-                ])
+                'name' => 'user_owner_id',
+                'label' => ucfirst(__('laravel-crm::lang.owner')),
+                'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+                'value' =>  old('user_owner_id', $product->user_owner_id ?? auth()->user()->id),
+             ])
             </div>
         </div>
-        @include('laravel-crm::partials.form.select',[
-                 'name' => 'user_owner_id',
-                 'label' => ucfirst(__('laravel-crm::lang.owner')),
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                 'value' =>  old('user_owner_id', $product->user_owner_id ?? auth()->user()->id),
-              ])
+       
     </div>
 </div>

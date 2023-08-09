@@ -92,4 +92,9 @@ class Product extends Model
     {
         return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroItem::class);
     }
+
+    public function taxRate()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\TaxRate::class);
+    }
 }
