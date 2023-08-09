@@ -24,7 +24,7 @@ class CreateLaravelCrmTaxRatesTable extends Migration
         });
         
         Schema::table(config('laravel-crm.db_table_prefix').'products', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\TaxRate::class)->nullable();
+            $table->foreignIdFor(\VentureDrake\LaravelCrm\Models\TaxRate::class)->nullable();
         });
     }
 
