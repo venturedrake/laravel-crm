@@ -24,7 +24,8 @@
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.category')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.unit')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }} ({{ \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD' }})</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.tax')) }} %</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.tax')) }}</th>
+                <th scope="col">{{ ucfirst(__('laravel-crm::lang.tax_rate')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.active')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col"></th>
@@ -38,7 +39,8 @@
                     <td>{{ $product->productCategory->name ?? null }}</td>
                     <td>{{ $product->unit }}</td>
                     <td>{{ (isset($product->getDefaultPrice()->unit_price)) ? money($product->getDefaultPrice()->unit_price ?? null, $product->getDefaultPrice()->currency) : null }}</td>
-                    <td>{{ $product->tax_rate }}</td>
+                    <td>{{ $product->taxRate->name ?? null }}</td>
+                    <td>{{ $product->tax_rate ?? $product->taxRate->rate ?? 0 }}%</td>
                     <td>{{ ($product->active == 1) ? 'YES' : 'NO' }}</td>
                     <td>{{ $product->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">

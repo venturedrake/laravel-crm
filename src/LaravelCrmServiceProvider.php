@@ -165,6 +165,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
         'VentureDrake\LaravelCrm\Models\Product' => \VentureDrake\LaravelCrm\Policies\ProductPolicy::class,
         'VentureDrake\LaravelCrm\Models\ProductCategory' => \VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy::class,
+        'VentureDrake\LaravelCrm\Models\TaxRate' => \VentureDrake\LaravelCrm\Policies\TaxRatePolicy::class,
         'VentureDrake\LaravelCrm\Models\Label' => \VentureDrake\LaravelCrm\Policies\LabelPolicy::class,
         'VentureDrake\LaravelCrm\Models\Task' => \VentureDrake\LaravelCrm\Policies\TaskPolicy::class,
         'VentureDrake\LaravelCrm\Models\Note' => \VentureDrake\LaravelCrm\Policies\NotePolicy::class,

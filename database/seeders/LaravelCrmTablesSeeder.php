@@ -291,6 +291,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm product attributes', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm product attributes', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm tax rates', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm tax rates', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm tax rates', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm tax rates', 'crm_permission' => 1]);
+
         Permission::firstOrCreate(['name' => 'create crm labels', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm labels', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm labels', 'crm_permission' => 1]);

@@ -430,5 +430,13 @@ return [
     'overdue' => 'overdue',
     'due_tomorrow' => 'due tomorrow',
     'total_invoices' => 'total invoices',
-    'total_clients' => 'total customers'
+    'total_clients' => 'total customers',
+    'tax_rates' => 'tax rates',
+    'tax_rate_stored' => 'tax rate stored',
+    'tax_rate_updated' => 'tax rate updated',
+    'tax_rate_deleted' => 'tax rate deleted',
+    'rate' => 'rate',
+    'add_tax_rate' => 'add tax rate',
+    'back_to_tax_rates' => 'back to tax rates',
+    'edit_tax_rate' => 'edit tax rate'
 ];

@@ -18,7 +18,7 @@ class CreateLaravelCrmTaxRatesTable extends Migration
             $table->unsignedBigInteger('team_id')->index()->nullable();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('tax_rate');
+            $table->decimal('rate');
             $table->timestamps();
             $table->softDeletes();
         });

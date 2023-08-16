@@ -15,9 +15,9 @@
                             <thead>
                             <tr>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.products')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>
-                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.products')) }}</th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -25,9 +25,9 @@
                             @foreach($productCategories as $productCategory)
                                 <tr class="has-link" data-url="{{ url(route('laravel-crm.product-categories.show',$productCategory)) }}">
                                     <td>{{ $productCategory->name }}</td>
+                                    <td>{{ $productCategory->products->count() }}</td>
                                     <td>{{ $productCategory->created_at->format($dateFormat) }}</td>
                                     <td>{{ $productCategory->updated_at->format($dateFormat) }}</td>
-                                    <td>{{ $productCategory->products->count() }}</td>
                                     <td class="disable-link text-right">
                                         @can('view crm product categories')
                                         <a href="{{  route('laravel-crm.product-categories.show',$productCategory) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
