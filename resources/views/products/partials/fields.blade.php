@@ -66,24 +66,9 @@
                  ])
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
-                      'name' => 'tax_rate_id',
-                      'label' => ucfirst(__('laravel-crm::lang.tax')),
-                      'options' => ['' => ''] + \VentureDrake\LaravelCrm\Models\TaxRate::pluck('name', 'id')->toArray(),
-                      'value' => old('tax_rate_id', (isset($product) ? $product->taxRate->id ?? null : null))
-                  ])
-            </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.text',[
-                      'name' => 'tax_rate',
-                      'label' => ucfirst(__('laravel-crm::lang.tax_rate')),
-                      'append' => '<span class="fa fa-percent" aria-hidden="true"></span>',
-                      'value' => old('tax_rate', $product->tax_rate ?? null)
-                  ])
-            </div>
-        </div>
+        @livewire('product-form',[
+            'product' => $product ?? null
+        ])
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.select',[

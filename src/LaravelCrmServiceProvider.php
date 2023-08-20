@@ -46,6 +46,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveNotes;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveProductForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
@@ -480,6 +481,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('invoice-lines', LiveInvoiceLines::class);
         Livewire::component('send-invoice', SendInvoice::class);
         Livewire::component('pay-invoice', PayInvoice::class);
+        Livewire::component('product-form', LiveProductForm::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
