@@ -52,7 +52,7 @@ class TaskReminderNotification extends Notification
     public function toMail($notifiable)
     {
         $mailMessage = new MailMessage();
-        $subject = 'TASK: '.$this->task->name.' ('.Carbon::parse($this->task->due_at)->format('M d, Y \\@ h:i A').')';
+        $subject = 'TASK REMINDER: '.$this->task->name.' ('.Carbon::parse($this->task->due_at)->format('M d, Y \\@ h:i A').')';
         $greeting = 'Hi '.$this->user->name.',';
 
         $mailMessage
