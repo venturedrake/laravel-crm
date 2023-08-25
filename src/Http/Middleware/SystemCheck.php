@@ -40,13 +40,13 @@ class SystemCheck
             // Check if DB database required
             if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0180')->first()) {
                 if($setting->value == 0) {
-                    flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="#">update database</a>')->info()->important();
+                    flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="https://github.com/venturedrake/laravel-crm#upgrading-from--02">update database</a>')->info()->important();
                 }
             }
 
             if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0181')->first()) {
                 if($setting->value == 0) {
-                    flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="#">update database</a>')->info()->important();
+                    flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="https://github.com/venturedrake/laravel-crm#upgrading-from--02">update database</a>')->info()->important();
                 }
             }
         }

@@ -54,7 +54,6 @@
         "venturedrake/laravel-encryptable": "^0.1.2"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.8",
         "laravel/pint": "^1.10",
         "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0",
         "phpstan/phpstan": "^0.12.65",
@@ -82,9 +81,9 @@
     "scripts": {
         "test": "vendor/bin/phpunit --colors=always",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
-        "format": "vendor/bin/php-cs-fixer fix --verbose",
         "analyse": "vendor/bin/phpstan analyse -c phpstan.neon",
-        "pint": "vendor/bin/pint"
+        "format": "vendor/bin/pint -v",
+        "format-test": "vendor/bin/pint -v --test"
     },
     "config": {
         "sort-packages": true

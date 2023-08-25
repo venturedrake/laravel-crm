@@ -20,6 +20,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.0 - 2023-08-25
+### Added
+- Update command for updating database
+- Make some of the models optional with config setting
+- Show related contact activity setting
+- Client search
+- Using Pint and Laravel preset for code style
+- Tax rates setting
+- Invoice contact details setting
+- Check app is running on correct subdomain setting
+- Added setting default config
+- Show users with update permissions update alerts
+- Send task, call, meeting and lunch reminder emails
+### Changed
+- Add related contacts to person and use contacts relation
+- Update some dependencies for Laravel 10 support
+- PDF download filenames updated
+- Default invoice, order & quote number set to 1000
+- Allowing products to be added during order, quote, invoice create
+### Fixed
+- Disabled settings no longer throws error
+- Bug when no activity
+- Support for removed Jetstream personal team
+- Invoice title fixed
+- Missing product on invoice
+- Invoice due badge
+- Timezone global view share
+- Tax amount on invoice lines
+- Validation on phone number & email type
+### Removed
+
 ## 0.18.1 - 2023-06-04
 ### Added
 - Laravel 10 support

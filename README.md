@@ -50,7 +50,7 @@ The free Laravel CRM you have been looking for, this package will add CRM functi
 
 If you want to get up and running quickly with a complete Laravel CRM please go to the [laravel-crm-starter project](https://github.com/venturedrake/laravel-crm-starter).
 
-If you would prefer to install Laravel CRM into your own Laravel application, please follow the installation steps below. 
+If you prefer to install Laravel CRM into your own Laravel application, please follow the installation steps below. 
 
 ## Installation
 
@@ -175,6 +175,12 @@ php artisan db:seed --class="VentureDrake\LaravelCrm\Database\Seeders\LaravelCrm
 
 ```bash
 php artisan laravelcrm:permissions
+```
+
+#### Step 4. Run update command to update database
+
+```bash
+php artisan laravelcrm:update
 ```
 
 ### Upgrading from < 0.2
