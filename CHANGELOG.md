@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.2 - 2023-08-28
+### Fixed
+- Version 0.19.1 database update check
+
 ## 0.19.1 - 2023-08-28
 ### Changed
 - Now using Laravel Pint and Laravel preset for code style
