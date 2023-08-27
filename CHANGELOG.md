@@ -20,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.1 - 2023-08-28
+### Changed
+- Now using Laravel Pint and Laravel preset for code style
+- Create multiple invoices from an order
+### Fixed
+- Typo on quote show view
+### Removed
+- Travis config
+- cs fixer config
+
 ## 0.19.0 - 2023-08-25
 ### Added
 - Update command for updating database
