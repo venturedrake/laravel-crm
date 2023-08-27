@@ -103,7 +103,7 @@
                         var tags = 'true';
                     }
                     
-                    $("tr[data-number='" + event.detail.id + "'] select[name^='invoiceLines']").select2({
+                    $("tr[data-number='" + event.detail.id + "'] td.bind-select2 select[name^='invoiceLines']").select2({
                         data: products,
                         tags: tags
                     }).select2('open')
@@ -114,7 +114,7 @@
                         });
                 });
 
-                $("select[name^='invoiceLines']").on('change', function (e) {
+                $("td.bind-select2 select[name^='invoiceLines']").on('change', function (e) {
                     @this.set('product_id.' + $(this).data('value'), $(this).val());
                     @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
                     Livewire.emit('loadInvoiceLineDefault', $(this).data('value'))

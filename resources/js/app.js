@@ -95,7 +95,7 @@ const appJquery = function() {
                     tags: tags
                 });
 
-                $("select[name^='invoiceLines']").select2({
+                $("td.bind-select2 select[name^='invoiceLines']").select2({
                     data: products,
                     tags: tags
                 });

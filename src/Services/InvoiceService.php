@@ -34,9 +34,6 @@ class InvoiceService
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'reference' => $request->reference,
-            /*'invoice_id' => $request->prefix.$request->number,
-            'prefix' => $request->prefix,
-            'number' => $request->number,*/
             'issue_date' => $request->issue_date,
             'due_date' => $request->due_date,
             'currency' => $request->currency,
@@ -63,6 +60,7 @@ class InvoiceService
                         'price' => $invoiceLine['price'],
                         'amount' => $invoiceLine['amount'],
                         'currency' => $request->currency,
+                        'order_product_id' => $invoiceLine['order_product_id'] ?? null,
                     ]);
                 }
             }
@@ -119,9 +117,6 @@ class InvoiceService
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'reference' => $request->reference,
-            /*'invoice_id' => $request->prefix.$request->number,
-            'prefix' => $request->prefix,
-            'number' => $request->number,*/
             'issue_date' => $request->issue_date,
             'due_date' => $request->due_date,
             'currency' => $request->currency,

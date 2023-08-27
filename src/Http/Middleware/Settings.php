@@ -150,6 +150,15 @@ class Settings
                 ]);
             }
 
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 191) {
+                Setting::firstOrCreate([
+                    'global' => 1,
+                    'name' => 'db_update_0191',
+                ], [
+                    'value' => 0,
+                ]);
+            }
+
             $installIdSetting = Setting::where([
                 'name' => 'install_id',
             ])->first();

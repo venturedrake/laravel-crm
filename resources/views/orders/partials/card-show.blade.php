@@ -13,13 +13,9 @@
                     'route' => 'orders'
                 ]) |
                 @can('edit crm orders')
-                    @if($order->invoices()->count() < 1)
+                    @if(! $order->invoiceComplete())
                         @hasinvoicesenabled
-                        <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id])}}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_invoice')) }}</a>
-                        @endhasinvoicesenabled
-                    @else
-                        @hasinvoicesenabled
-                        <a href="{{ route('laravel-crm.invoices.show',$order->invoices()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.invoiced')) }}</a>
+                        <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
                         @endhasinvoicesenabled
                     @endif
                     @if(! $order->deliveryComplete())

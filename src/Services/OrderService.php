@@ -35,7 +35,6 @@ class OrderService
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'client_id' => $client->id ?? null,
-            'quote_id' => $request->quote_id ?? null,
             'description' => $request->description,
             'reference' => $request->reference,
             'currency' => $request->currency,

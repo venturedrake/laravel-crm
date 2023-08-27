@@ -212,6 +212,25 @@ class Order extends Model
         return $this->addresses()->where('address_type_id', 6)->first();
     }
 
+    public function invoiceComplete()
+    {
+        foreach ($this->orderProducts as $orderProduct) {
+            $quantity = $orderProduct->quantity;
+
+            foreach ($this->invoices as $invoice) {
+                if ($invoiceLine = $invoice->invoiceLines()->where('order_product_id', $orderProduct->id)->first()) {
+                    $quantity -= $invoiceLine->quantity;
+                }
+            }
+
+            if ($quantity > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function deliveryComplete()
     {
         foreach ($this->orderProducts as $orderProduct) {

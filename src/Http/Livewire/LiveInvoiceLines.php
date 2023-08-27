@@ -17,11 +17,14 @@ class LiveInvoiceLines extends Component
 
     public $invoiceLines;
 
+    public $order_product_id;
     public $invoice_line_id;
 
     public $product_id;
 
     public $name;
+
+    public $order_quantities;
 
     public $price;
 
@@ -39,6 +42,8 @@ class LiveInvoiceLines extends Component
 
     public $total = 0;
 
+    public $fromOrder;
+
     protected $listeners = ['loadInvoiceLineDefault'];
 
     public function boot(SettingService $settingService)
@@ -46,35 +51,58 @@ class LiveInvoiceLines extends Component
         $this->settingService = $settingService;
     }
 
-    public function mount($invoice, $invoiceLines, $old = null)
+    public function mount($invoice, $invoiceLines, $old = null, $fromOrder = false)
     {
         $this->invoice = $invoice;
         $this->invoiceLines = $invoiceLines;
         $this->old = $old;
+        $this->fromOrder = $fromOrder;
 
         if ($this->old) {
             foreach ($this->old as $old) {
                 $this->add($this->i);
+                $this->order_product_id[$this->i] = $old['order_product_id'] ?? null;
                 $this->invoice_line_id[$this->i] = $old['invoice_line_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
-
-
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
+
+                if ($this->fromOrder) {
+                    foreach ($this->invoiceLines as $invoiceLine) {
+                        for ($i = 0; $i <= $this->getRemainOrderQuantity($invoiceLine); $i++) {
+                            $this->order_quantities[$this->i][$i] = $i;
+                        }
+                    }
+                }
+
                 $this->price[$this->i] = $old['price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
             }
         } elseif ($this->invoiceLines && $this->invoiceLines->count() > 0) {
             foreach ($this->invoiceLines as $invoiceLine) {
                 $this->add($this->i);
-                $this->invoice_line_id[$this->i] = $invoiceLine->id;
+
+                if ($this->fromOrder) {
+                    $this->order_product_id[$this->i] = $invoiceLine->id;
+                } else {
+                    $this->invoice_line_id[$this->i] = $invoiceLine->id;
+                }
+
                 $this->product_id[$this->i] = $invoiceLine->product->id ?? null;
                 $this->name[$this->i] = $invoiceLine->product->name ?? null;
                 $this->quantity[$this->i] = $invoiceLine->quantity;
+
+                if ($this->fromOrder) {
+                    for ($i = 0; $i <= $this->getRemainOrderQuantity($invoiceLine); $i++) {
+                        $this->order_quantities[$this->i][$i] = $i;
+                        $this->quantity[$this->i] = $i;
+                    }
+                }
+
                 $this->price[$this->i] = $invoiceLine->price / 100;
                 $this->amount[$this->i] = $invoiceLine->amount / 100;
             }
-        } else {
+        } elseif (! $this->fromOrder) {
             $this->add($this->i);
         }
 
@@ -154,6 +182,18 @@ class LiveInvoiceLines extends Component
     protected function currencyFormat($number)
     {
         return number_format($number, 2, '.', '');
+    }
+
+    public function getRemainOrderQuantity($orderProduct)
+    {
+        $quantity = $orderProduct->quantity;
+        foreach ($this->fromOrder->invoices as $invoice) {
+            if ($invoiceProduct = $invoice->invoiceLines()->where('order_product_id', $orderProduct->id)->first()) {
+                $quantity -= $invoiceProduct->quantity;
+            }
+        }
+
+        return $quantity;
     }
 
     public function render()

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
@@ -106,6 +107,43 @@ class LaravelCrmUpdate extends Command
 
             $this->settingService->set('db_update_0181', 1);
             $this->info('Updating Laravel CRM organisation linked to person complete.');
+        }
+
+        if($this->settingService->get('db_update_0191')->value == 0) {
+            $this->info('Updating Laravel CRM split orders, invoices & deliveries...');
+
+            foreach(Order::whereNotNull('quote_id')->get() as $order) {
+                foreach($order->quote->quoteProducts as $quoteProduct) {
+                    if($orderProduct = $order->orderProducts()
+                        ->whereNull('quote_product_id')
+                        ->where([
+                        'product_id' => $quoteProduct->product_id,
+                        'price' => $quoteProduct->price,
+                    ])->first()) {
+                        $orderProduct->update([
+                            'quote_product_id' => $quoteProduct->id
+                        ]);
+                    }
+                }
+            }
+
+            foreach(Invoice::whereNotNull('order_id')->get() as $invoice) {
+                foreach($invoice->order->orderProducts as $orderProduct) {
+                    if($invoiceLine = $invoice->invoiceLines()
+                        ->whereNull('order_product_id')
+                        ->where([
+                            'product_id' => $orderProduct->product_id,
+                            'price' => $orderProduct->price,
+                        ])->first()) {
+                        $invoiceLine->update([
+                            'order_product_id' => $orderProduct->id
+                        ]);
+                    }
+                }
+            }
+
+            $this->settingService->set('db_update_0191', 1);
+            $this->info('Updating Laravel CRM split orders, invoices & deliveries complete.');
         }
 
         $this->info('Laravel CRM is now updated.');

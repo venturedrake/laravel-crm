@@ -121,7 +121,8 @@
         @livewire('invoice-lines',[
             'invoice' => $invoice ?? null,
             'invoiceLines' => $invoice->invoiceLines ?? $order->orderProducts ?? null,
-            'old' => old('invoiceLines')
+            'old' => old('invoiceLines'),
+            'fromOrder' => (isset($order)) ? $order : false
         ])
     </div>
 </div>

@@ -96,15 +96,11 @@
                     <td>{{ $order->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm orders')
-                            @if($order->invoices()->count() < 1)
+                            @if(! $order->invoiceComplete())
                                 @hasinvoicesenabled
-                                    <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                                <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
                                 @endhasinvoicesenabled
-                            @else
-                                @hasinvoicesenabled
-                                <a href="{{ route('laravel-crm.invoices.show',$order->invoices()->first()) }}" class="btn btn-outline-secondary btn-sm">{{ ucwords(__('laravel-crm::lang.invoiced')) }}</a>
-                                @endhasinvoicesenabled
-                            @endif
+                            @endif        
                             @if(! $order->deliveryComplete())
                                 @hasdeliveriesenabled
                                     <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>

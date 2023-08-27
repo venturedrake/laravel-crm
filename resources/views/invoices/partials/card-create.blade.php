@@ -5,7 +5,7 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                {{ ucfirst(__('laravel-crm::lang.create_invoice')) }}
+                {{ ucfirst(__('laravel-crm::lang.create_invoice')) }} @isset($order){{ __('laravel-crm::lang.from_order') }} <a href="{{ route('laravel-crm.orders.show', $order) }}">{{ $order->order_id }}</a> @endisset
             @endslot
 
             @slot('actions')
