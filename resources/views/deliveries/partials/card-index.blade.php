@@ -54,18 +54,20 @@
                     </td>
                     @endhasordersenabled
                     <td>
-                        @if($delivery->order->client)
-                            {{ $delivery->order->client->name }}
-                        @endif
-                        @if($delivery->order->organisation)
-                            @if($delivery->order->client)<br /><small>@endif
-                                {{ $delivery->order->organisation->name }}
-                                @if($delivery->order->client)</small>@endif
-                        @endif
-                        @if($delivery->order->organisation && $delivery->order->person)
-                            <br /><small>{{ $delivery->order->person->name }}</small>
-                        @elseif($delivery->order->person)
-                            {{ $delivery->order->person->name }}
+                        @if($delivery->order)
+                            @if($delivery->order->client)
+                                {{ $delivery->order->client->name }}
+                            @endif
+                            @if($delivery->order->organisation)
+                                @if($delivery->order->client)<br /><small>@endif
+                                    {{ $delivery->order->organisation->name }}
+                                    @if($delivery->order->client)</small>@endif
+                            @endif
+                            @if($delivery->order->organisation && $delivery->order->person)
+                                <br /><small>{{ $delivery->order->person->name }}</small>
+                            @elseif($delivery->order->person)
+                                {{ $delivery->order->person->name }}
+                            @endif
                         @endif
                     </td>
                     <td>
