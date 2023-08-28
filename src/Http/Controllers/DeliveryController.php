@@ -6,6 +6,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDeliveryRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDeliveryRequest;
+use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
@@ -90,6 +91,16 @@ class DeliveryController extends Controller
                 $person = $order->person;
                 $organisation = $order->organisation;
 
+                $addressIds = [];
+
+                if ($address = $order->getShippingAddress()) {
+                    $addressIds[] = $address->id;
+                } elseif($address = $order->organisation->getShippingAddress()) {
+                    $addressIds[] = $address->id;
+                }
+
+                $addresses = Address::whereIn('id', $addressIds)->get();
+
                 break;
         }
 
@@ -98,7 +109,7 @@ class DeliveryController extends Controller
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
             'order' => $order ?? null,
-            'addresses' => $order->addresses ?? null,
+            'addresses' => $addresses ?? null,
         ]);
     }
 
@@ -210,23 +221,6 @@ class DeliveryController extends Controller
         if ($organisation = $delivery->order->organisation) {
             $organisation_address = $organisation->getPrimaryAddress();
         }
-
-        /*$pdfLocation = 'laravel-crm/'.strtolower(class_basename($quote)).'/'.$quote->id.'/';
-
-        if(!File::exists($pdfLocation)){
-            Storage::makeDirectory($pdfLocation);
-        }*/
-
-        /*  return view('laravel-crm::deliveries.pdf', [
-              'delivery' => $delivery,
-              'order' => $delivery->order,
-              'email' => $email ?? null,
-              'phone' => $phone ?? null,
-              'address' => $delivery->getShippingAddress() ?? null,
-              'organisation_address' => $delivery->order->getShippingAddress() ?? $organisation_address ?? null,
-              'fromName' => $this->settingService->get('organisation_name')->value ?? null,
-              'logo' => $this->settingService->get('logo_file')->value ?? null,
-          ]);*/
 
         return Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),

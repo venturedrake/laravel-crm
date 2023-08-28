@@ -41,7 +41,26 @@ class DeliveryService
             }
         }
 
-        $this->updateDeliveryAddresses($delivery, $request->addresses);
+        if ($request->addresses) {
+            foreach ($request->addresses as $addressRequest) {
+                $address = $delivery->addresses()->create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'address_type_id' => 6,
+                    'address' => $addressRequest['address'] ?? null,
+                    'name' => $addressRequest['name'] ?? null,
+                    'contact' => $addressRequest['contact'] ?? null,
+                    'phone' => $addressRequest['phone'] ?? null,
+                    'line1' => $addressRequest['line1'],
+                    'line2' => $addressRequest['line2'],
+                    'line3' => $addressRequest['line3'],
+                    'city' => $addressRequest['city'],
+                    'state' => $addressRequest['state'],
+                    'code' => $addressRequest['code'],
+                    'country' => $addressRequest['country'],
+                    'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                ]);
+            }
+        }
 
         return $delivery;
     }
@@ -53,17 +72,8 @@ class DeliveryService
             'delivered_on' => $request->delivered_on,
         ]);
 
-        $this->updateDeliveryAddresses($delivery, $request->addresses);
-
-        return $delivery;
-    }
-
-    protected function updateDeliveryAddresses($delivery, $addresses)
-    {
-        $addressIds = [];
-
-        if ($addresses) {
-            foreach ($addresses as $addressRequest) {
+        if ($request->addresses) {
+            foreach ($request->addresses as $addressRequest) {
                 if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
                     $address->update([
                         'address_type_id' => 6,
@@ -80,35 +90,10 @@ class DeliveryService
                         'country' => $addressRequest['country'],
                         'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
                     ]);
-
-                    $addressIds[] = $address->id;
-                } else {
-                    $address = $delivery->addresses()->create([
-                        'external_id' => Uuid::uuid4()->toString(),
-                        'address_type_id' => 6,
-                        'address' => $addressRequest['address'] ?? null,
-                        'name' => $addressRequest['name'] ?? null,
-                        'contact' => $addressRequest['contact'] ?? null,
-                        'phone' => $addressRequest['phone'] ?? null,
-                        'line1' => $addressRequest['line1'],
-                        'line2' => $addressRequest['line2'],
-                        'line3' => $addressRequest['line3'],
-                        'city' => $addressRequest['city'],
-                        'state' => $addressRequest['state'],
-                        'code' => $addressRequest['code'],
-                        'country' => $addressRequest['country'],
-                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
-                    ]);
-
-                    $addressIds[] = $address->id;
                 }
             }
         }
 
-        foreach ($delivery->addresses as $address) {
-            if (! in_array($address->id, $addressIds)) {
-                $address->delete();
-            }
-        }
+        return $delivery;
     }
 }

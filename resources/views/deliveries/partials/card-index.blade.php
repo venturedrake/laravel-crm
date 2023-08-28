@@ -54,8 +54,19 @@
                     </td>
                     @endhasordersenabled
                     <td>
-                        {{ $delivery->order->organisation->name ?? null }}<br />
-                        <small>{{ $delivery->order->person->name ?? null }}</small>
+                        @if($delivery->order->client)
+                            {{ $delivery->order->client->name }}
+                        @endif
+                        @if($delivery->order->organisation)
+                            @if($delivery->order->client)<br /><small>@endif
+                                {{ $delivery->order->organisation->name }}
+                                @if($delivery->order->client)</small>@endif
+                        @endif
+                        @if($delivery->order->organisation && $delivery->order->person)
+                            <br /><small>{{ $delivery->order->person->name }}</small>
+                        @elseif($delivery->order->person)
+                            {{ $delivery->order->person->name }}
+                        @endif
                     </td>
                     <td>
                         @if($address = $delivery->getShippingAddress())

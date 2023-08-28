@@ -54,6 +54,13 @@ class LiveAddressEdit extends Component
             }
         } elseif ($this->addresses && $this->addresses->count() > 0) {
             foreach ($this->addresses as $address) {
+
+                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->id == 6) {
+                    $this->add($this->i);
+                    $this->type[$this->i] = 5;
+                    $this->type_name[$this->i] = AddressType::find(5)->name;
+                }
+
                 $this->add($this->i);
                 $this->address[$this->i] = $address->address;
                 $this->type[$this->i] = $address->addressType->id ?? null;
@@ -69,6 +76,12 @@ class LiveAddressEdit extends Component
                 $this->country[$this->i] = $address->country;
                 $this->primary[$this->i] = $address->primary;
                 $this->addressId[$this->i] = $address->id;
+
+                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->id == 5) {
+                    $this->add($this->i);
+                    $this->type[$this->i] = 5;
+                    $this->type_name[$this->i] = AddressType::find(5)->name;
+                }
             }
         } else {
             $this->add($this->i);
