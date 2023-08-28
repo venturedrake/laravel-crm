@@ -52,6 +52,12 @@ class Settings
                 ], [
                     'value' => $currentTeam->name,
                 ]);
+            }else{
+                Setting::firstOrCreate([
+                    'name' => 'organisation_name',
+                ], [
+                    'value' => config('app.name'),
+                ]);
             }
 
             Setting::firstOrCreate([
