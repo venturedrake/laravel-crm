@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.4 - 2023-08-28
+### Added
+- Delivery number
+### Fixed
+- Copying billing & shipping address from quote to order
+- Copying shipping address from order to delivery
+
 ## 0.19.3 - 2023-08-28
 ### Added
 - Show quote orders
