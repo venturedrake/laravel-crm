@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.5 - 2023-08-29
+### Fixed
+- Consider soft deleted models when incrementing numbers
+
 ## 0.19.4 - 2023-08-28
 ### Added
 - Delivery number
