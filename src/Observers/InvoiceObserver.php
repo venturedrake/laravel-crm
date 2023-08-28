@@ -32,7 +32,7 @@ class InvoiceObserver
             $invoice->user_created_id = auth()->user()->id ?? null;
         }
 
-        if($lastInvoice = Invoice::orderBy('number', 'DESC')->first()) {
+        if($lastInvoice = Invoice::withTrashed()->orderBy('number', 'DESC')->first()) {
             $invoice->number = $lastInvoice->number + 1;
         } else {
             $invoice->number = 1000;

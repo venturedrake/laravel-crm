@@ -32,7 +32,7 @@ class OrderObserver
             $order->user_created_id = auth()->user()->id ?? null;
         }
 
-        if($lastOrder = Order::orderBy('number', 'DESC')->first()) {
+        if($lastOrder = Order::withTrashed()->orderBy('number', 'DESC')->first()) {
             $order->number = $lastOrder->number + 1;
         } else {
             $order->number = 1000;

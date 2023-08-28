@@ -32,7 +32,7 @@ class DeliveryObserver
             $delivery->user_created_id = auth()->user()->id ?? null;
         }
 
-        if($lastDelivery = Delivery::orderBy('number', 'DESC')->first()) {
+        if($lastDelivery = Delivery::withTrashed()->orderBy('number', 'DESC')->first()) {
             $delivery->number = $lastDelivery->number + 1;
         } else {
             $delivery->number = 1000;
