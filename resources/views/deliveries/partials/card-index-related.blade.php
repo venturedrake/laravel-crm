@@ -17,7 +17,7 @@
                     <td>{{ $delivery->created_at->diffForHumans() }}</td>
                     <td>
                         @if($delivery->order)
-                            <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}">{{ $delivery->order->reference }}</a>
+                            {{ $delivery->order->reference }}
                         @endif    
                     </td>
                     <td>
