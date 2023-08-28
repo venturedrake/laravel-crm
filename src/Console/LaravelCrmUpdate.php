@@ -113,7 +113,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM split orders, invoices & deliveries...');
 
             foreach(Order::whereNotNull('quote_id')->get() as $order) {
-                if($order->quote){
+                if($order->quote) {
                     foreach($order->quote->quoteProducts as $quoteProduct) {
                         if($orderProduct = $order->orderProducts()
                             ->whereNull('quote_product_id')
@@ -130,7 +130,7 @@ class LaravelCrmUpdate extends Command
             }
 
             foreach(Invoice::whereNotNull('order_id')->get() as $invoice) {
-                if($invoice->order){
+                if($invoice->order) {
                     foreach($invoice->order->orderProducts as $orderProduct) {
                         if($invoiceLine = $invoice->invoiceLines()
                             ->whereNull('order_product_id')

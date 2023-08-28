@@ -71,7 +71,7 @@ class QuoteController extends Controller
         }
 
         return view('laravel-crm::quotes.index', [
-            'quotes' => $quotes,
+            'quotes' => $quotes
         ]);
     }
 
@@ -187,6 +187,7 @@ class QuoteController extends Controller
             'phone' => $phone ?? null,
             'address' => $address ?? null,
             'organisation_address' => $organisation_address ?? null,
+            'orders' => $quote->orders()->latest()->get(),
         ]);
     }
 

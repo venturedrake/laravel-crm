@@ -6,6 +6,24 @@
     <li class="nav-item">
         <a class="nav-link active" data-toggle="tab" id="tab-activities" href="#tabs-activities">{{ ucfirst(__('laravel-crm::lang.activity')) }}</a>
     </li>
+    @isset($orders)
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-orders">{{ ucfirst(__('laravel-crm::lang.orders')) }}</a>
+        </li>
+    @endisset
+    @isset($invoices)
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-invoices">{{ ucfirst(__('laravel-crm::lang.invoices')) }}</a>
+        </li>
+    @endisset
+    @isset($deliveries)
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-deliveries">{{ ucfirst(__('laravel-crm::lang.deliveries')) }}</a>
+        </li>
+    @endisset
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-notes">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a>
+    </li>
     <li class="nav-item">
         <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-notes">{{ ucfirst(__('laravel-crm::lang.notes')) }}</a>
     </li>
@@ -33,6 +51,33 @@
             ])
         </div>
     </div>
+    @isset($orders)
+    <div class="tab-pane fade" id="tabs-orders">
+        <div class="card-body pl-0 pr-0">
+            @include('laravel-crm::orders.partials.card-index-related',[
+                'orders' => $orders
+            ])
+        </div>
+    </div>
+    @endisset
+    @isset($invoices)
+        <div class="tab-pane fade" id="tabs-invoices">
+            <div class="card-body pl-0 pr-0">
+                @include('laravel-crm::invoices.partials.card-index-related',[
+                    'invoices' => $invoices
+                ])
+            </div>
+        </div>
+    @endisset
+    @isset($deliveries)
+        <div class="tab-pane fade" id="tabs-deliveries">
+            <div class="card-body pl-0 pr-0">
+                @include('laravel-crm::deliveries.partials.card-index-related',[
+                    'deliveries' => $deliveries
+                ])
+            </div>
+        </div>
+    @endisset
     <div class="tab-pane fade" id="tabs-notes">
         <div class="card-body pl-0 pr-0">
             @livewire('notes', [

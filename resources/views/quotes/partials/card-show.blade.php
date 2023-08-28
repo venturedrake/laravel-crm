@@ -35,7 +35,9 @@
                 @can('view crm quotes')
                     <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
                 @endcan    
-                @include('laravel-crm::partials.navs.activities') |
+                @include('laravel-crm::partials.navs.activities', [
+                    'orders' => $orders
+                ]) |
                 @can('edit crm quotes')
                     @if(! $quote->accepted_at)
                         <a href="{{ route('laravel-crm.quotes.edit',$quote) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
