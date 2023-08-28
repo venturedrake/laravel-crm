@@ -15,6 +15,7 @@
             @foreach($deliveries as $delivery)
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.deliveries.show', $delivery)) }}">
                     <td>{{ $delivery->created_at->diffForHumans() }}</td>
+                    <td>{{ $delivery->delivery_id }}</td>
                     <td>
                         @if($delivery->order)
                             {{ $delivery->order->reference }}

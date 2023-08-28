@@ -20,6 +20,15 @@ class DeliveryObserver
         if (! app()->runningInConsole()) {
             $delivery->user_created_id = auth()->user()->id ?? null;
         }
+
+        if($lastDelivery = Delivery::orderBy('number', 'DESC')->first()) {
+            $delivery->number = $lastDelivery->number + 1;
+        } else {
+            $delivery->number = 1000;
+        }
+
+        $delivery->prefix = $this->settingService->get('delivery_prefix')->value;
+        $delivery->delivery_id = $delivery->prefix.$delivery->number;
     }
 
     /**

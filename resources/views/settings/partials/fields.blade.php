@@ -38,6 +38,13 @@
          'value' => old('invoice_prefix', $invoicePrefix->value ?? null)
         ])
         @endhasinvoicesenabled
+        @hasdeliveriesenabled
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'delivery_prefix',
+         'label' => ucfirst(trans('laravel-crm::lang.delivery_prefix')),
+         'value' => old('delivery_prefix', $deliveryPrefix->value ?? null)
+        ])
+        @endhasdeliveriesenabled
         @hasquotesenabled
         @include('laravel-crm::partials.form.textarea',[
          'name' => 'quote_terms',

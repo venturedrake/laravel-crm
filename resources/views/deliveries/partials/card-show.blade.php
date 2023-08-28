@@ -38,13 +38,17 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
+                    <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.number')) }}</dt>
+                    <dd class="col-sm-8">
+                        {{ $delivery->delivery_id }}
+                    </dd>
+                    @hasordersenabled
                     <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.reference')) }}</dt>
                     <dd class="col-sm-8">
                         @if($delivery->order)
                             {{ $delivery->order->reference }}
                         @endif
                     </dd>
-                    @hasordersenabled
                     <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.order')) }}</dt>
                     <dd class="col-sm-8">
                         @if($delivery->order)

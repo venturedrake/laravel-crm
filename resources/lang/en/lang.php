@@ -439,5 +439,6 @@ return [
     'add_tax_rate' => 'add tax rate',
     'back_to_tax_rates' => 'back to tax rates',
     'edit_tax_rate' => 'edit tax rate',
-    'tax_rate_percent' => 'tax rate %'
+    'tax_rate_percent' => 'tax rate %',
+    'delivery_prefix' => 'delivery prefix',
 ];

@@ -121,6 +121,12 @@ class Settings
             ]);
 
             Setting::firstOrCreate([
+                'name' => 'delivery_prefix',
+            ], [
+                'value' => 'DEL-',
+            ]);
+
+            Setting::firstOrCreate([
                 'name' => 'dynamic_products',
             ], [
                 'value' => '1',

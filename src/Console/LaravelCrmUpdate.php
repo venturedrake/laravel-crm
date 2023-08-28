@@ -174,6 +174,25 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM split deliveries complete.');
         }
 
+        if($this->settingService->get('db_update_0194')->value == 0) {
+            $this->info('Updating Laravel CRM delivery numbers...');
+
+            foreach (Delivery::whereNull('number')->get() as $delivery) {
+                $this->info('Updating Laravel CRM delivery #'.$delivery->id);
+
+                $delivery->update([
+                    'delivery_id' => $this->settingService->get('delivery_prefix')->value.(1000 + $delivery->id),
+                    'prefix' => $this->settingService->get('delivery_prefix')->value,
+                    'number' => 1000 + $delivery->id,
+                ]);
+            }
+
+            $this->info('Updating Laravel CRM quote numbers complete');
+
+            $this->settingService->set('db_update_0194', 1);
+            $this->info('Updating Laravel CRM delivery numbers complete');
+        }
+
         $this->info('Laravel CRM is now updated.');
     }
 }
