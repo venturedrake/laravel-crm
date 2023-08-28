@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -148,6 +149,29 @@ class LaravelCrmUpdate extends Command
 
             $this->settingService->set('db_update_0191', 1);
             $this->info('Updating Laravel CRM split orders, invoices & deliveries complete.');
+        }
+
+        if($this->settingService->get('db_update_0193')->value == 0) {
+            $this->info('Updating Laravel CRM split deliveries...');
+
+            foreach(Delivery::whereNotNull('order_id')->get() as $delivery) {
+                if($delivery->order) {
+                    foreach($delivery->order->orderProducts as $orderProduct) {
+                        if($deliveryProduct = $delivery->deliveryProducts()
+                            ->whereNull('quantity')
+                            ->where([
+                                'order_product_id' => $orderProduct->id,
+                            ])->first()) {
+                            $deliveryProduct->update([
+                                'quantity' => $orderProduct->quantity
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            $this->settingService->set('db_update_0193', 1);
+            $this->info('Updating Laravel CRM split deliveries complete.');
         }
 
         $this->info('Laravel CRM is now updated.');

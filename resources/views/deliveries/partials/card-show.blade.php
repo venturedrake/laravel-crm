@@ -41,7 +41,7 @@
                     <dt class="col-sm-4 text-right">{{ ucfirst(__('laravel-crm::lang.reference')) }}</dt>
                     <dd class="col-sm-8">
                         @if($delivery->order)
-                            <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}">{{ $delivery->order->reference }}</a>
+                            {{ $delivery->order->reference }}
                         @endif
                     </dd>
                     @hasordersenabled
