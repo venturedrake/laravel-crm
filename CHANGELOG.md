@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.3 - 2023-08-28
+### Added
+- Show quote orders
+- Show order invoices
+- Show order deliveries
+### Changed
+- Update command for order related deliveries
+
 ## 0.19.2 - 2023-08-28
 ### Fixed
 - Version 0.19.1 database update check
