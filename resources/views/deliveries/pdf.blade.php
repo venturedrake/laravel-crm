@@ -36,10 +36,10 @@
                     @isset($order->person)
                         {{ $order->person->name }}<br />
                     @endisset
-                    @if($address->contact)
+                    @if($address && $address->contact)
                         <strong>{{ ucwords(__('laravel-crm::lang.contact')) }}: {{ $address->contact }}</strong><br >
                     @endif
-                    @if($address->phone)
+                    @if($address && $address->phone)
                         <strong>{{ ucwords(__('laravel-crm::lang.phone')) }}: {{ $address->phone }}</strong><br >
                     @endif
                     @if($address)
