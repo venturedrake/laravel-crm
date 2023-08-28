@@ -119,6 +119,10 @@ class FieldController extends Controller
      */
     public function destroy(Field $field)
     {
+        foreach (FieldModel::where('field_id', $field->id)->get() as $fieldModel) {
+            $fieldModel->delete();
+        }
+        
         $field->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.field_deleted')))->success()->important();
