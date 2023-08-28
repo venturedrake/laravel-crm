@@ -113,31 +113,35 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM split orders, invoices & deliveries...');
 
             foreach(Order::whereNotNull('quote_id')->get() as $order) {
-                foreach($order->quote->quoteProducts as $quoteProduct) {
-                    if($orderProduct = $order->orderProducts()
-                        ->whereNull('quote_product_id')
-                        ->where([
-                        'product_id' => $quoteProduct->product_id,
-                        'price' => $quoteProduct->price,
-                    ])->first()) {
-                        $orderProduct->update([
-                            'quote_product_id' => $quoteProduct->id
-                        ]);
+                if($order->quote){
+                    foreach($order->quote->quoteProducts as $quoteProduct) {
+                        if($orderProduct = $order->orderProducts()
+                            ->whereNull('quote_product_id')
+                            ->where([
+                                'product_id' => $quoteProduct->product_id,
+                                'price' => $quoteProduct->price,
+                            ])->first()) {
+                            $orderProduct->update([
+                                'quote_product_id' => $quoteProduct->id
+                            ]);
+                        }
                     }
                 }
             }
 
             foreach(Invoice::whereNotNull('order_id')->get() as $invoice) {
-                foreach($invoice->order->orderProducts as $orderProduct) {
-                    if($invoiceLine = $invoice->invoiceLines()
-                        ->whereNull('order_product_id')
-                        ->where([
-                            'product_id' => $orderProduct->product_id,
-                            'price' => $orderProduct->price,
-                        ])->first()) {
-                        $invoiceLine->update([
-                            'order_product_id' => $orderProduct->id
-                        ]);
+                if($invoice->order){
+                    foreach($invoice->order->orderProducts as $orderProduct) {
+                        if($invoiceLine = $invoice->invoiceLines()
+                            ->whereNull('order_product_id')
+                            ->where([
+                                'product_id' => $orderProduct->product_id,
+                                'price' => $orderProduct->price,
+                            ])->first()) {
+                            $invoiceLine->update([
+                                'order_product_id' => $orderProduct->id
+                            ]);
+                        }
                     }
                 }
             }
