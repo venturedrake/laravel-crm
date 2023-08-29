@@ -52,7 +52,7 @@ class Settings
                 ], [
                     'value' => $currentTeam->name,
                 ]);
-            }else{
+            } else {
                 Setting::firstOrCreate([
                     'name' => 'organisation_name',
                 ], [

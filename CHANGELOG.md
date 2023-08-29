@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.6 - 2023-08-29
+### Fixed
+- Error when sending quotes and missing organization name setting
+- Error when deleting custom fields and attached models
+- Error when showing deliveries when order has been deleted
+- Ensure address isset on pdf before displaying
+- Error on PDF when person not set
+
 ## 0.19.5 - 2023-08-29
 ### Fixed
 - Consider soft deleted models when incrementing numbers

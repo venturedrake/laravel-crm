@@ -46,6 +46,10 @@ The free Laravel CRM you have been looking for, this package will add CRM functi
 - **For MariaDB users**: 10.2.7 or higher
 - **Laravel** 6.0 or higher
 
+## Live Demo
+
+[https://demo.laravelcrm.com/register](https://demo.laravelcrm.com/register)
+
 ## Quick Start
 
 If you want to get up and running quickly with a complete Laravel CRM please go to the [laravel-crm-starter project](https://github.com/venturedrake/laravel-crm-starter).
