@@ -35,7 +35,7 @@
             <tr>
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.issued_to')) }}</strong><br />
-                    {{ $quote->organisation->name ?? $quote->organisation->person->name }}<br />
+                    {{ $quote->organisation->name ?? $quote->organisation->person->name ?? null }}<br />
                     @isset($quote->person)
                     {{ $quote->person->name }}<br />
                     @endisset

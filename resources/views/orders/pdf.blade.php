@@ -23,7 +23,7 @@
             <tr>
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
-                    {{ $order->organisation->name ?? $order->organisation->person->name }}<br />
+                    {{ $order->organisation->name ?? $order->organisation->person->name ?? null }}<br />
                     @isset($order->person)
                         {{ $order->person->name }}<br />
                     @endisset
