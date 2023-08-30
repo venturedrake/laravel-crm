@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrganisationRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrganisationRequest;
+use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 
@@ -149,6 +150,13 @@ class OrganisationController extends Controller
      */
     public function destroy(Organisation $organisation)
     {
+        foreach(Contact::where([
+            'entityable_type' => $organisation->getMorphClass(),
+            'entityable_id' => $organisation->id
+        ])->get() as $contact) {
+            $contact->delete();
+        }
+
         $organisation->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.organization_deleted')))->success()->important();

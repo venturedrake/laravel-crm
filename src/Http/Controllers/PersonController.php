@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StorePersonRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePersonRequest;
+use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -200,6 +201,13 @@ class PersonController extends Controller
      */
     public function destroy(Person $person)
     {
+        foreach(Contact::where([
+            'entityable_type' => $person->getMorphClass(),
+            'entityable_id' => $person->id
+        ])->get() as $contact) {
+            $contact->delete();
+        }
+
         $person->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.person_deleted')))->success()->important();
