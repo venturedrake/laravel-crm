@@ -68,7 +68,7 @@ const appJquery = function() {
             $('select[name="labels[]"]').select2({
                 tags: true,
                 tokenSeparators: [','],
-                createTag: function (params) {
+                /*createTag: function (params) {
                     var term = params.term;
 
                     if (term === '') {
@@ -78,9 +78,9 @@ const appJquery = function() {
                     return {
                         id: 'new_label_' + term,
                         text: term,
-                        newTag: true // add additional parameters
+                        newTag: true
                     }
-                }
+                }*/
             });
 
             if(typeof products !== 'undefined'){
