@@ -66,7 +66,7 @@ const appJquery = function() {
             });
 
             $('select[name="labels[]"]').select2({
-                tags: true,
+               /* tags: true,*/
                 tokenSeparators: [','],
                 /*createTag: function (params) {
                     var term = params.term;
