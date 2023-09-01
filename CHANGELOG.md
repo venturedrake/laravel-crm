@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.7 - 2023-09-01
+### Changed
+- Switched cs from laravel to prs12
+### Fixed
+- Related contacts bug when deleting peron or organisation
+- Bug when allowing null value on custom field
+- Fixed bug by disabling create new labels when adding leads, contacts, etc
+
 ## 0.19.6 - 2023-08-29
 ### Fixed
 - Error when sending quotes and missing organization name setting
