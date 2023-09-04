@@ -170,7 +170,7 @@ class LaravelCrmXero extends Command
                     }
 
                     foreach (Product::all() as $product) {
-                        if (! $product->xeroItem) {
+                        if (! $product->xeroItem && $product->code) {
                             $this->info('LaravelCRM Xero Integration Adding product '.$product->name.' to Xero');
 
                             $xeroProduct = Xero::post('Items', [
