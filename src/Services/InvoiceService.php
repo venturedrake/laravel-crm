@@ -54,11 +54,23 @@ class InvoiceService
                 }
 
                 if (isset($invoiceLine['product_id']) && $invoiceLine['product_id'] > 0 && $invoiceLine['quantity'] > 0) {
+                    if($product = Product::find($invoiceLine['product_id'])) {
+                        if($product->taxRate) {
+                            $taxRate = $product->taxRate->rate;
+                        } elseif($product->tax_rate) {
+                            $taxRate = $product->tax_rate;
+                        } else {
+                            $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                        }
+                    }
+
                     $invoice->invoiceLines()->create([
                         'product_id' => $invoiceLine['product_id'],
                         'quantity' => $invoiceLine['quantity'],
                         'price' => $invoiceLine['price'],
                         'amount' => $invoiceLine['amount'],
+                        'tax_rate' => $taxRate ?? 0,
+                        'tax_amount' => $invoiceLine['amount'] * ($taxRate / 100),
                         'currency' => $request->currency,
                         'order_product_id' => $invoiceLine['order_product_id'] ?? null,
                     ]);
@@ -129,30 +141,77 @@ class InvoiceService
         ]);
 
         if (isset($request->invoiceLines)) {
+            $invoiceLineIds = [];
+
             foreach ($request->invoiceLines as $line) {
                 if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
-                    $invoiceLine->update([
-                        'product_id' => $line['product_id'],
-                        'quantity' => $line['quantity'],
-                        'price' => $line['price'],
-                        'amount' => $line['amount'],
-                        'currency' => $request->currency,
-                    ]);
-                } elseif(isset($invoiceLine['product_id']) && $invoiceLine['quantity'] > 0) {
-                    if(! Product::find($invoiceLine['product_id'])) {
-                        $newProduct = $this->addProduct($invoiceLine, $request);
-                        $invoiceLine['product_id'] = $newProduct->id;
+                    if (! isset($line['product_id']) || $line['quantity'] == 0) {
+                        $invoiceLine->delete();
+                    } else {
+                        if(! Product::find($line['product_id'])) {
+                            $newProduct = $this->addProduct($line, $request);
+                            $line['product_id'] = $newProduct->id;
+                        }
+
+                        if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
+                            if($product = Product::find($invoiceLine['product_id'])) {
+                                if($product->taxRate) {
+                                    $taxRate = $product->taxRate->rate;
+                                } elseif($product->tax_rate) {
+                                    $taxRate = $product->tax_rate;
+                                } else {
+                                    $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                                }
+                            }
+
+                            $invoiceLine->update([
+                                'product_id' => $line['product_id'],
+                                'quantity' => $line['quantity'],
+                                'price' => $line['price'],
+                                'amount' => $line['amount'],
+                                'tax_rate' => $taxRate ?? 0,
+                                'tax_amount' => $line['amount'] * ($taxRate / 100),
+                                'currency' => $request->currency,
+                            ]);
+
+                            $invoiceLineIds[] = $invoiceLine->id;
+                        }
+                    }
+                } elseif(isset($line['product_id']) && $line['quantity'] > 0) {
+                    if(! Product::find($line['product_id'])) {
+                        $newProduct = $this->addProduct($line, $request);
+                        $line['product_id'] = $newProduct->id;
                     }
 
                     if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                        $invoice->invoiceLines()->create([
+                        if($product = Product::find($invoiceLine['product_id'])) {
+                            if($product->taxRate) {
+                                $taxRate = $product->taxRate->rate;
+                            } elseif($product->tax_rate) {
+                                $taxRate = $product->tax_rate;
+                            } else {
+                                $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                            }
+                        }
+
+                        $invoiceLine = $invoice->invoiceLines()->create([
                             'product_id' => $line['product_id'],
                             'quantity' => $line['quantity'],
                             'price' => $line['price'],
                             'amount' => $line['amount'],
+                            'tax_rate' => $taxRate ?? 0,
+                            'tax_amount' => $line['amount'] * ($taxRate / 100),
                             'currency' => $request->currency,
                         ]);
+
+                        $invoiceLineIds[] = $invoiceLine->id;
                     }
+                }
+            }
+
+            foreach ($invoice->invoiceLines as $invoiceLine) {
+                if (! in_array($invoiceLine->id, $invoiceLineIds)) {
+                    $invoiceLine->delete();
                 }
             }
         }

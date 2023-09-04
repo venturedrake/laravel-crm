@@ -99,6 +99,7 @@
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
+                        <th scope="col">{{ $taxName }}</th>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
                     </thead>
@@ -113,6 +114,7 @@
                             </td>
                             <td>{{ money($orderProduct->price ?? null, $orderProduct->currency) }}</td>
                             <td>{{ $orderProduct->quantity }}</td>
+                            <td>{{ money($orderProduct->tax_amount ?? null, $orderProduct->currency) }}</td>
                             <td>
                                 @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\lineAmount($orderProduct))
                                     <span data-toggle="tooltip" data-placement="top" title="Error with amount" class="text-danger">
@@ -125,7 +127,7 @@
                         </tr>
                         @if($orderProduct->comments)
                             <tr>
-                                <td colspan="4" class="border-0 pt-0">
+                                <td colspan="5" class="border-0 pt-0">
                                     <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong><br />
                                     {{ $orderProduct->comments }}
                                 </td>
@@ -135,6 +137,7 @@
                     </tbody>
                     <tfoot>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
@@ -151,10 +154,12 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
                         <td>{{ money($order->discount, $order->currency) }}</td>
                     </tr>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.tax')) }}</strong></td>
@@ -163,10 +168,12 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
                         <td>{{ money($order->adjustments, $order->currency) }}</td>
                     </tr>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>

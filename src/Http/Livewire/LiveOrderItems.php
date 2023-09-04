@@ -165,7 +165,7 @@ class LiveOrderItems extends Component
         for ($i = 1; $i <= $this->i; $i++) {
             if (isset($this->product_id[$i])) {
                 if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
-                    $taxRate = $product->tax_rate ?? $product->taxRate->rate ?? 0;
+                    $taxRate = $product->taxRate->rate ?? $product->tax_rate ?? 0;
                 } elseif($taxRate = $this->settingService->get('tax_rate')) {
                     $taxRate = $taxRate->value;
                 } else {
