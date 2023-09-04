@@ -20,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.8 - 2023-09-04
+### Added
+- Tax rates and tax amount added to quote products, order products & invoice lines
+- Indicate on products whether exist in Xero items
+### Fixed
+- Bug with create new products setting when creating quotes, orders, invoices
+- Tax rate show view
+### Removed
+- Save/Cancel buttons on product category show view
+
 ## 0.19.7 - 2023-09-01
 ### Changed
 - Switched cs from laravel to prs12
