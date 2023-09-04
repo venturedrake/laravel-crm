@@ -52,6 +52,8 @@
                     <dd class="col-sm-9">{{ $product->productCategory->name ?? null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                     <dd class="col-sm-9">{{ $product->description }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.integrations')) }}</dt>
+                    <dd class="col-sm-9">@if($product->xeroItem)<img src="/vendor/laravel-crm/img/xero-icon.png" height="20" />@endif</dd>
                 </dl>
                 <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.owner')) }}</h6>
                 <hr />

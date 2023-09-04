@@ -19,7 +19,7 @@
         <table class="table mb-0 card-table table-hover">
             <thead>
             <tr>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                <th scope="col" colspan="2">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.code')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.category')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.unit')) }}</th>
@@ -35,6 +35,7 @@
             @foreach($products as $product)
                 <tr class="has-link" data-url="{{ url(route('laravel-crm.products.show',$product)) }}">
                     <td>{{ $product->name }}</td>
+                    <td>@if($product->xeroItem)<img src="/vendor/laravel-crm/img/xero-icon.png" height="20" />@endif</td>
                     <td>{{ $product->code }}</td>
                     <td>{{ $product->productCategory->name ?? null }}</td>
                     <td>{{ $product->unit }}</td>
