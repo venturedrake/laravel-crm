@@ -98,9 +98,9 @@
             $(document).ready(function () {
                 window.addEventListener('addedItem', event => {
                     if($('meta[name=dynamic_products]').length > 0){
-                        var tags = $('meta[name=dynamic_products]').attr('content');
+                        var tags = JSON.parse($('meta[name=dynamic_products]').attr('content'));
                     }else{
-                        var tags = 'true';
+                        var tags = true;
                     }
                     
                     $("tr[data-number='" + event.detail.id + "'] td.bind-select2 select[name^='invoiceLines']").select2({

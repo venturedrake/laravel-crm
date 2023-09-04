@@ -85,9 +85,9 @@ const appJquery = function() {
 
             if(typeof products !== 'undefined'){
                 if($('meta[name=dynamic_products]').length > 0){
-                    var tags = $('meta[name=dynamic_products]').attr('content');
+                    var tags = JSON.parse($('meta[name=dynamic_products]').attr('content'));
                 }else{
-                    var tags = 'true';
+                    var tags = true;
                 }
                 
                 $("td.bind-select2 select[name^='products']").select2({
