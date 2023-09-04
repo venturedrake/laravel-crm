@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.9 - 2023-09-04
+### Fixed
+- Database update for tax amounts
+
 ## 0.19.8 - 2023-09-04
 ### Added
 - Tax rates and tax amount added to quote products, order products & invoice lines
