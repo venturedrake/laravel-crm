@@ -46,6 +46,12 @@ class Settings
                 'value' => config('laravel-crm.version'),
             ]);
 
+            Setting::firstOrCreate([
+                'name' => 'team',
+            ], [
+                'value' => 'related',
+            ]);
+            
             if (config('laravel-crm.teams') && ! auth()->guest() && $currentTeam = auth()->user()->currentTeam) {
                 Setting::firstOrCreate([
                     'name' => 'organisation_name',

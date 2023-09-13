@@ -2,12 +2,16 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Ramsey\Uuid\Uuid;
 use App\User;
 use DB;
 use Illuminate\Support\Facades\Hash;
 use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
+use VentureDrake\LaravelCrm\Models\Address;
+use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Role;
 use VentureDrake\LaravelCrm\Models\Team;
 
@@ -103,6 +107,10 @@ class UserController extends Controller
             }
         }
 
+        $this->updateUserPhones($user, $request->phones);
+        $this->updateUserEmails($user, $request->emails);
+        $this->updateUserAddresses($user, $request->addresses);
+
         if (config('laravel-crm.teams')) {
             if ($team = auth()->user()->currentTeam) {
                 DB::table('team_user')->insert([
@@ -154,6 +162,9 @@ class UserController extends Controller
         return view('laravel-crm::users.edit', [
             'user' => $user,
             'teams' => $teams,
+            'emails' => $user->emails,
+            'phones' => $user->phones,
+            'addresses' => $user->addresses,
         ]);
     }
 
@@ -171,6 +182,10 @@ class UserController extends Controller
             'email' => $request->email,
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ])->save();
+
+        $this->updateUserPhones($user, $request->phones);
+        $this->updateUserEmails($user, $request->emails);
+        $this->updateUserAddresses($user, $request->addresses);
 
         if ($request->role) {
             if ($role = Role::find($request->role)) {
@@ -206,5 +221,124 @@ class UserController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.user_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.users.index'));
+    }
+
+    protected function updateUserPhones($user, $phones)
+    {
+        $phoneIds = [];
+        if ($phones) {
+            foreach ($phones as $phoneRequest) {
+                if ($phoneRequest['id'] && $phone = Phone::find($phoneRequest['id'])) {
+                    $phone->update([
+                        'number' => $phoneRequest['number'],
+                        'type' => $phoneRequest['type'] ,
+                        'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                    $phoneIds[] = $phone->id;
+                } elseif ($phoneRequest['number']) {
+                    $phone = $user->phones()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'number' => $phoneRequest['number'],
+                        'type' => $phoneRequest['type'] ,
+                        'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                    $phoneIds[] = $phone->id;
+                }
+            }
+        }
+
+        foreach ($user->phones as $phone) {
+            if (! in_array($phone->id, $phoneIds)) {
+                $phone->delete();
+            }
+        }
+    }
+
+    protected function updateUserEmails($user, $emails)
+    {
+        $emailIds = [];
+
+        if ($emails) {
+            foreach ($emails as $emailRequest) {
+                if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
+                    $email->update([
+                        'address' => $emailRequest['address'],
+                        'type' => $emailRequest['type'] ,
+                        'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $emailIds[] = $email->id;
+                } elseif ($emailRequest['address']) {
+                    $email = $user->emails()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address' => $emailRequest['address'],
+                        'type' => $emailRequest['type'] ,
+                        'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $emailIds[] = $email->id;
+                }
+            }
+        }
+
+        foreach ($user->emails as $email) {
+            if (! in_array($email->id, $emailIds)) {
+                $email->delete();
+            }
+        }
+    }
+
+    protected function updateUserAddresses($user, $addresses)
+    {
+        $addressIds = [];
+
+        if ($addresses) {
+            foreach ($addresses as $addressRequest) {
+                if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
+                    $address->update([
+                        'address_type_id' => $addressRequest['type'] ?? null,
+                        'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'] ?? null,
+                        'contact' => $addressRequest['contact'] ?? null,
+                        'phone' => $addressRequest['phone'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $addressIds[] = $address->id;
+                } else {
+                    $address = $user->addresses()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address_type_id' => $addressRequest['type'] ?? null,
+                        'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'] ?? null,
+                        'contact' => $addressRequest['contact'] ?? null,
+                        'phone' => $addressRequest['phone'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $addressIds[] = $address->id;
+                }
+            }
+        }
+
+        foreach ($user->addresses as $address) {
+            if (! in_array($address->id, $addressIds)) {
+                $address->delete();
+            }
+        }
     }
 }

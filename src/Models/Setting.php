@@ -3,10 +3,16 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
+use VentureDrake\LaravelCrm\Traits\HasCrmAddresses;
+use VentureDrake\LaravelCrm\Traits\HasCrmEmails;
+use VentureDrake\LaravelCrm\Traits\HasCrmPhones;
 
 class Setting extends Model
 {
     use BelongsToTeams;
+    use HasCrmPhones;
+    use HasCrmEmails;
+    use HasCrmAddresses;
 
     protected $guarded = ['id'];
 
