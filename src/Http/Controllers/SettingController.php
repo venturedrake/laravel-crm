@@ -30,6 +30,7 @@ class SettingController extends Controller
     public function edit()
     {
         $organisationName = $this->settingService->get('organisation_name');
+        $vatNumber = $this->settingService->get('vat_number');
         $language = $this->settingService->get('language');
         $country = $this->settingService->get('country');
         $currency = $this->settingService->get('currency');
@@ -52,6 +53,7 @@ class SettingController extends Controller
 
         return view('laravel-crm::settings.edit', [
             'organisationName' => $organisationName,
+            'vatNumber' => $vatNumber,
             'language' => $language,
             'country' => $country,
             'currency' => $currency,
@@ -86,6 +88,11 @@ class SettingController extends Controller
     public function update(UpdateSettingRequest $request)
     {
         $this->settingService->set('organisation_name', $request->organisation_name);
+
+        if($request->vat_number) {
+            $this->settingService->set('vat_number', $request->vat_number);
+        }
+
         $this->settingService->set('language', $request->language);
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);

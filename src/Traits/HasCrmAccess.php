@@ -23,7 +23,7 @@ trait HasCrmAccess
     {
         return $this->emails()->where('primary', 1)->first();
     }
-    
+
     public function phones()
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Phone::class, 'phoneable');
@@ -33,7 +33,7 @@ trait HasCrmAccess
     {
         return $this->phones()->where('primary', 1)->first();
     }
-    
+
     public function addresses()
     {
         return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');

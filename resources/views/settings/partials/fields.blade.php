@@ -10,8 +10,7 @@
         @include('laravel-crm::partials.form.text',[
          'name' => 'vat_number',
          'label' => ucfirst(trans('laravel-crm::lang.vat_number')),
-         'value' => old('vat_number', $organisationVatNumber->value ?? null),
-         'required' => 'true'
+         'value' => old('vat_number', $vatNumber->value ?? null)
         ])
 
         @if($logoFile)

@@ -441,4 +441,5 @@ return [
     'edit_tax_rate' => 'edit tax rate',
     'tax_rate_percent' => 'tax rate %',
     'delivery_prefix' => 'delivery prefix',
+    'vat_number' => 'VAT Number'
 ];

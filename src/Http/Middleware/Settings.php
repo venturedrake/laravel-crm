@@ -51,7 +51,7 @@ class Settings
             ], [
                 'value' => 'related',
             ]);
-            
+
             if (config('laravel-crm.teams') && ! auth()->guest() && $currentTeam = auth()->user()->currentTeam) {
                 Setting::firstOrCreate([
                     'name' => 'organisation_name',
