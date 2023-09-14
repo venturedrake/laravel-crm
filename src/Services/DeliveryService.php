@@ -34,10 +34,12 @@ class DeliveryService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
-                $delivery->deliveryProducts()->create([
-                    'order_product_id' => $product['order_product_id'],
-                    'quantity' => $product['quantity'],
-                ]);
+                if($product['quantity'] > 0) {
+                    $delivery->deliveryProducts()->create([
+                        'order_product_id' => $product['order_product_id'],
+                        'quantity' => $product['quantity'],
+                    ]);
+                }
             }
         }
 

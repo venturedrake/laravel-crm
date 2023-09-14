@@ -23,6 +23,8 @@ class LiveDeliveryItems extends Component
 
     public $order_quantities;
 
+    public $delivery_quantities;
+
     public $quantity;
 
     public $inputs = [];
@@ -57,6 +59,12 @@ class LiveDeliveryItems extends Component
                             $this->order_quantities[$this->i][$i] = $i;
                         }
                     }
+                } else {
+                    foreach ($this->products as $deliveryProduct) {
+                        for ($i = 0; $i <= $deliveryProduct->quantity; $i++) {
+                            $this->delivery_quantities[$this->i][$i] = $i;
+                        }
+                    }
                 }
             }
         } elseif ($this->products && $this->products->count() > 0) {
@@ -69,13 +77,18 @@ class LiveDeliveryItems extends Component
                     $this->delivery_product_id[$this->i] = $deliveryProduct->id;
                 }
 
-                $this->product_id[$this->i] = $deliveryProduct->product->id ?? null;
-                $this->name[$this->i] = $deliveryProduct->product->name ?? null;
+                $this->product_id[$this->i] = $deliveryProduct->orderProduct->product->id ?? $deliveryProduct->product->id ?? null;
+                $this->name[$this->i] = $deliveryProduct->orderProduct->product->name ?? $deliveryProduct->product->name ?? null;
                 $this->quantity[$this->i] = $deliveryProduct->quantity;
 
                 if ($this->fromOrder) {
                     for ($i = 0; $i <= $this->getRemainOrderQuantity($deliveryProduct); $i++) {
                         $this->order_quantities[$this->i][$i] = $i;
+                        $this->quantity[$this->i] = $i;
+                    }
+                } else {
+                    for ($i = 0; $i <= $deliveryProduct->quantity; $i++) {
+                        $this->delivery_quantities[$this->i][$i] = $i;
                         $this->quantity[$this->i] = $i;
                     }
                 }
