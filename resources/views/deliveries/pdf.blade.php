@@ -98,11 +98,11 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($order->orderProducts()->whereNotNull('product_id')->get() as $orderProduct)
+        @foreach($delivery->deliveryProducts()->get() as $deliveryProduct)
             <tr>
-                <td>{{ $orderProduct->product->name }}</td>
-                <td>{{ $orderProduct->quantity }}</td>
-                <td>{{ $orderProduct->comments }}</td>
+                <td>{{ $deliveryProduct->orderProduct->product->name }}</td>
+                <td>{{ $deliveryProduct->quantity }}</td>
+                <td>{{ $deliveryProduct->orderProduct->comments }}</td>
             </tr>
         @endforeach
         </tbody>
