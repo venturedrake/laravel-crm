@@ -70,11 +70,6 @@
         'old' => old('phones')
         ])
 
-        @livewire('email-edit', [
-        'emails' => $emails ?? null,
-        'old' => old('emails')
-        ])
-
         @livewire('address-edit', [
         'addresses' => $addresses ?? null,
         'old' => old('addresses')
