@@ -178,4 +178,16 @@ return [
         'teams',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Update Notifications
+    |--------------------------------------------------------------------------
+    |
+    | Update this to false if you don't want to show any users that there are
+    | package updates available.
+    |
+    */
+
+    'update_notifications' => env('LARAVEL_CRM_UPDATE_NOTIFICATIONS', true),
+
 ];
