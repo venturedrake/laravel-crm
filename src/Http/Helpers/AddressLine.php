@@ -34,3 +34,32 @@ function addressSingleLine($address)
 
     return $line;
 }
+
+function addressMultipleLines($address)
+{
+    $lines = $address->line1;
+
+    if ($address->line2) {
+        $lines .= PHP_EOL.$address->line2;
+    }
+    if ($address->line3) {
+        $lines .= PHP_EOL.$address->line3;
+    }
+    if ($address->city) {
+        $lines .= PHP_EOL.$address->city;
+    }
+
+    if ($address->state) {
+        $lines .= ' '.$address->state;
+    }
+
+    if ($address->postcode) {
+        $lines .= ' '.$address->postcode;
+    }
+
+    if ($address->country) {
+        $lines .= PHP_EOL.$address->country;
+    }
+
+    return $lines;
+}
