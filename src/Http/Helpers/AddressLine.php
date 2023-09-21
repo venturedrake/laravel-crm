@@ -53,8 +53,8 @@ function addressMultipleLines($address)
         $lines .= ' '.$address->state;
     }
 
-    if ($address->postcode) {
-        $lines .= ' '.$address->postcode;
+    if ($address->code) {
+        $lines .= ' '.$address->code;
     }
 
     if ($address->country) {
