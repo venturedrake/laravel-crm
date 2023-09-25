@@ -47,7 +47,7 @@ class OrganisationService
         $organisation = Organisation::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->organisation_name,
-            'user_owner_id' => $request->user_owner_id ?? $request->user_assigned_id,
+            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
         $organisation->addresses()->create([

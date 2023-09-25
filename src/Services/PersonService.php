@@ -54,7 +54,7 @@ class PersonService
             'external_id' => Uuid::uuid4()->toString(),
             'first_name' => $name['first_name'],
             'last_name' => $name['last_name'] ?? null,
-            'user_owner_id' => $request->user_owner_id ?? $request->user_assigned_id,
+            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
         if ($request->phone) {
