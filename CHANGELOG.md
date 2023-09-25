@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 0.19.10 - 2023-09-25
+### Fixed
+- Adding new organisation or person bug when creating invoice
+
 ## 0.19.9 - 2023-09-04
 ### Fixed
 - Database update for tax amounts
