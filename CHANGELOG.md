@@ -21,8 +21,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed --->
 
 ## 0.19.10 - 2023-09-25
+### Added
+- Phone, emails & address to settings and users
+- VAT/ABN to settings
+- Added setting to disable update notifications
+- Address multiple lines helper
+### Changed
+- No longer adds zero quantity items to deliveries
 ### Fixed
 - Adding new organisation or person bug when creating invoice
+- Produce code required to post products to Xero api
+### Removed
 
 ## 0.19.9 - 2023-09-04
 ### Fixed
