@@ -97,8 +97,14 @@ class SettingController extends Controller
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
         $this->settingService->set('timezone', $request->timezone);
-        $this->settingService->set('tax_name', $request->tax_name);
-        $this->settingService->set('tax_rate', $request->tax_rate);
+
+        if($request->tax_name) {
+            $this->settingService->set('tax_name', $request->tax_name);
+        }
+
+        if($request->tax_rate) {
+            $this->settingService->set('tax_rate', $request->tax_rate);
+        }
 
         if($request->quote_prefix) {
             $this->settingService->set('quote_prefix', $request->quote_prefix);
