@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
@@ -140,6 +141,7 @@ use VentureDrake\LaravelCrm\Observers\XeroInvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
+use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -511,30 +513,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             });
         }
 
-        // This was causing composer install post dump autoload to fail when no DB connected
-        if (! $this->app->runningInConsole()) {
-            if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
-                view()->share('dateFormat', Setting::where('name', 'date_format')->first()->value ?? 'Y/m/d');
-                view()->share('timeFormat', Setting::where('name', 'time_format')->first()->value ?? 'H:i');
-                view()->share('timezone', Setting::where('name', 'timezone')->first()->value ?? 'UTC');
-                view()->share('taxName', Setting::where('name', 'tax_name')->first()->value ?? 'Tax');
-
-                if($setting = Setting::where('name', 'dynamic_products')->first()) {
-                    if($setting->value == 1) {
-                        view()->share('dynamicProducts', 'true');
-                    } else {
-                        view()->share('dynamicProducts', 'false');
-                    }
-                } else {
-                    view()->share('dynamicProducts', 'true');
-                }
-            } else {
-                view()->share('dateFormat', 'Y/m/d');
-                view()->share('timeFormat', 'H:i');
-                view()->share('timezone', 'UTC');
-                view()->share('taxName', 'Tax');
-            }
-        }
+        View::composer('*', SettingsComposer::class);
 
         Blade::if('hasleadsenabled', function () {
             if(is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {
