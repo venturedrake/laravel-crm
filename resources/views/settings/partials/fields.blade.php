@@ -21,8 +21,8 @@
         @include('laravel-crm::partials.form.file',[
              'name' => 'logo',
              'label' => ucfirst(trans('laravel-crm::lang.logo')),
-             'value' => old('logo', $timezone ?? null)
-         ])
+             'value' => old('logo')
+        ])
 
         @include('laravel-crm::partials.form.select',[
                 'name' => 'country',
