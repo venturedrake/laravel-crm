@@ -49,32 +49,32 @@
              'name' => 'timezone',
              'label' => ucfirst(trans('laravel-crm::lang.timezone')),
              'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timezones(),
-             'value' => old('timezone', $timezone->value ?? null),
+             'value' => old('timezone', $timezoneSetting->value ?? null),
              'required' => 'true'
         ])
         @include('laravel-crm::partials.form.select',[
             'name' => 'date_format',
             'label' => ucfirst(trans('laravel-crm::lang.date_format')),
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\dateFormats(),
-            'value' => old('date_format', $dateFormat->value ?? null),
+            'value' => old('date_format', $dateFormatSetting->value ?? null),
             'required' => 'true'
        ])
         @include('laravel-crm::partials.form.select',[
             'name' => 'time_format',
             'label' => ucfirst(trans('laravel-crm::lang.time_format')),
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timeFormats(),
-            'value' => old('time_format', $timeFormat->value ?? null),
+            'value' => old('time_format', $timeFormatSetting->value ?? null),
             'required' => 'true'
        ])
         @include('laravel-crm::partials.form.text',[
             'name' => 'tax_name',
             'label' => ucfirst(trans('laravel-crm::lang.tax_name')),
-            'value' => old('tax_name', $taxName->value ?? null)
+            'value' => old('tax_name', $taxNameSetting->value ?? null)
        ])
         @include('laravel-crm::partials.form.text',[
             'name' => 'tax_rate',
             'label' => ucfirst(trans('laravel-crm::lang.tax_rate')),
-            'value' => old('tax_rate', $taxRate->value ?? null),
+            'value' => old('tax_rate', $taxRateSetting->value ?? null),
             'append' => '%'
        ])
         @hasquotesenabled
@@ -130,7 +130,7 @@
         <div class="form-group">
             <label for="dynamic_products">{{ ucfirst(__('laravel-crm::lang.allow_creating_products_when_creating_quotes_orders_and_invoices')) }}</label>
             <span class="form-control-toggle">
-                 <input id="dynamic_products" type="checkbox" name="dynamic_products" {{ (isset($dynamicProducts->value) && ($dynamicProducts->value == 1)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+                 <input id="dynamic_products" type="checkbox" name="dynamic_products" {{ (isset($dynamicProductsSetting->value) && ($dynamicProductsSetting->value == 1)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
             </span>
         </div>
         <div class="form-group">

@@ -34,7 +34,7 @@ class SettingController extends Controller
         $language = $this->settingService->get('language');
         $country = $this->settingService->get('country');
         $currency = $this->settingService->get('currency');
-        $timezone = $this->settingService->get('timezone');
+        $timezoneSetting = $this->settingService->get('timezone');
         $logoFile = $this->settingService->get('logo_file');
         $quotePrefix = $this->settingService->get('quote_prefix');
         $orderPrefix = $this->settingService->get('order_prefix');
@@ -43,12 +43,12 @@ class SettingController extends Controller
         $quoteTerms = $this->settingService->get('quote_terms');
         $invoiceContactDetails = $this->settingService->get('invoice_contact_details');
         $invoiceTerms = $this->settingService->get('invoice_terms');
-        $dateFormat = $this->settingService->get('date_format');
-        $timeFormat = $this->settingService->get('time_format');
+        $dateFormatSetting = $this->settingService->get('date_format');
+        $timeFormatSetting = $this->settingService->get('time_format');
         $showRelatedActivity = $this->settingService->get('show_related_activity');
-        $dynamicProducts = $this->settingService->get('dynamic_products');
-        $taxName = $this->settingService->get('tax_name');
-        $taxRate = $this->settingService->get('tax_rate');
+        $dynamicProductsSetting = $this->settingService->get('dynamic_products');
+        $taxNameSetting = $this->settingService->get('tax_name');
+        $taxRateSetting = $this->settingService->get('tax_rate');
         $related = $this->settingService->get('team');
 
         return view('laravel-crm::settings.edit', [
@@ -57,7 +57,7 @@ class SettingController extends Controller
             'language' => $language,
             'country' => $country,
             'currency' => $currency,
-            'timezone' => $timezone,
+            'timezoneSetting' => $timezoneSetting,
             'logoFile' => $logoFile,
             'quotePrefix' => $quotePrefix,
             'orderPrefix' => $orderPrefix,
@@ -66,12 +66,12 @@ class SettingController extends Controller
             'quoteTerms' => $quoteTerms,
             'invoiceContactDetails' => $invoiceContactDetails,
             'invoiceTerms' => $invoiceTerms,
-            'dateFormat' => $dateFormat,
-            'timeFormat' => $timeFormat,
+            'dateFormatSetting' => $dateFormatSetting,
+            'timeFormatSetting' => $timeFormatSetting,
             'showRelatedActivity' => $showRelatedActivity,
-            'dynamicProducts' => $dynamicProducts,
-            'taxName' => $taxName,
-            'taxRate' => $taxRate,
+            'dynamicProductsSetting' => $dynamicProductsSetting,
+            'taxNameSetting' => $taxNameSetting,
+            'taxRateSetting' => $taxRateSetting,
             'emails' => $related->emails,
             'phones' => $related->phones,
             'addresses' => $related->addresses,
