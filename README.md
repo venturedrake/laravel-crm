@@ -8,8 +8,6 @@
 
 The free Laravel CRM you have been looking for, this package will add CRM functionality to your laravel projects or can be used as a complete standalone CRM built with Laravel. 
 
-> ⚠️ Warning: This is a pre-release version that is not recommended for production use just yet. 
-
 ## Use Cases
 
 - Use as a free CRM for your business or your clients
