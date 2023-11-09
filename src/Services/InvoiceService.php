@@ -73,6 +73,7 @@ class InvoiceService
                         'tax_amount' => $invoiceLine['amount'] * ($taxRate / 100),
                         'currency' => $request->currency,
                         'order_product_id' => $invoiceLine['order_product_id'] ?? null,
+                        'comments' => $invoiceLine['comments'],
                     ]);
                 }
             }
@@ -172,6 +173,7 @@ class InvoiceService
                                 'tax_rate' => $taxRate ?? 0,
                                 'tax_amount' => $line['amount'] * ($taxRate / 100),
                                 'currency' => $request->currency,
+                                'comments' => $line['comments'],
                             ]);
 
                             $invoiceLineIds[] = $invoiceLine->id;
@@ -202,6 +204,7 @@ class InvoiceService
                             'tax_rate' => $taxRate ?? 0,
                             'tax_amount' => $line['amount'] * ($taxRate / 100),
                             'currency' => $request->currency,
+                            'comments' => $line['comments'],
                         ]);
 
                         $invoiceLineIds[] = $invoiceLine->id;

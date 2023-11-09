@@ -32,6 +32,8 @@ class LiveInvoiceLines extends Component
 
     public $amount;
 
+    public $comments;
+
     public $inputs = [];
 
     public $i = 0;
@@ -77,6 +79,7 @@ class LiveInvoiceLines extends Component
 
                 $this->price[$this->i] = $old['price'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
+                $this->comments[$this->i] = $old['comments'] ?? null;
             }
         } elseif ($this->invoiceLines && $this->invoiceLines->count() > 0) {
             foreach ($this->invoiceLines as $invoiceLine) {
@@ -101,6 +104,7 @@ class LiveInvoiceLines extends Component
 
                 $this->price[$this->i] = $invoiceLine->price / 100;
                 $this->amount[$this->i] = $invoiceLine->amount / 100;
+                $this->comments[$this->i] = $invoiceLine->comments;
             }
         } elseif (! $this->fromOrder) {
             $this->add($this->i);
