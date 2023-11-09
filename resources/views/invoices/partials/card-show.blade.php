@@ -115,6 +115,14 @@
                             <td>{{ money($invoiceLine->tax_amount ?? null, $invoiceLine->currency) }}</td>
                             <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>
                         </tr>
+                        @if($invoiceLine->comments)
+                            <tr>
+                                <td colspan="5" class="border-0 pt-0">
+                                    <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong><br />
+                                    {{ $invoiceLine->comments }}
+                                </td>
+                            </tr>
+                        @endif    
                     @endforeach
                     </tbody>
                     <tfoot>
