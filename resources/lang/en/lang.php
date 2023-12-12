@@ -444,4 +444,5 @@ return [
     'vat_number' => 'VAT Number',
     'total_orders' => 'total orders',
     'total_deliveries' => 'total deliveries',
+    'default_tax_rate' => 'default tax rate',
 ];

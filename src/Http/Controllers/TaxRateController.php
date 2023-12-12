@@ -44,11 +44,16 @@ class TaxRateController extends Controller
      */
     public function store(StoreTaxRateRequest $request)
     {
-        TaxRate::create([
+        $taxRate = TaxRate::create([
             'name' => $request->name,
             'rate' => $request->rate,
             'description' => $request->description,
+            'default' => (($request->default == 'on') ? 1 : 0)
         ]);
+
+        if($request->default == 'on') {
+            TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
+        }
 
         flash(ucfirst(trans('laravel-crm::lang.tax_rate_stored')))->success()->important();
 
@@ -94,7 +99,12 @@ class TaxRateController extends Controller
             'name' => $request->name,
             'rate' => $request->rate,
             'description' => $request->description,
+            'default' => (($request->default == 'on') ? 1 : 0)
         ]);
+
+        if($request->default == 'on') {
+            TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
+        }
 
         flash(ucfirst(trans('laravel-crm::lang.tax_rate_updated')))->success()->important();
 

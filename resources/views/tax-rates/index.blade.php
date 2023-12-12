@@ -16,6 +16,7 @@
                             <tr>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.rate')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.default')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.products')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>
@@ -27,6 +28,7 @@
                                 <tr class="has-link" data-url="{{ url(route('laravel-crm.tax-rates.show',$taxRate)) }}">
                                     <td>{{ $taxRate->name }}</td>
                                     <td>{{ $taxRate->rate }}%</td>
+                                    <td>{{ $taxRate->default == 1 ? 'YES' : 'NO' }}</td>
                                     <td>{{ $taxRate->products->count() }}</td>
                                     <td>{{ $taxRate->created_at->format($dateFormat) }}</td>
                                     <td>{{ $taxRate->updated_at->format($dateFormat) }}</td>

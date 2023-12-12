@@ -30,6 +30,8 @@
                         <dd class="col-sm-9">{{ $taxRate->rate }}%</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                         <dd class="col-sm-9">{{ $taxRate->description }}</dd>
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.default_tax_rate')) }}</dt>
+                        <dd class="col-sm-9">{{ $taxRate->default == 1 ? 'YES' : 'NO' }}</dd>
                     </dl>
                 </div>
                 <div class="col-sm-6">
