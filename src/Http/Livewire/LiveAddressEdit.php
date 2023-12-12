@@ -55,10 +55,10 @@ class LiveAddressEdit extends Component
         } elseif ($this->addresses && $this->addresses->count() > 0) {
             foreach ($this->addresses as $address) {
 
-                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->id == 6) {
+                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Shipping') {
                     $this->add($this->i);
-                    $this->type[$this->i] = 5;
-                    $this->type_name[$this->i] = AddressType::find(5)->name;
+                    $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
+                    $this->type_name[$this->i] = 'Billing';
                 }
 
                 $this->add($this->i);
@@ -77,10 +77,10 @@ class LiveAddressEdit extends Component
                 $this->primary[$this->i] = $address->primary;
                 $this->addressId[$this->i] = $address->id;
 
-                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->id == 5) {
+                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Billing') {
                     $this->add($this->i);
-                    $this->type[$this->i] = 5;
-                    $this->type_name[$this->i] = AddressType::find(5)->name;
+                    $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
+                    $this->type_name[$this->i] = 'Billing';
                 }
             }
         } else {
@@ -97,15 +97,15 @@ class LiveAddressEdit extends Component
                         }
                     }
                 } else {
-                    $this->type[$this->i] = 5;
-                    $this->type_name[$this->i] = AddressType::find(5)->name;
+                    $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
+                    $this->type_name[$this->i] = 'Billing';
                     $this->add($this->i);
-                    $this->type[$this->i] = 6;
-                    $this->type_name[$this->i] = AddressType::find(6)->name;
+                    $this->type[$this->i] = AddressType::where('name', 'Shipping')->first()->id;
+                    $this->type_name[$this->i] = 'Shipping';
                 }
             } elseif ($model == 'delivery') {
-                $this->type[$this->i] = 6;
-                $this->type_name[$this->i] = AddressType::find(6)->name;
+                $this->type[$this->i] = AddressType::where('name', 'Shipping')->first()->id;
+                $this->type_name[$this->i] = 'Shipping';
             }
         }
     }
