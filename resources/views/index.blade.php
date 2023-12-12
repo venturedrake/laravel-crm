@@ -56,6 +56,19 @@
                 </div>
             </div>
             @endhasordersenabled
+            @hasinvoicesenabled
+            <div class="col-sm mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.invoices')) }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <h2>{{ $totalInvoicesCount ?? 0 }}</h2>
+                        <small>{{ ucfirst(__('laravel-crm::lang.total_invoices')) }}</small>
+                    </div>
+                </div>
+            </div>
+            @endhasinvoicesenabled
             @hasdeliveriesenabled
             <div class="col-sm mb-4">
                 <div class="card">
