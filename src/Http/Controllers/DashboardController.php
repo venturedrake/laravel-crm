@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
@@ -70,6 +71,7 @@ class DashboardController extends Controller
             'totalQuotesCount' => Quote::count(),
             'totalOrdersCount' => Order::count(),
             'totalInvoicesCount' => Invoice::count(),
+            'totalDeliveriesCount' => Delivery::count(),
             'totalClientsCount' => Client::count(),
             'totalOrganisationsCount' => Organisation::count(),
             'totalPeopleCount' => Person::count(),
