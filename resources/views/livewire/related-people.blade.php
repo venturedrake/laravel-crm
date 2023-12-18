@@ -1,9 +1,9 @@
 <div>
     @can('view crm people')
-        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.people')) }} ({{ $people->count() }})</span>@can('create crm people')<span class="float-right"><a href="#" data-toggle="modal" data-target="#linkPersonModal" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.people')) }} ({{ $people->count() }})</span>@can('create crm people') @if(!isset($actions) || $actions) <span class="float-right"><a href="#" data-toggle="modal" data-target="#linkPersonModal" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span> @endif @endcan</h6>
         <hr />
         @foreach($people as $person)
-            <p><span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show',$person) }}">{{ $person->name }}</a> <span class="float-right"><button wire:click.prevent="remove({{ $person->id }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button></span></p>
+            <p><span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show',$person) }}">{{ $person->name }}</a> @if(!isset($actions) || $actions) <span class="float-right"><button wire:click.prevent="remove({{ $person->id }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button></span>@endif</p>
         @endforeach
     
         <!-- Modal -->
