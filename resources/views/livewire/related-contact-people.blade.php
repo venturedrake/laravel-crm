@@ -1,9 +1,9 @@
 <div>
     @can('view crm contacts')
-        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.people')) }} ({{ $contacts->count() }})</span>@can('create crm contacts') @if(!isset($actions) || $actions) <span class="float-right"><a href="#" data-toggle="modal" data-target="#linkPersonModal" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span> @endif @endcan</h6>
+        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.people')) }} ({{ $contacts->count() }})</span>@can('create crm contacts') @if($actions) <span class="float-right"><a href="#" data-toggle="modal" data-target="#linkPersonModal" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span> @endif @endcan</h6>
         <hr />
         @foreach($contacts as $contact)
-            <p><span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show',$contact->entityable) }}">{{ $contact->entityable->name }}</a> @if(!isset($actions) || $actions) <span class="float-right"><button wire:click.prevent="remove({{ $contact->entityable->id }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button></span> @endif</p>
+            <p><span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show',$contact->entityable) }}">{{ $contact->entityable->name }}</a> @if($actions) <span class="float-right"><button wire:click.prevent="remove({{ $contact->entityable->id }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button></span> @endif</p>
         @endforeach
 
         <!-- Modal -->

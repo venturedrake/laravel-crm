@@ -12,10 +12,12 @@ class LiveRelatedPerson extends Component
     public $people;
     public $person_id;
     public $person_name;
+    public $actions;
 
-    public function mount($model)
+    public function mount($model, $actions = true)
     {
         $this->model = $model;
+        $this->actions = $actions;
         $this->getPeople();
     }
 

@@ -12,10 +12,12 @@ class LiveRelatedContactOrganisation extends Component
     public $contacts;
     public $organisation_id;
     public $organisation_name;
+    public $actions;
 
-    public function mount($model)
+    public function mount($model, $actions = true)
     {
         $this->model = $model;
+        $this->actions = $actions;
         $this->getContacts();
     }
 
