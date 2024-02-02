@@ -6,12 +6,25 @@
           'value' => old('name', $organisation->name ?? null),
           'required' => 'true'
         ])
-        @include('laravel-crm::partials.form.select',[
-             'name' => 'organisation_type_id',
-             'label' => ucfirst(__('laravel-crm::lang.type')),
-             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\OrganisationType::all(), true),
-             'value' =>  old('organisation_type_id', $organisation->organisationType->id ?? null),
-        ])
+        <div class="row">
+            <div class="col">
+                @include('laravel-crm::partials.form.select',[
+                     'name' => 'organisation_type_id',
+                     'label' => ucfirst(__('laravel-crm::lang.type')),
+                     'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\OrganisationType::all(), true),
+                     'value' =>  old('organisation_type_id', $organisation->organisationType->id ?? null),
+                ])
+            </div>
+            <div class="col">
+                @include('laravel-crm::partials.form.text',[
+                  'name' => 'vat_number',
+                  'label' => ucfirst(__('laravel-crm::lang.vat_number')),
+                  'value' => old('vat_number', $organisation->vat_number ?? null),
+                  'required' => 'true'
+                ])
+            </div>
+        </div>
+        
         @include('laravel-crm::partials.form.textarea',[
            'name' => 'description',
            'label' => ucfirst(__('laravel-crm::lang.description')),

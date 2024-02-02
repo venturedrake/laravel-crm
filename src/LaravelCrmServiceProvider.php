@@ -200,6 +200,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
          * Optional methods to load your package assets
          */
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel-crm');
+        // TBC: BS or TW mode, setting on config
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-crm');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
