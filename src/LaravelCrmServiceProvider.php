@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
+use VentureDrake\LaravelCrm\Console\LaravelCrmContactTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
@@ -446,7 +447,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmAddressTypes::class,
                 LaravelCrmOrganisationTypes::class,
                 LaravelCrmXero::class,
-                LaravelCrmReminders::class
+                LaravelCrmReminders::class,
+                LaravelCrmContactTypes::class
             ]);
 
             // Register the model factories

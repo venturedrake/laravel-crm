@@ -119,6 +119,44 @@ class TeamObserver
                     'updated_at' => Carbon::now(),
                 ]);
             }
+
+            foreach (DB::table(config('laravel-crm.db_table_prefix').'contact_types')
+                         ->whereNull('team_id')
+                         ->get() as $contactType) {
+                DB::table(config('laravel-crm.db_table_prefix').'contact_types')->insert([
+                    'name' => $contactType->name,
+                    'description' => $contactType->description,
+                    'team_id' => $team->id,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
+
+            foreach (DB::table(config('laravel-crm.db_table_prefix').'industries')
+                         ->whereNull('team_id')
+                         ->get() as $industry) {
+                DB::table(config('laravel-crm.db_table_prefix').'industries')->insert([
+                    'name' => $industry->name,
+                    'description' => $industry->description,
+                    'team_id' => $team->id,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
+
+            foreach (DB::table(config('laravel-crm.db_table_prefix').'tax_rates')
+                         ->whereNull('team_id')
+                         ->get() as $taxRate) {
+                DB::table(config('laravel-crm.db_table_prefix').'tax_rates')->insert([
+                    'name' => $taxRate->name,
+                    'description' => $taxRate->description,
+                    'rate' => $taxRate->rate,
+                    'default' => $taxRate->default,
+                    'team_id' => $team->id,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
         }
     }
 
