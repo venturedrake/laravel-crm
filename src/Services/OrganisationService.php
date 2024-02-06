@@ -31,6 +31,12 @@ class OrganisationService
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
             'organisation_type_id' => $request->organisation_type_id,
+            'vat_number' => $request->vat_number,
+            'industry_id' => $request->industry_id,
+            'timezone_id' => $request->timezone_id,
+            'number_of_employees' => $request->number_of_employees,
+            'total_money_raised' => $request->total_money_raised,
+            'linkedin' => $request->linkedin,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
         ]);
@@ -47,6 +53,14 @@ class OrganisationService
         $organisation = Organisation::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->organisation_name,
+            'organisation_type_id' => $request->organisation_type_id,
+            'vat_number' => $request->vat_number,
+            'industry_id' => $request->industry_id,
+            'timezone_id' => $request->timezone_id,
+            'number_of_employees' => $request->number_of_employees,
+            'total_money_raised' => $request->total_money_raised,
+            'linkedin' => $request->linkedin,
+            'description' => $request->description,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
@@ -70,6 +84,12 @@ class OrganisationService
         $organisation->update([
             'name' => $request->name,
             'organisation_type_id' => $request->organisation_type_id,
+            'vat_number' => $request->vat_number,
+            'industry_id' => $request->industry_id,
+            'timezone_id' => $request->timezone_id,
+            'number_of_employees' => $request->number_of_employees,
+            'total_money_raised' => $request->total_money_raised,
+            'linkedin' => $request->linkedin,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
         ]);
