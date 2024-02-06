@@ -25,7 +25,7 @@ class OrganisationObserver
     /**
      * Handle the organisation "created" event.
      *
-     * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
     public function created(Organisation $organisation)

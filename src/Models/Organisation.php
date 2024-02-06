@@ -54,6 +54,15 @@ class Organisation extends Model
         return config('laravel-crm.db_table_prefix').'organisations';
     }
 
+    public function setTotalMoneyRaisedAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['total_money_raised'] = $value * 100;
+        } else {
+            $this->attributes['total_money_raised'] = null;
+        }
+    }
+
     public function people()
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Person::class);
@@ -139,5 +148,10 @@ class Organisation extends Model
     public function client()
     {
         return $this->morphOne(\VentureDrake\LaravelCrm\Models\Client::class, 'clientable');
+    }
+
+    public function timezone()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Timezone::class);
     }
 }
