@@ -70,7 +70,8 @@
             "src/Http/Helpers/PersonName.php",
             "src/Http/Helpers/AddressLine.php",
             "src/Http/Helpers/AutoComplete.php",
-            "src/Http/Helpers/CheckAmount.php"
+            "src/Http/Helpers/CheckAmount.php",
+            "src/Http/Helpers/Validate.php"
         ]
     },
     "autoload-dev": {
