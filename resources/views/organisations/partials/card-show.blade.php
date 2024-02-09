@@ -69,8 +69,8 @@
                     <dd class="col-sm-9">{{ $organisation->timezone->name ?? null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.number_of_employees')) }}</dt>
                     <dd class="col-sm-9">{{ $organisation->number_of_employees }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.total_money_raised')) }}</dt>
-                    <dd class="col-sm-9">{{ money($organisation->total_money_raised, $organisation->currency) }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.annual_revenue')) }}</dt>
+                    <dd class="col-sm-9">{{ money($organisation->annual_revenue, $organisation->currency) }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.linkedin')) }}</dt>
                     <dd class="col-sm-9">https://linkedin.com/company/{{ $organisation->linkedin }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>

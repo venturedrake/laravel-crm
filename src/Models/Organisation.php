@@ -54,6 +54,15 @@ class Organisation extends Model
         return config('laravel-crm.db_table_prefix').'organisations';
     }
 
+    public function setAnnualRevenueAttribute($value)
+    {
+        if (isset($value)) {
+            $this->attributes['annual_revenue'] = $value * 100;
+        } else {
+            $this->attributes['annual_revenue'] = null;
+        }
+    }
+
     public function setTotalMoneyRaisedAttribute($value)
     {
         if (isset($value)) {
