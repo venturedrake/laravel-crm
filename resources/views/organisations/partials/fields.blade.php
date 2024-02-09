@@ -53,10 +53,10 @@
             </div>
             <div class="col">
                 @include('laravel-crm::partials.form.text',[
-                    'name' => 'total_money_raised',
-                    'label' => ucfirst(__('laravel-crm::lang.total_money_raised')),
+                    'name' => 'annual_revenue',
+                    'label' => ucfirst(__('laravel-crm::lang.annual_revenue')),
                     'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
-                    'value' => old('total_money_raised', ((isset($organisation->total_money_raised)) ? ($organisation->total_money_raised / 100) : null) ?? null)      
+                    'value' => old('annual_revenue', ((isset($organisation->annual_revenue)) ? ($organisation->annual_revenue / 100) : null) ?? null)      
                   ])
             </div>
         </div>

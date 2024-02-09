@@ -450,4 +450,5 @@ return [
     'industry' => 'industry',
     'linkedin' => 'LinkedIn',
     'linkedin_company_page' => 'LinkedIn company page',
+    'annual_revenue' => 'annual revenue',
 ];

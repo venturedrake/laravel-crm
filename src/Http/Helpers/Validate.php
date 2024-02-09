@@ -8,7 +8,7 @@ function email($email)
         $address = $email;
         $atPos = mb_strpos($address, '@');
         $domain = mb_substr($address, $atPos + 1);
-        
+
         if(checkdnsrr($domain . '.', 'MX')) {
             return true;
         }
