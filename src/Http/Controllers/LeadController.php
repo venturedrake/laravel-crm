@@ -279,6 +279,7 @@ class LeadController extends Controller
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'leads.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'leads.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
                 foreach ($record->getSearchable() as $field) {
