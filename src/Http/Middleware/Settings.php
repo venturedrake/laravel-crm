@@ -139,6 +139,12 @@ class Settings
             ]);
 
             Setting::firstOrCreate([
+                'name' => 'purchase_order_prefix',
+            ], [
+                'value' => 'PO-',
+            ]);
+
+            Setting::firstOrCreate([
                 'name' => 'dynamic_products',
             ], [
                 'value' => '1',

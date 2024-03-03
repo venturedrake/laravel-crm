@@ -48,6 +48,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveProductForm;
+use VentureDrake\LaravelCrm\Http\Livewire\LivePurchaseOrderLines;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
@@ -95,6 +96,8 @@ use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductPrice;
+use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
@@ -130,6 +133,8 @@ use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 use VentureDrake\LaravelCrm\Observers\ProductObserver;
 use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
+use VentureDrake\LaravelCrm\Observers\PurchaseOrderLineObserver;
+use VentureDrake\LaravelCrm\Observers\PurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteProductObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
@@ -179,6 +184,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Field' => \VentureDrake\LaravelCrm\Policies\FieldPolicy::class,
         'VentureDrake\LaravelCrm\Models\FieldGroup' => \VentureDrake\LaravelCrm\Policies\FieldGroupPolicy::class,
         'VentureDrake\LaravelCrm\Models\Delivery' => \VentureDrake\LaravelCrm\Policies\DeliveryPolicy::class,
+        'VentureDrake\LaravelCrm\Models\PurchaseOrder' => \VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy::class,
     ];
 
     /**
@@ -269,6 +275,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         FieldValue::observe(FieldValueObserver::class);
         Delivery::observe(DeliveryObserver::class);
         DeliveryProduct::observe(DeliveryProductObserver::class);
+        PurchaseOrder::observe(PurchaseOrderObserver::class);
+        PurchaseOrderLine::observe(PurchaseOrderLineObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -419,6 +427,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_default_to_laravel_crm_tax_rates_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_default_to_laravel_crm_tax_rates_table.php', 85),
                 __DIR__ . '/../database/migrations/create_laravel_crm_industries_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_industries_table.php', 86),
                 __DIR__ . '/../database/migrations/add_extra_fields_to_laravel_crm_organisations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_extra_fields_to_laravel_crm_organisations_table.php', 87),
+                __DIR__ . '/../database/migrations/create_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_orders_table.php', 88),
+                __DIR__ . '/../database/migrations/create_laravel_crm_purchase_order_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_order_lines_table.php', 89),
+                __DIR__ . '/../database/migrations/create_laravel_crm_xero_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_purchase_orders_table.php', 90),
             ], 'migrations');
 
             // Publishing the seeders
@@ -493,6 +504,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('send-invoice', SendInvoice::class);
         Livewire::component('pay-invoice', PayInvoice::class);
         Livewire::component('product-form', LiveProductForm::class);
+        Livewire::component('purchase-order-lines', LivePurchaseOrderLines::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
@@ -563,6 +575,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         Blade::if('hasdeliveriesenabled', function () {
             if(is_array(config('laravel-crm.modules')) && in_array('deliveries', config('laravel-crm.modules'))) {
+                return true;
+            } elseif(! config('laravel-crm.modules')) {
+                return true;
+            }
+        });
+
+        Blade::if('haspurchaseordersenabled', function () {
+            if(is_array(config('laravel-crm.modules')) && in_array('purchase-orders', config('laravel-crm.modules'))) {
                 return true;
             } elseif(! config('laravel-crm.modules')) {
                 return true;

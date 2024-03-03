@@ -56,6 +56,11 @@
                     <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deliveries') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deliveries.index')) }}"><i class="fa fa-shipping-fast"></i> {{ ucfirst(__('laravel-crm::lang.deliveries')) }}</a></li>
                 @endcan
             @endhasdeliveriesenabled
+            @haspurchaseordersenabled
+            @can('view crm purchase orders')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.purchase-order') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.purchase-orders.index')) }}"><i class="fa fa-file-invoice-dollar"></i> {{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}</a></li>
+            @endcan
+            @endhaspurchaseordersenabled
             @canany(['view crm clients', 'view crm people', 'view crm organisations'])
             <li class="dropdown-divider"></li>
             @endcan

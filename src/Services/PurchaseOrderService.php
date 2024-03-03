@@ -4,58 +4,58 @@ namespace VentureDrake\LaravelCrm\Services;
 
 use Carbon\Carbon;
 use Dcblogdev\Xero\Facades\Xero;
-use VentureDrake\LaravelCrm\Models\Invoice;
-use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
-use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
+use VentureDrake\LaravelCrm\Repositories\PurchaseOrderRepository;
 
-class InvoiceService
+class PurchaseOrderService
 {
     /**
-     * @var InvoiceRepository
+     * @var PurchaseOrderRepository
      */
-    private $invoiceRepository;
+    private $purchaseOrderRepository;
 
     /**
      * LeadService constructor.
-     * @param InvoiceRepository $invoiceRepository
+     * @param PurchaseOrderRepository $purchaseOrderRepository
      */
-    public function __construct(InvoiceRepository $invoiceRepository)
+    public function __construct(PurchaseOrderRepository $purchaseOrderRepository)
     {
-        $this->invoiceRepository = $invoiceRepository;
+        $this->purchaseOrderRepository = $purchaseOrderRepository;
     }
 
     public function create($request, $person = null, $organisation = null)
     {
-        $invoice = Invoice::create([
+        $purchaseOrder = PurchaseOrder::create([
             'order_id' => $request->order_id ?? null,
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'reference' => $request->reference,
             'issue_date' => $request->issue_date,
-            'due_date' => $request->due_date,
+            'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
-            'terms' => $request->terms,
+            'delivery_instructions' => $request->delivery_instructions,
             'subtotal' => $request->sub_total,
             'tax' => $request->tax,
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        if (isset($request->invoiceLines)) {
-            foreach ($request->invoiceLines as $invoiceLine) {
-                if(isset($invoiceLine['product_id']) && $invoiceLine['quantity'] > 0) {
-                    if(! Product::find($invoiceLine['product_id'])) {
-                        $newProduct = $this->addProduct($invoiceLine, $request);
-                        $invoiceLine['product_id'] = $newProduct->id;
+        if (isset($request->purchaseOrderLines)) {
+            foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
+                if(isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['quantity'] > 0) {
+                    if(! Product::find($purchaseOrderLine['product_id'])) {
+                        $newProduct = $this->addProduct($purchaseOrderLine, $request);
+                        $purchaseOrderLine['product_id'] = $newProduct->id;
                     }
                 }
 
-                if (isset($invoiceLine['product_id']) && $invoiceLine['product_id'] > 0 && $invoiceLine['quantity'] > 0) {
-                    if($product = Product::find($invoiceLine['product_id'])) {
+                if (isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['product_id'] > 0 && $purchaseOrderLine['quantity'] > 0) {
+                    if($product = Product::find($purchaseOrderLine['product_id'])) {
                         if($product->taxRate) {
                             $taxRate = $product->taxRate->rate;
                         } elseif($product->tax_rate) {
@@ -67,16 +67,16 @@ class InvoiceService
                         }
                     }
 
-                    $invoice->invoiceLines()->create([
-                        'product_id' => $invoiceLine['product_id'],
-                        'quantity' => $invoiceLine['quantity'],
-                        'price' => $invoiceLine['price'],
-                        'amount' => $invoiceLine['amount'],
+                    $purchaseOrder->purchaseOrderLines()->create([
+                        'product_id' => $purchaseOrderLine['product_id'],
+                        'quantity' => $purchaseOrderLine['quantity'],
+                        'price' => $purchaseOrderLine['price'],
+                        'amount' => $purchaseOrderLine['amount'],
                         'tax_rate' => $taxRate ?? 0,
-                        'tax_amount' => $invoiceLine['amount'] * ($taxRate / 100),
+                        'tax_amount' => $purchaseOrderLine['amount'] * ($taxRate / 100),
                         'currency' => $request->currency,
-                        'order_product_id' => $invoiceLine['order_product_id'] ?? null,
-                        'comments' => $invoiceLine['comments'],
+                        'order_product_id' => $purchaseOrderLine['order_product_id'] ?? null,
+                        'comments' => $purchaseOrderLine['comments'],
                     ]);
                 }
             }
@@ -85,7 +85,7 @@ class InvoiceService
         if (Xero::isConnected()) {
             $lineItems = [];
 
-            foreach ($invoice->invoiceLines as $line) {
+            foreach ($purchaseOrder->purchaseOrderLines as $line) {
                 $lineItems[] = [
                     'Description' => $line->product->name,
                     'Quantity' => $line->quantity,
@@ -99,7 +99,7 @@ class InvoiceService
             }
 
             try {
-                $xeroInvoice = Xero::invoices()->store([
+                /*$xeroInvoice = Xero::invoices()->store([
                     'Type' => 'ACCREC',
                     'Status' => 'AUTHORISED',
                     'Contact' => [
@@ -118,39 +118,39 @@ class InvoiceService
                     'reference' => $xeroInvoice['Reference'],
                     'invoice_id' => $invoice->id,
                     'status' => $xeroInvoice['Status'],
-                ]);
+                ]);*/
             } catch (Exception $e) {
                 //
             }
         }
 
-        return $invoice;
+        return $purchaseOrder;
     }
 
-    public function update($request, Invoice $invoice, $person = null, $organisation = null)
+    public function update($request, PurchaseOrder $purchaseOrder, $person = null, $organisation = null)
     {
-        $invoice->update([
+        $purchaseOrder->update([
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'reference' => $request->reference,
             'issue_date' => $request->issue_date,
-            'due_date' => $request->due_date,
+            'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
-            'terms' => $request->terms,
+            'delivery_instructions' => $request->delivery_instructions,
             'subtotal' => $request->sub_total,
             'tax' => $request->tax,
             'total' => $request->total,
-            'amount_due' => $request->total - ($invoice->amount_paid / 100),
+            'amount_due' => $request->total - ($purchaseOrder->amount_paid / 100),
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        if (isset($request->invoiceLines)) {
-            $invoiceLineIds = [];
+        if (isset($request->purchaseOrderLines)) {
+            $purchaseOrderLineIds = [];
 
-            foreach ($request->invoiceLines as $line) {
-                if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
+            foreach ($request->purchaseOrderLines as $line) {
+                if (isset($line['purchase_order_line_id']) && $purchaseOrderLine = PurchaseOrderLine::find($line['purchase_order_line_id'])) {
                     if (! isset($line['product_id']) || $line['quantity'] == 0) {
-                        $invoiceLine->delete();
+                        $purchaseOrderLine->delete();
                     } else {
                         if(! Product::find($line['product_id'])) {
                             $newProduct = $this->addProduct($line, $request);
@@ -158,7 +158,7 @@ class InvoiceService
                         }
 
                         if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                            if($product = Product::find($invoiceLine['product_id'])) {
+                            if($product = Product::find($purchaseOrderLine['product_id'])) {
                                 if($product->taxRate) {
                                     $taxRate = $product->taxRate->rate;
                                 } elseif($product->tax_rate) {
@@ -170,7 +170,7 @@ class InvoiceService
                                 }
                             }
 
-                            $invoiceLine->update([
+                            $purchaseOrderLine->update([
                                 'product_id' => $line['product_id'],
                                 'quantity' => $line['quantity'],
                                 'price' => $line['price'],
@@ -181,7 +181,7 @@ class InvoiceService
                                 'comments' => $line['comments'],
                             ]);
 
-                            $invoiceLineIds[] = $invoiceLine->id;
+                            $purchaseOrderLineIds[] = $purchaseOrderLine->id;
                         }
                     }
                 } elseif(isset($line['product_id']) && $line['quantity'] > 0) {
@@ -203,7 +203,7 @@ class InvoiceService
                             }
                         }
 
-                        $invoiceLine = $invoice->invoiceLines()->create([
+                        $purchaseOrderLine = $purchaseOrder->purchaseOrderLines()->create([
                             'product_id' => $line['product_id'],
                             'quantity' => $line['quantity'],
                             'price' => $line['price'],
@@ -214,19 +214,19 @@ class InvoiceService
                             'comments' => $line['comments'],
                         ]);
 
-                        $invoiceLineIds[] = $invoiceLine->id;
+                        $purchaseOrderLineIds[] = $purchaseOrderLine->id;
                     }
                 }
             }
 
-            foreach ($invoice->invoiceLines as $invoiceLine) {
-                if (! in_array($invoiceLine->id, $invoiceLineIds)) {
-                    $invoiceLine->delete();
+            foreach ($purchaseOrder->purchaseOrderLines as $purchaseOrderLine) {
+                if (! in_array($purchaseOrderLine->id, $purchaseOrderLineIds)) {
+                    $purchaseOrderLine->delete();
                 }
             }
         }
 
-        return $invoice;
+        return $purchaseOrder;
     }
 
     protected function addProduct($product, $request)

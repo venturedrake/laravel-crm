@@ -96,6 +96,11 @@
                     <td>{{ $order->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm orders')
+                            @if(! $order->deliveryComplete())
+                                @haspurchaseordersenabled
+                                <a href="{{ route('laravel-crm.purchase-orders.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.purchase')) }}</a>
+                                @endhaspurchaseordersenabled
+                            @endif
                             @if(! $order->invoiceComplete())
                                 @hasinvoicesenabled
                                 <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
@@ -103,7 +108,7 @@
                             @endif        
                             @if(! $order->deliveryComplete())
                                 @hasdeliveriesenabled
-                                    <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                                    <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.delivery')) }}</a>
                                 @endhasdeliveriesenabled
                             @endif
                         @endcan

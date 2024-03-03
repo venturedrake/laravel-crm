@@ -459,6 +459,54 @@ Route::group(['prefix' => 'deliveries', 'middleware' => 'auth.laravel-crm'], fun
         ->middleware(['can:view,delivery']);
 });
 
+/* Purchase Orders */
+
+Route::group(['prefix' => 'purchase-orders', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@index')
+        ->name('laravel-crm.purchase-orders.filter')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
+
+    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@search')
+        ->name('laravel-crm.purchase-orders.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
+
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@index')
+        ->name('laravel-crm.purchase-orders.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
+
+    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@create')
+        ->name('laravel-crm.purchase-orders.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@store')
+        ->name('laravel-crm.purchase-orders.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
+
+    Route::get('{purchaseOrder}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@show')
+        ->name('laravel-crm.purchase-orders.show')
+        ->middleware(['can:view,purchaseOrder']);
+
+    Route::get('{purchaseOrder}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@edit')
+        ->name('laravel-crm.purchase-orders.edit')
+        ->middleware(['can:update,purchaseOrder']);
+
+    Route::put('{purchaseOrder}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@update')
+        ->name('laravel-crm.purchase-orders.update')
+        ->middleware(['can:update,purchaseOrder']);
+
+    Route::delete('{purchaseOrder}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@destroy')
+        ->name('laravel-crm.purchase-orders.destroy')
+        ->middleware(['can:delete,purchaseOrder']);
+
+    Route::post('{purchaseOrder}/send', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@send')
+        ->name('laravel-crm.purchase-orders.send')
+        ->middleware(['can:update,purchaseOrder']);
+
+    Route::get('{purchaseOrder}/download', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@download')
+        ->name('laravel-crm.purchase-orders.download')
+        ->middleware(['can:view,purchaseOrder']);
+});
+
 /* Activities */
 
 Route::group(['prefix' => 'activities', 'middleware' => 'auth.laravel-crm'], function () {

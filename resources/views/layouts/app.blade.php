@@ -18,7 +18,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=567867589789" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=4356734567655" rel="stylesheet">
 
     @livewireStyles
 
@@ -82,7 +82,7 @@
             </div>
         </footer>
     </div>
-    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=467867598789"></script>
+    <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=4356734567655"></script>
     <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     @livewireScripts
