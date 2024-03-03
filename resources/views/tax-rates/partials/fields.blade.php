@@ -26,5 +26,11 @@
                  <input id="default" type="checkbox" name="default" {{ (isset($taxRate) && $taxRate->default == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
             </span>
         </div>
+
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'tax_type',
+         'label' => ucfirst(trans('laravel-crm::lang.tax_type')),
+         'value' => old('tax_type', $taxRate->tax_type ?? null),
+        ])
     </div>
 </div>

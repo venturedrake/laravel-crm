@@ -48,7 +48,8 @@ class TaxRateController extends Controller
             'name' => $request->name,
             'rate' => $request->rate,
             'description' => $request->description,
-            'default' => (($request->default == 'on') ? 1 : 0)
+            'default' => (($request->default == 'on') ? 1 : 0),
+            'tax_type' => $request->tax_type
         ]);
 
         if($request->default == 'on') {
@@ -99,7 +100,8 @@ class TaxRateController extends Controller
             'name' => $request->name,
             'rate' => $request->rate,
             'description' => $request->description,
-            'default' => (($request->default == 'on') ? 1 : 0)
+            'default' => (($request->default == 'on') ? 1 : 0),
+            'tax_type' => $request->tax_type
         ]);
 
         if($request->default == 'on') {

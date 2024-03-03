@@ -463,4 +463,5 @@ return [
     'create_purchase_order' => 'create purchase order',
     'back_to_purchase_orders' => 'back to purchase orders',
     'purchase_order_lines' => 'purchase order lines',
+    'tax_type' => 'tax type',
 ];
