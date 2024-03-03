@@ -191,7 +191,7 @@ class InvoiceService
                     }
 
                     if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                        if($product = Product::find($invoiceLine['product_id'])) {
+                        if($product = Product::find($line['product_id'])) {
                             if($product->taxRate) {
                                 $taxRate = $product->taxRate->rate;
                             } elseif($product->tax_rate) {
