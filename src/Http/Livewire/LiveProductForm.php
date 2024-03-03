@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
-use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
@@ -21,7 +20,7 @@ class LiveProductForm extends Component
     public function mount($product)
     {
         $taxRate = TaxRate::where('default', 1)->first();
-        
+
         $this->tax_rate_id = old('tax_rate_id') ?? $product->taxRate->id ?? $taxRate->id ?? null;
         $this->tax_rate = old('tax_rate') ??  $product->tax_rate ?? $product->taxRate->rate ?? $taxRate->rate ?? null;
     }

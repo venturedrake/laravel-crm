@@ -6,7 +6,7 @@ require('chart.js/dist/chart.min')
 require('../../bower_components/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')
 require('select2/dist/js/select2.min')
 require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min')
-require('trix/dist/trix')
+require('trix/dist/trix.esm')
 
 import bsCustomFileInput from 'bs-custom-file-input'
 
@@ -45,6 +45,7 @@ const appJquery = function() {
                 ' input[name="expire_at"],' +
                 ' input[name="issue_date"],' +
                 ' input[name="due_date"],' +
+                ' input[name="delivery_date"],' +
                 ' input[name="delivery_expected"],' +
                 ' input[name="delivered_on"]').datetimepicker({
                 timepicker:false,
@@ -96,6 +97,11 @@ const appJquery = function() {
                 });
 
                 $("td.bind-select2 select[name^='invoiceLines']").select2({
+                    data: products,
+                    tags: tags
+                });
+
+                $("td.bind-select2 select[name^='purchaseOrderLines']").select2({
                     data: products,
                     tags: tags
                 });

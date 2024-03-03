@@ -53,7 +53,7 @@
     @component('laravel-crm::components.card-body')
 
         <div class="row card-show card-fa-w30">
-            <div class="col-sm-6 binvoice-right">
+            <div class="col-sm-6 border-right">
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">

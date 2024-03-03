@@ -145,7 +145,8 @@ dt {
 #quoteProductsTotals label,
 #orderProductsTotals label,
 #invoiceLinesTotals label,
-#deliveryProductsTotals label{
+#deliveryProductsTotals label,
+#purchaseOrderLinesTotals label{
   display: none;
 }
 
@@ -153,7 +154,8 @@ dt {
 #quoteProducts .row:not(:first-child) label,
 #orderProducts .row:not(:first-child) label,
 #invoiceLines .row:not(:first-child) label,
-#deliveryProducts .row:not(:first-child) label{
+#deliveryProducts .row:not(:first-child) label,
+#purchaseOrderLines .row:not(:first-child) label{
     display: none;
 }
 
