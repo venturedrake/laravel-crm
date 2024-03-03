@@ -272,12 +272,8 @@ class OrderService
 
     protected function addProduct($product, $request)
     {
-        $taxRate = TaxRate::where('default', 1)->first();
-
         $newProduct = Product::create([
             'name' => $product['product_id'],
-            'tax_rate_id' => $taxRate->id ?? null,
-            'tax_rate' => $taxRate->id ?? Setting::where('name', 'tax_rate')->first()->value ?? null,
             'user_owner_id' => $request->user_owner_id,
         ]);
 
