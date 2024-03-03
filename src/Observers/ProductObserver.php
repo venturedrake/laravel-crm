@@ -4,6 +4,8 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\TaxRate;
 
 class ProductObserver
 {
@@ -16,6 +18,13 @@ class ProductObserver
     public function creating(Product $product)
     {
         $product->external_id = Uuid::uuid4()->toString();
+
+        if(! $product->tax_rate_id) {
+            $taxRate = TaxRate::where('default', 1)->first();
+
+            $product->tax_rate_id = $taxRate->id ?? null;
+            $product->tax_rate = $taxRate->rate ?? Setting::where('name', 'tax_rate')->first()->value ?? null;
+        }
 
         if (! app()->runningInConsole()) {
             $product->user_created_id = auth()->user()->id ?? null;
