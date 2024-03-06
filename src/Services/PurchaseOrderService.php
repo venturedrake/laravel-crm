@@ -9,7 +9,7 @@ use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
-use VentureDrake\LaravelCrm\Models\XeroInvoice;
+use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Repositories\PurchaseOrderRepository;
 
 class PurchaseOrderService
@@ -99,26 +99,26 @@ class PurchaseOrderService
             }
 
             try {
-                /*$xeroInvoice = Xero::invoices()->store([
-                    'Type' => 'ACCREC',
+                $xeroPurchaseOrder = Xero::post('PurchaseOrders', $array = [
                     'Status' => 'AUTHORISED',
                     'Contact' => [
-                        'ContactID' => $invoice->organisation->xeroContact->contact_id,
+                        'ContactID' => $purchaseOrder->organisation->xeroContact->contact_id,
                     ],
                     'LineItems' => $lineItems ?? [],
-                    'Date' => ($invoice->issue_date) ? $invoice->issue_date->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
-                    'DueDate' => ($invoice->due_date) ? $invoice->due_date->format('Y-m-d') : Carbon::now()->addDays(30)->format('Y-m-d'),
-                    'Reference' => $invoice->reference,
+                    'Date' => ($purchaseOrder->issue_date) ? $purchaseOrder->issue_date->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
+                    'DeliveryDate' => ($purchaseOrder->delivery_date) ? $purchaseOrder->due_date->format('Y-m-d') : Carbon::now()->addDays(30)->format('Y-m-d'),
+                    'Reference' => $purchaseOrder->reference,
+                    'DeliveryInstructions' => $purchaseOrder->delivery_instructions,
                 ]);
 
-                XeroInvoice::create([
-                    'xero_id' => $xeroInvoice['InvoiceID'],
-                    'xero_type' => $xeroInvoice['Type'],
-                    'number' => $xeroInvoice['InvoiceNumber'],
-                    'reference' => $xeroInvoice['Reference'],
-                    'invoice_id' => $invoice->id,
-                    'status' => $xeroInvoice['Status'],
-                ]);*/
+                XeroPurchaseOrder::create([
+                    'xero_id' => $xeroPurchaseOrder['PurchaseOrderID'],
+                    'xero_type' => $xeroPurchaseOrder['Type'],
+                    'number' => $xeroPurchaseOrder['PurchaseOrderNumber'],
+                    'reference' => $xeroPurchaseOrder['Reference'],
+                    'purchase_order_id' => $purchaseOrder->id,
+                    'status' => $xeroPurchaseOrder['Status'],
+                ]);
             } catch (Exception $e) {
                 //
             }
