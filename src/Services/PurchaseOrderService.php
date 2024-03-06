@@ -106,7 +106,7 @@ class PurchaseOrderService
                     ],
                     'LineItems' => $lineItems ?? [],
                     'Date' => ($purchaseOrder->issue_date) ? $purchaseOrder->issue_date->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
-                    'DeliveryDate' => ($purchaseOrder->delivery_date) ? $purchaseOrder->due_date->format('Y-m-d') : Carbon::now()->addDays(30)->format('Y-m-d'),
+                    'DeliveryDate' => ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format('Y-m-d') : Carbon::now()->addDays(30)->format('Y-m-d'),
                     'Reference' => $purchaseOrder->reference,
                     'DeliveryInstructions' => $purchaseOrder->delivery_instructions,
                 ]);
