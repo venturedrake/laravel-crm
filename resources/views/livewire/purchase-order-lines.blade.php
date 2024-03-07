@@ -110,7 +110,7 @@
                         .on('change', function (e) {
                             @this.set('product_id.' + $(this).data('value'), $(this).val());
                             @this.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
-                            Livewire.emit('loadInvoiceLineDefault', $(this).data('value'))
+                            Livewire.emit('loadPurchaseOrderLineDefault', $(this).data('value'))
                         });
                 });
 
