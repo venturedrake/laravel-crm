@@ -106,6 +106,7 @@ use VentureDrake\LaravelCrm\Models\XeroContact;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Models\XeroPerson;
+use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Observers\ActivityObserver;
 use VentureDrake\LaravelCrm\Observers\CallObserver;
 use VentureDrake\LaravelCrm\Observers\ClientObserver;
@@ -147,6 +148,7 @@ use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
+use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -277,6 +279,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         DeliveryProduct::observe(DeliveryProductObserver::class);
         PurchaseOrder::observe(PurchaseOrderObserver::class);
         PurchaseOrderLine::observe(PurchaseOrderLineObserver::class);
+        XeroPurchaseOrder::observe(XeroPurchaseOrderObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
