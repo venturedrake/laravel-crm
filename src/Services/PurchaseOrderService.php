@@ -94,7 +94,7 @@ class PurchaseOrderService
                     /*'TaxAmount' => ($line->tax_total->value / 100),*/
                     // 'LineAmount' => null,
                     'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
-                    'AccountCode' => 200, // Added setting for this
+                    'AccountCode' => $line->product->purchase_account ?? 300,
                 ];
             }
 
