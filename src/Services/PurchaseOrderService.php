@@ -90,7 +90,7 @@ class PurchaseOrderService
                     'Description' => $line->product->name,
                     'Quantity' => $line->quantity,
                     'UnitAmount' => $line->price / 100,
-                    'TaxType' => 'OUTPUT',
+                    'TaxType' => 'INPUT',
                     /*'TaxAmount' => ($line->tax_total->value / 100),*/
                     // 'LineAmount' => null,
                     'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
@@ -110,6 +110,8 @@ class PurchaseOrderService
                     'Reference' => $purchaseOrder->reference,
                     'DeliveryInstructions' => $purchaseOrder->delivery_instructions,
                 ]);
+                
+                dd($xeroPurchaseOrder);
 
                 XeroPurchaseOrder::create([
                     'xero_id' => $xeroPurchaseOrder['PurchaseOrderID'],
