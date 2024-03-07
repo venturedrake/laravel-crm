@@ -110,16 +110,14 @@ class PurchaseOrderService
                     'Reference' => $purchaseOrder->reference,
                     'DeliveryInstructions' => $purchaseOrder->delivery_instructions,
                 ]);
-                
-                dd($xeroPurchaseOrder);
 
                 XeroPurchaseOrder::create([
-                    'xero_id' => $xeroPurchaseOrder['PurchaseOrderID'],
-                    'xero_type' => $xeroPurchaseOrder['Type'],
-                    'number' => $xeroPurchaseOrder['PurchaseOrderNumber'],
-                    'reference' => $xeroPurchaseOrder['Reference'],
+                    'xero_id' => $xeroPurchaseOrder['body']['PurchaseOrders'][0]['PurchaseOrderID'],
+                    'xero_type' => $xeroPurchaseOrder['body']['PurchaseOrders'][0]['Type'],
+                    'number' => $xeroPurchaseOrder['body']['PurchaseOrders'][0]['PurchaseOrderNumber'],
+                    'reference' => $xeroPurchaseOrder['body']['PurchaseOrders'][0]['Reference'],
                     'purchase_order_id' => $purchaseOrder->id,
-                    'status' => $xeroPurchaseOrder['Status'],
+                    'status' => $xeroPurchaseOrder['body']['PurchaseOrders'][0]['Status'],
                 ]);
             } catch (Exception $e) {
                 //
