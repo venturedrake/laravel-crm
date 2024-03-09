@@ -20,6 +20,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.0.0 - 2024-03-09
+### Added
+- Comments on invoice lines
+- Purchase orders
+- Purchase order Xero integration
+- Some statistics totals widgets on dashboard
+- Set default tax rate when creating products
+- Setting to disable adding products dynamically when creating quotes, orders, invoices
+- Added VAT / Sales Tax number
+- Added some extra fields to organisations
+- Email validate helper
+- Tax type on tax rates
+### Changed
+- Updated form request validation on settings
+- Moved global view settings to view composer
+- Updated some setting variable names to avoid conflicts
+- Don't apply the teams scope when using Laravel Nova
+- Order search results on leads, orders & quotes by latest
+### Fixed
+- Issue when query string too long when many filters added
+- Allow null tax name and rate on settings
+- But in multi-tenant mode when adding orders
+- Bug when adding invoice line items
+### Removed
+- Duplicated notes tab removed
+- Auth checker package removed
+
 ## 0.19.10 - 2023-09-25
 ### Added
 - Phone, emails & address to settings and users
@@ -31,7 +58,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Adding new organisation or person bug when creating invoice
 - Produce code required to post products to Xero api
-### Removed
 
 ## 0.19.9 - 2023-09-04
 ### Fixed
