@@ -10,19 +10,25 @@
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                    'name' => 'code',
-                   'label' => ucfirst(__('laravel-crm::lang.product_code')),
+                   'label' => strtoupper(__('laravel-crm::lang.sku')) . ' (Stock Keeping Unit)',
                    'value' => old('code', $product->code ?? null)
                ])
             </div>
-            <div class="col-sm-6">
-                @include('laravel-crm::partials.form.select',[
+            <div c @include('laravel-crm::partials.form.text',[
+                   'name' => 'barcode',
+                   'label' => ucwords(__('laravel-crm::lang.barcode')) . ' (ISBN, UPC, GTIN, etc)',
+                   'value' => old('code', $product->code ?? null)
+               ])lass="col-sm-6">
+                
+            </div>
+        </div>
+
+        @include('laravel-crm::partials.form.select',[
                    'name' => 'product_category',
                    'label' => ucfirst(__('laravel-crm::lang.category')),
                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\ProductCategory::all(), true),
                    'value' => old('product_category', $product->productCategory->id ?? null)
                 ])
-            </div>
-        </div>
 
         <div class="row">
             <div class="col-sm-6">

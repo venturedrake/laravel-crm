@@ -36,8 +36,10 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.product_code')) }}</dt>
-                    <dd class="col-sm-9">{{ $product->code }}</dd> 
+                    <dt class="col-sm-3 text-right">{{ strtoupper(__('laravel-crm::lang.sku')) }}</dt>
+                    <dd class="col-sm-9">{{ $product->code }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.barcode')) }}</dt>
+                    <dd class="col-sm-9">{{ $product->barcode }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.purchase_account')) }}</dt>
                     <dd class="col-sm-9">{{ $product->purchase_account }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.sales_account')) }}</dt>
