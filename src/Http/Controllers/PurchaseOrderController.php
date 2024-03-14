@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\StorePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\PurchaseOrderService;
@@ -80,6 +81,11 @@ class PurchaseOrderController extends Controller
 
             case "organisation":
                 $organisation = Organisation::find($request->id);
+
+                break;
+
+            case "order":
+                $order = Order::find($request->id);
 
                 break;
         }
