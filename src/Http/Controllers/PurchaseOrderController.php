@@ -86,8 +86,6 @@ class PurchaseOrderController extends Controller
 
             case "order":
                 $order = Order::find($request->id);
-                $person = $order->person;
-                $organisation = $order->organisation;
 
                 break;
         }

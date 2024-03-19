@@ -20,7 +20,7 @@
             <thead>
             <tr>
                 <th scope="col" colspan="2">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
-                <th scope="col">{{ ucfirst(__('laravel-crm::lang.code')) }}</th>
+                <th scope="col">{{ strtoupper(__('laravel-crm::lang.sku')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.category')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.unit')) }}</th>
                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }} ({{ \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD' }})</th>

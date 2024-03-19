@@ -464,4 +464,7 @@ return [
     'back_to_purchase_orders' => 'back to purchase orders',
     'purchase_order_lines' => 'purchase order lines',
     'tax_type' => 'tax type',
+    'sku' => 'sku',
+    'barcode' => 'barcode',
+    'add_option' => 'add option',
 ];

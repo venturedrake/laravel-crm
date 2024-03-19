@@ -30,6 +30,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveLunch;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveMeeting;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveTask;
+use VentureDrake\LaravelCrm\Http\Livewire\Fields\CreateOrEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivities;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
@@ -80,6 +81,7 @@ use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
+use VentureDrake\LaravelCrm\Models\FieldOption;
 use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Invoice;
@@ -118,6 +120,7 @@ use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
 use VentureDrake\LaravelCrm\Observers\FieldObserver;
+use VentureDrake\LaravelCrm\Observers\FieldOptionObserver;
 use VentureDrake\LaravelCrm\Observers\FieldValueObserver;
 use VentureDrake\LaravelCrm\Observers\FileObserver;
 use VentureDrake\LaravelCrm\Observers\InvoiceLineObserver;
@@ -185,6 +188,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\File' => \VentureDrake\LaravelCrm\Policies\FilePolicy::class,
         'VentureDrake\LaravelCrm\Models\Field' => \VentureDrake\LaravelCrm\Policies\FieldPolicy::class,
         'VentureDrake\LaravelCrm\Models\FieldGroup' => \VentureDrake\LaravelCrm\Policies\FieldGroupPolicy::class,
+        'VentureDrake\LaravelCrm\Models\FieldOption' => \VentureDrake\LaravelCrm\Policies\FieldOptionPolicy::class,
         'VentureDrake\LaravelCrm\Models\Delivery' => \VentureDrake\LaravelCrm\Policies\DeliveryPolicy::class,
         'VentureDrake\LaravelCrm\Models\PurchaseOrder' => \VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy::class,
     ];
@@ -273,6 +277,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Lunch::observe(LunchObserver::class);
         Field::observe(FieldObserver::class);
         FieldGroup::observe(FieldGroupObserver::class);
+        FieldOption::observe(FieldOptionObserver::class);
         FieldModel::observe(FieldModelObserver::class);
         FieldValue::observe(FieldValueObserver::class);
         Delivery::observe(DeliveryObserver::class);
@@ -434,6 +439,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_laravel_crm_purchase_order_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_order_lines_table.php', 89),
                 __DIR__ . '/../database/migrations/create_laravel_crm_xero_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_purchase_orders_table.php', 90),
                 __DIR__ . '/../database/migrations/add_tax_type_to_laravel_crm_tax_rates_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_tax_type_to_laravel_crm_tax_rates_table.php', 91),
+                __DIR__ . '/../database/migrations/add_barcode_to_laravel_crm_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_barcode_to_laravel_crm_products_table.php', 92),
+                __DIR__ . '/../database/migrations/create_laravel_crm_field_options_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_field_options_table.php', 93),
             ], 'migrations');
 
             // Publishing the seeders
@@ -509,6 +516,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('pay-invoice', PayInvoice::class);
         Livewire::component('product-form', LiveProductForm::class);
         Livewire::component('purchase-order-lines', LivePurchaseOrderLines::class);
+        Livewire::component('fields.create-or-edit', CreateOrEdit::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
