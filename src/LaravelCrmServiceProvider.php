@@ -441,6 +441,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_tax_type_to_laravel_crm_tax_rates_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_tax_type_to_laravel_crm_tax_rates_table.php', 91),
                 __DIR__ . '/../database/migrations/add_barcode_to_laravel_crm_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_barcode_to_laravel_crm_products_table.php', 92),
                 __DIR__ . '/../database/migrations/create_laravel_crm_field_options_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_field_options_table.php', 93),
+                __DIR__ . '/../database/migrations/alter_type_on_laravel_crm_fields_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_type_on_laravel_crm_fields_table.php', 94),
             ], 'migrations');
 
             // Publishing the seeders
