@@ -28,16 +28,16 @@
                         @switch($type)
                             @case('select')
                                 <div class="card mb-3">
-                                    <div class="card-header">
+                                    {{--<div class="card-header">
                                         Options
-                                    </div>
+                                    </div>--}}
                                     <div class="card-body p-0">
                                         <table class="table pb-0 mb-0">
                                             <thead>
                                             <tr>
                                                 <th>Label</th>
                                                 <th>Order</th>
-                                                <th>Actions</th>
+                                                <th></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -46,6 +46,9 @@
                                                 <tr>
                                                     <td>
                                                         Text
+                                                    </td>
+                                                    <td>
+                                                        Order
                                                     </td>
                                                     <td>
                                                         X
