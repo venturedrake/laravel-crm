@@ -30,6 +30,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveLunch;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveMeeting;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveTask;
+use VentureDrake\LaravelCrm\Http\Livewire\Fields\CreateOrEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivities;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
@@ -510,6 +511,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('pay-invoice', PayInvoice::class);
         Livewire::component('product-form', LiveProductForm::class);
         Livewire::component('purchase-order-lines', LivePurchaseOrderLines::class);
+        Livewire::component('fields.create-or-edit', CreateOrEdit::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
