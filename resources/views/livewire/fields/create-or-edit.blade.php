@@ -8,8 +8,17 @@
                 <h3 class="mb-3">{{ ucfirst(trans('laravel-crm::lang.create_field')) }} <span class="float-right"><a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.fields.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(trans('laravel-crm::lang.back_to_fields')) }}</a></span></h3>
                 <div class="row">
                     <div class="col-sm-6 border-right">
+                        @include('laravel-crm::partials.form.text',[
+                         'name' => 'fieldName',
+                         'label' => ucfirst(trans('laravel-crm::lang.name')),
+                         'attributes' => [
+                            'wire:model' => 'fieldName'  
+                         ],
+                         'required' => 'true'
+                        ])
+                        
                         @include('laravel-crm::partials.form.select',[
-                        'name' => 'type',
+                        'name' => 'fieldType',
                         'label' => ucfirst(trans('laravel-crm::lang.type')),
                         'options' => [
                            'text' => 'Single-line text',
@@ -21,18 +30,21 @@
                            'date' => 'Date picker',
                          ],
                         'attributes' => [
-                            'wire:model' => 'type'  
+                            'wire:model' => 'fieldType'  
                         ],
+                        'required' => 'true'
                         ])
                         
-                        @switch($type)
+                        @switch($fieldType)
                             @case('select')
+                            @case('checkbox_multiple')
+                            @case('radio')
                                 <div class="card mb-3">
-                                    {{--<div class="card-header">
+                                    <div class="card-header">
                                         Options
-                                    </div>--}}
+                                    </div>
                                     <div class="card-body p-0">
-                                        <table class="table pb-0 mb-0">
+                                        <table class="table table-items pb-0 mb-0">
                                             <thead>
                                             <tr>
                                                 <th>Label</th>
@@ -41,24 +53,35 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            
-                                            @foreach($options as $option)
-                                                <tr>
+                                            @foreach($fieldOptions as $key => $option)
+                                                <tr wire:key="option-{{ $key }}">
                                                     <td>
-                                                        Text
+                                                        @include('laravel-crm::partials.form.text',[
+                                                           'name' => 'options['.$key.'][label]',
+                                                           'type' => 'text',
+                                                           'attributes' => [
+                                                               'wire:model' => 'fieldOptions.'.$key.'.label',
+                                                           ]
+                                                        ])
                                                     </td>
-                                                    <td>
-                                                        Order
+                                                    <td width="80">
+                                                        @include('laravel-crm::partials.form.text',[
+                                                           'name' => 'options['.$key.'][order]',
+                                                           'type' => 'number',
+                                                           'attributes' => [
+                                                               'wire:model' => 'fieldOptions.'.$key.'.order',
+                                                           ]
+                                                        ])
                                                     </td>
-                                                    <td>
-                                                        X
+                                                    <td width="80">
+                                                         <button wire:click.prevent="removeOption({{ $key }})" type="button" class="btn btn-outline-danger btn-sm btn-close"><span class="fa fa-remove"></span></button>
                                                     </td>
                                                 </tr>
                                             @endforeach
                                             </tbody>
                                             <tfoot>
                                             <tr>
-                                                <td colspan="3">+ Add option</td>
+                                                <td colspan="3"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="addOption()"><span class="fa fa-plus" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.add_option')) }}</button></td>
                                             </tr>
                                             </tfoot>
                                         </table>
@@ -73,7 +96,7 @@
                             @endswitch
                         
                         @include('laravel-crm::partials.form.select',[
-                        'name' => 'field_group_id',
+                        'name' => 'fieldGroup',
                         'label' => ucfirst(trans('laravel-crm::lang.group')),
                         'options' => [''=>''] + \VentureDrake\LaravelCrm\Models\FieldGroup::pluck('name','id')->toArray(),
                         'attributes' => [
@@ -82,43 +105,58 @@
                         ])
 
                         @include('laravel-crm::partials.form.text',[
-                         'name' => 'name',
-                         'label' => ucfirst(trans('laravel-crm::lang.name')),
-                         'attributes' => [
-                            'wire:model' => 'name'  
-                         ],
-                        ])
-
-                        @include('laravel-crm::partials.form.text',[
-                         'name' => 'default',
+                         'name' => 'fieldDefault',
                          'label' => ucfirst(trans('laravel-crm::lang.default')),
                          'attributes' => [
-                            'wire:model' => 'default'  
+                            'wire:model' => 'fieldDefault'  
                          ],
                         ])
 
-                        <div class="form-group">
+                        <div wire:ignore class="form-group">
                             <label for="required">{{ ucfirst(__('laravel-crm::lang.required')) }}</label>
                             <span class="form-control-toggle">
-                             <input id="required" type="checkbox" name="required" {{ (isset($field) && $field->required == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+                             <input wire:model="fieldRequired" id="fieldRequired" type="checkbox" name="fieldRequired" {{ (isset($field) && $field->required == 1) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                             </span>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div wire:ignore class="col-6">
                         <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.attach')) }}</h6>
                         @include('laravel-crm::partials.form.multiselect',[
                         'name' => 'field_models',
                         'label' => null,
                         'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\fieldModels(),
-                        'value' => old('field_models', (isset($field)) ? \VentureDrake\LaravelCrm\Models\FieldModel::where('field_id', $field->id)->get()->pluck('model')->toArray() : null)
+                        'value' => old('field_models', (isset($field)) ? \VentureDrake\LaravelCrm\Models\FieldModel::where('field_id', $field->id)->get()->pluck('model')->toArray() : null),
+                        'attributes' => [
+                            'wire:model' => 'fieldModels'  
+                         ],
                       ])
                     </div>
                 </div>
             </div>
             @component('laravel-crm::components.card-footer')
                 <a href="{{ url(route('laravel-crm.fields.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(trans('laravel-crm::lang.cancel')) }}</a>
-                <button type="submit" class="btn btn-primary">{{ ucfirst(trans('laravel-crm::lang.save')) }}</button>
+                <button type="submit" class="btn btn-primary">
+                    @if($field)
+                        {{ ucfirst(trans('laravel-crm::lang.save_changes')) }}
+                    @else
+                        {{ ucfirst(trans('laravel-crm::lang.save')) }}
+                    @endif
+                </button>
             @endcomponent
         </div>
     </form>
+    
+    @push('livewire-js')
+        <script>
+            $(function() {
+                $('#fieldRequired').change(function() {
+                    @this.set('fieldRequired', $(this).prop('checked'));
+                })
+
+                $('#select_field_models').change(function() {
+                    @this.set('fieldModels', $(this).val());
+                })
+            })
+        </script>
+    @endpush    
 </div>
