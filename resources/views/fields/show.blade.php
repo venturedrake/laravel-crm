@@ -29,6 +29,14 @@
                     <dl class="row">
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
                         <dd class="col-sm-9">{{ ucwords(str_replace('_',' ',$field->type)) }}</dd>
+                        @if(in_array($field->type, ['select', 'checkbox_multiple', 'radio']))
+                        <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.options')) }}</dt>
+                        <dd class="col-sm-9">
+                            @foreach($field->fieldOptions as $option)
+                                {{ $option->label }}<br />
+                            @endforeach
+                        </dd>
+                        @endif
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.group')) }}</dt>
                         <dd class="col-sm-9">{{ $field->fieldGroup->name ?? null }}</dd>
                         <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.required')) }}</dt>

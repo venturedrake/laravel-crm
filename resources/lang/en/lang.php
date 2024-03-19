@@ -466,4 +466,6 @@ return [
     'tax_type' => 'tax type',
     'sku' => 'sku',
     'barcode' => 'barcode',
+    'add_option' => 'add option',
+    'options' => 'options',
 ];
