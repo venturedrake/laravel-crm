@@ -101,13 +101,21 @@ class CreateOrEdit extends Component
             ]);
 
             if($this->fieldOptions) {
+                $fieldOptionIds = [];
                 foreach($this->fieldOptions as $option) {
                     if($fieldOption = FieldOption::find($option['id'])) {
+                        $fieldOptionIds[] = $option['id'];
                         $fieldOption->update([
                             'value' => $option['value'],
                             'label' => $option['label'],
                             'order' => $option['order'],
                         ]);
+                    }
+                }
+
+                foreach ($this->field->fieldOptions as $fieldOption) {
+                    if (! in_array($fieldOption->id, $fieldOptionIds)) {
+                        $fieldOption->delete();
                     }
                 }
             }
@@ -134,8 +142,6 @@ class CreateOrEdit extends Component
 
             flash(ucfirst(trans('laravel-crm::lang.field_stored')))->success()->important();
         }
-
-        // Update options
 
         $this->syncFieldModels();
 
