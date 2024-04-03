@@ -71,6 +71,16 @@
                             @can('view crm purchase orders')
                             <a href="{{ route('laravel-crm.purchase-orders.show',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                             @endcan
+                            @can('edit crm purchase orders')
+                                <a href="{{ route('laravel-crm.purchase-orders.edit',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                            @endcan
+                            @can('delete crm purchase orders')
+                                <form action="{{ route('laravel-crm.purchase-orders.destroy',$purchaseOrder) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                                    {{ method_field('DELETE') }}
+                                    {{ csrf_field() }}
+                                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.purchase_order') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                                </form>
+                            @endcan
                         @else
                             <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
                         @endif    
