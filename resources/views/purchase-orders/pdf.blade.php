@@ -8,12 +8,14 @@
                 <td width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.purchase_order')) }}</h1>
                     <p>
-                    @if($invoice->reference)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $invoice->reference }}<br />
+                    @if($purchaseOrder->reference)
+                        <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $purchaseOrder->reference }}<br />
                     @endif
-                    <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</strong> {{ $invoice->issue_date->format($dateFormat) }}<br />
-                    <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_number')) }}</strong> {{ $invoice->purchase_order_id  }}<br />
-                    <strong>{{ ucfirst(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $invoice->delivery_date->format($dateFormat) }}
+                    <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</strong> {{ $purchaseOrder->issue_date->format($dateFormat) }}<br />
+                    <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_number')) }}</strong> {{ $purchaseOrder->purchase_order_id  }}
+                    @if($purchaseOrder->delivery_date)
+                    <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $purchaseOrder->delivery_date->format($dateFormat) }}
+                    @endif
                     </p>
                 </td>
                 <td width="50%" style="text-align: right">
@@ -25,11 +27,11 @@
             <tr>
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
-                    @if($invoice->organisation)
-                        {{ $invoice->organisation->name }}<br />
+                    @if($purchaseOrder->organisation)
+                        {{ $purchaseOrder->organisation->name }}<br />
                     @endif
-                    @isset($invoice->person)
-                        {{ $invoice->person->name }}<br />
+                    @isset($purchaseOrder->person)
+                        {{ $purchaseOrder->person->name }}<br />
                     @endisset
                     @if(isset($organisation_address))
                         @if($organisation_address->line1)
@@ -69,12 +71,12 @@
             </tr>
         </tbody>
     </table>
-    @if($invoice->description)
+    @if($purchaseOrder->description)
         <table class="table table-bordered table-sm table-items">
           <tbody>
             <tr>
                 <td><h4>{{ ucfirst(__('laravel-crm::lang.description')) }}</h4>
-                    {!! nl2br($invoice->description) !!}</td>
+                    {!! nl2br($purchaseOrder->description) !!}</td>
             </tr>
           </tbody>  
         </table>
@@ -91,14 +93,14 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($invoice->invoiceLInes()->whereNotNull('product_id')->get() as $invoiceLine)
+        @foreach($purchaseOrder->purchaseOrderLines()->whereNotNull('product_id')->get() as $purchaseOrderLine)
             <tr>
-                <td>{{ $invoiceLine->product->name ?? null}}</td>
-                <td>{{ money($invoiceLine->price ?? null, $invoiceLine->currency) }}</td>
-                <td>{{ $invoiceLine->quantity }}</td>
-                <td>{{ money($invoiceLine->tax_amount ?? null, $invoiceLine->currency) }}</td>
-                <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>
-                <td>{{ $invoiceLine->comments }}</td>
+                <td>{{ $purchaseOrderLine->product->name ?? null}}</td>
+                <td>{{ money($purchaseOrderLine->price ?? null, $purchaseOrderLine->currency) }}</td>
+                <td>{{ $purchaseOrderLine->quantity }}</td>
+                <td>{{ money($purchaseOrderLine->tax_amount ?? null, $purchaseOrderLine->currency) }}</td>
+                <td>{{ money($purchaseOrderLine->amount ?? null, $purchaseOrderLine->currency) }}</td>
+                <td>{{ $purchaseOrderLine->comments }}</td>
             </tr>
         @endforeach
         </tbody>
@@ -108,16 +110,16 @@
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
-            <td>{{ money($invoice->subtotal, $invoice->currency) }}</td>
+            <td>{{ money($purchaseOrder->subtotal, $purchaseOrder->currency) }}</td>
             <td></td>
         </tr>
-        @if($invoice->discount > 0)
+        @if($purchaseOrder->discount > 0)
             <tr>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
-                <td>{{ money($invoice->discount, $invoice->currency) }}</td>
+                <td>{{ money($purchaseOrder->discount, $purchaseOrder->currency) }}</td>
                 <td></td>
             </tr>
         @endif
@@ -126,7 +128,7 @@
             <td></td>
             <td></td>
             <td><strong>{{ $taxName }}</strong></td>
-            <td>{{ money($invoice->tax, $invoice->currency) }}</td>
+            <td>{{ money($purchaseOrder->tax, $purchaseOrder->currency) }}</td>
             <td></td>
         </tr>
         {{--<tr>
@@ -134,7 +136,7 @@
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
-            <td>{{ money($invoice->adjustments, $invoice->currency) }}</td>
+            <td>{{ money($purchaseOrder->adjustments, $purchaseOrder->currency) }}</td>
             <td></td>
         </tr>--}}
         <tr>
@@ -142,18 +144,18 @@
             <td></td>
             <td></td>
             <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
-            <td>{{ money($invoice->total, $invoice->currency) }}</td>
+            <td>{{ money($purchaseOrder->total, $purchaseOrder->currency) }}</td>
             <td></td>
         </tr>
         </tfoot>
     </table>
-    @if($invoice->terms)
+    @if($purchaseOrder->terms)
         <table class="table table-bordered table-sm table-items">
             <tbody>
             <tr>
                 <td>
                     <h4>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h4>
-                    {!! nl2br($invoice->terms) !!}
+                    {!! nl2br($purchaseOrder->terms) !!}
                 </td>
             </tr>
             </tbody>
