@@ -39,13 +39,17 @@ class PurchaseOrderService
             'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
             'delivery_instructions' => $request->delivery_instructions,
-            'subtotal' => $request->sub_total,
-            'tax' => $request->tax,
-            'total' => $request->total,
+            'subtotal' => $request->sub_total ?? null,
+            'tax' => $request->tax ?? null,
+            'total' => $request->total ?? null,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
         if (isset($request->purchaseOrderLines)) {
+            $subTotal = 0;
+            $tax = 0;
+            $total = 0;
+
             foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
                 if(isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['quantity'] > 0) {
                     if(! Product::find($purchaseOrderLine['product_id'])) {
@@ -67,6 +71,10 @@ class PurchaseOrderService
                         }
                     }
 
+                    $subTotal += $purchaseOrderLine['amount'];
+                    $tax += $purchaseOrderLine['amount'] * ($taxRate / 100);
+                    $total += ($purchaseOrderLine['amount'] + ($purchaseOrderLine['amount'] * ($taxRate / 100)));
+
                     $purchaseOrder->purchaseOrderLines()->create([
                         'product_id' => $purchaseOrderLine['product_id'],
                         'quantity' => $purchaseOrderLine['quantity'],
@@ -79,6 +87,14 @@ class PurchaseOrderService
                         'comments' => $purchaseOrderLine['comments'],
                     ]);
                 }
+            }
+
+            if(! $request->total) {
+                $purchaseOrder->update([
+                    'subtotal' => $subTotal,
+                    'tax' => $tax,
+                    'total' => $total
+                ]);
             }
         }
 

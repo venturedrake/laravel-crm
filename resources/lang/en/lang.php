@@ -468,4 +468,7 @@ return [
     'barcode' => 'barcode',
     'add_option' => 'add option',
     'options' => 'options',
+    'generate_invoice' => 'generate invoice',
+    'supplier' => 'supplier',
+    'purchase_orders_created' => 'purchase orders created',
 ];

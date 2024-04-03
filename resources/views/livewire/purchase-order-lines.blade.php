@@ -4,6 +4,11 @@
     <script type="text/javascript">
         let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\productsSelect2() !!}
     </script>
+    @if($fromOrder)
+        <script type="text/javascript">
+            let organisations =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsSelect2() !!}
+        </script> 
+    @endif 
     <span id="invoiceLines">
         <div class="table-responsive">
             <table class="table table-sm table-items ">
@@ -30,6 +35,7 @@
                             <button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button>
                         </td>
                     </tr>
+                    @empty($fromOrder)
                     <tr>
                         <td></td>
                         <td></td>
@@ -88,6 +94,7 @@
                 ])
                     </td>
                   </tr>
+                  @endempty 
                 </tfoot>
             </table>
         </div>

@@ -13,9 +13,14 @@
                     'route' => 'orders'
                 ]) |
                 @can('edit crm orders')
+                    @if(! $order->deliveryComplete())
+                        @haspurchaseordersenabled
+                        <a href="{{ route('laravel-crm.purchase-orders.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.purchase_order')) }}</a>
+                        @endhaspurchaseordersenabled
+                    @endif
                     @if(! $order->invoiceComplete())
                         @hasinvoicesenabled
-                        <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.invoice')) }}</a>
+                        <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.generate_invoice')) }}</a>
                         @endhasinvoicesenabled
                     @endif
                     @if(! $order->deliveryComplete())

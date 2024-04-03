@@ -40,7 +40,7 @@
             @endcan
             @hasordersenabled
                 @can('view crm orders')
-                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.orders') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.orders.index')) }}"><i class="fa fa-shopping-cart"></i> {{ ucfirst(__('laravel-crm::lang.orders')) }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.orders') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.orders.index')) }}"><i class="fa fa-shopping-cart"></i> {{ ucwords(__('laravel-crm::lang.orders')) }}</a></li>
                 @endcan
             @endhasordersenabled
             @can('view crm projects')

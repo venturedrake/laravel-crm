@@ -28,12 +28,15 @@ class StorePurchaseOrderRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'person_name' => 'required_without:organisation_name|max:255',
-            'organisation_name' => 'required_without:person_name|max:255',
             'issue_date' => 'required|date_format:"'.$this->dateFormat().'"',
             'delivery_date' => 'nullable|date_format:"'.$this->dateFormat().'"',
             'currency' => 'required',
         ];
+
+        if (! request('order_id')) {
+            $rules['person_name'] = 'required_without:organisation_name|max:255';
+            $rules['organisation_name'] = 'required_without:person_name|max:255';
+        }
 
         /*if (! Xero::isConnected()) {
             $rules['number'] = 'required|integer|unique:VentureDrake\LaravelCrm\Models\Invoice,number';
