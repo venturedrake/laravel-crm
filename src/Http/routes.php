@@ -505,6 +505,10 @@ Route::group(['prefix' => 'purchase-orders', 'middleware' => 'auth.laravel-crm']
     Route::get('{purchaseOrder}/download', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@download')
         ->name('laravel-crm.purchase-orders.download')
         ->middleware(['can:view,purchaseOrder']);
+
+    Route::post('multiple', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@storeMultiple')
+        ->name('laravel-crm.purchase-orders.store-multiple')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
 });
 
 /* Activities */

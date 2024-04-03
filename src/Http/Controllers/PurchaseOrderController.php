@@ -127,6 +127,44 @@ class PurchaseOrderController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeMultiple(StorePurchaseOrderRequest $request)
+    {
+        $purchaseOrders = [];
+
+        foreach($request->purchaseOrderLines as $purchaseOrderLine) {
+            if($purchaseOrderLine['organisation_id']) {
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['order_id'] = $request->order_id;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['organisation_id'] = $purchaseOrderLine['organisation_id'];
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['reference'] = $request->reference;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['currency'] = $request->currency;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['issue_date'] = $request->issue_date;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_date'] = $request->delivery_date;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_instructions'] = $request->delivery_instructions;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['purchaseOrderLines'][] = $purchaseOrderLine;
+            }
+        }
+
+        foreach($purchaseOrders as $organisationId => $purchaseOrder) {
+            $purchaseOrderRequest = Request::create(url(route('laravel-crm.purchase-orders.create')), 'POST', $purchaseOrder);
+
+            if($organisation = Organisation::find($purchaseOrderRequest->organisation_id)) {
+                $this->purchaseOrderService->create($purchaseOrderRequest, $person ?? null, $organisation ?? null);
+            }
+
+            sleep(1);
+        }
+
+        flash(ucfirst(trans('laravel-crm::lang.purchase_orders_created')))->success()->important();
+
+        return redirect(route('laravel-crm.purchase-orders.index'));
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

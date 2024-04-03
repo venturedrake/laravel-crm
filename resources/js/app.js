@@ -107,6 +107,12 @@ const appJquery = function() {
                 });
             }
 
+            if(typeof organisations !== 'undefined'){
+                $("td.bind-select2-organisations select[name^='purchaseOrderLines']").select2({
+                    data: organisations
+                });
+            }
+
             $('#input_hex').colorpicker();
 
             $('form.form-delete-button > button[type="submit"]').on('click', function (e) {
