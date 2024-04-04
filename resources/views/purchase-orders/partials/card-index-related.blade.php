@@ -16,7 +16,7 @@
             <tbody>
             @foreach($purchaseOrders as $purchaseOrder)
                <tr @if(! $purchaseOrder->xeroInvoice) class="has-link" data-url="{{ url(route('laravel-crm.invoices.show', $purchaseOrder)) }}" @endif>
-                   <td>{{ $purchaseOrder->xeroInvoice->number ?? $purchaseOrder->invoice_id }}</td>
+                   <td>{{ $purchaseOrder->xeroInvoice->number ?? $purchaseOrder->purchase_order_id }}</td>
                    <td>{{ $purchaseOrder->xeroInvoice->reference ?? $purchaseOrder->reference }}</td>
                    <td>{{ $purchaseOrder->issue_date->format($dateFormat) }}</td>
                    <td>{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</td>

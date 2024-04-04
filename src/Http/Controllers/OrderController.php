@@ -217,6 +217,7 @@ class OrderController extends Controller
             'phone' => $phone ?? null,
             'organisation_address' => $address ?? null,
             'addresses' => $order->addresses,
+            'purchaseOrders' => $order->purchaseOrders()->latest()->get(),
             'invoices' => $order->invoices()->latest()->get(),
             'deliveries' => $order->deliveries()->latest()->get(),
         ]);
