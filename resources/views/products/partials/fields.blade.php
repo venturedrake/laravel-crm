@@ -14,12 +14,12 @@
                    'value' => old('code', $product->code ?? null)
                ])
             </div>
-            <div c @include('laravel-crm::partials.form.text',[
+            <div class="col-sm-6"> 
+                @include('laravel-crm::partials.form.text',[
                    'name' => 'barcode',
                    'label' => ucwords(__('laravel-crm::lang.barcode')) . ' (ISBN, UPC, GTIN, etc)',
                    'value' => old('code', $product->code ?? null)
-               ])lass="col-sm-6">
-                
+               ])
             </div>
         </div>
 
@@ -93,6 +93,8 @@
              ])
             </div>
         </div>
+        
+        @include('laravel-crm::fields.partials.model', ['model' => $product])
        
     </div>
 </div>

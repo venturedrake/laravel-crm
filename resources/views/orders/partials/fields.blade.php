@@ -88,6 +88,8 @@
              'value' =>  old('user_owner_id', $order->user_owner_id ?? $quote->user_owner_id ?? auth()->user()->id),
           ])
 
+        @include('laravel-crm::fields.partials.model', ['model' => $order])
+
         @livewire('address-edit', [
             'addresses' => $addresses ?? null,
             'old' => old('addresses'),
