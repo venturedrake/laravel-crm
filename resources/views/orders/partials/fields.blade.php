@@ -88,7 +88,7 @@
              'value' =>  old('user_owner_id', $order->user_owner_id ?? $quote->user_owner_id ?? auth()->user()->id),
           ])
 
-        @include('laravel-crm::fields.partials.model', ['model' => $order])
+        @include('laravel-crm::fields.partials.model', ['model' => $order ?? new \VentureDrake\LaravelCrm\Models\Order()])
 
         @livewire('address-edit', [
             'addresses' => $addresses ?? null,

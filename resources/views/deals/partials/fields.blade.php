@@ -60,7 +60,7 @@
                  'value' =>  old('user_owner_id', $deal->user_owner_id ?? auth()->user()->id),
               ])
 
-        @include('laravel-crm::fields.partials.model', ['model' => $deal])
+        @include('laravel-crm::fields.partials.model', ['model' => $deal ?? new \VentureDrake\LaravelCrm\Models\Deal()])
     </div>
     <div class="col-sm-6">
         <h6 class="text-uppercase"><span class="fa fa-user" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.person')) }}</h6>

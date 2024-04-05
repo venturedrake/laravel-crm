@@ -93,8 +93,9 @@
              ])
             </div>
         </div>
-        
-        @include('laravel-crm::fields.partials.model', ['model' => $product])
-       
+
+        @include('laravel-crm::fields.partials.model', ['model' => $product ?? new \VentureDrake\LaravelCrm\Models\Product()])
+
+
     </div>
 </div>

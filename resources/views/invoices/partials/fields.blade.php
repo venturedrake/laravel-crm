@@ -116,6 +116,7 @@
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
                  'value' =>  old('user_owner_id', $invoice->user_owner_id ?? auth()->user()->id),
               ])--}}
+        @include('laravel-crm::fields.partials.model', ['model' => $invoice ?? new \VentureDrake\LaravelCrm\Models\Invoice()])
     </div>
     <div class="col-sm-7">
         @livewire('invoice-lines',[

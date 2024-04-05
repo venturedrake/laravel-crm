@@ -19,6 +19,7 @@
              'value' =>  old('user_owner_id', $client->user_owner_id ?? auth()->user()->id),
              'required' => true
         ])
+        @include('laravel-crm::fields.partials.model', ['model' => $client ?? new \VentureDrake\LaravelCrm\Models\Client()])
     </div>
     <div class="col-sm-6">
         
