@@ -92,6 +92,7 @@ class PurchaseOrderController extends Controller
 
         $related = $this->settingService->get('team');
 
+        $addresses = [];
         foreach($related->addresses()->get() as $address) {
             $addresses[$address->id] = $address->address;
         }
