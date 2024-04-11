@@ -8,13 +8,13 @@
                 <td width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.purchase_order')) }}</h1>
                     <p>
-                    @if($purchaseOrder->reference)
-                        <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $purchaseOrder->reference }}<br />
-                    @endif
                     <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</strong> {{ $purchaseOrder->issue_date->format($dateFormat) }}<br />
                     <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_number')) }}</strong> {{ $purchaseOrder->purchase_order_id  }}
                     @if($purchaseOrder->delivery_date)
                     <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $purchaseOrder->delivery_date->format($dateFormat) }}
+                    @endif
+                    @if($purchaseOrder->reference)
+                    <br /><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $purchaseOrder->reference }}<br />
                     @endif
                     </p>
                 </td>
@@ -26,7 +26,7 @@
             </tr>
             <tr>
                 <td>
-                    <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
+                    <strong>{{ ucfirst(__('laravel-crm::lang.supplier')) }}</strong><br />
                     @if($purchaseOrder->organisation)
                         {{ $purchaseOrder->organisation->name }}<br />
                     @endif
@@ -59,9 +59,8 @@
                         {{ $address->country }}
                     @endif
                 </td>
-                
                 <td>
-                    <strong>{{ ucfirst(__('laravel-crm::lang.from')) }}</strong><br />
+                    <strong>{{ ucfirst(__('laravel-crm::lang.delivery_address')) }}</strong><br />
                     @if($contactDetails)
                         {!! nl2br($contactDetails) !!}
                     @else
@@ -71,16 +70,6 @@
             </tr>
         </tbody>
     </table>
-    @if($purchaseOrder->description)
-        <table class="table table-bordered table-sm table-items">
-          <tbody>
-            <tr>
-                <td><h4>{{ ucfirst(__('laravel-crm::lang.description')) }}</h4>
-                    {!! nl2br($purchaseOrder->description) !!}</td>
-            </tr>
-          </tbody>  
-        </table>
-    @endif
     <table class="table table-bordered table-sm table-items">
         <thead>
         <tr>
@@ -149,6 +138,18 @@
         </tr>
         </tfoot>
     </table>
+    @if($purchaseOrder->delivery_instructions)
+        <table class="table table-bordered table-sm table-items">
+            <tbody>
+            <tr>
+                <td>
+                    <h4>{{ ucfirst(__('laravel-crm::lang.delivery_instructions')) }}</h4>
+                    {!! nl2br($purchaseOrder->delivery_instructions) !!}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    @endif
     @if($purchaseOrder->terms)
         <table class="table table-bordered table-sm table-items">
             <tbody>

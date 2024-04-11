@@ -182,4 +182,9 @@ class PurchaseOrder extends Model
     {
         return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroPurchaseOrder::class);
     }
+
+    public function address()
+    {
+        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+    }
 }

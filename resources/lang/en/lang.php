@@ -471,4 +471,7 @@ return [
     'generate_invoice' => 'generate invoice',
     'supplier' => 'supplier',
     'purchase_orders_created' => 'purchase orders created',
+    'purchase_order_date' => 'purchase order date',
+    'purchase_order_number' => 'purchase order number',
+    'delivery_address' => 'delivery address',
 ];

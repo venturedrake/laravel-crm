@@ -98,6 +98,12 @@
                    ])
             </div>
         </div>
+        @include('laravel-crm::partials.form.select',[
+             'name' => 'delivery_address',
+             'label' => ucfirst(__('laravel-crm::lang.delivery_address')),
+             'options' => ['' => ''] + $addresses,
+             'value' => old('delivery_address')
+         ])
         @include('laravel-crm::partials.form.textarea',[
              'name' => 'delivery_instructions',
              'label' => ucfirst(__('laravel-crm::lang.delivery_instructions')),

@@ -62,15 +62,12 @@
                        @endif
                    </td>
                     <td class="disable-link text-right">
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                    
+                        @can('view crm purchase orders')
+                        <a href="{{ route('laravel-crm.purchase-orders.show',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
                         @if(! $purchaseOrder->xeroPurchaseOrder)
-                            {{--@livewire('send-invoice',[
-                                'invoice' => $invoice
-                            ])--}}
-                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
-                        
-                            @can('view crm purchase orders')
-                            <a href="{{ route('laravel-crm.purchase-orders.show',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
-                            @endcan
                             @can('edit crm purchase orders')
                                 <a href="{{ route('laravel-crm.purchase-orders.edit',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             @endcan
@@ -81,7 +78,8 @@
                                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.purchase_order') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                                 </form>
                             @endcan
-                        @else
+                        @endif
+                        @if($purchaseOrder->xeroPurchaseOrder)
                             <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
                         @endif    
                     </td>

@@ -18,6 +18,7 @@
                 ]) |
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
                 @include('laravel-crm::partials.navs.activities') |
+                @if(! $purchaseOrder->xeroPurchaseOrder)
                 @can('edit crm purchase orders')
                 <a href="{{ url(route('laravel-crm.purchase-orders.edit', $purchaseOrder)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
@@ -28,6 +29,10 @@
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.purchase_order') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
                 @endcan
+                @endif
+                @if($purchaseOrder->xeroPurchaseOrder)
+                    <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
+                @endif   
             </span>
         @endslot
 

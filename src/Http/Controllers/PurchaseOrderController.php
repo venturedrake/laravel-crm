@@ -90,12 +90,19 @@ class PurchaseOrderController extends Controller
                 break;
         }
 
+        $related = $this->settingService->get('team');
+
+        foreach($related->addresses()->get() as $address) {
+            $addresses[$address->id] = $address->address;
+        }
+
         return view('laravel-crm::purchase-orders.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
             'order' => $order ?? null,
             'prefix' => $this->settingService->get('purchase_order_prefix'),
             'number' => (PurchaseOrder::latest()->first()->number ?? 1000) + 1,
+            'addresses' => $addresses,
         ]);
     }
 
