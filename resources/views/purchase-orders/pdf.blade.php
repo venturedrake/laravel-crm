@@ -72,11 +72,11 @@
                         @endif
                         {{ $purchaseOrder->address->city }} {{ $purchaseOrder->address->state }} {{ $purchaseOrder->address->postcode }}<br />
                         {{ $purchaseOrder->address->country }}
+                        <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_contact')) }}</strong><br />
+                        {{ $purchaseOrder->address->contact }}
+                        <strong>{{ ucfirst(__('laravel-crm::lang.delivery_phone')) }}</strong><br />
+                        {{ $purchaseOrder->address->phone }}
                     @endif
-                    <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_contact')) }}</strong><br />
-                    {{ $purchaseOrder->address->contact }}
-                    <strong>{{ ucfirst(__('laravel-crm::lang.delivery_phone')) }}</strong><br />
-                    {{ $purchaseOrder->address->phone }}
                 </td>
             </tr>
         </tbody>
