@@ -97,6 +97,9 @@ class PurchaseOrderController extends Controller
             $addresses[$address->id] = $address->address;
         }
 
+        $purchaseOrderTerms = $this->settingService->get('purchase_order_terms');
+        $purchaseOrderDeliveryInstructions = $this->settingService->get('purchase_order_delivery_instructions');
+
         return view('laravel-crm::purchase-orders.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
@@ -104,6 +107,8 @@ class PurchaseOrderController extends Controller
             'prefix' => $this->settingService->get('purchase_order_prefix'),
             'number' => (PurchaseOrder::latest()->first()->number ?? 1000) + 1,
             'addresses' => $addresses,
+            'purchaseOrderTerms' => $purchaseOrderTerms,
+            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions,
         ]);
     }
 
@@ -216,11 +221,19 @@ class PurchaseOrderController extends Controller
             $address = $purchaseOrder->organisation->getPrimaryAddress();
         }
 
+        $related = $this->settingService->get('team');
+
+        $addresses = [];
+        foreach($related->addresses()->get() as $address) {
+            $addresses[$address->id] = $address->address;
+        }
+
         return view('laravel-crm::purchase-orders.edit', [
             'purchaseOrder' => $purchaseOrder,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
+            'addresses' => $addresses,
         ]);
     }
 

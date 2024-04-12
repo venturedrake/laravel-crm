@@ -105,6 +105,13 @@
          'value' => old('delivery_prefix', $deliveryPrefix->value ?? null)
         ])
         @endhasdeliveriesenabled
+        @haspurchaseordersenabled
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'purchase_order_prefix',
+         'label' => ucfirst(trans('laravel-crm::lang.purchase_order_prefix')),
+         'value' => old('purchase_order_prefix', $purchaseOrderPrefix->value ?? null)
+        ])
+        @endhaspurchaseordersenabled
         @hasquotesenabled
         @include('laravel-crm::partials.form.textarea',[
          'name' => 'quote_terms',
@@ -127,6 +134,20 @@
          'value' => old('invoice_terms', $invoiceTerms->value ?? null)
         ])
         @endhasinvoicesenabled
+        @haspurchaseordersenabled
+        @include('laravel-crm::partials.form.textarea',[
+         'name' => 'purchase_order_terms',
+         'label' => ucfirst(trans('laravel-crm::lang.purchase_order_terms')),
+         'rows' => 5,
+         'value' => old('purchase_order_terms', $purchaseOrderTerms->value ?? null)
+        ])
+        @include('laravel-crm::partials.form.textarea',[
+         'name' => 'purchase_order_delivery_instructions',
+         'label' => ucfirst(trans('laravel-crm::lang.purchase_order_delivery_instructions')),
+         'rows' => 5,
+         'value' => old('purchase_order_delivery_instructions', $purchaseOrderDeliveryInstructions->value ?? null)
+        ])
+        @endhaspurchaseordersenabled
         <div class="form-group">
             <label for="dynamic_products">{{ ucfirst(__('laravel-crm::lang.allow_creating_products_when_creating_quotes_orders_and_invoices')) }}</label>
             <span class="form-control-toggle">

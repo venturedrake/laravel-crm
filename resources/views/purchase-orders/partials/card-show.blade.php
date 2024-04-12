@@ -61,6 +61,12 @@
                     <dd class="col-sm-9">{{ ($purchaseOrder->issue_date) ? $purchaseOrder->issue_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Date</dt>
                     <dd class="col-sm-9">{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</dd>
+                    <dt class="col-sm-3 text-right">Delivery Contact</dt>
+                    <dd class="col-sm-9">{{ $purchaseOrder->address->contact ?? null }}</dd>
+                    <dt class="col-sm-3 text-right">Delivery Phone</dt>
+                    <dd class="col-sm-9">{{ $purchaseOrder->address->phone ?? null }}</dd>
+                    <dt class="col-sm-3 text-right">Delivery Address</dt>
+                    <dd class="col-sm-9">{{ $purchaseOrder->address->address ?? null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Instructions</dt>
                     <dd class="col-sm-9">{{ $purchaseOrder->delivery_instructions }}</dd>
                 </dl>

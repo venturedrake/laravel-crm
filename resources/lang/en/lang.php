@@ -474,4 +474,10 @@ return [
     'purchase_order_date' => 'purchase order date',
     'purchase_order_number' => 'purchase order number',
     'delivery_address' => 'delivery address',
+    'edit_purchase_order' => 'edit purchase order',
+    'delivery_details' => 'delivery details',
+    'purchase_order_terms' => 'purchase order terms',
+    'purchase_order_delivery_instructions' => 'purchase order delivery instructions',
+    'purchase_order_prefix' => 'purchase order prefix',
+    'delivery_phone' => 'delivery phone',
 ];

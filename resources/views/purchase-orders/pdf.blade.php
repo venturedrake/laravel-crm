@@ -61,11 +61,22 @@
                 </td>
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.delivery_address')) }}</strong><br />
-                    @if($contactDetails)
-                        {!! nl2br($contactDetails) !!}
-                    @else
-                        {{ $fromName }}
+                    {{ $fromName }}<br />
+                    @if($purchaseOrder->address)
+                        {{ $purchaseOrder->address->line1 }}<br />
+                        @if($purchaseOrder->address->line2)
+                            {{ $purchaseOrder->address->line2 }}<br />
+                        @endif
+                        @if($purchaseOrder->address->line3)
+                            {{ $purchaseOrder->address->line3 }}<br />
+                        @endif
+                        {{ $purchaseOrder->address->city }} {{ $purchaseOrder->address->state }} {{ $purchaseOrder->address->postcode }}<br />
+                        {{ $purchaseOrder->address->country }}
                     @endif
+                    <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_contact')) }}</strong><br />
+                    {{ $purchaseOrder->address->contact }}
+                    <strong>{{ ucfirst(__('laravel-crm::lang.delivery_phone')) }}</strong><br />
+                    {{ $purchaseOrder->address->phone }}
                 </td>
             </tr>
         </tbody>

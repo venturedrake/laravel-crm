@@ -31,6 +31,7 @@ class StorePurchaseOrderRequest extends FormRequest
             'issue_date' => 'required|date_format:"'.$this->dateFormat().'"',
             'delivery_date' => 'nullable|date_format:"'.$this->dateFormat().'"',
             'currency' => 'required',
+            'delivery_address' => 'required',
         ];
 
         if (! request('order_id')) {
