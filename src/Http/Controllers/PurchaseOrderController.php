@@ -358,6 +358,6 @@ class PurchaseOrderController extends Controller
                 'organisation_address' => $organisation_address ?? null,
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
-            ])->download('purchase-order-'.strtolower($purchaseOrder->purchase_order_id).'.pdf');
+            ])->download('purchase-order-'.strtolower($purchaseOrder->xeroPurchaseOrder->number ?? $purchaseOrder->purchase_order_id).'.pdf');
     }
 }

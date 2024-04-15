@@ -13,8 +13,8 @@
                     @if($purchaseOrder->delivery_date)
                     <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $purchaseOrder->delivery_date->format($dateFormat) }}
                     @endif
-                    @if($purchaseOrder->reference || $purchaseOrder->xeroPurchaseOrder->reference)
-                    <br /><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $purchaseOrder->xeroPurchaseOrder->reference || $purchaseOrder->reference }}<br />
+                    @if($purchaseOrder->reference || ($purchaseOrder->xeroPurchaseOrder && $purchaseOrder->xeroPurchaseOrder->reference))
+                    <br /><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $purchaseOrder->xeroPurchaseOrder->reference ?? $purchaseOrder->reference }}<br />
                     @endif
                     </p>
                 </td>
