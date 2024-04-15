@@ -6,6 +6,11 @@
     <li class="nav-item">
         <a class="nav-link active" data-toggle="tab" id="tab-activities" href="#tabs-activities">{{ ucfirst(__('laravel-crm::lang.activity')) }}</a>
     </li>
+    @isset($purchaseOrders)
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-orders">{{ ucwords(__('laravel-crm::lang.purchase_orders')) }}</a>
+        </li>
+    @endisset
     @isset($orders)
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" id="tab-notes" href="#tabs-orders">{{ ucfirst(__('laravel-crm::lang.orders')) }}</a>
@@ -27,18 +32,30 @@
     <li class="nav-item">
         <a class="nav-link" data-toggle="tab" id="tab-tasks" href="#tabs-tasks">{{ ucfirst(__('laravel-crm::lang.tasks')) }}</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" id="tab-calls" href="#tabs-calls">{{ ucfirst(__('laravel-crm::lang.calls')) }}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" id="tab-meetings" href="#tabs-meetings">{{ ucfirst(__('laravel-crm::lang.meetings')) }}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" id="tab-lunches" href="#tabs-lunches">{{ ucfirst(__('laravel-crm::lang.lunches')) }}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" id="tab-files" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
-    </li>
+    @if(isset($purchaseOrders))
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"></a>
+            <div class="dropdown-menu" style="">
+                <a class="dropdown-item" data-toggle="tab" id="tab-calls" href="#tabs-calls">{{ ucfirst(__('laravel-crm::lang.calls')) }}</a>
+                <a class="dropdown-item" data-toggle="tab" id="tab-meetings" href="#tabs-meetings">{{ ucfirst(__('laravel-crm::lang.meetings')) }}</a>
+                <a class="dropdown-item" data-toggle="tab" id="tab-lunches" href="#tabs-lunches">{{ ucfirst(__('laravel-crm::lang.lunches')) }}</a>
+                <a class="dropdown-item" data-toggle="tab" id="tab-files" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
+            </div>
+        </li>
+    @else
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-calls" href="#tabs-calls">{{ ucfirst(__('laravel-crm::lang.calls')) }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-meetings" href="#tabs-meetings">{{ ucfirst(__('laravel-crm::lang.meetings')) }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-lunches" href="#tabs-lunches">{{ ucfirst(__('laravel-crm::lang.lunches')) }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="tab-files" href="#tabs-files">{{ ucfirst(__('laravel-crm::lang.files')) }}</a>
+        </li>
+    @endif    
 </ul>
 <div class="tab-content">
     <div class="tab-pane fadev show active" id="tabs-activities">
@@ -48,6 +65,15 @@
             ])
         </div>
     </div>
+    @isset($purchaseOrders)
+        <div class="tab-pane fade" id="tabs-orders">
+            <div class="card-body pl-0 pr-0">
+                @include('laravel-crm::purchase-orders.partials.card-index-related',[
+                    'purchaseOrders' => $purchaseOrders
+                ])
+            </div>
+        </div>
+    @endisset
     @isset($orders)
     <div class="tab-pane fade" id="tabs-orders">
         <div class="card-body pl-0 pr-0">

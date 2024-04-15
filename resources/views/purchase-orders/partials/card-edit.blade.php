@@ -6,7 +6,7 @@
         @component('laravel-crm::components.card-header')
 
             @slot('title')
-                {{ ucfirst(__('laravel-crm::lang.edit_invoice')) }}
+                {{ ucfirst(__('laravel-crm::lang.edit_purchase_order')) }}
             @endslot
 
             @slot('actions')

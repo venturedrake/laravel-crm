@@ -4,6 +4,8 @@ namespace VentureDrake\LaravelCrm\Services;
 
 use Carbon\Carbon;
 use Dcblogdev\Xero\Facades\Xero;
+use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
@@ -39,13 +41,24 @@ class PurchaseOrderService
             'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
             'delivery_instructions' => $request->delivery_instructions,
-            'subtotal' => $request->sub_total,
-            'tax' => $request->tax,
-            'total' => $request->total,
+            'terms' => $request->terms,
+            'subtotal' => $request->sub_total ?? null,
+            'tax' => $request->tax ?? null,
+            'total' => $request->total ?? null,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
+        $deliveryAddress = Address::find($request->delivery_address)->replicate();
+        $deliveryAddress->external_id = Uuid::uuid4()->toString();
+        $deliveryAddress->created_at = now();
+        $deliveryAddress->updated_at = now();
+        $purchaseOrder->address()->save($deliveryAddress);
+
         if (isset($request->purchaseOrderLines)) {
+            $subTotal = 0;
+            $tax = 0;
+            $total = 0;
+
             foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
                 if(isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['quantity'] > 0) {
                     if(! Product::find($purchaseOrderLine['product_id'])) {
@@ -67,6 +80,10 @@ class PurchaseOrderService
                         }
                     }
 
+                    $subTotal += $purchaseOrderLine['amount'];
+                    $tax += $purchaseOrderLine['amount'] * ($taxRate / 100);
+                    $total += ($purchaseOrderLine['amount'] + ($purchaseOrderLine['amount'] * ($taxRate / 100)));
+
                     $purchaseOrder->purchaseOrderLines()->create([
                         'product_id' => $purchaseOrderLine['product_id'],
                         'quantity' => $purchaseOrderLine['quantity'],
@@ -79,6 +96,14 @@ class PurchaseOrderService
                         'comments' => $purchaseOrderLine['comments'],
                     ]);
                 }
+            }
+
+            if(! $request->total) {
+                $purchaseOrder->update([
+                    'subtotal' => $subTotal,
+                    'tax' => $tax,
+                    'total' => $total
+                ]);
             }
         }
 
@@ -137,11 +162,24 @@ class PurchaseOrderService
             'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
             'delivery_instructions' => $request->delivery_instructions,
+            'terms' => $request->terms,
             'subtotal' => $request->sub_total,
             'tax' => $request->tax,
             'total' => $request->total,
             'amount_due' => $request->total - ($purchaseOrder->amount_paid / 100),
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
+        ]);
+
+        $purchaseOrder->address->update([
+            'contact' => $request->address_contact,
+            'phone' => $request->address_phone,
+            'line1' => $request->address_line1,
+            'line2' => $request->address_line2,
+            'line3' => $request->address_line3,
+            'city' => $request->address_city,
+            'state' => $request->address_state,
+            'postal_code' => $request->address_code,
+            'country' => $request->address_country,
         ]);
 
         if (isset($request->purchaseOrderLines)) {

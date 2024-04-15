@@ -54,6 +54,24 @@
         @endif    
     </td>
 </tr>
+@if($fromOrder)
+<tr data-number="{{ $value }}" class="item-tr">
+    <td colspan="5" class="border-0 pt-0 bind-select2-organisations" style="position: relative;">
+        @include('laravel-crm::partials.form.select',[
+            'name' => 'purchaseOrderLines['.$value.'][organisation_id]',
+            'label' => ucfirst(__('laravel-crm::lang.supplier')),
+            'options' => [
+                   $this->organisation_id[$value] ?? null => $this->organisation_name[$value] ?? null,
+            ],
+            'value' => $this->organisation_id[$value] ?? null,
+            'attributes' => [
+                'wire:model' => 'organisation_idnpm .'.$value,
+                'data-value' => $value
+            ]
+        ])
+    </td>
+</tr>
+@endif
 <tr data-number="{{ $value }}" class="item-tr">
     <td colspan="3" class="border-0 pt-0">
         @if($fromOrder)
@@ -144,3 +162,4 @@
        @endif     
     </td>
 </tr>
+

@@ -40,9 +40,12 @@ class SettingController extends Controller
         $orderPrefix = $this->settingService->get('order_prefix');
         $invoicePrefix = $this->settingService->get('invoice_prefix');
         $deliveryPrefix = $this->settingService->get('delivery_prefix');
+        $purchaseOrderPrefix = $this->settingService->get('purchase_order_prefix');
         $quoteTerms = $this->settingService->get('quote_terms');
         $invoiceContactDetails = $this->settingService->get('invoice_contact_details');
         $invoiceTerms = $this->settingService->get('invoice_terms');
+        $purchaseOrderTerms = $this->settingService->get('purchase_order_terms');
+        $purchaseOrderDeliveryInstructions = $this->settingService->get('purchase_order_delivery_instructions');
         $dateFormatSetting = $this->settingService->get('date_format');
         $timeFormatSetting = $this->settingService->get('time_format');
         $showRelatedActivity = $this->settingService->get('show_related_activity');
@@ -63,9 +66,12 @@ class SettingController extends Controller
             'orderPrefix' => $orderPrefix,
             'invoicePrefix' => $invoicePrefix,
             'deliveryPrefix' => $deliveryPrefix,
+            'purchaseOrderPrefix' => $purchaseOrderPrefix,
             'quoteTerms' => $quoteTerms,
             'invoiceContactDetails' => $invoiceContactDetails,
             'invoiceTerms' => $invoiceTerms,
+            'purchaseOrderTerms' => $purchaseOrderTerms,
+            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions,
             'dateFormatSetting' => $dateFormatSetting,
             'timeFormatSetting' => $timeFormatSetting,
             'showRelatedActivity' => $showRelatedActivity,
@@ -122,6 +128,10 @@ class SettingController extends Controller
             $this->settingService->set('delivery_prefix', $request->delivery_prefix);
         }
 
+        if($request->purchase_order_prefix) {
+            $this->settingService->set('purchase_order_prefix', $request->purchase_order_prefix);
+        }
+
         if ($request->quote_terms) {
             $this->settingService->set('quote_terms', $request->quote_terms);
         }
@@ -132,6 +142,14 @@ class SettingController extends Controller
 
         if ($request->invoice_terms) {
             $this->settingService->set('invoice_terms', $request->invoice_terms);
+        }
+
+        if ($request->purchase_order_terms) {
+            $this->settingService->set('purchase_order_terms', $request->purchase_order_terms);
+        }
+
+        if ($request->purchase_order_delivery_instructions) {
+            $this->settingService->set('purchase_order_delivery_instructions', $request->purchase_order_delivery_instructions);
         }
 
         $this->settingService->set('date_format', $request->date_format);

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StorePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -90,12 +91,25 @@ class PurchaseOrderController extends Controller
                 break;
         }
 
+        $related = $this->settingService->get('team');
+
+        $addresses = [];
+        foreach($related->addresses()->get() as $address) {
+            $addresses[$address->id] = $address->address;
+        }
+
+        $purchaseOrderTerms = $this->settingService->get('purchase_order_terms');
+        $purchaseOrderDeliveryInstructions = $this->settingService->get('purchase_order_delivery_instructions');
+
         return view('laravel-crm::purchase-orders.create', [
             'person' => $person ?? null,
             'organisation' => $organisation ?? null,
             'order' => $order ?? null,
             'prefix' => $this->settingService->get('purchase_order_prefix'),
             'number' => (PurchaseOrder::latest()->first()->number ?? 1000) + 1,
+            'addresses' => $addresses,
+            'purchaseOrderTerms' => $purchaseOrderTerms,
+            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions,
         ]);
     }
 
@@ -127,6 +141,44 @@ class PurchaseOrderController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeMultiple(StorePurchaseOrderRequest $request)
+    {
+        $purchaseOrders = [];
+
+        foreach($request->purchaseOrderLines as $purchaseOrderLine) {
+            if($purchaseOrderLine['organisation_id']) {
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['order_id'] = $request->order_id;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['organisation_id'] = $purchaseOrderLine['organisation_id'];
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['reference'] = $request->reference;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['currency'] = $request->currency;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['issue_date'] = $request->issue_date;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_date'] = $request->delivery_date;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_instructions'] = $request->delivery_instructions;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['purchaseOrderLines'][] = $purchaseOrderLine;
+            }
+        }
+
+        foreach($purchaseOrders as $organisationId => $purchaseOrder) {
+            $purchaseOrderRequest = Request::create(url(route('laravel-crm.purchase-orders.create')), 'POST', $purchaseOrder);
+
+            if($organisation = Organisation::find($purchaseOrderRequest->organisation_id)) {
+                $this->purchaseOrderService->create($purchaseOrderRequest, $person ?? null, $organisation ?? null);
+            }
+
+            sleep(1);
+        }
+
+        flash(ucfirst(trans('laravel-crm::lang.purchase_orders_created')))->success()->important();
+
+        return redirect(route('laravel-crm.purchase-orders.index'));
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -144,12 +196,19 @@ class PurchaseOrderController extends Controller
             $organisation_address = $purchaseOrder->organisation->getPrimaryAddress();
         }
 
+        $related = $this->settingService->get('team');
+
+        if($purchaseOrder->address) {
+            $deliveryAddress = $purchaseOrder->address;
+        }
+
         return view('laravel-crm::purchase-orders.show', [
             'purchaseOrder' => $purchaseOrder,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
             'organisation_address' => $organisation_address ?? null,
+            'deliveryAddress' => $deliveryAddress ?? null,
         ]);
     }
 
@@ -170,11 +229,19 @@ class PurchaseOrderController extends Controller
             $address = $purchaseOrder->organisation->getPrimaryAddress();
         }
 
+        $related = $this->settingService->get('team');
+
+        $addresses = [];
+        foreach($related->addresses()->get() as $address) {
+            $addresses[$address->id] = $address->address;
+        }
+
         return view('laravel-crm::purchase-orders.edit', [
             'purchaseOrder' => $purchaseOrder,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
+            'addresses' => $addresses,
         ]);
     }
 
@@ -219,6 +286,52 @@ class PurchaseOrderController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.purchase_order_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.purchase-orders.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = PurchaseOrder::searchValue($request);
+
+        if (! $searchValue || trim($searchValue) == '') {
+            return redirect(route('laravel-crm.purchase-orders.index'));
+        }
+
+        $params = PurchaseOrder::filters($request, 'search');
+
+        $purchaseOrders = PurchaseOrder::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'purchase_orders.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
+            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'purchase_orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'purchase_orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->latest()
+            ->get()
+            ->filter(function ($record) use ($searchValue) {
+                foreach ($record->getSearchable() as $field) {
+                    if (Str::contains($field, '.')) {
+                        $field = explode('.', $field);
+                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
+                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+                                return $record;
+                            }
+                        }
+                    } elseif ($record->{$field}) {
+                        if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
+                            return $record;
+                        }
+                    }
+                }
+            });
+
+        return view('laravel-crm::purchase-orders.index', [
+            'purchaseOrders' => $purchaseOrders,
+            'searchValue' => $searchValue ?? null,
+        ]);
     }
 
     public function download(PurchaseOrder $purchaseOrder)

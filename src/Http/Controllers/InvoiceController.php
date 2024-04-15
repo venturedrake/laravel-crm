@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreInvoiceRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateInvoiceRequest;
 use VentureDrake\LaravelCrm\Models\Invoice;
@@ -224,6 +225,52 @@ class InvoiceController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.invoice_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.invoices.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = Invoice::searchValue($request);
+
+        if (! $searchValue || trim($searchValue) == '') {
+            return redirect(route('laravel-crm.invoices.index'));
+        }
+
+        $params = Invoice::filters($request, 'search');
+
+        $invoices = Invoice::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'invoices.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
+            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'invoices.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'invoices.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->latest()
+            ->get()
+            ->filter(function ($record) use ($searchValue) {
+                foreach ($record->getSearchable() as $field) {
+                    if (Str::contains($field, '.')) {
+                        $field = explode('.', $field);
+                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
+                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+                                return $record;
+                            }
+                        }
+                    } elseif ($record->{$field}) {
+                        if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
+                            return $record;
+                        }
+                    }
+                }
+            });
+
+        return view('laravel-crm::invoices.index', [
+            'invoices' => $invoices,
+            'searchValue' => $searchValue ?? null,
+        ]);
     }
 
     public function download(Invoice $invoice)

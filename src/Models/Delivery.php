@@ -20,6 +20,16 @@ class Delivery extends Model
 
     protected $guarded = ['id'];
 
+    protected $searchable = [
+        'reference',
+        'delivery_id',
+        'person.first_name',
+        'person.middle_name',
+        'person.last_name',
+        'person.maiden_name',
+        'organisation.name',
+    ];
+
     protected $filterable = [
         'user_owner_id',
     ];

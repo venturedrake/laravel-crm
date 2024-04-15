@@ -24,6 +24,15 @@
      }elseif(strpos(Route::currentRouteName(), 'laravel-crm.products') === 0  && auth()->user()->can('view crm products')){
          echo url(route('laravel-crm.products.search'));
          $currentAction = ucfirst(__('laravel-crm::lang.products'));
+     }elseif(strpos(Route::currentRouteName(), 'laravel-crm.invoices') === 0  && auth()->user()->can('view crm invoices')){
+         echo url(route('laravel-crm.invoices.search'));
+         $currentAction = ucfirst(__('laravel-crm::lang.invoices'));
+     }elseif(strpos(Route::currentRouteName(), 'laravel-crm.deliveries') === 0  && auth()->user()->can('view crm deliveries')){
+         echo url(route('laravel-crm.deliveries.search'));
+         $currentAction = ucfirst(__('laravel-crm::lang.deliveries'));
+     } elseif(strpos(Route::currentRouteName(), 'laravel-crm.purchase-orders') === 0  && auth()->user()->can('view crm purchase orders')){
+         echo url(route('laravel-crm.purchase-orders.search'));
+         $currentAction = ucfirst(__('laravel-crm::lang.purchase_orders'));
      }
  
     if(!isset($currentAction)){
@@ -51,6 +60,15 @@
          }elseif(auth()->user()->can('view crm products')){
              echo url(route('laravel-crm.products.search'));
              $currentAction = ucfirst(__('laravel-crm::lang.products'));
+         }elseif(auth()->user()->can('view crm invoices')){
+             echo url(route('laravel-crm.invoices.search'));
+             $currentAction = ucfirst(__('laravel-crm::lang.invoices'));
+         }elseif(auth()->user()->can('view crm deliveries')){
+             echo url(route('laravel-crm.deliveries.search'));
+             $currentAction = ucfirst(__('laravel-crm::lang.deliveries'));
+         }elseif(auth()->user()->can('view crm purchase orders')){
+             echo url(route('laravel-crm.purchase-orders.search'));
+             $currentAction = ucfirst(__('laravel-crm::lang.purchase_orders'));
          }
     }
 
@@ -83,14 +101,29 @@
                     <a class="dropdown-item" href="#orders" data-type="orders" data-action="{{ url(route('laravel-crm.orders.search')) }}">{{ ucfirst(__('laravel-crm::lang.orders')) }}</a>
                 @endcan
                 @endhasordersenabled
+                @hasinvoicesenabled
+                @can('view crm invoices')
+                    <a class="dropdown-item" href="#invoices" data-type="invoices" data-action="{{ url(route('laravel-crm.invoices.search')) }}">{{ ucfirst(__('laravel-crm::lang.invoices')) }}</a>
+                @endcan
+                @endhasinvoicesenabled
+                @hasdeliveriesenabled
+                @can('view crm deliveries')
+                    <a class="dropdown-item" href="#deliveries" data-type="deliveries" data-action="{{ url(route('laravel-crm.deliveries.search')) }}">{{ ucfirst(__('laravel-crm::lang.deliveries')) }}</a>
+                @endcan
+                @endhasdeliveriesenabled
+                @haspurchaseordersenabled
+                @can('view crm purchase orders')
+                    <a class="dropdown-item" href="#purchase-orders" data-type="purchaseOrders" data-action="{{ url(route('laravel-crm.purchase-orders.search')) }}">{{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}</a>
+                @endcan
+                @endhaspurchaseordersenabled
                 @can('view crm clients')
                     <a class="dropdown-item" href="#clients" data-type="clients" data-action="{{ url(route('laravel-crm.clients.search')) }}">{{ ucfirst(__('laravel-crm::lang.clients')) }}</a>
                 @endcan
-                @can('view crm people')
-                <a class="dropdown-item" href="#people" data-type="people" data-action="{{ url(route('laravel-crm.people.search')) }}">{{ ucfirst(__('laravel-crm::lang.people')) }}</a>
-                @endcan
                 @can('view crm organisations')    
                 <a class="dropdown-item" href="#organisations" data-type="organisations" data-action="{{ url(route('laravel-crm.organisations.search')) }}">{{ ucfirst(__('laravel-crm::lang.organizations')) }}</a>
+                @endcan
+                @can('view crm people')
+                    <a class="dropdown-item" href="#people" data-type="people" data-action="{{ url(route('laravel-crm.people.search')) }}">{{ ucfirst(__('laravel-crm::lang.people')) }}</a>
                 @endcan
                 @can('view crm products')
                 <a class="dropdown-item" href="#products" data-type="products" data-action="{{ url(route('laravel-crm.products.search')) }}">{{ ucfirst(__('laravel-crm::lang.products')) }}</a>

@@ -27,9 +27,10 @@
                 @hasordersenabled
                     <th scope="col">{{ ucwords(__('laravel-crm::lang.order')) }}</th>
                 @endhasordersenabled
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.to')) }}</th>
-                <th scope="col">{{ ucwords(__('laravel-crm::lang.date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.supplier')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.issue_date')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.amount')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
                 <th scope="col" width="280"></th>
             </tr>
@@ -54,22 +55,31 @@
                    </td>
                    <td>{{ $purchaseOrder->issue_date->format($dateFormat) }}</td>
                    <td>{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</td>
+                   <td>{{ money($purchaseOrder->total, $purchaseOrder->currency) }}</td>
                    <td>
                        @if($purchaseOrder->sent == 1)
                            <span class="text-success">Sent</span>
                        @endif
                    </td>
                     <td class="disable-link text-right">
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                    
+                        @can('view crm purchase orders')
+                        <a href="{{ route('laravel-crm.purchase-orders.show',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
                         @if(! $purchaseOrder->xeroPurchaseOrder)
-                            {{--@livewire('send-invoice',[
-                                'invoice' => $invoice
-                            ])--}}
-                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
-                        
-                            @can('view crm purchase orders')
-                            <a href="{{ route('laravel-crm.purchase-orders.show',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                            @can('edit crm purchase orders')
+                                <a href="{{ route('laravel-crm.purchase-orders.edit',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                             @endcan
-                        @else
+                            @can('delete crm purchase orders')
+                                <form action="{{ route('laravel-crm.purchase-orders.destroy',$purchaseOrder) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                                    {{ method_field('DELETE') }}
+                                    {{ csrf_field() }}
+                                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.purchase_order') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                                </form>
+                            @endcan
+                        @endif
+                        @if($purchaseOrder->xeroPurchaseOrder)
                             <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
                         @endif    
                     </td>

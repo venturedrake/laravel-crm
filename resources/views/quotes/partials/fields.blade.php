@@ -80,6 +80,9 @@
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
                  'value' =>  old('user_owner_id', $quote->user_owner_id ?? auth()->user()->id),
               ])
+
+        @include('laravel-crm::fields.partials.model', ['model' => $quote ?? new \VentureDrake\LaravelCrm\Models\Quote()])
+
     </div>
     <div class="col-sm-7">
         @livewire('quote-items',[

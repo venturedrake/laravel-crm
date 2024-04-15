@@ -18,6 +18,7 @@
                 ]) |
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
                 @include('laravel-crm::partials.navs.activities') |
+                @if(! $purchaseOrder->xeroPurchaseOrder)
                 @can('edit crm purchase orders')
                 <a href="{{ url(route('laravel-crm.purchase-orders.edit', $purchaseOrder)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
@@ -28,6 +29,10 @@
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.purchase_order') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                 </form>
                 @endcan
+                @endif
+                @if($purchaseOrder->xeroPurchaseOrder)
+                    <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
+                @endif   
             </span>
         @endslot
 
@@ -41,9 +46,9 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">Number</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->purchase_order_id }}</dd>
+                    <dd class="col-sm-9">{{ $purchaseOrder->xeroPurchaseOrder->number ?? $purchaseOrder->purchase_order_id }}</dd>
                     <dt class="col-sm-3 text-right">Reference</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->reference }}</dd>
+                    <dd class="col-sm-9">{{ $purchaseOrder->xeroPurchaseOrder->reference ?? $purchaseOrder->reference }}</dd>
                     @hasordersenabled
                         @if($purchaseOrder->order)
                             <dt class="col-sm-3 text-right">Order</dt>
@@ -56,6 +61,12 @@
                     <dd class="col-sm-9">{{ ($purchaseOrder->issue_date) ? $purchaseOrder->issue_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Date</dt>
                     <dd class="col-sm-9">{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</dd>
+                    <dt class="col-sm-3 text-right">Delivery Contact</dt>
+                    <dd class="col-sm-9">{{ $deliveryAddress->contact ?? null }}</dd>
+                    <dt class="col-sm-3 text-right">Delivery Phone</dt>
+                    <dd class="col-sm-9">{{ $deliveryAddress->phone ?? null }}</dd>
+                    <dt class="col-sm-3 text-right">Delivery Address</dt>
+                    <dd class="col-sm-9">{{$deliveryAddress->address ?? null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Instructions</dt>
                     <dd class="col-sm-9">{{ $purchaseOrder->delivery_instructions }}</dd>
                 </dl>

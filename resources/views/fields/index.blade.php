@@ -20,8 +20,7 @@
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.required')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.default')) }}</th>
                                 <th scope="col">{{ ucfirst(__('laravel-crm::lang.system')) }}</th>
-                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.created')) }}</th>
-                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.updated')) }}</th>
+                                <th scope="col">{{ ucfirst(__('laravel-crm::lang.attached_to')) }}</th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -34,8 +33,13 @@
                                     <td>{{ ($field->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
                                     <td>{{ $field->default }}</td>
                                     <td>{{ ($field->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
-                                    <td>{{ $field->created_at->format($dateFormat) }}</td>
-                                    <td>{{ $field->updated_at->format($dateFormat) }}</td>
+                                    <td>
+                                        @foreach(\VentureDrake\LaravelCrm\Models\FieldModel::where('field_id', $field->id)->get() as $fieldModel)
+                                            <span class="badge badge-secondary">
+                                                 {{ \Illuminate\Support\Str::plural(class_basename($fieldModel->model)) }}
+                                            </span>
+                                        @endforeach
+                                    </td>
                                     <td class="disable-link text-right">
                                         @can('view crm fields')
                                         <a href="{{  route('laravel-crm.fields.show', $field) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -47,6 +48,10 @@ class LivePurchaseOrderLines extends Component
 
     public $fromOrder;
 
+    public $organisation_id;
+
+    public $organisation_name;
+
     protected $listeners = ['loadPurchaseOrderLineDefault'];
 
     public function boot(SettingService $settingService)
@@ -68,6 +73,8 @@ class LivePurchaseOrderLines extends Component
                 $this->purchase_order_line_id[$this->i] = $old['purchase_order_line_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
+                $this->organisation_id[$this->i] = $old['organisation_id'] ?? null;
+                $this->organisation_name[$this->i] = (isset($old['organisation_id'])) ? Organisation::find($old['organisation_id'])->name ?? null : null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
 
                 if ($this->fromOrder) {
@@ -194,11 +201,11 @@ class LivePurchaseOrderLines extends Component
     public function getRemainOrderQuantity($orderProduct)
     {
         $quantity = $orderProduct->quantity;
-        foreach ($this->fromOrder->purchaseOrders as $purchaseOrder) {
-            if ($purchaseOrderProduct = $purchaseOrder->purchaseOrdersLines()->where('order_product_id', $orderProduct->id)->first()) {
+        /*foreach ($this->fromOrder->purchaseOrders as $purchaseOrder) {
+            if ($purchaseOrderProduct = $purchaseOrder->purchaseOrderLines()->where('order_product_id', $orderProduct->id)->first()) {
                 $quantity -= $purchaseOrderProduct->quantity;
             }
-        }
+        }*/
 
         return $quantity;
     }

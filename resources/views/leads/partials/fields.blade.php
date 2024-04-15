@@ -47,6 +47,8 @@
                  'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
                  'value' =>  old('user_owner_id', $lead->user_owner_id ?? auth()->user()->id),
               ])
+
+        @include('laravel-crm::fields.partials.model', ['model' => $lead ?? new \VentureDrake\LaravelCrm\Models\Lead()])
     </div>
     <div class="col-sm-6">
         <h6 class="text-uppercase"><span class="fa fa-user" aria-hidden="true"></span> {{ strtoupper(__('laravel-crm::lang.person')) }}</h6>
