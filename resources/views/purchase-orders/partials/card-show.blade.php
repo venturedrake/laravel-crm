@@ -16,6 +16,9 @@
                     'route' => 'purchase-orders',
                     'text' => 'back_to_purchase_orders'
                 ]) |
+                @livewire('send-purchase-order',[
+                    'purchaseOrder' => $purchaseOrder
+                ])
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
                 @include('laravel-crm::partials.navs.activities') |
                 @if(! $purchaseOrder->xeroPurchaseOrder)

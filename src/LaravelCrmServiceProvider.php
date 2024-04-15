@@ -60,6 +60,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveTasks;
 use VentureDrake\LaravelCrm\Http\Livewire\NotifyToast;
 use VentureDrake\LaravelCrm\Http\Livewire\PayInvoice;
 use VentureDrake\LaravelCrm\Http\Livewire\SendInvoice;
+use VentureDrake\LaravelCrm\Http\Livewire\SendPurchaseOrder;
 use VentureDrake\LaravelCrm\Http\Livewire\SendQuote;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
@@ -522,6 +523,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('product-form', LiveProductForm::class);
         Livewire::component('purchase-order-lines', LivePurchaseOrderLines::class);
         Livewire::component('fields.create-or-edit', CreateOrEdit::class);
+        Livewire::component('send-purchase-order', SendPurchaseOrder::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

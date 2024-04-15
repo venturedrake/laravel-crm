@@ -1,0 +1,1 @@
+Purchase Order {{ $purchaseOrder->purchase_order_id }} from {{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organisation_name')->first()->value }} for {{ $purchaseOrder->organisation->name  ?? null }} 

@@ -62,8 +62,10 @@
                        @endif
                    </td>
                     <td class="disable-link text-right">
+                        @livewire('send-purchase-order',[
+                            'purchaseOrder' => $purchaseOrder
+                        ])
                         <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.purchase-orders.download', $purchaseOrder) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
-                    
                         @can('view crm purchase orders')
                         <a href="{{ route('laravel-crm.purchase-orders.show',$purchaseOrder) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan

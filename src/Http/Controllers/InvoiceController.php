@@ -297,6 +297,6 @@ class InvoiceController extends Controller
                 'organisation_address' => $organisation_address ?? null,
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
-            ])->download('invoice-'.strtolower($invoice->invoice_id).'.pdf');
+            ])->download('invoice-'.strtolower($invoice->xeroInvoice->number ?? $invoice->invoice_id).'.pdf');
     }
 }

@@ -8,7 +8,7 @@
                 <td width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.invoice')) }}</h1>
                     <p>
-                    @if($invoice->reference || $invoice->xeroInvoice->reference)
+                    @if($invoice->reference || ($invoice->xeroInvoice && $invoice->xeroInvoice->reference))
                         <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $invoice->xeroInvoice->reference ?? $invoice->reference }}<br />
                     @endif
                     <strong>{{ ucfirst(__('laravel-crm::lang.invoice_date')) }}</strong> {{ $invoice->issue_date->format($dateFormat) }}<br />
