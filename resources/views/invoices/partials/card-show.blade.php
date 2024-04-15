@@ -28,23 +28,30 @@
                     'invoice' => $invoice
                 ])
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.invoices.download', $invoice) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
-                @if(! $invoice->fully_paid_at)
-                    @livewire('pay-invoice',[
-                        'invoice' => $invoice
-                    ])
+                @if(! $invoice->xeroInvoice)
+                    @if(! $invoice->fully_paid_at)
+                        @livewire('pay-invoice',[
+                            'invoice' => $invoice
+                        ])
+                    @endif
                 @endif
                 @include('laravel-crm::partials.navs.activities') @if($invoice->amount_paid <= 0) |
-                @can('edit crm invoices')
-                <a href="{{ url(route('laravel-crm.invoices.edit', $invoice)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                @endcan
-                @can('delete crm invoices')
-                <form action="{{ route('laravel-crm.invoices.destroy', $invoice) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
-                    {{ method_field('DELETE') }}
-                    {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
-                </form>
-                @endcan
-                @endif                                                      
+                @if(! $invoice->xeroInvoice)
+                    @can('edit crm invoices')
+                    <a href="{{ url(route('laravel-crm.invoices.edit', $invoice)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                    @endcan
+                    @can('delete crm invoices')
+                    <form action="{{ route('laravel-crm.invoices.destroy', $invoice) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                        {{ method_field('DELETE') }}
+                        {{ csrf_field() }}
+                        <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    </form>
+                    @endcan
+                    @endif  
+                @endif
+                @if($invoice->xeroInvoice)
+                    <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
+                @endif  
             </span>
         @endslot
 
@@ -58,9 +65,9 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">Number</dt>
-                    <dd class="col-sm-9">{{ $invoice->invoice_id }}</dd>
+                    <dd class="col-sm-9">{{ $invoice->xeroInvoice->number ?? $invoice->invoice_id }}</dd>
                     <dt class="col-sm-3 text-right">Reference</dt>
-                    <dd class="col-sm-9">{{ $invoice->reference }}</dd>
+                    <dd class="col-sm-9">{{ $invoice->xeroInvoice->reference ?? $invoice->reference }}</dd>
                     @hasordersenabled
                         @if($invoice->order)
                             <dt class="col-sm-3 text-right">Order</dt>

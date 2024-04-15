@@ -72,19 +72,22 @@
                        @endif
                    </td>
                     <td class="disable-link text-right">
-                        @if(! $invoice->xeroInvoice)
-                            @livewire('send-invoice',[
-                                'invoice' => $invoice
-                            ])
-                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.invoices.download', $invoice) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                        @livewire('send-invoice',[
+                            'invoice' => $invoice
+                        ])
+                        
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.invoices.download', $invoice) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                        @if(! $invoice->xeroInvoice)   
                             @if(! $invoice->fully_paid_at)
                                 @livewire('pay-invoice',[
                                     'invoice' => $invoice
                                 ]) 
                             @endif
-                            @can('view crm invoices')
-                            <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
-                            @endcan
+                        @endif
+                        @can('view crm invoices')
+                        <a href="{{ route('laravel-crm.invoices.show',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
+                        @endcan
+                        @if(! $invoice->xeroInvoice)
                             @if($invoice->amount_paid <= 0)
                                 @can('edit crm invoices')
                                 <a href="{{ route('laravel-crm.invoices.edit',$invoice) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
@@ -96,8 +99,9 @@
                                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
                                 </form>
                                 @endcan
-                            @endif     
-                        @else
+                            @endif  
+                        @endif
+                        @if($invoice->xeroInvoice)
                             <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
                         @endif    
                     </td>

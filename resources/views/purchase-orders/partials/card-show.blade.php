@@ -46,9 +46,9 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">Number</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->purchase_order_id }}</dd>
+                    <dd class="col-sm-9">{{ $purchaseOrder->xeroPurchaseOrder->number ?? $purchaseOrder->purchase_order_id }}</dd>
                     <dt class="col-sm-3 text-right">Reference</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->reference }}</dd>
+                    <dd class="col-sm-9">{{ $purchaseOrder->xeroPurchaseOrder->reference ?? $purchaseOrder->reference }}</dd>
                     @hasordersenabled
                         @if($purchaseOrder->order)
                             <dt class="col-sm-3 text-right">Order</dt>
@@ -62,11 +62,11 @@
                     <dt class="col-sm-3 text-right">Delivery Date</dt>
                     <dd class="col-sm-9">{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Contact</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->address->contact ?? null }}</dd>
+                    <dd class="col-sm-9">{{ $deliveryAddress->contact ?? null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Phone</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->address->phone ?? null }}</dd>
+                    <dd class="col-sm-9">{{ $deliveryAddress->phone ?? null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Address</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->address->address ?? null }}</dd>
+                    <dd class="col-sm-9">{{$deliveryAddress->address ?? null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Instructions</dt>
                     <dd class="col-sm-9">{{ $purchaseOrder->delivery_instructions }}</dd>
                 </dl>

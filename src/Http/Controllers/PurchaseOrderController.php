@@ -195,12 +195,19 @@ class PurchaseOrderController extends Controller
             $organisation_address = $purchaseOrder->organisation->getPrimaryAddress();
         }
 
+        $related = $this->settingService->get('team');
+
+        if($purchaseOrder->address) {
+            $deliveryAddress = $purchaseOrder->address;
+        }
+
         return view('laravel-crm::purchase-orders.show', [
             'purchaseOrder' => $purchaseOrder,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
             'organisation_address' => $organisation_address ?? null,
+            'deliveryAddress' => $deliveryAddress ?? null,
         ]);
     }
 

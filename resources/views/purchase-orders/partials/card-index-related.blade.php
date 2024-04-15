@@ -15,9 +15,9 @@
             </thead>
             <tbody>
             @foreach($purchaseOrders as $purchaseOrder)
-               <tr @if(! $purchaseOrder->xeroInvoice) class="has-link" data-url="{{ url(route('laravel-crm.invoices.show', $purchaseOrder)) }}" @endif>
-                   <td>{{ $purchaseOrder->xeroInvoice->number ?? $purchaseOrder->purchase_order_id }}</td>
-                   <td>{{ $purchaseOrder->xeroInvoice->reference ?? $purchaseOrder->reference }}</td>
+               <tr @if(! $purchaseOrder->xeroPurchaseOrder) class="has-link" data-url="{{ url(route('laravel-crm.purchase-orders.show', $purchaseOrder)) }}" @endif>
+                   <td>{{ $purchaseOrder->xeroPurchaseOrder->number ?? $purchaseOrder->purchase_order_id }}</td>
+                   <td>{{ $purchaseOrder->xeroPurchaseOrder->reference ?? $purchaseOrder->reference }}</td>
                    <td>{{ $purchaseOrder->issue_date->format($dateFormat) }}</td>
                    <td>{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</td>
                    <td>{{ money($purchaseOrder->total, $purchaseOrder->currency) }}</td>
@@ -27,7 +27,7 @@
                        @endif
                    </td>
                    <td>
-                   @if($purchaseOrder->xeroInvoice)
+                   @if($purchaseOrder->xeroPurchaseOrder)
                     <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
                    @endif
                    </td>
