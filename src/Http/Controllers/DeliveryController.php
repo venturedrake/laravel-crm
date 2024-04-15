@@ -224,7 +224,7 @@ class DeliveryController extends Controller
 
         $deliveries = Delivery::filter($params)
             ->select(
-                config('laravel-crm.db_table_prefix').'purchase_orders.*',
+                config('laravel-crm.db_table_prefix').'deliveries.*',
                 config('laravel-crm.db_table_prefix').'people.first_name',
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
