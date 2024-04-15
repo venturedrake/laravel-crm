@@ -480,4 +480,5 @@ return [
     'purchase_order_delivery_instructions' => 'purchase order delivery instructions',
     'purchase_order_prefix' => 'purchase order prefix',
     'delivery_phone' => 'delivery phone',
+    'send_purchase_order' => 'send purchase order',
 ];
