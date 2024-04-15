@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDeliveryRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDeliveryRequest;
 use VentureDrake\LaravelCrm\Models\Address;
@@ -209,6 +210,53 @@ class DeliveryController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.delivery_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.deliveries.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = Delivery::searchValue($request);
+
+        if (! $searchValue || trim($searchValue) == '') {
+            return redirect(route('laravel-crm.deliveries.index'));
+        }
+
+        $params = Delivery::filters($request, 'search');
+
+        $deliveries = Delivery::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'purchase_orders.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
+            ->leftJoin(config('laravel-crm.db_table_prefix').'orders', config('laravel-crm.db_table_prefix').'deliveries.order_id', '=', config('laravel-crm.db_table_prefix').'orders.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->latest()
+            ->get()
+            ->filter(function ($record) use ($searchValue) {
+                foreach ($record->getSearchable() as $field) {
+                    if (Str::contains($field, '.')) {
+                        $field = explode('.', $field);
+                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
+                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+                                return $record;
+                            }
+                        }
+                    } elseif ($record->{$field}) {
+                        if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
+                            return $record;
+                        }
+                    }
+                }
+            });
+
+        return view('laravel-crm::deliveries.index', [
+            'deliveries' => $deliveries,
+            'searchValue' => $searchValue ?? null,
+        ]);
     }
 
     public function download(Delivery $delivery)

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StorePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -285,6 +286,52 @@ class PurchaseOrderController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.purchase_order_deleted')))->success()->important();
 
         return redirect(route('laravel-crm.purchase-orders.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $searchValue = PurchaseOrder::searchValue($request);
+
+        if (! $searchValue || trim($searchValue) == '') {
+            return redirect(route('laravel-crm.purchase-orders.index'));
+        }
+
+        $params = PurchaseOrder::filters($request, 'search');
+
+        $purchaseOrders = PurchaseOrder::filter($params)
+            ->select(
+                config('laravel-crm.db_table_prefix').'purchase_orders.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.middle_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'people.maiden_name',
+                config('laravel-crm.db_table_prefix').'organisations.name'
+            )
+            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'purchase_orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'purchase_orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->latest()
+            ->get()
+            ->filter(function ($record) use ($searchValue) {
+                foreach ($record->getSearchable() as $field) {
+                    if (Str::contains($field, '.')) {
+                        $field = explode('.', $field);
+                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
+                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+                                return $record;
+                            }
+                        }
+                    } elseif ($record->{$field}) {
+                        if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
+                            return $record;
+                        }
+                    }
+                }
+            });
+
+        return view('laravel-crm::purchase-orders.index', [
+            'purchaseOrders' => $purchaseOrders,
+            'searchValue' => $searchValue ?? null,
+        ]);
     }
 
     public function download(PurchaseOrder $purchaseOrder)

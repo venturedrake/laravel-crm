@@ -27,7 +27,13 @@ class PurchaseOrder extends Model
     ];
 
     protected $searchable = [
-        //
+        'reference',
+        'order_id',
+        'person.first_name',
+        'person.middle_name',
+        'person.last_name',
+        'person.maiden_name',
+        'organisation.name',
     ];
 
     protected $filterable = [
