@@ -48,7 +48,7 @@ class PurchaseOrderService
             'total' => $request->total ?? null,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
-        
+
         if($request->delivery_type == 'delivery') {
             $deliveryAddress = Address::find($request->delivery_address)->replicate();
             $deliveryAddress->external_id = Uuid::uuid4()->toString();
@@ -164,6 +164,7 @@ class PurchaseOrderService
             'issue_date' => $request->issue_date,
             'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
+            'delivery_type' => $request->delivery_type,
             'delivery_instructions' => $request->delivery_instructions,
             'terms' => $request->terms,
             'subtotal' => $request->sub_total,
@@ -173,17 +174,19 @@ class PurchaseOrderService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        $purchaseOrder->address->update([
-            'contact' => $request->address_contact,
-            'phone' => $request->address_phone,
-            'line1' => $request->address_line1,
-            'line2' => $request->address_line2,
-            'line3' => $request->address_line3,
-            'city' => $request->address_city,
-            'state' => $request->address_state,
-            'postal_code' => $request->address_code,
-            'country' => $request->address_country,
-        ]);
+        if($request->delivery_type == 'delivery') {
+            $purchaseOrder->address->update([
+                'contact' => $request->address_contact,
+                'phone' => $request->address_phone,
+                'line1' => $request->address_line1,
+                'line2' => $request->address_line2,
+                'line3' => $request->address_line3,
+                'city' => $request->address_city,
+                'state' => $request->address_state,
+                'postal_code' => $request->address_code,
+                'country' => $request->address_country,
+            ]);
+        }
 
         if (isset($request->purchaseOrderLines)) {
             $purchaseOrderLineIds = [];

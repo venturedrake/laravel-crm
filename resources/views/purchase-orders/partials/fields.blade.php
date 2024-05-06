@@ -107,8 +107,8 @@
         @livewire('delivery-details', [
             'purchaseOrder' => $purchaseOrder ?? null,
             'addresses' => $addresses,
-            'purchaseOrderTerms' => $purchaseOrderTerms,
-            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions
+            'purchaseOrderTerms' => $purchaseOrderTerms ?? null,
+            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions ?? null
         ])
         {{--@include('laravel-crm::partials.form.multiselect',[
             'name' => 'labels',

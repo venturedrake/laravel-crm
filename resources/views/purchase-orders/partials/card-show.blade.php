@@ -67,7 +67,9 @@
                     @if($purchaseOrder->delivery_type == 'pickup')
                         <dt class="col-sm-3 text-right">Delivery Type</dt>
                         <dd class="col-sm-9">Pickup</dd>
-                    @else    
+                    @else
+                        <dt class="col-sm-3 text-right">Delivery Type</dt>
+                        <dd class="col-sm-9">Deliver</dd>
                         <dt class="col-sm-3 text-right">Delivery Contact</dt>
                         <dd class="col-sm-9">{{ $deliveryAddress->contact ?? null }}</dd>
                         <dt class="col-sm-3 text-right">Delivery Phone</dt>

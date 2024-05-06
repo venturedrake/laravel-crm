@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Requests;
 
-use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Foundation\Http\FormRequest;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 
@@ -37,8 +36,8 @@ class StorePurchaseOrderRequest extends FormRequest
             $rules['person_name'] = 'required_without:organisation_name|max:255';
             $rules['organisation_name'] = 'required_without:person_name|max:255';
         }
-        
-        if(request('delivery_type') == 'delivery'){
+
+        if(request('delivery_type') == 'deliver') {
             $rules['delivery_address'] = 'required';
         }
 

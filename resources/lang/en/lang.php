@@ -481,4 +481,5 @@ return [
     'purchase_order_prefix' => 'purchase order prefix',
     'delivery_phone' => 'delivery phone',
     'send_purchase_order' => 'send purchase order',
+    'delivery_type' => 'delivery type',
 ];

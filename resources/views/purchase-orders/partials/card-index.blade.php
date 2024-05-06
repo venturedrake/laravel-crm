@@ -30,6 +30,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.supplier')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.issue_date')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.delivery_type')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.amount')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.sent')) }}</th>
                 <th scope="col" width="280"></th>
@@ -55,6 +56,7 @@
                    </td>
                    <td>{{ $purchaseOrder->issue_date->format($dateFormat) }}</td>
                    <td>{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</td>
+                   <td>{{ ucfirst($purchaseOrder->delivery_type) }}</td>
                    <td>{{ money($purchaseOrder->total, $purchaseOrder->currency) }}</td>
                    <td>
                        @if($purchaseOrder->sent == 1)
