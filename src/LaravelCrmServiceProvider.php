@@ -38,6 +38,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveCalls;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDealForm;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryDetails;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
@@ -446,6 +447,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/alter_type_on_laravel_crm_fields_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_type_on_laravel_crm_fields_table.php', 94),
                 __DIR__ . '/../database/migrations/add_soft_delete_to_laravel_crm_field_values_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_soft_delete_to_laravel_crm_field_values_table.php', 95),
                 __DIR__ . '/../database/migrations/add_terms_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_terms_to_laravel_crm_purchase_orders_table.php', 96),
+                __DIR__ . '/../database/migrations/add_delivery_type_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_delivery_type_to_laravel_crm_purchase_orders_table.php', 97),
             ], 'migrations');
 
             // Publishing the seeders
@@ -524,6 +526,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('purchase-order-lines', LivePurchaseOrderLines::class);
         Livewire::component('fields.create-or-edit', CreateOrEdit::class);
         Livewire::component('send-purchase-order', SendPurchaseOrder::class);
+        Livewire::component('delivery-details', LiveDeliveryDetails::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

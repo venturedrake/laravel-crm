@@ -40,6 +40,7 @@ class PurchaseOrderService
             'issue_date' => $request->issue_date,
             'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
+            'delivery_type' => $request->delivery_type,
             'delivery_instructions' => $request->delivery_instructions,
             'terms' => $request->terms,
             'subtotal' => $request->sub_total ?? null,
@@ -47,12 +48,14 @@ class PurchaseOrderService
             'total' => $request->total ?? null,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
-
-        $deliveryAddress = Address::find($request->delivery_address)->replicate();
-        $deliveryAddress->external_id = Uuid::uuid4()->toString();
-        $deliveryAddress->created_at = now();
-        $deliveryAddress->updated_at = now();
-        $purchaseOrder->address()->save($deliveryAddress);
+        
+        if($request->delivery_type == 'delivery') {
+            $deliveryAddress = Address::find($request->delivery_address)->replicate();
+            $deliveryAddress->external_id = Uuid::uuid4()->toString();
+            $deliveryAddress->created_at = now();
+            $deliveryAddress->updated_at = now();
+            $purchaseOrder->address()->save($deliveryAddress);
+        }
 
         if (isset($request->purchaseOrderLines)) {
             $subTotal = 0;
