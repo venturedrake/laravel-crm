@@ -158,6 +158,7 @@ class PurchaseOrderController extends Controller
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['currency'] = $request->currency;
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['issue_date'] = $request->issue_date;
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_date'] = $request->delivery_date;
+                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_type'] = $request->delivery_type;
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_instructions'] = $request->delivery_instructions;
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['purchaseOrderLines'][] = $purchaseOrderLine;
             }

@@ -175,7 +175,7 @@ class PurchaseOrderService
         ]);
 
         if($request->delivery_type == 'deliver') {
-            if(! $purchaseOrder->address){
+            if(! $purchaseOrder->address) {
                 $purchaseOrder->address()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'contact' => $request->address_contact,
@@ -188,7 +188,7 @@ class PurchaseOrderService
                     'postal_code' => $request->address_code,
                     'country' => $request->address_country,
                 ]);
-            }else{
+            } else {
                 $purchaseOrder->address->update([
                     'contact' => $request->address_contact,
                     'phone' => $request->address_phone,
