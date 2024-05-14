@@ -60,23 +60,27 @@
                     @endif
                 </td>
                 <td>
-                    <strong>{{ ucfirst(__('laravel-crm::lang.delivery_address')) }}</strong><br />
+                    <strong>{{ ucfirst(__('laravel-crm::lang.delivery_details')) }}</strong><br />
                     {{ $fromName }}<br />
-                    @if($purchaseOrder->address)
-                        {{ $purchaseOrder->address->line1 }}<br />
-                        @if($purchaseOrder->address->line2)
-                            {{ $purchaseOrder->address->line2 }}<br />
+                    @if($purchaseOrder->delivery_type == 'pickup')
+                        {{ strtoupper(__('laravel-crm::lang.pickup')) }}
+                    @else    
+                        @if($purchaseOrder->address)
+                            {{ $purchaseOrder->address->line1 }}<br />
+                            @if($purchaseOrder->address->line2)
+                                {{ $purchaseOrder->address->line2 }}<br />
+                            @endif
+                            @if($purchaseOrder->address->line3)
+                                {{ $purchaseOrder->address->line3 }}<br />
+                            @endif
+                            {{ $purchaseOrder->address->city }} {{ $purchaseOrder->address->state }} {{ $purchaseOrder->address->postcode }}<br />
+                            {{ $purchaseOrder->address->country }}
+                            <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_contact')) }}</strong><br />
+                            {{ $purchaseOrder->address->contact }}
+                            <strong>{{ ucfirst(__('laravel-crm::lang.delivery_phone')) }}</strong><br />
+                            {{ $purchaseOrder->address->phone }}
                         @endif
-                        @if($purchaseOrder->address->line3)
-                            {{ $purchaseOrder->address->line3 }}<br />
-                        @endif
-                        {{ $purchaseOrder->address->city }} {{ $purchaseOrder->address->state }} {{ $purchaseOrder->address->postcode }}<br />
-                        {{ $purchaseOrder->address->country }}
-                        <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_contact')) }}</strong><br />
-                        {{ $purchaseOrder->address->contact }}
-                        <strong>{{ ucfirst(__('laravel-crm::lang.delivery_phone')) }}</strong><br />
-                        {{ $purchaseOrder->address->phone }}
-                    @endif
+                    @endif    
                 </td>
             </tr>
         </tbody>

@@ -64,6 +64,8 @@
                     <dd class="col-sm-9">{{ ($purchaseOrder->issue_date) ? $purchaseOrder->issue_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Date</dt>
                     <dd class="col-sm-9">{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</dd>
+                    <dt class="col-sm-3 text-right">Terms</dt>
+                    <dd class="col-sm-9">{{ $purchaseOrder->terms }}</dd>
                     @if($purchaseOrder->delivery_type == 'pickup')
                         <dt class="col-sm-3 text-right">Delivery Type</dt>
                         <dd class="col-sm-9">Pickup</dd>
