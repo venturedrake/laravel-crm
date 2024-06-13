@@ -94,12 +94,7 @@
                        @endif
                        @can('edit crm quotes')
                            @if($quoteError)
-                                   <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                       <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-                                       <div>
-                                           There is an error with the quote totals.
-                                       </div>
-                                   </div>
+                               <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Error with quote, check totals"><i class="fa-solid fa-triangle-exclamation"></i></button>
                            @else    
                                @if(!$quote->accepted_at && !$quote->rejected_at)
                                    <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
@@ -117,7 +112,7 @@
                            @endif    
                         @endcan
                         @can('view crm quotes')
-                           @if(! $quoteError))
+                           @if(! $quoteError)
                                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
                            @endif
                            <a href="{{ route('laravel-crm.quotes.show',$quote) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

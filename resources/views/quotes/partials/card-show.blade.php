@@ -8,32 +8,41 @@
 
         @slot('actions')
             <span class="float-right">
+                @php
+                    (!\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote)) ? $quoteError = true : $quoteError = false;
+                @endphp
                 @include('laravel-crm::partials.return-button',[
                     'model' => $quote,
                     'route' => 'quotes'
                 ]) |
-                @if(! $quote->order)
+                @if(! $quote->order && ! $quoteError)
                     @livewire('send-quote',[
                     'quote' => $quote
                     ])
                 @endif
                 @can('edit crm quotes')
-                    @if(!$quote->accepted_at && !$quote->rejected_at)
-                        <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_accepted')) }}</a>
-                        <a href="{{ route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_rejected')) }}</a>
-                    @elseif($quote->accepted_at && $quote->orders()->count() > 0 && ! $quote->orderComplete())
-                        @hasordersenabled
+                    @if($quoteError)
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Error with quote, check totals"><i class="fa-solid fa-triangle-exclamation"></i></button>
+                    @else
+                        @if(!$quote->accepted_at && !$quote->rejected_at)
+                            <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_accepted')) }}</a>
+                            <a href="{{ route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_rejected')) }}</a>
+                        @elseif($quote->accepted_at && $quote->orders()->count() > 0 && ! $quote->orderComplete())
+                            @hasordersenabled
+                                <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
+                            @endhasordersenabled
+                        @elseif($quote->accepted_at && $quote->orders()->count() < 1)
+                            <a href="{{ route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
+                            @hasordersenabled
                             <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
-                        @endhasordersenabled
-                    @elseif($quote->accepted_at && $quote->orders()->count() < 1)
-                        <a href="{{ route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
-                        @hasordersenabled
-                        <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
-                        @endhasordersenabled
-                    @endif
+                            @endhasordersenabled
+                        @endif
+                    @endif    
                 @endcan
                 @can('view crm quotes')
+                    @if(! $quoteError)
                     <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
+                    @endif
                 @endcan    
                 @include('laravel-crm::partials.navs.activities', [
                     'orders' => $orders
