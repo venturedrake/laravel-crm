@@ -42,6 +42,9 @@
             </thead>
             <tbody>
             @foreach($quotes as $quote)
+                @php
+                    (!\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote)) ? $quoteError = true : $quoteError = false;
+                @endphp
                <tr class="has-link @if($quote->accepted_at) table-success @elseif($quote->rejected_at) table-danger @endif" data-url="{{ url(route('laravel-crm.quotes.show',$quote)) }}">
                    <td>{{ $quote->created_at->diffForHumans() }}</td>
                    <td>{{ $quote->quote_id }}</td>
@@ -72,7 +75,7 @@
                    <td>{{ money($quote->tax, $quote->currency) }}</td>
                    <td>{{ money($quote->adjustments, $quote->currency) }}</td>--}}
                    <td>
-                       @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote))
+                       @if($quoteError)
                            <span data-toggle="tooltip" data-placement="top" title="Error with total" class="text-danger">
                             {{ money($quote->total, $quote->currency) }}
                            </span>
@@ -84,28 +87,39 @@
                    <td>{{ ($quote->expire_at) ? $quote->expire_at->format($dateFormat) : null }}</td>
                    <td>{{ $quote->ownerUser->name ?? null }}</td>
                    <td class="disable-link text-right">
-                       @if(! $quote->order)
+                       @if(! $quote->order && !$quoteError)
                            @livewire('send-quote',[
                            'quote' => $quote
                            ])
                        @endif
                        @can('edit crm quotes')
-                           @if(!$quote->accepted_at && !$quote->rejected_at)
-                               <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
-                               <a href="{{ route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.reject')) }}</a>
-                           @elseif($quote->accepted_at && $quote->orders()->count() > 0 && ! $quote->orderComplete())
-                               @hasordersenabled
-                                   <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
-                               @endhasordersenabled
-                           @elseif($quote->accepted_at && $quote->orders()->count() < 1)
-                               <a href="{{ route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
-                               @hasordersenabled
-                                   <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
-                               @endhasordersenabled
-                           @endif
+                           @if($quoteError)
+                                   <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                       <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                       <div>
+                                           There is an error with the quote totals.
+                                       </div>
+                                   </div>
+                           @else    
+                               @if(!$quote->accepted_at && !$quote->rejected_at)
+                                   <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.accept')) }}</a>
+                                   <a href="{{ route('laravel-crm.quotes.reject',$quote) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.reject')) }}</a>
+                               @elseif($quote->accepted_at && $quote->orders()->count() > 0 && ! $quote->orderComplete())
+                                   @hasordersenabled
+                                       <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
+                                   @endhasordersenabled
+                               @elseif($quote->accepted_at && $quote->orders()->count() < 1)
+                                   <a href="{{ route('laravel-crm.quotes.unaccept',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unaccept')) }}</a>
+                                   @hasordersenabled
+                                       <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
+                                   @endhasordersenabled
+                               @endif   
+                           @endif    
                         @endcan
                         @can('view crm quotes')
-                           <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                           @if(! $quoteError))
+                                <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.quotes.download', $quote) }}"><span class="fa fa-download" aria-hidden="true"></span></a>
+                           @endif
                            <a href="{{ route('laravel-crm.quotes.show',$quote) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>
                         @endcan
                         @can('edit crm quotes')

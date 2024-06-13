@@ -110,7 +110,12 @@ class LiveQuoteItems extends Component
             $this->amount[$id] = null;
         }
 
-        $this->calculateAmounts();
+        $this->calculateLineAmounts($id);
+    }
+
+    public function calculateLineAmounts($i)
+    {
+        $this->calculateLineItem($i);
     }
 
     public function calculateAmounts()
@@ -120,32 +125,43 @@ class LiveQuoteItems extends Component
         $this->total = 0;
 
         for ($i = 1; $i <= $this->i; $i++) {
-            if (isset($this->product_id[$i])) {
-                if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
-                    $taxRate = $product->taxRate->rate ?? $product->tax_rate ?? 0;
-                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                    $taxRate = $taxRate->rate;
-                } elseif($taxRate = $this->settingService->get('tax_rate')) {
-                    $taxRate = $taxRate->value;
-                } else {
-                    $taxRate = 0;
-                }
-
-                if (is_numeric($this->unit_price[$i]) && is_numeric($this->quantity[$i])) {
-                    $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
-                    $this->unit_price[$i] = $this->currencyFormat($this->unit_price[$i]);
-                } else {
-                    $this->amount[$i] = 0;
-                }
-
-                $this->sub_total += $this->amount[$i];
-                $this->tax += $this->amount[$i] * ($taxRate / 100);
-                $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
-            }
+            $this->calculateLineItem($i);
         }
 
-        $this->total = $this->sub_total + $this->tax;
+        $this->calculateTotals();
+    }
 
+    protected function calculateLineItem($i)
+    {
+        if (isset($this->product_id[$i])) {
+            if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+                $taxRate = $product->taxRate->rate ?? $product->tax_rate ?? 0;
+            } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                $taxRate = $taxRate->rate;
+            } elseif($taxRate = $this->settingService->get('tax_rate')) {
+                $taxRate = $taxRate->value;
+            } else {
+                $taxRate = 0;
+            }
+
+            if (is_numeric($this->unit_price[$i]) && is_numeric($this->quantity[$i])) {
+                $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
+                $this->unit_price[$i] = $this->currencyFormat($this->unit_price[$i]);
+            } else {
+                $this->amount[$i] = 0;
+            }
+
+            $this->sub_total += $this->amount[$i];
+            $this->tax += $this->amount[$i] * ($taxRate / 100);
+            $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
+
+            $this->calculateTotals();
+        }
+    }
+
+    protected function calculateTotals()
+    {
+        $this->total = $this->sub_total + $this->tax;
         $this->sub_total = $this->currencyFormat($this->sub_total);
         $this->tax = $this->currencyFormat($this->tax);
         $this->discount = $this->currencyFormat($this->discount);
