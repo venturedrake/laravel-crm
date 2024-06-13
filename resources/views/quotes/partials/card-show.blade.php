@@ -22,7 +22,7 @@
                 @endif
                 @can('edit crm quotes')
                     @if($quoteError)
-                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Error with quote, check totals"><i class="fa-solid fa-triangle-exclamation"></i></button>
+                        <a href="{{ route('laravel-crm.quotes.edit',$quote) }}" class="btn btn-warning btn-sm">Error with quote, check totals</a>
                     @else
                         @if(!$quote->accepted_at && !$quote->rejected_at)
                             <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_accepted')) }}</a>
