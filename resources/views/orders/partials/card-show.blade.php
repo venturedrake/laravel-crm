@@ -17,7 +17,7 @@
                     'route' => 'orders'
                 ]) |
                 @can('edit crm orders')
-                    @if($quoteError)
+                    @if($subTotalError || $taxError || $totalError)
                         <a href="{{ route('laravel-crm.orders.edit',$order) }}" class="btn btn-warning btn-sm">Error with order, check amounts</a>
                     @else
                         @if(! $order->deliveryComplete())
