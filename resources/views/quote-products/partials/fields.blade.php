@@ -52,7 +52,7 @@
            'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
            'attributes' => [
                'wire:model' => 'unit_price.'.$value,
-               'wire:change' => 'calculateLineAmounts('.$value.')',
+               'wire:change' => 'calculateAmounts',
                'step' => .01
            ]
        ])
@@ -64,7 +64,7 @@
            'type' => 'number',
            'attributes' => [
                'wire:model' => 'quantity.'.$value,
-               'wire:change' => 'calculateLineAmounts('.$value.')'
+               'wire:change' => 'calculateAmounts'
            ]
        ])
     </td>
