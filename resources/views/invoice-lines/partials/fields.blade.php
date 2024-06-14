@@ -55,7 +55,7 @@
     </td>
 </tr>
 <tr data-number="{{ $value }}" class="item-tr">
-    <td colspan="3" class="border-0 pt-0">
+    <td colspan="2" class="border-0 pt-0">
         @if($fromOrder)
             @include('laravel-crm::partials.form.text',[
                   'name' => 'invoiceLines['.$value.'][price]',
@@ -107,6 +107,19 @@
                    ]
                 ])
         @endif
+    </td>
+    <td class="border-0 pt-0">
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'invoiceLines['.$value.'][tax_amount]',
+          'label' => $taxName . ' (' . $tax_rate[$value] . '%)',
+          'type' => 'number',
+          'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
+          'attributes' => [
+              'wire:model' => 'tax_amount.'.$value,
+              'step' => .01,
+              'readonly' => 'readonly'
+          ]
+      ])
     </td>
     <td class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[
