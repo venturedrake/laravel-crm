@@ -22,7 +22,7 @@
                 @endif
                 @can('edit crm quotes')
                     @if($quoteError)
-                        <a href="{{ route('laravel-crm.quotes.edit',$quote) }}" class="btn btn-warning btn-sm">Error with quote, check totals</a>
+                        <a href="{{ route('laravel-crm.quotes.edit',$quote) }}" class="btn btn-warning btn-sm">Error with quote, check amounts</a>
                     @else
                         @if(!$quote->accepted_at && !$quote->rejected_at)
                             <a href="{{ route('laravel-crm.quotes.accept',$quote) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.mark_as_accepted')) }}</a>
@@ -176,7 +176,15 @@
                             <td></td>
                             <td></td>
                             <td><strong>{{ ucfirst(__('laravel-crm::lang.tax')) }}</strong></td>
-                            <td>{{ money($quote->tax, $quote->currency) }}</td>
+                            <td>
+                                @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\tax($quote))
+                                    <span data-toggle="tooltip" data-placement="top" title="Error with tax" class="text-danger">
+                                     {{ money($quote->tax, $quote->currency) }}
+                                    </span>
+                                @else
+                                    {{ money($quote->tax, $quote->currency) }}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
