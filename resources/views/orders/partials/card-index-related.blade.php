@@ -17,9 +17,11 @@
             </thead>
             <tbody>
             @foreach($orders as $order)
-                (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($order)) ? $subTotalError = true : $subTotalError = false;
-                (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\tax($order)) ? $taxError = true : $taxError = false;
-                (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($order)) ? $totalError = true : $totalError = false;
+                @php 
+                    (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($order)) ? $subTotalError = true : $subTotalError = false;
+                    (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\tax($order)) ? $taxError = true : $taxError = false;
+                    (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($order)) ? $totalError = true : $totalError = false;
+                @endphp
                <tr class="has-link" data-url="{{ url(route('laravel-crm.orders.show', $order)) }}">
                    <td>{{ $order->created_at->diffForHumans() }}</td>
                    <td>{{ $order->order_id }}</td>
