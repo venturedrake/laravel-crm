@@ -20,6 +20,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.1.0 - 2023-06-17
+### Added
+- Support for Laravel 11
+- Product barcode
+- Create multiple purchase orders from an order
+- Show purchase orders tab on orders
+- Custom fields to various models
+- Download, show and send Xero invoices
+- Search invoices, deliveries & purchase orders
+- Email purchase orders
+- Delivery types
+### Changed
+- Product code renamed as SKU
+- Updates to custom fields
+- Updated purchase order PDF
+- Added setting for checking for global field scope
+- Updated totals, tax totals checks
+### Fixed
+- Edit/delete purchase orders
+### Removed
+
 ## 1.0.0 - 2024-03-09
 ### Added
 - Comments on invoice lines
