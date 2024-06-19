@@ -16,6 +16,11 @@ const Swal = require('sweetalert2')
 const appJquery = function() {
     return {
         init: function () {
+            $('form button[type="submit"]').on('click', function(event) {
+                setTimeout(function () {
+                    event.target.disabled = true;
+                }, 0);
+            });
 
             $.ajaxSetup({
                 headers: {
