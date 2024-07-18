@@ -108,6 +108,8 @@
                                    @hasordersenabled
                                        <a href="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.create_order')) }}</a>
                                    @endhasordersenabled
+                               @elseif($quote->rejected_at)
+                                       <a href="{{ route('laravel-crm.quotes.unreject',$quote) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.unreject')) }}</a>
                                @endif   
                            @endif    
                         @endcan

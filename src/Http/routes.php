@@ -256,6 +256,10 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.quotes.unaccept')
         ->middleware(['can:update,quote']);
 
+    Route::get('{quote}/unreject', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@unreject')
+        ->name('laravel-crm.quotes.unreject')
+        ->middleware(['can:update,quote']);
+
     Route::post('{quote}/send', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@send')
         ->name('laravel-crm.quotes.send')
         ->middleware(['can:update,quote']);

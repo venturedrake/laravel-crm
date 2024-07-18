@@ -381,6 +381,17 @@ class QuoteController extends Controller
         return back();
     }
 
+    public function unreject(Quote $quote)
+    {
+        $quote->update([
+            'rejected_at' => null,
+        ]);
+
+        flash(ucfirst(trans('laravel-crm::lang.quote_unrejected')))->success()->important();
+
+        return back();
+    }
+
     public function download(Quote $quote)
     {
         if ($quote->person) {
