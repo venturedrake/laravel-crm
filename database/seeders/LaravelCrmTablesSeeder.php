@@ -6,6 +6,13 @@ use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Delivery;
+use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Models\Quote;
 
 class LaravelCrmTablesSeeder extends Seeder
 {
@@ -198,6 +205,290 @@ class LaravelCrmTablesSeeder extends Seeder
 
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\ContactType::firstOrCreate($item[0], $item[1]);
+        }
+
+        // Pipelines stage probabilities
+        $items = [
+            [
+                [
+                    'id' => 1,
+                ],
+                [
+                    'name' => 'New',
+                    'percent' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 2,
+                ],
+                [
+                    'name' => '10%',
+                    'percent' => 10,
+                ],
+            ],
+            [
+                [
+                    'id' => 3,
+                ],
+                [
+                    'name' => '20%',
+                    'percent' => 20,
+                ],
+            ],
+            [
+                [
+                    'id' => 4,
+                ],
+                [
+                    'name' => '30%',
+                    'percent' => 30,
+                ],
+            ],
+            [
+                [
+                    'id' => 5,
+                ],
+                [
+                    'name' => '40%',
+                    'percent' => 40,
+                ],
+            ],
+            [
+                [
+                    'id' => 6,
+                ],
+                [
+                    'name' => '50%',
+                    'percent' => 50,
+                ],
+            ],
+            [
+                [
+                    'id' => 7,
+                ],
+                [
+                    'name' => '60%',
+                    'percent' => 60,
+                ],
+            ],
+            [
+                [
+                    'id' => 8,
+                ],
+                [
+                    'name' => '70%',
+                    'percent' => 70,
+                ],
+            ],
+            [
+                [
+                    'id' => 9,
+                ],
+                [
+                    'name' => '80%',
+                    'percent' => 80,
+                ],
+            ],
+            [
+                [
+                    'id' => 10,
+                ],
+                [
+                    'name' => '90%',
+                    'percent' => 90,
+                ],
+            ],
+            [
+                [
+                    'id' => 11,
+                ],
+                [
+                    'name' => 'Won',
+                    'percent' => 100,
+                ],
+            ],
+            [
+                [
+                    'id' => 12,
+                ],
+                [
+                    'name' => 'Lost',
+                    'percent' => 0,
+                ],
+            ],
+        ];
+
+        foreach ($items as $item) {
+            \VentureDrake\LaravelCrm\Models\PipelineStageProbability::firstOrCreate($item[0], $item[1]);
+        }
+
+        // Pipelines
+        $items = [
+            [
+                [
+                    'id' => 1,
+                ],
+                [
+                    'name' => 'Lead Pipeline',
+                    'model' =>  get_class(new Lead()),
+                ],
+            ],
+            [
+                [
+                    'id' => 2,
+                ],
+                [
+                    'name' => 'Deal Pipeline',
+                    'model' =>  get_class(new Deal()),
+                ],
+            ],
+            [
+                [
+                    'id' => 3,
+                ],
+                [
+                    'name' => 'Quote Pipeline',
+                    'model' =>  get_class(new Quote()),
+                ],
+            ],
+            [
+                [
+                    'id' => 4,
+                ],
+                [
+                    'name' => 'Order Pipeline',
+                    'model' =>  get_class(new Order()),
+                ],
+            ],
+            [
+                [
+                    'id' => 5,
+                ],
+                [
+                    'name' => 'Invoice Pipeline',
+                    'model' =>  get_class(new Invoice()),
+                ],
+            ],
+            [
+                [
+                    'id' => 6,
+                ],
+                [
+                    'name' => 'Delivery Pipeline',
+                    'model' =>  get_class(new Delivery()),
+                ],
+            ],
+            [
+                [
+                    'id' => 7,
+                ],
+                [
+                    'name' => 'Purchase Order Pipeline',
+                    'model' =>  get_class(new PurchaseOrder()),
+                ],
+            ],
+        ];
+
+        foreach ($items as $item) {
+            \VentureDrake\LaravelCrm\Models\Pipeline::firstOrCreate($item[0], $item[1]);
+        }
+
+        // Pipelines stages
+        $items = [
+            [
+                [
+                    'id' => 1,
+                ],
+                [
+                    'name' => 'New',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 2,
+                ],
+                [
+                    'name' => 'Appointment Scheduled',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 3,
+                ],
+            ],
+            [
+                [
+                    'id' => 3,
+                ],
+                [
+                    'name' => 'Qualified To Buy',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 5,
+                ],
+            ],
+            [
+                [
+                    'id' => 4,
+                ],
+                [
+                    'name' => 'Presentation Scheduled',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 7,
+                ],
+            ],
+            [
+                [
+                    'id' => 5,
+                ],
+                [
+                    'name' => 'Decision Maker Bought-In',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 9,
+                ],
+            ],
+            [
+                [
+                    'id' => 6,
+                ],
+                [
+                    'name' => 'Contract Sent',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 10,
+                ],
+            ],
+            [
+                [
+                    'id' => 7,
+                ],
+                [
+                    'name' => 'Closed Won',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            [
+                [
+                    'id' => 8,
+                ],
+                [
+                    'name' => 'Closed Lost',
+                    'pipeline_id' => 1,
+                    'pipeline_stage_probability_id' => 12,
+                ],
+            ],
+        ];
+
+
+        // Add all the default stages for various pipelines
+        // Deals
+        // Quotes
+        // Orders
+        // Invoices
+        // Deliveries
+        // Purchase Orders
+
+        foreach ($items as $item) {
+            \VentureDrake\LaravelCrm\Models\PipelineStage::firstOrCreate($item[0], $item[1]);
         }
 
         $timestamp = time();

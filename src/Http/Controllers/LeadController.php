@@ -354,4 +354,25 @@ class LeadController extends Controller
 
         return redirect(route('laravel-crm.leads.index'));
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function board(Request $request)
+    {
+        Lead::resetSearchValue($request);
+        $params = Lead::filters($request);
+
+        if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
+            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
+        } else {
+            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
+        }
+
+        return view('laravel-crm::leads.board', [
+            'leads' => $leads,
+        ]);
+    }
 }

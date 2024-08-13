@@ -92,6 +92,14 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
         ->name('laravel-crm.leads.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
 
+    Route::get('list', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@index')
+        ->name('laravel-crm.leads.list')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
+
+    Route::get('board', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@board')
+        ->name('laravel-crm.leads.board')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
+
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@create')
         ->name('laravel-crm.leads.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Lead']);

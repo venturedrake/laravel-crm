@@ -7,6 +7,9 @@
         @endslot
 
         @slot('actions')
+            @include('laravel-crm::partials.view-types', [
+                'model' => 'leads', 
+            ])
             @include('laravel-crm::partials.filters', [
                 'action' => route('laravel-crm.leads.filter'),
                 'model' => '\VentureDrake\LaravelCrm\Models\Lead'
@@ -30,6 +33,7 @@
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.client')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.organization')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.contact_person')) }}</th>
+                <th scope="col">{{ ucwords(__('laravel-crm::lang.stage')) }}</th>
                 <th scope="col">{{ ucwords(__('laravel-crm::lang.owner')) }}</th>
                 <th scope="col" width="210"></th>
             </tr>
@@ -47,6 +51,7 @@
                     <td>{{ $lead->client->name ?? null}}</td>
                     <td>{{ $lead->organisation->name ?? null}}</td>
                     <td>{{ $lead->person->name ??  null }}</td>
+                    <td>{{ $lead->pipelineStage->name ?? null }}</td>
                     <td>{{ $lead->ownerUser->name ?? null }}</td>
                     <td class="disable-link text-right">
                         @hasdealsenabled

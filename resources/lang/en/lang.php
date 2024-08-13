@@ -485,4 +485,5 @@ return [
     'pickup' => 'pickup',
     'unreject' => 'unreject',
     'quote_unrejected' => 'quote unrejected',
+    'stage' => 'stage'
 ];

@@ -43,6 +43,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveInvoiceLines;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLunches;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveMeetings;
@@ -99,6 +100,9 @@ use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
+use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Models\PipelineStageProbability;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductPrice;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -138,6 +142,9 @@ use VentureDrake\LaravelCrm\Observers\OrderProductObserver;
 use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
+use VentureDrake\LaravelCrm\Observers\PipelineObserver;
+use VentureDrake\LaravelCrm\Observers\PipelineStageObserver;
+use VentureDrake\LaravelCrm\Observers\PipelineStageProbabilityObserver;
 use VentureDrake\LaravelCrm\Observers\ProductObserver;
 use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
 use VentureDrake\LaravelCrm\Observers\PurchaseOrderLineObserver;
@@ -288,6 +295,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         PurchaseOrder::observe(PurchaseOrderObserver::class);
         PurchaseOrderLine::observe(PurchaseOrderLineObserver::class);
         XeroPurchaseOrder::observe(XeroPurchaseOrderObserver::class);
+        Pipeline::observe(PipelineObserver::class);
+        PipelineStage::observe(PipelineStageObserver::class);
+        PipelineStageProbability::observe(PipelineStageProbabilityObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -508,6 +518,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
         Livewire::component('live-lead-form', LiveLeadForm::class);
+        Livewire::component('live-lead-board', LiveLeadBoard::class);
         Livewire::component('deal-form', LiveDealForm::class);
         Livewire::component('quote-form', LiveQuoteForm::class);
         Livewire::component('notify-toast', NotifyToast::class);

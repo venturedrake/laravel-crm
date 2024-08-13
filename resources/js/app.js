@@ -12,6 +12,8 @@ import bsCustomFileInput from 'bs-custom-file-input'
 
 const Swal = require('sweetalert2')
 
+window.Sortable = require('sortablejs').default;
+
 // Little bit of Jquery
 const appJquery = function() {
     return {
