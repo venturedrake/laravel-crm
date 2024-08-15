@@ -548,6 +548,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->everyMinute()
                     ->withoutOverlapping();
 
+                $schedule->command('laravelcrm:archive')
+                    ->name('laravelCrmArchiving')
+                    ->daily()
+                    ->withoutOverlapping();
+
                 if (config('xero.clientId') && config('xero.clientSecret')) {
                     $schedule->command('xero:keep-alive')
                         ->name('laravelCrmXeroKeepAlive')
