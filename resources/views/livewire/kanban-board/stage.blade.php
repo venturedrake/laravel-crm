@@ -19,7 +19,7 @@
             @endforeach
         </div>
         <div class="card-footer">
-            <a href="{{ url(route('laravel-crm.leads.create')) }}" class="btn btn-primary btn-block">Add lead</a>
+            <a href="{{ url(route('laravel-crm.leads.create', ['stage' => $stage['id']])) }}" class="btn btn-primary btn-block">Add lead</a>
         </div>
     </div>
 </div>

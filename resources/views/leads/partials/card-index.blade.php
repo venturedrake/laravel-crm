@@ -9,6 +9,7 @@
         @slot('actions')
             @include('laravel-crm::partials.view-types', [
                 'model' => 'leads', 
+                'viewSetting' => $viewSetting ?? 'list'
             ])
             @include('laravel-crm::partials.filters', [
                 'action' => route('laravel-crm.leads.filter'),

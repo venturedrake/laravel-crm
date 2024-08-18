@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Console;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -56,7 +55,7 @@ class LaravelCrmArchive extends Command
     {
         $this->info('Laravel CRM archiving...');
 
-        // 
+        //
 
         $this->info('Archive CRM archiving complete.');
     }

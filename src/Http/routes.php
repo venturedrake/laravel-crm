@@ -92,7 +92,7 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
         ->name('laravel-crm.leads.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
 
-    Route::get('list', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@index')
+    Route::get('list', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@list')
         ->name('laravel-crm.leads.list')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
 
