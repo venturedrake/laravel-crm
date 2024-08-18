@@ -293,3 +293,8 @@ dt {
 label span.required-label{
   color: red;
 }
+
+.cursor-grab{
+  cursor: -webkit-grab;
+  cursor: grab;
+} 
