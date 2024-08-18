@@ -201,6 +201,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\FieldOption' => \VentureDrake\LaravelCrm\Policies\FieldOptionPolicy::class,
         'VentureDrake\LaravelCrm\Models\Delivery' => \VentureDrake\LaravelCrm\Policies\DeliveryPolicy::class,
         'VentureDrake\LaravelCrm\Models\PurchaseOrder' => \VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Pipeline' => \VentureDrake\LaravelCrm\Policies\PipelinePolicy::class,
     ];
 
     /**

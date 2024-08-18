@@ -1169,6 +1169,37 @@ Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function
         ->middleware(['can:delete,role']);
 });
 
+/* Pipelines */
+Route::group(['prefix' => 'pipelines', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@index')
+        ->name('laravel-crm.pipelines.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Pipeline']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@create')
+        ->name('laravel-crm.pipelines.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Pipeline']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@store')
+        ->name('laravel-crm.pipelines.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Pipeline']);
+
+    Route::get('{pipeline}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@show')
+        ->name('laravel-crm.pipelines.show')
+        ->middleware(['can:view,pipeline']);
+
+    Route::get('{pipeline}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@edit')
+        ->name('laravel-crm.pipelines.edit')
+        ->middleware(['can:update,pipeline']);
+
+    Route::put('{pipeline}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@update')
+        ->name('laravel-crm.pipelines.update')
+        ->middleware(['can:update,pipeline']);
+
+    Route::delete('{pipeline}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@destroy')
+        ->name('laravel-crm.pipelines.destroy')
+        ->middleware(['can:delete,pipeline']);
+});
+
 /* Labels */
 Route::group(['prefix' => 'labels', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@index')

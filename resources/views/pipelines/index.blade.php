@@ -14,12 +14,12 @@
             <div class="col col-md-10">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title float-left m-0"> {{ ucfirst(__('laravel-crm::lang.product_categories')) }} </h3> @can('create crm product categories')<span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.product-categories.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_product_category')) }}</a></span>@endcan
+                        <h3 class="card-title float-left m-0"> {{ ucfirst(__('laravel-crm::lang.pipelines')) }} </h3> @can('create crm pipelines')<span class="float-right"><a type="button" class="btn btn-primary btn-sm" href="{{ url(route('laravel-crm.pipelines.create')) }}"><span class="fa fa-plus"></span>  {{ ucfirst(__('laravel-crm::lang.add_pipeline')) }}</a></span>@endcan
                     </div>
                     <div class="card-body p-0">
                         <div class="tab-pane active" id="roles" role="tabpanel">
                             <div class="table-responsive">
-                                <table class="table mb-0 card-table table-hover">
+                                {{--<table class="table mb-0 card-table table-hover">
                                     <thead>
                                     <tr>
                                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
@@ -54,15 +54,15 @@
                                         </tr>
                                     @endforeach
                                     </tbody>
-                                </table>
+                                </table>--}}
                             </div>
                         </div>
                     </div>
-                    @if($productCategories instanceof \Illuminate\Pagination\LengthAwarePaginator )
+                    {{--@if($productCategories instanceof \Illuminate\Pagination\LengthAwarePaginator )
                         @component('laravel-crm::components.card-footer')
                             {{ $productCategories->links() }}
                         @endcomponent
-                    @endif
+                    @endif--}}
                 </div>
             </div>
         </div>

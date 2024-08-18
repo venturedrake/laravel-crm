@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
+<ul class="nav nav-pills flex-column" role="tablist">
     @can('view crm settings')
     <li class="nav-item">
         <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.settings') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.settings.edit')) }}" role="tab" aria-controls="settings" aria-selected="true">{{ ucwords(__('laravel-crm::lang.general_settings')) }}</a>
@@ -7,6 +7,11 @@
     @can('view crm roles')
         <li class="nav-item">
             <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.roles') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.roles.index')) }}" role="tab" aria-controls="roles" aria-selected="false">{{ ucwords(__('laravel-crm::lang.roles_and_permissions')) }}</a>
+        </li>
+    @endcan
+    @can('view crm pipelines')
+        <li class="nav-item">
+            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.pipelines') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.pipelines.index')) }}" role="tab" aria-controls="pipelines" aria-selected="false">{{ ucwords(__('laravel-crm::lang.pipelines')) }}</a>
         </li>
     @endcan
     @can('view crm product categories')

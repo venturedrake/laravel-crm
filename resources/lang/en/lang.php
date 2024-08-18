@@ -485,5 +485,13 @@ return [
     'pickup' => 'pickup',
     'unreject' => 'unreject',
     'quote_unrejected' => 'quote unrejected',
-    'stage' => 'stage'
+    'stage' => 'stage',
+    'edit_custom_field' => 'edit custom field',
+    'create_custom_field' => 'create custom field',
+    'custom_field' => 'custom field',
+    'custom_field_group' => 'custom field group',
+    'create_custom_field_group' => 'create custom field group',
+    'edit_custom_field_group' => 'edit custom field group',
+    'back_to_custom_field_groups' => 'back to custom field groups',
+    'pipelines' => 'pipelines',
 ];

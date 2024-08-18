@@ -652,6 +652,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm clients', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm clients', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm pipelines', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm pipelines', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm pipelines', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm pipelines', 'crm_permission' => 1]);
+
         if (config('permission.teams')) {
             $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
         } else {
@@ -750,6 +755,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm clients',
                 'edit crm clients',
                 'delete crm clients',
+                'create crm pipelines',
+                'view crm pipelines',
+                'edit crm pipelines',
+                'delete crm pipelines',
             ]);
 
         if (config('permission.teams')) {
@@ -832,6 +841,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm clients',
                 'edit crm clients',
                 'delete crm clients',
+                'create crm pipelines',
+                'view crm pipelines',
+                'edit crm pipelines',
+                'delete crm pipelines',
             ]);
     }
 }
