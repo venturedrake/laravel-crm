@@ -159,7 +159,7 @@ class Settings
             if(Str::startsWith(config('laravel-crm.version'), '0.')) {
                 $currentVersion = (int) Str::replace('.', '', config('laravel-crm.version'));
             } else {
-                $currentVersion = (int) Str::replace('.', '', config('laravel-crm.version') * 10);
+                $currentVersion = (int) Str::replace('.', '', config('laravel-crm.version')) * 10;
             }
 
             if($currentVersion >= 180) {
