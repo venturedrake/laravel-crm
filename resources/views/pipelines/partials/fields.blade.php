@@ -3,14 +3,8 @@
         @include('laravel-crm::partials.form.text',[
          'name' => 'name',
          'label' => ucfirst(trans('laravel-crm::lang.name')),
-         'value' => old('name', $productCategory->name ?? null)
+         'value' => old('name', $pipeline->name ?? null),
+         'required' => 'true'
        ])
-
-        @include('laravel-crm::partials.form.textarea',[
-        'name' => 'description',
-        'label' => ucfirst(trans('laravel-crm::lang.description')),
-         'rows' => 5,
-        'value' => old('name', $productCategory->description ?? null)
-      ])
     </div>
 </div>

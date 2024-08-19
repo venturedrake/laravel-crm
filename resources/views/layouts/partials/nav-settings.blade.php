@@ -13,6 +13,9 @@
         <li class="nav-item">
             <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.pipelines') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.pipelines.index')) }}" role="tab" aria-controls="pipelines" aria-selected="false">{{ ucwords(__('laravel-crm::lang.pipelines')) }}</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.pipeline-stages') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.pipeline-stages.index')) }}" role="tab" aria-controls="pipeline-stages" aria-selected="false">{{ ucwords(__('laravel-crm::lang.pipeline_stages')) }}</a>
+        </li>
     @endcan
     @can('view crm product categories')
     <li class="nav-item">

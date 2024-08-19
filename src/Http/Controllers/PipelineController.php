@@ -48,7 +48,6 @@ class PipelineController extends Controller
         Pipeline::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
-            'description' => $request->description,
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.pipeline_stored')))->success()->important();
@@ -93,7 +92,6 @@ class PipelineController extends Controller
     {
         $pipeline->update([
             'name' => $request->name,
-            'description' => $request->description,
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.pipeline_updated')))->success()->important();

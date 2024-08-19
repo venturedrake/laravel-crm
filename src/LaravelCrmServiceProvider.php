@@ -202,6 +202,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Delivery' => \VentureDrake\LaravelCrm\Policies\DeliveryPolicy::class,
         'VentureDrake\LaravelCrm\Models\PurchaseOrder' => \VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy::class,
         'VentureDrake\LaravelCrm\Models\Pipeline' => \VentureDrake\LaravelCrm\Policies\PipelinePolicy::class,
+        'VentureDrake\LaravelCrm\Models\PipelineStage' => \VentureDrake\LaravelCrm\Policies\PipelineStagePolicy::class,
     ];
 
     /**
@@ -459,6 +460,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_soft_delete_to_laravel_crm_field_values_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_soft_delete_to_laravel_crm_field_values_table.php', 95),
                 __DIR__ . '/../database/migrations/add_terms_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_terms_to_laravel_crm_purchase_orders_table.php', 96),
                 __DIR__ . '/../database/migrations/add_delivery_type_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_delivery_type_to_laravel_crm_purchase_orders_table.php', 97),
+                __DIR__ . '/../database/migrations/create_laravel_crm_pipelines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipelines_table.php', 98),
+                __DIR__ . '/../database/migrations/create_laravel_crm_pipeline_stage_probabilities_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipeline_stage_probabilities_table.php', 99),
+                __DIR__ . '/../database/migrations/create_laravel_crm_pipeline_stages_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipeline_stages_table.php', 100),
+                __DIR__ . '/../database/migrations/add_pipeline_to_laravel_crm_models_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_pipeline_to_laravel_crm_models_table.php', 101),
+                __DIR__ . '/../database/migrations/add_user_to_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_user_to_laravel_crm_settings_table.php', 102),
             ], 'migrations');
 
             // Publishing the seeders

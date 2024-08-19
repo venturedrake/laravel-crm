@@ -78,6 +78,7 @@ class LeadController extends Controller
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
             'viewSetting' => $viewSetting->value ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
         ]);
     }
 

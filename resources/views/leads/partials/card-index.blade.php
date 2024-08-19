@@ -7,10 +7,12 @@
         @endslot
 
         @slot('actions')
-            @include('laravel-crm::partials.view-types', [
-                'model' => 'leads', 
-                'viewSetting' => $viewSetting ?? 'list'
-            ])
+            @if($pipeline)
+                @include('laravel-crm::partials.view-types', [
+                    'model' => 'leads', 
+                    'viewSetting' => $viewSetting ?? 'list'
+                ])
+            @endif
             @include('laravel-crm::partials.filters', [
                 'action' => route('laravel-crm.leads.filter'),
                 'model' => '\VentureDrake\LaravelCrm\Models\Lead'

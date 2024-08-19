@@ -1200,6 +1200,37 @@ Route::group(['prefix' => 'pipelines', 'middleware' => 'auth.laravel-crm'], func
         ->middleware(['can:delete,pipeline']);
 });
 
+/* Pipeline Stages */
+Route::group(['prefix' => 'pipeline-stages', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@index')
+        ->name('laravel-crm.pipeline-stages.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PipelineStage']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@create')
+        ->name('laravel-crm.pipeline-stages.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PipelineStage']);
+
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@store')
+        ->name('laravel-crm.pipeline-stages.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PipelineStage']);
+
+    Route::get('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@show')
+        ->name('laravel-crm.pipeline-stages.show')
+        ->middleware(['can:view,pipelineStage']);
+
+    Route::get('{pipelineStage}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@edit')
+        ->name('laravel-crm.pipeline-stages.edit')
+        ->middleware(['can:update,pipelineStage']);
+
+    Route::put('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@update')
+        ->name('laravel-crm.pipeline-stages.update')
+        ->middleware(['can:update,pipelineStage']);
+
+    Route::delete('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@destroy')
+        ->name('laravel-crm.pipeline-stages.destroy')
+        ->middleware(['can:delete,pipelineStage']);
+});
+
 /* Labels */
 Route::group(['prefix' => 'labels', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LabelController@index')
