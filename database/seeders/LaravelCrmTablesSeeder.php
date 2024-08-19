@@ -396,6 +396,7 @@ class LaravelCrmTablesSeeder extends Seeder
 
         // Pipelines stages
         $items = [
+            // Leads
             [
                 [
                     'id' => 1,
@@ -476,16 +477,273 @@ class LaravelCrmTablesSeeder extends Seeder
                     'pipeline_stage_probability_id' => 12,
                 ],
             ],
+            // Deals
+            [
+                [
+                    'id' => 9,
+                ],
+                [
+                    'name' => 'Draft',
+                    'pipeline_id' => 2,
+                    'pipeline_stage_probability_id' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 10,
+                ],
+                [
+                    'name' => 'Pending',
+                    'pipeline_id' => 2,
+                    'pipeline_stage_probability_id' => 9,
+                ],
+            ],
+            [
+                [
+                    'id' => 11,
+                ],
+                [
+                    'name' => 'Closed Won',
+                    'pipeline_id' => 2,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            [
+                [
+                    'id' => 12,
+                ],
+                [
+                    'name' => 'Closed Lost',
+                    'pipeline_id' => 2,
+                    'pipeline_stage_probability_id' => 12,
+                ],
+            ],
+            // Quotes
+            [
+                [
+                    'id' => 13,
+                ],
+                [
+                    'name' => 'Draft',
+                    'pipeline_id' => 3,
+                    'pipeline_stage_probability_id' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 14,
+                ],
+                [
+                    'name' => 'Sent',
+                    'pipeline_id' => 3,
+                    'pipeline_stage_probability_id' => 9,
+                ],
+            ],
+            [
+                [
+                    'id' => 15,
+                ],
+                [
+                    'name' => 'Accepted',
+                    'pipeline_id' => 3,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            [
+                [
+                    'id' => 16,
+                ],
+                [
+                    'name' => 'Rejected',
+                    'pipeline_id' => 3,
+                    'pipeline_stage_probability_id' => 12,
+                ],
+            ],
+            [
+                [
+                    'id' => 17,
+                ],
+                [
+                    'name' => 'Ordered',
+                    'pipeline_id' => 3,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            // Orders
+            [
+                [
+                    'id' => 18,
+                ],
+                [
+                    'name' => 'Draft',
+                    'pipeline_id' => 4,
+                    'pipeline_stage_probability_id' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 19,
+                ],
+                [
+                    'name' => 'Open',
+                    'pipeline_id' => 4,
+                    'pipeline_stage_probability_id' => 9,
+                ],
+            ],
+            [
+                [
+                    'id' => 20,
+                ],
+                [
+                    'name' => 'Invoiced',
+                    'pipeline_id' => 4,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            [
+                [
+                    'id' => 21,
+                ],
+                [
+                    'name' => 'Delivered',
+                    'pipeline_id' => 4,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            [
+                [
+                    'id' => 22,
+                ],
+                [
+                    'name' => 'Completed',
+                    'pipeline_id' => 4,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            // Invoices
+            [
+                [
+                    'id' => 23,
+                ],
+                [
+                    'name' => 'Draft',
+                    'pipeline_id' => 5,
+                    'pipeline_stage_probability_id' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 24,
+                ],
+                [
+                    'name' => 'Awaiting Approval',
+                    'pipeline_id' => 5,
+                    'pipeline_stage_probability_id' => 5,
+                ],
+            ],
+            [
+                [
+                    'id' => 25,
+                ],
+                [
+                    'name' => 'Awaiting Payment',
+                    'pipeline_id' => 5,
+                    'pipeline_stage_probability_id' => 9,
+                ],
+            ],
+            [
+                [
+                    'id' => 26,
+                ],
+                [
+                    'name' => 'Paid',
+                    'pipeline_id' => 5,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            // Deliveries
+            [
+                [
+                    'id' => 27,
+                ],
+                [
+                    'name' => 'Draft',
+                    'pipeline_id' => 6,
+                    'pipeline_stage_probability_id' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 28,
+                ],
+                [
+                    'name' => 'Packed',
+                    'pipeline_id' => 6,
+                    'pipeline_stage_probability_id' => 9,
+                ],
+            ],
+            [
+                [
+                    'id' => 29,
+                ],
+                [
+                    'name' => 'Sent',
+                    'pipeline_id' => 6,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            [
+                [
+                    'id' => 30,
+                ],
+                [
+                    'name' => 'Delivered',
+                    'pipeline_id' => 6,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
+            // Purchase Orders
+            [
+                [
+                    'id' => 31,
+                ],
+                [
+                    'name' => 'Draft',
+                    'pipeline_id' => 7,
+                    'pipeline_stage_probability_id' => 1,
+                ],
+            ],
+            [
+                [
+                    'id' => 32,
+                ],
+                [
+                    'name' => 'Awaiting Approval',
+                    'pipeline_id' => 7,
+                    'pipeline_stage_probability_id' => 5,
+                ],
+            ],
+            [
+                [
+                    'id' => 33,
+                ],
+                [
+                    'name' => 'Approved',
+                    'pipeline_id' => 7,
+                    'pipeline_stage_probability_id' => 9,
+                ],
+            ],
+            [
+                [
+                    'id' => 34,
+                ],
+                [
+                    'name' => 'Paid',
+                    'pipeline_id' => 7,
+                    'pipeline_stage_probability_id' => 11,
+                ],
+            ],
         ];
-
-
-        // Add all the default stages for various pipelines
-        // Deals
-        // Quotes
-        // Orders
-        // Invoices
-        // Deliveries
-        // Purchase Orders
 
         foreach ($items as $item) {
             \VentureDrake\LaravelCrm\Models\PipelineStage::firstOrCreate($item[0], $item[1]);
