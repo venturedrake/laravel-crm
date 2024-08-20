@@ -31,4 +31,9 @@ class PipelineStage extends Model
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Lead::class);
     }
+
+    public function deals()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);
+    }
 }

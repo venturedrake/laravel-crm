@@ -7,6 +7,8 @@ use Livewire\Component;
 
 class KanbanBoard extends Component
 {
+    public $model;
+
     public $sortable;
     public $sortableBetweenStages;
 

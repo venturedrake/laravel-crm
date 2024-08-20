@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -46,6 +47,18 @@ class DealController extends Controller
      */
     public function index(Request $request)
     {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_deals')->first();
+
+        if(! $viewSetting) {
+            auth()->user()->crmSettings()->create([
+                'name' => 'view_deals',
+                'value' => 'list',
+            ]);
+        } elseif($viewSetting->value == 'board') {
+            return redirect(route('laravel-crm.deals.board'));
+        }
+
+
         Deal::resetSearchValue($request);
         $params = Deal::filters($request);
 
@@ -57,6 +70,8 @@ class DealController extends Controller
 
         return view('laravel-crm::deals.index', [
             'deals' => $deals,
+            'viewSetting' => $viewSetting->value ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
         ]);
     }
 
@@ -360,5 +375,46 @@ class DealController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.deal_reopened')))->success()->important();
 
         return back();
+    }
+
+    public function list(Request $request)
+    {
+        auth()->user()->crmSettings()->updateOrCreate([
+            'name' => 'view_deals',
+        ], [
+            'value' => 'list',
+        ]);
+
+        return redirect(route('laravel-crm.deals.index'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function board(Request $request)
+    {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_deals')->first();
+
+        auth()->user()->crmSettings()->updateOrCreate([
+            'name' => 'view_deals',
+        ], [
+            'value' => 'board',
+        ]);
+
+        Deal::resetSearchValue($request);
+        $params = Deal::filters($request);
+
+        if (Deal::filter($params)->get()->count() < 30) {
+            $deals = Deal::filter($params)->latest()->get();
+        } else {
+            $deals = Deal::filter($params)->latest()->paginate(30);
+        }
+
+        return view('laravel-crm::deals.board', [
+            'deals' => $deals,
+            'viewSetting' => $viewSetting->value ?? null
+        ]);
     }
 }

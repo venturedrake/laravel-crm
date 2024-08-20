@@ -37,6 +37,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveActivities;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveCalls;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveDealBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDealForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryDetails;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryItems;
@@ -527,6 +528,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('live-lead-form', LiveLeadForm::class);
         Livewire::component('live-lead-board', LiveLeadBoard::class);
         Livewire::component('deal-form', LiveDealForm::class);
+        Livewire::component('live-deal-board', LiveDealBoard::class);
         Livewire::component('quote-form', LiveQuoteForm::class);
         Livewire::component('notify-toast', NotifyToast::class);
         Livewire::component('quote-items', LiveQuoteItems::class);

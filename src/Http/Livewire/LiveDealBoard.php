@@ -4,15 +4,16 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Illuminate\Support\Collection;
 use VentureDrake\LaravelCrm\Http\Livewire\KanbanBoard\KanbanBoard;
-use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 
-class LiveLeadBoard extends KanbanBoard
+class LiveDealBoard extends KanbanBoard
 {
-    public $model = 'lead';
+    public $model = 'deal';
+
     public function stages(): Collection
     {
-        if($pipeline = Pipeline::where('model', get_class(new Lead()))->first()) {
+        if($pipeline = Pipeline::where('model', get_class(new Deal()))->first()) {
             return $pipeline->pipelineStages()
                 ->orderBy('order')
                 ->orderBy('id')
@@ -22,20 +23,20 @@ class LiveLeadBoard extends KanbanBoard
 
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
-        Lead::find($recordId)->update([
+        Deal::find($recordId)->update([
             'pipeline_stage_id' => $stageId
         ]);
     }
 
     public function records(): Collection
     {
-        return Lead::get()
-            ->map(function (Lead $lead) {
+        return Deal::get()
+            ->map(function (Deal $deal) {
                 return [
-                    'id' => $lead->id,
-                    'title' => $lead->title,
-                    'labels' => $lead->labels,
-                    'stage' => $lead->pipelineStage->id ?? $this->firstStageId(),
+                    'id' => $deal->id,
+                    'title' => $deal->title,
+                    'labels' => $deal->labels,
+                    'stage' => $deal->pipelineStage->id ?? $this->firstStageId(),
                 ];
             });
     }
