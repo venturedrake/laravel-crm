@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Http\Requests\UpdateQuoteRequest;
 use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -61,6 +62,17 @@ class QuoteController extends Controller
      */
     public function index(Request $request)
     {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_quotes')->first();
+
+        if(! $viewSetting) {
+            auth()->user()->crmSettings()->create([
+                'name' => 'view_quotes',
+                'value' => 'list',
+            ]);
+        } elseif($viewSetting->value == 'board') {
+            return redirect(route('laravel-crm.quotes.board'));
+        }
+
         Quote::resetSearchValue($request);
         $params = Quote::filters($request);
 
@@ -71,7 +83,9 @@ class QuoteController extends Controller
         }
 
         return view('laravel-crm::quotes.index', [
-            'quotes' => $quotes
+            'quotes' => $quotes,
+            'viewSetting' => $viewSetting->value ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
         ]);
     }
 
@@ -108,6 +122,8 @@ class QuoteController extends Controller
             'prefix' => $this->settingService->get('quote_prefix'),
             'number' => (Quote::latest()->first()->number ?? 1000) + 1,
             'quoteTerms' => $quoteTerms,
+            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
+            'stage' => $request->stage ?? null
         ]);
     }
 
@@ -213,6 +229,7 @@ class QuoteController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first()
         ]);
     }
 
@@ -416,5 +433,46 @@ class QuoteController extends Controller
             'fromName' => $this->settingService->get('organisation_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
+    }
+
+    public function list(Request $request)
+    {
+        auth()->user()->crmSettings()->updateOrCreate([
+            'name' => 'view_quotes',
+        ], [
+            'value' => 'list',
+        ]);
+
+        return redirect(route('laravel-crm.quotes.index'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function board(Request $request)
+    {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_quotes')->first();
+
+        auth()->user()->crmSettings()->updateOrCreate([
+            'name' => 'view_quotes',
+        ], [
+            'value' => 'board',
+        ]);
+
+        Quote::resetSearchValue($request);
+        $params = Quote::filters($request);
+
+        if (Quote::filter($params)->get()->count() < 30) {
+            $quotes = Quote::filter($params)->latest()->get();
+        } else {
+            $quotes = Quote::filter($params)->latest()->paginate(30);
+        }
+
+        return view('laravel-crm::quotes.board', [
+            'quotes' => $quotes,
+            'viewSetting' => $viewSetting->value ?? null
+        ]);
     }
 }

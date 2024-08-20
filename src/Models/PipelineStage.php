@@ -36,4 +36,9 @@ class PipelineStage extends Model
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);
     }
+
+    public function quotes()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Quote::class);
+    }
 }

@@ -225,4 +225,14 @@ class Quote extends Model
 
         return true;
     }
+
+    public function pipeline()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Pipeline::class);
+    }
+
+    public function pipelineStage()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\PipelineStage::class);
+    }
 }

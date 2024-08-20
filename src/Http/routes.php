@@ -236,6 +236,14 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.quotes.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
 
+    Route::get('list', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@list')
+        ->name('laravel-crm.quotes.list')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
+
+    Route::get('board', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@board')
+        ->name('laravel-crm.quotes.board')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
+
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@create')
         ->name('laravel-crm.quotes.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Quote']);

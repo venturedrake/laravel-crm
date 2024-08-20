@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
@@ -45,6 +46,8 @@ class QuoteService
             'adjustments' => $request->adjustment,
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
+            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $quote->labels()->sync($request->labels ?? []);
@@ -107,6 +110,8 @@ class QuoteService
             'adjustments' => $request->adjustment,
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
+            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $quote->labels()->sync($request->labels ?? []);

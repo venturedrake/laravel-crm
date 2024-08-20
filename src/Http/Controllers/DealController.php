@@ -103,6 +103,8 @@ class DealController extends Controller
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
+            'stage' => $request->stage ?? null
         ]);
     }
 
@@ -207,6 +209,7 @@ class DealController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first()
         ]);
     }
 
