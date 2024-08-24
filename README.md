@@ -25,6 +25,9 @@ The free Laravel CRM you have been looking for, this package will add CRM functi
  - Orders & Invoicing
  - Purchase orders
  - Deliveries
+ - Kanban boards 
+ - Activity Feed / Timelines
+ - Custom fields
  - Customer management
  - Contact database management
  - Products & Product Categories
@@ -217,12 +220,9 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
  - Documents
  - Calendar
- - Custom Fields
- - Activity Feed / Timelines
  - CSV Import / Export
  - SMS
  - Payments
- - Kanban boards
 
 ## Feedback
 

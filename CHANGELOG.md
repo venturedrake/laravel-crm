@@ -8,17 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documents
 - Calendar
-- Custom Fields
 - CSV Import / Export
 - SMS
 - Payments
-- Kanban boards
 
 <!--- ## 1.0.0 - 2023-XX-XX
 ### Added
 ### Changed
 ### Fixed
 ### Removed --->
+
+## 1.2.0 - 2023-08-24
+### Added
+- Kanban boards
+- Custom Fields
+- Disabled double click on form submits
+### Changed
+- Improved logo sizing on pdfs
+- Vertical navigation for settings
+- Imporved updating process
+### Fixed
+- Unreject quotes functionality
+- But when added organization
+- Version check
 
 ## 1.1.0 - 2023-06-17
 ### Added
