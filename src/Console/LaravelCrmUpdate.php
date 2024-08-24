@@ -253,6 +253,17 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM tax amounts complete');
         }
 
+        if($this->settingService->get('db_update_1200')->value == 0) {
+            $this->info('Updating Laravel CRM pipeline tables');
+
+            $this->callSilent('db:seed', [
+                '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmPipelineTablesSeeder',
+            ]);
+
+            $this->settingService->set('db_update_1200', 1);
+            $this->info('Updating Laravel CRM pipeline tables complete.');
+        }
+
         $this->info('Laravel CRM is now updated.');
     }
 }

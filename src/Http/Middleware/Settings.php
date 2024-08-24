@@ -216,6 +216,15 @@ class Settings
                 ]);
             }
 
+            if($currentVersion >= 1200) {
+                Setting::firstOrCreate([
+                    'global' => 1,
+                    'name' => 'db_update_1200',
+                ], [
+                    'value' => 0,
+                ]);
+            }
+
             $installIdSetting = Setting::where([
                 'name' => 'install_id',
             ])->first();
