@@ -260,6 +260,7 @@ class LaravelCrmUpdate extends Command
 
             $this->callSilent('db:seed', [
                 '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmPipelineTablesSeeder',
+                '--force' => true,
             ]);
 
             foreach (Lead::whereNull('number')->get() as $lead) {
