@@ -40,6 +40,7 @@ class PurchaseOrderService
             'issue_date' => $request->issue_date,
             'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
+            'delivery_type' => $request->delivery_type,
             'delivery_instructions' => $request->delivery_instructions,
             'terms' => $request->terms,
             'subtotal' => $request->sub_total ?? null,
@@ -48,11 +49,13 @@ class PurchaseOrderService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        $deliveryAddress = Address::find($request->delivery_address)->replicate();
-        $deliveryAddress->external_id = Uuid::uuid4()->toString();
-        $deliveryAddress->created_at = now();
-        $deliveryAddress->updated_at = now();
-        $purchaseOrder->address()->save($deliveryAddress);
+        if($request->delivery_type == 'deliver') {
+            $deliveryAddress = Address::find($request->delivery_address)->replicate();
+            $deliveryAddress->external_id = Uuid::uuid4()->toString();
+            $deliveryAddress->created_at = now();
+            $deliveryAddress->updated_at = now();
+            $purchaseOrder->address()->save($deliveryAddress);
+        }
 
         if (isset($request->purchaseOrderLines)) {
             $subTotal = 0;
@@ -161,6 +164,7 @@ class PurchaseOrderService
             'issue_date' => $request->issue_date,
             'delivery_date' => $request->delivery_date,
             'currency' => $request->currency,
+            'delivery_type' => $request->delivery_type,
             'delivery_instructions' => $request->delivery_instructions,
             'terms' => $request->terms,
             'subtotal' => $request->sub_total,
@@ -170,17 +174,34 @@ class PurchaseOrderService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        $purchaseOrder->address->update([
-            'contact' => $request->address_contact,
-            'phone' => $request->address_phone,
-            'line1' => $request->address_line1,
-            'line2' => $request->address_line2,
-            'line3' => $request->address_line3,
-            'city' => $request->address_city,
-            'state' => $request->address_state,
-            'postal_code' => $request->address_code,
-            'country' => $request->address_country,
-        ]);
+        if($request->delivery_type == 'deliver') {
+            if(! $purchaseOrder->address) {
+                $purchaseOrder->address()->create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'contact' => $request->address_contact,
+                    'phone' => $request->address_phone,
+                    'line1' => $request->address_line1,
+                    'line2' => $request->address_line2,
+                    'line3' => $request->address_line3,
+                    'city' => $request->address_city,
+                    'state' => $request->address_state,
+                    'postal_code' => $request->address_code,
+                    'country' => $request->address_country,
+                ]);
+            } else {
+                $purchaseOrder->address->update([
+                    'contact' => $request->address_contact,
+                    'phone' => $request->address_phone,
+                    'line1' => $request->address_line1,
+                    'line2' => $request->address_line2,
+                    'line3' => $request->address_line3,
+                    'city' => $request->address_city,
+                    'state' => $request->address_state,
+                    'postal_code' => $request->address_code,
+                    'country' => $request->address_country,
+                ]);
+            }
+        }
 
         if (isset($request->purchaseOrderLines)) {
             $purchaseOrderLineIds = [];

@@ -5,7 +5,6 @@ namespace VentureDrake\LaravelCrm\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class BelongsToTeamsScope implements Scope
@@ -23,7 +22,7 @@ class BelongsToTeamsScope implements Scope
             if(! config('nova.path') || (config('nova.path') && ! Str::startsWith(request()->getRequestUri(), config('nova.path')))) {
                 $this->extend($builder);
 
-                if (Schema::hasColumn($model->getTable(), 'global')) {
+                if (in_array($model->getTable(), config('laravel-crm.model_with_global'))) {
                     $builder->where(function ($query) use ($model) {
                         $query->orWhere($model->getTable().'.team_id', auth()->user()->currentTeam->id)
                             ->orWhere($model->getTable().'.global', 1);

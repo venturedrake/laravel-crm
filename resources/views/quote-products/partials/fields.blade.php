@@ -44,7 +44,7 @@
     </td>
 </tr>
 <tr data-number="{{ $value }}" class="item-tr">
-    <td colspan="3" class="border-0 pt-0">
+    <td colspan="2" class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[
           'name' => 'products['.$value.'][unit_price]',
            'label' => ucfirst(__('laravel-crm::lang.price')),
@@ -67,6 +67,19 @@
                'wire:change' => 'calculateAmounts'
            ]
        ])
+    </td>
+    <td class="border-0 pt-0">
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'products['.$value.'][tax_amount]',
+          'label' => $taxName . ' (' . $tax_rate[$value] . '%)',
+          'type' => 'number',
+          'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
+          'attributes' => [
+              'wire:model' => 'tax_amount.'.$value,
+              'step' => .01,
+              'readonly' => 'readonly'
+          ]
+      ])
     </td>
     <td class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[

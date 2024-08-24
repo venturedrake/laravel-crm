@@ -1,26 +1,33 @@
 <div>
-    <div class="card">
-        <div class="card-header">
-            @include('laravel-crm::layouts.partials.nav-settings')
-        </div>
-        <div class="card-body">
-            <div class="tab-content">
-                <div class="tab-pane active" id="integrations" role="tabpanel">
-                    <h3 class="mb-3">Xero</h3>
-                    <p class="border-bottom mb-3 pb-3">Connect to xero accounting to sync contacts, products, quotes & generate invoices.</p>
-                    @if(isset($tenantName))
-                        <div class="alert alert-info">
-                            You are connected to the Xero organisation <strong>{{ $tenantName }}</strong>.
-                        </div>
-                        <hr />
-                        <a class="btn btn-success" href="{{ route('laravel-crm.integrations.xero.disconnect') }}">
-                            Disconnect xero
-                        </a>
-                        <hr />
-                        <h4 class="mb-3">Settings</h4>
-                        <form wire:submit.prevent="updateSettings">
-                            <table class="table mb-0 card-table table-hover">
-                                <tbody>
+    <div class="container-fluid pl-0">
+        <div class="row">
+            <div class="col col-md-2">
+                <div class="card">
+                    <div class="card-body py-3 px-2">
+                        @include('laravel-crm::layouts.partials.nav-settings')
+                    </div>
+                </div>
+            </div>
+            <div class="col col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Xero</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="border-bottom mb-3 pb-3">Connect to xero accounting to sync contacts, products, quotes & generate invoices.</p>
+                        @if(isset($tenantName))
+                            <div class="alert alert-info">
+                                You are connected to the Xero organisation <strong>{{ $tenantName }}</strong>.
+                            </div>
+                            <hr />
+                            <a class="btn btn-success" href="{{ route('laravel-crm.integrations.xero.disconnect') }}">
+                                Disconnect xero
+                            </a>
+                            <hr />
+                            <h4 class="mb-3">Settings</h4>
+                            <form wire:submit.prevent="updateSettings">
+                                <table class="table mb-0 card-table table-hover">
+                                    <tbody>
                                     <tr>
                                         <td>Sync Contacts</td>
                                         <td wire:ignore class="disable-link text-right">
@@ -45,18 +52,19 @@
                                             <input wire:model="setting_invoices" id="setting_invoices" type="checkbox" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                                         </td>
                                     </tr>
-                                </tbody>
-                            </table>
-                            <hr />
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
-                            </div>
-                        </form>
-                    @else
-                        <a type="button" class="btn btn-outline-secondary" href="{{ route('laravel-crm.integrations.xero.connect') }}">
-                            Connect to xero
-                        </a>
-                    @endif
+                                    </tbody>
+                                </table>
+                                <hr />
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
+                                </div>
+                            </form>
+                        @else
+                            <a type="button" class="btn btn-outline-secondary" href="{{ route('laravel-crm.integrations.xero.connect') }}">
+                                Connect to xero
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

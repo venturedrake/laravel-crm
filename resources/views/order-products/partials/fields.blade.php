@@ -1,5 +1,5 @@
 <tr wire:key="select2-{{ $value }}" data-number="{{ $value }}" class="item-tr">
-    <td colspan="5" class="pt-3 bind-select2" style="position: relative;">
+    <td colspan="6" class="pt-3 bind-select2" style="position: relative;">
         @include('laravel-crm::partials.form.hidden',[
           'name' => 'products['.$value.'][quote_product_id]',
           'attributes' => [
@@ -54,7 +54,7 @@
     </td>
 </tr>
 <tr data-number="{{ $value }}" class="item-tr">
-    <td colspan="3" class="border-0 pt-0">
+    <td colspan=2" class="border-0 pt-0">
         @if($fromQuote)
             @include('laravel-crm::partials.form.text',[
               'name' => 'products['.$value.'][unit_price]',
@@ -109,6 +109,19 @@
     </td>
     <td class="border-0 pt-0">
         @include('laravel-crm::partials.form.text',[
+         'name' => 'products['.$value.'][tax_amount]',
+          'label' => $taxName . ' (' . $tax_rate[$value] . '%)',
+          'type' => 'number',
+          'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
+          'attributes' => [
+              'wire:model' => 'tax_amount.'.$value,
+              'step' => .01,
+              'readonly' => 'readonly'
+          ]
+      ])
+    </td>
+    <td class="border-0 pt-0">
+        @include('laravel-crm::partials.form.text',[
          'name' => 'products['.$value.'][amount]',
           'label' => ucfirst(__('laravel-crm::lang.amount')),
           'type' => 'number',
@@ -122,7 +135,7 @@
     </td>
 </tr>
 <tr data-number="{{ $value }}" class="item-tr">
-    <td colspan="5" class="border-0 pt-0 pb-4">
+    <td colspan="6" class="border-0 pt-0 pb-4">
         @if($fromQuote)
             @include('laravel-crm::partials.form.text',[
                'name' => 'products['.$value.'][comments]',

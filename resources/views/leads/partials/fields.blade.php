@@ -34,6 +34,22 @@
                 ])
             </div>
         </div>
+
+        @if($pipeline)
+            @include('laravel-crm::partials.form.select',[
+                     'name' => 'pipeline_stage_id',
+                     'label' => ucfirst(__('laravel-crm::lang.stage')),
+                     'options' => $pipeline->pipelineStages()
+                                            ->orderBy('order')
+                                            ->orderBy('id')
+                                            ->pluck('name', 'id') ?? [],
+                     'value' =>  old('pipeline_stage_id', $lead->pipelineStage->id ?? $stage ?? $pipeline->pipelineStages()
+                                            ->orderBy('order')
+                                            ->orderBy('id')
+                                            ->first()->id ?? null),
+              ])
+        @endif
+        
         @include('laravel-crm::partials.form.multiselect',[
                     'name' => 'labels',
                     'label' => ucfirst(__('laravel-crm::lang.labels')),

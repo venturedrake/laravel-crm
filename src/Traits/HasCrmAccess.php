@@ -43,4 +43,9 @@ trait HasCrmAccess
     {
         return $this->addresses()->where('primary', 1)->first();
     }
+
+    public function crmSettings()
+    {
+        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Setting::class);
+    }
 }

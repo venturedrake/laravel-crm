@@ -176,4 +176,14 @@ class Lead extends Model
     {
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
+
+    public function pipeline()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Pipeline::class);
+    }
+
+    public function pipelineStage()
+    {
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\PipelineStage::class);
+    }
 }

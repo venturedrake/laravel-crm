@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\DealProduct;
+use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Repositories\DealRepository;
 
 class DealService
@@ -37,6 +38,8 @@ class DealService
             'currency' => $request->currency,
             'expected_close' => $request->expected_close,
             'user_owner_id' => $request->user_owner_id,
+            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $deal->labels()->sync($request->labels ?? []);
@@ -68,6 +71,8 @@ class DealService
             'currency' => $request->currency,
             'expected_close' => $request->expected_close,
             'user_owner_id' => $request->user_owner_id,
+            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $deal->labels()->sync($request->labels ?? []);

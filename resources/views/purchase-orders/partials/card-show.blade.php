@@ -64,14 +64,23 @@
                     <dd class="col-sm-9">{{ ($purchaseOrder->issue_date) ? $purchaseOrder->issue_date->format($dateFormat) : null }}</dd>
                     <dt class="col-sm-3 text-right">Delivery Date</dt>
                     <dd class="col-sm-9">{{ ($purchaseOrder->delivery_date) ? $purchaseOrder->delivery_date->format($dateFormat) : null }}</dd>
-                    <dt class="col-sm-3 text-right">Delivery Contact</dt>
-                    <dd class="col-sm-9">{{ $deliveryAddress->contact ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">Delivery Phone</dt>
-                    <dd class="col-sm-9">{{ $deliveryAddress->phone ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">Delivery Address</dt>
-                    <dd class="col-sm-9">{{$deliveryAddress->address ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">Delivery Instructions</dt>
-                    <dd class="col-sm-9">{{ $purchaseOrder->delivery_instructions }}</dd>
+                    <dt class="col-sm-3 text-right">Terms</dt>
+                    <dd class="col-sm-9">{{ $purchaseOrder->terms }}</dd>
+                    @if($purchaseOrder->delivery_type == 'pickup')
+                        <dt class="col-sm-3 text-right">Delivery Type</dt>
+                        <dd class="col-sm-9">Pickup</dd>
+                    @else
+                        <dt class="col-sm-3 text-right">Delivery Type</dt>
+                        <dd class="col-sm-9">Deliver</dd>
+                        <dt class="col-sm-3 text-right">Delivery Contact</dt>
+                        <dd class="col-sm-9">{{ $deliveryAddress->contact ?? null }}</dd>
+                        <dt class="col-sm-3 text-right">Delivery Phone</dt>
+                        <dd class="col-sm-9">{{ $deliveryAddress->phone ?? null }}</dd>
+                        <dt class="col-sm-3 text-right">Delivery Address</dt>
+                        <dd class="col-sm-9">{{$deliveryAddress->address ?? null }}</dd>
+                        <dt class="col-sm-3 text-right">Delivery Instructions</dt>
+                        <dd class="col-sm-9">{{ $purchaseOrder->delivery_instructions }}</dd>
+                    @endif    
                 </dl>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />

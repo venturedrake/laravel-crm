@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Requests;
 
-use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Foundation\Http\FormRequest;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 
@@ -31,7 +30,6 @@ class StorePurchaseOrderRequest extends FormRequest
             'issue_date' => 'required|date_format:"'.$this->dateFormat().'"',
             'delivery_date' => 'nullable|date_format:"'.$this->dateFormat().'"',
             'currency' => 'required',
-            'delivery_address' => 'required',
         ];
 
         if (! request('order_id')) {
@@ -39,9 +37,9 @@ class StorePurchaseOrderRequest extends FormRequest
             $rules['organisation_name'] = 'required_without:person_name|max:255';
         }
 
-        /*if (! Xero::isConnected()) {
-            $rules['number'] = 'required|integer|unique:VentureDrake\LaravelCrm\Models\Invoice,number';
-        }*/
+        if(request('delivery_type') == 'deliver') {
+            $rules['delivery_address'] = 'required';
+        }
 
         return $rules;
     }

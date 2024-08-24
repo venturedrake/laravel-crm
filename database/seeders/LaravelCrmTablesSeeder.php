@@ -6,6 +6,8 @@ use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Setting;
 
 class LaravelCrmTablesSeeder extends Seeder
 {
@@ -17,188 +19,236 @@ class LaravelCrmTablesSeeder extends Seeder
     public function run()
     {
         // Labels
-        $items = [
-            [
+        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_labels')->first()) {
+            $items = [
                 [
-                    'id' => 1,
+                    [
+                        'id' => 1,
+                    ],
+                    [
+                        'name' => 'Hot',
+                        'hex' => 'dc3545',
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
                 ],
                 [
-                    'name' => 'Hot',
-                    'hex' => 'dc3545',
-                    'external_id' => Uuid::uuid4()->toString(),
-                ],
-            ],
-            [
-                [
-                    'id' => 2,
-                ],
-                [
-                    'name' => 'Cold',
-                    'hex' => '007bff',
-                    'external_id' => Uuid::uuid4()->toString(),
-                ],
-            ],
-            [
-                [
-                    'id' => 3,
+                    [
+                        'id' => 2,
+                    ],
+                    [
+                        'name' => 'Cold',
+                        'hex' => '007bff',
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
                 ],
                 [
-                    'name' => 'Warm',
-                    'hex' => 'ffc107',
-                    'external_id' => Uuid::uuid4()->toString(),
+                    [
+                        'id' => 3,
+                    ],
+                    [
+                        'name' => 'Warm',
+                        'hex' => 'ffc107',
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
                 ],
-            ],
-        ];
+            ];
 
-        foreach ($items as $item) {
-            \VentureDrake\LaravelCrm\Models\Label::firstOrCreate($item[0], $item[1]);
+            foreach ($items as $item) {
+                \VentureDrake\LaravelCrm\Models\Label::firstOrCreate($item[0], $item[1]);
+            }
+
+            Setting::updateOrCreate([
+                'global' => 1,
+                'name' => 'db_seeded_labels',
+            ], [
+                'value' => 1,
+            ]);
         }
 
-        // Lead statuses
-        $items = [
-            [
+        // Lead statuses (DEPRECATED)
+        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_lead_statuses')->first()) {
+            $items = [
                 [
-                    'id' => 1,
+                    [
+                        'id' => 1,
+                    ],
+                    [
+                        'name' => 'Lead In',
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
                 ],
                 [
-                    'name' => 'Lead In',
-                    'external_id' => Uuid::uuid4()->toString(),
+                    [
+                        'id' => 2,
+                    ],
+                    [
+                        'name' => 'Contacted',
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
                 ],
-            ],
-            [
-                [
-                    'id' => 2,
-                ],
-                [
-                    'name' => 'Contacted',
-                    'external_id' => Uuid::uuid4()->toString(),
-                ],
-            ],
-        ];
+            ];
 
-        foreach ($items as $item) {
-            \VentureDrake\LaravelCrm\Models\LeadStatus::firstOrCreate($item[0], $item[1]);
+            foreach ($items as $item) {
+                \VentureDrake\LaravelCrm\Models\LeadStatus::firstOrCreate($item[0], $item[1]);
+            }
+
+            Setting::updateOrCreate([
+                'global' => 1,
+                'name' => 'db_seeded_lead_statuses',
+            ], [
+                'value' => 1,
+            ]);
         }
 
         // Organisation Types
-        $items = [
-            [
+        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_organisation_types')->first()) {
+            $items = [
                 [
-                    'id' => 1,
+                    [
+                        'id' => 1,
+                    ],
+                    [
+                        'name' => 'Sole Trader',
+                    ],
                 ],
                 [
-                    'name' => 'Sole Trader',
-                ],
-            ],
-            [
-                [
-                    'id' => 2,
-                ],
-                [
-                    'name' => 'Partnership',
-                ],
-            ],
-            [
-                [
-                    'id' => 3,
+                    [
+                        'id' => 2,
+                    ],
+                    [
+                        'name' => 'Partnership',
+                    ],
                 ],
                 [
-                    'name' => 'Company',
+                    [
+                        'id' => 3,
+                    ],
+                    [
+                        'name' => 'Company',
+                    ],
                 ],
-            ],
-            [
                 [
-                    'id' => 4,
+                    [
+                        'id' => 4,
+                    ],
+                    [
+                        'name' => 'Trust',
+                    ],
                 ],
-                [
-                    'name' => 'Trust',
-                ],
-            ],
-        ];
+            ];
 
-        foreach ($items as $item) {
-            \VentureDrake\LaravelCrm\Models\OrganisationType::firstOrCreate($item[0], $item[1]);
+            foreach ($items as $item) {
+                \VentureDrake\LaravelCrm\Models\OrganisationType::firstOrCreate($item[0], $item[1]);
+            }
+
+            Setting::updateOrCreate([
+                'global' => 1,
+                'name' => 'db_seeded_organisation_types',
+            ], [
+                'value' => 1,
+            ]);
         }
 
         // Address types
-        $items = [
-            [
+        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_address_types')->first()) {
+            $items = [
                 [
-                    'id' => 1,
+                    [
+                        'id' => 1,
+                    ],
+                    [
+                        'name' => 'Current',
+                    ],
                 ],
                 [
-                    'name' => 'Current',
-                ],
-            ],
-            [
-                [
-                    'id' => 2,
-                ],
-                [
-                    'name' => 'Previous',
-                ],
-            ],
-            [
-                [
-                    'id' => 3,
+                    [
+                        'id' => 2,
+                    ],
+                    [
+                        'name' => 'Previous',
+                    ],
                 ],
                 [
-                    'name' => 'Postal',
-                ],
-            ],
-            [
-                [
-                    'id' => 4,
-                ],
-                [
-                    'name' => 'Business',
-                ],
-            ],
-            [
-                [
-                    'id' => 5,
+                    [
+                        'id' => 3,
+                    ],
+                    [
+                        'name' => 'Postal',
+                    ],
                 ],
                 [
-                    'name' => 'Billing',
+                    [
+                        'id' => 4,
+                    ],
+                    [
+                        'name' => 'Business',
+                    ],
                 ],
-            ],
-            [
                 [
-                    'id' => 6,
+                    [
+                        'id' => 5,
+                    ],
+                    [
+                        'name' => 'Billing',
+                    ],
                 ],
                 [
-                    'name' => 'Shipping',
+                    [
+                        'id' => 6,
+                    ],
+                    [
+                        'name' => 'Shipping',
+                    ],
                 ],
-            ],
-        ];
+            ];
 
-        foreach ($items as $item) {
-            \VentureDrake\LaravelCrm\Models\AddressType::firstOrCreate($item[0], $item[1]);
+            foreach ($items as $item) {
+                \VentureDrake\LaravelCrm\Models\AddressType::firstOrCreate($item[0], $item[1]);
+            }
+
+            Setting::updateOrCreate([
+                'global' => 1,
+                'name' => 'db_seeded_address_types',
+            ], [
+                'value' => 1,
+            ]);
         }
 
         // Contact types
-        $items = [
-            [
+        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_contact_types')->first()) {
+            $items = [
                 [
-                    'id' => 1,
+                    [
+                        'id' => 1,
+                    ],
+                    [
+                        'name' => 'Primary',
+                    ],
                 ],
                 [
-                    'name' => 'Primary',
+                    [
+                        'id' => 2,
+                    ],
+                    [
+                        'name' => 'Secondary',
+                    ],
                 ],
-            ],
-            [
-                [
-                    'id' => 2,
-                ],
-                [
-                    'name' => 'Secondary',
-                ],
-            ],
-        ];
+            ];
 
-        foreach ($items as $item) {
-            \VentureDrake\LaravelCrm\Models\ContactType::firstOrCreate($item[0], $item[1]);
+            foreach ($items as $item) {
+                \VentureDrake\LaravelCrm\Models\ContactType::firstOrCreate($item[0], $item[1]);
+            }
+
+            Setting::updateOrCreate([
+                'global' => 1,
+                'name' => 'db_seeded_contact_types',
+            ], [
+                'value' => 1,
+            ]);
         }
+
+        // Pipelines
+        $this->callSilent(LaravelCrmPipelineTablesSeeder::class);
 
         $timestamp = time();
         foreach (timezone_identifiers_list() as $zone) {
@@ -361,6 +411,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm clients', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm clients', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm pipelines', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm pipelines', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm pipelines', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm pipelines', 'crm_permission' => 1]);
+
         if (config('permission.teams')) {
             $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
         } else {
@@ -459,6 +514,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm clients',
                 'edit crm clients',
                 'delete crm clients',
+                'create crm pipelines',
+                'view crm pipelines',
+                'edit crm pipelines',
+                'delete crm pipelines',
             ]);
 
         if (config('permission.teams')) {
@@ -541,6 +600,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm clients',
                 'edit crm clients',
                 'delete crm clients',
+                'create crm pipelines',
+                'view crm pipelines',
+                'edit crm pipelines',
+                'delete crm pipelines',
             ]);
     }
 }

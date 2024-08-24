@@ -37,11 +37,14 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveActivities;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveCalls;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveDealBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDealForm;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryDetails;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveInvoiceLines;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLunches;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveMeetings;
@@ -51,6 +54,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveProductForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePurchaseOrderLines;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
@@ -98,6 +102,9 @@ use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
+use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Models\PipelineStageProbability;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductPrice;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -137,6 +144,9 @@ use VentureDrake\LaravelCrm\Observers\OrderProductObserver;
 use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
+use VentureDrake\LaravelCrm\Observers\PipelineObserver;
+use VentureDrake\LaravelCrm\Observers\PipelineStageObserver;
+use VentureDrake\LaravelCrm\Observers\PipelineStageProbabilityObserver;
 use VentureDrake\LaravelCrm\Observers\ProductObserver;
 use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
 use VentureDrake\LaravelCrm\Observers\PurchaseOrderLineObserver;
@@ -193,6 +203,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\FieldOption' => \VentureDrake\LaravelCrm\Policies\FieldOptionPolicy::class,
         'VentureDrake\LaravelCrm\Models\Delivery' => \VentureDrake\LaravelCrm\Policies\DeliveryPolicy::class,
         'VentureDrake\LaravelCrm\Models\PurchaseOrder' => \VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Pipeline' => \VentureDrake\LaravelCrm\Policies\PipelinePolicy::class,
+        'VentureDrake\LaravelCrm\Models\PipelineStage' => \VentureDrake\LaravelCrm\Policies\PipelineStagePolicy::class,
     ];
 
     /**
@@ -287,6 +299,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         PurchaseOrder::observe(PurchaseOrderObserver::class);
         PurchaseOrderLine::observe(PurchaseOrderLineObserver::class);
         XeroPurchaseOrder::observe(XeroPurchaseOrderObserver::class);
+        Pipeline::observe(PipelineObserver::class);
+        PipelineStage::observe(PipelineStageObserver::class);
+        PipelineStageProbability::observe(PipelineStageProbabilityObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -446,6 +461,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/alter_type_on_laravel_crm_fields_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_type_on_laravel_crm_fields_table.php', 94),
                 __DIR__ . '/../database/migrations/add_soft_delete_to_laravel_crm_field_values_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_soft_delete_to_laravel_crm_field_values_table.php', 95),
                 __DIR__ . '/../database/migrations/add_terms_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_terms_to_laravel_crm_purchase_orders_table.php', 96),
+                __DIR__ . '/../database/migrations/add_delivery_type_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_delivery_type_to_laravel_crm_purchase_orders_table.php', 97),
+                __DIR__ . '/../database/migrations/create_laravel_crm_pipelines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipelines_table.php', 98),
+                __DIR__ . '/../database/migrations/create_laravel_crm_pipeline_stage_probabilities_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipeline_stage_probabilities_table.php', 99),
+                __DIR__ . '/../database/migrations/create_laravel_crm_pipeline_stages_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipeline_stages_table.php', 100),
+                __DIR__ . '/../database/migrations/add_pipeline_to_laravel_crm_models_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_pipeline_to_laravel_crm_models_table.php', 101),
+                __DIR__ . '/../database/migrations/add_user_to_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_user_to_laravel_crm_settings_table.php', 102),
             ], 'migrations');
 
             // Publishing the seeders
@@ -506,8 +527,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
         Livewire::component('live-lead-form', LiveLeadForm::class);
+        Livewire::component('live-lead-board', LiveLeadBoard::class);
         Livewire::component('deal-form', LiveDealForm::class);
+        Livewire::component('live-deal-board', LiveDealBoard::class);
         Livewire::component('quote-form', LiveQuoteForm::class);
+        Livewire::component('live-quote-board', LiveQuoteBoard::class);
         Livewire::component('notify-toast', NotifyToast::class);
         Livewire::component('quote-items', LiveQuoteItems::class);
         Livewire::component('order-form', LiveOrderForm::class);
@@ -524,6 +548,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('purchase-order-lines', LivePurchaseOrderLines::class);
         Livewire::component('fields.create-or-edit', CreateOrEdit::class);
         Livewire::component('send-purchase-order', SendPurchaseOrder::class);
+        Livewire::component('delivery-details', LiveDeliveryDetails::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
@@ -532,6 +557,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 $schedule->command('laravelcrm:reminders')
                     ->name('laravelCrmReminders')
                     ->everyMinute()
+                    ->withoutOverlapping();
+
+                $schedule->command('laravelcrm:archive')
+                    ->name('laravelCrmArchiving')
+                    ->daily()
                     ->withoutOverlapping();
 
                 if (config('xero.clientId') && config('xero.clientSecret')) {

@@ -12,10 +12,17 @@ import bsCustomFileInput from 'bs-custom-file-input'
 
 const Swal = require('sweetalert2')
 
+window.Sortable = require('sortablejs').default;
+
 // Little bit of Jquery
 const appJquery = function() {
     return {
         init: function () {
+            $('form button[type="submit"]').on('click', function(event) {
+                setTimeout(function () {
+                    event.target.disabled = true;
+                }, 0);
+            });
 
             $.ajaxSetup({
                 headers: {

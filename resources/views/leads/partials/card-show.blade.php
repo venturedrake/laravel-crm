@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ $lead->title }}
+            {{ $lead->title }} @if($lead->pipelineStage) <small><span class="badge badge-secondary">{{ $lead->pipelineStage->name }}</span> @endif</small>
         @endslot
 
         @slot('actions')

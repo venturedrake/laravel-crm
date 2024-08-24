@@ -8,29 +8,40 @@
 
         @slot('actions')
             <span class="float-right">
+                @php 
+                    (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($order)) ? $subTotalError = true : $subTotalError = false;
+                    (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\tax($order)) ? $taxError = true : $taxError = false;
+                    (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($order)) ? $totalError = true : $totalError = false;
+                @endphp
                 @include('laravel-crm::partials.return-button',[
                     'model' => $order,
                     'route' => 'orders'
                 ]) |
                 @can('edit crm orders')
-                    @if(! $order->deliveryComplete())
-                        @haspurchaseordersenabled
-                        <a href="{{ route('laravel-crm.purchase-orders.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.purchase_order')) }}</a>
-                        @endhaspurchaseordersenabled
-                    @endif
-                    @if(! $order->invoiceComplete())
-                        @hasinvoicesenabled
-                        <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.generate_invoice')) }}</a>
-                        @endhasinvoicesenabled
-                    @endif
-                    @if(! $order->deliveryComplete())
-                        @hasdeliveriesenabled
-                            <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
-                        @endhasdeliveriesenabled
-                    @endif
+                    @if($subTotalError || $taxError || $totalError)
+                        <a href="{{ route('laravel-crm.orders.edit',$order) }}" class="btn btn-warning btn-sm">Error with order, check amounts</a>
+                    @else
+                        @if(! $order->deliveryComplete())
+                            @haspurchaseordersenabled
+                            <a href="{{ route('laravel-crm.purchase-orders.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.purchase_order')) }}</a>
+                            @endhaspurchaseordersenabled
+                        @endif
+                        @if(! $order->invoiceComplete())
+                            @hasinvoicesenabled
+                            <a href="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.generate_invoice')) }}</a>
+                            @endhasinvoicesenabled
+                        @endif
+                        @if(! $order->deliveryComplete())
+                            @hasdeliveriesenabled
+                                <a href="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn btn-success btn-sm">{{ ucwords(__('laravel-crm::lang.create_delivery')) }}</a>
+                            @endhasdeliveriesenabled
+                        @endif
+                    @endif    
                 @endcan
                 @can('view crm orders')
-                    <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.orders.download', $order) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
+                    @if(! $subTotalError && ! $taxError && ! $totalError)
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.orders.download', $order) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
+                    @endif
                 @endcan    
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm orders')
@@ -168,7 +179,15 @@
                         <td></td>
                         <td></td>
                         <td><strong>{{ ucfirst(__('laravel-crm::lang.tax')) }}</strong></td>
-                        <td>{{ money($order->tax, $order->currency) }}</td>
+                        <td>
+                            @if(! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\tax($order))
+                                <span data-toggle="tooltip" data-placement="top" title="Error with sub total" class="text-danger">
+                                   {{ money($order->tax, $order->currency) }}
+                                </span>
+                            @else
+                                {{ money($order->tax, $order->currency) }}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td></td>

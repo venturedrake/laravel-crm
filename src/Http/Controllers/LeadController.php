@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -53,6 +54,17 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
+
+        if(! $viewSetting) {
+            auth()->user()->crmSettings()->create([
+                'name' => 'view_leads',
+                'value' => 'list',
+            ]);
+        } elseif($viewSetting->value == 'board') {
+            return redirect(route('laravel-crm.leads.board'));
+        }
+
         Lead::resetSearchValue($request);
         $params = Lead::filters($request);
 
@@ -62,8 +74,11 @@ class LeadController extends Controller
             $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
         }
 
+
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
+            'viewSetting' => $viewSetting->value ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
         ]);
     }
 
@@ -95,6 +110,8 @@ class LeadController extends Controller
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
+            'stage' => $request->stage ?? null
         ]);
     }
 
@@ -187,6 +204,7 @@ class LeadController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first()
         ]);
     }
 
@@ -353,5 +371,46 @@ class LeadController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.lead_converted_to_deal')))->success()->important();
 
         return redirect(route('laravel-crm.leads.index'));
+    }
+
+    public function list(Request $request)
+    {
+        auth()->user()->crmSettings()->updateOrCreate([
+            'name' => 'view_leads',
+        ], [
+            'value' => 'list',
+        ]);
+
+        return redirect(route('laravel-crm.leads.index'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function board(Request $request)
+    {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
+
+        auth()->user()->crmSettings()->updateOrCreate([
+            'name' => 'view_leads',
+        ], [
+            'value' => 'board',
+        ]);
+
+        Lead::resetSearchValue($request);
+        $params = Lead::filters($request);
+
+        if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
+            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
+        } else {
+            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
+        }
+
+        return view('laravel-crm::leads.board', [
+            'leads' => $leads,
+            'viewSetting' => $viewSetting->value ?? null
+        ]);
     }
 }

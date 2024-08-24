@@ -1,0 +1,4 @@
+<div class="btn-group" role="group" aria-label="Switch view">
+    <a href="{{ route('laravel-crm.'.$model.'.list') }}" type="button" class="btn btn-sm btn-outline-secondary {{ ($viewSetting == 'list') ? 'active' : null }}" data-toggle="tooltip" data-placement="top" title="View {{ $model ?? null }} as list"><i class="fa fa-solid fa-list"></i></a>
+    <a href="{{ route('laravel-crm.'.$model.'.board') }}" type="button" class="btn btn-sm btn-outline-secondary {{ ($viewSetting == 'board') ? 'active' : null }}" data-toggle="tooltip" data-placement="top" title="View {{ $model ?? null }} as board"><i class="fa fas fa-th"></i></a>
+</div>
