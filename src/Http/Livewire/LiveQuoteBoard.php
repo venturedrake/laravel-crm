@@ -9,7 +9,7 @@ use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class LiveQuoteBoard extends KanbanBoard
 {
-    public $model = 'deal';
+    public $model = 'quote';
 
     public function stages(): Collection
     {
@@ -37,7 +37,9 @@ class LiveQuoteBoard extends KanbanBoard
                     'title' => $quote->title,
                     'labels' => $quote->labels,
                     'stage' => $quote->pipelineStage->id ?? $this->firstStageId(),
-                    'number' => $quote->quote_id
+                    'number' => $quote->quote_id,
+                    'amount' => $quote->total,
+                    'currency' => $quote->currency,
                 ];
             });
     }
