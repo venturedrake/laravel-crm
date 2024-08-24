@@ -4,9 +4,11 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
+use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -259,6 +261,26 @@ class LaravelCrmUpdate extends Command
             $this->callSilent('db:seed', [
                 '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmPipelineTablesSeeder',
             ]);
+
+            foreach (Lead::whereNull('number')->get() as $lead) {
+                $this->info('Updating Laravel CRM lead #'.$lead->id);
+
+                $lead->update([
+                    'lead_id' => $this->settingService->get('lead_prefix')->value.(1000 + $lead->id),
+                    'prefix' => $this->settingService->get('lead_prefix')->value,
+                    'number' => 1000 + $lead->id,
+                ]);
+            }
+
+            foreach (Deal::whereNull('number')->get() as $deal) {
+                $this->info('Updating Laravel CRM deal #'.$deal->id);
+
+                $deal->update([
+                    'deal_id' => $this->settingService->get('deal_prefix')->value.(1000 + $deal->id),
+                    'prefix' => $this->settingService->get('deal_prefix')->value,
+                    'number' => 1000 + $deal->id,
+                ]);
+            }
 
             $this->settingService->set('db_update_1200', 1);
             $this->info('Updating Laravel CRM pipeline tables complete.');

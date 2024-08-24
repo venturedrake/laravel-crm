@@ -37,6 +37,7 @@ class LiveDealBoard extends KanbanBoard
                     'title' => $deal->title,
                     'labels' => $deal->labels,
                     'stage' => $deal->pipelineStage->id ?? $this->firstStageId(),
+                    'number' => $deal->deal_id
                 ];
             });
     }

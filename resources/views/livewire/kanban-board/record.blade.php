@@ -6,7 +6,7 @@
             'limit' => 3
         ])
         <div class="mt-2">
-            <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.show', $record['id'])) }}">LD-{{ $record['id'] }}</a> 
+            <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.show', $record['id'])) }}">{{ $record['number'] }}</a> 
             <div class="mb-0 d-inline-block float-right"><i class="fa fa-user-circle" aria-hidden="true"></i></div>
         </div>
     </div>

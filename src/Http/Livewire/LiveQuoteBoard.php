@@ -37,6 +37,7 @@ class LiveQuoteBoard extends KanbanBoard
                     'title' => $quote->title,
                     'labels' => $quote->labels,
                     'stage' => $quote->pipelineStage->id ?? $this->firstStageId(),
+                    'number' => $quote->quote_id
                 ];
             });
     }

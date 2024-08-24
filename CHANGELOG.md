@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Kanban boards
 - Custom Fields
 - Disabled double click on form submits
+- Lead prefix
+- Deal prefix
 ### Changed
 - Improved logo sizing on pdfs
 - Vertical navigation for settings

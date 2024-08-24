@@ -509,4 +509,6 @@ return [
     'create_pipeline_stage' => 'create pipeline stage',
     'back_to_pipeline_stages' => 'back to pipeline stages',
     'edit_pipeline_stage' => 'edit pipeline stage',
+    'lead_prefix' => 'lead prefix',
+    'deal_prefix' => 'deal prefix',
 ];

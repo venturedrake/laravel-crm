@@ -36,6 +36,8 @@ class SettingController extends Controller
         $currency = $this->settingService->get('currency');
         $timezoneSetting = $this->settingService->get('timezone');
         $logoFile = $this->settingService->get('logo_file');
+        $leadPrefix = $this->settingService->get('lead_prefix');
+        $dealPrefix = $this->settingService->get('deal_prefix');
         $quotePrefix = $this->settingService->get('quote_prefix');
         $orderPrefix = $this->settingService->get('order_prefix');
         $invoicePrefix = $this->settingService->get('invoice_prefix');
@@ -62,6 +64,8 @@ class SettingController extends Controller
             'currency' => $currency,
             'timezoneSetting' => $timezoneSetting,
             'logoFile' => $logoFile,
+            'leadPrefix' => $leadPrefix,
+            'dealPrefix' => $dealPrefix,
             'quotePrefix' => $quotePrefix,
             'orderPrefix' => $orderPrefix,
             'invoicePrefix' => $invoicePrefix,
@@ -110,6 +114,14 @@ class SettingController extends Controller
 
         if($request->tax_rate) {
             $this->settingService->set('tax_rate', $request->tax_rate);
+        }
+
+        if($request->lead_prefix) {
+            $this->settingService->set('lead_prefix', $request->lead_prefix);
+        }
+
+        if($request->deal_prefix) {
+            $this->settingService->set('deal_prefix', $request->deal_prefix);
         }
 
         if($request->quote_prefix) {

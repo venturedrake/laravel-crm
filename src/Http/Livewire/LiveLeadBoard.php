@@ -36,6 +36,7 @@ class LiveLeadBoard extends KanbanBoard
                     'title' => $lead->title,
                     'labels' => $lead->labels,
                     'stage' => $lead->pipelineStage->id ?? $this->firstStageId(),
+                    'number' => $lead->lead_id
                 ];
             });
     }
