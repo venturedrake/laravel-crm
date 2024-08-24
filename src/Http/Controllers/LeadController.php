@@ -278,6 +278,17 @@ class LeadController extends Controller
 
     public function search(Request $request)
     {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
+
+        if(! $viewSetting) {
+            auth()->user()->crmSettings()->create([
+                'name' => 'view_leads',
+                'value' => 'list',
+            ]);
+        } elseif($viewSetting->value == 'board') {
+            return redirect(route('laravel-crm.leads.board'));
+        }
+
         $searchValue = Lead::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
@@ -319,6 +330,8 @@ class LeadController extends Controller
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
             'searchValue' => $searchValue ?? null,
+            'viewSetting' => $viewSetting->value ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
         ]);
     }
 

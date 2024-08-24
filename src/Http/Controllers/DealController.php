@@ -283,6 +283,17 @@ class DealController extends Controller
 
     public function search(Request $request)
     {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_deals')->first();
+
+        if(! $viewSetting) {
+            auth()->user()->crmSettings()->create([
+                'name' => 'view_deals',
+                'value' => 'list',
+            ]);
+        } elseif($viewSetting->value == 'board') {
+            return redirect(route('laravel-crm.deals.board'));
+        }
+
         $searchValue = Deal::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
@@ -323,6 +334,8 @@ class DealController extends Controller
         return view('laravel-crm::deals.index', [
             'deals' => $deals,
             'searchValue' => $searchValue ?? null,
+            'viewSetting' => $viewSetting->value ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
         ]);
     }
 
