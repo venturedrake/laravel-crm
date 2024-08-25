@@ -254,8 +254,15 @@ class InvoiceController extends Controller
                 foreach ($record->getSearchable() as $field) {
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
-                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
-                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+
+                        if(config('laravel-crm.encrypt_db_fields')) {
+                            $relatedField = decrypt($record->{$field[1]});
+                        } else {
+                            $relatedField = $record->{$field[1]};
+                        }
+
+                        if ($record->{$field[1]} && $relatedField) {
+                            if (Str::contains(strtolower($relatedField), strtolower($searchValue))) {
                                 return $record;
                             }
                         }

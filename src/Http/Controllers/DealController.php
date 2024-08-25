@@ -285,15 +285,6 @@ class DealController extends Controller
     {
         $viewSetting = auth()->user()->crmSettings()->where('name', 'view_deals')->first();
 
-        if(! $viewSetting) {
-            auth()->user()->crmSettings()->create([
-                'name' => 'view_deals',
-                'value' => 'list',
-            ]);
-        } elseif($viewSetting->value == 'board') {
-            return redirect(route('laravel-crm.deals.board'));
-        }
-
         $searchValue = Deal::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
@@ -318,8 +309,15 @@ class DealController extends Controller
                 foreach ($record->getSearchable() as $field) {
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
-                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
-                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+
+                        if(config('laravel-crm.encrypt_db_fields')) {
+                            $relatedField = decrypt($record->{$field[1]});
+                        } else {
+                            $relatedField = $record->{$field[1]};
+                        }
+
+                        if ($record->{$field[1]} && $relatedField) {
+                            if (Str::contains(strtolower($relatedField), strtolower($searchValue))) {
                                 return $record;
                             }
                         }
@@ -331,12 +329,20 @@ class DealController extends Controller
                 }
             });
 
-        return view('laravel-crm::deals.index', [
-            'deals' => $deals,
-            'searchValue' => $searchValue ?? null,
-            'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
-        ]);
+        if($viewSetting->value === 'board') {
+            return view('laravel-crm::deals.board', [
+                'deals' => $deals,
+                'searchValue' => $searchValue ?? null,
+                'viewSetting' => $viewSetting->value ?? null
+            ]);
+        } else {
+            return view('laravel-crm::deals.index', [
+                'deals' => $deals,
+                'searchValue' => $searchValue ?? null,
+                'viewSetting' => $viewSetting->value ?? null,
+                'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
+            ]);
+        }
     }
 
     /**

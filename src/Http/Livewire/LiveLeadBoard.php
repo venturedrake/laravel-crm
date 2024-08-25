@@ -10,6 +10,9 @@ use VentureDrake\LaravelCrm\Models\Pipeline;
 class LiveLeadBoard extends KanbanBoard
 {
     public $model = 'lead';
+
+    public $leads;
+
     public function stages(): Collection
     {
         if($pipeline = Pipeline::where('model', get_class(new Lead()))->first()) {
@@ -29,17 +32,16 @@ class LiveLeadBoard extends KanbanBoard
 
     public function records(): Collection
     {
-        return Lead::get()
-            ->map(function (Lead $lead) {
-                return [
-                    'id' => $lead->id,
-                    'title' => $lead->title,
-                    'labels' => $lead->labels,
-                    'stage' => $lead->pipelineStage->id ?? $this->firstStageId(),
-                    'number' => $lead->lead_id,
-                    'amount' => $lead->amount,
-                    'currency' => $lead->currency,
-                ];
-            });
+        return $this->leads->map(function (Lead $lead) {
+            return [
+                'id' => $lead->id,
+                'title' => $lead->title,
+                'labels' => $lead->labels,
+                'stage' => $lead->pipelineStage->id ?? $this->firstStageId(),
+                'number' => $lead->lead_id,
+                'amount' => $lead->amount,
+                'currency' => $lead->currency,
+            ];
+        });
     }
 }

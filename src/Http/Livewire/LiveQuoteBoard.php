@@ -11,6 +11,8 @@ class LiveQuoteBoard extends KanbanBoard
 {
     public $model = 'quote';
 
+    public $quotes;
+
     public function stages(): Collection
     {
         if($pipeline = Pipeline::where('model', get_class(new Quote()))->first()) {
@@ -30,17 +32,16 @@ class LiveQuoteBoard extends KanbanBoard
 
     public function records(): Collection
     {
-        return Quote::get()
-            ->map(function (Quote $quote) {
-                return [
-                    'id' => $quote->id,
-                    'title' => $quote->title,
-                    'labels' => $quote->labels,
-                    'stage' => $quote->pipelineStage->id ?? $this->firstStageId(),
-                    'number' => $quote->quote_id,
-                    'amount' => $quote->total,
-                    'currency' => $quote->currency,
-                ];
-            });
+        return $this->quotes->map(function (Quote $quote) {
+            return [
+                'id' => $quote->id,
+                'title' => $quote->title,
+                'labels' => $quote->labels,
+                'stage' => $quote->pipelineStage->id ?? $this->firstStageId(),
+                'number' => $quote->quote_id,
+                'amount' => $quote->total,
+                'currency' => $quote->currency,
+            ];
+        });
     }
 }

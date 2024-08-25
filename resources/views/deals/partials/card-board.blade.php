@@ -22,8 +22,8 @@
     @endcomponent
 
     @component('laravel-crm::components.card-table')
-
-        <livewire:live-deal-board />
+        
+        <livewire:live-deal-board :deals="$deals" />
 
     @endcomponent
 

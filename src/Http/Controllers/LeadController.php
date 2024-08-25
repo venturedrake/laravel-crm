@@ -74,7 +74,6 @@ class LeadController extends Controller
             $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
         }
 
-
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
             'viewSetting' => $viewSetting->value ?? null,
@@ -280,15 +279,6 @@ class LeadController extends Controller
     {
         $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
 
-        if(! $viewSetting) {
-            auth()->user()->crmSettings()->create([
-                'name' => 'view_leads',
-                'value' => 'list',
-            ]);
-        } elseif($viewSetting->value == 'board') {
-            return redirect(route('laravel-crm.leads.board'));
-        }
-
         $searchValue = Lead::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
@@ -314,8 +304,15 @@ class LeadController extends Controller
                 foreach ($record->getSearchable() as $field) {
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
-                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
-                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+
+                        if(config('laravel-crm.encrypt_db_fields')) {
+                            $relatedField = decrypt($record->{$field[1]});
+                        } else {
+                            $relatedField = $record->{$field[1]};
+                        }
+
+                        if ($record->{$field[1]} && $relatedField) {
+                            if (Str::contains(strtolower($relatedField), strtolower($searchValue))) {
                                 return $record;
                             }
                         }
@@ -327,12 +324,20 @@ class LeadController extends Controller
                 }
             });
 
-        return view('laravel-crm::leads.index', [
-            'leads' => $leads,
-            'searchValue' => $searchValue ?? null,
-            'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
-        ]);
+        if($viewSetting->value === 'board') {
+            return view('laravel-crm::leads.board', [
+                'leads' => $leads,
+                'searchValue' => $searchValue ?? null,
+                'viewSetting' => $viewSetting->value ?? null
+            ]);
+        } else {
+            return view('laravel-crm::leads.index', [
+                'leads' => $leads,
+                'searchValue' => $searchValue ?? null,
+                'viewSetting' => $viewSetting->value ?? null,
+                'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
+            ]);
+        }
     }
 
     /**

@@ -12,17 +12,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SMS
 - Payments
 
-<!--- ## 1.0.0 - 2023-XX-XX
+<!--- ## 1.0.0 - 2024-XX-XX
 ### Added
 ### Changed
 ### Fixed
 ### Removed --->
 
-## 1.2.1 - 2023-08-24
+## 1.2.2 - 2024-08-25
+### Fixed
+- Kanban board search
+- Search when not using encrypted fields
+- Bug when custom field has been deleted
+
+## 1.2.1 - 24-08-24
 ### Fixed
 - Force seed pipeline settings
 
-## 1.2.0 - 2023-08-24
+## 1.2.0 - 2024-08-24
 ### Added
 - Kanban boards
 - Custom Fields
@@ -38,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - But when added organization
 - Version check
 
-## 1.1.0 - 2023-06-17
+## 1.1.0 - 2024-06-17
 ### Added
 - Support for Laravel 11
 - Product barcode
