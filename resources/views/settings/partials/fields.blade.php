@@ -77,6 +77,20 @@
             'value' => old('tax_rate', $taxRateSetting->value ?? null),
             'append' => '%'
        ])
+        @hasleadsenabled
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'lead_prefix',
+         'label' => ucfirst(trans('laravel-crm::lang.lead_prefix')),
+         'value' => old('lead_prefix', $leadPrefix->value ?? null)
+        ])
+        @endhasleadsenabled
+        @hasdealsenabled
+        @include('laravel-crm::partials.form.text',[
+         'name' => 'deal_prefix',
+         'label' => ucfirst(trans('laravel-crm::lang.deal_prefix')),
+         'value' => old('deal_prefix', $dealPrefix->value ?? null)
+        ])
+        @endhasdealsenabled
         @hasquotesenabled
         @include('laravel-crm::partials.form.text',[
          'name' => 'quote_prefix',

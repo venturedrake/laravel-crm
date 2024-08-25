@@ -23,7 +23,7 @@
 
     @component('laravel-crm::components.card-table')
 
-        <livewire:live-lead-board />
+        <livewire:live-lead-board :leads="$leads" />
 
     @endcomponent
 

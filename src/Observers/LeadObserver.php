@@ -2,10 +2,22 @@
 
 namespace VentureDrake\LaravelCrm\Observers;
 
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Services\SettingService;
 
 class LeadObserver
 {
+    /**
+     * @var SettingService
+     */
+    private $settingService;
+
+    public function __construct(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
+
     /**
      * Handle the lead "creating" event.
      *
@@ -14,9 +26,20 @@ class LeadObserver
      */
     public function creating(Lead $lead)
     {
+        $lead->external_id = Uuid::uuid4()->toString();
+
         if (! app()->runningInConsole()) {
             $lead->user_created_id = auth()->user()->id ?? null;
         }
+
+        if($lastLead = Lead::withTrashed()->orderBy('number', 'DESC')->first()) {
+            $lead->number = $lastLead->number + 1;
+        } else {
+            $lead->number = 1000;
+        }
+
+        $lead->prefix = $this->settingService->get('lead_prefix')->value;
+        $lead->lead_id = $lead->prefix.$lead->number;
     }
 
     /**

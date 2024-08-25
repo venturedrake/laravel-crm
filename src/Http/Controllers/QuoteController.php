@@ -303,6 +303,8 @@ class QuoteController extends Controller
 
     public function search(Request $request)
     {
+        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_quotes')->first();
+
         $searchValue = Quote::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
@@ -328,8 +330,15 @@ class QuoteController extends Controller
                 foreach ($record->getSearchable() as $field) {
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
-                        if ($record->{$field[1]} && $descryptedField = decrypt($record->{$field[1]})) {
-                            if (Str::contains(strtolower($descryptedField), strtolower($searchValue))) {
+
+                        if(config('laravel-crm.encrypt_db_fields')) {
+                            $relatedField = decrypt($record->{$field[1]});
+                        } else {
+                            $relatedField = $record->{$field[1]};
+                        }
+
+                        if ($record->{$field[1]} && $relatedField) {
+                            if (Str::contains(strtolower($relatedField), strtolower($searchValue))) {
                                 return $record;
                             }
                         }
@@ -341,10 +350,20 @@ class QuoteController extends Controller
                 }
             });
 
-        return view('laravel-crm::quotes.index', [
-            'quotes' => $quotes,
-            'searchValue' => $searchValue ?? null,
-        ]);
+        if($viewSetting->value === 'board') {
+            return view('laravel-crm::quotes.board', [
+                'quotes' => $quotes,
+                'searchValue' => $searchValue ?? null,
+                'viewSetting' => $viewSetting->value ?? null
+            ]);
+        } else {
+            return view('laravel-crm::quotes.index', [
+                'quotes' => $quotes,
+                'searchValue' => $searchValue ?? null,
+                'viewSetting' => $viewSetting->value ?? null,
+                'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
+            ]);
+        }
     }
 
     /**

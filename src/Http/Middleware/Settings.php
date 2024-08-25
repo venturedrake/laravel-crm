@@ -115,6 +115,18 @@ class Settings
             ]);
 
             Setting::firstOrCreate([
+                'name' => 'lead_prefix',
+            ], [
+                'value' => 'LD-',
+            ]);
+
+            Setting::firstOrCreate([
+                'name' => 'deal_prefix',
+            ], [
+                'value' => 'DL-',
+            ]);
+
+            Setting::firstOrCreate([
                 'name' => 'quote_prefix',
             ], [
                 'value' => 'QU-',

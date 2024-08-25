@@ -11,6 +11,8 @@ class LiveDealBoard extends KanbanBoard
 {
     public $model = 'deal';
 
+    public $deals;
+
     public function stages(): Collection
     {
         if($pipeline = Pipeline::where('model', get_class(new Deal()))->first()) {
@@ -30,14 +32,16 @@ class LiveDealBoard extends KanbanBoard
 
     public function records(): Collection
     {
-        return Deal::get()
-            ->map(function (Deal $deal) {
-                return [
-                    'id' => $deal->id,
-                    'title' => $deal->title,
-                    'labels' => $deal->labels,
-                    'stage' => $deal->pipelineStage->id ?? $this->firstStageId(),
-                ];
-            });
+        return $this->deals->map(function (Deal $deal) {
+            return [
+                'id' => $deal->id,
+                'title' => $deal->title,
+                'labels' => $deal->labels,
+                'stage' => $deal->pipelineStage->id ?? $this->firstStageId(),
+                'number' => $deal->deal_id,
+                'amount' => $deal->amount,
+                'currency' => $deal->currency,
+            ];
+        });
     }
 }
