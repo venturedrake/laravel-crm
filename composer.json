@@ -1,6 +1,6 @@
 {
-    "name": "venturedrake/laravel-crm",
-    "description": "A free open source CRM built as a package for laravel projects",
+    "name": "jto8312/laravel-crm",
+    "description": "A modified version of the original venturedrake/laravel-crm project with additional features and improvements.",
     "keywords": [
         "venturedrake",
         "laravel",
@@ -20,7 +20,7 @@
         "crm online",
         "crm platform"
     ],
-    "homepage": "https://github.com/venturedrake/laravel-crm",
+    "homepage": "https://github.com/jto8312/laravel-crm",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -28,6 +28,12 @@
             "name": "Andrew Drake",
             "email": "andrew@venturedrake.com",
             "homepage": "https://venturedrake.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Jonathan Torres",
+            "email": "jonathan8312@gmail.com",
+            "homepage": "https://trebolcolombia.com",,
             "role": "Developer"
         }
     ],
