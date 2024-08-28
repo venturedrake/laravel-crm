@@ -31,7 +31,10 @@
 
         @component('laravel-crm::components.card-footer')
                 <a href="{{ url(route('laravel-crm.purchase-orders.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
-                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
+{{--
+                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.create_and_add_another')) }}</button>
+--}}
+                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.create_purchase_order')) }}</button>
         @endcomponent
 
     @endcomponent

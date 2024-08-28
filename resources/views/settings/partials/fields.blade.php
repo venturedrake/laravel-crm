@@ -147,6 +147,12 @@
          'rows' => 5,
          'value' => old('invoice_terms', $invoiceTerms->value ?? null)
         ])
+        @include('laravel-crm::partials.form.textarea',[
+         'name' => 'invoice_payment_instructions',
+         'label' => ucfirst(trans('laravel-crm::lang.invoice_payment_instructions')),
+         'rows' => 5,
+         'value' => old('invoice_payment_instructions', $invoicePaymentInstructions->value ?? null)
+        ])
         @endhasinvoicesenabled
         @haspurchaseordersenabled
         @include('laravel-crm::partials.form.textarea',[
