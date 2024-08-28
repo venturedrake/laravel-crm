@@ -423,7 +423,8 @@ return [
     'from_quote' => 'de cotización',
     'from_order' => 'de pedido',
     'show_related_contact_activity' => 'mostrar actividad de contacto relacionada',
-    'allow_creating_products_when_creating_quotes_orders_and_invoices' => 'permitir crear productos al crear o editar cotizaciones, pedidos y facturas',
+    'allow_creating_products_when_creating_quotes_orders_and_invoices' => 'permitir crear productos al crear o
+        editar cotizaciones, pedidos y facturas',
     'tax_rate' => 'tasa de impuesto',
     'tax_name' => 'nombre del impuesto',
     'invoice_contact_details' => 'detalles de contacto de la factura',
