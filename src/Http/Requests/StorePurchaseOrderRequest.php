@@ -32,10 +32,10 @@ class StorePurchaseOrderRequest extends FormRequest
             'currency' => 'required',
         ];
 
-        if (! request('order_id')) {
-            $rules['person_name'] = 'required_without:organisation_name|max:255';
-            $rules['organisation_name'] = 'required_without:person_name|max:255';
-        }
+        //if (! request('order_id')) {
+        $rules['person_name'] = 'required_without:organisation_name|max:255';
+        $rules['organisation_name'] = 'required_without:person_name|max:255';
+        //}
 
         if(request('delivery_type') == 'deliver') {
             $rules['delivery_address'] = 'required';

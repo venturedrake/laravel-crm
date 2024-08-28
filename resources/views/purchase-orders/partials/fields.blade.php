@@ -4,7 +4,6 @@
              'name' => 'order_id',
              'value' => old('order_id', $invoice->order->id ?? $order->id ?? null),
         ])
-        @empty($order)
         <span class="autocomplete">
              @include('laravel-crm::partials.form.hidden',[
                'name' => 'person_id',
@@ -43,7 +42,6 @@
                'required' => 'true'
             ])
         </span>
-        @endempty
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[

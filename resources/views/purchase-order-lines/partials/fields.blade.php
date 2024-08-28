@@ -55,7 +55,7 @@
     </td>
 </tr>
 @if($fromOrder)
-<tr data-number="{{ $value }}" class="item-tr">
+{{--<tr data-number="{{ $value }}" class="item-tr">
     <td colspan="5" class="border-0 pt-0 bind-select2-organisations" style="position: relative;">
         @include('laravel-crm::partials.form.select',[
             'name' => 'purchaseOrderLines['.$value.'][organisation_id]',
@@ -65,12 +65,12 @@
             ],
             'value' => $this->organisation_id[$value] ?? null,
             'attributes' => [
-                'wire:model' => 'organisation_idnpm .'.$value,
+                'wire:model' => 'organisation_id .'.$value,
                 'data-value' => $value
             ]
         ])
     </td>
-</tr>
+</tr>--}}
 @endif
 <tr data-number="{{ $value }}" class="item-tr">
     <td colspan="2" class="border-0 pt-0">
@@ -84,7 +84,7 @@
                        'wire:model' => 'price.'.$value,
                        'wire:change' => 'calculateAmounts',
                        'step' => .01,
-                        'readonly' => 'readonly'
+                       /* 'readonly' => 'readonly'*/
                    ]
                 ])
         @else
@@ -103,7 +103,7 @@
     </td>
     <td class="border-0 pt-0">
         @if($fromOrder)
-            @include('laravel-crm::partials.form.select',[
+            {{--@include('laravel-crm::partials.form.select',[
                'name' => 'purchaseOrderLines['.$value.'][quantity]',
                'label' => ucfirst(__('laravel-crm::lang.quantity')),
                'options' => $this->order_quantities[$value],
@@ -113,6 +113,15 @@
                    'data-value' => $value,
                    'wire:change' => 'calculateAmounts'
                ]
+           ])--}}
+            @include('laravel-crm::partials.form.text',[
+              'name' => 'purchaseOrderLines['.$value.'][quantity]',
+              'label' => ucfirst(__('laravel-crm::lang.quantity')),
+              'type' => 'number',
+              'attributes' => [
+                  'wire:model' => 'quantity.'.$value,
+                  'wire:change' => 'calculateAmounts'
+              ]
            ])
         @else
             @include('laravel-crm::partials.form.text',[
@@ -156,14 +165,21 @@
 <tr data-number="{{ $value }}" class="item-tr">
     <td colspan="5" class="border-0 pt-0 pb-4">
         @if($fromOrder)
-            @include('laravel-crm::partials.form.text',[
+           {{-- @include('laravel-crm::partials.form.text',[
                'name' => 'purchaseOrderLines['.$value.'][comments]',
                'label' => ucfirst(__('laravel-crm::lang.comments')),
                'attributes' => [
                    'wire:model' => 'comments.'.$value,
                     'readonly' => 'readonly'
                ]
-           ])
+           ])--}}
+            @include('laravel-crm::partials.form.text',[
+             'name' => 'purchaseOrderLines['.$value.'][comments]',
+             'label' => ucfirst(__('laravel-crm::lang.comments')),
+             'attributes' => [
+                 'wire:model' => 'comments.'.$value,
+             ]
+         ])
         @else    
             @include('laravel-crm::partials.form.text',[
                'name' => 'purchaseOrderLines['.$value.'][comments]',

@@ -137,6 +137,10 @@ class PurchaseOrderController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.purchase_order_created')))->success()->important();
 
+        if($request->action == 'create_and_add_another') {
+            return redirect(route('laravel-crm.purchase-orders.create', ['model' => 'order', 'id' => $request->order]));
+        }
+
         return redirect(route('laravel-crm.purchase-orders.index'));
     }
 
