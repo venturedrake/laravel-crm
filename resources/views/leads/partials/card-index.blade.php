@@ -55,7 +55,7 @@
                     <td>{{ $lead->organisation->name ?? null}}</td>
                     <td>{{ $lead->person->name ??  null }}</td>
                     <td>{{ $lead->pipelineStage->name ?? null }}</td>
-                    <td>{{ $lead->ownerUser->name ?? null }}</td>
+                    <td>{{ $lead->ownerUser->name ?? "Unallocated" }}</td>
                     <td class="disable-link text-right">
                         @hasdealsenabled
                             @can('edit crm leads')

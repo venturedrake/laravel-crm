@@ -514,4 +514,5 @@ return [
     'create_and_add_another' => 'create & add another',
     'invoice_payment_instructions' => 'invoice payment instructions',
     'payment' => 'payment',
+    'unallocated' => 'unallocated',
 ];
