@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
 use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -357,6 +358,7 @@ class LeadController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first()
         ]);
     }
 
