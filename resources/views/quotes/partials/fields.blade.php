@@ -90,11 +90,11 @@
         ])
 
         @include('laravel-crm::partials.form.select',[
-                 'name' => 'user_owner_id',
-                 'label' => ucfirst(__('laravel-crm::lang.owner')),
-                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                 'value' =>  old('user_owner_id', $quote->user_owner_id ?? auth()->user()->id),
-              ])
+             'name' => 'user_owner_id',
+             'label' => ucfirst(__('laravel-crm::lang.owner')),
+             'options' => ['' => ucfirst(__('laravel-crm::lang.unallocated'))] + \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+             'value' =>  old('user_owner_id', (isset($quote)) ? $quote->user_owner_id ?? '' : auth()->user()->id),
+        ])
 
         @include('laravel-crm::fields.partials.model', ['model' => $quote ?? new \VentureDrake\LaravelCrm\Models\Quote()])
 

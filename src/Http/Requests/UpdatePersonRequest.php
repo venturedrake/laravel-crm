@@ -25,7 +25,6 @@ class UpdatePersonRequest extends FormRequest
     {
         return [
             'first_name' => 'required|max:255',
-            'user_owner_id' => 'required',
             'phones.*.type' => 'required_with:phones.*.number',
             'emails.*.type' => 'required_with:emails.*.address'
         ];

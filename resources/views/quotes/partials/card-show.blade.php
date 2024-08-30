@@ -88,7 +88,9 @@
                             'labels' => $quote->labels
                     ])</dd>
                     <dt class="col-sm-3 text-right">Owner</dt>
-                    <dd class="col-sm-9">{{ $quote->ownerUser->name ?? null }}</dd>
+                    <dd class="col-sm-9">
+                        @if($quote->ownerUser)<a href="{{ route('laravel-crm.users.show', $quote->ownerUser) }}">{{ $quote->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
+                    </dd>
                 </dl>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.client')) }}</h6>
                 <hr />

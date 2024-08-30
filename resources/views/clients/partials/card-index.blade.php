@@ -37,7 +37,7 @@
                             'labels' => $client->labels,
                             'limit' => 3
                         ])</td>
-                    <td>{{ $client->ownerUser->name ?? null }}</td>
+                    <td>{{ $client->ownerUser->name ?? "Unallocated" }}</td>
                     <td class="disable-link text-right">
                         @hasleadsenabled
                         @can('create crm leads')

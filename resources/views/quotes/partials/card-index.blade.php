@@ -92,7 +92,7 @@
                    </td>
                    <td>{{ ($quote->issue_at) ? $quote->issue_at->format($dateFormat) : null }}</td>
                    <td>{{ ($quote->expire_at) ? $quote->expire_at->format($dateFormat) : null }}</td>
-                   <td>{{ $quote->ownerUser->name ?? null }}</td>
+                   <td>{{ $quote->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>
                    <td class="disable-link text-right">
                        @if(! $quote->order && !$quoteError)
                            @livewire('send-quote',[

@@ -30,7 +30,6 @@ class StoreDealRequest extends FormRequest
             'organisation_id' => 'required_without_all:person_name,person_id,organisation_name|max:255',
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
-            'user_owner_id' => 'required',
         ];
     }
 

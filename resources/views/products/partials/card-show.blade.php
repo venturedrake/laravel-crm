@@ -61,7 +61,9 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">{{ $product->ownerUser->name }}</dd>
+                    <dd class="col-sm-9">
+                        @if($product->ownerUser)<a href="{{ route('laravel-crm.users.show', $product->ownerUser) }}">{{ $product->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
+                    </dd>
                 </dl>
             </div>
             <div class="col-sm-6">
