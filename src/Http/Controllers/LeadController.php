@@ -422,11 +422,7 @@ class LeadController extends Controller
         Lead::resetSearchValue($request);
         $params = Lead::filters($request);
 
-        if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
-            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
-        } else {
-            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
-        }
+        $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
 
         return view('laravel-crm::leads.board', [
             'leads' => $leads,

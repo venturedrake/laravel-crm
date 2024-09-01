@@ -428,11 +428,7 @@ class DealController extends Controller
         Deal::resetSearchValue($request);
         $params = Deal::filters($request);
 
-        if (Deal::filter($params)->get()->count() < 30) {
-            $deals = Deal::filter($params)->latest()->get();
-        } else {
-            $deals = Deal::filter($params)->latest()->paginate(30);
-        }
+        $deals = Deal::filter($params)->latest()->get();
 
         return view('laravel-crm::deals.board', [
             'deals' => $deals,

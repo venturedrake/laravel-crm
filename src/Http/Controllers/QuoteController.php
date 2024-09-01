@@ -483,11 +483,7 @@ class QuoteController extends Controller
         Quote::resetSearchValue($request);
         $params = Quote::filters($request);
 
-        if (Quote::filter($params)->get()->count() < 30) {
-            $quotes = Quote::filter($params)->latest()->get();
-        } else {
-            $quotes = Quote::filter($params)->latest()->paginate(30);
-        }
+        $quotes = Quote::filter($params)->latest()->get();
 
         return view('laravel-crm::quotes.board', [
             'quotes' => $quotes,
