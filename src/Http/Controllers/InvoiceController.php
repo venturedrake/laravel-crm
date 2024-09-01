@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreInvoiceRequest;
@@ -256,7 +257,12 @@ class InvoiceController extends Controller
                         $field = explode('.', $field);
 
                         if(config('laravel-crm.encrypt_db_fields')) {
-                            $relatedField = decrypt($record->{$field[1]});
+                            try {
+                                $relatedField = decrypt($record->{$field[1]});
+                            } catch (DecryptException $e) {
+                            }
+
+                            $relatedField = $record->{$field[1]};
                         } else {
                             $relatedField = $record->{$field[1]};
                         }
