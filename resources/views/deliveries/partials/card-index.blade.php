@@ -87,7 +87,7 @@
                     <td>
                         {{ $delivery->delivered_on ?? null }}
                     </td>
-                    <td>{{ $delivery->ownerUser->name ?? null }}</td>
+                    <td>{{ $delivery->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>
                     <td class="disable-link text-right">
                         @can('view crm deliveries')
                             <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.deliveries.download', $delivery) }}"><span class="fa fa-download" aria-hidden="true"></span></a>

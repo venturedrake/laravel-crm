@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StorePurchaseOrderRequest;
@@ -136,6 +137,10 @@ class PurchaseOrderController extends Controller
         $this->purchaseOrderService->create($request, $person ?? null, $organisation ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.purchase_order_created')))->success()->important();
+
+        if($request->action == 'create_and_add_another') {
+            return redirect(route('laravel-crm.purchase-orders.create', ['model' => 'order', 'id' => $request->order]));
+        }
 
         return redirect(route('laravel-crm.purchase-orders.index'));
     }
@@ -318,7 +323,12 @@ class PurchaseOrderController extends Controller
                         $field = explode('.', $field);
 
                         if(config('laravel-crm.encrypt_db_fields')) {
-                            $relatedField = decrypt($record->{$field[1]});
+                            try {
+                                $relatedField = decrypt($record->{$field[1]});
+                            } catch (DecryptException $e) {
+                            }
+
+                            $relatedField = $record->{$field[1]};
                         } else {
                             $relatedField = $record->{$field[1]};
                         }

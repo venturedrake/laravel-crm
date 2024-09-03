@@ -47,7 +47,7 @@
                     ])</p>
                 <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($deal->amount, $deal->currency) }}</p>
                 <p><span class="fa fa-info" aria-hidden="true"></span> {{ $deal->description }}</p>
-                <p><span class="fa fa-user-circle" aria-hidden="true"></span> <a href="{{ route('laravel-crm.users.show', $deal->ownerUser) }}">{{ $deal->ownerUser->name ?? null }}</a></p>
+                <p><span class="fa fa-user-circle" aria-hidden="true"></span> @if($deal->ownerUser)<a href="{{ route('laravel-crm.users.show', $deal->ownerUser) }}">{{ $deal->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif</p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.client')) }}</h6>
                 <hr />
                 <p><span class="fa fa-address-card" aria-hidden="true"></span> @if($deal->client)<a href="{{ route('laravel-crm.clients.show',$deal->client) }}">{{ $deal->client->name }}</a>@endif </p>

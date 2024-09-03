@@ -83,8 +83,8 @@
         @include('laravel-crm::partials.form.select',[
              'name' => 'user_owner_id',
              'label' => ucfirst(__('laravel-crm::lang.owner')),
-             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-             'value' =>  old('user_owner_id', $organisation->user_owner_id ?? auth()->user()->id),
+             'options' => ['' => ucfirst(__('laravel-crm::lang.unallocated'))] + \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+             'value' =>  old('user_owner_id', (isset($organisation)) ? $organisation->user_owner_id ?? '' : auth()->user()->id),
         ])
 
         @include('laravel-crm::fields.partials.model', ['model' => $organisation ?? new \VentureDrake\LaravelCrm\Models\Organisation()])

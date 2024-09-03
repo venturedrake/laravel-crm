@@ -43,7 +43,7 @@
                     <td>{{ $product->taxRate->name ?? null }}</td>
                     <td>{{ $product->tax_rate ?? $product->taxRate->rate ?? 0 }}%</td>
                     <td>{{ ($product->active == 1) ? 'YES' : 'NO' }}</td>
-                    <td>{{ $product->ownerUser->name ?? null }}</td>
+                    <td>{{ $product->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>
                     <td class="disable-link text-right">
                         @can('view crm products')
                         <a href="{{  route('laravel-crm.products.show',$product) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a>

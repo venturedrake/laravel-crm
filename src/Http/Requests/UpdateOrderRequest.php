@@ -24,12 +24,10 @@ class UpdateOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            /*'client_name' => 'required|max:255',*/
             'person_name' => 'required_without_all:organisation_name,organisation_id|max:255',
             'person_id' => 'required_without_all:organisation_name,organisation_id,person_name|max:255',
             'organisation_name' => 'required_without_all:person_name,person_id|max:255',
             'organisation_id' => 'required_without_all:person_name,person_id,organisation_name|max:255',
-            'user_owner_id' => 'required',
         ];
     }
 

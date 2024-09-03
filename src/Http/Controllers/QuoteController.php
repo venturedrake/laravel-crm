@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreQuoteRequest;
@@ -332,7 +333,12 @@ class QuoteController extends Controller
                         $field = explode('.', $field);
 
                         if(config('laravel-crm.encrypt_db_fields')) {
-                            $relatedField = decrypt($record->{$field[1]});
+                            try {
+                                $relatedField = decrypt($record->{$field[1]});
+                            } catch (DecryptException $e) {
+                            }
+
+                            $relatedField = $record->{$field[1]};
                         } else {
                             $relatedField = $record->{$field[1]};
                         }
@@ -483,11 +489,7 @@ class QuoteController extends Controller
         Quote::resetSearchValue($request);
         $params = Quote::filters($request);
 
-        if (Quote::filter($params)->get()->count() < 30) {
-            $quotes = Quote::filter($params)->latest()->get();
-        } else {
-            $quotes = Quote::filter($params)->latest()->paginate(30);
-        }
+        $quotes = Quote::filter($params)->latest()->get();
 
         return view('laravel-crm::quotes.board', [
             'quotes' => $quotes,

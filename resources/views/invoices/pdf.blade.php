@@ -148,6 +148,18 @@
         </tr>
         </tfoot>
     </table>
+    @if($paymentInstructions)
+        <table class="table table-bordered table-sm table-items">
+            <tbody>
+            <tr>
+                <td>
+                    <h4>{{ ucfirst(__('laravel-crm::lang.payment')) }}</h4>
+                    {!! nl2br($paymentInstructions) !!}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    @endif
     @if($invoice->terms)
         <table class="table table-bordered table-sm table-items">
             <tbody>

@@ -56,7 +56,7 @@
                     <td>{{ $deal->organisation->name ?? null }}</td>
                     <td>{{ $deal->person->name ?? null }}</td>
                     <td>{{ ($deal->expected_close) ? $deal->expected_close->format($dateFormat) : null }}</td>
-                    <td>{{ $deal->ownerUser->name ?? null }}</td>
+                    <td>{{ $deal->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm deals')
                         @if(!$deal->closed_at)

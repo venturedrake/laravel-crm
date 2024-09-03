@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDealRequest;
@@ -311,7 +312,12 @@ class DealController extends Controller
                         $field = explode('.', $field);
 
                         if(config('laravel-crm.encrypt_db_fields')) {
-                            $relatedField = decrypt($record->{$field[1]});
+                            try {
+                                $relatedField = decrypt($record->{$field[1]});
+                            } catch (DecryptException $e) {
+                            }
+
+                            $relatedField = $record->{$field[1]};
                         } else {
                             $relatedField = $record->{$field[1]};
                         }
@@ -428,11 +434,7 @@ class DealController extends Controller
         Deal::resetSearchValue($request);
         $params = Deal::filters($request);
 
-        if (Deal::filter($params)->get()->count() < 30) {
-            $deals = Deal::filter($params)->latest()->get();
-        } else {
-            $deals = Deal::filter($params)->latest()->paginate(30);
-        }
+        $deals = Deal::filter($params)->latest()->get();
 
         return view('laravel-crm::deals.board', [
             'deals' => $deals,

@@ -89,7 +89,7 @@
                             'labels' => $order->labels
                     ])</dd>
                     <dt class="col-sm-4 text-right">Owner</dt>
-                    <dd class="col-sm-8">{{ $order->ownerUser->name ?? null }}</dd>
+                    <dd class="col-sm-8">@if($order->ownerUser)<a href="{{ route('laravel-crm.users.show', $order->ownerUser) }}">{{ $order->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif</dd>
                 </dl>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.client')) }}</h6>
                 <hr />

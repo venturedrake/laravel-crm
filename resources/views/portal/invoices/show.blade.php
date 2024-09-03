@@ -227,12 +227,22 @@
                         </div>
                     </div>
                     <hr class="m-0" />
-                    <div class="row py-1">
-                        <div class="col px-5 py-4">
-                            <h5>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
-                            {!! nl2br($invoice->terms) !!}
+                    @if($paymentInstructions)
+                        <div class="row py-1">
+                            <div class="col px-5 py-4">
+                                <h5>{{ ucfirst(__('laravel-crm::lang.payment')) }}</h5>
+                                {!! nl2br($paymentInstructions) !!}
+                            </div>
                         </div>
-                    </div>
+                    @endif
+                    @if($invoice->terms)
+                        <div class="row py-1">
+                            <div class="col px-5 py-4">
+                                <h5>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
+                                {!! nl2br($invoice->terms) !!}
+                            </div>
+                        </div>
+                    @endif
                 </div>  
             </div>
         </div>

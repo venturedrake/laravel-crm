@@ -25,7 +25,6 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'user_owner_id' => 'required',
         ];
     }
 }

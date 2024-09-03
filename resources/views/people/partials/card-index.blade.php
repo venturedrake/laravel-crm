@@ -49,7 +49,7 @@
                     <td>{{ $person->deals->where('closed_status', 'lost')->count() }}</td>
                     <td>{{ $person->deals->where('closed_status', 'won')->count() }}</td>
                     <td></td>
-                    <td>{{ $person->ownerUser->name ?? null }}</td>
+                    <td>{{ $person->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>
                     <td class="disable-link text-right">
                         @hasleadsenabled
                         @can('create crm leads')

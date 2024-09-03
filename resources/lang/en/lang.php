@@ -511,4 +511,8 @@ return [
     'edit_pipeline_stage' => 'edit pipeline stage',
     'lead_prefix' => 'lead prefix',
     'deal_prefix' => 'deal prefix',
+    'create_and_add_another' => 'create & add another',
+    'invoice_payment_instructions' => 'invoice payment instructions',
+    'payment' => 'payment',
+    'unallocated' => 'unallocated',
 ];

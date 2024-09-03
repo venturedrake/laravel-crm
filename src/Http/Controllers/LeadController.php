@@ -3,11 +3,13 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
 use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -306,7 +308,12 @@ class LeadController extends Controller
                         $field = explode('.', $field);
 
                         if(config('laravel-crm.encrypt_db_fields')) {
-                            $relatedField = decrypt($record->{$field[1]});
+                            try {
+                                $relatedField = decrypt($record->{$field[1]});
+                            } catch (DecryptException $e) {
+                            }
+
+                            $relatedField = $record->{$field[1]};
                         } else {
                             $relatedField = $record->{$field[1]};
                         }
@@ -357,6 +364,7 @@ class LeadController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
+            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first()
         ]);
     }
 
@@ -420,11 +428,7 @@ class LeadController extends Controller
         Lead::resetSearchValue($request);
         $params = Lead::filters($request);
 
-        if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
-            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
-        } else {
-            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
-        }
+        $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
 
         return view('laravel-crm::leads.board', [
             'leads' => $leads,

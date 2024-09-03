@@ -106,7 +106,7 @@
                             {{ money($order->total, $order->currency) }}
                         @endif
                     </td>
-                    <td>{{ $order->ownerUser->name ?? null }}</td>
+                    <td>{{ $order->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>
                     <td class="disable-link text-right">
                         @can('edit crm orders')
                             @if($subTotalError || $taxError || $totalError)

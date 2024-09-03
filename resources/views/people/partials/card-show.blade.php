@@ -92,7 +92,9 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9"><a href="{{ route('laravel-crm.users.show', $person->ownerUser) }}">{{ $person->ownerUser->name }}</a></dd>
+                    <dd class="col-sm-9">
+                        @if($person->ownerUser)<a href="{{ route('laravel-crm.users.show', $person->ownerUser) }}">{{ $person->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
+                    </dd>
                 </dl>
                 @livewire('related-contact-people',[
                     'model' => $person
