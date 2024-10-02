@@ -181,4 +181,9 @@ class Person extends Model
     {
         return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroPerson::class);
     }
+
+    public function client()
+    {
+        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Client::class, 'clientable');
+    }
 }
