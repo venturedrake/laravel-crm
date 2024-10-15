@@ -315,9 +315,8 @@ class DealController extends Controller
                             try {
                                 $relatedField = decrypt($record->{$field[1]});
                             } catch (DecryptException $e) {
+                                $relatedField = $record->{$field[1]};
                             }
-
-                            $relatedField = $record->{$field[1]};
                         } else {
                             $relatedField = $record->{$field[1]};
                         }
