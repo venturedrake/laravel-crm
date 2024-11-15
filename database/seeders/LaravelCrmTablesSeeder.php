@@ -19,7 +19,7 @@ class LaravelCrmTablesSeeder extends Seeder
     public function run()
     {
         // Labels
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_labels')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_labels')->first()) {
             $items = [
                 [
                     [
@@ -66,7 +66,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Lead statuses (DEPRECATED)
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_lead_statuses')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_lead_statuses')->first()) {
             $items = [
                 [
                     [
@@ -101,7 +101,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Organisation Types
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_organisation_types')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_organisation_types')->first()) {
             $items = [
                 [
                     [
@@ -150,7 +150,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Address types
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_address_types')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_address_types')->first()) {
             $items = [
                 [
                     [
@@ -215,7 +215,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Contact types
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_contact_types')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_contact_types')->first()) {
             $items = [
                 [
                     [

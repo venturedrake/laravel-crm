@@ -49,7 +49,7 @@ class PurchaseOrderService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        if($request->delivery_type == 'deliver') {
+        if ($request->delivery_type == 'deliver') {
             $deliveryAddress = Address::find($request->delivery_address)->replicate();
             $deliveryAddress->external_id = Uuid::uuid4()->toString();
             $deliveryAddress->created_at = now();
@@ -63,20 +63,20 @@ class PurchaseOrderService
             $total = 0;
 
             foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
-                if(isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['quantity'] > 0) {
-                    if(! Product::find($purchaseOrderLine['product_id'])) {
+                if (isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['quantity'] > 0) {
+                    if (! Product::find($purchaseOrderLine['product_id'])) {
                         $newProduct = $this->addProduct($purchaseOrderLine, $request);
                         $purchaseOrderLine['product_id'] = $newProduct->id;
                     }
                 }
 
                 if (isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['product_id'] > 0 && $purchaseOrderLine['quantity'] > 0) {
-                    if($product = Product::find($purchaseOrderLine['product_id'])) {
-                        if($product->taxRate) {
+                    if ($product = Product::find($purchaseOrderLine['product_id'])) {
+                        if ($product->taxRate) {
                             $taxRate = $product->taxRate->rate;
-                        } elseif($product->tax_rate) {
+                        } elseif ($product->tax_rate) {
                             $taxRate = $product->tax_rate;
-                        } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                        } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                             $taxRate = $taxRate->rate;
                         } else {
                             $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
@@ -101,7 +101,7 @@ class PurchaseOrderService
                 }
             }
 
-            if(! $request->total) {
+            if (! $request->total) {
                 $purchaseOrder->update([
                     'subtotal' => $subTotal,
                     'tax' => $tax,
@@ -174,8 +174,8 @@ class PurchaseOrderService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        if($request->delivery_type == 'deliver') {
-            if(! $purchaseOrder->address) {
+        if ($request->delivery_type == 'deliver') {
+            if (! $purchaseOrder->address) {
                 $purchaseOrder->address()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'contact' => $request->address_contact,
@@ -211,18 +211,18 @@ class PurchaseOrderService
                     if (! isset($line['product_id']) || $line['quantity'] == 0) {
                         $purchaseOrderLine->delete();
                     } else {
-                        if(! Product::find($line['product_id'])) {
+                        if (! Product::find($line['product_id'])) {
                             $newProduct = $this->addProduct($line, $request);
                             $line['product_id'] = $newProduct->id;
                         }
 
                         if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                            if($product = Product::find($purchaseOrderLine['product_id'])) {
-                                if($product->taxRate) {
+                            if ($product = Product::find($purchaseOrderLine['product_id'])) {
+                                if ($product->taxRate) {
                                     $taxRate = $product->taxRate->rate;
-                                } elseif($product->tax_rate) {
+                                } elseif ($product->tax_rate) {
                                     $taxRate = $product->tax_rate;
-                                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                                } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                                     $taxRate = $taxRate->rate;
                                 } else {
                                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
@@ -243,19 +243,19 @@ class PurchaseOrderService
                             $purchaseOrderLineIds[] = $purchaseOrderLine->id;
                         }
                     }
-                } elseif(isset($line['product_id']) && $line['quantity'] > 0) {
-                    if(! Product::find($line['product_id'])) {
+                } elseif (isset($line['product_id']) && $line['quantity'] > 0) {
+                    if (! Product::find($line['product_id'])) {
                         $newProduct = $this->addProduct($line, $request);
                         $line['product_id'] = $newProduct->id;
                     }
 
                     if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                        if($product = Product::find($line['product_id'])) {
-                            if($product->taxRate) {
+                        if ($product = Product::find($line['product_id'])) {
+                            if ($product->taxRate) {
                                 $taxRate = $product->taxRate->rate;
-                            } elseif($product->tax_rate) {
+                            } elseif ($product->tax_rate) {
                                 $taxRate = $product->tax_rate;
-                            } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                                 $taxRate = $taxRate->rate;
                             } else {
                                 $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;

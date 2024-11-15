@@ -51,20 +51,20 @@ class OrderService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
-                if(isset($product['product_id']) && $product['quantity'] > 0) {
-                    if(! Product::find($product['product_id'])) {
+                if (isset($product['product_id']) && $product['quantity'] > 0) {
+                    if (! Product::find($product['product_id'])) {
                         $newProduct = $this->addProduct($product, $request);
                         $product['product_id'] = $newProduct->id;
                     }
                 }
 
                 if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
-                    if($productForTax = Product::find($product['product_id'])) {
-                        if($productForTax->taxRate) {
+                    if ($productForTax = Product::find($product['product_id'])) {
+                        if ($productForTax->taxRate) {
                             $taxRate = $productForTax->taxRate->rate;
-                        } elseif($productForTax->tax_rate) {
+                        } elseif ($productForTax->tax_rate) {
                             $taxRate = $productForTax->tax_rate;
-                        } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                        } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                             $taxRate = $taxRate->rate;
                         } else {
                             $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
@@ -137,18 +137,18 @@ class OrderService
                     if (! isset($product['product_id']) || $product['quantity'] == 0) {
                         $orderProduct->delete();
                     } else {
-                        if(! Product::find($product['product_id'])) {
+                        if (! Product::find($product['product_id'])) {
                             $newProduct = $this->addProduct($product, $request);
                             $product['product_id'] = $newProduct->id;
                         }
 
                         if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
-                            if($productForTax = Product::find($product['product_id'])) {
-                                if($productForTax->taxRate) {
+                            if ($productForTax = Product::find($product['product_id'])) {
+                                if ($productForTax->taxRate) {
                                     $taxRate = $productForTax->taxRate->rate;
-                                } elseif($productForTax->tax_rate) {
+                                } elseif ($productForTax->tax_rate) {
                                     $taxRate = $productForTax->tax_rate;
-                                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                                } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                                     $taxRate = $taxRate->rate;
                                 } else {
                                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
@@ -169,19 +169,19 @@ class OrderService
                             $orderProductIds[] = $orderProduct->id;
                         }
                     }
-                } elseif(isset($product['product_id']) && $product['quantity'] > 0) {
-                    if(! Product::find($product['product_id'])) {
+                } elseif (isset($product['product_id']) && $product['quantity'] > 0) {
+                    if (! Product::find($product['product_id'])) {
                         $newProduct = $this->addProduct($product, $request);
                         $product['product_id'] = $newProduct->id;
                     }
 
                     if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
-                        if($productForTax = Product::find($product['product_id'])) {
-                            if($productForTax->taxRate) {
+                        if ($productForTax = Product::find($product['product_id'])) {
+                            if ($productForTax->taxRate) {
                                 $taxRate = $productForTax->taxRate->rate;
-                            } elseif($productForTax->tax_rate) {
+                            } elseif ($productForTax->tax_rate) {
                                 $taxRate = $productForTax->tax_rate;
-                            } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                                 $taxRate = $taxRate->rate;
                             } else {
                                 $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;

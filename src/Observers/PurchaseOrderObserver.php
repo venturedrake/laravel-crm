@@ -32,7 +32,7 @@ class PurchaseOrderObserver
             $purchaseOrder->user_created_id = auth()->user()->id ?? null;
         }
 
-        if($lastPurchaseOrder = PurchaseOrder::withTrashed()->orderBy('number', 'DESC')->first()) {
+        if ($lastPurchaseOrder = PurchaseOrder::withTrashed()->orderBy('number', 'DESC')->first()) {
             $purchaseOrder->number = $lastPurchaseOrder->number + 1;
         } else {
             $purchaseOrder->number = 1000;

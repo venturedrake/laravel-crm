@@ -66,7 +66,7 @@ class LaravelCrmUpdate extends Command
     {
         $this->info('Updating Laravel CRM...');
 
-        if($this->settingService->get('db_update_0180')->value == 0) {
+        if ($this->settingService->get('db_update_0180')->value == 0) {
             $this->info('Updating Laravel CRM quote numbers...');
 
             foreach (Quote::whereNull('number')->get() as $quote) {
@@ -97,11 +97,11 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM orders numbers complete');
         }
 
-        if($this->settingService->get('db_update_0181')->value == 0) {
+        if ($this->settingService->get('db_update_0181')->value == 0) {
             $this->info('Updating Laravel CRM organisation linked to person...');
 
             foreach (Person::whereNotNull('organisation_id')->get() as $person) {
-                if($contact = $person->contacts()->create([
+                if ($contact = $person->contacts()->create([
                     'team_id' => $person->team_id,
                     'entityable_type' => $person->organisation->getMorphClass(),
                     'entityable_id' => $person->organisation->id,
@@ -116,13 +116,13 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM organisation linked to person complete.');
         }
 
-        if($this->settingService->get('db_update_0191')->value == 0) {
+        if ($this->settingService->get('db_update_0191')->value == 0) {
             $this->info('Updating Laravel CRM split orders, invoices & deliveries...');
 
-            foreach(Order::whereNotNull('quote_id')->get() as $order) {
-                if($order->quote) {
-                    foreach($order->quote->quoteProducts as $quoteProduct) {
-                        if($orderProduct = $order->orderProducts()
+            foreach (Order::whereNotNull('quote_id')->get() as $order) {
+                if ($order->quote) {
+                    foreach ($order->quote->quoteProducts as $quoteProduct) {
+                        if ($orderProduct = $order->orderProducts()
                             ->whereNull('quote_product_id')
                             ->where([
                                 'product_id' => $quoteProduct->product_id,
@@ -136,10 +136,10 @@ class LaravelCrmUpdate extends Command
                 }
             }
 
-            foreach(Invoice::whereNotNull('order_id')->get() as $invoice) {
-                if($invoice->order) {
-                    foreach($invoice->order->orderProducts as $orderProduct) {
-                        if($invoiceLine = $invoice->invoiceLines()
+            foreach (Invoice::whereNotNull('order_id')->get() as $invoice) {
+                if ($invoice->order) {
+                    foreach ($invoice->order->orderProducts as $orderProduct) {
+                        if ($invoiceLine = $invoice->invoiceLines()
                             ->whereNull('order_product_id')
                             ->where([
                                 'product_id' => $orderProduct->product_id,
@@ -157,13 +157,13 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM split orders, invoices & deliveries complete.');
         }
 
-        if($this->settingService->get('db_update_0193')->value == 0) {
+        if ($this->settingService->get('db_update_0193')->value == 0) {
             $this->info('Updating Laravel CRM split deliveries...');
 
-            foreach(Delivery::whereNotNull('order_id')->get() as $delivery) {
-                if($delivery->order) {
-                    foreach($delivery->order->orderProducts as $orderProduct) {
-                        if($deliveryProduct = $delivery->deliveryProducts()
+            foreach (Delivery::whereNotNull('order_id')->get() as $delivery) {
+                if ($delivery->order) {
+                    foreach ($delivery->order->orderProducts as $orderProduct) {
+                        if ($deliveryProduct = $delivery->deliveryProducts()
                             ->whereNull('quantity')
                             ->where([
                                 'order_product_id' => $orderProduct->id,
@@ -180,7 +180,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM split deliveries complete.');
         }
 
-        if($this->settingService->get('db_update_0194')->value == 0) {
+        if ($this->settingService->get('db_update_0194')->value == 0) {
             $this->info('Updating Laravel CRM delivery numbers...');
 
             foreach (Delivery::whereNull('number')->get() as $delivery) {
@@ -197,15 +197,15 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM delivery numbers complete');
         }
 
-        if($this->settingService->get('db_update_0199')->value == 0) {
+        if ($this->settingService->get('db_update_0199')->value == 0) {
             $this->info('Updating Laravel CRM tax amounts...');
 
             foreach (QuoteProduct::whereNull('tax_amount')->get() as $quoteProduct) {
                 $this->info('Updating Laravel CRM quote product tax #'.$quoteProduct->id);
 
-                if($quoteProduct->product && $quoteProduct->product->taxRate) {
+                if ($quoteProduct->product && $quoteProduct->product->taxRate) {
                     $taxRate = $quoteProduct->product->taxRate->rate;
-                } elseif($quoteProduct->product && $quoteProduct->product->tax_rate) {
+                } elseif ($quoteProduct->product && $quoteProduct->product->tax_rate) {
                     $taxRate = $quoteProduct->product->tax_rate;
                 } else {
                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
@@ -220,9 +220,9 @@ class LaravelCrmUpdate extends Command
             foreach (OrderProduct::whereNull('tax_amount')->get() as $orderProduct) {
                 $this->info('Updating Laravel CRM order product tax #'.$orderProduct->id);
 
-                if($orderProduct->product && $orderProduct->product->taxRate) {
+                if ($orderProduct->product && $orderProduct->product->taxRate) {
                     $taxRate = $orderProduct->product->taxRate->rate;
-                } elseif($orderProduct->product && $orderProduct->product->tax_rate) {
+                } elseif ($orderProduct->product && $orderProduct->product->tax_rate) {
                     $taxRate = $orderProduct->product->tax_rate;
                 } else {
                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
@@ -237,9 +237,9 @@ class LaravelCrmUpdate extends Command
             foreach (InvoiceLine::whereNull('tax_amount')->get() as $invoiceLine) {
                 $this->info('Updating Laravel CRM invoice line tax #'.$invoiceLine->id);
 
-                if($invoiceLine->product && $invoiceLine->product->taxRate) {
+                if ($invoiceLine->product && $invoiceLine->product->taxRate) {
                     $taxRate = $invoiceLine->product->taxRate->rate;
-                } elseif($invoiceLine->product && $invoiceLine->product->tax_rate) {
+                } elseif ($invoiceLine->product && $invoiceLine->product->tax_rate) {
                     $taxRate = $invoiceLine->product->tax_rate;
                 } else {
                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
@@ -255,7 +255,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM tax amounts complete');
         }
 
-        if($this->settingService->get('db_update_1200')->value == 0) {
+        if ($this->settingService->get('db_update_1200')->value == 0) {
             $this->info('Updating Laravel CRM pipeline tables');
 
             $this->callSilent('db:seed', [

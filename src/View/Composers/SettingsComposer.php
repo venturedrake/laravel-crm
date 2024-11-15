@@ -16,8 +16,8 @@ class SettingsComposer
             $view->with('timezone', Setting::where('name', 'timezone')->first()->value ?? 'UTC');
             $view->with('taxName', Setting::where('name', 'tax_name')->first()->value ?? 'Tax');
 
-            if($setting = Setting::where('name', 'dynamic_products')->first()) {
-                if($setting->value == 1) {
+            if ($setting = Setting::where('name', 'dynamic_products')->first()) {
+                if ($setting->value == 1) {
                     $view->with('dynamicProducts', 'true');
                 } else {
                     $view->with('dynamicProducts', 'false');

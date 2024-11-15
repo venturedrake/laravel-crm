@@ -94,19 +94,19 @@ class LiveLunches extends Component
     {
         $lunchIds = [];
 
-        foreach($this->model->lunches()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $lunch) {
+        foreach ($this->model->lunches()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $lunch) {
             $lunchIds[] = $lunch->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
-            foreach($this->model->contacts as $contact) {
+        if ($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
+            foreach ($this->model->contacts as $contact) {
                 foreach ($contact->entityable->lunches()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $lunch) {
                     $lunchIds[] = $lunch->id;
                 }
             }
         }
 
-        if(count($lunchIds) > 0) {
+        if (count($lunchIds) > 0) {
             $this->lunches = Lunch::whereIn('id', $lunchIds)->latest()->get();
         }
 

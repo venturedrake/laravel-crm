@@ -64,8 +64,8 @@ class CallReminderNotification extends Notification
         $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->call->finish_at)->format('M d, Y \\@ h:i A'). '<br />Location: '.$this->call->location));
         $mailMessage->line(new HtmlString($this->call->description));
 
-        if($this->call->callable) {
-            switch(class_basename($this->call->callable->getMorphClass())) {
+        if ($this->call->callable) {
+            switch (class_basename($this->call->callable->getMorphClass())) {
                 case "Lead":
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->call->callable->id.'">'.$this->call->callable->title.'</a></small>'));
                     break;

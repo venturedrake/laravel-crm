@@ -32,7 +32,7 @@ class QuoteObserver
             $quote->user_created_id = auth()->user()->id ?? null;
         }
 
-        if($lastQuote = Quote::withTrashed()->orderBy('number', 'DESC')->first()) {
+        if ($lastQuote = Quote::withTrashed()->orderBy('number', 'DESC')->first()) {
             $quote->number = $lastQuote->number + 1;
         } else {
             $quote->number = 1000;

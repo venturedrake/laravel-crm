@@ -94,19 +94,19 @@ class LiveMeetings extends Component
     {
         $meetingIds = [];
 
-        foreach($this->model->meetings()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $meeting) {
+        foreach ($this->model->meetings()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $meeting) {
             $meetingIds[] = $meeting->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
-            foreach($this->model->contacts as $contact) {
+        if ($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
+            foreach ($this->model->contacts as $contact) {
                 foreach ($contact->entityable->meetings()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $meeting) {
                     $meetingIds[] = $meeting->id;
                 }
             }
         }
 
-        if(count($meetingIds) > 0) {
+        if (count($meetingIds) > 0) {
             $this->meetings = Meeting::whereIn('id', $meetingIds)->latest()->get();
         }
 

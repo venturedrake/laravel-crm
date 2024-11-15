@@ -168,13 +168,13 @@ class Settings
                 'value' => '0',
             ]);
 
-            if(Str::startsWith(config('laravel-crm.version'), '0.')) {
+            if (Str::startsWith(config('laravel-crm.version'), '0.')) {
                 $currentVersion = (int) Str::replace('.', '', config('laravel-crm.version'));
             } else {
                 $currentVersion = (int) Str::replace('.', '', config('laravel-crm.version')) * 10;
             }
 
-            if($currentVersion >= 180) {
+            if ($currentVersion >= 180) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0180',
@@ -183,7 +183,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 181) {
+            if ($currentVersion >= 181) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0181',
@@ -192,7 +192,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 191) {
+            if ($currentVersion >= 191) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0191',
@@ -201,7 +201,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 193) {
+            if ($currentVersion >= 193) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0193',
@@ -210,7 +210,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 194) {
+            if ($currentVersion >= 194) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0194',
@@ -219,7 +219,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 199) {
+            if ($currentVersion >= 199) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0199',
@@ -228,7 +228,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 1200) {
+            if ($currentVersion >= 1200) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_1200',

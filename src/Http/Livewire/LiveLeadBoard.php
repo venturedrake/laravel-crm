@@ -15,7 +15,7 @@ class LiveLeadBoard extends KanbanBoard
 
     public function stages(): Collection
     {
-        if($pipeline = Pipeline::where('model', get_class(new Lead()))->first()) {
+        if ($pipeline = Pipeline::where('model', get_class(new Lead()))->first()) {
             return $pipeline->pipelineStages()
                 ->orderBy('order')
                 ->orderBy('id')

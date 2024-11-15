@@ -52,7 +52,7 @@ class TaxRateController extends Controller
             'tax_type' => $request->tax_type
         ]);
 
-        if($request->default == 'on') {
+        if ($request->default == 'on') {
             TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
         }
 
@@ -104,7 +104,7 @@ class TaxRateController extends Controller
             'tax_type' => $request->tax_type
         ]);
 
-        if($request->default == 'on') {
+        if ($request->default == 'on') {
             TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
         }
 

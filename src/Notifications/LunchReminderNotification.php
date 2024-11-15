@@ -64,8 +64,8 @@ class LunchReminderNotification extends Notification
         $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->lunch->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->lunch->finish_at)->format('M d, Y \\@ h:i A'). '<br />Location: '.$this->lunch->location));
         $mailMessage->line(new HtmlString($this->lunch->description));
 
-        if($this->lunch->lunchable) {
-            switch(class_basename($this->lunch->lunchable->getMorphClass())) {
+        if ($this->lunch->lunchable) {
+            switch (class_basename($this->lunch->lunchable->getMorphClass())) {
                 case "Lead":
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->title.'</a></small>'));
                     break;

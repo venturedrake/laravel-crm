@@ -97,7 +97,7 @@ class DeliveryController extends Controller
 
                 if ($address = $order->getShippingAddress()) {
                     $addressIds[] = $address->id;
-                } elseif($address = $order->organisation->getShippingAddress()) {
+                } elseif ($address = $order->organisation->getShippingAddress()) {
                     $addressIds[] = $address->id;
                 }
 
@@ -242,7 +242,7 @@ class DeliveryController extends Controller
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
 
-                        if(config('laravel-crm.encrypt_db_fields')) {
+                        if (config('laravel-crm.encrypt_db_fields')) {
                             try {
                                 $relatedField = decrypt($record->{$field[1]});
                             } catch (DecryptException $e) {

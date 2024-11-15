@@ -38,7 +38,7 @@ class LiveNote extends Component
         $this->content = $note->content;
         $this->noted_at = ($note->noted_at) ? $note->noted_at->format($this->dateFormat().' H:i') : null;
 
-        if($this->settingService->get('show_related_activity')->value == 1) {
+        if ($this->settingService->get('show_related_activity')->value == 1) {
             $this->showRelated = true;
         }
 

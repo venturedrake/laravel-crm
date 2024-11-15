@@ -58,12 +58,12 @@ class LeadController extends Controller
     {
         $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
 
-        if(! $viewSetting) {
+        if (! $viewSetting) {
             auth()->user()->crmSettings()->create([
                 'name' => 'view_leads',
                 'value' => 'list',
             ]);
-        } elseif($viewSetting->value == 'board') {
+        } elseif ($viewSetting->value == 'board') {
             return redirect(route('laravel-crm.leads.board'));
         }
 
@@ -307,7 +307,7 @@ class LeadController extends Controller
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
 
-                        if(config('laravel-crm.encrypt_db_fields')) {
+                        if (config('laravel-crm.encrypt_db_fields')) {
                             try {
                                 $relatedField = decrypt($record->{$field[1]});
                             } catch (DecryptException $e) {
@@ -331,7 +331,7 @@ class LeadController extends Controller
                 }
             });
 
-        if($viewSetting->value === 'board') {
+        if ($viewSetting->value === 'board') {
             return view('laravel-crm::leads.board', [
                 'leads' => $leads,
                 'searchValue' => $searchValue ?? null,

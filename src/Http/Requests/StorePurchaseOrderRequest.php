@@ -37,7 +37,7 @@ class StorePurchaseOrderRequest extends FormRequest
         $rules['organisation_name'] = 'required_without:person_name|max:255';
         //}
 
-        if(request('delivery_type') == 'deliver') {
+        if (request('delivery_type') == 'deliver') {
             $rules['delivery_address'] = 'required';
         }
 

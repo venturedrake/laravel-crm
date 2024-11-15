@@ -95,7 +95,7 @@ class PurchaseOrderController extends Controller
         $related = $this->settingService->get('team');
 
         $addresses = [];
-        foreach($related->addresses()->get() as $address) {
+        foreach ($related->addresses()->get() as $address) {
             $addresses[$address->id] = $address->address;
         }
 
@@ -138,7 +138,7 @@ class PurchaseOrderController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.purchase_order_created')))->success()->important();
 
-        if($request->action == 'create_and_add_another') {
+        if ($request->action == 'create_and_add_another') {
             return redirect(route('laravel-crm.purchase-orders.create', ['model' => 'order', 'id' => $request->order]));
         }
 
@@ -155,8 +155,8 @@ class PurchaseOrderController extends Controller
     {
         $purchaseOrders = [];
 
-        foreach($request->purchaseOrderLines as $purchaseOrderLine) {
-            if($purchaseOrderLine['organisation_id']) {
+        foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
+            if ($purchaseOrderLine['organisation_id']) {
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['order_id'] = $request->order_id;
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['organisation_id'] = $purchaseOrderLine['organisation_id'];
                 $purchaseOrders[$purchaseOrderLine['organisation_id']]['reference'] = $request->reference;
@@ -169,10 +169,10 @@ class PurchaseOrderController extends Controller
             }
         }
 
-        foreach($purchaseOrders as $organisationId => $purchaseOrder) {
+        foreach ($purchaseOrders as $organisationId => $purchaseOrder) {
             $purchaseOrderRequest = Request::create(url(route('laravel-crm.purchase-orders.create')), 'POST', $purchaseOrder);
 
-            if($organisation = Organisation::find($purchaseOrderRequest->organisation_id)) {
+            if ($organisation = Organisation::find($purchaseOrderRequest->organisation_id)) {
                 $this->purchaseOrderService->create($purchaseOrderRequest, $person ?? null, $organisation ?? null);
             }
 
@@ -204,7 +204,7 @@ class PurchaseOrderController extends Controller
 
         $related = $this->settingService->get('team');
 
-        if($purchaseOrder->address) {
+        if ($purchaseOrder->address) {
             $deliveryAddress = $purchaseOrder->address;
         }
 
@@ -238,7 +238,7 @@ class PurchaseOrderController extends Controller
         $related = $this->settingService->get('team');
 
         $addresses = [];
-        foreach($related->addresses()->get() as $address) {
+        foreach ($related->addresses()->get() as $address) {
             $addresses[$address->id] = $address->address;
         }
 
@@ -322,7 +322,7 @@ class PurchaseOrderController extends Controller
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
 
-                        if(config('laravel-crm.encrypt_db_fields')) {
+                        if (config('laravel-crm.encrypt_db_fields')) {
                             try {
                                 $relatedField = decrypt($record->{$field[1]});
                             } catch (DecryptException $e) {

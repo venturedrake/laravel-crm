@@ -31,19 +31,19 @@ class LiveActivities extends Component
     {
         $activityIds = [];
 
-        foreach($this->model->activities()->latest()->get() as $activity) {
+        foreach ($this->model->activities()->latest()->get() as $activity) {
             $activityIds[] = $activity->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
-            foreach($this->model->contacts as $contact) {
+        if ($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
+            foreach ($this->model->contacts as $contact) {
                 foreach ($contact->entityable->activities()->latest()->get() as $activity) {
                     $activityIds[] = $activity->id;
                 }
             }
         }
 
-        if(count($activityIds) > 0) {
+        if (count($activityIds) > 0) {
             $this->activities = Activity::whereIn('id', $activityIds)->latest()->get();
         }
     }

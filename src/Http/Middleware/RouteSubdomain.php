@@ -17,9 +17,9 @@ class RouteSubdomain
     {
         $host = explode(".", request()->getHost());
 
-        if(count($host) == 2) {
+        if (count($host) == 2) {
             abort(404);
-        } elseif($host[0] != config('laravel-crm.route_subdomain')) {
+        } elseif ($host[0] != config('laravel-crm.route_subdomain')) {
             abort(404);
         }
 
