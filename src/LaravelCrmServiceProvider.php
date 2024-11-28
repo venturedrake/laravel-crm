@@ -356,7 +356,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
             // Publishing assets.
             $this->publishes([
-                __DIR__.'/../resources/assets' => public_path('vendor/laravel-crm'),
+                __DIR__ . '/../resources/assets' => public_path('vendor/laravel-crm'),
             ], 'assets');
 
             // Publishing the translation files.
