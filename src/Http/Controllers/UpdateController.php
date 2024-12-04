@@ -17,10 +17,10 @@ class UpdateController extends Controller
      */
     public function index()
     {
-        if ($installIdSetting = Setting::where(['name' => 'install_id',])->first()) {
+        if ($installIdSetting = Setting::where(['name' => 'install_id'])->first()) {
             try {
-                $client = new Client();
-                $url = "https://beta.laravelcrm.com/api/public/version";
+                $client = new Client;
+                $url = 'https://beta.laravelcrm.com/api/public/version';
 
                 if (Schema::hasColumn('users', 'crm_access')) {
                     $userCount = User::where('crm_access', 1)->count();
@@ -61,7 +61,6 @@ class UpdateController extends Controller
     /**
      * Update
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)

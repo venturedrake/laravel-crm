@@ -8,13 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StorePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePurchaseOrderRequest;
-use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Services\PurchaseOrderService;
+use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Services\PurchaseOrderService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class PurchaseOrderController extends Controller
@@ -76,17 +76,17 @@ class PurchaseOrderController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case "person":
+            case 'person':
                 $person = Person::find($request->id);
 
                 break;
 
-            case "organisation":
+            case 'organisation':
                 $organisation = Organisation::find($request->id);
 
                 break;
 
-            case "order":
+            case 'order':
                 $order = Order::find($request->id);
 
                 break;

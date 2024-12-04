@@ -9,7 +9,9 @@ use VentureDrake\LaravelCrm\Services\SettingService;
 class LiveActivities extends Component
 {
     private $settingService;
+
     public $model;
+
     public $activities = [];
 
     protected $listeners = [

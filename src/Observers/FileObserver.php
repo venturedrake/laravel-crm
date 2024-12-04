@@ -10,7 +10,6 @@ class FileObserver
     /**
      * Handle the file "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\File  $file
      * @return void
      */
     public function creating(File $file)
@@ -25,7 +24,6 @@ class FileObserver
     /**
      * Handle the file "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\File  $file
      * @return void
      */
     public function created(File $file)
@@ -36,7 +34,6 @@ class FileObserver
     /**
      * Handle the file "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\File  $file
      * @return void
      */
     public function updating(File $file)
@@ -49,7 +46,6 @@ class FileObserver
     /**
      * Handle the file "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\File  $file
      * @return void
      */
     public function updated(File $file)
@@ -78,7 +74,6 @@ class FileObserver
     /**
      * Handle the file "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\File  $file
      * @return void
      */
     public function deleted(File $file)
@@ -89,7 +84,6 @@ class FileObserver
     /**
      * Handle the file "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\File  $file
      * @return void
      */
     public function restored(File $file)
@@ -103,7 +97,6 @@ class FileObserver
     /**
      * Handle the file "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\File  $file
      * @return void
      */
     public function forceDeleted(File $file)

@@ -20,7 +20,6 @@ class OrderService
 
     /**
      * LeadService constructor.
-     * @param OrderRepository $orderRepository
      */
     public function __construct(OrderRepository $orderRepository)
     {

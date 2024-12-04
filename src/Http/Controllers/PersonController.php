@@ -77,7 +77,7 @@ class PersonController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case "organisation":
+            case 'organisation':
                 $organisation = Organisation::find($request->id);
 
                 break;
@@ -203,7 +203,7 @@ class PersonController extends Controller
     {
         foreach (Contact::where([
             'entityable_type' => $person->getMorphClass(),
-            'entityable_id' => $person->id
+            'entityable_id' => $person->id,
         ])->get() as $contact) {
             $contact->delete();
         }

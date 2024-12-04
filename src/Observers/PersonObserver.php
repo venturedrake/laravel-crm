@@ -88,9 +88,7 @@ class PersonObserver
      * @param  \VentureDrake\LaravelCrm\Person  $person
      * @return void
      */
-    public function restoring(Person $person)
-    {
-    }
+    public function restoring(Person $person) {}
 
     /**
      * Handle the person "restored" event.

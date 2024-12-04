@@ -13,7 +13,6 @@ class QuotePolicy
     /**
      * Determine whether the user can view any quotes.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class QuotePolicy
     /**
      * Determine whether the user can view the quote.
      *
-     * @param  \App\User  $user
      * @param  \App\Quote  $quote
      * @return mixed
      */
@@ -40,7 +38,6 @@ class QuotePolicy
     /**
      * Determine whether the user can create quotes.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class QuotePolicy
     /**
      * Determine whether the user can update the quote.
      *
-     * @param  \App\User  $user
      * @param  \App\Quote  $quote
      * @return mixed
      */
@@ -67,7 +63,6 @@ class QuotePolicy
     /**
      * Determine whether the user can delete the quote.
      *
-     * @param  \App\User  $user
      * @param  \App\Quote  $quote
      * @return mixed
      */
@@ -81,7 +76,6 @@ class QuotePolicy
     /**
      * Determine whether the user can restore the quote.
      *
-     * @param  \App\User  $user
      * @param  \App\Quote  $quote
      * @return mixed
      */
@@ -95,7 +89,6 @@ class QuotePolicy
     /**
      * Determine whether the user can permanently delete the quote.
      *
-     * @param  \App\User  $user
      * @param  \App\Quote  $quote
      * @return mixed
      */

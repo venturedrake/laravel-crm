@@ -34,7 +34,7 @@ class QuoteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Quote $quote)
@@ -67,7 +67,7 @@ class QuoteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function process(Quote $quote, Request $request)
@@ -77,7 +77,7 @@ class QuoteController extends Controller
         }
 
         switch ($request->action) {
-            case "accept":
+            case 'accept':
                 $quote->update([
                     'accepted_at' => Carbon::now(),
                 ]);
@@ -86,7 +86,7 @@ class QuoteController extends Controller
 
                 break;
 
-            case "reject":
+            case 'reject':
                 $quote->update([
                     'rejected_at' => Carbon::now(),
                 ]);
@@ -95,7 +95,7 @@ class QuoteController extends Controller
 
                 break;
 
-            case "download":
+            case 'download':
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
                 ])
@@ -111,7 +111,6 @@ class QuoteController extends Controller
 
                 break;
         }
-
 
         return back();
     }

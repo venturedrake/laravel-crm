@@ -10,7 +10,6 @@ class XeroContactObserver
     /**
      * Handle the xeroContact "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroContact  $xeroContact
      * @return void
      */
     public function creating(XeroContact $xeroContact)
@@ -21,7 +20,6 @@ class XeroContactObserver
     /**
      * Handle the xeroContact "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroContact  $xeroContact
      * @return void
      */
     public function created(XeroContact $xeroContact)
@@ -32,7 +30,6 @@ class XeroContactObserver
     /**
      * Handle the xeroContact "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroContact  $xeroContact
      * @return void
      */
     public function updating(XeroContact $xeroContact)
@@ -43,7 +40,6 @@ class XeroContactObserver
     /**
      * Handle the xeroContact "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroContact  $xeroContact
      * @return void
      */
     public function updated(XeroContact $xeroContact)
@@ -65,7 +61,6 @@ class XeroContactObserver
     /**
      * Handle the xeroContact "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroContact  $xeroContact
      * @return void
      */
     public function deleted(XeroContact $xeroContact)
@@ -76,7 +71,6 @@ class XeroContactObserver
     /**
      * Handle the xeroContact "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroContact  $xeroContact
      * @return void
      */
     public function restored(XeroContact $xeroContact)
@@ -87,7 +81,6 @@ class XeroContactObserver
     /**
      * Handle the xeroContact "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroContact  $xeroContact
      * @return void
      */
     public function forceDeleted(XeroContact $xeroContact)

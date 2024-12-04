@@ -17,5 +17,5 @@ return [
     'link_organization' => 'link organisation',
     'postcode' => 'postcode',
     'back_to_organisations' => 'back to organisations',
-    'vat_number' => 'ABN Number'
+    'vat_number' => 'ABN Number',
 ];

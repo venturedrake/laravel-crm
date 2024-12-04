@@ -4,11 +4,11 @@ namespace VentureDrake\LaravelCrm\Notifications;
 
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Support\HtmlString;
-use VentureDrake\LaravelCrm\Models\Meeting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
+use VentureDrake\LaravelCrm\Models\Meeting;
 
 class MeetingReminderNotification extends Notification
 {
@@ -51,7 +51,7 @@ class MeetingReminderNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $mailMessage = new MailMessage();
+        $mailMessage = new MailMessage;
         $subject = 'MEETING REMINDER: '.$this->meeting->name.' ('.Carbon::parse($this->meeting->start_at)->format('M d, Y \\@ h:i A').')';
         $greeting = 'Hi '.$this->user->name.',';
 
@@ -61,44 +61,44 @@ class MeetingReminderNotification extends Notification
 
         $mailMessage->line(new HtmlString('<strong>THIS MEETING IS COMING UP:</strong>'));
         $mailMessage->line(new HtmlString('<strong>'.$this->meeting->name.'</strong>'));
-        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->meeting->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->meeting->finish_at)->format('M d, Y \\@ h:i A'). '<br />Location: '.$this->meeting->location));
+        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->meeting->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->meeting->finish_at)->format('M d, Y \\@ h:i A').'<br />Location: '.$this->meeting->location));
         $mailMessage->line(new HtmlString($this->meeting->description));
 
         if ($this->meeting->meetingable) {
             switch (class_basename($this->meeting->meetingable->getMorphClass())) {
-                case "Lead":
+                case 'Lead':
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->title.'</a></small>'));
                     break;
 
-                case "Deal":
+                case 'Deal':
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/deals/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->title.'</a></small>'));
                     break;
 
-                case "Quote":
+                case 'Quote':
                     $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/quotes/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->title.'</a></small>'));
                     break;
 
-                case "Order":
+                case 'Order':
                     $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/orders/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->order_id.'</a></small>'));
                     break;
 
-                case "Invoice":
+                case 'Invoice':
                     $mailMessage->line(new HtmlString('Invoice: <a href="'.config('app.url').'/invoices/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->invoice_id.'</a></small>'));
                     break;
 
-                case "Delivery":
+                case 'Delivery':
                     $mailMessage->line(new HtmlString('Delivery: <a href="'.config('app.url').'/deliveries/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->delivery_id.'</a></small>'));
                     break;
 
-                case "Client":
+                case 'Client':
                     $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->name.'</a></small>'));
                     break;
 
-                case "Organisation":
+                case 'Organisation':
                     $mailMessage->line(new HtmlString('Organisation: <a href="'.config('app.url').'/organisation/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->name.'</a></small>'));
                     break;
 
-                case "Person":
+                case 'Person':
                     $mailMessage->line(new HtmlString('Person: <a href="'.config('app.url').'/people/'.$this->meeting->meetingable->id.'">'.$this->meeting->meetingable->name.'</a></small>'));
                     break;
             }

@@ -168,7 +168,7 @@ class LaravelCrmInstall extends Command
 
             exec("{$exec} https://github.com/venturedrake/laravel-crm");
 
-            $this->line("Thanks for the love.");
+            $this->line('Thanks for the love.');
         }
     }
 
@@ -176,7 +176,6 @@ class LaravelCrmInstall extends Command
      * Checks if config exists given a filename.
      *
      * @param  string  $fileName
-     * @return bool
      */
     private function configExists($fileName): bool
     {
@@ -189,8 +188,6 @@ class LaravelCrmInstall extends Command
 
     /**
      * Returns a prompt if config exists and ask to override it.
-     *
-     * @return bool
      */
     private function shouldOverwriteConfig(): bool
     {
@@ -204,7 +201,6 @@ class LaravelCrmInstall extends Command
      * Publishes configuration for the Service Provider.
      *
      * @param  bool  $forcePublish
-     * @return void
      */
     private function publishConfiguration($forcePublish = false): void
     {

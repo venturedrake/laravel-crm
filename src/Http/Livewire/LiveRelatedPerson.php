@@ -9,9 +9,13 @@ use VentureDrake\LaravelCrm\Models\Person;
 class LiveRelatedPerson extends Component
 {
     public $model;
+
     public $people;
+
     public $person_id;
+
     public $person_name;
+
     public $actions;
 
     public function mount($model, $actions = true)

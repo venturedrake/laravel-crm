@@ -79,7 +79,7 @@ class LeadController extends Controller
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
             'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
+            'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
         ]);
     }
 
@@ -111,8 +111,8 @@ class LeadController extends Controller
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
-            'stage' => $request->stage ?? null
+            'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
+            'stage' => $request->stage ?? null,
         ]);
     }
 
@@ -205,7 +205,7 @@ class LeadController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first()
+            'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
         ]);
     }
 
@@ -335,14 +335,14 @@ class LeadController extends Controller
             return view('laravel-crm::leads.board', [
                 'leads' => $leads,
                 'searchValue' => $searchValue ?? null,
-                'viewSetting' => $viewSetting->value ?? null
+                'viewSetting' => $viewSetting->value ?? null,
             ]);
         } else {
             return view('laravel-crm::leads.index', [
                 'leads' => $leads,
                 'searchValue' => $searchValue ?? null,
                 'viewSetting' => $viewSetting->value ?? null,
-                'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
+                'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
             ]);
         }
     }
@@ -364,7 +364,7 @@ class LeadController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first()
+            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
         ]);
     }
 
@@ -432,7 +432,7 @@ class LeadController extends Controller
 
         return view('laravel-crm::leads.board', [
             'leads' => $leads,
-            'viewSetting' => $viewSetting->value ?? null
+            'viewSetting' => $viewSetting->value ?? null,
         ]);
     }
 }

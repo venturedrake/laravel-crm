@@ -26,7 +26,7 @@ class XeroConnect extends Component
     public $setting_invoices;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return void
      */
@@ -69,7 +69,6 @@ class XeroConnect extends Component
         ], [
             'value' => $this->setting_invoices,
         ]);
-
 
         $this->notify(
             'Updated settings',

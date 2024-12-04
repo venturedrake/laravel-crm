@@ -26,7 +26,7 @@ class UpdatePersonRequest extends FormRequest
         return [
             'first_name' => 'required|max:255',
             'phones.*.type' => 'required_with:phones.*.number',
-            'emails.*.type' => 'required_with:emails.*.address'
+            'emails.*.type' => 'required_with:emails.*.address',
         ];
     }
 
@@ -34,7 +34,7 @@ class UpdatePersonRequest extends FormRequest
     {
         return [
             'phones.*.type.required_with' => 'The type field is required',
-            'emails.*.type.required_with' => 'The type field is required'
+            'emails.*.type.required_with' => 'The type field is required',
         ];
     }
 }

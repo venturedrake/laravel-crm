@@ -7,13 +7,21 @@ use Livewire\Component;
 class LiveEmailEdit extends Component
 {
     public $emails;
+
     public $address;
+
     public $type;
+
     public $primary;
+
     public $emailId;
+
     public $old;
+
     public $updateMode = false;
+
     public $inputs = [];
+
     public $i = 0;
 
     public function mount($emails, $old)

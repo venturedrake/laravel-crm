@@ -12,12 +12,12 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class PurchaseOrder extends Model
 {
-    use SoftDeletes;
-    use HasCrmFields;
     use BelongsToTeams;
-    use SearchFilters;
     use HasCrmActivities;
+    use HasCrmFields;
     use HasGlobalSettings;
+    use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -56,7 +56,7 @@ class PurchaseOrder extends Model
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'purchase_order_prefix')->first()->value ?? null) . $this->number;
+            return (Setting::where('name', 'purchase_order_prefix')->first()->value ?? null).$this->number;
         }
     }
 

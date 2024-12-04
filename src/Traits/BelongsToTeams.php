@@ -17,7 +17,7 @@ trait BelongsToTeams
      */
     public static function bootBelongsToTeams()
     {
-        static::addGlobalScope(new BelongsToTeamsScope());
+        static::addGlobalScope(new BelongsToTeamsScope);
 
         static::creating(function (Model $model) {
             if (config('laravel-crm.teams') && auth()->hasUser() && auth()->user()->currentTeam && ! $model->team_id) {

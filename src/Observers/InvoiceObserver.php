@@ -21,7 +21,6 @@ class InvoiceObserver
     /**
      * Handle the invoice "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Invoice  $invoice
      * @return void
      */
     public function creating(Invoice $invoice)
@@ -45,7 +44,6 @@ class InvoiceObserver
     /**
      * Handle the invoice "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Invoice  $invoice
      * @return void
      */
     public function created(Invoice $invoice)
@@ -56,7 +54,6 @@ class InvoiceObserver
     /**
      * Handle the invoice "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Invoice  $invoice
      * @return void
      */
     public function updating(Invoice $invoice)
@@ -69,7 +66,6 @@ class InvoiceObserver
     /**
      * Handle the invoice "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Invoice  $invoice
      * @return void
      */
     public function updated(Invoice $invoice)
@@ -94,7 +90,6 @@ class InvoiceObserver
     /**
      * Handle the invoice "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Invoice  $invoice
      * @return void
      */
     public function deleted(Invoice $invoice)
@@ -105,7 +100,6 @@ class InvoiceObserver
     /**
      * Handle the invoice "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Invoice  $invoice
      * @return void
      */
     public function restored(Invoice $invoice)
@@ -119,7 +113,6 @@ class InvoiceObserver
     /**
      * Handle the invoice "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Invoice  $invoice
      * @return void
      */
     public function forceDeleted(Invoice $invoice)

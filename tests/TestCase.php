@@ -25,9 +25,9 @@ class TestCase extends OrchestraTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        include_once(__DIR__ . '/../database/migrations/create_laravel_crm_tables.php.stub');
+        include_once __DIR__.'/../database/migrations/create_laravel_crm_tables.php.stub';
 
-        (new \CreateLaravelCrmTables())->up();
+        (new \CreateLaravelCrmTables)->up();
     }
 
     /** @test */

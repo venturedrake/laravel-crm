@@ -7,8 +7,8 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class LeadSource extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

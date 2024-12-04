@@ -59,7 +59,6 @@ class DealController extends Controller
             return redirect(route('laravel-crm.deals.board'));
         }
 
-
         Deal::resetSearchValue($request);
         $params = Deal::filters($request);
 
@@ -72,7 +71,7 @@ class DealController extends Controller
         return view('laravel-crm::deals.index', [
             'deals' => $deals,
             'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
+            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
         ]);
     }
 
@@ -104,8 +103,8 @@ class DealController extends Controller
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
-            'stage' => $request->stage ?? null
+            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
+            'stage' => $request->stage ?? null,
         ]);
     }
 
@@ -210,7 +209,7 @@ class DealController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first()
+            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
         ]);
     }
 
@@ -338,14 +337,14 @@ class DealController extends Controller
             return view('laravel-crm::deals.board', [
                 'deals' => $deals,
                 'searchValue' => $searchValue ?? null,
-                'viewSetting' => $viewSetting->value ?? null
+                'viewSetting' => $viewSetting->value ?? null,
             ]);
         } else {
             return view('laravel-crm::deals.index', [
                 'deals' => $deals,
                 'searchValue' => $searchValue ?? null,
                 'viewSetting' => $viewSetting->value ?? null,
-                'pipeline' => Pipeline::where('model', get_class(new Deal()))->first(),
+                'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
             ]);
         }
     }
@@ -437,7 +436,7 @@ class DealController extends Controller
 
         return view('laravel-crm::deals.board', [
             'deals' => $deals,
-            'viewSetting' => $viewSetting->value ?? null
+            'viewSetting' => $viewSetting->value ?? null,
         ]);
     }
 }

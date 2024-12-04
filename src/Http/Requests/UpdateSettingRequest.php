@@ -30,7 +30,7 @@ class UpdateSettingRequest extends FormRequest
             'currency' => 'required',
             'timezone' => 'required',
             'date_format' => 'required',
-            'time_format' => 'required'
+            'time_format' => 'required',
         ];
     }
 }

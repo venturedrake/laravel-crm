@@ -112,7 +112,7 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        if (! in_array($role->name, ['Owner','Admin']) && $role->users->count() < 1) {
+        if (! in_array($role->name, ['Owner', 'Admin']) && $role->users->count() < 1) {
             $permissionsArray = [];
             foreach ($request->permission as $permissionKey => $permissionValue) {
                 $permissionsArray[] = Permission::where('id', $permissionKey)->first()->name;
@@ -140,7 +140,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        if (! in_array($role->name, ['Owner','Admin']) && $role->users->count() < 1) {
+        if (! in_array($role->name, ['Owner', 'Admin']) && $role->users->count() < 1) {
             foreach (Permission::all() as $permission) {
                 $permission->removeRole($role);
             }

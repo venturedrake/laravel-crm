@@ -11,19 +11,29 @@ use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveCall extends Component
 {
-    use NotifyToast;
     use HasGlobalSettings;
+    use NotifyToast;
 
     private $settingService;
+
     public $call;
+
     public $editMode = false;
+
     public $name;
+
     public $description;
+
     public $start_at;
+
     public $finish_at;
+
     public $guests = [];
+
     public $location;
+
     public $showRelated = false;
+
     public $view;
 
     protected $listeners = [
@@ -60,12 +70,12 @@ class LiveCall extends Component
     protected function rules()
     {
         return [
-            'name' => "required",
-            'description' => "nullable",
+            'name' => 'required',
+            'description' => 'nullable',
             'start_at' => 'required',
             'finish_at' => 'required',
             'guests' => 'nullable',
-            'location' => "nullable",
+            'location' => 'nullable',
         ];
     }
 

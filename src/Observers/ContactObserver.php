@@ -25,7 +25,6 @@ class ContactObserver
     /**
      * Handle the contact "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Contact  $contact
      * @return void
      */
     public function created(Contact $contact)
@@ -49,7 +48,6 @@ class ContactObserver
     /**
      * Handle the contact "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Contact  $contact
      * @return void
      */
     public function updated(Contact $contact)
@@ -74,7 +72,6 @@ class ContactObserver
     /**
      * Handle the contact "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Contact  $contact
      * @return void
      */
     public function deleted(Contact $contact)
@@ -85,7 +82,6 @@ class ContactObserver
     /**
      * Handle the contact "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Contact  $contact
      * @return void
      */
     public function restored(Contact $contact)
@@ -99,7 +95,6 @@ class ContactObserver
     /**
      * Handle the contact "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Contact  $contact
      * @return void
      */
     public function forceDeleted(Contact $contact)

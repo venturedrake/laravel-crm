@@ -86,7 +86,6 @@ class SendInvoice extends Component
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->save(storage_path($this->pdf));
-        ;
 
         Mail::send(new \VentureDrake\LaravelCrm\Mail\SendInvoice([
             'to' => $this->to,
@@ -102,7 +101,7 @@ class SendInvoice extends Component
         );
 
         $this->invoice->update([
-            'sent' => 1
+            'sent' => 1,
         ]);
 
         $this->resetFields();

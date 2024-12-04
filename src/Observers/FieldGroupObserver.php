@@ -10,7 +10,6 @@ class FieldGroupObserver
     /**
      * Handle the fieldGroup "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldGroup  $fieldGroup
      * @return void
      */
     public function creating(FieldGroup $fieldGroup)
@@ -21,7 +20,6 @@ class FieldGroupObserver
     /**
      * Handle the fieldGroup "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldGroup  $fieldGroup
      * @return void
      */
     public function created(FieldGroup $fieldGroup)
@@ -32,7 +30,6 @@ class FieldGroupObserver
     /**
      * Handle the fieldGroup "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldGroup  $fieldGroup
      * @return void
      */
     public function updating(FieldGroup $fieldGroup)
@@ -43,7 +40,6 @@ class FieldGroupObserver
     /**
      * Handle the fieldGroup "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldGroup  $fieldGroup
      * @return void
      */
     public function updated(FieldGroup $fieldGroup)
@@ -65,7 +61,6 @@ class FieldGroupObserver
     /**
      * Handle the fieldGroup "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldGroup  $fieldGroup
      * @return void
      */
     public function deleted(FieldGroup $fieldGroup)
@@ -76,7 +71,6 @@ class FieldGroupObserver
     /**
      * Handle the fieldGroup "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldGroup  $fieldGroup
      * @return void
      */
     public function restored(FieldGroup $fieldGroup)
@@ -87,7 +81,6 @@ class FieldGroupObserver
     /**
      * Handle the fieldGroup "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldGroup  $fieldGroup
      * @return void
      */
     public function forceDeleted(FieldGroup $fieldGroup)

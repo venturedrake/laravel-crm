@@ -9,7 +9,6 @@ class XeroTokenObserver
     /**
      * Handle the xeroToken "creating" event.
      *
-     * @param  \Dcblogdev\Xero\Models\XeroToken  $xeroToken
      * @return void
      */
     public function creating(XeroToken $xeroToken)
@@ -22,7 +21,6 @@ class XeroTokenObserver
     /**
      * Handle the xeroToken "created" event.
      *
-     * @param  \Dcblogdev\Xero\Models\XeroToken  $xeroToken
      * @return void
      */
     public function created(XeroToken $xeroToken)
@@ -33,7 +31,6 @@ class XeroTokenObserver
     /**
      * Handle the xeroToken "updating" event.
      *
-     * @param  \Dcblogdev\Xero\Models\XeroToken  $xeroToken
      * @return void
      */
     public function updating(XeroToken $xeroToken)
@@ -44,7 +41,6 @@ class XeroTokenObserver
     /**
      * Handle the xeroToken "updated" event.
      *
-     * @param  \Dcblogdev\Xero\Models\XeroToken  $xeroToken
      * @return void
      */
     public function updated(XeroToken $xeroToken)
@@ -66,7 +62,6 @@ class XeroTokenObserver
     /**
      * Handle the xeroToken "deleted" event.
      *
-     * @param  \Dcblogdev\Xero\Models\XeroToken  $xeroToken
      * @return void
      */
     public function deleted(XeroToken $xeroToken)
@@ -77,7 +72,6 @@ class XeroTokenObserver
     /**
      * Handle the xeroToken "restored" event.
      *
-     * @param  \Dcblogdev\Xero\Models\XeroToken  $xeroToken
      * @return void
      */
     public function restored(XeroToken $xeroToken)
@@ -88,7 +82,6 @@ class XeroTokenObserver
     /**
      * Handle the xeroToken "force deleted" event.
      *
-     * @param  \Dcblogdev\Xero\Models\XeroToken  $xeroToken
      * @return void
      */
     public function forceDeleted(XeroToken $xeroToken)

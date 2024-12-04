@@ -10,7 +10,6 @@ class FieldOptionObserver
     /**
      * Handle the fieldOption "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldOption  $fieldOption
      * @return void
      */
     public function creating(FieldOption $fieldOption)
@@ -21,7 +20,6 @@ class FieldOptionObserver
     /**
      * Handle the fieldOption "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldOption  $fieldOption
      * @return void
      */
     public function created(FieldOption $fieldOption)
@@ -32,7 +30,6 @@ class FieldOptionObserver
     /**
      * Handle the fieldOption "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldOption  $fieldOption
      * @return void
      */
     public function updating(FieldOption $fieldOption)
@@ -43,7 +40,6 @@ class FieldOptionObserver
     /**
      * Handle the fieldOption "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldOption  $fieldOption
      * @return void
      */
     public function updated(FieldOption $fieldOption)
@@ -65,7 +61,6 @@ class FieldOptionObserver
     /**
      * Handle the fieldOption "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldOption  $fieldOption
      * @return void
      */
     public function deleted(FieldOption $fieldOption)
@@ -76,7 +71,6 @@ class FieldOptionObserver
     /**
      * Handle the fieldOption "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldOption  $fieldOption
      * @return void
      */
     public function restored(FieldOption $fieldOption)
@@ -87,7 +81,6 @@ class FieldOptionObserver
     /**
      * Handle the fieldOption "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldOption  $fieldOption
      * @return void
      */
     public function forceDeleted(FieldOption $fieldOption)

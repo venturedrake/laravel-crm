@@ -79,9 +79,7 @@ class PipelineStageObserver
      * @param  \VentureDrake\LaravelCrm\PipelineStage  $pipelineStage
      * @return void
      */
-    public function restoring(PipelineStage $pipelineStage)
-    {
-    }
+    public function restoring(PipelineStage $pipelineStage) {}
 
     /**
      * Handle the pipelineStage "restored" event.

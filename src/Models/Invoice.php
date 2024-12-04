@@ -12,12 +12,12 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Invoice extends Model
 {
-    use SoftDeletes;
-    use HasCrmFields;
     use BelongsToTeams;
-    use SearchFilters;
     use HasCrmActivities;
+    use HasCrmFields;
     use HasGlobalSettings;
+    use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -57,7 +57,7 @@ class Invoice extends Model
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'invoice_prefix')->first()->value ?? null) . $this->number;
+            return (Setting::where('name', 'invoice_prefix')->first()->value ?? null).$this->number;
         }
     }
 

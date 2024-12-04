@@ -13,7 +13,6 @@ class PermissionPolicy
     /**
      * Determine whether the user can view any permissions.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class PermissionPolicy
     /**
      * Determine whether the user can view the permission.
      *
-     * @param  \App\User  $user
      * @param  \App\Permission  $permission
      * @return mixed
      */
@@ -40,7 +38,6 @@ class PermissionPolicy
     /**
      * Determine whether the user can create permissions.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class PermissionPolicy
     /**
      * Determine whether the user can update the permission.
      *
-     * @param  \App\User  $user
      * @param  \App\Permission  $permission
      * @return mixed
      */
@@ -67,7 +63,6 @@ class PermissionPolicy
     /**
      * Determine whether the user can delete the permission.
      *
-     * @param  \App\User  $user
      * @param  \App\Permission  $permission
      * @return mixed
      */
@@ -81,7 +76,6 @@ class PermissionPolicy
     /**
      * Determine whether the user can restore the permission.
      *
-     * @param  \App\User  $user
      * @param  \App\Permission  $permission
      * @return mixed
      */
@@ -95,7 +89,6 @@ class PermissionPolicy
     /**
      * Determine whether the user can permanently delete the permission.
      *
-     * @param  \App\User  $user
      * @param  \App\Permission  $permission
      * @return mixed
      */

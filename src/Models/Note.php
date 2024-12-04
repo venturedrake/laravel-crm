@@ -9,9 +9,9 @@ use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 
 class Note extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
     use HasGlobalSettings;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

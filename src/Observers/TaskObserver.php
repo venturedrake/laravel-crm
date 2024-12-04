@@ -10,7 +10,6 @@ class TaskObserver
     /**
      * Handle the task "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Task  $task
      * @return void
      */
     public function creating(Task $task)
@@ -25,7 +24,6 @@ class TaskObserver
     /**
      * Handle the task "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Task  $task
      * @return void
      */
     public function created(Task $task)
@@ -36,7 +34,6 @@ class TaskObserver
     /**
      * Handle the task "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Task  $task
      * @return void
      */
     public function updating(Task $task)
@@ -49,7 +46,6 @@ class TaskObserver
     /**
      * Handle the task "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Task  $task
      * @return void
      */
     public function updated(Task $task)
@@ -78,7 +74,6 @@ class TaskObserver
     /**
      * Handle the task "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Task  $task
      * @return void
      */
     public function deleted(Task $task)
@@ -89,7 +84,6 @@ class TaskObserver
     /**
      * Handle the task "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Task  $task
      * @return void
      */
     public function restored(Task $task)
@@ -103,7 +97,6 @@ class TaskObserver
     /**
      * Handle the task "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Task  $task
      * @return void
      */
     public function forceDeleted(Task $task)

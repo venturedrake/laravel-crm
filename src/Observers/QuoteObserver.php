@@ -21,7 +21,6 @@ class QuoteObserver
     /**
      * Handle the quote "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Quote  $quote
      * @return void
      */
     public function creating(Quote $quote)
@@ -45,7 +44,6 @@ class QuoteObserver
     /**
      * Handle the quote "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Quote  $quote
      * @return void
      */
     public function created(Quote $quote)
@@ -56,7 +54,6 @@ class QuoteObserver
     /**
      * Handle the quote "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Quote  $quote
      * @return void
      */
     public function updating(Quote $quote)
@@ -69,7 +66,6 @@ class QuoteObserver
     /**
      * Handle the quote "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Quote  $quote
      * @return void
      */
     public function updated(Quote $quote)
@@ -94,7 +90,6 @@ class QuoteObserver
     /**
      * Handle the quote "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Quote  $quote
      * @return void
      */
     public function deleted(Quote $quote)
@@ -105,7 +100,6 @@ class QuoteObserver
     /**
      * Handle the quote "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Quote  $quote
      * @return void
      */
     public function restored(Quote $quote)
@@ -119,7 +113,6 @@ class QuoteObserver
     /**
      * Handle the quote "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Quote  $quote
      * @return void
      */
     public function forceDeleted(Quote $quote)

@@ -10,12 +10,11 @@ class RouteSubdomain
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        $host = explode(".", request()->getHost());
+        $host = explode('.', request()->getHost());
 
         if (count($host) == 2) {
             abort(404);

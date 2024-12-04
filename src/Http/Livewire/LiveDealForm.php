@@ -10,16 +10,27 @@ use VentureDrake\LaravelCrm\Models\Person;
 class LiveDealForm extends Component
 {
     public $client_id;
+
     public $clientHasOrganisations = false;
+
     public $clientHasPeople = false;
+
     public $client_name;
+
     public $people = [];
+
     public $person_id;
+
     public $person_name;
+
     public $organisations = [];
+
     public $organisation_id;
+
     public $organisation_name;
+
     public $title;
+
     public $generateTitle;
 
     public function mount($deal, $generateTitle = true, $client = null, $organisation = null, $person = null)
@@ -123,11 +134,11 @@ class LiveDealForm extends Component
     {
         if ($this->generateTitle) {
             if ($this->client_name) {
-                $this->title = $this->client_name . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
+                $this->title = $this->client_name.' '.ucfirst(trans('laravel-crm::lang.deal'));
             } elseif ($this->organisation_name) {
-                $this->title = $this->organisation_name . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
+                $this->title = $this->organisation_name.' '.ucfirst(trans('laravel-crm::lang.deal'));
             } elseif ($this->person_name) {
-                $this->title = $this->person_name . ' ' . ucfirst(trans('laravel-crm::lang.deal'));
+                $this->title = $this->person_name.' '.ucfirst(trans('laravel-crm::lang.deal'));
             }
         }
     }
@@ -140,8 +151,8 @@ class LiveDealForm extends Component
     public function getClientOrganisations()
     {
         foreach (Client::find($this->client_id)->contacts()
-                     ->where('entityable_type', 'LIKE', '%Organisation%')
-                     ->get() as $contact) {
+            ->where('entityable_type', 'LIKE', '%Organisation%')
+            ->get() as $contact) {
             $this->organisations[$contact->entityable_id] = $contact->entityable->name;
             $this->clientHasOrganisations = true;
         }
@@ -150,8 +161,8 @@ class LiveDealForm extends Component
     public function getClientPeople()
     {
         foreach (Client::find($this->client_id)->contacts()
-                     ->where('entityable_type', 'LIKE', '%Person%')
-                     ->get() as $contact) {
+            ->where('entityable_type', 'LIKE', '%Person%')
+            ->get() as $contact) {
             $this->people[$contact->entityable_id] = $contact->entityable->name;
             $this->clientHasPeople = true;
         }

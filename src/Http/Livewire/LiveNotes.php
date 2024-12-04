@@ -13,11 +13,17 @@ class LiveNotes extends Component
     use NotifyToast;
 
     private $settingService;
+
     public $model;
+
     public $notes = [];
+
     public $pinned;
+
     public $content;
+
     public $noted_at;
+
     public $showForm = false;
 
     protected $listeners = [

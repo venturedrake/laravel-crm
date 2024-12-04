@@ -15,7 +15,6 @@ class ProductService
 
     /**
      * LeadService constructor.
-     * @param ProductRepository $productRepository
      */
     public function __construct(ProductRepository $productRepository)
     {

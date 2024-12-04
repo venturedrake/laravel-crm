@@ -9,7 +9,6 @@ class UserObserver
     /**
      * Handle the user "creating" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function creating(User $user)
@@ -20,7 +19,6 @@ class UserObserver
     /**
      * Handle the user "created" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function created(User $user)
@@ -31,7 +29,6 @@ class UserObserver
     /**
      * Handle the user "updating" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function updating(User $user)
@@ -42,7 +39,6 @@ class UserObserver
     /**
      * Handle the user "updated" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function updated(User $user)
@@ -53,7 +49,6 @@ class UserObserver
     /**
      * Handle the user "deleting" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function deleting(User $user)
@@ -64,7 +59,6 @@ class UserObserver
     /**
      * Handle the user "deleted" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function deleted(User $user)
@@ -75,7 +69,6 @@ class UserObserver
     /**
      * Handle the user "restored" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function restored(User $user)
@@ -86,7 +79,6 @@ class UserObserver
     /**
      * Handle the user "force deleted" event.
      *
-     * @param  \App\User  $user
      * @return void
      */
     public function forceDeleted(User $user)

@@ -8,8 +8,8 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class Industry extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
+    use SoftDeletes;
     use Sortable;
 
     protected $guarded = ['id'];

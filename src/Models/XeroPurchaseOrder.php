@@ -7,8 +7,8 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class XeroPurchaseOrder extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

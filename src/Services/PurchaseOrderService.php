@@ -23,7 +23,6 @@ class PurchaseOrderService
 
     /**
      * LeadService constructor.
-     * @param PurchaseOrderRepository $purchaseOrderRepository
      */
     public function __construct(PurchaseOrderRepository $purchaseOrderRepository)
     {
@@ -105,7 +104,7 @@ class PurchaseOrderService
                 $purchaseOrder->update([
                     'subtotal' => $subTotal,
                     'tax' => $tax,
-                    'total' => $total
+                    'total' => $total,
                 ]);
             }
         }

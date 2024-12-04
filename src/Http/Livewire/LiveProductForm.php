@@ -9,7 +9,9 @@ use VentureDrake\LaravelCrm\Services\SettingService;
 class LiveProductForm extends Component
 {
     private $settingService;
+
     public $tax_rate_id;
+
     public $tax_rate;
 
     public function boot(SettingService $settingService)
@@ -22,7 +24,7 @@ class LiveProductForm extends Component
         $taxRate = TaxRate::where('default', 1)->first();
 
         $this->tax_rate_id = old('tax_rate_id') ?? $product->taxRate->id ?? $taxRate->id ?? null;
-        $this->tax_rate = old('tax_rate') ??  $product->tax_rate ?? $product->taxRate->rate ?? $taxRate->rate ?? null;
+        $this->tax_rate = old('tax_rate') ?? $product->tax_rate ?? $product->taxRate->rate ?? $taxRate->rate ?? null;
     }
 
     public function updatedTaxRateId($value)

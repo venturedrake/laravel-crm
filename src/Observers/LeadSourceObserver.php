@@ -10,7 +10,6 @@ class LeadSourceObserver
     /**
      * Handle the leadSource "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\LeadSource  $leadSource
      * @return void
      */
     public function creating(LeadSource $leadSource)
@@ -21,7 +20,6 @@ class LeadSourceObserver
     /**
      * Handle the leadSource "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\LeadSource  $leadSource
      * @return void
      */
     public function created(LeadSource $leadSource)
@@ -32,7 +30,6 @@ class LeadSourceObserver
     /**
      * Handle the leadSource "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\LeadSource  $leadSource
      * @return void
      */
     public function updating(LeadSource $leadSource)
@@ -43,7 +40,6 @@ class LeadSourceObserver
     /**
      * Handle the leadSource "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\LeadSource  $leadSource
      * @return void
      */
     public function updated(LeadSource $leadSource)
@@ -65,7 +61,6 @@ class LeadSourceObserver
     /**
      * Handle the leadSource "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\LeadSource  $leadSource
      * @return void
      */
     public function deleted(LeadSource $leadSource)
@@ -76,7 +71,6 @@ class LeadSourceObserver
     /**
      * Handle the leadSource "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\LeadSource  $leadSource
      * @return void
      */
     public function restored(LeadSource $leadSource)
@@ -87,7 +81,6 @@ class LeadSourceObserver
     /**
      * Handle the leadSource "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\LeadSource  $leadSource
      * @return void
      */
     public function forceDeleted(LeadSource $leadSource)

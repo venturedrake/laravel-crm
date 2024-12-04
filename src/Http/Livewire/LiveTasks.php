@@ -12,18 +12,24 @@ class LiveTasks extends Component
     use NotifyToast;
 
     private $settingService;
+
     public $model;
+
     public $tasks;
+
     public $name;
+
     public $description;
+
     public $due_at;
+
     public $showForm = false;
 
     protected $listeners = [
         'addTaskActivity' => 'addTaskOn',
         'taskDeleted' => 'getTasks',
         'taskCompleted' => 'getTasks',
-     ];
+    ];
 
     public function boot(SettingService $settingService)
     {

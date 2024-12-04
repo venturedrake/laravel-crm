@@ -10,7 +10,6 @@ class XeroPurchaseOrderObserver
     /**
      * Handle the xeroPurchaseOrder "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPurchaseOrder  $xeroPurchaseOrder
      * @return void
      */
     public function creating(XeroPurchaseOrder $xeroPurchaseOrder)
@@ -21,7 +20,6 @@ class XeroPurchaseOrderObserver
     /**
      * Handle the xeroPurchaseOrder "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPurchaseOrder  $xeroPurchaseOrder
      * @return void
      */
     public function created(XeroPurchaseOrder $xeroPurchaseOrder)
@@ -32,7 +30,6 @@ class XeroPurchaseOrderObserver
     /**
      * Handle the xeroPurchaseOrder "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPurchaseOrder  $xeroPurchaseOrder
      * @return void
      */
     public function updating(XeroPurchaseOrder $xeroPurchaseOrder)
@@ -43,7 +40,6 @@ class XeroPurchaseOrderObserver
     /**
      * Handle the xeroPurchaseOrder "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPurchaseOrder  $xeroPurchaseOrder
      * @return void
      */
     public function updated(XeroPurchaseOrder $xeroPurchaseOrder)
@@ -65,7 +61,6 @@ class XeroPurchaseOrderObserver
     /**
      * Handle the xeroPurchaseOrder "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPurchaseOrder  $xeroPurchaseOrder
      * @return void
      */
     public function deleted(XeroPurchaseOrder $xeroPurchaseOrder)
@@ -76,7 +71,6 @@ class XeroPurchaseOrderObserver
     /**
      * Handle the xeroPurchaseOrder "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPurchaseOrder  $xeroPurchaseOrder
      * @return void
      */
     public function restored(XeroPurchaseOrder $xeroPurchaseOrder)
@@ -87,7 +81,6 @@ class XeroPurchaseOrderObserver
     /**
      * Handle the xeroPurchaseOrder "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPurchaseOrder  $xeroPurchaseOrder
      * @return void
      */
     public function forceDeleted(XeroPurchaseOrder $xeroPurchaseOrder)

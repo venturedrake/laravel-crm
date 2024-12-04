@@ -19,7 +19,6 @@ class QuoteService
 
     /**
      * LeadService constructor.
-     * @param QuoteRepository $quoteRepository
      */
     public function __construct(QuoteRepository $quoteRepository)
     {

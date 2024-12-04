@@ -10,7 +10,6 @@ class InvoiceLineObserver
     /**
      * Handle the invoiceLine "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\InvoiceLine  $invoiceLine
      * @return void
      */
     public function creating(InvoiceLine $invoiceLine)
@@ -21,7 +20,6 @@ class InvoiceLineObserver
     /**
      * Handle the invoiceLine "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\InvoiceLine  $invoiceLine
      * @return void
      */
     public function created(InvoiceLine $invoiceLine)
@@ -32,7 +30,6 @@ class InvoiceLineObserver
     /**
      * Handle the invoiceLine "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\InvoiceLine  $invoiceLine
      * @return void
      */
     public function updating(InvoiceLine $invoiceLine)
@@ -43,7 +40,6 @@ class InvoiceLineObserver
     /**
      * Handle the invoiceLine "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\InvoiceLine  $invoiceLine
      * @return void
      */
     public function updated(InvoiceLine $invoiceLine)
@@ -65,7 +61,6 @@ class InvoiceLineObserver
     /**
      * Handle the invoiceLine "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\InvoiceLine  $invoiceLine
      * @return void
      */
     public function deleted(InvoiceLine $invoiceLine)
@@ -76,7 +71,6 @@ class InvoiceLineObserver
     /**
      * Handle the invoiceLine "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\InvoiceLine  $invoiceLine
      * @return void
      */
     public function restored(InvoiceLine $invoiceLine)
@@ -87,7 +81,6 @@ class InvoiceLineObserver
     /**
      * Handle the invoiceLine "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\InvoiceLine  $invoiceLine
      * @return void
      */
     public function forceDeleted(InvoiceLine $invoiceLine)

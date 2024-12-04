@@ -16,7 +16,6 @@ class LeadService
 
     /**
      * LeadService constructor.
-     * @param LeadRepository $leadRepository
      */
     public function __construct(LeadRepository $leadRepository)
     {

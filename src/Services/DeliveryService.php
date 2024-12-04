@@ -16,7 +16,6 @@ class DeliveryService
 
     /**
      * LeadService constructor.
-     * @param DeliveryRepository $deliveryRepository
      */
     public function __construct(DeliveryRepository $deliveryRepository)
     {

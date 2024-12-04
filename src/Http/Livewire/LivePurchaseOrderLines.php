@@ -20,6 +20,7 @@ class LivePurchaseOrderLines extends Component
     public $purchaseOrderLines;
 
     public $order_product_id;
+
     public $purchase_order_line_id;
 
     public $product_id;

@@ -13,7 +13,9 @@ class LiveFile extends Component
     use NotifyToast;
 
     private $settingService;
+
     public $showRelated = false;
+
     public $file;
 
     protected $listeners = [

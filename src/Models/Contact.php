@@ -7,8 +7,8 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class Contact extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

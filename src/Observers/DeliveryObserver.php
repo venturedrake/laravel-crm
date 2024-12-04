@@ -21,7 +21,6 @@ class DeliveryObserver
     /**
      * Handle the delivery "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Delivery  $delivery
      * @return void
      */
     public function creating(Delivery $delivery)
@@ -45,7 +44,6 @@ class DeliveryObserver
     /**
      * Handle the delivery "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Delivery  $delivery
      * @return void
      */
     public function created(Delivery $delivery)
@@ -56,7 +54,6 @@ class DeliveryObserver
     /**
      * Handle the delivery "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Delivery  $delivery
      * @return void
      */
     public function updating(Delivery $delivery)
@@ -69,7 +66,6 @@ class DeliveryObserver
     /**
      * Handle the delivery "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Delivery  $delivery
      * @return void
      */
     public function updated(Delivery $delivery)
@@ -94,7 +90,6 @@ class DeliveryObserver
     /**
      * Handle the delivery "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Delivery  $delivery
      * @return void
      */
     public function deleted(Delivery $delivery)
@@ -105,7 +100,6 @@ class DeliveryObserver
     /**
      * Handle the delivery "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Delivery  $delivery
      * @return void
      */
     public function restored(Delivery $delivery)
@@ -119,7 +113,6 @@ class DeliveryObserver
     /**
      * Handle the delivery "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Delivery  $delivery
      * @return void
      */
     public function forceDeleted(Delivery $delivery)

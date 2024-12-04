@@ -52,8 +52,8 @@ class LaravelCrmAddressTypes extends Command
 
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('address_types')
-                         ->whereNull('team_id')
-                         ->get() as $addressType) {
+                ->whereNull('team_id')
+                ->get() as $addressType) {
                 $this->info('Inserting address type '.$addressType->name.' for team '.$team->name);
 
                 $teamAddressType = DB::table('address_types')->where([

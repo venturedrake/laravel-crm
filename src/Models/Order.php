@@ -10,11 +10,11 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Order extends Model
 {
-    use SoftDeletes;
-    use HasCrmFields;
     use BelongsToTeams;
-    use SearchFilters;
     use HasCrmActivities;
+    use HasCrmFields;
+    use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -48,7 +48,7 @@ class Order extends Model
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'order_prefix')->first()->value ?? null) . $this->number;
+            return (Setting::where('name', 'order_prefix')->first()->value ?? null).$this->number;
         }
     }
 

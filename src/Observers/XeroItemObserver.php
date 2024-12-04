@@ -10,7 +10,6 @@ class XeroItemObserver
     /**
      * Handle the xeroItem "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroItem  $xeroItem
      * @return void
      */
     public function creating(XeroItem $xeroItem)
@@ -21,7 +20,6 @@ class XeroItemObserver
     /**
      * Handle the xeroItem "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroItem  $xeroItem
      * @return void
      */
     public function created(XeroItem $xeroItem)
@@ -32,7 +30,6 @@ class XeroItemObserver
     /**
      * Handle the xeroItem "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroItem  $xeroItem
      * @return void
      */
     public function updating(XeroItem $xeroItem)
@@ -43,7 +40,6 @@ class XeroItemObserver
     /**
      * Handle the xeroItem "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroItem  $xeroItem
      * @return void
      */
     public function updated(XeroItem $xeroItem)
@@ -65,7 +61,6 @@ class XeroItemObserver
     /**
      * Handle the xeroItem "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroItem  $xeroItem
      * @return void
      */
     public function deleted(XeroItem $xeroItem)
@@ -76,7 +71,6 @@ class XeroItemObserver
     /**
      * Handle the xeroItem "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroItem  $xeroItem
      * @return void
      */
     public function restored(XeroItem $xeroItem)
@@ -87,7 +81,6 @@ class XeroItemObserver
     /**
      * Handle the xeroItem "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroItem  $xeroItem
      * @return void
      */
     public function forceDeleted(XeroItem $xeroItem)

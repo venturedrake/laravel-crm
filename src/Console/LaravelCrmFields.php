@@ -57,10 +57,10 @@ class LaravelCrmFields extends Command
         $this->info('Updating Laravel CRM custom fields...');
 
         foreach (FieldModel::all() as $fieldModel) {
-            $this->line('Updating field: ' . $fieldModel->field->name);
+            $this->line('Updating field: '.$fieldModel->field->name);
 
             foreach ($fieldModel->model::all() as $model) {
-                $this->line('Updating attached '.class_basename($model).' model #' .$model->id);
+                $this->line('Updating attached '.class_basename($model).' model #'.$model->id);
                 $model->fields()->firstOrCreate([
                     'field_id' => $fieldModel->field_id,
                     'value' => $fieldModel->field->default,

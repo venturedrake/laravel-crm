@@ -15,6 +15,7 @@ class LiveDeliveryItems extends Component
     public $products;
 
     public $order_product_id;
+
     public $delivery_product_id;
 
     public $product_id;

@@ -21,7 +21,6 @@ class InvoiceService
 
     /**
      * LeadService constructor.
-     * @param InvoiceRepository $invoiceRepository
      */
     public function __construct(InvoiceRepository $invoiceRepository)
     {

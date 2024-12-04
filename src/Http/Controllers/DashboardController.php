@@ -39,7 +39,6 @@ class DashboardController extends Controller
             $usersOnline = \App\User::whereDate('last_online_at', '>=', Carbon::now()->subMinutes(20)->toDateString())->get();
         }
 
-
         $today = today();
         $startDate = today()->subdays(14);
         $period = CarbonPeriod::create($startDate, $today);
@@ -48,22 +47,22 @@ class DashboardController extends Controller
         // Iterate over the period
         foreach ($period as $date) {
             $datasheet[$date->format('d/m/Y')] = [];
-            $datasheet[$date->format('d/m/Y')]["daily"] = [];
-            $datasheet[$date->format('d/m/Y')]["daily"]["date"] = $date->format('d/m/Y');
-            $datasheet[$date->format('d/m/Y')]["daily"]["leads"] = 0;
-            $datasheet[$date->format('d/m/Y')]["daily"]["deals"] = 0;
+            $datasheet[$date->format('d/m/Y')]['daily'] = [];
+            $datasheet[$date->format('d/m/Y')]['daily']['date'] = $date->format('d/m/Y');
+            $datasheet[$date->format('d/m/Y')]['daily']['leads'] = 0;
+            $datasheet[$date->format('d/m/Y')]['daily']['deals'] = 0;
         }
 
         $leads = Lead::whereBetween('created_at', [$startDate, now()])->get();
 
         foreach ($leads as $lead) {
-            $datasheet[$lead->created_at->format('d/m/Y')]["daily"]["leads"]++;
+            $datasheet[$lead->created_at->format('d/m/Y')]['daily']['leads']++;
         }
 
         $deals = Deal::whereBetween('created_at', [$startDate, now()])->get();
 
         foreach ($deals as $deal) {
-            $datasheet[$deal->created_at->format('d/m/Y')]["daily"]["deals"]++;
+            $datasheet[$deal->created_at->format('d/m/Y')]['daily']['deals']++;
         }
 
         return view('laravel-crm::index', [

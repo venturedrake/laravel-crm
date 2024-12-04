@@ -10,7 +10,6 @@ class LunchObserver
     /**
      * Handle the lunch "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lunch  $lunch
      * @return void
      */
     public function creating(Lunch $lunch)
@@ -25,7 +24,6 @@ class LunchObserver
     /**
      * Handle the lunch "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lunch  $lunch
      * @return void
      */
     public function created(Lunch $lunch)
@@ -36,7 +34,6 @@ class LunchObserver
     /**
      * Handle the lunch "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lunch  $lunch
      * @return void
      */
     public function updating(Lunch $lunch)
@@ -49,7 +46,6 @@ class LunchObserver
     /**
      * Handle the lunch "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lunch  $lunch
      * @return void
      */
     public function updated(Lunch $lunch)
@@ -78,7 +74,6 @@ class LunchObserver
     /**
      * Handle the lunch "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lunch  $lunch
      * @return void
      */
     public function deleted(Lunch $lunch)
@@ -89,7 +84,6 @@ class LunchObserver
     /**
      * Handle the lunch "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lunch  $lunch
      * @return void
      */
     public function restored(Lunch $lunch)
@@ -103,7 +97,6 @@ class LunchObserver
     /**
      * Handle the lunch "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lunch  $lunch
      * @return void
      */
     public function forceDeleted(Lunch $lunch)

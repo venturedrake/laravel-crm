@@ -10,7 +10,6 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldModel  $fieldModel
      * @return void
      */
     public function creating(FieldModel $fieldModel)
@@ -21,7 +20,6 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldModel  $fieldModel
      * @return void
      */
     public function created(FieldModel $fieldModel)
@@ -37,7 +35,6 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldModel  $fieldModel
      * @return void
      */
     public function updating(FieldModel $fieldModel)
@@ -48,7 +45,6 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldModel  $fieldModel
      * @return void
      */
     public function updated(FieldModel $fieldModel)
@@ -65,7 +61,7 @@ class FieldModelObserver
     public function deleting(FieldModel $fieldModel)
     {
         foreach ($fieldModel->model::all() as $model) {
-            if ($field =  $model->fields()->where('field_id', $fieldModel->field_id)->first()) {
+            if ($field = $model->fields()->where('field_id', $fieldModel->field_id)->first()) {
                 $field->delete();
             }
         }
@@ -74,7 +70,6 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldModel  $fieldModel
      * @return void
      */
     public function deleted(FieldModel $fieldModel)
@@ -85,7 +80,6 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldModel  $fieldModel
      * @return void
      */
     public function restored(FieldModel $fieldModel)
@@ -96,7 +90,6 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldModel  $fieldModel
      * @return void
      */
     public function forceDeleted(FieldModel $fieldModel)

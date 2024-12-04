@@ -9,8 +9,8 @@ use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class PayInvoice extends Component
 {
-    use NotifyToast;
     use HasGlobalSettings;
+    use NotifyToast;
 
     public $invoice;
 
@@ -37,7 +37,7 @@ class PayInvoice extends Component
     protected function rules()
     {
         return [
-            'amount_paid' => 'required|numeric|size:'. ($this->invoice->amount_due / 100),
+            'amount_paid' => 'required|numeric|size:'.($this->invoice->amount_due / 100),
         ];
     }
 

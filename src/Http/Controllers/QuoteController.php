@@ -86,7 +86,7 @@ class QuoteController extends Controller
         return view('laravel-crm::quotes.index', [
             'quotes' => $quotes,
             'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
+            'pipeline' => Pipeline::where('model', get_class(new Quote))->first(),
         ]);
     }
 
@@ -123,8 +123,8 @@ class QuoteController extends Controller
             'prefix' => $this->settingService->get('quote_prefix'),
             'number' => (Quote::latest()->first()->number ?? 1000) + 1,
             'quoteTerms' => $quoteTerms,
-            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
-            'stage' => $request->stage ?? null
+            'pipeline' => Pipeline::where('model', get_class(new Quote))->first(),
+            'stage' => $request->stage ?? null,
         ]);
     }
 
@@ -230,7 +230,7 @@ class QuoteController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first()
+            'pipeline' => Pipeline::where('model', get_class(new Quote))->first(),
         ]);
     }
 
@@ -359,14 +359,14 @@ class QuoteController extends Controller
             return view('laravel-crm::quotes.board', [
                 'quotes' => $quotes,
                 'searchValue' => $searchValue ?? null,
-                'viewSetting' => $viewSetting->value ?? null
+                'viewSetting' => $viewSetting->value ?? null,
             ]);
         } else {
             return view('laravel-crm::quotes.index', [
                 'quotes' => $quotes,
                 'searchValue' => $searchValue ?? null,
                 'viewSetting' => $viewSetting->value ?? null,
-                'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
+                'pipeline' => Pipeline::where('model', get_class(new Quote))->first(),
             ]);
         }
     }
@@ -449,14 +449,14 @@ class QuoteController extends Controller
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
         ])
             ->loadView('laravel-crm::quotes.pdf', [
-            'quote' => $quote,
-            'email' => $email ?? null,
-            'phone' => $phone ?? null,
-            'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
-            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
-            'logo' => $this->settingService->get('logo_file')->value ?? null,
-        ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
+                'quote' => $quote,
+                'email' => $email ?? null,
+                'phone' => $phone ?? null,
+                'address' => $address ?? null,
+                'organisation_address' => $organisation_address ?? null,
+                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'logo' => $this->settingService->get('logo_file')->value ?? null,
+            ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
     }
 
     public function list(Request $request)
@@ -492,7 +492,7 @@ class QuoteController extends Controller
 
         return view('laravel-crm::quotes.board', [
             'quotes' => $quotes,
-            'viewSetting' => $viewSetting->value ?? null
+            'viewSetting' => $viewSetting->value ?? null,
         ]);
     }
 }

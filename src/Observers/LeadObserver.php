@@ -21,7 +21,6 @@ class LeadObserver
     /**
      * Handle the lead "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
      * @return void
      */
     public function creating(Lead $lead)
@@ -45,7 +44,6 @@ class LeadObserver
     /**
      * Handle the lead "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
      * @return void
      */
     public function created(Lead $lead)
@@ -56,7 +54,6 @@ class LeadObserver
     /**
      * Handle the lead "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
      * @return void
      */
     public function updating(Lead $lead)
@@ -69,7 +66,6 @@ class LeadObserver
     /**
      * Handle the lead "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
      * @return void
      */
     public function updated(Lead $lead)
@@ -94,7 +90,6 @@ class LeadObserver
     /**
      * Handle the lead "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
      * @return void
      */
     public function deleted(Lead $lead)
@@ -105,7 +100,6 @@ class LeadObserver
     /**
      * Handle the lead "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
      * @return void
      */
     public function restored(Lead $lead)
@@ -119,7 +113,6 @@ class LeadObserver
     /**
      * Handle the lead "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Lead  $lead
      * @return void
      */
     public function forceDeleted(Lead $lead)

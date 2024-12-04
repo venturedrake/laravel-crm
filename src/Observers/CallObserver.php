@@ -10,7 +10,6 @@ class CallObserver
     /**
      * Handle the call "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Call  $call
      * @return void
      */
     public function creating(Call $call)
@@ -25,7 +24,6 @@ class CallObserver
     /**
      * Handle the call "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Call  $call
      * @return void
      */
     public function created(Call $call)
@@ -36,7 +34,6 @@ class CallObserver
     /**
      * Handle the call "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Call  $call
      * @return void
      */
     public function updating(Call $call)
@@ -49,7 +46,6 @@ class CallObserver
     /**
      * Handle the call "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Call  $call
      * @return void
      */
     public function updated(Call $call)
@@ -78,7 +74,6 @@ class CallObserver
     /**
      * Handle the call "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Call  $call
      * @return void
      */
     public function deleted(Call $call)
@@ -89,7 +84,6 @@ class CallObserver
     /**
      * Handle the call "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Call  $call
      * @return void
      */
     public function restored(Call $call)
@@ -103,7 +97,6 @@ class CallObserver
     /**
      * Handle the call "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Call  $call
      * @return void
      */
     public function forceDeleted(Call $call)

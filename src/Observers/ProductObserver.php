@@ -12,7 +12,6 @@ class ProductObserver
     /**
      * Handle the product "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Product  $product
      * @return void
      */
     public function creating(Product $product)
@@ -34,7 +33,6 @@ class ProductObserver
     /**
      * Handle the product "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Product  $product
      * @return void
      */
     public function created(Product $product)
@@ -45,7 +43,6 @@ class ProductObserver
     /**
      * Handle the product "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Product  $product
      * @return void
      */
     public function updating(Product $product)
@@ -58,7 +55,6 @@ class ProductObserver
     /**
      * Handle the product "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Product  $product
      * @return void
      */
     public function updated(Product $product)
@@ -83,7 +79,6 @@ class ProductObserver
     /**
      * Handle the product "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Product  $product
      * @return void
      */
     public function deleted(Product $product)
@@ -94,7 +89,6 @@ class ProductObserver
     /**
      * Handle the product "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Product  $product
      * @return void
      */
     public function restored(Product $product)
@@ -108,7 +102,6 @@ class ProductObserver
     /**
      * Handle the product "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Product  $product
      * @return void
      */
     public function forceDeleted(Product $product)

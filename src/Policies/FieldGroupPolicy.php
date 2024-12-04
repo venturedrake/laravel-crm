@@ -13,7 +13,6 @@ class FieldGroupPolicy
     /**
      * Determine whether the user can view any fieldGroups.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class FieldGroupPolicy
     /**
      * Determine whether the user can view the fieldGroup.
      *
-     * @param  \App\User  $user
      * @param  \App\FieldGroup  $fieldGroup
      * @return mixed
      */
@@ -40,7 +38,6 @@ class FieldGroupPolicy
     /**
      * Determine whether the user can create fieldGroups.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class FieldGroupPolicy
     /**
      * Determine whether the user can update the fieldGroup.
      *
-     * @param  \App\User  $user
      * @param  \App\FieldGroup  $fieldGroup
      * @return mixed
      */
@@ -67,7 +63,6 @@ class FieldGroupPolicy
     /**
      * Determine whether the user can delete the fieldGroup.
      *
-     * @param  \App\User  $user
      * @param  \App\FieldGroup  $fieldGroup
      * @return mixed
      */
@@ -81,7 +76,6 @@ class FieldGroupPolicy
     /**
      * Determine whether the user can restore the fieldGroup.
      *
-     * @param  \App\User  $user
      * @param  \App\FieldGroup  $fieldGroup
      * @return mixed
      */
@@ -95,7 +89,6 @@ class FieldGroupPolicy
     /**
      * Determine whether the user can permanently delete the fieldGroup.
      *
-     * @param  \App\User  $user
      * @param  \App\FieldGroup  $fieldGroup
      * @return mixed
      */

@@ -378,12 +378,11 @@ class OrderController extends Controller
     /**
      * Create an order from the quote
      *
-     * @param  Order  $order
      * @return \Illuminate\Http\Response
      */
     public function createDelivery(Order $order)
     {
-        $request = new \Illuminate\Http\Request();
+        $request = new \Illuminate\Http\Request;
         $products = [];
 
         foreach ($order->orderProducts as $orderProduct) {

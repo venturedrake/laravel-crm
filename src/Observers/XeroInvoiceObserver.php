@@ -10,7 +10,6 @@ class XeroInvoiceObserver
     /**
      * Handle the xeroInvoice "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroInvoice  $xeroInvoice
      * @return void
      */
     public function creating(XeroInvoice $xeroInvoice)
@@ -21,7 +20,6 @@ class XeroInvoiceObserver
     /**
      * Handle the xeroInvoice "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroInvoice  $xeroInvoice
      * @return void
      */
     public function created(XeroInvoice $xeroInvoice)
@@ -32,7 +30,6 @@ class XeroInvoiceObserver
     /**
      * Handle the xeroInvoice "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroInvoice  $xeroInvoice
      * @return void
      */
     public function updating(XeroInvoice $xeroInvoice)
@@ -43,7 +40,6 @@ class XeroInvoiceObserver
     /**
      * Handle the xeroInvoice "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroInvoice  $xeroInvoice
      * @return void
      */
     public function updated(XeroInvoice $xeroInvoice)
@@ -65,7 +61,6 @@ class XeroInvoiceObserver
     /**
      * Handle the xeroInvoice "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroInvoice  $xeroInvoice
      * @return void
      */
     public function deleted(XeroInvoice $xeroInvoice)
@@ -76,7 +71,6 @@ class XeroInvoiceObserver
     /**
      * Handle the xeroInvoice "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroInvoice  $xeroInvoice
      * @return void
      */
     public function restored(XeroInvoice $xeroInvoice)
@@ -87,7 +81,6 @@ class XeroInvoiceObserver
     /**
      * Handle the xeroInvoice "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroInvoice  $xeroInvoice
      * @return void
      */
     public function forceDeleted(XeroInvoice $xeroInvoice)

@@ -10,7 +10,6 @@ class OrderProductObserver
     /**
      * Handle the orderProduct "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\OrderProduct  $orderProduct
      * @return void
      */
     public function creating(OrderProduct $orderProduct)
@@ -21,7 +20,6 @@ class OrderProductObserver
     /**
      * Handle the orderProduct "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\OrderProduct  $orderProduct
      * @return void
      */
     public function created(OrderProduct $orderProduct)
@@ -32,7 +30,6 @@ class OrderProductObserver
     /**
      * Handle the orderProduct "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\OrderProduct  $orderProduct
      * @return void
      */
     public function updating(OrderProduct $orderProduct)
@@ -43,7 +40,6 @@ class OrderProductObserver
     /**
      * Handle the orderProduct "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\OrderProduct  $orderProduct
      * @return void
      */
     public function updated(OrderProduct $orderProduct)
@@ -65,7 +61,6 @@ class OrderProductObserver
     /**
      * Handle the orderProduct "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\OrderProduct  $orderProduct
      * @return void
      */
     public function deleted(OrderProduct $orderProduct)
@@ -76,7 +71,6 @@ class OrderProductObserver
     /**
      * Handle the orderProduct "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\OrderProduct  $orderProduct
      * @return void
      */
     public function restored(OrderProduct $orderProduct)
@@ -87,7 +81,6 @@ class OrderProductObserver
     /**
      * Handle the orderProduct "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\OrderProduct  $orderProduct
      * @return void
      */
     public function forceDeleted(OrderProduct $orderProduct)

@@ -9,10 +9,10 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Product extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
     use HasCrmFields;
     use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

@@ -63,7 +63,7 @@ function phoneTypes($null = true)
         'home' => 'Home',
         'mobile' => 'Mobile',
         'fax' => 'Fax',
-        'other' => "Other",
+        'other' => 'Other',
     ]);
 
     return $array;
@@ -80,7 +80,7 @@ function emailTypes($null = true)
     $array = array_merge($array, [
         'work' => 'Work',
         'home' => 'Home',
-        'other' => "Other",
+        'other' => 'Other',
     ]);
 
     return $array;
@@ -123,7 +123,6 @@ function currencies()
 
     return $items;
 }
-
 
 function timezones()
 {

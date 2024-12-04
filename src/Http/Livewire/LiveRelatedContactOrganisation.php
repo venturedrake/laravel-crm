@@ -9,10 +9,15 @@ use VentureDrake\LaravelCrm\Models\Organisation;
 class LiveRelatedContactOrganisation extends Component
 {
     public $model;
+
     public $contacts;
+
     public $organisation_id;
+
     public $organisation_name;
+
     public $actions;
+
     public $contactTypeFilter;
 
     public function mount($model, $actions = true, $contactTypeFilter = null)

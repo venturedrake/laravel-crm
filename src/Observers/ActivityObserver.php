@@ -21,7 +21,6 @@ class ActivityObserver
     /**
      * Handle the activity "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Activity  $activity
      * @return void
      */
     public function created(Activity $activity)
@@ -43,7 +42,6 @@ class ActivityObserver
     /**
      * Handle the activity "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Activity  $activity
      * @return void
      */
     public function updated(Activity $activity)
@@ -65,7 +63,6 @@ class ActivityObserver
     /**
      * Handle the activity "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Activity  $activity
      * @return void
      */
     public function deleted(Activity $activity)
@@ -76,7 +73,6 @@ class ActivityObserver
     /**
      * Handle the activity "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Activity  $activity
      * @return void
      */
     public function restored(Activity $activity)
@@ -87,7 +83,6 @@ class ActivityObserver
     /**
      * Handle the activity "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Activity  $activity
      * @return void
      */
     public function forceDeleted(Activity $activity)

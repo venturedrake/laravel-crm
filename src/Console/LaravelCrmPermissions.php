@@ -61,9 +61,9 @@ class LaravelCrmPermissions extends Command
 
             foreach (DB::table('teams')->get() as $team) {
                 foreach (DB::table($tableNames['roles'])
-                             ->where('crm_role', 1)
-                             ->whereNull('team_id')
-                             ->get() as $role) {
+                    ->where('crm_role', 1)
+                    ->whereNull('team_id')
+                    ->get() as $role) {
                     $this->info('Inserting role '.$role->name.' for team '.$team->name);
 
                     DB::table($tableNames['roles'])->updateOrInsert([
@@ -85,9 +85,9 @@ class LaravelCrmPermissions extends Command
                         'team_id' => $team->id,
                     ])->first()) {
                         foreach (DB::table($tableNames['permissions'])
-                                     ->leftJoin($tableNames['role_has_permissions'], $tableNames['permissions'].'.id', '=', $tableNames['role_has_permissions'].'.permission_id')
-                                     ->where($tableNames['role_has_permissions'].'.role_id', $role->id)
-                                     ->get() as $permission) {
+                            ->leftJoin($tableNames['role_has_permissions'], $tableNames['permissions'].'.id', '=', $tableNames['role_has_permissions'].'.permission_id')
+                            ->where($tableNames['role_has_permissions'].'.role_id', $role->id)
+                            ->get() as $permission) {
                             $this->info('Assigning permission '.$permission->name.' for role '.$role->name);
 
                             DB::table($tableNames['role_has_permissions'])->updateOrInsert([

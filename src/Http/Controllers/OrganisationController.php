@@ -152,7 +152,7 @@ class OrganisationController extends Controller
     {
         foreach (Contact::where([
             'entityable_type' => $organisation->getMorphClass(),
-            'entityable_id' => $organisation->id
+            'entityable_id' => $organisation->id,
         ])->get() as $contact) {
             $contact->delete();
         }

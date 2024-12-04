@@ -9,14 +9,23 @@ use VentureDrake\LaravelCrm\Models\Organisation;
 class LiveOrderForm extends Component
 {
     public $client_id;
+
     public $clientHasOrganisations = false;
+
     public $clientHasPeople = false;
+
     public $client_name;
+
     public $people = [];
+
     public $person_id;
+
     public $person_name;
+
     public $organisations = [];
+
     public $organisation_id;
+
     public $organisation_name;
 
     public function mount($order, $client = null, $organisation = null, $person = null)
@@ -63,8 +72,8 @@ class LiveOrderForm extends Component
     public function getClientOrganisations()
     {
         foreach (Client::find($this->client_id)->contacts()
-                     ->where('entityable_type', 'LIKE', '%Organisation%')
-                     ->get() as $contact) {
+            ->where('entityable_type', 'LIKE', '%Organisation%')
+            ->get() as $contact) {
             $this->organisations[$contact->entityable_id] = $contact->entityable->name;
             $this->clientHasOrganisations = true;
         }
@@ -73,8 +82,8 @@ class LiveOrderForm extends Component
     public function getClientPeople()
     {
         foreach (Client::find($this->client_id)->contacts()
-                     ->where('entityable_type', 'LIKE', '%Person%')
-                     ->get() as $contact) {
+            ->where('entityable_type', 'LIKE', '%Person%')
+            ->get() as $contact) {
             $this->people[$contact->entityable_id] = $contact->entityable->name;
             $this->clientHasPeople = true;
         }

@@ -10,7 +10,6 @@ class FieldValueObserver
     /**
      * Handle the fieldValue "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldValue  $fieldValue
      * @return void
      */
     public function creating(FieldValue $fieldValue)
@@ -21,7 +20,6 @@ class FieldValueObserver
     /**
      * Handle the fieldValue "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldValue  $fieldValue
      * @return void
      */
     public function created(FieldValue $fieldValue)
@@ -32,7 +30,6 @@ class FieldValueObserver
     /**
      * Handle the fieldValue "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldValue  $fieldValue
      * @return void
      */
     public function updating(FieldValue $fieldValue)
@@ -43,7 +40,6 @@ class FieldValueObserver
     /**
      * Handle the fieldValue "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldValue  $fieldValue
      * @return void
      */
     public function updated(FieldValue $fieldValue)
@@ -65,7 +61,6 @@ class FieldValueObserver
     /**
      * Handle the fieldValue "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldValue  $fieldValue
      * @return void
      */
     public function deleted(FieldValue $fieldValue)
@@ -76,7 +71,6 @@ class FieldValueObserver
     /**
      * Handle the fieldValue "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldValue  $fieldValue
      * @return void
      */
     public function restored(FieldValue $fieldValue)
@@ -87,7 +81,6 @@ class FieldValueObserver
     /**
      * Handle the fieldValue "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\FieldValue  $fieldValue
      * @return void
      */
     public function forceDeleted(FieldValue $fieldValue)

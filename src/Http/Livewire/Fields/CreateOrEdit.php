@@ -60,9 +60,9 @@ class CreateOrEdit extends Component
     public function updatedFieldType($value)
     {
         switch ($value) {
-            case "select":
-            case "checkbox_multiple":
-            case "radio":
+            case 'select':
+            case 'checkbox_multiple':
+            case 'radio':
                 if (count($this->fieldOptions) == 0) {
                     $this->addOption();
 
@@ -97,7 +97,7 @@ class CreateOrEdit extends Component
                 'name' => $this->fieldName,
                 'field_group_id' => $this->fieldGroup,
                 'required' => $this->fieldRequired,
-                'default' => $this->fieldDefault
+                'default' => $this->fieldDefault,
             ]);
 
             if ($this->fieldOptions) {
@@ -127,7 +127,7 @@ class CreateOrEdit extends Component
                 'name' => $this->fieldName,
                 'field_group_id' => $this->fieldGroup,
                 'required' => $this->fieldRequired,
-                'default' => $this->fieldDefault
+                'default' => $this->fieldDefault,
             ]);
 
             if ($this->fieldOptions) {

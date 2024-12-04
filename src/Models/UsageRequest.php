@@ -8,13 +8,13 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
 class UsageRequest extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix') . 'usage_requests';
+        return config('laravel-crm.db_table_prefix').'usage_requests';
     }
 }

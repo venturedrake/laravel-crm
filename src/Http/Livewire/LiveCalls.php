@@ -13,21 +13,30 @@ class LiveCalls extends Component
     use NotifyToast;
 
     private $settingService;
+
     public $model;
+
     public $calls;
+
     public $name;
+
     public $description;
+
     public $start_at;
+
     public $finish_at;
+
     public $guests = [];
+
     public $location;
+
     public $showForm = false;
 
     protected $listeners = [
         'addCallActivity' => 'addCallOn',
         'callDeleted' => 'getCalls',
         'callCompleted' => 'getCalls',
-     ];
+    ];
 
     public function boot(SettingService $settingService)
     {
@@ -47,12 +56,12 @@ class LiveCalls extends Component
     public function create()
     {
         $data = $this->validate([
-            'name' => "required",
-            'description' => "nullable",
+            'name' => 'required',
+            'description' => 'nullable',
             'start_at' => 'required',
             'finish_at' => 'required',
             'guests' => 'nullable',
-            'location' => "nullable",
+            'location' => 'nullable',
         ]);
 
         $call = $this->model->calls()->create([

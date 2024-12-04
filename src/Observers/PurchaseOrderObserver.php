@@ -21,7 +21,6 @@ class PurchaseOrderObserver
     /**
      * Handle the purchaseOrder "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrder  $purchaseOrder
      * @return void
      */
     public function creating(PurchaseOrder $purchaseOrder)
@@ -45,7 +44,6 @@ class PurchaseOrderObserver
     /**
      * Handle the purchaseOrder "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrder  $purchaseOrder
      * @return void
      */
     public function created(PurchaseOrder $purchaseOrder)
@@ -56,7 +54,6 @@ class PurchaseOrderObserver
     /**
      * Handle the purchaseOrder "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrder  $purchaseOrder
      * @return void
      */
     public function updating(PurchaseOrder $purchaseOrder)
@@ -69,7 +66,6 @@ class PurchaseOrderObserver
     /**
      * Handle the purchaseOrder "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrder  $purchaseOrder
      * @return void
      */
     public function updated(PurchaseOrder $purchaseOrder)
@@ -94,7 +90,6 @@ class PurchaseOrderObserver
     /**
      * Handle the purchaseOrder "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrder  $purchaseOrder
      * @return void
      */
     public function deleted(PurchaseOrder $purchaseOrder)
@@ -105,7 +100,6 @@ class PurchaseOrderObserver
     /**
      * Handle the purchaseOrder "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrder  $purchaseOrder
      * @return void
      */
     public function restored(PurchaseOrder $purchaseOrder)
@@ -119,7 +113,6 @@ class PurchaseOrderObserver
     /**
      * Handle the purchaseOrder "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrder  $purchaseOrder
      * @return void
      */
     public function forceDeleted(PurchaseOrder $purchaseOrder)

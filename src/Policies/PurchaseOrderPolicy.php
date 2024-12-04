@@ -13,7 +13,6 @@ class PurchaseOrderPolicy
     /**
      * Determine whether the user can view any purchaseOrders.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class PurchaseOrderPolicy
     /**
      * Determine whether the user can view the purchaseOrder.
      *
-     * @param  \App\User  $user
      * @param  \App\PurchaseOrder  $purchaseOrder
      * @return mixed
      */
@@ -40,7 +38,6 @@ class PurchaseOrderPolicy
     /**
      * Determine whether the user can create purchaseOrders.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class PurchaseOrderPolicy
     /**
      * Determine whether the user can update the purchaseOrder.
      *
-     * @param  \App\User  $user
      * @param  \App\PurchaseOrder  $purchaseOrder
      * @return mixed
      */
@@ -67,7 +63,6 @@ class PurchaseOrderPolicy
     /**
      * Determine whether the user can delete the purchaseOrder.
      *
-     * @param  \App\User  $user
      * @param  \App\PurchaseOrder  $purchaseOrder
      * @return mixed
      */
@@ -81,7 +76,6 @@ class PurchaseOrderPolicy
     /**
      * Determine whether the user can restore the purchaseOrder.
      *
-     * @param  \App\User  $user
      * @param  \App\PurchaseOrder  $purchaseOrder
      * @return mixed
      */
@@ -95,7 +89,6 @@ class PurchaseOrderPolicy
     /**
      * Determine whether the user can permanently delete the purchaseOrder.
      *
-     * @param  \App\User  $user
      * @param  \App\PurchaseOrder  $purchaseOrder
      * @return mixed
      */

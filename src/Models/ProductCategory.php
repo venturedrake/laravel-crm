@@ -8,9 +8,9 @@ use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 
 class ProductCategory extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
     use HasCrmFields;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

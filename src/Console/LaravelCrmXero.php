@@ -38,7 +38,7 @@ class LaravelCrmXero extends Command
             $tenantName = Xero::getTenantName();
 
             switch ($this->argument('model')) {
-                case "contacts":
+                case 'contacts':
                     if (Setting::where('name', 'xero_contacts')->first() && Setting::where('name', 'xero_contacts')->first()->value == 1) {
                         foreach (Xero::contacts()->get() as $contact) {
                             $this->info('Updating LaravelCRM Xero Contact: '.$contact['Name']);
@@ -111,7 +111,7 @@ class LaravelCrmXero extends Command
 
                     break;
 
-                case "products":
+                case 'products':
                     if (Setting::where('name', 'xero_products')->first() && Setting::where('name', 'xero_products')->first()->value == 1) {
                         if ($result = Xero::get('Items', $array = [])) {
                             foreach ($result['body']['Items'] as $item) {
@@ -205,11 +205,11 @@ class LaravelCrmXero extends Command
 
                     break;
 
-                case "quotes":
+                case 'quotes':
                     //
                     break;
 
-                case "invoices":
+                case 'invoices':
                     if (Setting::where('name', 'xero_invoices')->first() && Setting::where('name', 'xero_invoices')->first()->value == 1) {
                         foreach (Xero::invoices()->get() as $invoice) {
                             // Update invoices TBC
@@ -229,22 +229,22 @@ class LaravelCrmXero extends Command
     {
         if (isset($item['SalesDetails']['TaxType'])) {
             switch ($item['SalesDetails']['TaxType']) {
-                case "OUTPUT":
+                case 'OUTPUT':
                     return 10;
 
                     break;
 
-                case "INPUT":
+                case 'INPUT':
                     return 0;
 
                     break;
 
-                case "INPUT2":
+                case 'INPUT2':
                     return 15;
 
                     break;
 
-                case "CAPEXOUTPUT":
+                case 'CAPEXOUTPUT':
                     return 17.5;
 
                     break;

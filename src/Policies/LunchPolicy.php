@@ -13,7 +13,6 @@ class LunchPolicy
     /**
      * Determine whether the user can view any lunches.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class LunchPolicy
     /**
      * Determine whether the user can view the lunch.
      *
-     * @param  \App\User  $user
      * @param  \App\Lunch  $lunch
      * @return mixed
      */
@@ -40,7 +38,6 @@ class LunchPolicy
     /**
      * Determine whether the user can create lunches.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class LunchPolicy
     /**
      * Determine whether the user can update the lunch.
      *
-     * @param  \App\User  $user
      * @param  \App\Lunch  $lunch
      * @return mixed
      */
@@ -67,7 +63,6 @@ class LunchPolicy
     /**
      * Determine whether the user can delete the lunch.
      *
-     * @param  \App\User  $user
      * @param  \App\Lunch  $lunch
      * @return mixed
      */
@@ -81,7 +76,6 @@ class LunchPolicy
     /**
      * Determine whether the user can restore the lunch.
      *
-     * @param  \App\User  $user
      * @param  \App\Lunch  $lunch
      * @return mixed
      */
@@ -95,7 +89,6 @@ class LunchPolicy
     /**
      * Determine whether the user can permanently delete the lunch.
      *
-     * @param  \App\User  $user
      * @param  \App\Lunch  $lunch
      * @return mixed
      */

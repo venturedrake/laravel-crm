@@ -7,6 +7,7 @@ use Livewire\Component;
 class NotifyToast extends Component
 {
     public $level = 'success';
+
     public $message;
 
     public function render()

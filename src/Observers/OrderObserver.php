@@ -21,7 +21,6 @@ class OrderObserver
     /**
      * Handle the order "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Order  $order
      * @return void
      */
     public function creating(Order $order)
@@ -45,7 +44,6 @@ class OrderObserver
     /**
      * Handle the order "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Order  $order
      * @return void
      */
     public function created(Order $order)
@@ -60,7 +58,6 @@ class OrderObserver
     /**
      * Handle the order "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Order  $order
      * @return void
      */
     public function updating(Order $order)
@@ -73,7 +70,6 @@ class OrderObserver
     /**
      * Handle the order "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Order  $order
      * @return void
      */
     public function updated(Order $order)
@@ -98,7 +94,6 @@ class OrderObserver
     /**
      * Handle the order "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Order  $order
      * @return void
      */
     public function deleted(Order $order)
@@ -109,7 +104,6 @@ class OrderObserver
     /**
      * Handle the order "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Order  $order
      * @return void
      */
     public function restored(Order $order)
@@ -123,7 +117,6 @@ class OrderObserver
     /**
      * Handle the order "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Order  $order
      * @return void
      */
     public function forceDeleted(Order $order)

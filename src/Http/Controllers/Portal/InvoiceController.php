@@ -33,7 +33,7 @@ class InvoiceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Invoice $invoice)
@@ -68,7 +68,7 @@ class InvoiceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function process(Invoice $invoice, Request $request)
@@ -78,7 +78,7 @@ class InvoiceController extends Controller
         }
 
         switch ($request->action) {
-            case "download":
+            case 'download':
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
                 ])
@@ -96,7 +96,6 @@ class InvoiceController extends Controller
 
                 break;
         }
-
 
         return back();
     }

@@ -13,14 +13,14 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Organisation extends Model
 {
-    use SoftDeletes;
-    use LaravelEncryptableTrait;
     use BelongsToTeams;
-    use HasCrmFields;
-    use SearchFilters;
-    use Sortable;
     use HasCrmActivities;
+    use HasCrmFields;
     use HasCrmUserRelations;
+    use LaravelEncryptableTrait;
+    use SearchFilters;
+    use SoftDeletes;
+    use Sortable;
 
     protected $guarded = ['id'];
 

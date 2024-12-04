@@ -10,7 +10,6 @@ class SettingObserver
     /**
      * Handle the email "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function creating(Setting $setting)
@@ -21,7 +20,6 @@ class SettingObserver
     /**
      * Handle the Setting "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function created(Setting $setting)
@@ -43,7 +41,6 @@ class SettingObserver
     /**
      * Handle the Setting "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function updated(Setting $setting)
@@ -54,7 +51,6 @@ class SettingObserver
     /**
      * Handle the Setting "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function deleted(Setting $setting)
@@ -65,7 +61,6 @@ class SettingObserver
     /**
      * Handle the Setting "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function restored(Setting $setting)
@@ -76,7 +71,6 @@ class SettingObserver
     /**
      * Handle the Setting "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Setting  $setting
      * @return void
      */
     public function forceDeleted(Setting $setting)
@@ -88,12 +82,12 @@ class SettingObserver
     {
         if (Schema::hasColumn($setting->getTable(), 'global')) {
             switch ($setting->name) {
-                case "app_name":
-                case "app_env":
-                case "app_url":
-                case "version":
-                case "install_id":
-                case "version_latest":
+                case 'app_name':
+                case 'app_env':
+                case 'app_url':
+                case 'version':
+                case 'install_id':
+                case 'version_latest':
                     $setting->global = 1;
 
                     break;

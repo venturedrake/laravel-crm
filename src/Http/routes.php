@@ -79,7 +79,7 @@ Route::get('/', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@in
 
 /* Leads */
 
-Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function () {
+Route::group(['prefix' => 'leads', 'middleware' => 'auth.laravel-crm'], function () {
     Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@index')
         ->name('laravel-crm.leads.filter')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
@@ -1369,7 +1369,6 @@ Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function (
             ->name('laravel-crm.people.autocomplete')
             ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
     });
-
 
     Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], function () {
         Route::get('{organisation}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@autocomplete')

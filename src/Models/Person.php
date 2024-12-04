@@ -14,14 +14,14 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Person extends Model
 {
-    use SoftDeletes;
-    use LaravelEncryptableTrait;
     use BelongsToTeams;
-    use HasCrmFields;
-    use SearchFilters;
-    use Sortable;
     use HasCrmActivities;
+    use HasCrmFields;
     use HasGlobalSettings;
+    use LaravelEncryptableTrait;
+    use SearchFilters;
+    use SoftDeletes;
+    use Sortable;
 
     protected $guarded = ['id'];
 

@@ -77,17 +77,17 @@ class DeliveryController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case "person":
+            case 'person':
                 $person = Person::find($request->id);
 
                 break;
 
-            case "organisation":
+            case 'organisation':
                 $organisation = Organisation::find($request->id);
 
                 break;
 
-            case "order":
+            case 'order':
                 $order = Order::find($request->id);
                 $client = $order->client;
                 $person = $order->person;

@@ -10,11 +10,11 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Lead extends Model
 {
-    use SoftDeletes;
-    use HasCrmFields;
     use BelongsToTeams;
-    use SearchFilters;
     use HasCrmActivities;
+    use HasCrmFields;
+    use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

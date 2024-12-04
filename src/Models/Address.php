@@ -8,9 +8,9 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Address extends Model
 {
-    use SoftDeletes;
-    use LaravelEncryptableTrait;
     use BelongsToTeams;
+    use LaravelEncryptableTrait;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -36,7 +36,7 @@ class Address extends Model
         if ($value) {
             return $value;
         } else {
-            return $this->line1. ', ' . (($this->line2) ? $this->line2. ', ' : null) . (($this->line3) ? $this->line3. ', ' : null) . $this->city . '  ' . $this->state  .' '. $this->code. ', ' . $this->country ;
+            return $this->line1.', '.(($this->line2) ? $this->line2.', ' : null).(($this->line3) ? $this->line3.', ' : null).$this->city.'  '.$this->state.' '.$this->code.', '.$this->country;
         }
     }
 

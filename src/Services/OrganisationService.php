@@ -18,7 +18,6 @@ class OrganisationService
 
     /**
      * LeadService constructor.
-     * @param OrganisationRepository $organisationRepository
      */
     public function __construct(OrganisationRepository $organisationRepository)
     {
@@ -111,7 +110,7 @@ class OrganisationService
                 if ($phoneRequest['id'] && $phone = Phone::find($phoneRequest['id'])) {
                     $phone->update([
                         'number' => $phoneRequest['number'],
-                        'type' => $phoneRequest['type'] ,
+                        'type' => $phoneRequest['type'],
                         'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
                     ]);
                     $phoneIds[] = $phone->id;
@@ -119,7 +118,7 @@ class OrganisationService
                     $phone = $organisation->phones()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'number' => $phoneRequest['number'],
-                        'type' => $phoneRequest['type'] ,
+                        'type' => $phoneRequest['type'],
                         'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
                     ]);
                     $phoneIds[] = $phone->id;
@@ -143,7 +142,7 @@ class OrganisationService
                 if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
                     $email->update([
                         'address' => $emailRequest['address'],
-                        'type' => $emailRequest['type'] ,
+                        'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
 
@@ -152,7 +151,7 @@ class OrganisationService
                     $email = $organisation->emails()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'address' => $emailRequest['address'],
-                        'type' => $emailRequest['type'] ,
+                        'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
 

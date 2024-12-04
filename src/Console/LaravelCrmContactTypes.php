@@ -52,8 +52,8 @@ class LaravelCrmContactTypes extends Command
 
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('contact_types')
-                         ->whereNull('team_id')
-                         ->get() as $contactType) {
+                ->whereNull('team_id')
+                ->get() as $contactType) {
                 $this->info('Inserting contact type '.$contactType->name.' for team '.$team->name);
 
                 $teamContactType = DB::table('contact_types')->where([

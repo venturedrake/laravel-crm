@@ -21,7 +21,6 @@ class DealObserver
     /**
      * Handle the deal "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Deal  $deal
      * @return void
      */
     public function creating(Deal $deal)
@@ -45,7 +44,6 @@ class DealObserver
     /**
      * Handle the deal "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Deal  $deal
      * @return void
      */
     public function created(Deal $deal)
@@ -56,7 +54,6 @@ class DealObserver
     /**
      * Handle the deal "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Deal  $deal
      * @return void
      */
     public function updating(Deal $deal)
@@ -69,7 +66,6 @@ class DealObserver
     /**
      * Handle the deal "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Deal  $deal
      * @return void
      */
     public function updated(Deal $deal)
@@ -94,7 +90,6 @@ class DealObserver
     /**
      * Handle the deal "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Deal  $deal
      * @return void
      */
     public function deleted(Deal $deal)
@@ -105,7 +100,6 @@ class DealObserver
     /**
      * Handle the deal "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Deal  $deal
      * @return void
      */
     public function restored(Deal $deal)
@@ -119,7 +113,6 @@ class DealObserver
     /**
      * Handle the deal "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Deal  $deal
      * @return void
      */
     public function forceDeleted(Deal $deal)

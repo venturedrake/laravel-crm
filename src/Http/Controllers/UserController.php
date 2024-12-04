@@ -2,10 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Ramsey\Uuid\Uuid;
 use App\User;
 use DB;
 use Illuminate\Support\Facades\Hash;
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
@@ -122,7 +122,7 @@ class UserController extends Controller
                 $user->forceFill([
                     'current_team_id' => $team->id,
                 ])->save();
-            };
+            }
         }
 
         if ($request->user_teams) {
@@ -231,7 +231,7 @@ class UserController extends Controller
                 if ($phoneRequest['id'] && $phone = Phone::find($phoneRequest['id'])) {
                     $phone->update([
                         'number' => $phoneRequest['number'],
-                        'type' => $phoneRequest['type'] ,
+                        'type' => $phoneRequest['type'],
                         'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
                     ]);
                     $phoneIds[] = $phone->id;
@@ -239,7 +239,7 @@ class UserController extends Controller
                     $phone = $user->phones()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'number' => $phoneRequest['number'],
-                        'type' => $phoneRequest['type'] ,
+                        'type' => $phoneRequest['type'],
                         'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
                     ]);
                     $phoneIds[] = $phone->id;
@@ -263,7 +263,7 @@ class UserController extends Controller
                 if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
                     $email->update([
                         'address' => $emailRequest['address'],
-                        'type' => $emailRequest['type'] ,
+                        'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
 
@@ -272,7 +272,7 @@ class UserController extends Controller
                     $email = $user->emails()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'address' => $emailRequest['address'],
-                        'type' => $emailRequest['type'] ,
+                        'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
 

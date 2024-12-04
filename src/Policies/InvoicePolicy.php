@@ -13,7 +13,6 @@ class InvoicePolicy
     /**
      * Determine whether the user can view any invoices.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class InvoicePolicy
     /**
      * Determine whether the user can view the invoice.
      *
-     * @param  \App\User  $user
      * @param  \App\Invoice  $invoice
      * @return mixed
      */
@@ -40,7 +38,6 @@ class InvoicePolicy
     /**
      * Determine whether the user can create invoices.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class InvoicePolicy
     /**
      * Determine whether the user can update the invoice.
      *
-     * @param  \App\User  $user
      * @param  \App\Invoice  $invoice
      * @return mixed
      */
@@ -67,7 +63,6 @@ class InvoicePolicy
     /**
      * Determine whether the user can delete the invoice.
      *
-     * @param  \App\User  $user
      * @param  \App\Invoice  $invoice
      * @return mixed
      */
@@ -81,7 +76,6 @@ class InvoicePolicy
     /**
      * Determine whether the user can restore the invoice.
      *
-     * @param  \App\User  $user
      * @param  \App\Invoice  $invoice
      * @return mixed
      */
@@ -95,7 +89,6 @@ class InvoicePolicy
     /**
      * Determine whether the user can permanently delete the invoice.
      *
-     * @param  \App\User  $user
      * @param  \App\Invoice  $invoice
      * @return mixed
      */

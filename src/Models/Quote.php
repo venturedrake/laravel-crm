@@ -12,12 +12,12 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Quote extends Model
 {
-    use SoftDeletes;
-    use HasCrmFields;
     use BelongsToTeams;
-    use SearchFilters;
     use HasCrmActivities;
+    use HasCrmFields;
     use HasGlobalSettings;
+    use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -59,7 +59,7 @@ class Quote extends Model
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'quote_prefix')->first()->value ?? null) . $this->number;
+            return (Setting::where('name', 'quote_prefix')->first()->value ?? null).$this->number;
         }
     }
 

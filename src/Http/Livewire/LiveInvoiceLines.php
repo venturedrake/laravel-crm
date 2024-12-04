@@ -19,6 +19,7 @@ class LiveInvoiceLines extends Component
     public $invoiceLines;
 
     public $order_product_id;
+
     public $invoice_line_id;
 
     public $product_id;

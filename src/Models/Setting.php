@@ -10,9 +10,9 @@ use VentureDrake\LaravelCrm\Traits\HasCrmPhones;
 class Setting extends Model
 {
     use BelongsToTeams;
-    use HasCrmPhones;
-    use HasCrmEmails;
     use HasCrmAddresses;
+    use HasCrmEmails;
+    use HasCrmPhones;
 
     protected $guarded = ['id'];
 
@@ -22,12 +22,12 @@ class Setting extends Model
         static::creating(function ($model) {
             if ($model->global) {
                 switch ($model->name) {
-                    case "app_name":
-                    case "app_env":
-                    case "app_url":
-                    case "version":
-                    case "install_id":
-                    case "version_latest":
+                    case 'app_name':
+                    case 'app_env':
+                    case 'app_url':
+                    case 'version':
+                    case 'install_id':
+                    case 'version_latest':
                         $model->global = 1;
 
                         break;

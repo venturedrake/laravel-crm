@@ -13,7 +13,6 @@ class TaxRatePolicy
     /**
      * Determine whether the user can view any tax rates.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class TaxRatePolicy
     /**
      * Determine whether the user can view thetax rate.
      *
-     * @param  \App\User  $user
      * @param  \App\TaxRate  $taxRate
      * @return mixed
      */
@@ -40,7 +38,6 @@ class TaxRatePolicy
     /**
      * Determine whether the user can create tax rates.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class TaxRatePolicy
     /**
      * Determine whether the user can update thetax rate.
      *
-     * @param  \App\User  $user
      * @param  \App\TaxRate  $taxRate
      * @return mixed
      */
@@ -67,7 +63,6 @@ class TaxRatePolicy
     /**
      * Determine whether the user can delete thetax rate.
      *
-     * @param  \App\User  $user
      * @param  \App\TaxRate  $taxRate
      * @return mixed
      */
@@ -81,7 +76,6 @@ class TaxRatePolicy
     /**
      * Determine whether the user can restore thetax rate.
      *
-     * @param  \App\User  $user
      * @param  \App\TaxRate  $taxRate
      * @return mixed
      */
@@ -95,7 +89,6 @@ class TaxRatePolicy
     /**
      * Determine whether the user can permanently delete thetax rate.
      *
-     * @param  \App\User  $user
      * @param  \App\TaxRate  $taxRate
      * @return mixed
      */

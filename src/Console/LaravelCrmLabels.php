@@ -53,8 +53,8 @@ class LaravelCrmLabels extends Command
 
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('labels')
-                         ->whereNull('team_id')
-                         ->get() as $label) {
+                ->whereNull('team_id')
+                ->get() as $label) {
                 $this->info('Inserting label '.$label->name.' for team '.$team->name);
 
                 $teamLabel = DB::table('labels')->where([

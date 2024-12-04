@@ -155,7 +155,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Lead Pipeline',
-                        'model' =>  get_class(new Lead()),
+                        'model' => get_class(new Lead),
                     ],
                 ],
                 [
@@ -164,7 +164,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Deal Pipeline',
-                        'model' =>  get_class(new Deal()),
+                        'model' => get_class(new Deal),
                     ],
                 ],
                 [
@@ -173,7 +173,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Quote Pipeline',
-                        'model' =>  get_class(new Quote()),
+                        'model' => get_class(new Quote),
                     ],
                 ],
                 [
@@ -182,7 +182,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Order Pipeline',
-                        'model' =>  get_class(new Order()),
+                        'model' => get_class(new Order),
                     ],
                 ],
                 [
@@ -191,7 +191,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Invoice Pipeline',
-                        'model' =>  get_class(new Invoice()),
+                        'model' => get_class(new Invoice),
                     ],
                 ],
                 [
@@ -200,7 +200,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Delivery Pipeline',
-                        'model' =>  get_class(new Delivery()),
+                        'model' => get_class(new Delivery),
                     ],
                 ],
                 [
@@ -209,7 +209,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Purchase Order Pipeline',
-                        'model' =>  get_class(new PurchaseOrder()),
+                        'model' => get_class(new PurchaseOrder),
                     ],
                 ],
             ];

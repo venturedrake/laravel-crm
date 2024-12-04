@@ -10,15 +10,21 @@ use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveNote extends Component
 {
-    use NotifyToast;
     use HasGlobalSettings;
+    use NotifyToast;
 
     private $settingService;
+
     public $note;
+
     public $editMode = false;
+
     public $content;
+
     public $noted_at;
+
     public $showRelated = false;
+
     public $view;
 
     protected $listeners = [
@@ -53,8 +59,8 @@ class LiveNote extends Component
     protected function rules()
     {
         return [
-            'content' => "required",
-            'noted_at' => "nullable",
+            'content' => 'required',
+            'noted_at' => 'nullable',
         ];
     }
 

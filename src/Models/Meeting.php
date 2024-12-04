@@ -11,11 +11,11 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Meeting extends Model
 {
-    use SoftDeletes;
-    use HasCrmFields;
     use BelongsToTeams;
-    use SearchFilters;
+    use HasCrmFields;
     use HasGlobalSettings;
+    use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

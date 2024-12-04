@@ -10,7 +10,6 @@ class DeliveryProductObserver
     /**
      * Handle the deliveryProduct "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\DeliveryProduct  $deliveryProduct
      * @return void
      */
     public function creating(DeliveryProduct $deliveryProduct)
@@ -21,7 +20,6 @@ class DeliveryProductObserver
     /**
      * Handle the deliveryProduct "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\DeliveryProduct  $deliveryProduct
      * @return void
      */
     public function created(DeliveryProduct $deliveryProduct)
@@ -32,7 +30,6 @@ class DeliveryProductObserver
     /**
      * Handle the deliveryProduct "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\DeliveryProduct  $deliveryProduct
      * @return void
      */
     public function updating(DeliveryProduct $deliveryProduct)
@@ -43,7 +40,6 @@ class DeliveryProductObserver
     /**
      * Handle the deliveryProduct "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\DeliveryProduct  $deliveryProduct
      * @return void
      */
     public function updated(DeliveryProduct $deliveryProduct)
@@ -65,7 +61,6 @@ class DeliveryProductObserver
     /**
      * Handle the deliveryProduct "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\DeliveryProduct  $deliveryProduct
      * @return void
      */
     public function deleted(DeliveryProduct $deliveryProduct)
@@ -76,7 +71,6 @@ class DeliveryProductObserver
     /**
      * Handle the deliveryProduct "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\DeliveryProduct  $deliveryProduct
      * @return void
      */
     public function restored(DeliveryProduct $deliveryProduct)
@@ -87,7 +81,6 @@ class DeliveryProductObserver
     /**
      * Handle the deliveryProduct "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\DeliveryProduct  $deliveryProduct
      * @return void
      */
     public function forceDeleted(DeliveryProduct $deliveryProduct)

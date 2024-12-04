@@ -13,7 +13,6 @@ class NotePolicy
     /**
      * Determine whether the user can view any notes.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class NotePolicy
     /**
      * Determine whether the user can view the note.
      *
-     * @param  \App\User  $user
      * @param  \App\Note  $note
      * @return mixed
      */
@@ -40,7 +38,6 @@ class NotePolicy
     /**
      * Determine whether the user can create notes.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class NotePolicy
     /**
      * Determine whether the user can update the note.
      *
-     * @param  \App\User  $user
      * @param  \App\Note  $note
      * @return mixed
      */
@@ -67,7 +63,6 @@ class NotePolicy
     /**
      * Determine whether the user can delete the note.
      *
-     * @param  \App\User  $user
      * @param  \App\Note  $note
      * @return mixed
      */
@@ -81,7 +76,6 @@ class NotePolicy
     /**
      * Determine whether the user can restore the note.
      *
-     * @param  \App\User  $user
      * @param  \App\Note  $note
      * @return mixed
      */
@@ -95,7 +89,6 @@ class NotePolicy
     /**
      * Determine whether the user can permanently delete the note.
      *
-     * @param  \App\User  $user
      * @param  \App\Note  $note
      * @return mixed
      */

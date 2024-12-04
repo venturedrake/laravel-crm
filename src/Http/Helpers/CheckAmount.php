@@ -46,8 +46,8 @@ function total($model)
 function lineAmount($item)
 {
     switch (class_basename($item)) {
-        case "QuoteProduct":
-        case "OrderProduct":
+        case 'QuoteProduct':
+        case 'OrderProduct':
             if (($item->price * $item->quantity) == $item->amount) {
                 return true;
             }
@@ -59,12 +59,12 @@ function lineAmount($item)
 function getItems($model)
 {
     switch (class_basename($model)) {
-        case "Quote":
+        case 'Quote':
             return $model->quoteProducts()->whereNotNull('product_id')->get();
 
             break;
 
-        case "Order":
+        case 'Order':
             return $model->orderProducts()->whereNotNull('product_id')->get();
 
             break;

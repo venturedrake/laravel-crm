@@ -25,18 +25,18 @@ class SettingsComposer
                     'dynamicProducts' => 'true',
                 ];
 
-                if (!Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
+                if (! Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
                     return $defaults;
                 }
 
-                if($dynamicProductsSetting = Setting::where('name', 'dynamic_products')->first()) {
-                    if($dynamicProductsSetting->value == 1) {
-                        $dynamicProducts =  'true';
+                if ($dynamicProductsSetting = Setting::where('name', 'dynamic_products')->first()) {
+                    if ($dynamicProductsSetting->value == 1) {
+                        $dynamicProducts = 'true';
                     } else {
-                        $dynamicProducts =  'false';
+                        $dynamicProducts = 'false';
                     }
                 } else {
-                    $dynamicProducts =  $defaults['dynamicProducts'];
+                    $dynamicProducts = $defaults['dynamicProducts'];
                 }
 
                 return [

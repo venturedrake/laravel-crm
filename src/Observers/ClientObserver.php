@@ -88,9 +88,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function restoring(Client $client)
-    {
-    }
+    public function restoring(Client $client) {}
 
     /**
      * Handle the client "restored" event.

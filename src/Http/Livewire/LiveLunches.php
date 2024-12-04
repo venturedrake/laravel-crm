@@ -13,21 +13,30 @@ class LiveLunches extends Component
     use NotifyToast;
 
     private $settingService;
+
     public $model;
+
     public $lunches;
+
     public $name;
+
     public $description;
+
     public $start_at;
+
     public $finish_at;
+
     public $guests = [];
+
     public $location;
+
     public $showForm = false;
 
     protected $listeners = [
         'addLunchActivity' => 'addLunchOn',
         'lunchDeleted' => 'getLunches',
         'lunchCompleted' => 'getLunches',
-     ];
+    ];
 
     public function boot(SettingService $settingService)
     {
@@ -52,7 +61,7 @@ class LiveLunches extends Component
             'start_at' => 'required',
             'finish_at' => 'required',
             'guests' => 'nullable',
-            'location' => "nullable",
+            'location' => 'nullable',
         ]);
 
         $lunch = $this->model->lunches()->create([

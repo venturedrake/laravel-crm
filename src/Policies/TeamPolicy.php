@@ -13,7 +13,6 @@ class TeamPolicy
     /**
      * Determine whether the user can view any teams.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class TeamPolicy
     /**
      * Determine whether the user can view the team.
      *
-     * @param  \App\User  $user
      * @param  \App\Team  $team
      * @return mixed
      */
@@ -40,7 +38,6 @@ class TeamPolicy
     /**
      * Determine whether the user can create teams.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class TeamPolicy
     /**
      * Determine whether the user can update the team.
      *
-     * @param  \App\User  $user
      * @param  \App\Team  $team
      * @return mixed
      */
@@ -67,7 +63,6 @@ class TeamPolicy
     /**
      * Determine whether the user can delete the team.
      *
-     * @param  \App\User  $user
      * @param  \App\Team  $team
      * @return mixed
      */
@@ -81,7 +76,6 @@ class TeamPolicy
     /**
      * Determine whether the user can restore the team.
      *
-     * @param  \App\User  $user
      * @param  \App\Team  $team
      * @return mixed
      */
@@ -95,7 +89,6 @@ class TeamPolicy
     /**
      * Determine whether the user can permanently delete the team.
      *
-     * @param  \App\User  $user
      * @param  \App\Team  $team
      * @return mixed
      */

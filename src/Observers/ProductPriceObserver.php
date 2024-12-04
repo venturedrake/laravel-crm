@@ -10,7 +10,6 @@ class ProductPriceObserver
     /**
      * Handle the product "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\ProductPrice  $product
      * @return void
      */
     public function creating(ProductPrice $product)
@@ -21,7 +20,6 @@ class ProductPriceObserver
     /**
      * Handle the product "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\ProductPrice  $product
      * @return void
      */
     public function created(ProductPrice $product)
@@ -32,7 +30,6 @@ class ProductPriceObserver
     /**
      * Handle the product "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\ProductPrice  $product
      * @return void
      */
     public function updating(ProductPrice $product)
@@ -43,7 +40,6 @@ class ProductPriceObserver
     /**
      * Handle the product "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\ProductPrice  $product
      * @return void
      */
     public function updated(ProductPrice $product)
@@ -65,7 +61,6 @@ class ProductPriceObserver
     /**
      * Handle the product "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\ProductPrice  $product
      * @return void
      */
     public function deleted(ProductPrice $product)
@@ -76,7 +71,6 @@ class ProductPriceObserver
     /**
      * Handle the product "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\ProductPrice  $product
      * @return void
      */
     public function restored(ProductPrice $product)
@@ -87,7 +81,6 @@ class ProductPriceObserver
     /**
      * Handle the product "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\ProductPrice  $product
      * @return void
      */
     public function forceDeleted(ProductPrice $product)

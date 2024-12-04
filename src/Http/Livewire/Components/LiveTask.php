@@ -11,16 +11,23 @@ use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class LiveTask extends Component
 {
-    use NotifyToast;
     use HasGlobalSettings;
+    use NotifyToast;
 
     private $settingService;
+
     public $task;
+
     public $editMode = false;
+
     public $name;
+
     public $description;
+
     public $due_at;
+
     public $showRelated = false;
+
     public $view;
 
     protected $listeners = [
@@ -54,9 +61,9 @@ class LiveTask extends Component
     protected function rules()
     {
         return [
-            'name' => "required",
-            'description' => "nullable",
-            'due_at' => "nullable",
+            'name' => 'required',
+            'description' => 'nullable',
+            'due_at' => 'nullable',
         ];
     }
 

@@ -73,7 +73,7 @@ class PipelineStageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit(PipelineStage $pipelineStage)
@@ -106,7 +106,7 @@ class PipelineStageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(PipelineStage $pipelineStage)

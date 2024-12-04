@@ -79,9 +79,7 @@ class PipelineStageProbabilityObserver
      * @param  \VentureDrake\LaravelCrm\PipelineStageProbability  $pipelineStageProbability
      * @return void
      */
-    public function restoring(PipelineStageProbability $pipelineStageProbability)
-    {
-    }
+    public function restoring(PipelineStageProbability $pipelineStageProbability) {}
 
     /**
      * Handle the pipelineStageProbability "restored" event.

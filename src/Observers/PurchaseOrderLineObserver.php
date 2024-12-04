@@ -10,7 +10,6 @@ class PurchaseOrderLineObserver
     /**
      * Handle the purchaseOrderLine "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrderLine  $purchaseOrderLine
      * @return void
      */
     public function creating(PurchaseOrderLine $purchaseOrderLine)
@@ -21,7 +20,6 @@ class PurchaseOrderLineObserver
     /**
      * Handle the purchaseOrderLine "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrderLine  $purchaseOrderLine
      * @return void
      */
     public function created(PurchaseOrderLine $purchaseOrderLine)
@@ -32,7 +30,6 @@ class PurchaseOrderLineObserver
     /**
      * Handle the purchaseOrderLine "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrderLine  $purchaseOrderLine
      * @return void
      */
     public function updating(PurchaseOrderLine $purchaseOrderLine)
@@ -43,7 +40,6 @@ class PurchaseOrderLineObserver
     /**
      * Handle the purchaseOrderLine "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrderLine  $purchaseOrderLine
      * @return void
      */
     public function updated(PurchaseOrderLine $purchaseOrderLine)
@@ -65,7 +61,6 @@ class PurchaseOrderLineObserver
     /**
      * Handle the purchaseOrderLine "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrderLine  $purchaseOrderLine
      * @return void
      */
     public function deleted(PurchaseOrderLine $purchaseOrderLine)
@@ -76,7 +71,6 @@ class PurchaseOrderLineObserver
     /**
      * Handle the purchaseOrderLine "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrderLine  $purchaseOrderLine
      * @return void
      */
     public function restored(PurchaseOrderLine $purchaseOrderLine)
@@ -87,7 +81,6 @@ class PurchaseOrderLineObserver
     /**
      * Handle the purchaseOrderLine "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\PurchaseOrderLine  $purchaseOrderLine
      * @return void
      */
     public function forceDeleted(PurchaseOrderLine $purchaseOrderLine)

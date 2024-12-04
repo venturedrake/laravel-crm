@@ -10,7 +10,6 @@ class QuoteProductObserver
     /**
      * Handle the quoteProduct "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\QuoteProduct  $quoteProduct
      * @return void
      */
     public function creating(QuoteProduct $quoteProduct)
@@ -21,7 +20,6 @@ class QuoteProductObserver
     /**
      * Handle the quoteProduct "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\QuoteProduct  $quoteProduct
      * @return void
      */
     public function created(QuoteProduct $quoteProduct)
@@ -32,7 +30,6 @@ class QuoteProductObserver
     /**
      * Handle the quoteProduct "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\QuoteProduct  $quoteProduct
      * @return void
      */
     public function updating(QuoteProduct $quoteProduct)
@@ -43,7 +40,6 @@ class QuoteProductObserver
     /**
      * Handle the quoteProduct "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\QuoteProduct  $quoteProduct
      * @return void
      */
     public function updated(QuoteProduct $quoteProduct)
@@ -65,7 +61,6 @@ class QuoteProductObserver
     /**
      * Handle the quoteProduct "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\QuoteProduct  $quoteProduct
      * @return void
      */
     public function deleted(QuoteProduct $quoteProduct)
@@ -76,7 +71,6 @@ class QuoteProductObserver
     /**
      * Handle the quoteProduct "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\QuoteProduct  $quoteProduct
      * @return void
      */
     public function restored(QuoteProduct $quoteProduct)
@@ -87,7 +81,6 @@ class QuoteProductObserver
     /**
      * Handle the quoteProduct "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\QuoteProduct  $quoteProduct
      * @return void
      */
     public function forceDeleted(QuoteProduct $quoteProduct)

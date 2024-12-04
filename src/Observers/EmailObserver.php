@@ -25,7 +25,6 @@ class EmailObserver
     /**
      * Handle the email "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Email  $email
      * @return void
      */
     public function created(Email $email)
@@ -49,7 +48,6 @@ class EmailObserver
     /**
      * Handle the email "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Email  $email
      * @return void
      */
     public function updated(Email $email)
@@ -74,7 +72,6 @@ class EmailObserver
     /**
      * Handle the email "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Email  $email
      * @return void
      */
     public function deleted(Email $email)
@@ -85,7 +82,6 @@ class EmailObserver
     /**
      * Handle the email "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Email  $email
      * @return void
      */
     public function restored(Email $email)
@@ -99,7 +95,6 @@ class EmailObserver
     /**
      * Handle the email "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Email  $email
      * @return void
      */
     public function forceDeleted(Email $email)

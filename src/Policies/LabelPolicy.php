@@ -13,7 +13,6 @@ class LabelPolicy
     /**
      * Determine whether the user can view any labels.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class LabelPolicy
     /**
      * Determine whether the user can view the label.
      *
-     * @param  \App\User  $user
      * @param  \App\Label  $label
      * @return mixed
      */
@@ -40,7 +38,6 @@ class LabelPolicy
     /**
      * Determine whether the user can create labels.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class LabelPolicy
     /**
      * Determine whether the user can update the label.
      *
-     * @param  \App\User  $user
      * @param  \App\Label  $label
      * @return mixed
      */
@@ -67,7 +63,6 @@ class LabelPolicy
     /**
      * Determine whether the user can delete the label.
      *
-     * @param  \App\User  $user
      * @param  \App\Label  $label
      * @return mixed
      */
@@ -81,7 +76,6 @@ class LabelPolicy
     /**
      * Determine whether the user can restore the label.
      *
-     * @param  \App\User  $user
      * @param  \App\Label  $label
      * @return mixed
      */
@@ -95,7 +89,6 @@ class LabelPolicy
     /**
      * Determine whether the user can permanently delete the label.
      *
-     * @param  \App\User  $user
      * @param  \App\Label  $label
      * @return mixed
      */

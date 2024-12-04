@@ -10,7 +10,6 @@ class MeetingObserver
     /**
      * Handle the meeting "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Meeting  $meeting
      * @return void
      */
     public function creating(Meeting $meeting)
@@ -25,7 +24,6 @@ class MeetingObserver
     /**
      * Handle the meeting "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Meeting  $meeting
      * @return void
      */
     public function created(Meeting $meeting)
@@ -36,7 +34,6 @@ class MeetingObserver
     /**
      * Handle the meeting "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Meeting  $meeting
      * @return void
      */
     public function updating(Meeting $meeting)
@@ -49,7 +46,6 @@ class MeetingObserver
     /**
      * Handle the meeting "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Meeting  $meeting
      * @return void
      */
     public function updated(Meeting $meeting)
@@ -78,7 +74,6 @@ class MeetingObserver
     /**
      * Handle the meeting "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Meeting  $meeting
      * @return void
      */
     public function deleted(Meeting $meeting)
@@ -89,7 +84,6 @@ class MeetingObserver
     /**
      * Handle the meeting "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Meeting  $meeting
      * @return void
      */
     public function restored(Meeting $meeting)
@@ -103,7 +97,6 @@ class MeetingObserver
     /**
      * Handle the meeting "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\Meeting  $meeting
      * @return void
      */
     public function forceDeleted(Meeting $meeting)

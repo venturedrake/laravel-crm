@@ -37,7 +37,6 @@ class BelongsToTeamsScope implements Scope
     /**
      * Extend the query builder with the needed functions.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @return void
      */
     public function extend(Builder $builder)

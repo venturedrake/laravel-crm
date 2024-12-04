@@ -8,9 +8,9 @@ use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Email extends Model
 {
-    use SoftDeletes;
-    use LaravelEncryptableTrait;
     use BelongsToTeams;
+    use LaravelEncryptableTrait;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

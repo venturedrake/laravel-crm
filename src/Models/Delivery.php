@@ -12,11 +12,11 @@ use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Delivery extends Model
 {
-    use SoftDeletes;
     use BelongsToTeams;
-    use SearchFilters;
     use HasCrmActivities;
     use HasGlobalSettings;
+    use SearchFilters;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

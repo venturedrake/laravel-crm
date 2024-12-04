@@ -77,9 +77,9 @@ class ClientController extends Controller
     public function store(StoreClientRequest $request)
     {
         $client = Client::create([
-             'name' => $request->name,
-             'user_owner_id' => $request->user_owner_id,
-         ]);
+            'name' => $request->name,
+            'user_owner_id' => $request->user_owner_id,
+        ]);
 
         $client->labels()->sync($request->labels ?? []);
 
@@ -97,8 +97,8 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         return view('laravel-crm::clients.show', [
-             'client' => $client,
-         ]);
+            'client' => $client,
+        ]);
     }
 
     /**
@@ -110,8 +110,8 @@ class ClientController extends Controller
     public function edit(Client $client)
     {
         return view('laravel-crm::clients.edit', [
-             'client' => $client,
-         ]);
+            'client' => $client,
+        ]);
     }
 
     /**
@@ -124,9 +124,9 @@ class ClientController extends Controller
     public function update(UpdateClientRequest $request, Client $client)
     {
         $client->update([
-             'name' => $request->name,
-             'user_owner_id' => $request->user_owner_id,
-         ]);
+            'name' => $request->name,
+            'user_owner_id' => $request->user_owner_id,
+        ]);
 
         $client->labels()->sync($request->labels ?? []);
 

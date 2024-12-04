@@ -13,7 +13,6 @@ class ContactPolicy
     /**
      * Determine whether the user can view any contacts.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -26,7 +25,6 @@ class ContactPolicy
     /**
      * Determine whether the user can view the contact.
      *
-     * @param  \App\User  $user
      * @param  \App\Contact  $contact
      * @return mixed
      */
@@ -40,7 +38,6 @@ class ContactPolicy
     /**
      * Determine whether the user can create contacts.
      *
-     * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +50,6 @@ class ContactPolicy
     /**
      * Determine whether the user can update the contact.
      *
-     * @param  \App\User  $user
      * @param  \App\Contact  $contact
      * @return mixed
      */
@@ -67,7 +63,6 @@ class ContactPolicy
     /**
      * Determine whether the user can delete the contact.
      *
-     * @param  \App\User  $user
      * @param  \App\Contact  $contact
      * @return mixed
      */
@@ -81,7 +76,6 @@ class ContactPolicy
     /**
      * Determine whether the user can restore the contact.
      *
-     * @param  \App\User  $user
      * @param  \App\Contact  $contact
      * @return mixed
      */
@@ -95,7 +89,6 @@ class ContactPolicy
     /**
      * Determine whether the user can permanently delete the contact.
      *
-     * @param  \App\User  $user
      * @param  \App\Contact  $contact
      * @return mixed
      */

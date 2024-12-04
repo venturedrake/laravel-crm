@@ -10,7 +10,6 @@ class XeroPersonObserver
     /**
      * Handle the xeroPerson "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPerson  $xeroPerson
      * @return void
      */
     public function creating(XeroPerson $xeroPerson)
@@ -21,7 +20,6 @@ class XeroPersonObserver
     /**
      * Handle the xeroPerson "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPerson  $xeroPerson
      * @return void
      */
     public function created(XeroPerson $xeroPerson)
@@ -32,7 +30,6 @@ class XeroPersonObserver
     /**
      * Handle the xeroPerson "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPerson  $xeroPerson
      * @return void
      */
     public function updating(XeroPerson $xeroPerson)
@@ -43,7 +40,6 @@ class XeroPersonObserver
     /**
      * Handle the xeroPerson "updated" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPerson  $xeroPerson
      * @return void
      */
     public function updated(XeroPerson $xeroPerson)
@@ -65,7 +61,6 @@ class XeroPersonObserver
     /**
      * Handle the xeroPerson "deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPerson  $xeroPerson
      * @return void
      */
     public function deleted(XeroPerson $xeroPerson)
@@ -76,7 +71,6 @@ class XeroPersonObserver
     /**
      * Handle the xeroPerson "restored" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPerson  $xeroPerson
      * @return void
      */
     public function restored(XeroPerson $xeroPerson)
@@ -87,7 +81,6 @@ class XeroPersonObserver
     /**
      * Handle the xeroPerson "force deleted" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Models\XeroPerson  $xeroPerson
      * @return void
      */
     public function forceDeleted(XeroPerson $xeroPerson)

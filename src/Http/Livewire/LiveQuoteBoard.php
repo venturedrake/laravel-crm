@@ -4,8 +4,8 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Illuminate\Support\Collection;
 use VentureDrake\LaravelCrm\Http\Livewire\KanbanBoard\KanbanBoard;
-use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\Quote;
 
 class LiveQuoteBoard extends KanbanBoard
 {
@@ -15,7 +15,7 @@ class LiveQuoteBoard extends KanbanBoard
 
     public function stages(): Collection
     {
-        if ($pipeline = Pipeline::where('model', get_class(new Quote()))->first()) {
+        if ($pipeline = Pipeline::where('model', get_class(new Quote))->first()) {
             return $pipeline->pipelineStages()
                 ->orderBy('order')
                 ->orderBy('id')
@@ -26,7 +26,7 @@ class LiveQuoteBoard extends KanbanBoard
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
         Quote::find($recordId)->update([
-            'pipeline_stage_id' => $stageId
+            'pipeline_stage_id' => $stageId,
         ]);
     }
 

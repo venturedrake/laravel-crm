@@ -129,7 +129,7 @@ class LaravelCrmUpdate extends Command
                                 'price' => $quoteProduct->price,
                             ])->first()) {
                             $orderProduct->update([
-                                'quote_product_id' => $quoteProduct->id
+                                'quote_product_id' => $quoteProduct->id,
                             ]);
                         }
                     }
@@ -146,7 +146,7 @@ class LaravelCrmUpdate extends Command
                                 'price' => $orderProduct->price,
                             ])->first()) {
                             $invoiceLine->update([
-                                'order_product_id' => $orderProduct->id
+                                'order_product_id' => $orderProduct->id,
                             ]);
                         }
                     }
@@ -169,7 +169,7 @@ class LaravelCrmUpdate extends Command
                                 'order_product_id' => $orderProduct->id,
                             ])->first()) {
                             $deliveryProduct->update([
-                                'quantity' => $orderProduct->quantity
+                                'quantity' => $orderProduct->quantity,
                             ]);
                         }
                     }
@@ -213,7 +213,7 @@ class LaravelCrmUpdate extends Command
 
                 $quoteProduct->update([
                     'tax_rate' => $taxRate,
-                    'tax_amount' => $quoteProduct->amount * ($taxRate / 100)
+                    'tax_amount' => $quoteProduct->amount * ($taxRate / 100),
                 ]);
             }
 
@@ -230,7 +230,7 @@ class LaravelCrmUpdate extends Command
 
                 $orderProduct->update([
                     'tax_rate' => $taxRate,
-                    'tax_amount' => $orderProduct->amount * ($taxRate / 100)
+                    'tax_amount' => $orderProduct->amount * ($taxRate / 100),
                 ]);
             }
 
@@ -247,7 +247,7 @@ class LaravelCrmUpdate extends Command
 
                 $invoiceLine->update([
                     'tax_rate' => $taxRate,
-                    'tax_amount' => ($invoiceLine->amount * ($taxRate / 100)) / 100
+                    'tax_amount' => ($invoiceLine->amount * ($taxRate / 100)) / 100,
                 ]);
             }
 

@@ -186,9 +186,9 @@ class SettingController extends Controller
         }
 
         if ($request->organisation_name && config('laravel-crm.teams') && auth()->user()->currentTeam) {
-            DB::table("teams")
-                ->where("id", auth()->user()->currentTeam->id)
-                ->update(["name" => $request->organisation_name]);
+            DB::table('teams')
+                ->where('id', auth()->user()->currentTeam->id)
+                ->update(['name' => $request->organisation_name]);
         }
 
         $this->settingService->set('dynamic_products', (($request->dynamic_products == 'on') ? 1 : 0));
@@ -212,7 +212,7 @@ class SettingController extends Controller
                 if ($phoneRequest['id'] && $phone = Phone::find($phoneRequest['id'])) {
                     $phone->update([
                         'number' => $phoneRequest['number'],
-                        'type' => $phoneRequest['type'] ,
+                        'type' => $phoneRequest['type'],
                         'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
                     ]);
                     $phoneIds[] = $phone->id;
@@ -220,7 +220,7 @@ class SettingController extends Controller
                     $phone = $setting->phones()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'number' => $phoneRequest['number'],
-                        'type' => $phoneRequest['type'] ,
+                        'type' => $phoneRequest['type'],
                         'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
                     ]);
                     $phoneIds[] = $phone->id;
@@ -244,7 +244,7 @@ class SettingController extends Controller
                 if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
                     $email->update([
                         'address' => $emailRequest['address'],
-                        'type' => $emailRequest['type'] ,
+                        'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
 
@@ -253,7 +253,7 @@ class SettingController extends Controller
                     $email = $setting->emails()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'address' => $emailRequest['address'],
-                        'type' => $emailRequest['type'] ,
+                        'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
                     ]);
 

@@ -19,6 +19,7 @@ class LiveOrderItems extends Component
     public $products;
 
     public $quote_product_id;
+
     public $order_product_id;
 
     public $product_id;

@@ -9,7 +9,7 @@ export default defineConfig({
         }),
     ],
     build: {
-        outDir: 'resources',
+        outDir: 'resources/build',
         emptyOutDir: true,
     }
 });

@@ -52,8 +52,8 @@ class LaravelCrmOrganisationTypes extends Command
 
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('organisation_types')
-                         ->whereNull('team_id')
-                         ->get() as $organisationType) {
+                ->whereNull('team_id')
+                ->get() as $organisationType) {
                 $this->info('Inserting organisation type '.$organisationType->name.' for team '.$team->name);
 
                 $teamOrganisationType = DB::table('organisation_types')->where([

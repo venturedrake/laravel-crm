@@ -10,6 +10,7 @@ class KanbanBoard extends Component
     public $model;
 
     public $sortable;
+
     public $sortableBetweenStages;
 
     public function mount(

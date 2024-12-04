@@ -4,11 +4,11 @@ namespace VentureDrake\LaravelCrm\Notifications;
 
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Support\HtmlString;
-use VentureDrake\LaravelCrm\Models\Call;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
+use VentureDrake\LaravelCrm\Models\Call;
 
 class CallReminderNotification extends Notification
 {
@@ -51,7 +51,7 @@ class CallReminderNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $mailMessage = new MailMessage();
+        $mailMessage = new MailMessage;
         $subject = 'CALL REMINDER: '.$this->call->name.' ('.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').')';
         $greeting = 'Hi '.$this->user->name.',';
 
@@ -61,44 +61,44 @@ class CallReminderNotification extends Notification
 
         $mailMessage->line(new HtmlString('<strong>THIS CALL IS COMING UP:</strong>'));
         $mailMessage->line(new HtmlString('<strong>'.$this->call->name.'</strong>'));
-        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->call->finish_at)->format('M d, Y \\@ h:i A'). '<br />Location: '.$this->call->location));
+        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->call->finish_at)->format('M d, Y \\@ h:i A').'<br />Location: '.$this->call->location));
         $mailMessage->line(new HtmlString($this->call->description));
 
         if ($this->call->callable) {
             switch (class_basename($this->call->callable->getMorphClass())) {
-                case "Lead":
+                case 'Lead':
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->call->callable->id.'">'.$this->call->callable->title.'</a></small>'));
                     break;
 
-                case "Deal":
+                case 'Deal':
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/deals/'.$this->call->callable->id.'">'.$this->call->callable->title.'</a></small>'));
                     break;
 
-                case "Quote":
+                case 'Quote':
                     $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/quotes/'.$this->call->callable->id.'">'.$this->call->callable->title.'</a></small>'));
                     break;
 
-                case "Order":
+                case 'Order':
                     $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/orders/'.$this->call->callable->id.'">'.$this->call->callable->order_id.'</a></small>'));
                     break;
 
-                case "Invoice":
+                case 'Invoice':
                     $mailMessage->line(new HtmlString('Invoice: <a href="'.config('app.url').'/invoices/'.$this->call->callable->id.'">'.$this->call->callable->invoice_id.'</a></small>'));
                     break;
 
-                case "Delivery":
+                case 'Delivery':
                     $mailMessage->line(new HtmlString('Delivery: <a href="'.config('app.url').'/deliveries/'.$this->call->callable->id.'">'.$this->call->callable->delivery_id.'</a></small>'));
                     break;
 
-                case "Client":
+                case 'Client':
                     $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.$this->call->callable->id.'">'.$this->call->callable->name.'</a></small>'));
                     break;
 
-                case "Organisation":
+                case 'Organisation':
                     $mailMessage->line(new HtmlString('Organisation: <a href="'.config('app.url').'/organisation/'.$this->call->callable->id.'">'.$this->call->callable->name.'</a></small>'));
                     break;
 
-                case "Person":
+                case 'Person':
                     $mailMessage->line(new HtmlString('Person: <a href="'.config('app.url').'/people/'.$this->call->callable->id.'">'.$this->call->callable->name.'</a></small>'));
                     break;
             }

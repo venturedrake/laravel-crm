@@ -15,10 +15,15 @@ class LiveFiles extends Component
     use WithFileUploads;
 
     private $settingService;
+
     public $model;
+
     public $files;
+
     public $file;
+
     public $random;
+
     public $showForm = false;
 
     protected $listeners = [

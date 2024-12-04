@@ -4,11 +4,11 @@ namespace VentureDrake\LaravelCrm\Notifications;
 
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Support\HtmlString;
-use VentureDrake\LaravelCrm\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
+use VentureDrake\LaravelCrm\Models\Task;
 
 class TaskReminderNotification extends Notification
 {
@@ -51,7 +51,7 @@ class TaskReminderNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $mailMessage = new MailMessage();
+        $mailMessage = new MailMessage;
         $subject = 'TASK REMINDER: '.$this->task->name.' ('.Carbon::parse($this->task->due_at)->format('M d, Y \\@ h:i A').')';
         $greeting = 'Hi '.$this->user->name.',';
 
@@ -65,39 +65,39 @@ class TaskReminderNotification extends Notification
 
         if ($this->task->taskable) {
             switch (class_basename($this->task->taskable->getMorphClass())) {
-                case "Lead":
+                case 'Lead':
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->task->taskable->id.'">'.$this->task->taskable->title.'</a></small>'));
                     break;
 
-                case "Deal":
+                case 'Deal':
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/deals/'.$this->task->taskable->id.'">'.$this->task->taskable->title.'</a></small>'));
                     break;
 
-                case "Quote":
+                case 'Quote':
                     $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/quotes/'.$this->task->taskable->id.'">'.$this->task->taskable->title.'</a></small>'));
                     break;
 
-                case "Order":
+                case 'Order':
                     $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/orders/'.$this->task->taskable->id.'">'.$this->task->taskable->order_id.'</a></small>'));
                     break;
 
-                case "Invoice":
+                case 'Invoice':
                     $mailMessage->line(new HtmlString('Invoice: <a href="'.config('app.url').'/invoices/'.$this->task->taskable->id.'">'.$this->task->taskable->invoice_id.'</a></small>'));
                     break;
 
-                case "Delivery":
+                case 'Delivery':
                     $mailMessage->line(new HtmlString('Delivery: <a href="'.config('app.url').'/deliveries/'.$this->task->taskable->id.'">'.$this->task->taskable->delivery_id.'</a></small>'));
                     break;
 
-                case "Client":
+                case 'Client':
                     $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.$this->task->taskable->id.'">'.$this->task->taskable->name.'</a></small>'));
                     break;
 
-                case "Organisation":
+                case 'Organisation':
                     $mailMessage->line(new HtmlString('Organisation: <a href="'.config('app.url').'/organisation/'.$this->task->taskable->id.'">'.$this->task->taskable->name.'</a></small>'));
                     break;
 
-                case "Person":
+                case 'Person':
                     $mailMessage->line(new HtmlString('Person: <a href="'.config('app.url').'/people/'.$this->task->taskable->id.'">'.$this->task->taskable->name.'</a></small>'));
                     break;
             }

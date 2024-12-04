@@ -7,13 +7,21 @@ use Livewire\Component;
 class LivePhoneEdit extends Component
 {
     public $phones;
+
     public $number;
+
     public $type;
+
     public $primary;
+
     public $phoneId;
+
     public $old;
+
     public $updateMode = false;
+
     public $inputs = [];
+
     public $i = 0;
 
     public function mount($phones, $old)

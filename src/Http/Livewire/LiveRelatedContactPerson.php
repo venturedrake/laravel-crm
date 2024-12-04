@@ -8,10 +8,15 @@ use VentureDrake\LaravelCrm\Models\Person;
 class LiveRelatedContactPerson extends Component
 {
     public $model;
+
     public $contacts;
+
     public $person_id;
+
     public $person_name;
+
     public $actions;
+
     public $contactTypeFilter;
 
     public function mount($model, $actions = true, $contactTypeFilter = null)

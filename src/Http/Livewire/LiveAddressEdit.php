@@ -8,24 +8,43 @@ use VentureDrake\LaravelCrm\Models\AddressType;
 class LiveAddressEdit extends Component
 {
     public $addresses;
+
     public $address;
+
     public $type;
+
     public $type_name;
+
     public $contact;
+
     public $phone;
+
     public $line1;
+
     public $line2;
+
     public $line3;
+
     public $code;
+
     public $city;
+
     public $state;
+
     public $country;
+
     public $primary;
+
     public $addressId;
+
     public $old;
+
     public $model;
+
     public $updateMode = false;
+
     public $inputs = [];
+
     public $i = 0;
 
     public function mount($addresses, $old, $model = null, $show = [])

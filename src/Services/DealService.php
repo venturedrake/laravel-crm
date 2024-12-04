@@ -17,7 +17,6 @@ class DealService
 
     /**
      * LeadService constructor.
-     * @param DealRepository $dealRepository
      */
     public function __construct(DealRepository $dealRepository)
     {
