@@ -359,7 +359,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
             // Publishing assets.
             $this->publishes([
-                __DIR__.'/../resources/build' => public_path('vendor/laravel-crm'),
+                __DIR__.'/../public/vendor/laravel-crm/' => public_path('vendor/laravel-crm'),
             ], 'assets');
 
             // Publishing the translation files.
@@ -514,6 +514,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->load(__DIR__.'/../database/factories');
             }
         }
+        
+        // View components
+        Blade::componentNamespace('VentureDrake\\LaravelCrm\\View\\Components', 'crm');
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
