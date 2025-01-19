@@ -34,7 +34,7 @@
         <x-slot:actions>
             <x-mary-button label="Messages" icon="o-envelope" link="###" class="btn-ghost btn-sm" responsive />
             <x-mary-button label="Notifications" icon="o-bell" link="###" class="btn-ghost btn-sm" responsive />
-            <x-mary-dropdown label="Hello" class="btn-warning" right>
+            <x-mary-dropdown label="{{ auth()->user()->name }}" class="btn-warning" right>
                 <x-mary-menu-item title="It should align correctly on right side" />
                 <x-mary-menu-item title="Yes!" />
             </x-mary-dropdown>
