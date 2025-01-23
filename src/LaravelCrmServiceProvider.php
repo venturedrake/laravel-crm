@@ -515,7 +515,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->load(__DIR__.'/../database/factories');
             }
         }
-        
+
         // View components
         Blade::componentNamespace('VentureDrake\\LaravelCrm\\View\\Components', 'crm');
 

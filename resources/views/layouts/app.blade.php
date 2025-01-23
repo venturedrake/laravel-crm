@@ -28,32 +28,48 @@
             <label for="main-drawer" class="lg:hidden mr-3">
                 <x-mary-icon name="o-bars-3" class="cursor-pointer" />
             </label>
-            <div><a class="navbar-brand" href="{{ url(route('laravel-crm.dashboard')) }}" @can('view crm updates')data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}"@endcan>{{ config('app.name', 'Laravel ') }} CRM</a></div>
+            <x-mary-popover>
+                <x-slot:trigger>
+                    <a class="navbar-brand text-2xl font-extrabold" href="{{ url(route('laravel-crm.dashboard')) }}" @can('view crm updates')data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}"@endcan>{{ config('app.name', 'Laravel ') }} CRM</a>
+                </x-slot:trigger>
+                <x-slot:content>
+                    Version {{ config('laravel-crm.version') }} <br>
+                    @if(\VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value < \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()->value)
+                        <x-mary-badge value="Upgrade Available" class="badge-success" />
+                    @else
+                        <x-mary-badge value="Latest Version" class="badge-primary" />
+                    @endif
+                </x-slot:content>
+            </x-mary-popover>
         </x-slot:brand>
         
         <x-slot:actions>
+            <x-mary-input icon="o-magnifying-glass" placeholder="Search..." />
             <x-mary-button label="Messages" icon="o-envelope" link="###" class="btn-ghost btn-sm" responsive />
             <x-mary-button label="Notifications" icon="o-bell" link="###" class="btn-ghost btn-sm" responsive />
+            @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::managesProfilePhotos())
+                <x-mary-avatar :image="auth()->user()->profile_photo_url" alt="{{ Auth::user()->name }}" />
+            @else    
             <x-mary-dropdown label="{{ auth()->user()->name }}" class="btn-warning" right>
-                <x-mary-menu-item title="It should align correctly on right side" />
-                <x-mary-menu-item title="Yes!" />
+                @if(Route::has('profile.show'))
+                    <x-mary-menu-item href="{{ route('profile.show') }}" title="{{ __('Profile') }}" />
+                @endif
+                @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::hasApiFeatures())
+                    <x-mary-menu-item href="{{ route('api-tokens.index') }}" title="{{ __('API Tokens') }}" />
+                @endif
+                    <x-mary-menu-separator />
+                    <form method="POST" action="{{ route('logout') }}" x-data>
+                        @csrf
+                        <x-mary-menu-item href="{{ route('logout') }}" @click.prevent="$root.submit();"  title="{{ __('Log Out') }}" />
+                    </form>
             </x-mary-dropdown>
+            @endif    
         </x-slot:actions>
     </x-mary-nav>
     
     <x-mary-main with-nav full-width>
         
         <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-200">
-            
-            @if($user = auth()->user())
-                <x-mary-list-item :item="$user" value="name" sub-value="email" no-separator no-hover class="pt-2">
-                    <x-slot:actions>
-                        <x-mary-button icon="o-power" class="btn-circle btn-ghost btn-xs" tooltip-left="logoff" no-wire-navigate link="/logout" />
-                    </x-slot:actions>
-                </x-mary-list-item>
-
-                <x-mary-menu-separator />
-            @endif
 
             {{-- Activates the menu item when a route matches the `link` property --}}
             <x-mary-menu activate-by-route>
@@ -88,6 +104,10 @@
             </x-mary-menu>
         </x-slot:sidebar>
         <x-slot:content>
+            <!-- Page Heading -->
+            @if (isset($header))
+                {{ $header }}
+            @endif
             {{ $slot ?? null }}
         </x-slot:content>
     </x-mary-main>

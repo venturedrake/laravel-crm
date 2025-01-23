@@ -1,106 +1,34 @@
 <x-crm::app-layout>
-    <div id="dashboard" class="mb-10">
+    <div class="mb-10">
         <div class="flex flex-wrap gap-5 justify-between items-center">
             <div>
                 <div class="text-4xl font-extrabold ">
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
                     Dashboard
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
-
-                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
             </div>
-
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
             <div class="flex items-center gap-3 ">
                 <div>
-
-                    <!-- STANDARD LABEL -->
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- PREPEND/APPEND CONTAINER -->
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- PREPEND -->
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
                     <div class="relative flex-1">
                         <select id="marya82de51370451601b26ad5ceef42d49bperiod" wire:model.live="period" class="select select-primary w-full font-normal pl-10">
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                            <!--[if BLOCK]><![endif]-->                    <option value="-7 days">Last 7 days</option>
+                            <option value="-7 days">Last 7 days</option>
                             <option value="-15 days">Last 15 days</option>
                             <option value="-30 days">Last 30 days</option>
-                            <!--[if ENDBLOCK]><![endif]-->
                         </select>
-
-                        <!-- ICON -->
-                        <!--[if BLOCK]><![endif]-->                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                         <svg class="inline w-5 h-5 absolute pointer-events-none top-1/2 -translate-y-1/2 left-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"></path>
                         </svg>
-                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <!--[if ENDBLOCK]><![endif]-->
-
-                        <!-- RIGHT ICON  -->
-                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                        <!-- INLINE LABEL -->
-                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                     </div>
-
-                    <!-- APPEND -->
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- END: APPEND/PREPEND CONTAINER  -->
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- ERROR -->
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- HINT -->
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
             </div>
         </div>
 
-        <!--[if BLOCK]><![endif]-->        <hr class="my-5">
+        <hr class="my-5">
 
-        <!--[if BLOCK]><![endif]-->            <div class="h-0.5 -mt-9 mb-9">
+        <div class="h-0.5 -mt-9 mb-9">
             <progress class="progress progress-primary w-full h-0.5 dark:h-1" wire:loading=""></progress>
         </div>
-        <!--[if ENDBLOCK]><![endif]-->
-        <!--[if ENDBLOCK]><![endif]-->
     </div>
-    
-    
-    <div class="grid lg:grid-cols-4 gap-5 lg:gap-8">
-        <x-mary-stat title="Messages" value="44" icon="o-envelope" tooltip="Hello" />
 
-        <x-mary-stat
-                title="Sales"
-                description="This month"
-                value="22.124"
-                icon="o-arrow-trending-up"
-                tooltip-bottom="There" />
-        <x-mary-stat
-                title="Lost"
-                description="This month"
-                value="34"
-                icon="o-arrow-trending-down"
-                tooltip-left="Ops!" />
-
-        <x-mary-stat
-                title="Sales"
-                description="This month"
-                value="22.124"
-                icon="o-arrow-trending-down"
-                class="text-orange-500"
-                color="text-pink-500"
-                tooltip-right="Gosh!" />
-    </div>
     <div class="grid lg:grid-cols-4 gap-5 lg:gap-8">
         <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow truncate text-ellipsis">
             <div class="flex items-center gap-3">
@@ -116,7 +44,7 @@
                     <!--[if BLOCK]><![endif]-->                    <div class="text-xs text-gray-500 whitespace-nowrap">Gross</div>
                     <!--[if ENDBLOCK]><![endif]-->
 
-                    <div class="font-black text-xl">$3,284,283,666,408.58</div>
+                    <div class="font-black text-xl">$150,407.07</div>
 
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
@@ -135,7 +63,7 @@
                     <!--[if BLOCK]><![endif]-->                    <div class="text-xs text-gray-500 whitespace-nowrap">Orders</div>
                     <!--[if ENDBLOCK]><![endif]-->
 
-                    <div class="font-black text-xl">55</div>
+                    <div class="font-black text-xl">53</div>
 
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
@@ -154,7 +82,7 @@
                     <!--[if BLOCK]><![endif]-->                    <div class="text-xs text-gray-500 whitespace-nowrap">New customers</div>
                     <!--[if ENDBLOCK]><![endif]-->
 
-                    <div class="font-black text-xl">546</div>
+                    <div class="font-black text-xl">563</div>
 
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
@@ -178,8 +106,7 @@
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
             </div>
-        </div>   
-    </div>
+        </div>    </div>
 </x-crm::app-layout>
 
 {{--@extends('laravel-crm::layouts.app')--}}
