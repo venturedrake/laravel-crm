@@ -10,7 +10,7 @@
                         @if($note->relatedNote->noteable instanceof \VentureDrake\LaravelCrm\Models\Person)
                             <span class="fa fa-user mr-1" aria-hidden="true"></span> <a
                                     href="{{ route('laravel-crm.people.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
-                        @elseif($note->relatedNote->noteable instanceof \VentureDrake\LaravelCrm\Models\Organisation)
+                        @elseif($note->relatedNote->noteable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building mr-1" aria-hidden="true"></span> <a
                                     href="{{ route('laravel-crm.organisations.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
                         @endif
@@ -21,13 +21,13 @@
                         - {{ $note->createdByUser->name }} @include('laravel-crm::livewire.components.partials.note.actions', ['note' => $note])</h5>
                     @if($showRelated)
                         <p class="pb-0 mb-2">
-                        @if($note->noteable instanceof \VentureDrake\LaravelCrm\Models\Person)
-                            <span class="fa fa-user-circle" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.people.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
-                        @elseif($note->noteable instanceof \VentureDrake\LaravelCrm\Models\Organisation)
-                            <span class="fa fa-building" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.organisations.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
-                        @endif   
+                            @if($note->noteable instanceof \VentureDrake\LaravelCrm\Models\Person)
+                                <span class="fa fa-user-circle" aria-hidden="true"></span> <a
+                                        href="{{ route('laravel-crm.people.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
+                            @elseif($note->noteable instanceof \VentureDrake\LaravelCrm\Models\Organization)
+                                <span class="fa fa-building" aria-hidden="true"></span> <a
+                                        href="{{ route('laravel-crm.organisations.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
+                            @endif
                         </p>
                     @endif
                     @include('laravel-crm::livewire.components.partials.note.content', ['note' => $note])
@@ -39,7 +39,8 @@
         <script>
             $(document).ready(function () {
                 $(document).on("change", "input[name='noted_at']", function () {
-                @this.set('noted_at', $(this).val());
+                @this.set('noted_at', $(this).val())
+                    ;
                 });
             });
         </script>

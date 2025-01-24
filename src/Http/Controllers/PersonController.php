@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\StorePersonRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePersonRequest;
 use VentureDrake\LaravelCrm\Models\Contact;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
@@ -78,7 +78,7 @@ class PersonController extends Controller
     {
         switch ($request->model) {
             case 'organisation':
-                $organisation = Organisation::find($request->id);
+                $organisation = Organization::find($request->id);
 
                 break;
         }
@@ -102,14 +102,14 @@ class PersonController extends Controller
 
         if ($request->organisation_name) {
             if (! $request->organisation_id) {
-                $organisation = Organisation::create([
+                $organisation = Organization::create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'name' => $request->organisation_name,
                     'user_owner_id' => $request->user_owner_id,
                 ]);
                 $person->organisation()->associate($organisation);
             } else {
-                $person->organisation()->associate(Organisation::find($request->organisation_id));
+                $person->organisation()->associate(Organization::find($request->organisation_id));
             }
             $person->save();
         }
@@ -173,14 +173,14 @@ class PersonController extends Controller
 
         if ($request->organisation_name) {
             if (! $request->organisation_id) {
-                $organisation = Organisation::create([
+                $organisation = Organization::create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'name' => $request->organisation_name,
                     'user_owner_id' => $request->user_owner_id,
                 ]);
                 $person->organisation()->associate($organisation);
             } else {
-                $person->organisation()->associate(Organisation::find($request->organisation_id));
+                $person->organisation()->associate(Organization::find($request->organisation_id));
             }
             $person->save();
         } elseif (trim($request->organisation_name) == '' && $person->organisation) {

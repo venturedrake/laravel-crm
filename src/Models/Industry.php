@@ -28,6 +28,6 @@ class Industry extends Model
 
     public function organisations()
     {
-        return $this->belongsToMany(Organisation::class);
+        return $this->belongsToMany(Organization::class);
     }
 }

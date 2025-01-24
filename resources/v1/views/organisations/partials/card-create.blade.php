@@ -10,7 +10,7 @@
 
             @slot('actions')
                 @include('laravel-crm::partials.return-button',[
-                    'model' => new \VentureDrake\LaravelCrm\Models\Organisation(),
+                    'model' => new \VentureDrake\LaravelCrm\Models\Organization(),
                     'route' => 'organisations'
                 ])
             @endslot
@@ -24,7 +24,8 @@
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.organisations.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+            <a href="{{ url(route('laravel-crm.organisations.index')) }}"
+               class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
             <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         @endcomponent
 

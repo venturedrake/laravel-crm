@@ -9,7 +9,7 @@
                         @if($task->taskable instanceof \VentureDrake\LaravelCrm\Models\Person)
                             <span class="fa fa-user-circle" aria-hidden="true"></span> <a
                                     href="{{ route('laravel-crm.people.show', $task->taskable) }}">{{ $task->taskable->name }}</a>
-                        @elseif($task->taskable instanceof \VentureDrake\LaravelCrm\Models\Organisation)
+                        @elseif($task->taskable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building" aria-hidden="true"></span> <a
                                     href="{{ route('laravel-crm.organisations.show', $task->taskable) }}">{{ $task->taskable->name }}</a>
                         @endif
@@ -23,7 +23,8 @@
         <script>
             $(document).ready(function () {
                 $(document).on("change", "input[name='due_at']", function () {
-                    @this.set('due_at', $(this).val());
+                @this.set('due_at', $(this).val())
+                    ;
                 });
             });
         </script>

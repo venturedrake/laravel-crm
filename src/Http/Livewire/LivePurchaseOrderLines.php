@@ -3,7 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -79,7 +79,7 @@ class LivePurchaseOrderLines extends Component
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->organisation_id[$this->i] = $old['organisation_id'] ?? null;
-                $this->organisation_name[$this->i] = (isset($old['organisation_id'])) ? Organisation::find($old['organisation_id'])->name ?? null : null;
+                $this->organisation_name[$this->i] = (isset($old['organisation_id'])) ? Organization::find($old['organisation_id'])->name ?? null : null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
 
                 if ($this->fromOrder) {

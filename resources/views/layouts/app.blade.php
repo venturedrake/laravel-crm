@@ -86,8 +86,8 @@
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.deliveries')) }}" icon="o-home" link="{{ url(route('laravel-crm.deliveries.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}" icon="o-home" link="{{ url(route('laravel-crm.purchase-orders.index')) }}" />
                 <x-mary-menu-separator />
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.clients')) }}" icon="o-home" link="{{ url(route('laravel-crm.clients.index')) }}" />
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.organizations')) }}" icon="o-home" link="{{ url(route('laravel-crm.organisations.index')) }}" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.customers')) }}" icon="o-home" link="{{ url(route('laravel-crm.customers.index')) }}" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.organizations')) }}" icon="o-home" link="{{ url(route('laravel-crm.organizations.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.people')) }}" icon="o-home" link="{{ url(route('laravel-crm.people.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.users')) }}" icon="o-home" link="{{ url(route('laravel-crm.users.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.teams')) }}" icon="o-home" link="{{ url(route('laravel-crm.teams.index')) }}" />

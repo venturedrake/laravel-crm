@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Console\Command;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Setting;
@@ -43,13 +43,13 @@ class LaravelCrmXero extends Command
                         foreach (Xero::contacts()->get() as $contact) {
                             $this->info('Updating LaravelCRM Xero Contact: '.$contact['Name']);
 
-                            $organisation = Organisation::select(config('laravel-crm.db_table_prefix').'organisations.*')
+                            $organisation = Organization::select(config('laravel-crm.db_table_prefix').'organisations.*')
                                 ->leftJoin(config('laravel-crm.db_table_prefix').'xero_contacts', config('laravel-crm.db_table_prefix').'organisations.id', '=', config('laravel-crm.db_table_prefix').'xero_contacts.organisation_id')
                                 ->where(config('laravel-crm.db_table_prefix').'xero_contacts.contact_id', $contact['ContactID'])
                                 ->first();
 
                             if (! $organisation) {
-                                $organisation = Organisation::create([
+                                $organisation = Organization::create([
                                     'name' => $contact['Name'],
                                     'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
                                 ]);

@@ -7,14 +7,14 @@ namespace VentureDrake\LaravelCrm\Database\Factories;
 use Carbon\Carbon;
 use Faker\Generator as Faker;
 use VentureDrake\LaravelCrm\Models\Lead;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 
 $factory->define(Lead::class, function (Faker $faker) {
     return [
         'external_id' => $faker->uuid,
         'person_id' => Person::all()->random(1)->first()->id,
-        'organisation_id' => Organisation::all()->random(1)->first()->id,
+        'organisation_id' => Organization::all()->random(1)->first()->id,
         'title' => $faker->sentence,
         'amount' => $faker->randomFloat(2, 100, 100000),
         'currency' => 'USD',

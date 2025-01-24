@@ -1,33 +1,35 @@
 <x-crm::app-layout>
-    <div class="mb-10">
-        <div class="flex flex-wrap gap-5 justify-between items-center">
-            <div>
-                <div class="text-4xl font-extrabold ">
-                    Dashboard
-                </div>
-            </div>
-            <div class="flex items-center gap-3 ">
+    <x-slot name="header">
+        <div class="mb-10">
+            <div class="flex flex-wrap gap-5 justify-between items-center">
                 <div>
-                    <div class="relative flex-1">
-                        <select id="marya82de51370451601b26ad5ceef42d49bperiod" wire:model.live="period" class="select select-primary w-full font-normal pl-10">
-                            <option value="-7 days">Last 7 days</option>
-                            <option value="-15 days">Last 15 days</option>
-                            <option value="-30 days">Last 30 days</option>
-                        </select>
-                        <svg class="inline w-5 h-5 absolute pointer-events-none top-1/2 -translate-y-1/2 left-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"></path>
-                        </svg>
+                    <div class="text-4xl font-extrabold ">
+                        {{ ucfirst(__('laravel-crm::lang.dashboard')) }}
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 ">
+                    <div>
+                        <div class="relative flex-1">
+                            <select id="marya82de51370451601b26ad5ceef42d49bperiod" wire:model.live="period" class="select select-primary w-full font-normal pl-10">
+                                <option value="-7 days">Last 7 days</option>
+                                <option value="-15 days">Last 15 days</option>
+                                <option value="-30 days">Last 30 days</option>
+                            </select>
+                            <svg class="inline w-5 h-5 absolute pointer-events-none top-1/2 -translate-y-1/2 left-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <hr class="my-5">
+            <hr class="my-5">
 
-        <div class="h-0.5 -mt-9 mb-9">
-            <progress class="progress progress-primary w-full h-0.5 dark:h-1" wire:loading=""></progress>
+            <div class="h-0.5 -mt-9 mb-9">
+                <progress class="progress progress-primary w-full h-0.5 dark:h-1" wire:loading=""></progress>
+            </div>
         </div>
-    </div>
+    </x-slot>
 
     <div class="grid lg:grid-cols-4 gap-5 lg:gap-8">
         <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow truncate text-ellipsis">

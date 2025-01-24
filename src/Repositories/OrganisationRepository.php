@@ -2,17 +2,17 @@
 
 namespace VentureDrake\LaravelCrm\Repositories;
 
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 
 class OrganisationRepository
 {
     public function all()
     {
-        return Organisation::all();
+        return Organization::all();
     }
 
     public function find($id)
     {
-        return Organisation::find($id);
+        return Organization::find($id);
     }
 }

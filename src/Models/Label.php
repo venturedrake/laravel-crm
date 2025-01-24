@@ -52,6 +52,6 @@ class Label extends Model
      */
     public function organisations()
     {
-        return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Organisation::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Organization::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 }

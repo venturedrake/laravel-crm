@@ -57,12 +57,12 @@ class Lead extends Model
 
     public function client()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Client::class);
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Customer::class);
     }
 
     public function organisation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }
 
     public function person()

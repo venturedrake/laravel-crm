@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreClientRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateClientRequest;
-use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Customer;
 
-class ClientController extends Controller
+class CustomerController extends Controller
 {
     public function __construct()
     {
@@ -22,9 +22,9 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        Client::resetSearchValue($request);
-        $params = Client::filters($request);
-        $clients = Client::filter($params);
+        Customer::resetSearchValue($request);
+        $params = Customer::filters($request);
+        $clients = Customer::filter($params);
 
         // This is  not the best, will refactor. Problem with trying to sort encryoted fields
         if (request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')) {
@@ -53,7 +53,7 @@ class ClientController extends Controller
             }
         }
 
-        return view('laravel-crm::clients.index', [
+        return view('laravel-crm::customers.index', [
             'clients' => $clients,
         ]);
     }
@@ -76,7 +76,7 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        $client = Client::create([
+        $client = Customer::create([
             'name' => $request->name,
             'user_owner_id' => $request->user_owner_id,
         ]);
@@ -94,7 +94,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Client $client)
+    public function show(Customer $client)
     {
         return view('laravel-crm::clients.show', [
             'client' => $client,
@@ -107,7 +107,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Client $client)
+    public function edit(Customer $client)
     {
         return view('laravel-crm::clients.edit', [
             'client' => $client,
@@ -121,7 +121,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateClientRequest $request, Client $client)
+    public function update(UpdateClientRequest $request, Customer $client)
     {
         $client->update([
             'name' => $request->name,
@@ -141,7 +141,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $client)
+    public function destroy(Customer $client)
     {
         $client->delete();
 
@@ -152,15 +152,15 @@ class ClientController extends Controller
 
     public function search(Request $request)
     {
-        $searchValue = Client::searchValue($request);
+        $searchValue = Customer::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.clients.index'));
         }
 
-        $params = Client::filters($request, 'search');
+        $params = Customer::filters($request, 'search');
 
-        $clients = Client::filter($params)->get()->filter(function ($record) use ($searchValue) {
+        $clients = Customer::filter($params)->get()->filter(function ($record) use ($searchValue) {
             foreach ($record->getSearchable() as $field) {
                 if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
                     return $record;
@@ -174,7 +174,7 @@ class ClientController extends Controller
         ]);
     }
 
-    public function autocomplete(Client $client)
+    public function autocomplete(Customer $client)
     {
         /*$email = $person->getPrimaryEmail();
         $phone = $person->getPrimaryPhone();

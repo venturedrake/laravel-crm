@@ -157,7 +157,7 @@ class Invoice extends Model
 
     public function organisation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }
 
     public function order()

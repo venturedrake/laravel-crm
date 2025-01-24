@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StorePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePurchaseOrderRequest;
 use VentureDrake\LaravelCrm\Models\Order;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -82,7 +82,7 @@ class PurchaseOrderController extends Controller
                 break;
 
             case 'organisation':
-                $organisation = Organisation::find($request->id);
+                $organisation = Organization::find($request->id);
 
                 break;
 
@@ -131,7 +131,7 @@ class PurchaseOrderController extends Controller
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
+            $organisation = Organization::find($request->organisation_id);
         }
 
         $this->purchaseOrderService->create($request, $person ?? null, $organisation ?? null);
@@ -172,7 +172,7 @@ class PurchaseOrderController extends Controller
         foreach ($purchaseOrders as $organisationId => $purchaseOrder) {
             $purchaseOrderRequest = Request::create(url(route('laravel-crm.purchase-orders.create')), 'POST', $purchaseOrder);
 
-            if ($organisation = Organisation::find($purchaseOrderRequest->organisation_id)) {
+            if ($organisation = Organization::find($purchaseOrderRequest->organisation_id)) {
                 $this->purchaseOrderService->create($purchaseOrderRequest, $person ?? null, $organisation ?? null);
             }
 
@@ -269,7 +269,7 @@ class PurchaseOrderController extends Controller
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
+            $organisation = Organization::find($request->organisation_id);
         }
 
         $purchaseOrder = $this->purchaseOrderService->update($request, $purchaseOrder, $person ?? null, $organisation ?? null);

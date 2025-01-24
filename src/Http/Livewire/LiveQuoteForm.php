@@ -3,8 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
-use VentureDrake\LaravelCrm\Models\Client;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Customer;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class LiveQuoteForm extends Component
@@ -85,7 +85,7 @@ class LiveQuoteForm extends Component
 
     public function updatedOrganisationId($value)
     {
-        if ($organisation = Organisation::find($value)) {
+        if ($organisation = Organization::find($value)) {
             $address = $organisation->getPrimaryAddress();
             $this->dispatchBrowserEvent('selectedOrganisation', [
                 'id' => $value,
@@ -150,7 +150,7 @@ class LiveQuoteForm extends Component
 
     public function getClientOrganisations()
     {
-        foreach (Client::find($this->client_id)->contacts()
+        foreach (Customer::find($this->client_id)->contacts()
             ->where('entityable_type', 'LIKE', '%Organisation%')
             ->get() as $contact) {
             $this->organisations[$contact->entityable_id] = $contact->entityable->name;
@@ -160,7 +160,7 @@ class LiveQuoteForm extends Component
 
     public function getClientPeople()
     {
-        foreach (Client::find($this->client_id)->contacts()
+        foreach (Customer::find($this->client_id)->contacts()
             ->where('entityable_type', 'LIKE', '%Person%')
             ->get() as $contact) {
             $this->people[$contact->entityable_id] = $contact->entityable->name;

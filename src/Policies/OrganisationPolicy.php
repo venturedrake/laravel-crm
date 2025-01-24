@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Policies;
 
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 
 class OrganisationPolicy
 {
@@ -28,7 +28,7 @@ class OrganisationPolicy
      * @param  \App\Organisation  $organisation
      * @return mixed
      */
-    public function view(User $user, Organisation $organisation)
+    public function view(User $user, Organization $organisation)
     {
         if ($user->hasPermissionTo('view crm organisations')) {
             return true;
@@ -53,7 +53,7 @@ class OrganisationPolicy
      * @param  \App\Organisation  $organisation
      * @return mixed
      */
-    public function update(User $user, Organisation $organisation)
+    public function update(User $user, Organization $organisation)
     {
         if ($user->hasPermissionTo('edit crm organisations')) {
             return true;
@@ -66,7 +66,7 @@ class OrganisationPolicy
      * @param  \App\Organisation  $organisation
      * @return mixed
      */
-    public function delete(User $user, Organisation $organisation)
+    public function delete(User $user, Organization $organisation)
     {
         if ($user->hasPermissionTo('delete crm organisations')) {
             return true;
@@ -79,7 +79,7 @@ class OrganisationPolicy
      * @param  \App\Organisation  $organisation
      * @return mixed
      */
-    public function restore(User $user, Organisation $organisation)
+    public function restore(User $user, Organization $organisation)
     {
         if ($user->hasPermissionTo('delete crm organisations')) {
             return true;
@@ -92,7 +92,7 @@ class OrganisationPolicy
      * @param  \App\Organisation  $organisation
      * @return mixed
      */
-    public function forceDelete(User $user, Organisation $organisation)
+    public function forceDelete(User $user, Organization $organisation)
     {
         return false;
     }

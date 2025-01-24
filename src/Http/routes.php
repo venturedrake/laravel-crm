@@ -796,48 +796,48 @@ Route::group(['prefix' => 'files', 'middleware' => 'auth.laravel-crm'], function
         ->middleware(['can:update,file']);
 });
 
-/* Clients */
+/* Customers */
 
-Route::group(['prefix' => 'clients', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@index')
-        ->name('laravel-crm.clients.filter')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Client']);
+Route::group(['prefix' => 'customers', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@index')
+        ->name('laravel-crm.customers.filter')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
 
-    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@search')
-        ->name('laravel-crm.clients.search')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Client']);
+    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@search')
+        ->name('laravel-crm.customers.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
 
-    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@index')
-        ->name('laravel-crm.clients.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Client']);
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@index')
+        ->name('laravel-crm.customers.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
 
-    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@create')
-        ->name('laravel-crm.clients.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Client']);
+    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@create')
+        ->name('laravel-crm.customers.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Customer']);
 
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@store')
-        ->name('laravel-crm.clients.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Client']);
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@store')
+        ->name('laravel-crm.customers.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Customer']);
 
-    Route::get('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@show')
-        ->name('laravel-crm.clients.show')
-        ->middleware(['can:view,client']);
+    Route::get('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@show')
+        ->name('laravel-crm.customers.show')
+        ->middleware(['can:view,customer']);
 
-    Route::get('{client}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@edit')
-        ->name('laravel-crm.clients.edit')
-        ->middleware(['can:update,client']);
+    Route::get('{client}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@edit')
+        ->name('laravel-crm.customers.edit')
+        ->middleware(['can:update,customer']);
 
-    Route::put('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@update')
-        ->name('laravel-crm.clients.update')
-        ->middleware(['can:update,client']);
+    Route::put('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@update')
+        ->name('laravel-crm.customers.update')
+        ->middleware(['can:update,customer']);
 
-    Route::delete('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@destroy')
-        ->name('laravel-crm.clients.destroy')
-        ->middleware(['can:delete,client']);
+    Route::delete('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@destroy')
+        ->name('laravel-crm.customers.destroy')
+        ->middleware(['can:delete,customer']);
 
-    Route::get('{client}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\ClientController@autocomplete')
-        ->name('laravel-crm.clients.autocomplete')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Client']);
+    Route::get('{client}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@autocomplete')
+        ->name('laravel-crm.customers.autocomplete')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
 });
 
 /* People */
@@ -884,48 +884,48 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
 });
 
-/* Organisations */
+/* Organizations */
 
-Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@index')
-        ->name('laravel-crm.organisations.filter')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
+Route::group(['prefix' => 'organizations', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@index')
+        ->name('laravel-crm.organizations.filter')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organization']);
 
-    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@search')
-        ->name('laravel-crm.organisations.search')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
+    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@search')
+        ->name('laravel-crm.organizations.search')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organization']);
 
-    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@index')
-        ->name('laravel-crm.organisations.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@index')
+        ->name('laravel-crm.organizations.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organization']);
 
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@create')
-        ->name('laravel-crm.organisations.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organisation']);
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@create')
+        ->name('laravel-crm.organizations.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organization']);
 
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@store')
-        ->name('laravel-crm.organisations.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organisation']);
+    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@store')
+        ->name('laravel-crm.organizations.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organization']);
 
-    Route::get('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@show')
-        ->name('laravel-crm.organisations.show')
-        ->middleware(['can:view,organisation']);
+    Route::get('{organization}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@show')
+        ->name('laravel-crm.organizations.show')
+        ->middleware(['can:view,organization']);
 
-    Route::get('{organisation}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@edit')
-        ->name('laravel-crm.organisations.edit')
-        ->middleware(['can:update,organisation']);
+    Route::get('{organization}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@edit')
+        ->name('laravel-crm.organizations.edit')
+        ->middleware(['can:update,organization']);
 
-    Route::put('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@update')
-        ->name('laravel-crm.organisations.update')
-        ->middleware(['can:update,organisation']);
+    Route::put('{organization}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@update')
+        ->name('laravel-crm.organizations.update')
+        ->middleware(['can:update,organization']);
 
-    Route::delete('{organisation}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@destroy')
-        ->name('laravel-crm.organisations.destroy')
-        ->middleware(['can:delete,organisation']);
+    Route::delete('{organization}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@destroy')
+        ->name('laravel-crm.organizations.destroy')
+        ->middleware(['can:delete,organization']);
 
-    Route::get('{organisation}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@autocomplete')
-        ->name('laravel-crm.organisations.autocomplete')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
+    Route::get('{organization}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@autocomplete')
+        ->name('laravel-crm.organizations.autocomplete')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organization']);
 });
 
 /* Users */

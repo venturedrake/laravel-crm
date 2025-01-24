@@ -128,7 +128,7 @@ class Person extends Model
 
     public function organisation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }
 
     public function deals()
@@ -184,6 +184,6 @@ class Person extends Model
 
     public function client()
     {
-        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Client::class, 'clientable');
+        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Customer::class, 'clientable');
     }
 }

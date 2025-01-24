@@ -5,7 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Email;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Repositories\OrganisationRepository;
 
@@ -26,7 +26,7 @@ class OrganisationService
 
     public function create($request)
     {
-        $organisation = Organisation::create([
+        $organisation = Organization::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
             'organisation_type_id' => $request->organisation_type_id,
@@ -50,7 +50,7 @@ class OrganisationService
 
     public function createFromRelated($request)
     {
-        $organisation = Organisation::create([
+        $organisation = Organization::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->organisation_name,
             'organisation_type_id' => $request->organisation_type_id,
@@ -79,7 +79,7 @@ class OrganisationService
         return $organisation;
     }
 
-    public function update(Organisation $organisation, $request)
+    public function update(Organization $organisation, $request)
     {
         $organisation->update([
             'name' => $request->name,

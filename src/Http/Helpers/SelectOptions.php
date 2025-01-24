@@ -172,7 +172,7 @@ function fieldModels()
         'VentureDrake\LaravelCrm\Models\Quote' => ucfirst(__('laravel-crm::lang.quotes')),
         'VentureDrake\LaravelCrm\Models\Order' => ucfirst(__('laravel-crm::lang.orders')),
         'VentureDrake\LaravelCrm\Models\Person' => ucfirst(__('laravel-crm::lang.people')),
-        'VentureDrake\LaravelCrm\Models\Organisation' => ucfirst(__('laravel-crm::lang.organizations')),
+        'VentureDrake\LaravelCrm\Models\Organization' => ucfirst(__('laravel-crm::lang.organizations')),
         'VentureDrake\LaravelCrm\Models\Product' => ucfirst(__('laravel-crm::lang.products')),
     ];
 }

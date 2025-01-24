@@ -4,13 +4,13 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\Quote;
@@ -73,8 +73,8 @@ class DashboardController extends Controller
             'totalInvoicesCount' => Invoice::count(),
             'totalDeliveriesCount' => Delivery::count(),
             'totalPurchaseOrdersCount' => PurchaseOrder::count(),
-            'totalClientsCount' => Client::count(),
-            'totalOrganisationsCount' => Organisation::count(),
+            'totalClientsCount' => Customer::count(),
+            'totalOrganisationsCount' => Organization::count(),
             'totalPeopleCount' => Person::count(),
             'usersOnline' => $usersOnline,
             'createdLast14Days' => json_encode($datasheet),

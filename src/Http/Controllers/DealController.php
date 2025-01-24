@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDealRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
-use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\DealService;
@@ -84,12 +84,12 @@ class DealController extends Controller
     {
         switch ($request->model) {
             case 'client':
-                $client = Client::find($request->id);
+                $client = Customer::find($request->id);
 
                 break;
 
             case 'organisation':
-                $organisation = Organisation::find($request->id);
+                $organisation = Organization::find($request->id);
 
                 break;
 
@@ -125,16 +125,16 @@ class DealController extends Controller
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
+            $organisation = Organization::find($request->organisation_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
-            $client = Client::create([
+            $client = Customer::create([
                 'name' => $request->client_name,
                 'user_owner_id' => $request->user_owner_id,
             ]);
         } elseif ($request->client_id) {
-            $client = Client::find($request->client_id);
+            $client = Customer::find($request->client_id);
         }
 
         if (isset($client)) {
@@ -231,16 +231,16 @@ class DealController extends Controller
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
+            $organisation = Organization::find($request->organisation_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
-            $client = Client::create([
+            $client = Customer::create([
                 'name' => $request->client_name,
                 'user_owner_id' => $request->user_owner_id,
             ]);
         } elseif ($request->client_id) {
-            $client = Client::find($request->client_id);
+            $client = Customer::find($request->client_id);
         }
 
         if (isset($client)) {

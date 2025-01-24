@@ -67,7 +67,7 @@
              'prepend' => 'https://www.linkedin.com/company/',
              'value' => old('linkedin', $organisation->linkedin ?? null),     
            ])
-        
+
         @include('laravel-crm::partials.form.textarea',[
            'name' => 'description',
            'label' => ucfirst(__('laravel-crm::lang.description')),
@@ -87,7 +87,7 @@
              'value' =>  old('user_owner_id', (isset($organisation)) ? $organisation->user_owner_id ?? '' : auth()->user()->id),
         ])
 
-        @include('laravel-crm::fields.partials.model', ['model' => $organisation ?? new \VentureDrake\LaravelCrm\Models\Organisation()])
+        @include('laravel-crm::fields.partials.model', ['model' => $organisation ?? new \VentureDrake\LaravelCrm\Models\Organization()])
     </div>
     <div class="col-sm-6">
         @livewire('phone-edit', [

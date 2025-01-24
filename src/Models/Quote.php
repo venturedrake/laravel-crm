@@ -138,12 +138,12 @@ class Quote extends Model
 
     public function organisation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organisation::class);
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }
 
     public function client()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Client::class);
+        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Customer::class);
     }
 
     public function quoteProducts()

@@ -11,7 +11,7 @@ use VentureDrake\LaravelCrm\Http\Requests\UpdateDeliveryRequest;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Order;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\DeliveryService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -83,7 +83,7 @@ class DeliveryController extends Controller
                 break;
 
             case 'organisation':
-                $organisation = Organisation::find($request->id);
+                $organisation = Organization::find($request->id);
 
                 break;
 

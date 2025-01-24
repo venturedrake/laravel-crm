@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 
 class LiveRelatedContactOrganisation extends Component
 {
@@ -35,9 +35,9 @@ class LiveRelatedContactOrganisation extends Component
         ]);
 
         if ($this->organisation_id) {
-            $organisation = Organisation::find($this->organisation_id);
+            $organisation = Organization::find($this->organisation_id);
         } else {
-            $organisation = Organisation::create([
+            $organisation = Organization::create([
                 'external_id' => Uuid::uuid4()->toString(),
                 'name' => $data['organisation_name'],
                 'user_owner_id' => auth()->user()->id,
@@ -63,7 +63,7 @@ class LiveRelatedContactOrganisation extends Component
 
     public function remove($id)
     {
-        if ($organisation = Organisation::find($id)) {
+        if ($organisation = Organization::find($id)) {
             $this->model->contacts()
                 ->where([
                     'entityable_type' => $organisation->getMorphClass(),

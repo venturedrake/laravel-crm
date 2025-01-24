@@ -7,19 +7,19 @@ use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrganisationRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrganisationRequest;
 use VentureDrake\LaravelCrm\Models\Contact;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
 
-class OrganisationController extends Controller
+class OrganizationController extends Controller
 {
     /**
      * @var OrganisationService
      */
-    private $organisationService;
+    private $organizationService;
 
-    public function __construct(OrganisationService $organisationService)
+    public function __construct(OrganisationService $organizationService)
     {
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
     }
 
     /**
@@ -29,39 +29,39 @@ class OrganisationController extends Controller
      */
     public function index(Request $request)
     {
-        Organisation::resetSearchValue($request);
-        $params = Organisation::filters($request);
-        $organisations = Organisation::filter($params);
+        Organization::resetSearchValue($request);
+        $params = Organization::filters($request);
+        $organizations = Organization::filter($params);
 
         // This is  not the best, will refactor. Problem with trying to sort encryoted fields
         if (request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')) {
-            $organisations = $organisations->get();
+            $organizations = $organizations->get();
 
-            foreach ($organisations as $key => $organisation) {
-                $organisations[$key]->name_decrypted = $organisation->name;
+            foreach ($organizations as $key => $organization) {
+                $organizations[$key]->name_decrypted = $organization->name;
             }
 
             $sortField = Str::replace('.', '_', request()->only(['sort', 'direction'])['sort']).'_decrypted';
 
             if (request()->only(['sort', 'direction'])['direction'] == 'asc') {
-                $organisations = $organisations->sortBy($sortField);
+                $organizations = $organizations->sortBy($sortField);
             } else {
-                $organisations = $organisations->sortByDesc($sortField);
+                $organizations = $organizations->sortByDesc($sortField);
             }
 
-            if ($organisations->count() > 30) {
-                $organisations = $organisations->paginate(30);
+            if ($organizations->count() > 30) {
+                $organizations = $organizations->paginate(30);
             }
         } else {
-            if ($organisations->count() < 30) {
-                $organisations = $organisations->sortable(['created_at' => 'desc'])->get();
+            if ($organizations->count() < 30) {
+                $organizations = $organizations->sortable(['created_at' => 'desc'])->get();
             } else {
-                $organisations = $organisations->sortable(['created_at' => 'desc'])->paginate(30);
+                $organizations = $organizations->sortable(['created_at' => 'desc'])->paginate(30);
             }
         }
 
-        return view('laravel-crm::organisations.index', [
-            'organisations' => $organisations,
+        return view('laravel-crm::organizations.index', [
+            'organizations' => $organizations,
         ]);
     }
 
@@ -72,7 +72,7 @@ class OrganisationController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::organisations.create');
+        return view('laravel-crm::organizations.create');
     }
 
     /**
@@ -83,13 +83,13 @@ class OrganisationController extends Controller
      */
     public function store(StoreOrganisationRequest $request)
     {
-        $organisation = $this->organisationService->create($request);
+        $organization = $this->organizationService->create($request);
 
-        $organisation->labels()->sync($request->labels ?? []);
+        $organization->labels()->sync($request->labels ?? []);
 
         flash(ucfirst(trans('laravel-crm::lang.organization_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.organisations.index'));
+        return redirect(route('laravel-crm.organizations.index'));
     }
 
     /**
@@ -98,13 +98,13 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Organisation $organisation)
+    public function show(Organization $organization)
     {
-        return view('laravel-crm::organisations.show', [
-            'organisation' => $organisation,
-            'emails' => $organisation->emails,
-            'phones' => $organisation->phones,
-            'addresses' => $organisation->addresses,
+        return view('laravel-crm::organizations.show', [
+            'organization' => $organization,
+            'emails' => $organization->emails,
+            'phones' => $organization->phones,
+            'addresses' => $organization->addresses,
         ]);
     }
 
@@ -114,13 +114,13 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Organisation $organisation)
+    public function edit(Organization $organization)
     {
-        return view('laravel-crm::organisations.edit', [
-            'organisation' => $organisation,
-            'emails' => $organisation->emails,
-            'phones' => $organisation->phones,
-            'addresses' => $organisation->addresses,
+        return view('laravel-crm::organizations.edit', [
+            'organization' => $organization,
+            'emails' => $organization->emails,
+            'phones' => $organization->phones,
+            'addresses' => $organization->addresses,
         ]);
     }
 
@@ -131,15 +131,15 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOrganisationRequest $request, Organisation $organisation)
+    public function update(UpdateOrganisationRequest $request, Organization $organization)
     {
-        $this->organisationService->update($organisation, $request);
+        $this->organizationService->update($organization, $request);
 
-        $organisation->labels()->sync($request->labels ?? []);
+        $organization->labels()->sync($request->labels ?? []);
 
         flash(ucfirst(trans('laravel-crm::lang.organization_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.organisations.show', $organisation));
+        return redirect(route('laravel-crm.organizations.show', $organization));
     }
 
     /**
@@ -148,33 +148,33 @@ class OrganisationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Organisation $organisation)
+    public function destroy(Organization $organization)
     {
         foreach (Contact::where([
-            'entityable_type' => $organisation->getMorphClass(),
-            'entityable_id' => $organisation->id,
+            'entityable_type' => $organization->getMorphClass(),
+            'entityable_id' => $organization->id,
         ])->get() as $contact) {
             $contact->delete();
         }
 
-        $organisation->delete();
+        $organization->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.organization_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.organisations.index'));
+        return redirect(route('laravel-crm.organizations.index'));
     }
 
     public function search(Request $request)
     {
-        $searchValue = Organisation::searchValue($request);
+        $searchValue = Organization::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            return redirect(route('laravel-crm.organisations.index'));
+            return redirect(route('laravel-crm.organizations.index'));
         }
 
-        $params = Organisation::filters($request, 'search');
+        $params = Organization::filters($request, 'search');
 
-        $organisations = Organisation::filter($params)->get()->filter(function ($record) use ($searchValue) {
+        $organizations = Organization::filter($params)->get()->filter(function ($record) use ($searchValue) {
             foreach ($record->getSearchable() as $field) {
                 if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
                     return $record;
@@ -182,15 +182,15 @@ class OrganisationController extends Controller
             }
         });
 
-        return view('laravel-crm::organisations.index', [
-            'organisations' => $organisations,
+        return view('laravel-crm::organizations.index', [
+            'organizations' => $organizations,
             'searchValue' => $searchValue ?? null,
         ]);
     }
 
-    public function autocomplete(Organisation $organisation)
+    public function autocomplete(Organization $organization)
     {
-        $address = $organisation->getPrimaryAddress();
+        $address = $organization->getPrimaryAddress();
 
         return response()->json([
             'address_line1' => $address->line1 ?? null,

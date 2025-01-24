@@ -3,7 +3,7 @@
 namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Customer;
 
 class ClientObserver
 {
@@ -13,7 +13,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function creating(Client $client)
+    public function creating(Customer $client)
     {
         $client->external_id = Uuid::uuid4()->toString();
 
@@ -28,7 +28,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function created(Client $client)
+    public function created(Customer $client)
     {
         //
     }
@@ -39,7 +39,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function updating(Client $client)
+    public function updating(Customer $client)
     {
         if (! app()->runningInConsole()) {
             $client->user_updated_id = auth()->user()->id ?? null;
@@ -52,7 +52,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function updated(Client $client)
+    public function updated(Customer $client)
     {
         //
     }
@@ -63,7 +63,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function deleting(Client $client)
+    public function deleting(Customer $client)
     {
         if (! app()->runningInConsole()) {
             $client->user_deleted_id = auth()->user()->id ?? null;
@@ -77,7 +77,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function deleted(Client $client)
+    public function deleted(Customer $client)
     {
         //
     }
@@ -88,7 +88,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function restoring(Client $client) {}
+    public function restoring(Customer $client) {}
 
     /**
      * Handle the client "restored" event.
@@ -96,7 +96,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function restored(Client $client)
+    public function restored(Customer $client)
     {
         if (! app()->runningInConsole()) {
             $client->user_restored_id = auth()->user()->id ?? null;
@@ -110,7 +110,7 @@ class ClientObserver
      * @param  \VentureDrake\LaravelCrm\Client  $client
      * @return void
      */
-    public function forceDeleted(Client $client)
+    public function forceDeleted(Customer $client)
     {
         //
     }

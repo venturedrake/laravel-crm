@@ -11,7 +11,7 @@ use VentureDrake\LaravelCrm\Traits\HasCrmUserRelations;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
-class Client extends Model
+class Customer extends Model
 {
     use BelongsToTeams;
     use HasCrmActivities;
@@ -51,7 +51,7 @@ class Client extends Model
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix').'clients';
+        return config('laravel-crm.db_table_prefix').'customers';
     }
 
     public function getNameAttribute($value)
@@ -59,14 +59,14 @@ class Client extends Model
         if ($value) {
             return $value;
         } else {
-            return $this->clientable->name ?? null;
+            return $this->customerable->name ?? null;
         }
     }
 
     /**
-     * Get all of the owning clientable models.
+     * Get all of the owning customerable models.
      */
-    public function clientable()
+    public function customerable()
     {
         return $this->morphTo();
     }

@@ -79,8 +79,8 @@ use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
-use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Contact;
+use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\DeliveryProduct;
@@ -100,7 +100,7 @@ use VentureDrake\LaravelCrm\Models\Meeting;
 use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -185,9 +185,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Quote' => \VentureDrake\LaravelCrm\Policies\QuotePolicy::class,
         'VentureDrake\LaravelCrm\Models\Order' => \VentureDrake\LaravelCrm\Policies\OrderPolicy::class,
         'VentureDrake\LaravelCrm\Models\Invoice' => \VentureDrake\LaravelCrm\Policies\InvoicePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Client' => \VentureDrake\LaravelCrm\Policies\ClientPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Customer' => \VentureDrake\LaravelCrm\Policies\ClientPolicy::class,
         'VentureDrake\LaravelCrm\Models\Person' => \VentureDrake\LaravelCrm\Policies\PersonPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Organisation' => \VentureDrake\LaravelCrm\Policies\OrganisationPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Organization' => \VentureDrake\LaravelCrm\Policies\OrganisationPolicy::class,
         'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
         'VentureDrake\LaravelCrm\Models\Product' => \VentureDrake\LaravelCrm\Policies\ProductPolicy::class,
         'VentureDrake\LaravelCrm\Models\ProductCategory' => \VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy::class,
@@ -269,9 +269,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         OrderProduct::observe(OrderProductObserver::class);
         Invoice::observe(InvoiceObserver::class);
         InvoiceLine::observe(InvoiceLineObserver::class);
-        Client::observe(ClientObserver::class);
+        Customer::observe(ClientObserver::class);
         Person::observe(PersonObserver::class);
-        Organisation::observe(OrganisationObserver::class);
+        Organization::observe(OrganisationObserver::class);
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
         Product::observe(ProductObserver::class);

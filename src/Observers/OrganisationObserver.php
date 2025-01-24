@@ -3,7 +3,7 @@
 namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 
 class OrganisationObserver
 {
@@ -13,7 +13,7 @@ class OrganisationObserver
      * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function creating(Organisation $organisation)
+    public function creating(Organization $organisation)
     {
         $organisation->external_id = Uuid::uuid4()->toString();
 
@@ -28,7 +28,7 @@ class OrganisationObserver
      * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function created(Organisation $organisation)
+    public function created(Organization $organisation)
     {
         //
     }
@@ -39,7 +39,7 @@ class OrganisationObserver
      * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function updating(Organisation $organisation)
+    public function updating(Organization $organisation)
     {
         if (! app()->runningInConsole()) {
             $organisation->user_updated_id = auth()->user()->id ?? null;
@@ -52,7 +52,7 @@ class OrganisationObserver
      * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function updated(Organisation $organisation)
+    public function updated(Organization $organisation)
     {
         //
     }
@@ -63,7 +63,7 @@ class OrganisationObserver
      * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function deleting(Organisation $organisation)
+    public function deleting(Organization $organisation)
     {
         if (! app()->runningInConsole()) {
             $organisation->user_deleted_id = auth()->user()->id ?? null;
@@ -77,7 +77,7 @@ class OrganisationObserver
      * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function deleted(Organisation $organisation)
+    public function deleted(Organization $organisation)
     {
         //
     }
@@ -88,7 +88,7 @@ class OrganisationObserver
      * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function restored(Organisation $organisation)
+    public function restored(Organization $organisation)
     {
         if (! app()->runningInConsole()) {
             $organisation->user_deleted_id = auth()->user()->id ?? null;
@@ -102,7 +102,7 @@ class OrganisationObserver
      * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
      * @return void
      */
-    public function forceDeleted(Organisation $organisation)
+    public function forceDeleted(Organization $organisation)
     {
         //
     }

@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Policies;
 
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Customer;
 
 class ClientPolicy
 {
@@ -28,7 +28,7 @@ class ClientPolicy
      * @param  \App\Client  $client
      * @return mixed
      */
-    public function view(User $user, Client $client)
+    public function view(User $user, Customer $client)
     {
         if ($user->hasPermissionTo('view crm clients')) {
             return true;
@@ -53,7 +53,7 @@ class ClientPolicy
      * @param  \App\Client  $client
      * @return mixed
      */
-    public function update(User $user, Client $client)
+    public function update(User $user, Customer $client)
     {
         if ($user->hasPermissionTo('edit crm clients')) {
             return true;
@@ -66,7 +66,7 @@ class ClientPolicy
      * @param  \App\Client  $client
      * @return mixed
      */
-    public function delete(User $user, Client $client)
+    public function delete(User $user, Customer $client)
     {
         if ($user->hasPermissionTo('delete crm clients')) {
             return true;
@@ -79,7 +79,7 @@ class ClientPolicy
      * @param  \App\Client  $client
      * @return mixed
      */
-    public function restore(User $user, Client $client)
+    public function restore(User $user, Customer $client)
     {
         if ($user->hasPermissionTo('delete crm clients')) {
             return true;
@@ -92,7 +92,7 @@ class ClientPolicy
      * @param  \App\Client  $client
      * @return mixed
      */
-    public function forceDelete(User $user, Client $client)
+    public function forceDelete(User $user, Customer $client)
     {
         return true;
     }

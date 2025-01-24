@@ -11,7 +11,7 @@ use VentureDrake\LaravelCrm\Traits\HasCrmUserRelations;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
-class Organisation extends Model
+class Organization extends Model
 {
     use BelongsToTeams;
     use HasCrmActivities;
@@ -136,9 +136,9 @@ class Organisation extends Model
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
-    public function organisationType()
+    public function organizationType()
     {
-        return $this->belongsTo(OrganisationType::class);
+        return $this->belongsTo(OrganizationType::class);
     }
 
     public function contacts()
@@ -156,7 +156,7 @@ class Organisation extends Model
 
     public function client()
     {
-        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Client::class, 'clientable');
+        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Customer::class, 'clientable');
     }
 
     public function timezone()

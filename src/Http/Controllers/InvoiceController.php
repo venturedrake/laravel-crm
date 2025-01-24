@@ -10,7 +10,7 @@ use VentureDrake\LaravelCrm\Http\Requests\StoreInvoiceRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateInvoiceRequest;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
-use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -82,7 +82,7 @@ class InvoiceController extends Controller
                 break;
 
             case 'organisation':
-                $organisation = Organisation::find($request->id);
+                $organisation = Organization::find($request->id);
 
                 break;
 
@@ -123,7 +123,7 @@ class InvoiceController extends Controller
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
+            $organisation = Organization::find($request->organisation_id);
         }
 
         $this->invoiceService->create($request, $person ?? null, $organisation ?? null);
@@ -203,7 +203,7 @@ class InvoiceController extends Controller
         if ($request->organisation_name && ! $request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
-            $organisation = Organisation::find($request->organisation_id);
+            $organisation = Organization::find($request->organisation_id);
         }
 
         $invoice = $this->invoiceService->update($request, $invoice, $person ?? null, $organisation ?? null);
