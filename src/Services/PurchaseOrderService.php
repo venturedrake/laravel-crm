@@ -118,7 +118,7 @@ class PurchaseOrderService
                     'Quantity' => $line->quantity,
                     'UnitAmount' => $line->price / 100,
                     'TaxType' => 'INPUT',
-                    /*'TaxAmount' => ($line->tax_total->value / 100),*/
+                    /* 'TaxAmount' => ($line->tax_total->value / 100), */
                     // 'LineAmount' => null,
                     'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
                     'AccountCode' => $line->product->purchase_account ?? 300,

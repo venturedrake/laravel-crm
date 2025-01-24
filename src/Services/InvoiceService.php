@@ -90,7 +90,7 @@ class InvoiceService
                     'Quantity' => $line->quantity,
                     'UnitAmount' => $line->price / 100,
                     'TaxType' => 'OUTPUT',
-                    /*'TaxAmount' => ($line->tax_total->value / 100),*/
+                    /* 'TaxAmount' => ($line->tax_total->value / 100), */
                     // 'LineAmount' => null,
                     'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
                     'AccountCode' => $line->product->sales_account ?? 200,
