@@ -73,7 +73,7 @@ Route::group(['prefix' => 'p'], function () {
 
 /* Dashboard */
 
-Route::get('/', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
+Route::get('dashboard', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
     ->middleware('auth.laravel-crm')
     ->name('laravel-crm.dashboard');
 

@@ -26,5 +26,20 @@ export default {
         require("daisyui")
     ],
 
-    darkMode: 'class'
+    darkMode: 'class',
+
+    daisyui: {
+        themes: [
+            {
+                light: {
+                    ...require("daisyui/src/theming/themes")["light"],
+                    primary: "#05b3a9",
+                },
+                dark: {
+                    ...require("daisyui/src/theming/themes")["dark"],
+                    primary: "#05b3a9",
+                },
+            },
+        ],
+    },
 };

@@ -30,7 +30,7 @@
             </label>
             <x-mary-popover>
                 <x-slot:trigger>
-                    <a class="navbar-brand text-2xl font-extrabold" href="{{ url(route('laravel-crm.dashboard')) }}" @can('view crm updates')data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}"@endcan>{{ config('app.name', 'Laravel ') }} CRM</a>
+                    <a class="navbar-brand text-2xl font-extrabold" href="{{ url(route('laravel-crm.dashboard')) }}" @can('view crm updates')data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}"@endcan><img src="{{ asset('vendor/laravel-crm/img/laravel-crm-logo.png') }}" width="215" class="dark:hidden" /> <img src="{{ asset('vendor/laravel-crm/img/laravel-crm-dark-logo.png') }}" width="215" class="hidden dark:inline" /> </a>
                 </x-slot:trigger>
                 <x-slot:content>
                     Version {{ config('laravel-crm.version') }} <br>
@@ -44,14 +44,14 @@
         </x-slot:brand>
         
         <x-slot:actions>
-            <x-mary-input icon="o-magnifying-glass" placeholder="Search..." />
+            {{--<x-mary-input icon="o-magnifying-glass" placeholder="Search..." />--}}
             <x-mary-button label="Messages" icon="o-envelope" link="###" class="btn-ghost btn-sm" responsive />
             <x-mary-button label="Notifications" icon="o-bell" link="###" class="btn-ghost btn-sm" responsive />
             <x-mary-theme-toggle class="btn btn-ghost" />
             @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::managesProfilePhotos())
                 <x-mary-avatar :image="auth()->user()->profile_photo_url" alt="{{ Auth::user()->name }}" />
             @else    
-            <x-mary-dropdown label="{{ auth()->user()->name }}" class="btn-warning" right>
+            <x-mary-dropdown label="{{ auth()->user()->name }}" class="btn-neutral" right>
                 @if(Route::has('profile.show'))
                     <x-mary-menu-item href="{{ route('profile.show') }}" title="{{ __('Profile') }}" />
                 @endif

@@ -77,6 +77,8 @@ use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
+use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
+use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Contact;
@@ -561,6 +563,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('fields.create-or-edit', CreateOrEdit::class);
         Livewire::component('send-purchase-order', SendPurchaseOrder::class);
         Livewire::component('delivery-details', LiveDeliveryDetails::class);
+        
+        /* Version 2 Livewire Components */
+        Livewire::component('crm-lead-index', LeadIndex::class);
+        Livewire::component('crm-lead-board', LeadBoard::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

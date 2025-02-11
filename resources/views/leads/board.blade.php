@@ -26,7 +26,7 @@
         </x-slot:actions>
     </x-mary-header>
 
-    <livewire:crm-lead-index />
+    <livewire:crm-lead-board />
 
     {{-- TABLE --}}
     {{--<x-mary-card shadow>
