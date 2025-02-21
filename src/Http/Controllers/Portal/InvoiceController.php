@@ -48,8 +48,8 @@ class InvoiceController extends Controller
             $address = $invoice->person->getPrimaryAddress();
         }
 
-        if ($invoice->organisation) {
-            $organisation_address = $invoice->organisation->getPrimaryAddress();
+        if ($invoice->organization) {
+            $organization_address = $invoice->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::portal.invoices.show', [
@@ -59,8 +59,8 @@ class InvoiceController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
-            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'organization_address' => $organization_address ?? null,
+            'fromName' => $this->settingService->get('organization_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ]);
     }
@@ -89,8 +89,8 @@ class InvoiceController extends Controller
                         'email' => $email ?? null,
                         'phone' => $phone ?? null,
                         'address' => $address ?? null,
-                        'organisation_address' => $organisation_address ?? null,
-                        'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                        'organization_address' => $organization_address ?? null,
+                        'fromName' => $this->settingService->get('organization_name')->value ?? null,
                         'logo' => $this->settingService->get('logo_file')->value ?? null,
                     ])->download('invoice-'.strtolower($invoice->invoice_id).'.pdf');
 

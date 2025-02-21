@@ -11,7 +11,7 @@ class LiveLeadForm extends Component
 {
     public $client_id;
 
-    public $clientHasOrganisations = false;
+    public $clientHasOrganizations = false;
 
     public $clientHasPeople = false;
 
@@ -23,27 +23,27 @@ class LiveLeadForm extends Component
 
     public $person_name;
 
-    public $organisations = [];
+    public $organizations = [];
 
-    public $organisation_id;
+    public $organization_id;
 
-    public $organisation_name;
+    public $organization_name;
 
     public $title;
 
     public $generateTitle;
 
-    public function mount($lead, $generateTitle = true, $client = null, $organisation = null, $person = null)
+    public function mount($lead, $generateTitle = true, $client = null, $organization = null, $person = null)
     {
         $this->client_id = old('client_id') ?? $lead->client->id ?? $client->id ?? null;
         $this->client_name = old('client_name') ?? $lead->client->name ?? $client->name ?? null;
         $this->person_id = old('person_id') ?? $lead->person->id ?? $person->id ?? null;
         $this->person_name = old('person_name') ?? $lead->person->name ?? $person->name ?? null;
-        $this->organisation_id = old('organisation_id') ?? $lead->organisation->id ?? $organisation->id ?? null;
-        $this->organisation_name = old('organisation_name') ?? $lead->organisation->name ?? $organisation->name ?? null;
+        $this->organization_id = old('organization_id') ?? $lead->organization->id ?? $organization->id ?? null;
+        $this->organization_name = old('organization_name') ?? $lead->organization->name ?? $organization->name ?? null;
 
         if ($this->client_id) {
-            $this->getClientOrganisations();
+            $this->getClientOrganizations();
 
             $this->getClientPeople();
         }
@@ -63,18 +63,18 @@ class LiveLeadForm extends Component
         $this->generateTitle();
 
         if ($this->client_id) {
-            $this->getClientOrganisations();
+            $this->getClientOrganizations();
 
             $this->getClientPeople();
         } else {
-            $this->clientHasOrganisations = false;
+            $this->clientHasOrganizations = false;
 
             $this->clientHasPeople = false;
 
             $this->dispatchBrowserEvent('clientNameUpdated');
 
-            if (! $this->organisation_id) {
-                $this->dispatchBrowserEvent('selectedOrganisation');
+            if (! $this->organization_id) {
+                $this->dispatchBrowserEvent('selectedOrganization');
             }
 
             if (! $this->person_id) {
@@ -83,11 +83,11 @@ class LiveLeadForm extends Component
         }
     }
 
-    public function updatedOrganisationId($value)
+    public function updatedOrganizationId($value)
     {
-        if ($organisation = Organization::find($value)) {
-            $address = $organisation->getPrimaryAddress();
-            $this->dispatchBrowserEvent('selectedOrganisation', [
+        if ($organization = Organization::find($value)) {
+            $address = $organization->getPrimaryAddress();
+            $this->dispatchBrowserEvent('selectedOrganization', [
                 'id' => $value,
                 'address_line1' => $address->line1 ?? null,
                 'address_line2' => $address->line2 ?? null,
@@ -97,13 +97,13 @@ class LiveLeadForm extends Component
                 'address_code' => $address->code ?? null,
                 'address_country' => $address->country ?? null,
             ]);
-            $this->organisation_name = $organisation->name;
+            $this->organization_name = $organization->name;
         } else {
-            $this->dispatchBrowserEvent('selectedOrganisation');
+            $this->dispatchBrowserEvent('selectedOrganization');
         }
     }
 
-    public function updatedOrganisationName($value)
+    public function updatedOrganizationName($value)
     {
         $this->generateTitle();
     }
@@ -135,8 +135,8 @@ class LiveLeadForm extends Component
         if ($this->generateTitle) {
             if ($this->client_name) {
                 $this->title = $this->client_name.' '.ucfirst(trans('laravel-crm::lang.lead'));
-            } elseif ($this->organisation_name) {
-                $this->title = $this->organisation_name.' '.ucfirst(trans('laravel-crm::lang.lead'));
+            } elseif ($this->organization_name) {
+                $this->title = $this->organization_name.' '.ucfirst(trans('laravel-crm::lang.lead'));
             } elseif ($this->person_name) {
                 $this->title = $this->person_name.' '.ucfirst(trans('laravel-crm::lang.lead'));
             }
@@ -148,13 +148,13 @@ class LiveLeadForm extends Component
         $this->generateTitle = false;
     }
 
-    public function getClientOrganisations()
+    public function getClientOrganizations()
     {
         foreach (Customer::find($this->client_id)->contacts()
-            ->where('entityable_type', 'LIKE', '%Organisation%')
+            ->where('entityable_type', 'LIKE', '%Organization%')
             ->get() as $contact) {
-            $this->organisations[$contact->entityable_id] = $contact->entityable->name;
-            $this->clientHasOrganisations = true;
+            $this->organizations[$contact->entityable_id] = $contact->entityable->name;
+            $this->clientHasOrganizations = true;
         }
     }
 

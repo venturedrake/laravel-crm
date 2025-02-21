@@ -4,20 +4,20 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use VentureDrake\LaravelCrm\Http\Requests\StoreOrganisationRequest;
-use VentureDrake\LaravelCrm\Http\Requests\UpdateOrganisationRequest;
+use VentureDrake\LaravelCrm\Http\Requests\StoreOrganizationRequest;
+use VentureDrake\LaravelCrm\Http\Requests\UpdateOrganizationRequest;
 use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Organization;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 
 class OrganizationController extends Controller
 {
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
     private $organizationService;
 
-    public function __construct(OrganisationService $organizationService)
+    public function __construct(OrganizationService $organizationService)
     {
         $this->organizationService = $organizationService;
     }
@@ -81,7 +81,7 @@ class OrganizationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreOrganisationRequest $request)
+    public function store(StoreOrganizationRequest $request)
     {
         $organization = $this->organizationService->create($request);
 
@@ -131,7 +131,7 @@ class OrganizationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOrganisationRequest $request, Organization $organization)
+    public function update(UpdateOrganizationRequest $request, Organization $organization)
     {
         $this->organizationService->update($organization, $request);
 

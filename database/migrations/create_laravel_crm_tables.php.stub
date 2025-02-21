@@ -19,7 +19,7 @@ class CreateLaravelCrmTables extends Migration
             $table->string('value');
             $table->timestamps();
         });
-        Schema::create(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id');
             $table->string('name');
@@ -48,8 +48,8 @@ class CreateLaravelCrmTables extends Migration
             $table->date('birthday')->nullable();
             $table->enum('gender', ['male','female'])->nullable();
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('organisation_id')->nullable();
-            $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');
+            $table->unsignedBigInteger('organization_id')->nullable();
+            $table->foreign('organization_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organizations');
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_updated_id')->nullable();
@@ -145,8 +145,8 @@ class CreateLaravelCrmTables extends Migration
             $table->string('external_id');
             $table->unsignedBigInteger('person_id')->index()->nullable();
             $table->foreign('person_id')->references('id')->on(config('laravel-crm.db_table_prefix').'people');
-            $table->unsignedBigInteger('organisation_id')->index()->nullable();
-            $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');
+            $table->unsignedBigInteger('organization_id')->index()->nullable();
+            $table->foreign('organization_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organizations');
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('amount')->nullable();
@@ -180,8 +180,8 @@ class CreateLaravelCrmTables extends Migration
             $table->foreign('lead_id')->references('id')->on(config('laravel-crm.db_table_prefix').'leads');
             $table->unsignedBigInteger('person_id')->index()->nullable();
             $table->foreign('person_id')->references('id')->on(config('laravel-crm.db_table_prefix').'people');
-            $table->unsignedBigInteger('organisation_id')->index()->nullable();
-            $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');
+            $table->unsignedBigInteger('organization_id')->index()->nullable();
+            $table->foreign('organization_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organizations');
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('amount')->nullable();
@@ -328,7 +328,7 @@ class CreateLaravelCrmTables extends Migration
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'lead_statuses');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'lead_sources');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'people');
-        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'organisations');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'organizations');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'emails');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'phones');
         Schema::dropIfExists(config('laravel-crm.db_table_prefix').'addresses');

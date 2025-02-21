@@ -1,4 +1,4 @@
-<form method="POST" action="{{ url(route('laravel-crm.organisations.update', $organisation)) }}">
+<form method="POST" action="{{ url(route('laravel-crm.organizations.update', $organization)) }}">
     @csrf
     @method('PUT')
     @component('laravel-crm::components.card')
@@ -11,8 +11,8 @@
 
             @slot('actions')
                 @include('laravel-crm::partials.return-button',[
-                    'model' => $organisation,
-                    'route' => 'organisations'
+                    'model' => $organization,
+                    'route' => 'organizations'
                 ])
             @endslot
 
@@ -20,12 +20,12 @@
 
         @component('laravel-crm::components.card-body')
 
-            @include('laravel-crm::organisations.partials.fields')
+            @include('laravel-crm::organizations.partials.fields')
 
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.organisations.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+            <a href="{{ url(route('laravel-crm.organizations.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
             <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
         @endcomponent
 

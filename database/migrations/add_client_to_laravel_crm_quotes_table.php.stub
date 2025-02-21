@@ -14,7 +14,7 @@ class AddClientToLaravelCrmQuotesTable extends Migration
     public function up()
     {
         Schema::table(config('laravel-crm.db_table_prefix').'quotes', function (Blueprint $table) {
-            $table->foreignIdFor(\VentureDrake\LaravelCrm\Models\Client::class)->after('organisation_id')->nullable();
+            $table->foreignIdFor(\VentureDrake\LaravelCrm\Models\Client::class)->after('organization_id')->nullable();
         });  
     }
 

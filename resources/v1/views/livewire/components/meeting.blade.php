@@ -11,7 +11,7 @@
                                     href="{{ route('laravel-crm.people.show', $meeting->meetingable) }}">{{ $meeting->meetingable->name }}</a>
                         @elseif($meeting->meetingable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.organisations.show', $meeting->meetingable) }}">{{ $meeting->meetingable->name }}</a>
+                                    href="{{ route('laravel-crm.organizations.show', $meeting->meetingable) }}">{{ $meeting->meetingable->name }}</a>
                         @endif
                     </p>
                 @endif

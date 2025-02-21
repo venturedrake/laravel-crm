@@ -74,7 +74,7 @@ class DashboardController extends Controller
             'totalDeliveriesCount' => Delivery::count(),
             'totalPurchaseOrdersCount' => PurchaseOrder::count(),
             'totalClientsCount' => Customer::count(),
-            'totalOrganisationsCount' => Organization::count(),
+            'totalOrganizationsCount' => Organization::count(),
             'totalPeopleCount' => Person::count(),
             'usersOnline' => $usersOnline,
             'createdLast14Days' => json_encode($datasheet),

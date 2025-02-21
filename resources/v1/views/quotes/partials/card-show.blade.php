@@ -97,8 +97,8 @@
                 <p><span class="fa fa-address-card" aria-hidden="true"></span> @if($quote->client)<a href="{{ route('laravel-crm.clients.show',$quote->client) }}">{{ $quote->client->name }}</a>@endif </p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />
-                <p><span class="fa fa-building" aria-hidden="true"></span> @if($quote->organisation)<a href="{{ route('laravel-crm.organisations.show',$quote->organisation) }}">{{ $quote->organisation->name }}</a>@endif</p>
-                <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
+                <p><span class="fa fa-building" aria-hidden="true"></span> @if($quote->organization)<a href="{{ route('laravel-crm.organizations.show',$quote->organization) }}">{{ $quote->organization->name }}</a>@endif</p>
+                <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organization_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organization_address) : null }} </p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
                 <p><span class="fa fa-user" aria-hidden="true"></span> @if($quote->person)<a href="{{ route('laravel-crm.people.show',$quote->person) }}">{{ $quote->person->name }}</a>@endif </p>

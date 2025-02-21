@@ -16,7 +16,7 @@ use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\LeadService;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
 class LeadController extends Controller
@@ -37,16 +37,16 @@ class LeadController extends Controller
     private $personService;
 
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
-    private $organisationService;
+    private $organizationService;
 
-    public function __construct(LeadService $leadService, DealService $dealService, PersonService $personService, OrganisationService $organisationService)
+    public function __construct(LeadService $leadService, DealService $dealService, PersonService $personService, OrganizationService $organizationService)
     {
         $this->leadService = $leadService;
         $this->dealService = $dealService;
         $this->personService = $personService;
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
     }
 
     /**
@@ -96,8 +96,8 @@ class LeadController extends Controller
 
                 break;
 
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
 
@@ -109,7 +109,7 @@ class LeadController extends Controller
 
         return view('laravel-crm::leads.create', [
             'client' => $client ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'person' => $person ?? null,
             'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
             'stage' => $request->stage ?? null,
@@ -130,10 +130,10 @@ class LeadController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -146,10 +146,10 @@ class LeadController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -161,7 +161,7 @@ class LeadController extends Controller
             }
         }
 
-        $lead = $this->leadService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
+        $lead = $this->leadService->create($request, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_stored')))->success()->important();
 
@@ -224,10 +224,10 @@ class LeadController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
         } elseif ($request->person_id) {
-            $organisation = Organization::find($request->organisation_id);
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -240,10 +240,10 @@ class LeadController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -255,7 +255,7 @@ class LeadController extends Controller
             }
         }
 
-        $lead = $this->leadService->update($request, $lead, $person ?? null, $organisation ?? null, $client ?? null);
+        $lead = $this->leadService->update($request, $lead, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_updated')))->success()->important();
 
@@ -296,10 +296,10 @@ class LeadController extends Controller
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
                 config('laravel-crm.db_table_prefix').'people.maiden_name',
-                config('laravel-crm.db_table_prefix').'organisations.name'
+                config('laravel-crm.db_table_prefix').'organizations.name'
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'leads.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'leads.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'leads.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
@@ -382,13 +382,13 @@ class LeadController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
-        $this->dealService->create($request, $person ?? null, $organisation ?? null);
+        $this->dealService->create($request, $person ?? null, $organization ?? null);
 
         $lead->update([
             'converted_at' => Carbon::now(),

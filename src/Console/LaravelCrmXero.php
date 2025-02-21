@@ -43,23 +43,23 @@ class LaravelCrmXero extends Command
                         foreach (Xero::contacts()->get() as $contact) {
                             $this->info('Updating LaravelCRM Xero Contact: '.$contact['Name']);
 
-                            $organisation = Organization::select(config('laravel-crm.db_table_prefix').'organisations.*')
-                                ->leftJoin(config('laravel-crm.db_table_prefix').'xero_contacts', config('laravel-crm.db_table_prefix').'organisations.id', '=', config('laravel-crm.db_table_prefix').'xero_contacts.organisation_id')
+                            $organization = Organization::select(config('laravel-crm.db_table_prefix').'organizations.*')
+                                ->leftJoin(config('laravel-crm.db_table_prefix').'xero_contacts', config('laravel-crm.db_table_prefix').'organizations.id', '=', config('laravel-crm.db_table_prefix').'xero_contacts.organization_id')
                                 ->where(config('laravel-crm.db_table_prefix').'xero_contacts.contact_id', $contact['ContactID'])
                                 ->first();
 
-                            if (! $organisation) {
-                                $organisation = Organization::create([
+                            if (! $organization) {
+                                $organization = Organization::create([
                                     'name' => $contact['Name'],
                                     'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
                                 ]);
                             } else {
-                                $organisation->update([
+                                $organization->update([
                                     'name' => $contact['Name'],
                                 ]);
                             }
 
-                            $organisation->xeroContact()->updateOrCreate([
+                            $organization->xeroContact()->updateOrCreate([
                                 'contact_id' => $contact['ContactID'],
                             ], [
                                 'name' => $contact['Name'],
@@ -76,13 +76,13 @@ class LaravelCrmXero extends Command
                                         'first_name' => $contact['FirstName'] ?? null,
                                         'last_name' => $contact['LastName'] ?? null,
                                         'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
-                                        'organisation_id' => $organisation->id,
+                                        'organization_id' => $organization->id,
                                     ]);
                                 } else {
                                     $person->update([
                                         'first_name' => $contact['FirstName'] ?? null,
                                         'last_name' => $contact['LastName'] ?? null,
-                                        'organisation_id' => $organisation->id,
+                                        'organization_id' => $organization->id,
                                     ]);
                                 }
 

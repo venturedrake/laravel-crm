@@ -94,12 +94,12 @@ class TeamObserver
                 ]);
             }
 
-            foreach (DB::table(config('laravel-crm.db_table_prefix').'organisation_types')
+            foreach (DB::table(config('laravel-crm.db_table_prefix').'organization_types')
                 ->whereNull('team_id')
-                ->get() as $organisationType) {
-                DB::table(config('laravel-crm.db_table_prefix').'organisation_types')->insert([
-                    'name' => $organisationType->name,
-                    'description' => $organisationType->description,
+                ->get() as $organizationType) {
+                DB::table(config('laravel-crm.db_table_prefix').'organization_types')->insert([
+                    'name' => $organizationType->name,
+                    'description' => $organizationType->description,
                     'team_id' => $team->id,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),

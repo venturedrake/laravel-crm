@@ -34,7 +34,7 @@ class Invoice extends Model
         'person.middle_name',
         'person.last_name',
         'person.maiden_name',
-        'organisation.name',
+        'organization.name',
     ];
 
     protected $filterable = [
@@ -72,7 +72,7 @@ class Invoice extends Model
 
     public function getTitleAttribute()
     {
-        return money($this->total, $this->currency).' - '.($this->organisation->name ?? $this->person->name ?? null);
+        return money($this->total, $this->currency).' - '.($this->organization->name ?? $this->person->name ?? null);
     }
 
     public function setIssueDateAttribute($value)
@@ -155,7 +155,7 @@ class Invoice extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
     }
 
-    public function organisation()
+    public function organization()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }

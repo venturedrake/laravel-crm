@@ -7,21 +7,21 @@ use DB;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 
-class LaravelCrmOrganisationTypes extends Command
+class LaravelCrmOrganizationTypes extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'laravelcrm:organisationtypes';
+    protected $signature = 'laravelcrm:organizationtypes';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Migrate Laravel CRM Organisation Types';
+    protected $description = 'Migrate Laravel CRM Organization Types';
 
     /**
      * The Composer instance.
@@ -48,24 +48,24 @@ class LaravelCrmOrganisationTypes extends Command
      */
     public function handle()
     {
-        $this->info('Updating LaravelCRM Organisation Types...');
+        $this->info('Updating LaravelCRM Organization Types...');
 
         foreach (DB::table('teams')->get() as $team) {
-            foreach (DB::table('organisation_types')
+            foreach (DB::table('organization_types')
                 ->whereNull('team_id')
-                ->get() as $organisationType) {
-                $this->info('Inserting organisation type '.$organisationType->name.' for team '.$team->name);
+                ->get() as $organizationType) {
+                $this->info('Inserting organization type '.$organizationType->name.' for team '.$team->name);
 
-                $teamOrganisationType = DB::table('organisation_types')->where([
-                    'name' => $organisationType->name,
-                    'description' => $organisationType->description,
+                $teamOrganizationType = DB::table('organization_types')->where([
+                    'name' => $organizationType->name,
+                    'description' => $organizationType->description,
                     'team_id' => $team->id,
                 ])->first();
 
-                if (! $teamOrganisationType) {
-                    DB::table('organisation_types')->insert([
-                        'name' => $organisationType->name,
-                        'description' => $organisationType->description,
+                if (! $teamOrganizationType) {
+                    DB::table('organization_types')->insert([
+                        'name' => $organizationType->name,
+                        'description' => $organizationType->description,
                         'team_id' => $team->id,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
@@ -74,6 +74,6 @@ class LaravelCrmOrganisationTypes extends Command
             }
         }
 
-        $this->info('LaravelCRM Organisation Types Update Complete.');
+        $this->info('LaravelCRM Organization Types Update Complete.');
     }
 }

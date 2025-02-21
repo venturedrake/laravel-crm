@@ -22,7 +22,7 @@ class DeliveryService
         $this->deliveryRepository = $deliveryRepository;
     }
 
-    public function create($request, $person = null, $organisation = null)
+    public function create($request, $person = null, $organization = null)
     {
         $delivery = Delivery::create([
             'order_id' => $request->order_id,
@@ -66,7 +66,7 @@ class DeliveryService
         return $delivery;
     }
 
-    public function update($request, Delivery $delivery, $person = null, $organisation = null)
+    public function update($request, Delivery $delivery, $person = null, $organization = null)
     {
         $delivery->update([
             'delivery_expected' => $request->delivery_expected,

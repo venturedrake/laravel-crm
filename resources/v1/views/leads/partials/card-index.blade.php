@@ -52,7 +52,7 @@
                         ])</td>
                     <td>{{ money($lead->amount, $lead->currency) }}</td>
                     <td>{{ $lead->client->name ?? null}}</td>
-                    <td>{{ $lead->organisation->name ?? null}}</td>
+                    <td>{{ $lead->organization->name ?? null}}</td>
                     <td>{{ $lead->person->name ??  null }}</td>
                     <td>{{ $lead->pipelineStage->name ?? null }}</td>
                     <td>{{ $lead->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>

@@ -2,6 +2,6 @@
 
 @section('content')
 
-    @include('laravel-crm::organisations.partials.card-index')
+    @include('laravel-crm::organizations.partials.card-index')
 
 @endsection

@@ -51,7 +51,7 @@ class Organization extends Model
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix').'organisations';
+        return config('laravel-crm.db_table_prefix').'organizations';
     }
 
     public function setAnnualRevenueAttribute($value)
@@ -78,7 +78,7 @@ class Organization extends Model
     }
 
     /**
-     * Get all of the organisation emails.
+     * Get all of the organization emails.
      */
     public function emails()
     {
@@ -91,7 +91,7 @@ class Organization extends Model
     }
 
     /**
-     * Get all of the organisation phone numbers.
+     * Get all of the organization phone numbers.
      */
     public function phones()
     {
@@ -147,7 +147,7 @@ class Organization extends Model
     }
 
     /**
-     * Get the xero contact associated with the organisation.
+     * Get the xero contact associated with the organization.
      */
     public function xeroContact()
     {

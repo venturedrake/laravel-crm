@@ -49,7 +49,7 @@
                    </td>
                    @endhasordersenabled
                    <td>
-                       {{ $purchaseOrder->organisation->name ?? null }}
+                       {{ $purchaseOrder->organization->name ?? null }}
                        @if($purchaseOrder->person)
                            <br /><small>{{ $purchaseOrder->person->name }}</small>
                        @endif    

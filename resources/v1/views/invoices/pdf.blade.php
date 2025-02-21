@@ -25,26 +25,26 @@
             <tr>
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
-                    @if($invoice->organisation)
-                        {{ $invoice->organisation->name }}<br />
+                    @if($invoice->organization)
+                        {{ $invoice->organization->name }}<br />
                     @endif
                     @isset($invoice->person)
                         {{ $invoice->person->name }}<br />
                     @endisset
-                    @if(isset($organisation_address))
-                        @if($organisation_address->line1)
-                            {{ $organisation_address->line1 }}<br />
+                    @if(isset($organization_address))
+                        @if($organization_address->line1)
+                            {{ $organization_address->line1 }}<br />
                         @endif
-                        @if($organisation_address->line2)
-                            {{ $organisation_address->line2 }}<br />
+                        @if($organization_address->line2)
+                            {{ $organization_address->line2 }}<br />
                         @endif
-                        @if($organisation_address->line3)
-                            {{ $organisation_address->line3 }}<br />
+                        @if($organization_address->line3)
+                            {{ $organization_address->line3 }}<br />
                         @endif
-                        @if($organisation_address->city || $organisation_address->state || $organisation_address->postcode)
-                            {{ $organisation_address->city }} {{ $organisation_address->state }} {{ $organisation_address->postcode }}<br />
+                        @if($organization_address->city || $organization_address->state || $organization_address->postcode)
+                            {{ $organization_address->city }} {{ $organization_address->state }} {{ $organization_address->postcode }}<br />
                         @endif
-                        {{ $organisation_address->country }}
+                        {{ $organization_address->country }}
                     @elseif($address)
                         {{ $address->line1 }}<br />
                         @if($address->line2)

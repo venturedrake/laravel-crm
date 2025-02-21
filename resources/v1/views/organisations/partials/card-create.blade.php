@@ -1,4 +1,4 @@
-<form method="POST" action="{{ url(route('laravel-crm.organisations.store')) }}">
+<form method="POST" action="{{ url(route('laravel-crm.organizations.store')) }}">
     @csrf
     @component('laravel-crm::components.card')
 
@@ -11,7 +11,7 @@
             @slot('actions')
                 @include('laravel-crm::partials.return-button',[
                     'model' => new \VentureDrake\LaravelCrm\Models\Organization(),
-                    'route' => 'organisations'
+                    'route' => 'organizations'
                 ])
             @endslot
 
@@ -19,12 +19,12 @@
 
         @component('laravel-crm::components.card-body')
 
-            @include('laravel-crm::organisations.partials.fields')
+            @include('laravel-crm::organizations.partials.fields')
 
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.organisations.index')) }}"
+            <a href="{{ url(route('laravel-crm.organizations.index')) }}"
                class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
             <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         @endcomponent

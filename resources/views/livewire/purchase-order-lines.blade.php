@@ -6,7 +6,7 @@
     </script>
     @if($fromOrder)
         <script type="text/javascript">
-            let organisations =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsSelect2() !!}
+            let organizations =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizationsSelect2() !!}
         </script> 
     @endif 
     <span id="invoiceLines">

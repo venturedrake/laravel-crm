@@ -24,7 +24,7 @@ class UpdateSettingRequest extends FormRequest
     public function rules()
     {
         return [
-            'organisation_name' => 'required|max:255',
+            'organization_name' => 'required|max:255',
             'country' => 'required',
             'language' => 'required',
             'currency' => 'required',

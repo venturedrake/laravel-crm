@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOrganisationRequest extends FormRequest
+class UpdateOrganizationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

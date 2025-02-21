@@ -9,7 +9,7 @@
             'quote' => $quote ?? null,
             'generateTitle' => $generateTitle ?? true,
             'client' => $client ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'person' => $person ?? null
         ])
         

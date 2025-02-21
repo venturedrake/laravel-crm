@@ -51,7 +51,7 @@
                    </td>
                    @endhasordersenabled
                    <td>
-                       {{ $invoice->organisation->name ?? null }}
+                       {{ $invoice->organization->name ?? null }}
                        @if($invoice->person)
                            <br /><small>{{ $invoice->person->name }}</small>
                        @endif    

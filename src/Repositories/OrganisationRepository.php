@@ -4,7 +4,7 @@ namespace VentureDrake\LaravelCrm\Repositories;
 
 use VentureDrake\LaravelCrm\Models\Organization;
 
-class OrganisationRepository
+class OrganizationRepository
 {
     public function all()
     {

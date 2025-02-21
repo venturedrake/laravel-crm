@@ -23,8 +23,8 @@
             ])
 
             @include('laravel-crm::partials.form.hidden',[
-                'name' => 'organisation_id',
-                'value' => old('organisation_id', $order->organisation->id ?? $quote->organisation->id ?? null),
+                'name' => 'organization_id',
+                'value' => old('organization_id', $order->organization->id ?? $quote->organization->id ?? null),
             ])
 
             <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.client')) }}</h6>
@@ -32,7 +32,7 @@
             <p><span class="fa fa-address-card" aria-hidden="true"></span> @if($quote->client)<a href="{{ route('laravel-crm.clients.show',$quote->client) }}">{{ $quote->client->name }}</a>@endif </p>
             <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
             <hr />
-            <p><span class="fa fa-building" aria-hidden="true"></span> @if($quote->organisation)<a href="{{ route('laravel-crm.organisations.show',$quote->organisation) }}">{{ $quote->organisation->name }}</a>@endif</p>
+            <p><span class="fa fa-building" aria-hidden="true"></span> @if($quote->organization)<a href="{{ route('laravel-crm.organizations.show',$quote->organization) }}">{{ $quote->organization->name }}</a>@endif</p>
             <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
             <hr />
             <p><span class="fa fa-user" aria-hidden="true"></span> @if($quote->person)<a href="{{ route('laravel-crm.people.show',$quote->person) }}">{{ $quote->person->name }}</a>@endif </p>
@@ -44,7 +44,7 @@
             @livewire('order-form',[
             'order' => $order ?? null,
             'client' => $client ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'person' => $person ?? null
             ])
             

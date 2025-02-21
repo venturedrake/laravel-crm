@@ -41,7 +41,7 @@ class AddClientToLaravelCrmDealsTable extends Migration
             $table->string('url')->nullable();
         }); 
         
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
             $table->string('url')->nullable();
         }); 
         
@@ -98,7 +98,7 @@ class AddClientToLaravelCrmDealsTable extends Migration
              $table->dropColumn('url');
         });
         
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
              $table->dropColumn('url');
         });
         

@@ -48,9 +48,9 @@ class OrderObserver
      */
     public function created(Order $order)
     {
-        /*if ($order->organisation && ! $order->organisation->client) {
-            $order->organisation->client()->create([
-                'user_owner_id' => $order->organisation->user_owner_id,
+        /*if ($order->organization && ! $order->organization->client) {
+            $order->organization->client()->create([
+                'user_owner_id' => $order->organization->user_owner_id,
             ]);
         }*/
     }

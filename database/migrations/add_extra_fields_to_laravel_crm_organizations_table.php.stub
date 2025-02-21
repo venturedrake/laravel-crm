@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddExtraFieldsToLaravelCrmOrganisationsTable extends Migration
+class AddExtraFieldsToLaravelCrmOrganizationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddExtraFieldsToLaravelCrmOrganisationsTable extends Migration
      */
     public function up()
     {
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
             $table->string('vat_number')->nullable();
             $table->string('domain')->nullable();
             $table->string('website_url')->nullable();
@@ -41,7 +41,7 @@ class AddExtraFieldsToLaravelCrmOrganisationsTable extends Migration
      */
     public function down()
     {
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
             $table->dropColumn([
                 'vat_number',
                 'domain',

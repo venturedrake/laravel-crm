@@ -49,8 +49,8 @@ class QuoteController extends Controller
             $address = $quote->person->getPrimaryAddress();
         }
 
-        if ($quote->organisation) {
-            $organisation_address = $quote->organisation->getPrimaryAddress();
+        if ($quote->organization) {
+            $organization_address = $quote->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::portal.quotes.show', [
@@ -58,8 +58,8 @@ class QuoteController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
-            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'organization_address' => $organization_address ?? null,
+            'fromName' => $this->settingService->get('organization_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ]);
     }
@@ -104,8 +104,8 @@ class QuoteController extends Controller
                         'email' => $email ?? null,
                         'phone' => $phone ?? null,
                         'address' => $address ?? null,
-                        'organisation_address' => $organisation_address ?? null,
-                        'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                        'organization_address' => $organization_address ?? null,
+                        'fromName' => $this->settingService->get('organization_name')->value ?? null,
                         'logo' => $this->settingService->get('logo_file')->value ?? null,
                     ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
 

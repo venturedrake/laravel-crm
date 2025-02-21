@@ -36,7 +36,7 @@ class Quote extends Model
         'person.middle_name',
         'person.last_name',
         'person.maiden_name',
-        'organisation.name',
+        'organization.name',
     ];
 
     protected $filterable = [
@@ -136,7 +136,7 @@ class Quote extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
     }
 
-    public function organisation()
+    public function organization()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }

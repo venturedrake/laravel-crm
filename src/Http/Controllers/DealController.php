@@ -14,7 +14,7 @@ use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\DealService;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
 class DealController extends Controller
@@ -30,15 +30,15 @@ class DealController extends Controller
     private $personService;
 
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
-    private $organisationService;
+    private $organizationService;
 
-    public function __construct(DealService $dealService, PersonService $personService, OrganisationService $organisationService)
+    public function __construct(DealService $dealService, PersonService $personService, OrganizationService $organizationService)
     {
         $this->dealService = $dealService;
         $this->personService = $personService;
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
     }
 
     /**
@@ -88,8 +88,8 @@ class DealController extends Controller
 
                 break;
 
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
 
@@ -101,7 +101,7 @@ class DealController extends Controller
 
         return view('laravel-crm::deals.create', [
             'client' => $client ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'person' => $person ?? null,
             'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
             'stage' => $request->stage ?? null,
@@ -122,10 +122,10 @@ class DealController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -138,10 +138,10 @@ class DealController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -153,7 +153,7 @@ class DealController extends Controller
             }
         }
 
-        $this->dealService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
+        $this->dealService->create($request, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.deal_stored')))->success()->important();
 
@@ -174,8 +174,8 @@ class DealController extends Controller
             $address = $deal->person->getPrimaryAddress();
         }
 
-        if ($deal->organisation) {
-            $organisation_address = $deal->organisation->getPrimaryAddress();
+        if ($deal->organization) {
+            $organization_address = $deal->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::deals.show', [
@@ -183,7 +183,7 @@ class DealController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'organization_address' => $organization_address ?? null,
         ]);
     }
 
@@ -200,8 +200,8 @@ class DealController extends Controller
             $phone = $deal->person->getPrimaryPhone();
         }
 
-        if ($deal->organisation) {
-            $address = $deal->organisation->getPrimaryAddress();
+        if ($deal->organization) {
+            $address = $deal->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::deals.edit', [
@@ -228,10 +228,10 @@ class DealController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -244,10 +244,10 @@ class DealController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -259,7 +259,7 @@ class DealController extends Controller
             }
         }
 
-        $deal = $this->dealService->update($request, $deal, $person ?? null, $organisation ?? null, $client ?? null);
+        $deal = $this->dealService->update($request, $deal, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.deal_updated')))->success()->important();
 
@@ -300,10 +300,10 @@ class DealController extends Controller
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
                 config('laravel-crm.db_table_prefix').'people.maiden_name',
-                config('laravel-crm.db_table_prefix').'organisations.name'
+                config('laravel-crm.db_table_prefix').'organizations.name'
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'deals.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'deals.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'deals.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->get()
             ->filter(function ($record) use ($searchValue) {
                 foreach ($record->getSearchable() as $field) {

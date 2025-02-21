@@ -11,7 +11,7 @@
                                     href="{{ route('laravel-crm.people.show', $call->callable) }}">{{ $call->callable->name }}</a>
                         @elseif($call->callable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.organisations.show', $call->callable) }}">{{ $call->callable->name }}</a>
+                                    href="{{ route('laravel-crm.organizations.show', $call->callable) }}">{{ $call->callable->name }}</a>
                         @endif
                     </p>
                 @endif

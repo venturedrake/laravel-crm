@@ -126,7 +126,7 @@ class Person extends Model
         return $this->addresses()->where('primary', 1)->first();
     }
 
-    public function organisation()
+    public function organization()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }

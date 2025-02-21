@@ -24,10 +24,10 @@ class UpdateDealRequest extends FormRequest
     public function rules()
     {
         return [
-            'person_name' => 'required_without_all:organisation_name,organisation_id|max:255',
-            'person_id' => 'required_without_all:organisation_name,organisation_id,person_name|max:255',
-            'organisation_name' => 'required_without_all:person_name,person_id|max:255',
-            'organisation_id' => 'required_without_all:person_name,person_id,organisation_name|max:255',
+            'person_name' => 'required_without_all:organization_name,organization_id|max:255',
+            'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
+            'organization_name' => 'required_without_all:person_name,person_id|max:255',
+            'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
         ];
@@ -36,10 +36,10 @@ class UpdateDealRequest extends FormRequest
     public function messages()
     {
         return [
-            'person_name.required_without_all' => 'The contact person field is required if no organisation.',
-            'organisation_name.required_without_all' => 'The organisation field is required if no contact person.',
-            'person_id.required_without_all' => 'The contact person field is required if no organisation.',
-            'organisation_id.required_without_all' => 'The organisation field is required of no contact person.',
+            'person_name.required_without_all' => 'The contact person field is required if no organization.',
+            'organization_name.required_without_all' => 'The organization field is required if no contact person.',
+            'person_id.required_without_all' => 'The contact person field is required if no organization.',
+            'organization_id.required_without_all' => 'The organization field is required of no contact person.',
         ];
     }
 }

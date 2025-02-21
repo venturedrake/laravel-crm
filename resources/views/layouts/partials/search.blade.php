@@ -18,8 +18,8 @@
      }elseif(strpos(Route::currentRouteName(), 'laravel-crm.people') === 0  && auth()->user()->can('view crm people')){
          echo url(route('laravel-crm.people.search'));
          $currentAction = ucfirst(__('laravel-crm::lang.people'));
-     }elseif(strpos(Route::currentRouteName(), 'laravel-crm.organisations') === 0  && auth()->user()->can('view crm organisations')){
-         echo url(route('laravel-crm.organisations.search'));
+     }elseif(strpos(Route::currentRouteName(), 'laravel-crm.organizations') === 0  && auth()->user()->can('view crm organizations')){
+         echo url(route('laravel-crm.organizations.search'));
          $currentAction = ucfirst(__('laravel-crm::lang.organizations'));
      }elseif(strpos(Route::currentRouteName(), 'laravel-crm.products') === 0  && auth()->user()->can('view crm products')){
          echo url(route('laravel-crm.products.search'));
@@ -54,8 +54,8 @@
          }elseif(auth()->user()->can('view crm people')){
              echo url(route('laravel-crm.people.search'));
              $currentAction = ucfirst(__('laravel-crm::lang.people'));
-         }elseif( auth()->user()->can('view crm organisations')){
-             echo url(route('laravel-crm.organisations.search'));
+         }elseif( auth()->user()->can('view crm organizations')){
+             echo url(route('laravel-crm.organizations.search'));
              $currentAction = ucfirst(__('laravel-crm::lang.organizations'));
          }elseif(auth()->user()->can('view crm products')){
              echo url(route('laravel-crm.products.search'));
@@ -119,8 +119,8 @@
                 @can('view crm clients')
                     <a class="dropdown-item" href="#clients" data-type="clients" data-action="{{ url(route('laravel-crm.clients.search')) }}">{{ ucfirst(__('laravel-crm::lang.clients')) }}</a>
                 @endcan
-                @can('view crm organisations')    
-                <a class="dropdown-item" href="#organisations" data-type="organisations" data-action="{{ url(route('laravel-crm.organisations.search')) }}">{{ ucfirst(__('laravel-crm::lang.organizations')) }}</a>
+                @can('view crm organizations')    
+                <a class="dropdown-item" href="#organizations" data-type="organizations" data-action="{{ url(route('laravel-crm.organizations.search')) }}">{{ ucfirst(__('laravel-crm::lang.organizations')) }}</a>
                 @endcan
                 @can('view crm people')
                     <a class="dropdown-item" href="#people" data-type="people" data-action="{{ url(route('laravel-crm.people.search')) }}">{{ ucfirst(__('laravel-crm::lang.people')) }}</a>

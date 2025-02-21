@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Kyslik\ColumnSortable\Sortable;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
-class OrganisationType extends Model
+class OrganizationType extends Model
 {
     use BelongsToTeams;
     use SoftDeletes;
@@ -23,10 +23,10 @@ class OrganisationType extends Model
 
     public function getTable()
     {
-        return config('laravel-crm.db_table_prefix').'organisation_types';
+        return config('laravel-crm.db_table_prefix').'organization_types';
     }
 
-    public function organisations()
+    public function organizations()
     {
         return $this->belongsToMany(Organization::class);
     }

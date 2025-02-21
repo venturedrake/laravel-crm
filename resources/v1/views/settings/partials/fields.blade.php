@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col border-right">
         @include('laravel-crm::partials.form.text',[
-         'name' => 'organisation_name',
+         'name' => 'organization_name',
          'label' => ucfirst(trans('laravel-crm::lang.organization_name')),
-         'value' => old('organisation_name', $organisationName->value ?? null),
+         'value' => old('organization_name', $organizationName->value ?? null),
          'required' => 'true'
         ])
 

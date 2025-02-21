@@ -56,16 +56,16 @@
 </tr>
 @if($fromOrder)
 {{--<tr data-number="{{ $value }}" class="item-tr">
-    <td colspan="5" class="border-0 pt-0 bind-select2-organisations" style="position: relative;">
+    <td colspan="5" class="border-0 pt-0 bind-select2-organizations" style="position: relative;">
         @include('laravel-crm::partials.form.select',[
-            'name' => 'purchaseOrderLines['.$value.'][organisation_id]',
+            'name' => 'purchaseOrderLines['.$value.'][organization_id]',
             'label' => ucfirst(__('laravel-crm::lang.supplier')),
             'options' => [
-                   $this->organisation_id[$value] ?? null => $this->organisation_name[$value] ?? null,
+                   $this->organization_id[$value] ?? null => $this->organization_name[$value] ?? null,
             ],
-            'value' => $this->organisation_id[$value] ?? null,
+            'value' => $this->organization_id[$value] ?? null,
             'attributes' => [
-                'wire:model' => 'organisation_id .'.$value,
+                'wire:model' => 'organization_id .'.$value,
                 'data-value' => $value
             ]
         ])

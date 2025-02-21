@@ -98,22 +98,22 @@ class LaravelCrmUpdate extends Command
         }
 
         if ($this->settingService->get('db_update_0181')->value == 0) {
-            $this->info('Updating Laravel CRM organisation linked to person...');
+            $this->info('Updating Laravel CRM organization linked to person...');
 
-            foreach (Person::whereNotNull('organisation_id')->get() as $person) {
+            foreach (Person::whereNotNull('organization_id')->get() as $person) {
                 if ($contact = $person->contacts()->create([
                     'team_id' => $person->team_id,
-                    'entityable_type' => $person->organisation->getMorphClass(),
-                    'entityable_id' => $person->organisation->id,
+                    'entityable_type' => $person->organization->getMorphClass(),
+                    'entityable_id' => $person->organization->id,
                 ])) {
                     $person->update([
-                        'organisation_id' => null,
+                        'organization_id' => null,
                     ]);
                 }
             }
 
             $this->settingService->set('db_update_0181', 1);
-            $this->info('Updating Laravel CRM organisation linked to person complete.');
+            $this->info('Updating Laravel CRM organization linked to person complete.');
         }
 
         if ($this->settingService->get('db_update_0191')->value == 0) {

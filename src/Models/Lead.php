@@ -28,7 +28,7 @@ class Lead extends Model
         'person.middle_name',
         'person.last_name',
         'person.maiden_name',
-        'organisation.name',
+        'organization.name',
     ];
 
     protected $filterable = [
@@ -60,7 +60,7 @@ class Lead extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Customer::class);
     }
 
-    public function organisation()
+    public function organization()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }
@@ -114,8 +114,8 @@ class Lead extends Model
 
     public function getPrimaryAddress()
     {
-        if ($this->organisation) {
-            return $this->organisation->getPrimaryAddress();
+        if ($this->organization) {
+            return $this->organization->getPrimaryAddress();
         } else {
             return $this->addresses()->where('primary', 1)->first();
         }

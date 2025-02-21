@@ -17,7 +17,7 @@
                         <p class="border-bottom mb-3 pb-3">Connect to xero accounting to sync contacts, products, quotes & generate invoices.</p>
                         @if(isset($tenantName))
                             <div class="alert alert-info">
-                                You are connected to the Xero organisation <strong>{{ $tenantName }}</strong>.
+                                You are connected to the Xero organization <strong>{{ $tenantName }}</strong>.
                             </div>
                             <hr />
                             <a class="btn btn-success" href="{{ route('laravel-crm.integrations.xero.disconnect') }}">

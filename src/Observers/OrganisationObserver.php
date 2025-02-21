@@ -5,104 +5,104 @@ namespace VentureDrake\LaravelCrm\Observers;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Organization;
 
-class OrganisationObserver
+class OrganizationObserver
 {
     /**
-     * Handle the organisation "creating" event.
+     * Handle the organization "creating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function creating(Organization $organisation)
+    public function creating(Organization $organization)
     {
-        $organisation->external_id = Uuid::uuid4()->toString();
+        $organization->external_id = Uuid::uuid4()->toString();
 
         if (! app()->runningInConsole()) {
-            $organisation->user_created_id = auth()->user()->id ?? null;
+            $organization->user_created_id = auth()->user()->id ?? null;
         }
     }
 
     /**
-     * Handle the organisation "created" event.
+     * Handle the organization "created" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function created(Organization $organisation)
+    public function created(Organization $organization)
     {
         //
     }
 
     /**
-     * Handle the organisation "updating" event.
+     * Handle the organization "updating" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function updating(Organization $organisation)
+    public function updating(Organization $organization)
     {
         if (! app()->runningInConsole()) {
-            $organisation->user_updated_id = auth()->user()->id ?? null;
+            $organization->user_updated_id = auth()->user()->id ?? null;
         }
     }
 
     /**
-     * Handle the organisation "updated" event.
+     * Handle the organization "updated" event.
      *
-     * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \ VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function updated(Organization $organisation)
+    public function updated(Organization $organization)
     {
         //
     }
 
     /**
-     * Handle the organisation "deleting" event.
+     * Handle the organization "deleting" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function deleting(Organization $organisation)
+    public function deleting(Organization $organization)
     {
         if (! app()->runningInConsole()) {
-            $organisation->user_deleted_id = auth()->user()->id ?? null;
-            $organisation->saveQuietly();
+            $organization->user_deleted_id = auth()->user()->id ?? null;
+            $organization->saveQuietly();
         }
     }
 
     /**
-     * Handle the organisation "deleted" event.
+     * Handle the organization "deleted" event.
      *
-     * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \ VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function deleted(Organization $organisation)
+    public function deleted(Organization $organization)
     {
         //
     }
 
     /**
-     * Handle the organisation "restored" event.
+     * Handle the organization "restored" event.
      *
-     * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \ VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function restored(Organization $organisation)
+    public function restored(Organization $organization)
     {
         if (! app()->runningInConsole()) {
-            $organisation->user_deleted_id = auth()->user()->id ?? null;
-            $organisation->saveQuietly();
+            $organization->user_deleted_id = auth()->user()->id ?? null;
+            $organization->saveQuietly();
         }
     }
 
     /**
-     * Handle the organisation "force deleted" event.
+     * Handle the organization "force deleted" event.
      *
-     * @param  \ VentureDrake\LaravelCrm\Organisation  $organisation
+     * @param  \ VentureDrake\LaravelCrm\Organization  $organization
      * @return void
      */
-    public function forceDeleted(Organization $organisation)
+    public function forceDeleted(Organization $organization)
     {
         //
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLaravelCrmOrganisationTypesTable extends Migration
+class CreateLaravelCrmOrganizationTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateLaravelCrmOrganisationTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('laravel-crm.db_table_prefix').'organisation_types', function (Blueprint $table) {
+        Schema::create(config('laravel-crm.db_table_prefix').'organization_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('team_id')->index()->nullable();
             $table->string('name');
@@ -22,8 +22,8 @@ class CreateLaravelCrmOrganisationTypesTable extends Migration
             $table->softDeletes();
         });
         
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
-            $table->unsignedBigInteger('organisation_type_id')->index()->nullable();
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
+            $table->unsignedBigInteger('organization_type_id')->index()->nullable();
         });
     }
 
@@ -34,10 +34,10 @@ class CreateLaravelCrmOrganisationTypesTable extends Migration
      */
     public function down()
     {
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
-                $table->dropColumn(['organisation_type_id']);
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
+                $table->dropColumn(['organization_type_id']);
         });
   
-        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'organisation_types');
+        Schema::dropIfExists(config('laravel-crm.db_table_prefix').'organization_types');
     }
 }

@@ -53,9 +53,9 @@ class LivePurchaseOrderLines extends Component
 
     public $fromOrder;
 
-    public $organisation_id;
+    public $organization_id;
 
-    public $organisation_name;
+    public $organization_name;
 
     protected $listeners = ['loadPurchaseOrderLineDefault'];
 
@@ -78,8 +78,8 @@ class LivePurchaseOrderLines extends Component
                 $this->purchase_order_line_id[$this->i] = $old['purchase_order_line_id'] ?? null;
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
-                $this->organisation_id[$this->i] = $old['organisation_id'] ?? null;
-                $this->organisation_name[$this->i] = (isset($old['organisation_id'])) ? Organization::find($old['organisation_id'])->name ?? null : null;
+                $this->organization_id[$this->i] = $old['organization_id'] ?? null;
+                $this->organization_name[$this->i] = (isset($old['organization_id'])) ? Organization::find($old['organization_id'])->name ?? null : null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
 
                 if ($this->fromOrder) {

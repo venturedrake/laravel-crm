@@ -10,7 +10,7 @@ class LiveOrderForm extends Component
 {
     public $client_id;
 
-    public $clientHasOrganisations = false;
+    public $clientHasOrganizations = false;
 
     public $clientHasPeople = false;
 
@@ -22,23 +22,23 @@ class LiveOrderForm extends Component
 
     public $person_name;
 
-    public $organisations = [];
+    public $organizations = [];
 
-    public $organisation_id;
+    public $organization_id;
 
-    public $organisation_name;
+    public $organization_name;
 
-    public function mount($order, $client = null, $organisation = null, $person = null)
+    public function mount($order, $client = null, $organization = null, $person = null)
     {
         $this->client_id = old('client_id') ?? $order->client->id ?? $client->id ?? null;
         $this->client_name = old('client_name') ?? $order->client->name ?? $client->name ?? null;
         $this->person_id = old('person_id') ?? $order->person->id ?? $person->id ?? null;
         $this->person_name = old('person_name') ?? $order->person->name ?? $person->name ?? null;
-        $this->organisation_id = old('organisation_id') ?? $order->organisation->id ?? $organisation->id ?? null;
-        $this->organisation_name = old('organisation_name') ?? $order->organisation->name ?? $organisation->name ?? null;
+        $this->organization_id = old('organization_id') ?? $order->organization->id ?? $organization->id ?? null;
+        $this->organization_name = old('organization_name') ?? $order->organization->name ?? $organization->name ?? null;
 
         if ($this->client_id) {
-            $this->getClientOrganisations();
+            $this->getClientOrganizations();
 
             $this->getClientPeople();
         }
@@ -47,11 +47,11 @@ class LiveOrderForm extends Component
     public function updatedClientName($value)
     {
         if ($this->client_id) {
-            $this->getClientOrganisations();
+            $this->getClientOrganizations();
 
             $this->getClientPeople();
         } else {
-            $this->clientHasOrganisations = false;
+            $this->clientHasOrganizations = false;
 
             $this->clientHasPeople = false;
 
@@ -59,23 +59,23 @@ class LiveOrderForm extends Component
         }
     }
 
-    public function updatedOrganisationId($value)
+    public function updatedOrganizationId($value)
     {
-        if ($organisation = Organization::find($value)) {
-            $this->organisation_name = $organisation->name;
-            $this->emit('orderOrganisationSelected', [
-                'id' => $this->organisation_id,
+        if ($organization = Organization::find($value)) {
+            $this->organization_name = $organization->name;
+            $this->emit('orderOrganizationSelected', [
+                'id' => $this->organization_id,
             ]);
         }
     }
 
-    public function getClientOrganisations()
+    public function getClientOrganizations()
     {
         foreach (Customer::find($this->client_id)->contacts()
-            ->where('entityable_type', 'LIKE', '%Organisation%')
+            ->where('entityable_type', 'LIKE', '%Organization%')
             ->get() as $contact) {
-            $this->organisations[$contact->entityable_id] = $contact->entityable->name;
-            $this->clientHasOrganisations = true;
+            $this->organizations[$contact->entityable_id] = $contact->entityable->name;
+            $this->clientHasOrganizations = true;
         }
     }
 

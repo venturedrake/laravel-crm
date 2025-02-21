@@ -53,13 +53,13 @@ class Settings
 
             if (config('laravel-crm.teams') && ! auth()->guest() && $currentTeam = auth()->user()->currentTeam) {
                 Setting::firstOrCreate([
-                    'name' => 'organisation_name',
+                    'name' => 'organization_name',
                 ], [
                     'value' => $currentTeam->name,
                 ]);
             } else {
                 Setting::firstOrCreate([
-                    'name' => 'organisation_name',
+                    'name' => 'organization_name',
                 ], [
                     'value' => config('app.name'),
                 ]);

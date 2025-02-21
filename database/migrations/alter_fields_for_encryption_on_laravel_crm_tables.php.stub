@@ -22,7 +22,7 @@ class AlterFieldsForEncryptionOnLaravelCrmTables extends Migration
                 $table->string('maiden_name', 500)->nullable()->change();
             });
 
-            Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+            Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
                 $table->string('name', 1000)->nullable()->change();
             });
             
@@ -63,7 +63,7 @@ class AlterFieldsForEncryptionOnLaravelCrmTables extends Migration
                 $table->string('maiden_name', 255)->nullable()->change();
             });
 
-            Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+            Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
                 $table->string('name', 1000)->nullable()->change();
             });
 

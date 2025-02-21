@@ -48,9 +48,9 @@ class Label extends Model
     }
 
     /**
-     * Get all of the organisations that are assigned this labels.
+     * Get all of the organizations that are assigned this labels.
      */
-    public function organisations()
+    public function organizations()
     {
         return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Organization::class, config('laravel-crm.db_table_prefix').'labelable');
     }

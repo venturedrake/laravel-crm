@@ -2,6 +2,6 @@
 
 @section('content')
 
-    @include('laravel-crm::organisations.partials.card-create')
+    @include('laravel-crm::organizations.partials.card-create')
 
 @endsection

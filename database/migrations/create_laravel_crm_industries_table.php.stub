@@ -22,7 +22,7 @@ class CreateLaravelCrmIndustriesTable extends Migration
             $table->softDeletes();
         });
         
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
             $table->unsignedBigInteger('industry_id')->index()->nullable();
         });
     }
@@ -34,7 +34,7 @@ class CreateLaravelCrmIndustriesTable extends Migration
      */
     public function down()
     {
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
                 $table->dropColumn(['industry_id']);
         });
   

@@ -29,12 +29,12 @@ class PurchaseOrderService
         $this->purchaseOrderRepository = $purchaseOrderRepository;
     }
 
-    public function create($request, $person = null, $organisation = null)
+    public function create($request, $person = null, $organization = null)
     {
         $purchaseOrder = PurchaseOrder::create([
             'order_id' => $request->order_id ?? null,
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'reference' => $request->reference,
             'issue_date' => $request->issue_date,
             'delivery_date' => $request->delivery_date,
@@ -129,7 +129,7 @@ class PurchaseOrderService
                 $xeroPurchaseOrder = Xero::post('PurchaseOrders', $array = [
                     'Status' => 'AUTHORISED',
                     'Contact' => [
-                        'ContactID' => $purchaseOrder->organisation->xeroContact->contact_id,
+                        'ContactID' => $purchaseOrder->organization->xeroContact->contact_id,
                     ],
                     'LineItems' => $lineItems ?? [],
                     'Date' => ($purchaseOrder->issue_date) ? $purchaseOrder->issue_date->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
@@ -154,11 +154,11 @@ class PurchaseOrderService
         return $purchaseOrder;
     }
 
-    public function update($request, PurchaseOrder $purchaseOrder, $person = null, $organisation = null)
+    public function update($request, PurchaseOrder $purchaseOrder, $person = null, $organization = null)
     {
         $purchaseOrder->update([
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'reference' => $request->reference,
             'issue_date' => $request->issue_date,
             'delivery_date' => $request->delivery_date,

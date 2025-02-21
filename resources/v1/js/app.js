@@ -114,9 +114,9 @@ const appJquery = function() {
                 });
             }
 
-            if(typeof organisations !== 'undefined'){
-                $("td.bind-select2-organisations select[name^='purchaseOrderLines']").select2({
-                    data: organisations
+            if(typeof organizations !== 'undefined'){
+                $("td.bind-select2-organizations select[name^='purchaseOrderLines']").select2({
+                    data: organizations
                 });
             }
 
@@ -150,8 +150,8 @@ const appJquery = function() {
                 appJquery.bindPersonAutocomplete();
             }
 
-            if (typeof organisations !== 'undefined') {
-                appJquery.bindOrganisationAutocomplete();
+            if (typeof organizations !== 'undefined') {
+                appJquery.bindOrganizationAutocomplete();
             }
 
             $(document).on('click','.btn-action-add-deal-product', function(e) {
@@ -354,32 +354,32 @@ const appJquery = function() {
 
         },
 
-        bindOrganisationAutocomplete: function (){
-            $('input[name="organisation_name"]').autocomplete({
-                source: organisations,
-                onSelectItem: appJquery.onSelectOrganisation,
+        bindOrganizationAutocomplete: function (){
+            $('input[name="organization_name"]').autocomplete({
+                source: organizations,
+                onSelectItem: appJquery.onSelectOrganization,
                 highlightClass: 'text-danger',
                 treshold: 2,
             });
 
-            $('input[name="organisation_name"]').on('input', function() {
-                $(this).closest('.autocomplete').find('input[name="organisation_id"]').val('');
-                $('.autocomplete-organisation').find('input,select').val('');
-                $(this).closest('.autocomplete').find('input[name="organisation_id"]').trigger('change');
+            $('input[name="organization_name"]').on('input', function() {
+                $(this).closest('.autocomplete').find('input[name="organization_id"]').val('');
+                $('.autocomplete-organization').find('input,select').val('');
+                $(this).closest('.autocomplete').find('input[name="organization_id"]').trigger('change');
             });
 
-            $('input[name="organisation_id"]').on('change', function() {
-                if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){
+            $('input[name="organization_id"]').on('change', function() {
+                if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organization_name"]').val()) != ''){
                     $(this).closest('.autocomplete').find(".autocomplete-new").show()
-                    $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+                    $('.autocomplete-organization').find('input,select').removeAttr('disabled');
                 }else{
                     $(this).closest('.autocomplete').find(".autocomplete-new").hide()
-                    $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
+                    $('.autocomplete-organization').find('input,select').attr('disabled','disabled');
                 }
             });
 
-            if($('input[name="organisation_name"]').closest('.autocomplete').find('input[name="organisation_id"]').val() == ''){
-                $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+            if($('input[name="organization_name"]').closest('.autocomplete').find('input[name="organization_id"]').val() == ''){
+                $('.autocomplete-organization').find('input,select').removeAttr('disabled');
             }
         },
 
@@ -399,21 +399,21 @@ const appJquery = function() {
             });
         },
 
-        onSelectOrganisation: function (item, element) {
-            $(element).closest('.autocomplete').find('input[name="organisation_id"]').val(item.value).trigger('change');
+        onSelectOrganization: function (item, element) {
+            $(element).closest('.autocomplete').find('input[name="organization_id"]').val(item.value).trigger('change');
 
             $.ajax({
-                url: "/crm/organisations/" +  item.value + "/autocomplete",
+                url: "/crm/organizations/" +  item.value + "/autocomplete",
                 cache: false
             }).done(function( data ) {
 
-                $('.autocomplete-organisation').find('input[name="line1"]').val(data.address_line1);
-                $('.autocomplete-organisation').find('input[name="line2"]').val(data.address_line2);
-                $('.autocomplete-organisation').find('input[name="line3"]').val(data.address_line3);
-                $('.autocomplete-organisation').find('input[name="city"]').val(data.address_city);
-                $('.autocomplete-organisation').find('input[name="state"]').val(data.address_state);
-                $('.autocomplete-organisation').find('input[name="code"]').val(data.address_code);
-                $('.autocomplete-organisation').find('select[name="country"]').val(data.address_country);
+                $('.autocomplete-organization').find('input[name="line1"]').val(data.address_line1);
+                $('.autocomplete-organization').find('input[name="line2"]').val(data.address_line2);
+                $('.autocomplete-organization').find('input[name="line3"]').val(data.address_line3);
+                $('.autocomplete-organization').find('input[name="city"]').val(data.address_city);
+                $('.autocomplete-organization').find('input[name="state"]').val(data.address_state);
+                $('.autocomplete-organization').find('input[name="code"]').val(data.address_code);
+                $('.autocomplete-organization').find('select[name="country"]').val(data.address_country);
 
             });
         },

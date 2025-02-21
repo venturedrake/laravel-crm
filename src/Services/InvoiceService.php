@@ -27,12 +27,12 @@ class InvoiceService
         $this->invoiceRepository = $invoiceRepository;
     }
 
-    public function create($request, $person = null, $organisation = null)
+    public function create($request, $person = null, $organization = null)
     {
         $invoice = Invoice::create([
             'order_id' => $request->order_id ?? null,
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'reference' => $request->reference,
             'issue_date' => $request->issue_date,
             'due_date' => $request->due_date,
@@ -102,7 +102,7 @@ class InvoiceService
                     'Type' => 'ACCREC',
                     'Status' => 'AUTHORISED',
                     'Contact' => [
-                        'ContactID' => $invoice->organisation->xeroContact->contact_id,
+                        'ContactID' => $invoice->organization->xeroContact->contact_id,
                     ],
                     'LineItems' => $lineItems ?? [],
                     'Date' => ($invoice->issue_date) ? $invoice->issue_date->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
@@ -126,11 +126,11 @@ class InvoiceService
         return $invoice;
     }
 
-    public function update($request, Invoice $invoice, $person = null, $organisation = null)
+    public function update($request, Invoice $invoice, $person = null, $organization = null)
     {
         $invoice->update([
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'reference' => $request->reference,
             'issue_date' => $request->issue_date,
             'due_date' => $request->due_date,

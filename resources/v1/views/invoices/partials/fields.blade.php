@@ -25,17 +25,17 @@
         </span>
         <span class="autocomplete">
             @include('laravel-crm::partials.form.hidden',[
-              'name' => 'organisation_id',
-              'value' => old('organisation_id', $invoice->organisation->id ?? $organisation->id ??  null),
+              'name' => 'organization_id',
+              'value' => old('organization_id', $invoice->organization->id ?? $organization->id ??  null),
             ])
             <script type="text/javascript">
-                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
+                let organizations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizations() !!}
             </script>
             @include('laravel-crm::partials.form.text',[
-                'name' => 'organisation_name',
+                'name' => 'organization_name',
                 'label' => ucfirst(__('laravel-crm::lang.organization')),
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organisation_name',$invoice->organisation->name ?? $organisation->name ?? null),
+                'value' => old('organization_name',$invoice->organization->name ?? $organization->name ?? null),
                 'attributes' => [
                   'autocomplete' => \Illuminate\Support\Str::random()
                ],

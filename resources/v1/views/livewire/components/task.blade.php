@@ -11,7 +11,7 @@
                                     href="{{ route('laravel-crm.people.show', $task->taskable) }}">{{ $task->taskable->name }}</a>
                         @elseif($task->taskable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.organisations.show', $task->taskable) }}">{{ $task->taskable->name }}</a>
+                                    href="{{ route('laravel-crm.organizations.show', $task->taskable) }}">{{ $task->taskable->name }}</a>
                         @endif
                     </p>
                 @endif

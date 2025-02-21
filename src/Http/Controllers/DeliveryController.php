@@ -14,7 +14,7 @@ use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\DeliveryService;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
@@ -31,20 +31,20 @@ class DeliveryController extends Controller
     private $personService;
 
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
-    private $organisationService;
+    private $organizationService;
 
     /**
      * @var DeliveryService
      */
     private $deliveryService;
 
-    public function __construct(SettingService $settingService, PersonService $personService, OrganisationService $organisationService, DeliveryService $deliveryService)
+    public function __construct(SettingService $settingService, PersonService $personService, OrganizationService $organizationService, DeliveryService $deliveryService)
     {
         $this->settingService = $settingService;
         $this->personService = $personService;
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
         $this->deliveryService = $deliveryService;
     }
 
@@ -82,8 +82,8 @@ class DeliveryController extends Controller
 
                 break;
 
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
 
@@ -91,13 +91,13 @@ class DeliveryController extends Controller
                 $order = Order::find($request->id);
                 $client = $order->client;
                 $person = $order->person;
-                $organisation = $order->organisation;
+                $organization = $order->organization;
 
                 $addressIds = [];
 
                 if ($address = $order->getShippingAddress()) {
                     $addressIds[] = $address->id;
-                } elseif ($address = $order->organisation->getShippingAddress()) {
+                } elseif ($address = $order->organization->getShippingAddress()) {
                     $addressIds[] = $address->id;
                 }
 
@@ -109,7 +109,7 @@ class DeliveryController extends Controller
         return view('laravel-crm::deliveries.create', [
             'client' => $client ?? null,
             'person' => $person ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'order' => $order ?? null,
             'addresses' => $addresses ?? null,
         ]);
@@ -143,15 +143,15 @@ class DeliveryController extends Controller
             $phone = $delivery->person->getPrimaryPhone();
         }
 
-        if ($delivery->organisation) {
-            $organisation_address = $delivery->organisation->getPrimaryAddress();
+        if ($delivery->organization) {
+            $organization_address = $delivery->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::deliveries.show', [
             'delivery' => $delivery,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'organization_address' => $organization_address ?? null,
             'addresses' => $delivery->addresses,
         ]);
     }
@@ -169,15 +169,15 @@ class DeliveryController extends Controller
             $phone = $delivery->person->getPrimaryPhone();
         }
 
-        if ($delivery->organisation) {
-            $address = $delivery->organisation->getPrimaryAddress();
+        if ($delivery->organization) {
+            $address = $delivery->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::deliveries.edit', [
             'delivery' => $delivery,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'organisation_address' => $address ?? null,
+            'organization_address' => $address ?? null,
             'addresses' => $delivery->addresses,
         ]);
     }
@@ -230,11 +230,11 @@ class DeliveryController extends Controller
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
                 config('laravel-crm.db_table_prefix').'people.maiden_name',
-                config('laravel-crm.db_table_prefix').'organisations.name'
+                config('laravel-crm.db_table_prefix').'organizations.name'
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'orders', config('laravel-crm.db_table_prefix').'deliveries.order_id', '=', config('laravel-crm.db_table_prefix').'orders.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'orders.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
@@ -278,8 +278,8 @@ class DeliveryController extends Controller
             $phone = $person->getPrimaryPhone();
         }
 
-        if ($organisation = $delivery->order->organisation) {
-            $organisation_address = $organisation->getPrimaryAddress();
+        if ($organization = $delivery->order->organization) {
+            $organization_address = $organization->getPrimaryAddress();
         }
 
         return Pdf::setOption([
@@ -291,8 +291,8 @@ class DeliveryController extends Controller
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $delivery->getShippingAddress() ?? null,
-                'organisation_address' => $delivery->order->getShippingAddress() ?? $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'organization_address' => $delivery->order->getShippingAddress() ?? $organization_address ?? null,
+                'fromName' => $this->settingService->get('organization_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->download('delivery-'.strtolower($delivery->delivery_id).'.pdf');
     }

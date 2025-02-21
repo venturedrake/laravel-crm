@@ -66,12 +66,12 @@
                         @if($order->client)
                             {{ $order->client->name }}
                         @endif
-                        @if($order->organisation)
+                        @if($order->organization)
                             @if($order->client)<br /><small>@endif
-                                {{ $order->organisation->name }}
+                                {{ $order->organization->name }}
                                 @if($order->client)</small>@endif
                         @endif
-                        @if($order->organisation && $order->person)
+                        @if($order->organization && $order->person)
                             <br /><small>{{ $order->person->name }}</small>
                         @elseif($order->person)
                             {{ $order->person->name }}

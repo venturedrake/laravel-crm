@@ -23,8 +23,8 @@ class CreateLaravelCrmQuotesTable extends Migration
             $table->foreign('deal_id')->references('id')->on(config('laravel-crm.db_table_prefix').'deals');
             $table->unsignedBigInteger('person_id')->index()->nullable();
             $table->foreign('person_id')->references('id')->on(config('laravel-crm.db_table_prefix').'people');
-            $table->unsignedBigInteger('organisation_id')->index()->nullable();
-            $table->foreign('organisation_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organisations');                   
+            $table->unsignedBigInteger('organization_id')->index()->nullable();
+            $table->foreign('organization_id')->references('id')->on(config('laravel-crm.db_table_prefix').'organizations');                   
             $table->string('title');
             $table->text('description')->nullable();         
             $table->datetime('issue_at')->nullable();

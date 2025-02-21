@@ -94,8 +94,8 @@ class LunchReminderNotification extends Notification
                     $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->name.'</a></small>'));
                     break;
 
-                case 'Organisation':
-                    $mailMessage->line(new HtmlString('Organisation: <a href="'.config('app.url').'/organisation/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->name.'</a></small>'));
+                case 'Organization':
+                    $mailMessage->line(new HtmlString('Organization: <a href="'.config('app.url').'/organization/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->name.'</a></small>'));
                     break;
 
                 case 'Person':

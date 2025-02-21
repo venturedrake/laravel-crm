@@ -11,7 +11,7 @@
                                     href="{{ route('laravel-crm.people.show', $file->filable) }}">{{ $file->filable->name }}</a>
                         @elseif($file->filable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.organisations.show', $file->filable) }}">{{ $file->filable->name }}</a>
+                                    href="{{ route('laravel-crm.organizations.show', $file->filable) }}">{{ $file->filable->name }}</a>
                         @endif
                     </p>
                 @endif

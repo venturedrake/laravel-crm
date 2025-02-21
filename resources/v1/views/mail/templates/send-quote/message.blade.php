@@ -7,7 +7,7 @@ Please advise if you accept the quote or if you have any questions, let us know.
 [Online Quote Link]
 
 Thanks,
-{{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organisation_name')->first()->value }}
+{{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organization_name')->first()->value }}
 @if($quote->terms)
     
 Terms

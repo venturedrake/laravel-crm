@@ -18,9 +18,9 @@ class XeroContact extends Model
     }
 
     /**
-     * Get the organisation that owns the xero contact.
+     * Get the organization that owns the xero contact.
      */
-    public function organisation()
+    public function organization()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }

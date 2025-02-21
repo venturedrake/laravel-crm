@@ -6,15 +6,15 @@ use Livewire\Component;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Organization;
 
-class LiveRelatedContactOrganisation extends Component
+class LiveRelatedContactOrganization extends Component
 {
     public $model;
 
     public $contacts;
 
-    public $organisation_id;
+    public $organization_id;
 
-    public $organisation_name;
+    public $organization_name;
 
     public $actions;
 
@@ -31,25 +31,25 @@ class LiveRelatedContactOrganisation extends Component
     public function link()
     {
         $data = $this->validate([
-            'organisation_name' => 'required',
+            'organization_name' => 'required',
         ]);
 
-        if ($this->organisation_id) {
-            $organisation = Organization::find($this->organisation_id);
+        if ($this->organization_id) {
+            $organization = Organization::find($this->organization_id);
         } else {
-            $organisation = Organization::create([
+            $organization = Organization::create([
                 'external_id' => Uuid::uuid4()->toString(),
-                'name' => $data['organisation_name'],
+                'name' => $data['organization_name'],
                 'user_owner_id' => auth()->user()->id,
             ]);
         }
 
         $this->model->contacts()->create([
-            'entityable_type' => $organisation->getMorphClass(),
-            'entityable_id' => $organisation->id,
+            'entityable_type' => $organization->getMorphClass(),
+            'entityable_id' => $organization->id,
         ]);
 
-        $organisation->contacts()->create([
+        $organization->contacts()->create([
             'entityable_type' => $this->model->getMorphClass(),
             'entityable_id' => $this->model->id,
         ]);
@@ -58,20 +58,20 @@ class LiveRelatedContactOrganisation extends Component
 
         $this->getContacts();
 
-        $this->dispatchBrowserEvent('linkedOrganisation');
+        $this->dispatchBrowserEvent('linkedOrganization');
     }
 
     public function remove($id)
     {
-        if ($organisation = Organization::find($id)) {
+        if ($organization = Organization::find($id)) {
             $this->model->contacts()
                 ->where([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ])
                 ->delete();
 
-            $organisation->contacts()
+            $organization->contacts()
                 ->where([
                     'entityable_type' => $this->model->getMorphClass(),
                     'entityable_id' => $this->model->id,
@@ -81,10 +81,10 @@ class LiveRelatedContactOrganisation extends Component
 
         $this->getContacts();
 
-        $this->dispatchBrowserEvent('linkedOrganisation');
+        $this->dispatchBrowserEvent('linkedOrganization');
     }
 
-    public function updatedOrganisationName($value)
+    public function updatedOrganizationName($value)
     {
         $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
     }
@@ -98,17 +98,17 @@ class LiveRelatedContactOrganisation extends Component
                     ->leftJoin('contact_types', 'contact_contact_type.contact_type_id', '=', 'contact_types.id')
                     ->where('contact_types.name', $this->contactTypeFilter);
             })
-            ->where('entityable_type', 'LIKE', '%Organisation%')
+            ->where('entityable_type', 'LIKE', '%Organization%')
             ->get();
     }
 
     private function resetFields()
     {
-        $this->reset('organisation_id', 'organisation_name');
+        $this->reset('organization_id', 'organization_name');
     }
 
     public function render()
     {
-        return view('laravel-crm::livewire.related-contact-organisations');
+        return view('laravel-crm::livewire.related-contact-organizations');
     }
 }

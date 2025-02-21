@@ -34,7 +34,7 @@ class LiveRelatedPerson extends Component
         if ($this->person_id) {
             $person = Person::find($this->person_id);
             $person->update([
-                'organisation_id' => $this->model->id,
+                'organization_id' => $this->model->id,
             ]);
         } else {
             $name = \VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstLastFromName($data['person_name']);
@@ -44,7 +44,7 @@ class LiveRelatedPerson extends Component
                 'first_name' => $name['first_name'],
                 'last_name' => $name['last_name'] ?? null,
                 'user_owner_id' => auth()->user()->id,
-                'organisation_id' => $this->model->id,
+                'organization_id' => $this->model->id,
             ]);
         }
 
@@ -59,7 +59,7 @@ class LiveRelatedPerson extends Component
     {
         if ($person = Person::find($id)) {
             $person->update([
-                'organisation_id' => null,
+                'organization_id' => null,
             ]);
         }
 

@@ -65,12 +65,12 @@
                        @if($quote->client)
                            {{ $quote->client->name }}
                        @endif
-                       @if($quote->organisation)
+                       @if($quote->organization)
                            @if($quote->client)<br /><small>@endif
-                               {{ $quote->organisation->name }}
+                               {{ $quote->organization->name }}
                                @if($quote->client)</small>@endif
                        @endif
-                       @if($quote->organisation && $quote->person)
+                       @if($quote->organization && $quote->person)
                            <br /><small>{{ $quote->person->name }}</small>
                        @elseif($quote->person)
                            {{ $quote->person->name }}

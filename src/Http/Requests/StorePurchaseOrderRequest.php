@@ -33,8 +33,8 @@ class StorePurchaseOrderRequest extends FormRequest
         ];
 
         // if (! request('order_id')) {
-        $rules['person_name'] = 'required_without:organisation_name|max:255';
-        $rules['organisation_name'] = 'required_without:person_name|max:255';
+        $rules['person_name'] = 'required_without:organization_name|max:255';
+        $rules['organization_name'] = 'required_without:person_name|max:255';
         // }
 
         if (request('delivery_type') == 'deliver') {

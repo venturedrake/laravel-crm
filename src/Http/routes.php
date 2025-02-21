@@ -1370,10 +1370,10 @@ Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function (
             ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
     });
 
-    Route::group(['prefix' => 'organisations', 'middleware' => 'auth.laravel-crm'], function () {
-        Route::get('{organisation}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganisationController@autocomplete')
-            ->name('laravel-crm.organisations.autocomplete')
-            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organisation']);
+    Route::group(['prefix' => 'organizations', 'middleware' => 'auth.laravel-crm'], function () {
+        Route::get('{organization}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@autocomplete')
+            ->name('laravel-crm.organizations.autocomplete')
+            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organization']);
     });
 
     Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], function () {

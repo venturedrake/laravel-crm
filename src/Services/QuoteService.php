@@ -25,12 +25,12 @@ class QuoteService
         $this->quoteRepository = $quoteRepository;
     }
 
-    public function create($request, $person = null, $organisation = null, $client = null)
+    public function create($request, $person = null, $organization = null, $client = null)
     {
         $quote = Quote::create([
             'lead_id' => $request->lead_id ?? null,
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'client_id' => $client->id ?? null,
             'title' => $request->title,
             'description' => $request->description,
@@ -90,11 +90,11 @@ class QuoteService
         return $quote;
     }
 
-    public function update($request, Quote $quote, $person = null, $organisation = null, $client = null)
+    public function update($request, Quote $quote, $person = null, $organization = null, $client = null)
     {
         $quote->update([
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'client_id' => $client->id ?? null,
             'title' => $request->title,
             'description' => $request->description,

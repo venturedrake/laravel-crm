@@ -424,7 +424,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Ability to add notes to leads, deals & contacts
 - Auth logging
-- Organisation types
+- Organization types
 - Search option on multiselect search filters
 ### Fixed
 - Incorrectly names morph fields on notes table
@@ -659,6 +659,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Leads
 - Deals
 - People
-- Organisations
+- Organizations
 - Users
 - Teams

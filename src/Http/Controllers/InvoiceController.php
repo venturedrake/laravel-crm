@@ -13,7 +13,7 @@ use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\InvoiceService;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
@@ -30,20 +30,20 @@ class InvoiceController extends Controller
     private $personService;
 
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
-    private $organisationService;
+    private $organizationService;
 
     /**
      * @var InvoiceService
      */
     private $invoiceService;
 
-    public function __construct(SettingService $settingService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService)
+    public function __construct(SettingService $settingService, PersonService $personService, OrganizationService $organizationService, InvoiceService $invoiceService)
     {
         $this->settingService = $settingService;
         $this->personService = $personService;
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
         $this->invoiceService = $invoiceService;
     }
 
@@ -81,15 +81,15 @@ class InvoiceController extends Controller
 
                 break;
 
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
 
             case 'order':
                 $order = Order::find($request->id);
                 $person = $order->person;
-                $organisation = $order->organisation;
+                $organization = $order->organization;
 
                 break;
         }
@@ -98,7 +98,7 @@ class InvoiceController extends Controller
 
         return view('laravel-crm::invoices.create', [
             'person' => $person ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'order' => $order ?? null,
             'prefix' => $this->settingService->get('invoice_prefix'),
             'number' => (Invoice::latest()->first()->number ?? 1000) + 1,
@@ -120,13 +120,13 @@ class InvoiceController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
-        $this->invoiceService->create($request, $person ?? null, $organisation ?? null);
+        $this->invoiceService->create($request, $person ?? null, $organization ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.invoice_created')))->success()->important();
 
@@ -147,8 +147,8 @@ class InvoiceController extends Controller
             $address = $invoice->person->getPrimaryAddress();
         }
 
-        if ($invoice->organisation) {
-            $organisation_address = $invoice->organisation->getPrimaryAddress();
+        if ($invoice->organization) {
+            $organization_address = $invoice->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::invoices.show', [
@@ -156,7 +156,7 @@ class InvoiceController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'organization_address' => $organization_address ?? null,
         ]);
     }
 
@@ -173,8 +173,8 @@ class InvoiceController extends Controller
             $phone = $invoice->person->getPrimaryPhone();
         }
 
-        if ($invoice->organisation) {
-            $address = $invoice->organisation->getPrimaryAddress();
+        if ($invoice->organization) {
+            $address = $invoice->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::invoices.edit', [
@@ -200,13 +200,13 @@ class InvoiceController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
-        $invoice = $this->invoiceService->update($request, $invoice, $person ?? null, $organisation ?? null);
+        $invoice = $this->invoiceService->update($request, $invoice, $person ?? null, $organization ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.invoice_updated')))->success()->important();
 
@@ -245,10 +245,10 @@ class InvoiceController extends Controller
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
                 config('laravel-crm.db_table_prefix').'people.maiden_name',
-                config('laravel-crm.db_table_prefix').'organisations.name'
+                config('laravel-crm.db_table_prefix').'organizations.name'
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'invoices.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'invoices.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'invoices.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
@@ -293,8 +293,8 @@ class InvoiceController extends Controller
             $address = $invoice->person->getPrimaryAddress();
         }
 
-        if ($invoice->organisation) {
-            $organisation_address = $invoice->organisation->getPrimaryAddress();
+        if ($invoice->organization) {
+            $organization_address = $invoice->organization->getPrimaryAddress();
         }
 
         return Pdf::setOption([
@@ -307,8 +307,8 @@ class InvoiceController extends Controller
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
-                'organisation_address' => $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'organization_address' => $organization_address ?? null,
+                'fromName' => $this->settingService->get('organization_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->download('invoice-'.strtolower($invoice->xeroInvoice->number ?? $invoice->invoice_id).'.pdf');
     }

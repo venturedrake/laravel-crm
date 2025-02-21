@@ -29,7 +29,7 @@ class SettingController extends Controller
      */
     public function edit()
     {
-        $organisationName = $this->settingService->get('organisation_name');
+        $organizationName = $this->settingService->get('organization_name');
         $vatNumber = $this->settingService->get('vat_number');
         $language = $this->settingService->get('language');
         $country = $this->settingService->get('country');
@@ -58,7 +58,7 @@ class SettingController extends Controller
         $related = $this->settingService->get('team');
 
         return view('laravel-crm::settings.edit', [
-            'organisationName' => $organisationName,
+            'organizationName' => $organizationName,
             'vatNumber' => $vatNumber,
             'language' => $language,
             'country' => $country,
@@ -99,7 +99,7 @@ class SettingController extends Controller
      */
     public function update(UpdateSettingRequest $request)
     {
-        $this->settingService->set('organisation_name', $request->organisation_name);
+        $this->settingService->set('organization_name', $request->organization_name);
 
         if ($request->vat_number) {
             $this->settingService->set('vat_number', $request->vat_number);
@@ -185,10 +185,10 @@ class SettingController extends Controller
             $this->settingService->set('logo_file_name', $file->getClientOriginalName());
         }
 
-        if ($request->organisation_name && config('laravel-crm.teams') && auth()->user()->currentTeam) {
+        if ($request->organization_name && config('laravel-crm.teams') && auth()->user()->currentTeam) {
             DB::table('teams')
                 ->where('id', auth()->user()->currentTeam->id)
-                ->update(['name' => $request->organisation_name]);
+                ->update(['name' => $request->organization_name]);
         }
 
         $this->settingService->set('dynamic_products', (($request->dynamic_products == 'on') ? 1 : 0));

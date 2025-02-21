@@ -28,8 +28,8 @@ class UpdateInvoiceRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'person_name' => 'required_without:organisation_name|max:255',
-            'organisation_name' => 'required_without:person_name|max:255',
+            'person_name' => 'required_without:organization_name|max:255',
+            'organization_name' => 'required_without:person_name|max:255',
             'issue_date' => 'required|date_format:"'.$this->dateFormat().'"',
             'due_date' => 'required|date_format:"'.$this->dateFormat().'"',
             'currency' => 'required',

@@ -18,7 +18,7 @@ use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\DeliveryService;
 use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Services\OrderService;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
@@ -35,9 +35,9 @@ class OrderController extends Controller
     private $personService;
 
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
-    private $organisationService;
+    private $organizationService;
 
     /**
      * @var InvoiceService
@@ -54,11 +54,11 @@ class OrderController extends Controller
      */
     private $deliveryService;
 
-    public function __construct(OrderService $orderService, PersonService $personService, OrganisationService $organisationService, InvoiceService $invoiceService, SettingService $settingService, DeliveryService $deliveryService)
+    public function __construct(OrderService $orderService, PersonService $personService, OrganizationService $organizationService, InvoiceService $invoiceService, SettingService $settingService, DeliveryService $deliveryService)
     {
         $this->orderService = $orderService;
         $this->personService = $personService;
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
         $this->invoiceService = $invoiceService;
         $this->settingService = $settingService;
         $this->deliveryService = $deliveryService;
@@ -98,8 +98,8 @@ class OrderController extends Controller
 
                 break;
 
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
 
@@ -111,16 +111,16 @@ class OrderController extends Controller
             case 'quote':
                 $quote = Quote::find($request->id);
                 $client = $quote->client;
-                $organisation = $quote->organisation;
+                $organization = $quote->organization;
                 $person = $quote->person;
 
                 $addressIds = [];
 
-                if ($address = $quote->organisation->getBillingAddress()) {
+                if ($address = $quote->organization->getBillingAddress()) {
                     $addressIds[] = $address->id;
                 }
 
-                if ($address = $quote->organisation->getShippingAddress()) {
+                if ($address = $quote->organization->getShippingAddress()) {
                     $addressIds[] = $address->id;
                 }
 
@@ -134,7 +134,7 @@ class OrderController extends Controller
         return view('laravel-crm::orders.create', [
             'quote' => $quote ?? null,
             'client' => $client ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'person' => $person ?? null,
             'addresses' => $addresses ?? null,
             'prefix' => $this->settingService->get('order_prefix'),
@@ -157,10 +157,10 @@ class OrderController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -173,10 +173,10 @@ class OrderController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -188,7 +188,7 @@ class OrderController extends Controller
             }
         }
 
-        $this->orderService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
+        $this->orderService->create($request, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.order_stored')))->success()->important();
 
@@ -208,15 +208,15 @@ class OrderController extends Controller
             $phone = $order->person->getPrimaryPhone();
         }
 
-        if ($order->organisation) {
-            $address = $order->organisation->getPrimaryAddress();
+        if ($order->organization) {
+            $address = $order->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::orders.show', [
             'order' => $order,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'organisation_address' => $address ?? null,
+            'organization_address' => $address ?? null,
             'addresses' => $order->addresses,
             'purchaseOrders' => $order->purchaseOrders()->latest()->get(),
             'invoices' => $order->invoices()->latest()->get(),
@@ -237,15 +237,15 @@ class OrderController extends Controller
             $phone = $order->person->getPrimaryPhone();
         }
 
-        if ($order->organisation) {
-            $address = $order->organisation->getPrimaryAddress();
+        if ($order->organization) {
+            $address = $order->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::orders.edit', [
             'order' => $order,
             'email' => $email ?? null,
             'phone' => $phone ?? null,
-            'organisation_address' => $address ?? null,
+            'organization_address' => $address ?? null,
             'addresses' => $order->addresses,
         ]);
     }
@@ -265,10 +265,10 @@ class OrderController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -281,10 +281,10 @@ class OrderController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -296,7 +296,7 @@ class OrderController extends Controller
             }
         }
 
-        $order = $this->orderService->update($request, $order, $person ?? null, $organisation ?? null, $client ?? null);
+        $order = $this->orderService->update($request, $order, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.order_updated')))->success()->important();
 
@@ -335,10 +335,10 @@ class OrderController extends Controller
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
                 config('laravel-crm.db_table_prefix').'people.maiden_name',
-                config('laravel-crm.db_table_prefix').'organisations.name'
+                config('laravel-crm.db_table_prefix').'organizations.name'
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'orders.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
@@ -401,9 +401,9 @@ class OrderController extends Controller
 
         if ($address = $order->getShippingAddress()) {
             $shippingAddress = $address;
-        } elseif ($address = $order->organisation->getShippingAddress()) {
+        } elseif ($address = $order->organization->getShippingAddress()) {
             $shippingAddress = $address;
-        } elseif ($address = $order->organisation->getPrimaryAddress()) {
+        } elseif ($address = $order->organization->getPrimaryAddress()) {
             $shippingAddress = $address;
         }
 
@@ -439,8 +439,8 @@ class OrderController extends Controller
             $address = $order->person->getPrimaryAddress();
         }
 
-        if ($order->organisation) {
-            $organisation_address = $order->organisation->getPrimaryAddress();
+        if ($order->organization) {
+            $organization_address = $order->organization->getPrimaryAddress();
         }
 
         /*$pdfLocation = 'laravel-crm/'.strtolower(class_basename($quote)).'/'.$quote->id.'/';
@@ -454,8 +454,8 @@ class OrderController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
-            'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+            'organization_address' => $organization_address ?? null,
+            'fromName' => $this->settingService->get('organization_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ]);*/
 
@@ -467,8 +467,8 @@ class OrderController extends Controller
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
-                'organisation_address' => $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'organization_address' => $organization_address ?? null,
+                'fromName' => $this->settingService->get('organization_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->download('order-'.strtolower($order->order_id).'.pdf');
     }

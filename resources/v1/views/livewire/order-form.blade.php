@@ -22,15 +22,15 @@
         </span>    
     </span>
     
-    @if($clientHasOrganisations)
+    @if($clientHasOrganizations)
 
         @include('laravel-crm::partials.form.select',[
-            'name' => 'organisation_id',
+            'name' => 'organization_id',
             'label' => ucfirst(__('laravel-crm::lang.organization')),
             'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-            'options' => ['' => ''] + $organisations,
+            'options' => ['' => ''] + $organizations,
             'attributes' => [
-                'wire:model' => 'organisation_id'        
+                'wire:model' => 'organization_id'        
             ],
             'required' => 'true',
         ])
@@ -39,23 +39,23 @@
 
         <span class="autocomplete">
         @include('laravel-crm::partials.form.hidden',[
-            'name' => 'organisation_id',
+            'name' => 'organization_id',
              'attributes' => [
-                'wire:model' => 'organisation_id'        
+                'wire:model' => 'organization_id'        
             ]   
         ])
         <script type="text/javascript">
-            let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
+            let organizations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizations() !!}
         </script>
             
         <span wire:ignore>    
             @include('laravel-crm::partials.form.text',[
-                'name' => 'organisation_name',
+                'name' => 'organization_name',
                 'label' => ucfirst(__('laravel-crm::lang.organization')),
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
                 'attributes' => [
                     'autocomplete' => \Illuminate\Support\Str::random(),
-                    'wire:model' => 'organisation_name'  
+                    'wire:model' => 'organization_name'  
                ],
                'required' => 'true'
             ])  
@@ -112,11 +112,11 @@
 
                 bindClientAutocomplete();
                 bindPersonAutocomplete();
-                bindOrganisationAutocomplete();
+                bindOrganizationAutocomplete();
 
                 window.addEventListener('clientNameUpdated', event => {
                     bindPersonAutocomplete();
-                    bindOrganisationAutocomplete();
+                    bindOrganizationAutocomplete();
                 });
 
                 function bindClientAutocomplete(){
@@ -126,8 +126,8 @@
                         onSelectItem: function (item, element) {
                             @this.set('client_id',item.value);
                             @this.set('client_name',item.label);
-                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
-                            @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
+                            @this.set('organization_id', $(element).closest('form').find("input[name='organization_id']").val());
+                            @this.set('organization_name', $(element).closest('form').find("input[name='organization_name']").val());
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             $(element).closest('.autocomplete').find('input[name="client_id"]').val(item.value).trigger('change');
@@ -163,31 +163,31 @@
                     }
                 }
 
-                function bindOrganisationAutocomplete(){
-                    $('input[name="organisation_name"]').autocomplete({
-                        source: organisations,
+                function bindOrganizationAutocomplete(){
+                    $('input[name="organization_name"]').autocomplete({
+                        source: organizations,
                         onSelectItem: function (item, element) {
                             @this.set('client_id', $(element).closest('form').find("input[name='client_id']").val());
                             @this.set('client_name', $(element).closest('form').find("input[name='client_name']").val());
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
-                            @this.set('organisation_id', item.value);
-                            @this.set('organisation_name', item.label);
+                            @this.set('organization_id', item.value);
+                            @this.set('organization_name', item.label);
 
-                            $(element).closest('.autocomplete').find('input[name="organisation_id"]').val(item.value).trigger('change');
+                            $(element).closest('.autocomplete').find('input[name="organization_id"]').val(item.value).trigger('change');
 
                             $.ajax({
-                                url: "/crm/organisations/" +  item.value + "/autocomplete",
+                                url: "/crm/organizations/" +  item.value + "/autocomplete",
                                 cache: false
                             }).done(function( data ) {
 
-                                $('.autocomplete-organisation').find('input[name="line1"]').val(data.address_line1);
-                                $('.autocomplete-organisation').find('input[name="line2"]').val(data.address_line2);
-                                $('.autocomplete-organisation').find('input[name="line3"]').val(data.address_line3);
-                                $('.autocomplete-organisation').find('input[name="city"]').val(data.address_city);
-                                $('.autocomplete-organisation').find('input[name="state"]').val(data.address_state);
-                                $('.autocomplete-organisation').find('input[name="code"]').val(data.address_code);
-                                $('.autocomplete-organisation').find('select[name="country"]').val(data.address_country);
+                                $('.autocomplete-organization').find('input[name="line1"]').val(data.address_line1);
+                                $('.autocomplete-organization').find('input[name="line2"]').val(data.address_line2);
+                                $('.autocomplete-organization').find('input[name="line3"]').val(data.address_line3);
+                                $('.autocomplete-organization').find('input[name="city"]').val(data.address_city);
+                                $('.autocomplete-organization').find('input[name="state"]').val(data.address_state);
+                                $('.autocomplete-organization').find('input[name="code"]').val(data.address_code);
+                                $('.autocomplete-organization').find('select[name="country"]').val(data.address_country);
 
                             });
                         },
@@ -195,31 +195,31 @@
                         treshold: 2,
                     });
 
-                    $('input[name="organisation_name"]').on('input', function() {
-                        $(this).closest('.autocomplete').find('input[name="organisation_id"]').val('');
-                        $('.autocomplete-organisation').find('input,select').val('');
-                        $(this).closest('.autocomplete').find('input[name="organisation_id"]').trigger('change');
+                    $('input[name="organization_name"]').on('input', function() {
+                        $(this).closest('.autocomplete').find('input[name="organization_id"]').val('');
+                        $('.autocomplete-organization').find('input,select').val('');
+                        $(this).closest('.autocomplete').find('input[name="organization_id"]').trigger('change');
                     });
 
-                    $('input[name="organisation_id"]').on('change', function() {
-                        if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){
+                    $('input[name="organization_id"]').on('change', function() {
+                        if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organization_name"]').val()) != ''){
                             $(this).closest('.autocomplete').find(".autocomplete-new").show()
-                            $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
-                            Livewire.emit('orderOrganisationDeselected');
+                            $('.autocomplete-organization').find('input,select').removeAttr('disabled');
+                            Livewire.emit('orderOrganizationDeselected');
                         }else{
                             $(this).closest('.autocomplete').find(".autocomplete-new").hide()
-                            $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
+                            $('.autocomplete-organization').find('input,select').attr('disabled','disabled');
                         }
-                        @this.set('organisation_id',$(this).val());
+                        @this.set('organization_id',$(this).val());
                     });
 
-                    if($('input[name="organisation_id"]').val() == '' && $.trim($('input[name="organisation_id"]').closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){
-                        $('input[name="organisation_id"]').closest('.autocomplete').find(".autocomplete-new").show();
-                        $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+                    if($('input[name="organization_id"]').val() == '' && $.trim($('input[name="organization_id"]').closest('.autocomplete').find('input[name="organization_name"]').val()) != ''){
+                        $('input[name="organization_id"]').closest('.autocomplete').find(".autocomplete-new").show();
+                        $('.autocomplete-organization').find('input,select').removeAttr('disabled');
                     }
 
-                    if($('input[name="organisation_name"]').closest('.autocomplete').find('input[name="organisation_id"]').val() == ''){
-                        $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+                    if($('input[name="organization_name"]').closest('.autocomplete').find('input[name="organization_id"]').val() == ''){
+                        $('.autocomplete-organization').find('input,select').removeAttr('disabled');
                     }
                 }
 
@@ -232,8 +232,8 @@
                             @this.set('client_name', $(element).closest('form').find("input[name='client_name']").val());
                             @this.set('person_id',item.value);
                             @this.set('person_name',item.label);
-                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
-                            @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
+                            @this.set('organization_id', $(element).closest('form').find("input[name='organization_id']").val());
+                            @this.set('organization_name', $(element).closest('form').find("input[name='organization_name']").val());
                             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
                         },
                         highlightClass: 'text-danger',

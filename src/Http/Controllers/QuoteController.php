@@ -15,7 +15,7 @@ use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrderService;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\QuoteService;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -33,9 +33,9 @@ class QuoteController extends Controller
     private $personService;
 
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
-    private $organisationService;
+    private $organizationService;
 
     /**
      * @var OrderService
@@ -47,11 +47,11 @@ class QuoteController extends Controller
      */
     private $settingService;
 
-    public function __construct(QuoteService $quoteService, PersonService $personService, OrganisationService $organisationService, OrderService $orderService, SettingService $settingService)
+    public function __construct(QuoteService $quoteService, PersonService $personService, OrganizationService $organizationService, OrderService $orderService, SettingService $settingService)
     {
         $this->quoteService = $quoteService;
         $this->personService = $personService;
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
         $this->orderService = $orderService;
         $this->settingService = $settingService;
     }
@@ -103,8 +103,8 @@ class QuoteController extends Controller
 
                 break;
 
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
 
@@ -118,7 +118,7 @@ class QuoteController extends Controller
 
         return view('laravel-crm::quotes.create', [
             'client' => $client ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'person' => $person ?? null,
             'prefix' => $this->settingService->get('quote_prefix'),
             'number' => (Quote::latest()->first()->number ?? 1000) + 1,
@@ -142,10 +142,10 @@ class QuoteController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -158,10 +158,10 @@ class QuoteController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -173,7 +173,7 @@ class QuoteController extends Controller
             }
         }
 
-        $this->quoteService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
+        $this->quoteService->create($request, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_stored')))->success()->important();
 
@@ -194,8 +194,8 @@ class QuoteController extends Controller
             $address = $quote->person->getPrimaryAddress();
         }
 
-        if ($quote->organisation) {
-            $organisation_address = $quote->organisation->getPrimaryAddress();
+        if ($quote->organization) {
+            $organization_address = $quote->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::quotes.show', [
@@ -203,7 +203,7 @@ class QuoteController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'organization_address' => $organization_address ?? null,
             'orders' => $quote->orders()->latest()->get(),
         ]);
     }
@@ -221,8 +221,8 @@ class QuoteController extends Controller
             $phone = $quote->person->getPrimaryPhone();
         }
 
-        if ($quote->organisation) {
-            $address = $quote->organisation->getPrimaryAddress();
+        if ($quote->organization) {
+            $address = $quote->organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::quotes.edit', [
@@ -249,10 +249,10 @@ class QuoteController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
         if ($request->client_name && ! $request->client_id) {
@@ -265,10 +265,10 @@ class QuoteController extends Controller
         }
 
         if (isset($client)) {
-            if (isset($organisation)) {
+            if (isset($organization)) {
                 $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organisation->getMorphClass(),
-                    'entityable_id' => $organisation->id,
+                    'entityable_type' => $organization->getMorphClass(),
+                    'entityable_id' => $organization->id,
                 ]);
             }
 
@@ -280,7 +280,7 @@ class QuoteController extends Controller
             }
         }
 
-        $quote = $this->quoteService->update($request, $quote, $person ?? null, $organisation ?? null, $client ?? null);
+        $quote = $this->quoteService->update($request, $quote, $person ?? null, $organization ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_updated')))->success()->important();
 
@@ -321,10 +321,10 @@ class QuoteController extends Controller
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
                 config('laravel-crm.db_table_prefix').'people.maiden_name',
-                config('laravel-crm.db_table_prefix').'organisations.name'
+                config('laravel-crm.db_table_prefix').'organizations.name'
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'quotes.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'quotes.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'quotes.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
@@ -441,8 +441,8 @@ class QuoteController extends Controller
             $address = $quote->person->getPrimaryAddress();
         }
 
-        if ($quote->organisation) {
-            $organisation_address = $quote->organisation->getPrimaryAddress();
+        if ($quote->organization) {
+            $organization_address = $quote->organization->getPrimaryAddress();
         }
 
         return Pdf::setOption([
@@ -453,8 +453,8 @@ class QuoteController extends Controller
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
-                'organisation_address' => $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'organization_address' => $organization_address ?? null,
+                'fromName' => $this->settingService->get('organization_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
     }

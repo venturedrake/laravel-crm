@@ -82,8 +82,8 @@ class SendInvoice extends Component
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
-                'organisation_address' => $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'organization_address' => $organization_address ?? null,
+                'fromName' => $this->settingService->get('organization_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->save(storage_path($this->pdf));
 

@@ -26,7 +26,7 @@ class Industry extends Model
         return config('laravel-crm.db_table_prefix').'industries';
     }
 
-    public function organisations()
+    public function organizations()
     {
         return $this->belongsToMany(Organization::class);
     }

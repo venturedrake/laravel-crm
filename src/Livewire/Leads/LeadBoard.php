@@ -1,4 +1,5 @@
 <?php
+
 namespace VentureDrake\LaravelCrm\Livewire\Leads;
 
 use Livewire\Component;

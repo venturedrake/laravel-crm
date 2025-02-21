@@ -3,43 +3,43 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ $organisation->name }} <small>@include('laravel-crm::partials.labels',[
-                            'labels' => $organisation->labels
+            {{ $organization->name }} <small>@include('laravel-crm::partials.labels',[
+                            'labels' => $organization->labels
                     ])</small>
         @endslot
 
         @slot('actions')
             <span class="float-right">
                 @include('laravel-crm::partials.return-button',[
-                    'model' => $organisation,
-                    'route' => 'organisations'
+                    'model' => $organization,
+                    'route' => 'organizations'
                 ]) | 
                 @hasleadsenabled
                 @can('create crm leads')
-                    <a href="{{ route('laravel-crm.leads.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
+                    <a href="{{ route('laravel-crm.leads.create', ['model' => 'organization', 'id' => $organization->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
                 @endcan
                 @endhasleadsenabled
                 @hasdealsenabled
                 @can('create crm deals')
-                    <a href="{{ route('laravel-crm.deals.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
+                    <a href="{{ route('laravel-crm.deals.create', ['model' => 'organization', 'id' => $organization->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
                 @endcan
                 @endhasdealsenabled
                 @hasquotesenabled
                 @can('create crm quotes')
-                    <a href="{{ route('laravel-crm.quotes.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
+                    <a href="{{ route('laravel-crm.quotes.create', ['model' => 'organization', 'id' => $organization->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
                 @endcan
                 @endhasquotesenabled
                 @hasordersenabled
                 @can('create crm orders')
-                    <a href="{{ route('laravel-crm.orders.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
+                    <a href="{{ route('laravel-crm.orders.create', ['model' => 'organization', 'id' => $organization->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
                 @endcan
                 @endhasordersenabled
                 @include('laravel-crm::partials.navs.activities') | 
-                @can('edit crm organisations')
-                <a href="{{ url(route('laravel-crm.organisations.edit', $organisation)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                @can('edit crm organizations')
+                <a href="{{ url(route('laravel-crm.organizations.edit', $organization)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
-                @can('delete crm organisations')
-                <form action="{{ route('laravel-crm.organisations.destroy',$organisation) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                @can('delete crm organizations')
+                <form action="{{ route('laravel-crm.organizations.destroy',$organization) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.organization') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
@@ -58,23 +58,23 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->name }}</dd>
+                    <dd class="col-sm-9">{{ $organization->name }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->organisationType->name ?? null }}</dd>
+                    <dd class="col-sm-9">{{ $organization->organizationType->name ?? null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.vat_number')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->vat_number }}</dd>
+                    <dd class="col-sm-9">{{ $organization->vat_number }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.industry')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->industry->name ?? null }}</dd>
+                    <dd class="col-sm-9">{{ $organization->industry->name ?? null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.timezone')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->timezone->name ?? null }}</dd>
+                    <dd class="col-sm-9">{{ $organization->timezone->name ?? null }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.number_of_employees')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->number_of_employees }}</dd>
+                    <dd class="col-sm-9">{{ $organization->number_of_employees }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.annual_revenue')) }}</dt>
-                    <dd class="col-sm-9">{{ money($organisation->annual_revenue, $organisation->currency) }}</dd>
+                    <dd class="col-sm-9">{{ money($organization->annual_revenue, $organization->currency) }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.linkedin')) }}</dt>
-                    <dd class="col-sm-9">https://linkedin.com/company/{{ $organisation->linkedin }}</dd>
+                    <dd class="col-sm-9">https://linkedin.com/company/{{ $organization->linkedin }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->description }}</dd>
+                    <dd class="col-sm-9">{{ $organization->description }}</dd>
                     @foreach($phones as $phone)
                         <dt class="col-sm-3 text-right">{{ ucfirst($phone->type) }} {{ ucfirst(__('laravel-crm::lang.phone')) }}</dt>
                         <dd class="col-sm-9">
@@ -94,26 +94,26 @@
                         </dd>
                     @endforeach
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.integrations')) }}</dt>
-                    <dd class="col-sm-9">@if($organisation->xeroContact)<img src="/vendor/laravel-crm/img/xero-icon.png" height="20" />@endif</dd>
+                    <dd class="col-sm-9">@if($organization->xeroContact)<img src="/vendor/laravel-crm/img/xero-icon.png" height="20" />@endif</dd>
                 </dl>
                 <h6 class="text-uppercase mt-4">{{ ucfirst(__('laravel-crm::lang.owner')) }}</h6>
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
                     <dd class="col-sm-9">
-                        @if($organisation->ownerUser)<a href="{{ route('laravel-crm.users.show', $organisation->ownerUser) }}">{{ $organisation->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
+                        @if($organization->ownerUser)<a href="{{ route('laravel-crm.users.show', $organization->ownerUser) }}">{{ $organization->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
                     </dd>
                 </dl>
                 @livewire('related-contact-people',[
-                    'model' => $organisation
+                    'model' => $organization
                 ])
-                @livewire('related-contact-organisations',[
-                    'model' => $organisation
+                @livewire('related-contact-organizations',[
+                    'model' => $organization
                 ])
                 @can('view crm deals')
-                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $organisation->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'organisation', 'id' => $organisation->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $organization->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'organization', 'id' => $organization->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
                     <hr />
-                    @foreach($organisation->deals as $deal)
+                    @foreach($organization->deals as $deal)
                         <p>{{ $deal->title }}<br />
                             <small>{{ money($deal->amount, $deal->currency) }}</small></p>
                     @endforeach
@@ -121,7 +121,7 @@
             </div>
             <div class="col-sm-6">
                 @include('laravel-crm::partials.activities', [
-                    'model' => $organisation
+                    'model' => $organization
                 ])
             </div>
         </div>

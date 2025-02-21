@@ -29,29 +29,29 @@ function people()
     return json_encode($data);
 }
 
-function organisations()
+function organizations()
 {
     $data = [];
 
-    foreach (Organization::all() as $organisation) {
-        if ($organisation->xeroContact) {
-            $data[$organisation->name.' (xero contact)'] = $organisation->id;
+    foreach (Organization::all() as $organization) {
+        if ($organization->xeroContact) {
+            $data[$organization->name.' (xero contact)'] = $organization->id;
         } else {
-            $data[$organisation->name] = $organisation->id;
+            $data[$organization->name] = $organization->id;
         }
     }
 
     return json_encode($data);
 }
 
-function organisationsSelect2()
+function organizationsSelect2()
 {
     $data = [];
 
-    foreach (Organization::all() as $organisation) {
+    foreach (Organization::all() as $organization) {
         $data[] = [
-            'id' => $organisation->id,
-            'text' => $organisation->name,
+            'id' => $organization->id,
+            'text' => $organization->name,
         ];
     }
 

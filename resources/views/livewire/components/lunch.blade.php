@@ -11,7 +11,7 @@
                                     href="{{ route('laravel-crm.people.show', $lunch->lunchable) }}">{{ $lunch->lunchable->name }}</a>
                         @elseif($lunch->lunchable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.organisations.show', $lunch->lunchable) }}">{{ $lunch->lunchable->name }}</a>
+                                    href="{{ route('laravel-crm.organizations.show', $lunch->lunchable) }}">{{ $lunch->lunchable->name }}</a>
                         @endif
                     </p>
                 @endif

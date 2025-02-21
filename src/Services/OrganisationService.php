@@ -7,29 +7,29 @@ use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Phone;
-use VentureDrake\LaravelCrm\Repositories\OrganisationRepository;
+use VentureDrake\LaravelCrm\Repositories\OrganizationRepository;
 
-class OrganisationService
+class OrganizationService
 {
     /**
-     * @var OrganisationRepository
+     * @var OrganizationRepository
      */
-    private $organisationRepository;
+    private $organizationRepository;
 
     /**
      * LeadService constructor.
      */
-    public function __construct(OrganisationRepository $organisationRepository)
+    public function __construct(OrganizationRepository $organizationRepository)
     {
-        $this->organisationRepository = $organisationRepository;
+        $this->organizationRepository = $organizationRepository;
     }
 
     public function create($request)
     {
-        $organisation = Organization::create([
+        $organization = Organization::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
-            'organisation_type_id' => $request->organisation_type_id,
+            'organization_type_id' => $request->organization_type_id,
             'vat_number' => $request->vat_number,
             'industry_id' => $request->industry_id,
             'timezone_id' => $request->timezone_id,
@@ -41,19 +41,19 @@ class OrganisationService
             'user_owner_id' => $request->user_owner_id,
         ]);
 
-        $this->updateOrganisationPhones($organisation, $request->phones);
-        $this->updateOrganisationEmails($organisation, $request->emails);
-        $this->updateOrganisationAddresses($organisation, $request->addresses);
+        $this->updateOrganizationPhones($organization, $request->phones);
+        $this->updateOrganizationEmails($organization, $request->emails);
+        $this->updateOrganizationAddresses($organization, $request->addresses);
 
-        return $organisation;
+        return $organization;
     }
 
     public function createFromRelated($request)
     {
-        $organisation = Organization::create([
+        $organization = Organization::create([
             'external_id' => Uuid::uuid4()->toString(),
-            'name' => $request->organisation_name,
-            'organisation_type_id' => $request->organisation_type_id,
+            'name' => $request->organization_name,
+            'organization_type_id' => $request->organization_type_id,
             'vat_number' => $request->vat_number,
             'industry_id' => $request->industry_id,
             'timezone_id' => $request->timezone_id,
@@ -64,7 +64,7 @@ class OrganisationService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        $organisation->addresses()->create([
+        $organization->addresses()->create([
             'external_id' => Uuid::uuid4()->toString(),
             'line1' => $request->line1,
             'line2' => $request->line2,
@@ -76,14 +76,14 @@ class OrganisationService
             'primary' => 1,
         ]);
 
-        return $organisation;
+        return $organization;
     }
 
-    public function update(Organization $organisation, $request)
+    public function update(Organization $organization, $request)
     {
-        $organisation->update([
+        $organization->update([
             'name' => $request->name,
-            'organisation_type_id' => $request->organisation_type_id,
+            'organization_type_id' => $request->organization_type_id,
             'vat_number' => $request->vat_number,
             'industry_id' => $request->industry_id,
             'timezone_id' => $request->timezone_id,
@@ -95,14 +95,14 @@ class OrganisationService
             'user_owner_id' => $request->user_owner_id,
         ]);
 
-        $this->updateOrganisationPhones($organisation, $request->phones);
-        $this->updateOrganisationEmails($organisation, $request->emails);
-        $this->updateOrganisationAddresses($organisation, $request->addresses);
+        $this->updateOrganizationPhones($organization, $request->phones);
+        $this->updateOrganizationEmails($organization, $request->emails);
+        $this->updateOrganizationAddresses($organization, $request->addresses);
 
-        return $organisation;
+        return $organization;
     }
 
-    protected function updateOrganisationPhones($organisation, $phones)
+    protected function updateOrganizationPhones($organization, $phones)
     {
         $phoneIds = [];
         if ($phones) {
@@ -115,7 +115,7 @@ class OrganisationService
                     ]);
                     $phoneIds[] = $phone->id;
                 } elseif ($phoneRequest['number']) {
-                    $phone = $organisation->phones()->create([
+                    $phone = $organization->phones()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'number' => $phoneRequest['number'],
                         'type' => $phoneRequest['type'],
@@ -126,14 +126,14 @@ class OrganisationService
             }
         }
 
-        foreach ($organisation->phones as $phone) {
+        foreach ($organization->phones as $phone) {
             if (! in_array($phone->id, $phoneIds)) {
                 $phone->delete();
             }
         }
     }
 
-    protected function updateOrganisationEmails($organisation, $emails)
+    protected function updateOrganizationEmails($organization, $emails)
     {
         $emailIds = [];
 
@@ -148,7 +148,7 @@ class OrganisationService
 
                     $emailIds[] = $email->id;
                 } elseif ($emailRequest['address']) {
-                    $email = $organisation->emails()->create([
+                    $email = $organization->emails()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'address' => $emailRequest['address'],
                         'type' => $emailRequest['type'],
@@ -160,14 +160,14 @@ class OrganisationService
             }
         }
 
-        foreach ($organisation->emails as $email) {
+        foreach ($organization->emails as $email) {
             if (! in_array($email->id, $emailIds)) {
                 $email->delete();
             }
         }
     }
 
-    protected function updateOrganisationAddresses($organisation, $addresses)
+    protected function updateOrganizationAddresses($organization, $addresses)
     {
         $addressIds = [];
 
@@ -192,7 +192,7 @@ class OrganisationService
 
                     $addressIds[] = $address->id;
                 } else {
-                    $address = $organisation->addresses()->create([
+                    $address = $organization->addresses()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'address_type_id' => $addressRequest['type'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
@@ -214,7 +214,7 @@ class OrganisationService
             }
         }
 
-        foreach ($organisation->addresses as $address) {
+        foreach ($organization->addresses as $address) {
             if (! in_array($address->id, $addressIds)) {
                 $address->delete();
             }

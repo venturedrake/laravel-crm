@@ -26,14 +26,14 @@ class OrderService
         $this->orderRepository = $orderRepository;
     }
 
-    public function create($request, $person = null, $organisation = null, $client = null)
+    public function create($request, $person = null, $organization = null, $client = null)
     {
         $order = Order::create([
             'lead_id' => $request->lead_id ?? null,
             'deal_id' => $request->deal_id ?? null,
             'quote_id' => $request->quote_id ?? null,
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'client_id' => $client->id ?? null,
             'description' => $request->description,
             'reference' => $request->reference,
@@ -109,11 +109,11 @@ class OrderService
         return $order;
     }
 
-    public function update($request, Order $order, $person = null, $organisation = null, $client = null)
+    public function update($request, Order $order, $person = null, $organization = null, $client = null)
     {
         $order->update([
             'person_id' => $person->id ?? null,
-            'organisation_id' => $organisation->id ?? null,
+            'organization_id' => $organization->id ?? null,
             'client_id' => $client->id ?? null,
             'description' => $request->description,
             'reference' => $request->reference,

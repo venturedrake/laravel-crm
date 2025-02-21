@@ -99,7 +99,7 @@
                 @livewire('related-contact-people',[
                     'model' => $person
                 ])
-                @livewire('related-contact-organisations',[
+                @livewire('related-contact-organizations',[
                     'model' => $person
                 ])
                 @can('view crm deals')

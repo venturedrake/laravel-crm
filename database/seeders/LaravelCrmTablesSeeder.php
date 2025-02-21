@@ -100,8 +100,8 @@ class LaravelCrmTablesSeeder extends Seeder
             ]);
         }
 
-        // Organisation Types
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_organisation_types')->first()) {
+        // Organization Types
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_organization_types')->first()) {
             $items = [
                 [
                     [
@@ -138,12 +138,12 @@ class LaravelCrmTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\OrganisationType::firstOrCreate($item[0], $item[1]);
+                \VentureDrake\LaravelCrm\Models\OrganizationType::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
                 'global' => 1,
-                'name' => 'db_seeded_organisation_types',
+                'name' => 'db_seeded_organization_types',
             ], [
                 'value' => 1,
             ]);
@@ -291,10 +291,10 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm people', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm people', 'crm_permission' => 1]);
 
-        Permission::firstOrCreate(['name' => 'create crm organisations', 'crm_permission' => 1]);
-        Permission::firstOrCreate(['name' => 'view crm organisations', 'crm_permission' => 1]);
-        Permission::firstOrCreate(['name' => 'edit crm organisations', 'crm_permission' => 1]);
-        Permission::firstOrCreate(['name' => 'delete crm organisations', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'create crm organizations', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm organizations', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm organizations', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm organizations', 'crm_permission' => 1]);
 
         Permission::firstOrCreate(['name' => 'create crm contacts', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm contacts', 'crm_permission' => 1]);
@@ -462,10 +462,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm people',
                 'edit crm people',
                 'delete crm people',
-                'create crm organisations',
-                'view crm organisations',
-                'edit crm organisations',
-                'delete crm organisations',
+                'create crm organizations',
+                'view crm organizations',
+                'edit crm organizations',
+                'delete crm organizations',
                 'create crm contacts',
                 'view crm contacts',
                 'edit crm contacts',
@@ -548,10 +548,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm people',
                 'edit crm people',
                 'delete crm people',
-                'create crm organisations',
-                'view crm organisations',
-                'edit crm organisations',
-                'delete crm organisations',
+                'create crm organizations',
+                'view crm organizations',
+                'edit crm organizations',
+                'delete crm organizations',
                 'create crm contacts',
                 'view crm contacts',
                 'edit crm contacts',

@@ -53,7 +53,7 @@
                         ])</td>
                     <td>{{ money($deal->amount, $deal->currency) }}</td>
                     <td>{{ $deal->client->name ?? null }}</td>
-                    <td>{{ $deal->organisation->name ?? null }}</td>
+                    <td>{{ $deal->organization->name ?? null }}</td>
                     <td>{{ $deal->person->name ?? null }}</td>
                     <td>{{ ($deal->expected_close) ? $deal->expected_close->format($dateFormat) : null }}</td>
                     <td>{{ $deal->ownerUser->name ?? ucfirst(__('laravel-crm::lang.unallocated')) }}</td>

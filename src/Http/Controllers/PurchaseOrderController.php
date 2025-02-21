@@ -12,7 +12,7 @@ use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
-use VentureDrake\LaravelCrm\Services\OrganisationService;
+use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\PurchaseOrderService;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -30,20 +30,20 @@ class PurchaseOrderController extends Controller
     private $personService;
 
     /**
-     * @var OrganisationService
+     * @var OrganizationService
      */
-    private $organisationService;
+    private $organizationService;
 
     /**
      * @var PurchaseOrderService
      */
     private $purchaseOrderService;
 
-    public function __construct(SettingService $settingService, PersonService $personService, OrganisationService $organisationService, PurchaseOrderService $purchaseOrderService)
+    public function __construct(SettingService $settingService, PersonService $personService, OrganizationService $organizationService, PurchaseOrderService $purchaseOrderService)
     {
         $this->settingService = $settingService;
         $this->personService = $personService;
-        $this->organisationService = $organisationService;
+        $this->organizationService = $organizationService;
         $this->purchaseOrderService = $purchaseOrderService;
     }
 
@@ -81,8 +81,8 @@ class PurchaseOrderController extends Controller
 
                 break;
 
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
 
@@ -104,7 +104,7 @@ class PurchaseOrderController extends Controller
 
         return view('laravel-crm::purchase-orders.create', [
             'person' => $person ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'order' => $order ?? null,
             'prefix' => $this->settingService->get('purchase_order_prefix'),
             'number' => (PurchaseOrder::latest()->first()->number ?? 1000) + 1,
@@ -128,13 +128,13 @@ class PurchaseOrderController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
-        $this->purchaseOrderService->create($request, $person ?? null, $organisation ?? null);
+        $this->purchaseOrderService->create($request, $person ?? null, $organization ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.purchase_order_created')))->success()->important();
 
@@ -156,24 +156,24 @@ class PurchaseOrderController extends Controller
         $purchaseOrders = [];
 
         foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
-            if ($purchaseOrderLine['organisation_id']) {
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['order_id'] = $request->order_id;
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['organisation_id'] = $purchaseOrderLine['organisation_id'];
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['reference'] = $request->reference;
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['currency'] = $request->currency;
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['issue_date'] = $request->issue_date;
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_date'] = $request->delivery_date;
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_type'] = $request->delivery_type;
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['delivery_instructions'] = $request->delivery_instructions;
-                $purchaseOrders[$purchaseOrderLine['organisation_id']]['purchaseOrderLines'][] = $purchaseOrderLine;
+            if ($purchaseOrderLine['organization_id']) {
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['order_id'] = $request->order_id;
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['organization_id'] = $purchaseOrderLine['organization_id'];
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['reference'] = $request->reference;
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['currency'] = $request->currency;
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['issue_date'] = $request->issue_date;
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['delivery_date'] = $request->delivery_date;
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['delivery_type'] = $request->delivery_type;
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['delivery_instructions'] = $request->delivery_instructions;
+                $purchaseOrders[$purchaseOrderLine['organization_id']]['purchaseOrderLines'][] = $purchaseOrderLine;
             }
         }
 
-        foreach ($purchaseOrders as $organisationId => $purchaseOrder) {
+        foreach ($purchaseOrders as $organizationId => $purchaseOrder) {
             $purchaseOrderRequest = Request::create(url(route('laravel-crm.purchase-orders.create')), 'POST', $purchaseOrder);
 
-            if ($organisation = Organization::find($purchaseOrderRequest->organisation_id)) {
-                $this->purchaseOrderService->create($purchaseOrderRequest, $person ?? null, $organisation ?? null);
+            if ($organization = Organization::find($purchaseOrderRequest->organization_id)) {
+                $this->purchaseOrderService->create($purchaseOrderRequest, $person ?? null, $organization ?? null);
             }
 
             sleep(1);
@@ -198,8 +198,8 @@ class PurchaseOrderController extends Controller
             $address = $purchaseOrder->person->getPrimaryAddress();
         }
 
-        if ($purchaseOrder->organisation) {
-            $organisation_address = $purchaseOrder->organisation->getPrimaryAddress();
+        if ($purchaseOrder->organization) {
+            $organization_address = $purchaseOrder->organization->getPrimaryAddress();
         }
 
         $related = $this->settingService->get('team');
@@ -213,7 +213,7 @@ class PurchaseOrderController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'organisation_address' => $organisation_address ?? null,
+            'organization_address' => $organization_address ?? null,
             'deliveryAddress' => $deliveryAddress ?? null,
         ]);
     }
@@ -231,8 +231,8 @@ class PurchaseOrderController extends Controller
             $phone = $purchaseOrder->person->getPrimaryPhone();
         }
 
-        if ($purchaseOrder->organisation) {
-            $address = $purchaseOrder->organisation->getPrimaryAddress();
+        if ($purchaseOrder->organization) {
+            $address = $purchaseOrder->organization->getPrimaryAddress();
         }
 
         $related = $this->settingService->get('team');
@@ -266,13 +266,13 @@ class PurchaseOrderController extends Controller
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
-            $organisation = $this->organisationService->createFromRelated($request);
-        } elseif ($request->organisation_id) {
-            $organisation = Organization::find($request->organisation_id);
+        if ($request->organization_name && ! $request->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($request->organization_id) {
+            $organization = Organization::find($request->organization_id);
         }
 
-        $purchaseOrder = $this->purchaseOrderService->update($request, $purchaseOrder, $person ?? null, $organisation ?? null);
+        $purchaseOrder = $this->purchaseOrderService->update($request, $purchaseOrder, $person ?? null, $organization ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.purchase_order_updated')))->success()->important();
 
@@ -311,10 +311,10 @@ class PurchaseOrderController extends Controller
                 config('laravel-crm.db_table_prefix').'people.middle_name',
                 config('laravel-crm.db_table_prefix').'people.last_name',
                 config('laravel-crm.db_table_prefix').'people.maiden_name',
-                config('laravel-crm.db_table_prefix').'organisations.name'
+                config('laravel-crm.db_table_prefix').'organizations.name'
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'purchase_orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'purchase_orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'purchase_orders.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
@@ -359,8 +359,8 @@ class PurchaseOrderController extends Controller
             $address = $purchaseOrder->person->getPrimaryAddress();
         }
 
-        if ($purchaseOrder->organisation) {
-            $organisation_address = $purchaseOrder->organisation->getPrimaryAddress();
+        if ($purchaseOrder->organization) {
+            $organization_address = $purchaseOrder->organization->getPrimaryAddress();
         }
 
         return Pdf::setOption([
@@ -372,8 +372,8 @@ class PurchaseOrderController extends Controller
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
-                'organisation_address' => $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'organization_address' => $organization_address ?? null,
+                'fromName' => $this->settingService->get('organization_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->download('purchase-order-'.strtolower($purchaseOrder->xeroPurchaseOrder->number ?? $purchaseOrder->purchase_order_id).'.pdf');
     }

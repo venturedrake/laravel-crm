@@ -25,7 +25,7 @@ class Order extends Model
         'person.middle_name',
         'person.last_name',
         'person.maiden_name',
-        'organisation.name',
+        'organization.name',
     ];
 
     protected $filterable = [
@@ -63,7 +63,7 @@ class Order extends Model
 
     public function getTitleAttribute()
     {
-        return money($this->total, $this->currency).' - '.($this->client->name ?? $this->organisation->name ?? $this->organisation->person->name ?? null);
+        return money($this->total, $this->currency).' - '.($this->client->name ?? $this->organization->name ?? $this->organization->person->name ?? null);
     }
 
     public function setSubtotalAttribute($value)
@@ -116,7 +116,7 @@ class Order extends Model
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
     }
 
-    public function organisation()
+    public function organization()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
     }

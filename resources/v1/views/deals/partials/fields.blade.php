@@ -9,7 +9,7 @@
             'deal' => $deal ?? null,
             'generateTitle' => $generateTitle ?? true,
             'client' => $client ?? null,
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
             'person' => $person ?? null
         ])
         
@@ -130,7 +130,7 @@
         </span>
         <h6 class="text-uppercase mt-4"><span class="fa fa-building" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
         <hr />
-        <span class="autocomplete-organisation">
+        <span class="autocomplete-organization">
             {{--@include('laravel-crm::partials.form.text',[
                 'name' => 'address',
                 'label' => ucfirst(__('laravel-crm::lang.address')),

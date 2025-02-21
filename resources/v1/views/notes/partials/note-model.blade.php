@@ -14,7 +14,7 @@
     @case('Person')
         <small>{{ ucfirst(__('laravel-crm::lang.person')) }}: <a href="{{ route('laravel-crm.people.show', $note->noteable) }}">{{ $note->noteable->name }}</a></small>
         @break
-    @case('Organisation')
-        <small>{{ ucfirst(__('laravel-crm::lang.organisation')) }}: <a href="{{ route('laravel-crm.organisations.show', $note->noteable) }}">{{ $note->noteable->name }}</a></small>
+    @case('Organization')
+        <small>{{ ucfirst(__('laravel-crm::lang.organization')) }}: <a href="{{ route('laravel-crm.organizations.show', $note->noteable) }}">{{ $note->noteable->name }}</a></small>
         @break
 @endswitch

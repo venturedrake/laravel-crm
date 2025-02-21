@@ -237,7 +237,7 @@
                         <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.organizations')) }}</h4>
                     </div>
                     <div class="card-body">
-                        <h2>{{ $totalOrganisationsCount ?? 0 }}</h2>
+                        <h2>{{ $totalOrganizationsCount ?? 0 }}</h2>
                         <small>{{ ucfirst(__('laravel-crm::lang.total_organizations')) }}</small>
                     </div>
                 </div>

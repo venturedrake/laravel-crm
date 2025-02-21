@@ -71,7 +71,7 @@
                 @livewire('related-contact-people',[
                     'model' => $client
                 ])
-                @livewire('related-contact-organisations',[
+                @livewire('related-contact-organizations',[
                     'model' => $client
                 ])
             </div>

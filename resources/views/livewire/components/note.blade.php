@@ -12,7 +12,7 @@
                                     href="{{ route('laravel-crm.people.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
                         @elseif($note->relatedNote->noteable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                             <span class="fa fa-building mr-1" aria-hidden="true"></span> <a
-                                    href="{{ route('laravel-crm.organisations.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
+                                    href="{{ route('laravel-crm.organizations.show', $note->relatedNote->noteable) }}">{{ $note->relatedNote->noteable->name }}</a>
                         @endif
                     </p>
                     @include('laravel-crm::livewire.components.partials.note.content', ['note' => $note->relatedNote])
@@ -26,7 +26,7 @@
                                         href="{{ route('laravel-crm.people.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
                             @elseif($note->noteable instanceof \VentureDrake\LaravelCrm\Models\Organization)
                                 <span class="fa fa-building" aria-hidden="true"></span> <a
-                                        href="{{ route('laravel-crm.organisations.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
+                                        href="{{ route('laravel-crm.organizations.show', $note->noteable) }}">{{ $note->noteable->name }}</a>
                             @endif
                         </p>
                     @endif

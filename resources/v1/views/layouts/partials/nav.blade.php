@@ -61,14 +61,14 @@
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.purchase-order') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.purchase-orders.index')) }}"><i class="fa fa-file-invoice-dollar"></i> {{ ucwords(__('laravel-crm::lang.purchase_orders')) }}</a></li>
             @endcan
             @endhaspurchaseordersenabled
-            @canany(['view crm clients', 'view crm people', 'view crm organisations'])
+            @canany(['view crm clients', 'view crm people', 'view crm organizations'])
             <li class="dropdown-divider"></li>
             @endcan
             @can('view crm clients')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.clients') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.clients.index')) }}"><i class="fa fa-address-card"></i> {{ ucfirst(__('laravel-crm::lang.clients')) }}</a></li>
             @endcan
-            @can('view crm organisations')
-            <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.organisations') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.organisations.index')) }}"><i class="fa fa-building"></i> {{ ucfirst(__('laravel-crm::lang.organizations')) }}</a></li>
+            @can('view crm organizations')
+            <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.organizations') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.organizations.index')) }}"><i class="fa fa-building"></i> {{ ucfirst(__('laravel-crm::lang.organizations')) }}</a></li>
             @endcan
             @can('view crm people')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.people') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.people.index')) }}"><i class="fa fa-user-circle"></i> {{ ucfirst(__('laravel-crm::lang.people')) }}</a></li>

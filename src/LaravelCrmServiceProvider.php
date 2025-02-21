@@ -21,7 +21,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmContactTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
-use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
+use VentureDrake\LaravelCrm\Console\LaravelCrmOrganizationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
 use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
@@ -58,7 +58,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LivePurchaseOrderLines;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteItems;
-use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganization;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactPerson;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedPerson;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveTasks;
@@ -144,7 +144,7 @@ use VentureDrake\LaravelCrm\Observers\MeetingObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
 use VentureDrake\LaravelCrm\Observers\OrderObserver;
 use VentureDrake\LaravelCrm\Observers\OrderProductObserver;
-use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
+use VentureDrake\LaravelCrm\Observers\OrganizationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 use VentureDrake\LaravelCrm\Observers\PipelineObserver;
@@ -189,7 +189,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Invoice' => \VentureDrake\LaravelCrm\Policies\InvoicePolicy::class,
         'VentureDrake\LaravelCrm\Models\Customer' => \VentureDrake\LaravelCrm\Policies\ClientPolicy::class,
         'VentureDrake\LaravelCrm\Models\Person' => \VentureDrake\LaravelCrm\Policies\PersonPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Organization' => \VentureDrake\LaravelCrm\Policies\OrganisationPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Organization' => \VentureDrake\LaravelCrm\Policies\OrganizationPolicy::class,
         'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
         'VentureDrake\LaravelCrm\Models\Product' => \VentureDrake\LaravelCrm\Policies\ProductPolicy::class,
         'VentureDrake\LaravelCrm\Models\ProductCategory' => \VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy::class,
@@ -273,7 +273,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         InvoiceLine::observe(InvoiceLineObserver::class);
         Customer::observe(ClientObserver::class);
         Person::observe(PersonObserver::class);
-        Organization::observe(OrganisationObserver::class);
+        Organization::observe(OrganizationObserver::class);
         Phone::observe(PhoneObserver::class);
         Email::observe(EmailObserver::class);
         Product::observe(ProductObserver::class);
@@ -398,7 +398,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_laravel_crm_contact_contact_type_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contact_contact_type_table.php', 21),
                 __DIR__.'/../vendor/owen-it/laravel-auditing/database/migrations/audits.stub' => $this->getMigrationFileName($filesystem, 'create_audits_table.php', 22), // Laravel auditing
                 __DIR__.'/../vendor/rappasoft/laravel-authentication-log/database/migrations/create_authentication_log_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_authentication_log_table.php', 23), // Laravel Authentication Log
-                __DIR__.'/../database/migrations/create_laravel_crm_organisation_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_organisation_types_table.php', 26),
+                __DIR__.'/../database/migrations/create_laravel_crm_organization_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_organization_types_table.php', 26),
                 __DIR__.'/../database/migrations/change_morph_col_names_on_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'change_morph_col_names_on_laravel_crm_notes_table.php', 27),
                 __DIR__.'/../database/migrations/add_related_note_to_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_related_note_to_laravel_crm_notes_table.php', 28),
                 __DIR__.'/../database/migrations/add_noted_at_to_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_noted_at_to_laravel_crm_notes_table.php', 29),
@@ -459,7 +459,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/add_comments_to_laravel_crm_invoice_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_comments_to_laravel_crm_invoice_lines_table.php', 84),
                 __DIR__.'/../database/migrations/add_default_to_laravel_crm_tax_rates_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_default_to_laravel_crm_tax_rates_table.php', 85),
                 __DIR__.'/../database/migrations/create_laravel_crm_industries_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_industries_table.php', 86),
-                __DIR__.'/../database/migrations/add_extra_fields_to_laravel_crm_organisations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_extra_fields_to_laravel_crm_organisations_table.php', 87),
+                __DIR__.'/../database/migrations/add_extra_fields_to_laravel_crm_organizations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_extra_fields_to_laravel_crm_organizations_table.php', 87),
                 __DIR__.'/../database/migrations/create_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_orders_table.php', 88),
                 __DIR__.'/../database/migrations/create_laravel_crm_purchase_order_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_order_lines_table.php', 89),
                 __DIR__.'/../database/migrations/create_laravel_crm_xero_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_purchase_orders_table.php', 90),
@@ -503,7 +503,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmPermissions::class,
                 LaravelCrmLabels::class,
                 LaravelCrmAddressTypes::class,
-                LaravelCrmOrganisationTypes::class,
+                LaravelCrmOrganizationTypes::class,
                 LaravelCrmXero::class,
                 LaravelCrmReminders::class,
                 LaravelCrmContactTypes::class,
@@ -537,7 +537,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('lunch', LiveLunch::class);
         Livewire::component('files', LiveFiles::class);
         Livewire::component('file', LiveFile::class);
-        Livewire::component('related-contact-organisations', LiveRelatedContactOrganisation::class);
+        Livewire::component('related-contact-organizations', LiveRelatedContactOrganization::class);
         Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
         Livewire::component('live-lead-form', LiveLeadForm::class);
@@ -563,7 +563,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('fields.create-or-edit', CreateOrEdit::class);
         Livewire::component('send-purchase-order', SendPurchaseOrder::class);
         Livewire::component('delivery-details', LiveDeliveryDetails::class);
-        
+
         /* Version 2 Livewire Components */
         Livewire::component('crm-lead-index', LeadIndex::class);
         Livewire::component('crm-lead-board', LeadBoard::class);

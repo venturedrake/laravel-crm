@@ -14,7 +14,7 @@ $factory->define(Deal::class, function (Faker $faker) {
     return [
         'external_id' => $faker->uuid,
         'person_id' => Person::all()->random(1)->first()->id,
-        'organisation_id' => Organization::all()->random(1)->first()->id,
+        'organization_id' => Organization::all()->random(1)->first()->id,
         'title' => $faker->sentence,
         'amount' => $faker->randomFloat(2, 100, 100000),
         'currency' => 'USD',

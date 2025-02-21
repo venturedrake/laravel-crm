@@ -42,7 +42,7 @@ class PersonController extends Controller
             foreach ($people as $key => $person) {
                 $people[$key]->first_name_decrypted = $person->first_name;
                 $people[$key]->last_name_decrypted = $person->last_name;
-                $people[$key]->organisation_name_decrypted = $person->organisation->name ?? null;
+                $people[$key]->organization_name_decrypted = $person->organization->name ?? null;
             }
 
             $sortField = Str::replace('.', '_', request()->only(['sort', 'direction'])['sort']).'_decrypted';
@@ -77,14 +77,14 @@ class PersonController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case 'organisation':
-                $organisation = Organization::find($request->id);
+            case 'organization':
+                $organization = Organization::find($request->id);
 
                 break;
         }
 
         return view('laravel-crm::people.create', [
-            'organisation' => $organisation ?? null,
+            'organization' => $organization ?? null,
         ]);
     }
 
@@ -100,16 +100,16 @@ class PersonController extends Controller
 
         $person->labels()->sync($request->labels ?? []);
 
-        if ($request->organisation_name) {
-            if (! $request->organisation_id) {
-                $organisation = Organization::create([
+        if ($request->organization_name) {
+            if (! $request->organization_id) {
+                $organization = Organization::create([
                     'external_id' => Uuid::uuid4()->toString(),
-                    'name' => $request->organisation_name,
+                    'name' => $request->organization_name,
                     'user_owner_id' => $request->user_owner_id,
                 ]);
-                $person->organisation()->associate($organisation);
+                $person->organization()->associate($organization);
             } else {
-                $person->organisation()->associate(Organization::find($request->organisation_id));
+                $person->organization()->associate(Organization::find($request->organization_id));
             }
             $person->save();
         }
@@ -127,9 +127,9 @@ class PersonController extends Controller
      */
     public function show(Person $person)
     {
-        $organisation = $person->organisation;
-        if ($organisation) {
-            $organisationAddress = $organisation->getPrimaryAddress();
+        $organization = $person->organization;
+        if ($organization) {
+            $organizationAddress = $organization->getPrimaryAddress();
         }
 
         return view('laravel-crm::people.show', [
@@ -137,8 +137,8 @@ class PersonController extends Controller
             'emails' => $person->emails,
             'phones' => $person->phones,
             'addresses' => $person->addresses,
-            'organisation' => $organisation ?? null,
-            'organisation_address' => $organisationAddress ?? null,
+            'organization' => $organization ?? null,
+            'organization_address' => $organizationAddress ?? null,
         ]);
     }
 
@@ -171,20 +171,20 @@ class PersonController extends Controller
 
         $person->labels()->sync($request->labels ?? []);
 
-        if ($request->organisation_name) {
-            if (! $request->organisation_id) {
-                $organisation = Organization::create([
+        if ($request->organization_name) {
+            if (! $request->organization_id) {
+                $organization = Organization::create([
                     'external_id' => Uuid::uuid4()->toString(),
-                    'name' => $request->organisation_name,
+                    'name' => $request->organization_name,
                     'user_owner_id' => $request->user_owner_id,
                 ]);
-                $person->organisation()->associate($organisation);
+                $person->organization()->associate($organization);
             } else {
-                $person->organisation()->associate(Organization::find($request->organisation_id));
+                $person->organization()->associate(Organization::find($request->organization_id));
             }
             $person->save();
-        } elseif (trim($request->organisation_name) == '' && $person->organisation) {
-            $person->organisation()->dissociate();
+        } elseif (trim($request->organization_name) == '' && $person->organization) {
+            $person->organization()->dissociate();
             $person->save();
         }
 

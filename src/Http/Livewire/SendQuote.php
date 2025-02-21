@@ -70,8 +70,8 @@ class SendQuote extends Component
             $address = $this->quote->person->getPrimaryAddress();
         }
 
-        if ($this->quote->organisation) {
-            $organisation_address = $this->quote->organisation->getPrimaryAddress();
+        if ($this->quote->organization) {
+            $organization_address = $this->quote->organization->getPrimaryAddress();
         }
 
         $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->quote)).'/'.$this->quote->id.'/';
@@ -90,8 +90,8 @@ class SendQuote extends Component
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
-                'organisation_address' => $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                'organization_address' => $organization_address ?? null,
+                'fromName' => $this->settingService->get('organization_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->save(storage_path($this->pdf));
 

@@ -17,7 +17,7 @@ class AddTeamIdToLaravelCrmTables extends Migration
             $table->unsignedBigInteger('team_id')->after('id')->index()->nullable();
         });
 
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
             $table->unsignedBigInteger('team_id')->after('external_id')->index()->nullable();
         });
 
@@ -89,7 +89,7 @@ class AddTeamIdToLaravelCrmTables extends Migration
             $table->dropColumn(['team_id']);
         });
         
-        Schema::table(config('laravel-crm.db_table_prefix').'organisations', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
             $table->dropColumn(['team_id']);
         });
         
