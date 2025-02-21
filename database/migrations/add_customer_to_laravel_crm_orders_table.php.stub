@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddClientToLaravelCrmOrdersTable extends Migration
+class AddCustomerToLaravelCrmOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddClientToLaravelCrmOrdersTable extends Migration
     public function up()
     {
         Schema::table(config('laravel-crm.db_table_prefix').'orders', function (Blueprint $table) {
-            $table->foreignIdFor(\VentureDrake\LaravelCrm\Models\Client::class)->after('quote_id')->nullable();
+            $table->foreignIdFor(\VentureDrake\LaravelCrm\Models\Customer::class)->after('quote_id')->nullable();
         });  
     }
 
@@ -26,7 +26,7 @@ class AddClientToLaravelCrmOrdersTable extends Migration
     public function down()
     {
         Schema::table(config('laravel-crm.db_table_prefix').'orders', function (Blueprint $table) {
-             $table->dropColumn('client_id');
+             $table->dropColumn('customer_id');
         });
     }
 }

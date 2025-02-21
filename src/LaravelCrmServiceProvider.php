@@ -123,8 +123,8 @@ use VentureDrake\LaravelCrm\Models\XeroPerson;
 use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Observers\ActivityObserver;
 use VentureDrake\LaravelCrm\Observers\CallObserver;
-use VentureDrake\LaravelCrm\Observers\ClientObserver;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
+use VentureDrake\LaravelCrm\Observers\CustomerObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\DeliveryObserver;
 use VentureDrake\LaravelCrm\Observers\DeliveryProductObserver;
@@ -187,7 +187,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Quote' => \VentureDrake\LaravelCrm\Policies\QuotePolicy::class,
         'VentureDrake\LaravelCrm\Models\Order' => \VentureDrake\LaravelCrm\Policies\OrderPolicy::class,
         'VentureDrake\LaravelCrm\Models\Invoice' => \VentureDrake\LaravelCrm\Policies\InvoicePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Customer' => \VentureDrake\LaravelCrm\Policies\ClientPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Customer' => \VentureDrake\LaravelCrm\Policies\CustomerPolicy::class,
         'VentureDrake\LaravelCrm\Models\Person' => \VentureDrake\LaravelCrm\Policies\PersonPolicy::class,
         'VentureDrake\LaravelCrm\Models\Organization' => \VentureDrake\LaravelCrm\Policies\OrganizationPolicy::class,
         'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
@@ -271,7 +271,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         OrderProduct::observe(OrderProductObserver::class);
         Invoice::observe(InvoiceObserver::class);
         InvoiceLine::observe(InvoiceLineObserver::class);
-        Customer::observe(ClientObserver::class);
+        Customer::observe(CustomerObserver::class);
         Person::observe(PersonObserver::class);
         Organization::observe(OrganizationObserver::class);
         Phone::observe(PhoneObserver::class);

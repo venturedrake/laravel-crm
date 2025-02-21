@@ -406,10 +406,10 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm purchase orders', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm purchase orders', 'crm_permission' => 1]);
 
-        Permission::firstOrCreate(['name' => 'create crm clients', 'crm_permission' => 1]);
-        Permission::firstOrCreate(['name' => 'view crm clients', 'crm_permission' => 1]);
-        Permission::firstOrCreate(['name' => 'edit crm clients', 'crm_permission' => 1]);
-        Permission::firstOrCreate(['name' => 'delete crm clients', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'create crm customers', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm customers', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm customers', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm customers', 'crm_permission' => 1]);
 
         Permission::firstOrCreate(['name' => 'create crm pipelines', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm pipelines', 'crm_permission' => 1]);
@@ -510,10 +510,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm purchase orders',
                 'edit crm purchase orders',
                 'delete crm purchase orders',
-                'create crm clients',
-                'view crm clients',
-                'edit crm clients',
-                'delete crm clients',
+                'create crm customers',
+                'view crm customers',
+                'edit crm customers',
+                'delete crm customers',
                 'create crm pipelines',
                 'view crm pipelines',
                 'edit crm pipelines',
@@ -596,10 +596,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm purchase orders',
                 'edit crm purchase orders',
                 'delete crm purchase orders',
-                'create crm clients',
-                'view crm clients',
-                'edit crm clients',
-                'delete crm clients',
+                'create crm customers',
+                'view crm customers',
+                'edit crm customers',
+                'delete crm customers',
                 'create crm pipelines',
                 'view crm pipelines',
                 'edit crm pipelines',

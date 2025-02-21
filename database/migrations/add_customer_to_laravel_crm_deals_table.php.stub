@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddClientToLaravelCrmDealsTable extends Migration
+class AddCustomerToLaravelCrmDealsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -37,7 +37,7 @@ class AddClientToLaravelCrmDealsTable extends Migration
             $table->string('url')->nullable();
         }); 
         
-        Schema::table(config('laravel-crm.db_table_prefix').'clients', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'customers', function (Blueprint $table) {
             $table->string('url')->nullable();
         }); 
         
@@ -94,7 +94,7 @@ class AddClientToLaravelCrmDealsTable extends Migration
              $table->dropColumn('url');
         });
         
-        Schema::table(config('laravel-crm.db_table_prefix').'clients', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'customers', function (Blueprint $table) {
              $table->dropColumn('url');
         });
         
