@@ -5,3 +5,7 @@
 [x-cloak] {
     display: none;
 }
+
+.input-neutral {
+    @apply border-gray-400 focus:border-gray-400 focus:outline-gray-400
+}

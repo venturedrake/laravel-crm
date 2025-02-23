@@ -9,6 +9,7 @@ use Faker\Generator as Faker;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\PipelineStage;
 
 $factory->define(Lead::class, function (Faker $faker) {
     return [
@@ -21,5 +22,6 @@ $factory->define(Lead::class, function (Faker $faker) {
         'lead_status_id' => 1,
         'user_assigned_id' => 1,
         'created_at' => Carbon::now()->subDays($faker->numberBetween(0, 14)),
+        'pipeline_stage_id' => PipelineStage::where('pipeline_id', 1)->get()->random(1)->first()->id,
     ];
 });

@@ -55,7 +55,7 @@ class Lead extends Model
         }
     }
 
-    public function client()
+    public function customer()
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Customer::class);
     }

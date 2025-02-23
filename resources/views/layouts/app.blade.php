@@ -21,7 +21,7 @@
 
         @include('laravel-crm::layouts.partials.favicon')
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased bg-base-200">
     
     <x-mary-nav sticky full-width>
         <x-slot:brand>
@@ -73,7 +73,7 @@
         <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-200">
 
             {{-- Activates the menu item when a route matches the `link` property --}}
-            <x-mary-menu activate-by-route>
+            <x-mary-menu activate-by-route class="bg-base-100 rounded-none">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.dashboard')) }}" icon="bxs.dashboard" link="{{ url(route('laravel-crm.dashboard')) }}" />
                 <x-mary-menu-separator />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" icon="fas.crosshairs" link="{{ url(route('laravel-crm.leads.index')) }}" />
@@ -118,7 +118,6 @@
     @stack('modals')
 
     @livewireScripts
-    <!--@livewire('notify-toast')-->
     @stack('livewire-js')
     </body>
 </html>

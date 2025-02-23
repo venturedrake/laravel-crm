@@ -34,10 +34,14 @@ export default {
                 light: {
                     ...require("daisyui/src/theming/themes")["light"],
                     primary: "#05b3a9",
+                    secondary: "#6505B3",
+                    accent: "#B34105",
                 },
                 dark: {
                     ...require("daisyui/src/theming/themes")["dark"],
                     primary: "#05b3a9",
+                    secondary: "#6505B3",
+                    accent: "#B34105",
                 },
             },
         ],

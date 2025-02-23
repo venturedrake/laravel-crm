@@ -77,6 +77,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
+use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Models\Activity;
@@ -166,6 +167,7 @@ use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
+use VentureDrake\LaravelCrm\View\Components\IndexToggle;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
 class LaravelCrmServiceProvider extends ServiceProvider
@@ -257,7 +259,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         $router->pushMiddlewareToGroup('crm', LogUsage::class);
         $router->pushMiddlewareToGroup('crm-api', LogUsage::class);
         $router->pushMiddlewareToGroup('crm', FormComponentsConfig::class);
-        $router->pushMiddlewareToGroup('web', FormComponentsConfig::class);
+        $router->pushMiddlewareToGroup('web', middleware: FormComponentsConfig::class);
 
         $this->registerRoutes();
 
@@ -520,6 +522,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // View components
         Blade::componentNamespace('VentureDrake\\LaravelCrm\\View\\Components', 'crm');
+        Blade::component('crm-index-toggle', IndexToggle::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
@@ -565,6 +568,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('delivery-details', LiveDeliveryDetails::class);
 
         /* Version 2 Livewire Components */
+        Livewire::component('crm-kanban-board', KanbanBoard::class);
         Livewire::component('crm-lead-index', LeadIndex::class);
         Livewire::component('crm-lead-board', LeadBoard::class);
 
