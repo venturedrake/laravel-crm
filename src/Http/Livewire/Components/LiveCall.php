@@ -45,7 +45,7 @@ class LiveCall extends Component
         $this->guests = $call->contacts()->pluck('entityable_id')->toArray();
         $this->location = $call->location;
 
-        if($this->settingService->get('show_related_activity')->value == 1) {
+        if ($this->settingService->get('show_related_activity')->value == 1) {
             $this->showRelated = true;
         }
 

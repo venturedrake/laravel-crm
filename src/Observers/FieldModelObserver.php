@@ -65,7 +65,7 @@ class FieldModelObserver
     public function deleting(FieldModel $fieldModel)
     {
         foreach ($fieldModel->model::all() as $model) {
-            if($field =  $model->fields()->where('field_id', $fieldModel->field_id)->first()) {
+            if ($field =  $model->fields()->where('field_id', $fieldModel->field_id)->first()) {
                 $field->delete();
             }
         }

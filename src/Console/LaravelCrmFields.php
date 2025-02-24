@@ -56,7 +56,7 @@ class LaravelCrmFields extends Command
     {
         $this->info('Updating Laravel CRM custom fields...');
 
-        foreach(FieldModel::all() as $fieldModel) {
+        foreach (FieldModel::all() as $fieldModel) {
             $this->line('Updating field: ' . $fieldModel->field->name);
 
             foreach ($fieldModel->model::all() as $model) {

@@ -55,7 +55,7 @@ class LiveAddressEdit extends Component
         } elseif ($this->addresses && $this->addresses->count() > 0) {
             foreach ($this->addresses as $address) {
 
-                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Shipping') {
+                if ($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Shipping') {
                     $this->add($this->i);
                     $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
                     $this->type_name[$this->i] = 'Billing';
@@ -77,7 +77,7 @@ class LiveAddressEdit extends Component
                 $this->primary[$this->i] = $address->primary;
                 $this->addressId[$this->i] = $address->id;
 
-                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Billing') {
+                if ($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Billing') {
                     $this->add($this->i);
                     $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
                     $this->type_name[$this->i] = 'Billing';

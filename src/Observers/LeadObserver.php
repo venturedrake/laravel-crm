@@ -32,7 +32,7 @@ class LeadObserver
             $lead->user_created_id = auth()->user()->id ?? null;
         }
 
-        if($lastLead = Lead::withTrashed()->orderBy('number', 'DESC')->first()) {
+        if ($lastLead = Lead::withTrashed()->orderBy('number', 'DESC')->first()) {
             $lead->number = $lastLead->number + 1;
         } else {
             $lead->number = 1000;

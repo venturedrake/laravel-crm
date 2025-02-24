@@ -27,7 +27,7 @@ class LiveProductForm extends Component
 
     public function updatedTaxRateId($value)
     {
-        if($value) {
+        if ($value) {
             $this->tax_rate = TaxRate::find($value)->rate;
         } else {
             $this->tax_rate = number_format($this->settingService->get('tax_rate')->value ?? 0, 2);

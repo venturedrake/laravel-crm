@@ -156,13 +156,13 @@ class LiveInvoiceLines extends Component
             if (isset($this->product_id[$i])) {
                 $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i]);
 
-                if($product && $product->taxRate) {
+                if ($product && $product->taxRate) {
                     $taxRate = $product->taxRate->rate;
-                } elseif($product && $product->tax_rate) {
+                } elseif ($product && $product->tax_rate) {
                     $taxRate = $product->tax_rate;
-                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
+                } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                     $taxRate = $taxRate->rate;
-                } elseif($taxRate = $this->settingService->get('tax_rate')) {
+                } elseif ($taxRate = $this->settingService->get('tax_rate')) {
                     $taxRate = $taxRate->value;
                 } else {
                     $taxRate = 0;

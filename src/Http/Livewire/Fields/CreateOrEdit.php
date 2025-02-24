@@ -35,7 +35,7 @@ class CreateOrEdit extends Component
 
     public function mount()
     {
-        if(isset($this->field)) {
+        if (isset($this->field)) {
             $this->fieldName = $this->field->name;
             $this->fieldType = $this->field->type;
             $this->fieldGroup = $this->field->fieldGroup->id ?? null;
@@ -43,7 +43,7 @@ class CreateOrEdit extends Component
             $this->fieldRequired = $this->field->required;
             $this->fieldModels = FieldModel::where('field_id', $this->field->id)->get()->pluck('model')->toArray();
 
-            foreach($this->field->fieldOptions as $fieldOption) {
+            foreach ($this->field->fieldOptions as $fieldOption) {
                 $this->fieldOptions[] = [
                     'id' => $fieldOption->id,
                     'value' => $fieldOption->value,
@@ -59,11 +59,11 @@ class CreateOrEdit extends Component
 
     public function updatedFieldType($value)
     {
-        switch($value) {
+        switch ($value) {
             case "select":
             case "checkbox_multiple":
             case "radio":
-                if(count($this->fieldOptions) == 0) {
+                if (count($this->fieldOptions) == 0) {
                     $this->addOption();
 
                 }
@@ -91,7 +91,7 @@ class CreateOrEdit extends Component
     {
         $this->validate();
 
-        if(isset($this->field)) {
+        if (isset($this->field)) {
             $this->field->update([
                 'type' => $this->fieldType,
                 'name' => $this->fieldName,
@@ -100,10 +100,10 @@ class CreateOrEdit extends Component
                 'default' => $this->fieldDefault
             ]);
 
-            if($this->fieldOptions) {
+            if ($this->fieldOptions) {
                 $fieldOptionIds = [];
-                foreach($this->fieldOptions as $option) {
-                    if($fieldOption = FieldOption::find($option['id'])) {
+                foreach ($this->fieldOptions as $option) {
+                    if ($fieldOption = FieldOption::find($option['id'])) {
                         $fieldOptionIds[] = $option['id'];
                         $fieldOption->update([
                             'value' => $option['value'],
@@ -130,8 +130,8 @@ class CreateOrEdit extends Component
                 'default' => $this->fieldDefault
             ]);
 
-            if($this->fieldOptions) {
-                foreach($this->fieldOptions as $option) {
+            if ($this->fieldOptions) {
+                foreach ($this->fieldOptions as $option) {
                     $this->field->fieldOptions()->create([
                         'value' => $option['value'],
                         'label' => $option['label'],

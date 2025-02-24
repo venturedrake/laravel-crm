@@ -150,7 +150,7 @@ class OrganisationController extends Controller
      */
     public function destroy(Organisation $organisation)
     {
-        foreach(Contact::where([
+        foreach (Contact::where([
             'entityable_type' => $organisation->getMorphClass(),
             'entityable_id' => $organisation->id
         ])->get() as $contact) {

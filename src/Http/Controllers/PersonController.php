@@ -201,7 +201,7 @@ class PersonController extends Controller
      */
     public function destroy(Person $person)
     {
-        foreach(Contact::where([
+        foreach (Contact::where([
             'entityable_type' => $person->getMorphClass(),
             'entityable_id' => $person->id
         ])->get() as $contact) {

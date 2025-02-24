@@ -80,19 +80,19 @@ class LiveFiles extends Component
     {
         $fileIds = [];
 
-        foreach($this->model->files()->latest()->get() as $file) {
+        foreach ($this->model->files()->latest()->get() as $file) {
             $fileIds[] = $file->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
-            foreach($this->model->contacts as $contact) {
+        if ($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
+            foreach ($this->model->contacts as $contact) {
                 foreach ($contact->entityable->files()->latest()->get() as $file) {
                     $fileIds[] = $file->id;
                 }
             }
         }
 
-        if(count($fileIds) > 0) {
+        if (count($fileIds) > 0) {
             $this->files = File::whereIn('id', $fileIds)->latest()->get();
         }
 

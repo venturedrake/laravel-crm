@@ -242,7 +242,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             $router->pushMiddlewareToGroup('crm-api', XeroTenant::class);
         }
 
-        if(config('laravel-crm.route_subdomain')) {
+        if (config('laravel-crm.route_subdomain')) {
             $router->pushMiddlewareToGroup('crm', RouteSubdomain::class);
         }
 
@@ -587,65 +587,65 @@ class LaravelCrmServiceProvider extends ServiceProvider
         View::composer('*', SettingsComposer::class);
 
         Blade::if('hasleadsenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });
 
         Blade::if('hasdealsenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('deals', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('deals', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });
 
         Blade::if('hasquotesenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('quotes', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('quotes', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });
 
         Blade::if('hasordersenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('orders', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('orders', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });
 
         Blade::if('hasinvoicesenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('invoices', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('invoices', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });
 
         Blade::if('hasdeliveriesenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('deliveries', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('deliveries', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });
 
         Blade::if('haspurchaseordersenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('purchase-orders', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('purchase-orders', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });
 
         Blade::if('hasteamsenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('teams', config('laravel-crm.modules'))) {
+            if (is_array(config('laravel-crm.modules')) && in_array('teams', config('laravel-crm.modules'))) {
                 return true;
-            } elseif(! config('laravel-crm.modules')) {
+            } elseif (! config('laravel-crm.modules')) {
                 return true;
             }
         });

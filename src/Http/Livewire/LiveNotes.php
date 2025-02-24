@@ -80,19 +80,19 @@ class LiveNotes extends Component
         } else {
             $noteIds = [];
 
-            foreach($this->model->notes()->latest()->get() as $note) {
+            foreach ($this->model->notes()->latest()->get() as $note) {
                 $noteIds[] = $note->id;
             }
 
-            if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
-                foreach($this->model->contacts as $contact) {
+            if ($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
+                foreach ($this->model->contacts as $contact) {
                     foreach ($contact->entityable->notes()->latest()->get() as $note) {
                         $noteIds[] = $note->id;
                     }
                 }
             }
 
-            if(count($noteIds) > 0) {
+            if (count($noteIds) > 0) {
                 $this->notes = Note::whereIn('id', $noteIds)->latest()->get();
             }
         }

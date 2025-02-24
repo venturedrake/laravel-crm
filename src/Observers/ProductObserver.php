@@ -19,7 +19,7 @@ class ProductObserver
     {
         $product->external_id = Uuid::uuid4()->toString();
 
-        if(! $product->tax_rate_id) {
+        if (! $product->tax_rate_id) {
             $taxRate = TaxRate::where('default', 1)->first();
 
             $product->tax_rate_id = $taxRate->id ?? null;

@@ -78,19 +78,19 @@ class LiveTasks extends Component
     {
         $taskIds = [];
 
-        foreach($this->model->tasks()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $task) {
+        foreach ($this->model->tasks()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $task) {
             $taskIds[] = $task->id;
         }
 
-        if($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
-            foreach($this->model->contacts as $contact) {
+        if ($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
+            foreach ($this->model->contacts as $contact) {
                 foreach ($contact->entityable->tasks()->where('user_assigned_id', auth()->user()->id)->latest()->get() as $task) {
                     $taskIds[] = $task->id;
                 }
             }
         }
 
-        if(count($taskIds) > 0) {
+        if (count($taskIds) > 0) {
             $this->tasks = Task::whereIn('id', $taskIds)->latest()->get();
         }
 

@@ -22,7 +22,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
     public function run()
     {
         // Pipelines stage probabilities
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipeline_probabilities')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipeline_probabilities')->first()) {
             $items = [
                 [
                     [
@@ -147,7 +147,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
         }
 
         // Pipelines
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipelines')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipelines')->first()) {
             $items = [
                 [
                     [
@@ -227,7 +227,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
         }
 
         // Pipelines stages
-        if(! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipelines_stages')->first()) {
+        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipelines_stages')->first()) {
             $items = [
                 // Leads
                 [

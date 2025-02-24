@@ -346,7 +346,7 @@ class OrderController extends Controller
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
 
-                        if(config('laravel-crm.encrypt_db_fields')) {
+                        if (config('laravel-crm.encrypt_db_fields')) {
                             try {
                                 $relatedField = decrypt($record->{$field[1]});
                             } catch (DecryptException $e) {

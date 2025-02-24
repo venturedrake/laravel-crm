@@ -101,7 +101,7 @@ class SettingController extends Controller
     {
         $this->settingService->set('organisation_name', $request->organisation_name);
 
-        if($request->vat_number) {
+        if ($request->vat_number) {
             $this->settingService->set('vat_number', $request->vat_number);
         }
 
@@ -110,39 +110,39 @@ class SettingController extends Controller
         $this->settingService->set('currency', $request->currency);
         $this->settingService->set('timezone', $request->timezone);
 
-        if($request->tax_name) {
+        if ($request->tax_name) {
             $this->settingService->set('tax_name', $request->tax_name);
         }
 
-        if($request->tax_rate) {
+        if ($request->tax_rate) {
             $this->settingService->set('tax_rate', $request->tax_rate);
         }
 
-        if($request->lead_prefix) {
+        if ($request->lead_prefix) {
             $this->settingService->set('lead_prefix', $request->lead_prefix);
         }
 
-        if($request->deal_prefix) {
+        if ($request->deal_prefix) {
             $this->settingService->set('deal_prefix', $request->deal_prefix);
         }
 
-        if($request->quote_prefix) {
+        if ($request->quote_prefix) {
             $this->settingService->set('quote_prefix', $request->quote_prefix);
         }
 
-        if($request->order_prefix) {
+        if ($request->order_prefix) {
             $this->settingService->set('order_prefix', $request->order_prefix);
         }
 
-        if($request->invoice_prefix) {
+        if ($request->invoice_prefix) {
             $this->settingService->set('invoice_prefix', $request->invoice_prefix);
         }
 
-        if($request->delivery_prefix) {
+        if ($request->delivery_prefix) {
             $this->settingService->set('delivery_prefix', $request->delivery_prefix);
         }
 
-        if($request->purchase_order_prefix) {
+        if ($request->purchase_order_prefix) {
             $this->settingService->set('purchase_order_prefix', $request->purchase_order_prefix);
         }
 

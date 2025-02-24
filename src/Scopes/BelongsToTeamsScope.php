@@ -19,7 +19,7 @@ class BelongsToTeamsScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         if (config('laravel-crm.teams') && auth()->hasUser() && auth()->user()->currentTeam) {
-            if(! config('nova.path') || (config('nova.path') && ! Str::startsWith(request()->getRequestUri(), config('nova.path')))) {
+            if (! config('nova.path') || (config('nova.path') && ! Str::startsWith(request()->getRequestUri(), config('nova.path')))) {
                 $this->extend($builder);
 
                 if (in_array($model->getTable(), config('laravel-crm.model_with_global'))) {

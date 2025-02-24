@@ -64,7 +64,7 @@ class LaravelCrmReminders extends Command
     {
         $this->info('Sending Laravel CRM Reminders...');
 
-        foreach(Task::whereNull('completed_at')
+        foreach (Task::whereNull('completed_at')
             ->where('reminder_email', 0)
             ->where('due_at', '>=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->subMinutes(5)->format('Y-m-d H:i:\\00'))
             ->where('due_at', '<=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->addMinutes(15)->format('Y-m-d H:i:\\00'))
@@ -84,7 +84,7 @@ class LaravelCrmReminders extends Command
             }
         }
 
-        foreach(Call::where('reminder_email', 0)
+        foreach (Call::where('reminder_email', 0)
                     ->where('start_at', '>=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->subMinutes(5)->format('Y-m-d H:i:\\00'))
                     ->where('start_at', '<=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->addMinutes(15)->format('Y-m-d H:i:\\00'))
                     ->orderBy('start_at', 'asc')
@@ -103,7 +103,7 @@ class LaravelCrmReminders extends Command
             }
         }
 
-        foreach(Meeting::where('reminder_email', 0)
+        foreach (Meeting::where('reminder_email', 0)
                     ->where('start_at', '>=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->subMinutes(5)->format('Y-m-d H:i:\\00'))
                     ->where('start_at', '<=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->addMinutes(15)->format('Y-m-d H:i:\\00'))
                     ->orderBy('start_at', 'asc')
@@ -122,7 +122,7 @@ class LaravelCrmReminders extends Command
             }
         }
 
-        foreach(Lunch::where('reminder_email', 0)
+        foreach (Lunch::where('reminder_email', 0)
                     ->where('start_at', '>=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->subMinutes(5)->format('Y-m-d H:i:\\00'))
                     ->where('start_at', '<=', Carbon::now()->timezone($this->settingService->get('timezone')->value ?? 'UTC')->addMinutes(15)->format('Y-m-d H:i:\\00'))
                     ->orderBy('start_at', 'asc')

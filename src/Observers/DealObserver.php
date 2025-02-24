@@ -32,7 +32,7 @@ class DealObserver
             $deal->user_created_id = auth()->user()->id ?? null;
         }
 
-        if($lastDeal = Deal::withTrashed()->orderBy('number', 'DESC')->first()) {
+        if ($lastDeal = Deal::withTrashed()->orderBy('number', 'DESC')->first()) {
             $deal->number = $lastDeal->number + 1;
         } else {
             $deal->number = 1000;

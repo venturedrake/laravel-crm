@@ -63,8 +63,8 @@ class TaskReminderNotification extends Notification
         $mailMessage->line(new HtmlString('<strong>'.$this->task->name.'</strong>'));
         $mailMessage->line(new HtmlString($this->task->description));
 
-        if($this->task->taskable) {
-            switch(class_basename($this->task->taskable->getMorphClass())) {
+        if ($this->task->taskable) {
+            switch (class_basename($this->task->taskable->getMorphClass())) {
                 case "Lead":
                     $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->task->taskable->id.'">'.$this->task->taskable->title.'</a></small>'));
                     break;

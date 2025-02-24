@@ -16,7 +16,7 @@ class SystemCheck
      */
     public function handle($request, Closure $next)
     {
-        if(config('laravel-crm.update_notifications')) {
+        if (config('laravel-crm.update_notifications')) {
             // Since version 0.1.0
             if (! Schema::hasColumn('users', 'crm_access') || ! Schema::hasColumn('users', 'last_online_at') || ! Schema::hasColumn('users', 'current_crm_team_id')) {
                 // Pre initial release version installed, you will need to add fields to users table
@@ -33,57 +33,57 @@ class SystemCheck
             }
 
             // Since version 0.2.0
-            if(! auth()->guest() && Schema::hasTable(config('laravel-crm.db_table_prefix').'settings') && auth()->user()->hasPermissionTo('view crm updates')) {
-                if(\VentureDrake\LaravelCrm\Models\Setting::where('name', 'version')->first()->value < \VentureDrake\LaravelCrm\Models\Setting::where('name', 'version_latest')->first()->value) {
+            if (! auth()->guest() && Schema::hasTable(config('laravel-crm.db_table_prefix').'settings') && auth()->user()->hasPermissionTo('view crm updates')) {
+                if (\VentureDrake\LaravelCrm\Models\Setting::where('name', 'version')->first()->value < \VentureDrake\LaravelCrm\Models\Setting::where('name', 'version_latest')->first()->value) {
                     flash('There is a new version of Laravel CRM software available. <a href="https://github.com/venturedrake/laravel-crm" target="_blank">View version '.\VentureDrake\LaravelCrm\Models\Setting::where('name', 'version_latest')->first()->value.' details</a> or <a href="https://github.com/venturedrake/laravel-crm" target="_blank">update now</a>.')->warning()->important();
                 }
 
                 // Check if DB database required
                 $dbUpdateRequired = false;
 
-                if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0180')->first()) {
-                    if($setting->value == 0) {
+                if ($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0180')->first()) {
+                    if ($setting->value == 0) {
                         $dbUpdateRequired = true;
                     }
                 }
 
-                if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0181')->first()) {
-                    if($setting->value == 0) {
+                if ($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0181')->first()) {
+                    if ($setting->value == 0) {
                         $dbUpdateRequired = true;
                     }
                 }
 
-                if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0191')->first()) {
-                    if($setting->value == 0) {
+                if ($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0191')->first()) {
+                    if ($setting->value == 0) {
                         $dbUpdateRequired = true;
                     }
                 }
 
-                if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0193')->first()) {
-                    if($setting->value == 0) {
+                if ($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0193')->first()) {
+                    if ($setting->value == 0) {
                         $dbUpdateRequired = true;
                     }
                 }
 
-                if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0194')->first()) {
-                    if($setting->value == 0) {
+                if ($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0194')->first()) {
+                    if ($setting->value == 0) {
                         $dbUpdateRequired = true;
                     }
                 }
 
-                if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0199')->first()) {
-                    if($setting->value == 0) {
+                if ($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_0199')->first()) {
+                    if ($setting->value == 0) {
                         $dbUpdateRequired = true;
                     }
                 }
 
-                if($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_1200')->first()) {
-                    if($setting->value == 0) {
+                if ($setting = \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_update_1200')->first()) {
+                    if ($setting->value == 0) {
                         $dbUpdateRequired = true;
                     }
                 }
 
-                if($dbUpdateRequired) {
+                if ($dbUpdateRequired) {
                     flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="https://github.com/venturedrake/laravel-crm#upgrading-from--02" target="_blank">update database</a>')->info()->important();
                 }
             }
