@@ -2,34 +2,53 @@
 
 namespace VentureDrake\LaravelCrm\View\Composers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 use VentureDrake\LaravelCrm\Models\Setting;
 
 class SettingsComposer
 {
+    public static ?array $cachedParameters = null;
+
     public function compose(View $view)
     {
-        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
-            $view->with('dateFormat', Setting::where('name', 'date_format')->first()->value ?? 'Y/m/d');
-            $view->with('timeFormat', Setting::where('name', 'time_format')->first()->value ?? 'H:i');
-            $view->with('timezone', Setting::where('name', 'timezone')->first()->value ?? 'UTC');
-            $view->with('taxName', Setting::where('name', 'tax_name')->first()->value ?? 'Tax');
+        static::$cachedParameters ??= Cache::remember(
+            self::class,
+            now()->addHour(),
+            function () {
+                $defaults = [
+                    'dateFormat' => 'Y/m/d',
+                    'timeFormat' => 'H:i',
+                    'timezone' => 'UTC',
+                    'taxName' => 'Tax',
+                    'dynamicProducts' => 'true',
+                ];
 
-            if($setting = Setting::where('name', 'dynamic_products')->first()) {
-                if($setting->value == 1) {
-                    $view->with('dynamicProducts', 'true');
-                } else {
-                    $view->with('dynamicProducts', 'false');
+                if (! Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
+                    return $defaults;
                 }
-            } else {
-                $view->with('dynamicProducts', 'true');
+
+                if ($dynamicProductsSetting = Setting::where('name', 'dynamic_products')->first()) {
+                    if ($dynamicProductsSetting->value == 1) {
+                        $dynamicProducts = 'true';
+                    } else {
+                        $dynamicProducts = 'false';
+                    }
+                } else {
+                    $dynamicProducts = $defaults['dynamicProducts'];
+                }
+
+                return [
+                    'dateFormat' => Setting::where('name', 'date_format')->first()?->value ?? $defaults['dateFormat'],
+                    'timeFormat' => Setting::where('name', 'time_format')->first()?->value ?? $defaults['timeFormat'],
+                    'timezone' => Setting::where('name', 'timezone')->first()?->value ?? $defaults['timezone'],
+                    'taxName' => Setting::where('name', 'tax_name')->first()?->value ?? $defaults['taxName'],
+                    'dynamicProducts' => $dynamicProducts,
+                ];
             }
-        } else {
-            $view->with('dateFormat', 'Y/m/d');
-            $view->with('timeFormat', 'H:i');
-            $view->with('timezone', 'UTC');
-            $view->with('taxName', 'Tax');
-        }
+        );
+
+        $view->with(static::$cachedParameters);
     }
 }
