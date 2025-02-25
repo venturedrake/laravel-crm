@@ -18,6 +18,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.2.3 - 2025-02-25
+### Added
+- Cache settings in view composer
+- Create & add another PO from orders
+### Changed
+- Updated invoice payment instructions
+- Unallocated option for leads, orders, etc
+- Don't paginate boards
+### Fixed
+- Missing pipeline on lead to deal conversion
+- Archive command added to provider
+- Handle invalid payload on decrypt
+- Issue with searching on related fields
+- Missing client relation on person model
+
 ## 1.2.2 - 2024-08-25
 ### Fixed
 - Kanban board search
