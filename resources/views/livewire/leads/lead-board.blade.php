@@ -3,7 +3,7 @@
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" class="mb-5" progress-indicator >
         {{--  SEARCH --}}
         <x-slot:middle class="!justify-end">
-            <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="name" icon="o-magnifying-glass" class="input-neutral" clearable />
+            <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" class="input-neutral" clearable />
         </x-slot:middle>
 
         {{-- ACTIONS  --}}
@@ -30,5 +30,17 @@
         @endforeach
     </div>
 
-   {{-- <livewire:crm-lead-board :leads="$leads" />--}}
+    {{-- FILTERS --}}
+    <x-mary-drawer wire:model="showFilters" title="Filters" class="lg:w-1/3" right separator with-close-button>
+        <div class="grid gap-5" @keydown.enter="$wire.showFilters = false">
+            <x-mary-choices label="Owner" wire:model.live="user_id" :options="$users" icon="o-user" inline allow-all />
+            <x-mary-choices label="Label" wire:model.live="label_id" :options="$labels" icon="o-tag" inline allow-all />
+        </div>
+
+        {{-- ACTIONS --}}
+        <x-slot:actions>
+            <x-mary-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
+            <x-mary-button label="Done" icon="o-check" class="btn-primary" @click="$wire.showFilters = false" />
+        </x-slot:actions>
+    </x-mary-drawer>
 </div>

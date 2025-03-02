@@ -67,20 +67,7 @@ class LeadController extends Controller
             return redirect(route('laravel-crm.leads.board'));
         }
 
-        Lead::resetSearchValue($request);
-        $params = Lead::filters($request);
-
-        if (Lead::filter($params)->whereNull('converted_at')->get()->count() < 30) {
-            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
-        } else {
-            $leads = Lead::filter($params)->whereNull('converted_at')->latest()->paginate(30);
-        }
-
-        return view('laravel-crm::leads.index', [
-            'leads' => $leads,
-            'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
-        ]);
+        return view('laravel-crm::leads.index');
     }
 
     /**
@@ -411,28 +398,18 @@ class LeadController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a leads board
      *
      * @return \Illuminate\Http\Response
      */
     public function board(Request $request)
     {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
-
         auth()->user()->crmSettings()->updateOrCreate([
             'name' => 'view_leads',
         ], [
             'value' => 'board',
         ]);
 
-        Lead::resetSearchValue($request);
-        $params = Lead::filters($request);
-
-        $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
-
-        return view('laravel-crm::leads.board', [
-            'leads' => $leads,
-            'viewSetting' => $viewSetting->value ?? null,
-        ]);
+        return view('laravel-crm::leads.board');
     }
 }

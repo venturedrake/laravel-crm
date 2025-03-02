@@ -2,8 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Leads;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
+use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 
@@ -13,7 +16,31 @@ class LeadBoard extends KanbanBoard
 
     public $model = 'lead';
 
-    public $leads;
+    #[Url]
+    public string $search = '';
+
+    #[Url]
+    public ?array $user_id = [];
+
+    #[Url]
+    public ?array $label_id = [];
+
+    public bool $showFilters = false;
+
+    public function filterCount(): int
+    {
+        return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
+    }
+
+    public function users(): Collection
+    {
+        return User::orderBy('name')->get();
+    }
+
+    public function labels(): Collection
+    {
+        return Label::all();
+    }
 
     public function stages(): Collection
     {
@@ -34,7 +61,13 @@ class LeadBoard extends KanbanBoard
 
     public function records(): Collection
     {
-        return $this->leads->map(function (Lead $lead) {
+        $leads = Lead::whereNull('converted_at')->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%$this->search%"))
+            ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
+            ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
+            ->latest()
+            ->get();
+
+        return $leads->map(function (Lead $lead) {
             return [
                 'id' => $lead->id,
                 'title' => $lead->title,
@@ -66,6 +99,9 @@ class LeadBoard extends KanbanBoard
             });
 
         return view('laravel-crm::livewire.leads.lead-board', [
+            'users' => $this->users(),
+            'labels' => $this->labels(),
+            'filterCount' => $this->filterCount(),
             'records' => $records,
             'stages' => $stages,
         ]);
