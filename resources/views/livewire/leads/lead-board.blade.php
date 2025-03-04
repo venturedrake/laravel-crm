@@ -30,6 +30,13 @@
         @endforeach
     </div>
 
+    <div wire:ignore>
+        @includeWhen($sortable, 'laravel-crm::livewire.kanban-board.sortable', [
+            'sortable' => $sortable,
+            'sortableBetweenStages' => $sortableBetweenStages,
+        ])
+    </div>
+
     {{-- FILTERS --}}
     <x-mary-drawer wire:model="showFilters" title="Filters" class="lg:w-1/3" right separator with-close-button>
         <div class="grid gap-5" @keydown.enter="$wire.showFilters = false">
