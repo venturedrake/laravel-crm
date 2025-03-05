@@ -17,5 +17,8 @@
         "tailwindcss": "^3.4.1",
         "vite": "^5.0"
     },
-    "name": "laravel-crm"
+    "name": "laravel-crm",
+    "dependencies": {
+        "sortablejs": "^1.15.6"
+    }
 }

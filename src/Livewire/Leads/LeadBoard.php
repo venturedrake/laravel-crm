@@ -52,11 +52,32 @@ class LeadBoard extends KanbanBoard
         }
     }
 
+    public function onStageSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+    }
+
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
         Lead::find($recordId)->update([
             'pipeline_stage_id' => $stageId,
         ]);
+
+        foreach ($fromOrderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+
+        foreach ($toOrderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
     }
 
     public function records(): Collection
@@ -64,7 +85,8 @@ class LeadBoard extends KanbanBoard
         $leads = Lead::whereNull('converted_at')->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%$this->search%"))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
-            ->latest()
+            ->orderBy('pipeline_stage_order')
+            ->oldest()
             ->get();
 
         return $leads->map(function (Lead $lead) {
