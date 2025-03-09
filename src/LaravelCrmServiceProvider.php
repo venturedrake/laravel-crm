@@ -79,6 +79,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
+use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
@@ -571,6 +572,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-kanban-board', KanbanBoard::class);
         Livewire::component('crm-lead-index', LeadIndex::class);
         Livewire::component('crm-lead-board', LeadBoard::class);
+        Livewire::component('crm-lead-create', LeadCreate::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

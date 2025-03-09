@@ -1,3 +1,3 @@
 <x-crm::app-layout>
-    CREATE
+    <livewire:crm-lead-create />
 </x-crm::app-layout>
