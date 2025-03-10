@@ -37,7 +37,9 @@ class LeadCreate extends Component
                 ->limit(10)
                 ->get();
 
-            $this->showOrganizations = true;
+            if ($this->organizations->count() > 0) {
+                $this->showOrganizations = true;
+            }
         } else {
             $this->showOrganizations = false;
         }
@@ -54,6 +56,11 @@ class LeadCreate extends Component
         $this->showOrganizations = false;
     }
 
+    public function hideOrganizations()
+    {
+        $this->showOrganizations = false;
+    }
+
     public function searchPeople()
     {
 
@@ -65,7 +72,9 @@ class LeadCreate extends Component
                 ->limit(10)
                 ->get();
 
-            $this->showPeople = true;
+            if ($this->people->count() > 0) {
+                $this->showPeople = true;
+            }
         } else {
             $this->showPeople = false;
         }
@@ -79,6 +88,11 @@ class LeadCreate extends Component
             $this->person = $person->name;
         }
 
+        $this->showPeople = false;
+    }
+
+    public function hidePeople()
+    {
         $this->showPeople = false;
     }
 

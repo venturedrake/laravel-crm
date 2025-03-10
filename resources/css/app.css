@@ -9,3 +9,32 @@
 .input-neutral {
     @apply border-gray-400 focus:border-gray-400 focus:outline-gray-400
 }
+
+.autocomplete-input{
+    position: relative;
+}
+
+.autocomplete-input ul{
+    list-style: none;
+    padding: 0;
+    position: absolute;
+    margin: 0;
+    background: white;
+}
+
+.autocomplete-input ul li{
+    background: lavender;
+    padding: 4px;
+    margin-bottom: 1px;
+}
+
+.autocomplete-input ul li:hover{
+    cursor: pointer;
+}
+
+.autocomplete-new {
+    position: absolute !important;
+    right: 5px !important;
+    top: 35px !important;
+    z-index: 2;
+}

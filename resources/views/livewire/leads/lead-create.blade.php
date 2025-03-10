@@ -1,31 +1,4 @@
 <div>
-    <!-- CSS -->
-    <style type="text/css">
-        .autocomplete-input .clear{
-            clear:both;
-            margin-top: 20px;
-        }
-
-        .autocomplete-input ul{
-            list-style: none;
-            padding: 0px;
-            position: absolute;
-            margin: 0;
-            background: white;
-        }
-
-        .autocomplete-input ul li{
-            background: lavender;
-            padding: 4px;
-            margin-bottom: 1px;
-        }
-
-        .autocomplete-input ul li:hover{
-            cursor: pointer;
-        }
-        
-    </style>
-    
     {{-- HEADER --}}
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.create_lead')) }}" class="mb-5" progress-indicator >
 
@@ -40,8 +13,8 @@
         <div class="grid lg:grid-cols-2 gap-8">
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" separator>
                 <div class="grid gap-3 lg:px-3" wire:key="details">
-                    <div class="autocomplete-input z-10">
-                        <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.organization')) }}" icon="fas.building" wire:model="organization" wire:keyup="searchOrganizations" />
+                    <div class="autocomplete-input z-50">
+                        <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.organization')) }}" icon="fas.building" wire:model="organization" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" />
                         @if($showOrganizations)
                             <div class="border border-solid border-primary absolute bg-white z-50 w-96">
                                 @if(!empty($organizations))
@@ -55,11 +28,14 @@
                                 @endif  
                             </div>
                         @endif
+                        @if(! $organization_id && $organization)
+                            <x-mary-badge value="New" class="badge-primary autocomplete-new text-white" />
+                        @endif
                     </div>
-                    <div class="autocomplete-input z-10">
-                        <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.contact_person')) }}" icon="fas.user" wire:model="person" wire:keyup="searchPeople"  />
+                    <div class="autocomplete-input z-40">
+                        <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.contact_person')) }}" icon="fas.user" wire:model="person" wire:keyup="searchPeople" wire:blur="hidePeople" />
                         @if($showPeople)
-                            <div class="border border-solid border-primary absolute bg-white z-50 w-96">
+                            <div class="border border-solid border-primary absolute bg-white z-40 w-96">
                                 @if(!empty($people))
                                     @foreach($people as $person)
                                         <x-mary-list-item wire:click="linkPerson({{ $person->id }})" :item="$person">
@@ -70,6 +46,9 @@
                                     @endforeach
                                 @endif
                             </div>
+                        @endif
+                        @if(! $person_id && $person)
+                            <x-mary-badge value="New" class="badge-primary autocomplete-new text-white" />
                         @endif
                     </div>
                     <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.title')) }}" wire:model="title" />
