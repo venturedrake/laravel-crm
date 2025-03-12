@@ -50,6 +50,25 @@ function users($null = true)
     return $array;
 }
 
+function usersOptions($null = true)
+{
+    $items = [
+        [
+            'id' => 0,
+            'name' => ucfirst(__('laravel-crm::lang.unallocated')),
+        ],
+    ];
+
+    foreach (\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users($null) as $id => $value) {
+        $items[] = [
+            'id' => $id,
+            'name' => $value,
+        ];
+    }
+
+    return $items;
+}
+
 function phoneTypes($null = true)
 {
     $array = [];
@@ -121,6 +140,20 @@ function currencies()
         }
     }
 
+    return $items;
+}
+
+function currencyOptions()
+{
+    $items = [];
+    
+    foreach (\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies() as $id => $value) {
+        $items[] = [
+            'id' => $id,
+            'name' => $value,
+        ];
+    }
+    
     return $items;
 }
 
