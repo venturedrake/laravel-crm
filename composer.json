@@ -51,7 +51,7 @@
         "owenvoke/blade-fontawesome": "^2.8",
         "rappasoft/laravel-authentication-log": "^4.0",
         "rinvex/countries": "^8.1|^9.0",
-        "robsontenorio/mary": "^1.41",
+        "robsontenorio/mary": "V2.x-dev",
         "spatie/laravel-permission": "^6.0",
         "torann/geoip": "^3.0",
         "venturedrake/laravel-encryptable": "^0.1.2"
