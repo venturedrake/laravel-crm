@@ -47,7 +47,7 @@
         "livewire/livewire": "^3.0",
         "mallardduck/blade-boxicons": "^2.4",
         "mpdf/mpdf": "^8.0",
-        "owen-it/laravel-auditing": "^13.6",
+        "owen-it/laravel-auditing": "^13.6|^14.0",
         "owenvoke/blade-fontawesome": "^2.8",
         "rappasoft/laravel-authentication-log": "^4.0",
         "rinvex/countries": "^8.1|^9.0",
