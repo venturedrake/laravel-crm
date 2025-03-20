@@ -40,7 +40,6 @@
         "doctrine/dbal": "^3.9|^4.0",
         "guzzlehttp/guzzle": "^6.0|^7.0",
         "illuminate/support": "^10.0|^11.0|^12.0",
-        "kyslik/column-sortable": "^6.4",
         "laracasts/flash": "^3.2",
         "laravel/legacy-factories": "^1.3",
         "livewire/livewire": "^3.0",
