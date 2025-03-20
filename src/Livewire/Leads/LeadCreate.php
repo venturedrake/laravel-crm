@@ -27,16 +27,17 @@ class LeadCreate extends Component
     public $showPeople = false;
 
     public $people;
-    
+
     public $currency;
 
     public $pipeline;
-    
+
     public $user_owner_id;
-    
-    public function mount(){
+
+    public function mount()
+    {
         $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->pipeline = Pipeline::where('model', get_class(new Lead()))->first();
+        $this->pipeline = Pipeline::where('model', get_class(new Lead))->first();
         $this->user_owner_id = auth()->user()->id;
     }
 

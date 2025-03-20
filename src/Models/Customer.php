@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Kyslik\ColumnSortable\Sortable;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
@@ -20,7 +19,6 @@ class Customer extends Model
     use LaravelEncryptableTrait;
     use SearchFilters;
     use SoftDeletes;
-    use Sortable;
 
     protected $guarded = ['id'];
 
@@ -35,13 +33,6 @@ class Customer extends Model
     protected $filterable = [
         'user_owner_id',
         'labels.id',
-    ];
-
-    public $sortable = [
-        'id',
-        'name',
-        'created_at',
-        'updated_at',
     ];
 
     public function getSearchable()

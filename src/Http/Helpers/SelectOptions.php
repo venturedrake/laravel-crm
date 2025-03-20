@@ -146,14 +146,14 @@ function currencies()
 function currencyOptions()
 {
     $items = [];
-    
+
     foreach (\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencies() as $id => $value) {
         $items[] = [
             'id' => $id,
             'name' => $value,
         ];
     }
-    
+
     return $items;
 }
 
