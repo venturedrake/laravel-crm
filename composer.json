@@ -48,7 +48,7 @@
         "owen-it/laravel-auditing": "^13.6|^14.0",
         "owenvoke/blade-fontawesome": "^2.8",
         "rinvex/countries": "^8.1|^9.0",
-        "robsontenorio/mary": "^1.0|v2.x-dev",
+        "robsontenorio/mary": "^1.0|v2.x-dev|dev-main",
         "spatie/laravel-permission": "^6.0",
         "torann/geoip": "^3.0",
         "venturedrake/laravel-encryptable": "^0.1.2"
