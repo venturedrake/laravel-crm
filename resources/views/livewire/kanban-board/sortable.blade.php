@@ -6,6 +6,7 @@
                 group: '{{ $sortableBetweenStages ? $stage['group'] : $stage['id'] }}',
                 animation: 0,
                 ghostClass: 'bg-light',
+                dragClass: "bg-white",
 
                 setData: function (dataTransfer, dragEl) {
                     dataTransfer.setData('id', dragEl.id);

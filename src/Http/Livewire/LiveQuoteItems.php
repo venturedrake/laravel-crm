@@ -36,6 +36,8 @@ class LiveQuoteItems extends Component
 
     public $comments;
 
+    public $order;
+
     public $inputs = [];
 
     public $i = 0;
@@ -60,7 +62,8 @@ class LiveQuoteItems extends Component
     public function mount($quote, $products, $old = null)
     {
         $this->quote = $quote;
-        $this->products = $products;
+
+        $this->products = $products->sortBy('order')->sortBy('created_at');
         $this->old = $old;
 
         if ($this->old) {
@@ -74,19 +77,10 @@ class LiveQuoteItems extends Component
                 $this->tax_amount[$this->i] = $old['tax_amount'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
                 $this->comments[$this->i] = $old['comments'] ?? null;
+                $this->order[$this->i] = $old['order'] ?? null;
             }
         } elseif ($this->products && $this->products->count() > 0) {
-            foreach ($this->products as $quoteProduct) {
-                $this->add($this->i);
-                $this->quote_product_id[$this->i] = $quoteProduct->id;
-                $this->product_id[$this->i] = $quoteProduct->product->id ?? null;
-                $this->name[$this->i] = $quoteProduct->product->name ?? null;
-                $this->quantity[$this->i] = $quoteProduct->quantity;
-                $this->unit_price[$this->i] = $quoteProduct->price / 100;
-                $this->tax_amount[$this->i] = $quoteProduct->tax_amount / 100;
-                $this->amount[$this->i] = $quoteProduct->amount / 100;
-                $this->comments[$this->i] = $quoteProduct->comments;
-            }
+            $this->loadProducts();
         } else {
             $this->add($this->i);
         }
@@ -174,6 +168,34 @@ class LiveQuoteItems extends Component
         $this->dispatchBrowserEvent('removedItem', ['id' => $id]);
 
         $this->calculateAmounts();
+    }
+
+    public function loadProducts($reorder = false)
+    {
+        foreach ($this->products as $quoteProduct) {
+            $this->add($this->i);
+            $this->quote_product_id[$this->i] = $quoteProduct->id;
+            $this->product_id[$this->i] = $quoteProduct->product->id ?? null;
+            $this->name[$this->i] = $quoteProduct->product->name ?? null;
+            $this->quantity[$this->i] = $quoteProduct->quantity;
+            $this->unit_price[$this->i] = $quoteProduct->price / 100;
+            $this->tax_amount[$this->i] = $quoteProduct->tax_amount / 100;
+            $this->amount[$this->i] = $quoteProduct->amount / 100;
+            $this->comments[$this->i] = $quoteProduct->comments;
+
+            if (!$reorder) {
+                $this->order[$this->i] = $quoteProduct->order;
+            }
+        }
+    }
+
+    public function onItemSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $i) {
+            $this->order[$i] = $orderNumber + 1;
+        }
+
+        $this->loadProducts(true);
     }
 
     protected function currencyFormat($number)

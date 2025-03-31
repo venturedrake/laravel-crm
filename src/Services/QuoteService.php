@@ -83,6 +83,7 @@ class QuoteService
                         'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                         'currency' => $request->currency,
                         'comments' => $product['comments'],
+                        'order' => $product['order'] ?? 0,
                     ]);
                 }
             }
@@ -151,6 +152,7 @@ class QuoteService
                                 'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                                 'currency' => $request->currency,
                                 'comments' => $product['comments'],
+                                'order' => $product['order'] ?? 0,
                             ]);
 
                             $quoteProductIds[] = $quoteProduct->id;
@@ -184,6 +186,7 @@ class QuoteService
                             'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                             'currency' => $request->currency,
                             'comments' => $product['comments'],
+                            'order' => $product['order'] ?? 0,
                         ]);
 
                         $quoteProductIds[] = $quoteProduct->id;
