@@ -15,10 +15,10 @@
                         <th scope="col" class="col-3 border-0">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
                 </thead>--}}
-                <tbody id="sortableItems">
-                @foreach($inputs as $key => $value)
-                    @include('laravel-crm::quote-products.partials.fields')
-                @endforeach
+                <tbody wire:ignore id="sortableItems">
+                    @foreach($inputs as $key => $value)
+                        @include('laravel-crm::quote-products.partials.fields')
+                    @endforeach
                 </tbody>
                 <tfoot id="quoteProductsTotals" class="tfoot">
                  <tr>

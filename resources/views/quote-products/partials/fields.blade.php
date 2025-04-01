@@ -10,12 +10,12 @@
                            'wire:model' => 'quote_product_id.'.$value,
                        ]
                     ])
-                    @include('laravel-crm::partials.form.hidden',[
+                    {{--@include('laravel-crm::partials.form.hidden',[
                       'name' => 'products['.$value.'][order]',
                       'attributes' => [
                           'wire:model' => 'order.'.$value,
                       ]
-                   ])
+                   ])--}}
                     {{--<span class="autocomplete autocomplete-product-name">
                         @include('laravel-crm::partials.form.hidden',[
                             'name' => 'products['.$value.'][product_id]',

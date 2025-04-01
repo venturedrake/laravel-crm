@@ -77,10 +77,19 @@ class LiveQuoteItems extends Component
                 $this->tax_amount[$this->i] = $old['tax_amount'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
                 $this->comments[$this->i] = $old['comments'] ?? null;
-                $this->order[$this->i] = $old['order'] ?? null;
             }
         } elseif ($this->products && $this->products->count() > 0) {
-            $this->loadProducts();
+            foreach ($this->products as $quoteProduct) {
+                $this->add($this->i);
+                $this->quote_product_id[$this->i] = $quoteProduct->id;
+                $this->product_id[$this->i] = $quoteProduct->product->id ?? null;
+                $this->name[$this->i] = $quoteProduct->product->name ?? null;
+                $this->quantity[$this->i] = $quoteProduct->quantity;
+                $this->unit_price[$this->i] = $quoteProduct->price / 100;
+                $this->tax_amount[$this->i] = $quoteProduct->tax_amount / 100;
+                $this->amount[$this->i] = $quoteProduct->amount / 100;
+                $this->comments[$this->i] = $quoteProduct->comments;
+            }
         } else {
             $this->add($this->i);
         }
@@ -95,6 +104,11 @@ class LiveQuoteItems extends Component
         $this->unit_price[$i] = null;
         $this->quantity[$i] = null;
         $this->tax_rate[$i] = null;
+
+        if (isset($this->order[$i - 1])) {
+            $this->order[$i] = $this->order[$i - 1] + 1;
+        }
+
         array_push($this->inputs, $i);
 
         $this->dispatchBrowserEvent('addedItem', ['id' => $this->i]);
@@ -170,32 +184,11 @@ class LiveQuoteItems extends Component
         $this->calculateAmounts();
     }
 
-    public function loadProducts($reorder = false)
-    {
-        foreach ($this->products as $quoteProduct) {
-            $this->add($this->i);
-            $this->quote_product_id[$this->i] = $quoteProduct->id;
-            $this->product_id[$this->i] = $quoteProduct->product->id ?? null;
-            $this->name[$this->i] = $quoteProduct->product->name ?? null;
-            $this->quantity[$this->i] = $quoteProduct->quantity;
-            $this->unit_price[$this->i] = $quoteProduct->price / 100;
-            $this->tax_amount[$this->i] = $quoteProduct->tax_amount / 100;
-            $this->amount[$this->i] = $quoteProduct->amount / 100;
-            $this->comments[$this->i] = $quoteProduct->comments;
-
-            if (!$reorder) {
-                $this->order[$this->i] = $quoteProduct->order;
-            }
-        }
-    }
-
     public function onItemSorted($orderedIds)
     {
         foreach ($orderedIds as $orderNumber => $i) {
             $this->order[$i] = $orderNumber + 1;
         }
-
-        $this->loadProducts(true);
     }
 
     protected function currencyFormat($number)
