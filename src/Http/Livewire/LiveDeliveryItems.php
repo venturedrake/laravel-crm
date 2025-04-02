@@ -129,6 +129,14 @@ class LiveDeliveryItems extends Component
         return $quantity;
     }
 
+    public function onItemSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $i) {
+            $key = $orderNumber + 1;
+            $this->inputs[$orderNumber] = (int) $i;
+        }
+    }
+
     public function render()
     {
         return view('laravel-crm::livewire.delivery-items');
