@@ -41,7 +41,6 @@
                 'options' => [
                     $this->product_id[$value] ?? null => $this->name[$value] ?? null,
                 ],
-                'value' => $this->product_id[$value] ?? null,
                 'attributes' => [
                     'wire:model' => 'product_id.'.$value,
                     'data-value' => $value

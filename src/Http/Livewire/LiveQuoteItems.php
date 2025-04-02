@@ -62,9 +62,9 @@ class LiveQuoteItems extends Component
     public function mount($quote, $products, $old = null)
     {
         $this->quote = $quote;
-        
+
         $this->products = $products->sortBy('order');
-        
+
         $this->old = $old;
 
         if ($this->old) {
@@ -106,12 +106,7 @@ class LiveQuoteItems extends Component
         $this->quantity[$i] = null;
         $this->tax_rate[$i] = null;
 
-        if (isset($this->order[$i - 1])) {
-            $this->order[$i] = $this->order[$i - 1] + 1;
-        }
-
         array_push($this->inputs, $i);
-
         $this->dispatchBrowserEvent('addedItem', ['id' => $this->i]);
     }
 
@@ -187,8 +182,20 @@ class LiveQuoteItems extends Component
 
     public function onItemSorted($orderedIds)
     {
+        $oldOrder = [
+            'quote_product_id' => $this->quote_product_id,
+            'product_id' => $this->product_id,
+            'name' => $this->name,
+            'quantity' => $this->quantity,
+            'unit_price' => $this->unit_price,
+            'tax_amount' => $this->tax_amount,
+            'amount' => $this->amount,
+            'comments' => $this->comments,
+        ];
+
         foreach ($orderedIds as $orderNumber => $i) {
-            $this->order[$i] = $orderNumber + 1;
+            $key = $orderNumber + 1;
+            $this->inputs[$orderNumber] = (int) $i;
         }
     }
 
