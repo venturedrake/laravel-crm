@@ -26,7 +26,7 @@
                     const fromOrderedIds = [].slice.call(evt.from.children).map(child => child.id);
 
                     if (sameContainer) {
-                        @this.call('onStageSorted', recordId, fromStageId, fromOrderedIds);
+                        @this.call('onStageSorted', fromOrderedIds);
                         return;
                     }
 

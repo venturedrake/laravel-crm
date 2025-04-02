@@ -10,30 +10,6 @@
                            'wire:model' => 'quote_product_id.'.$value,
                        ]
                     ])
-                    {{--@include('laravel-crm::partials.form.hidden',[
-                      'name' => 'products['.$value.'][order]',
-                      'attributes' => [
-                          'wire:model' => 'order.'.$value,
-                      ]
-                   ])--}}
-                    {{--<span class="autocomplete autocomplete-product-name">
-                        @include('laravel-crm::partials.form.hidden',[
-                            'name' => 'products['.$value.'][product_id]',
-                            'attributes' => [
-                                'wire:model' => 'product_id.'.$value,
-                            ]
-                        ])
-                        <span wire:ignore>
-                            @include('laravel-crm::partials.form.text',[
-                                'name' => 'products['.$value.'][name]',
-                                /*'label' => ucfirst(__('laravel-crm::lang.name')),*/
-                                'attributes' => [
-                                    'wire:model' => 'name.'.$value,
-                                    'autocomplete' => \Illuminate\Support\Str::random(),
-                                ]
-                            ])
-                        </span>
-                    </span>--}}
                     <span wire:ignore>
              @include('laravel-crm::partials.form.select',[
                 'name' => 'products['.$value.'][product_id]',

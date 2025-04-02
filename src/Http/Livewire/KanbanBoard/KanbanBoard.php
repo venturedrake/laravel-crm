@@ -35,7 +35,7 @@ class KanbanBoard extends Component
         return $record['stage'] == $stage['id'];
     }
 
-    public function onStageSorted($recordId, $stageId, $orderedIds)
+    public function onStageSorted($orderedIds)
     {
         //
     }
