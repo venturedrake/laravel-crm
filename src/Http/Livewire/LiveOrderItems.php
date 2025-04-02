@@ -67,7 +67,7 @@ class LiveOrderItems extends Component
     public function mount($order, $products, $old = null, $fromQuote = false)
     {
         $this->order = $order;
-        $this->products = $products;
+        $this->products = $products->sortBy('order');
         $this->old = $old;
         $this->fromQuote = $fromQuote;
 
@@ -218,6 +218,26 @@ class LiveOrderItems extends Component
         $this->dispatchBrowserEvent('removedItem', ['id' => $id]);
 
         $this->calculateAmounts();
+    }
+
+    public function onItemSorted($orderedIds)
+    {
+        $oldOrder = [
+            'quote_product_id' => $this->quote_product_id,
+            'order_product_id' => $this->quote_product_id,
+            'product_id' => $this->product_id,
+            'name' => $this->name,
+            'quantity' => $this->quantity,
+            'unit_price' => $this->unit_price,
+            'tax_amount' => $this->tax_amount,
+            'amount' => $this->amount,
+            'comments' => $this->comments,
+        ];
+
+        foreach ($orderedIds as $orderNumber => $i) {
+            $key = $orderNumber + 1;
+            $this->inputs[$orderNumber] = (int) $i;
+        }
     }
 
     protected function currencyFormat($number)

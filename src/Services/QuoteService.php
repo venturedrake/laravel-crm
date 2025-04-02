@@ -53,7 +53,11 @@ class QuoteService
         $quote->labels()->sync($request->labels ?? []);
 
         if (isset($request->products)) {
+            $quoteProductOrder = 0;
+
             foreach ($request->products as $product) {
+                $quoteProductOrder++;
+
                 if (isset($product['product_id']) && $product['quantity'] > 0) {
                     if (! Product::find($product['product_id'])) {
                         $newProduct = $this->addProduct($product, $request);
@@ -120,6 +124,7 @@ class QuoteService
         if (isset($request->products)) {
             $quoteProductIds = [];
             $quoteProductOrder = 0;
+
             foreach ($request->products as $product) {
                 $quoteProductOrder++;
 

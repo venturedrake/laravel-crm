@@ -36,8 +36,6 @@ class LiveQuoteItems extends Component
 
     public $comments;
 
-    public $order;
-
     public $inputs = [];
 
     public $i = 0;
