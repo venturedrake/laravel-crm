@@ -46,7 +46,11 @@ class InvoiceService
         ]);
 
         if (isset($request->invoiceLines)) {
+            $invoiceLineOrder = 0;
+
             foreach ($request->invoiceLines as $invoiceLine) {
+                $invoiceLineOrder++;
+
                 if (isset($invoiceLine['product_id']) && $invoiceLine['quantity'] > 0) {
                     if (! Product::find($invoiceLine['product_id'])) {
                         $newProduct = $this->addProduct($invoiceLine, $request);
@@ -77,6 +81,7 @@ class InvoiceService
                         'currency' => $request->currency,
                         'order_product_id' => $invoiceLine['order_product_id'] ?? null,
                         'comments' => $invoiceLine['comments'],
+                        'order' => $invoiceLineOrder,
                     ]);
                 }
             }
@@ -146,8 +151,11 @@ class InvoiceService
 
         if (isset($request->invoiceLines)) {
             $invoiceLineIds = [];
+            $invoiceLineOrder = 0;
 
             foreach ($request->invoiceLines as $line) {
+                $invoiceLineOrder++;
+
                 if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
                     if (! isset($line['product_id']) || $line['quantity'] == 0) {
                         $invoiceLine->delete();
@@ -179,6 +187,7 @@ class InvoiceService
                                 'tax_amount' => $line['amount'] * ($taxRate / 100),
                                 'currency' => $request->currency,
                                 'comments' => $line['comments'],
+                                'order' => $invoiceLineOrder,
                             ]);
 
                             $invoiceLineIds[] = $invoiceLine->id;
@@ -212,6 +221,7 @@ class InvoiceService
                             'tax_amount' => $line['amount'] * ($taxRate / 100),
                             'currency' => $request->currency,
                             'comments' => $line['comments'],
+                            'order' => $invoiceLineOrder,
                         ]);
 
                         $invoiceLineIds[] = $invoiceLine->id;

@@ -180,17 +180,6 @@ class LiveQuoteItems extends Component
 
     public function onItemSorted($orderedIds)
     {
-        $oldOrder = [
-            'quote_product_id' => $this->quote_product_id,
-            'product_id' => $this->product_id,
-            'name' => $this->name,
-            'quantity' => $this->quantity,
-            'unit_price' => $this->unit_price,
-            'tax_amount' => $this->tax_amount,
-            'amount' => $this->amount,
-            'comments' => $this->comments,
-        ];
-
         foreach ($orderedIds as $orderNumber => $i) {
             $key = $orderNumber + 1;
             $this->inputs[$orderNumber] = (int) $i;

@@ -200,6 +200,14 @@ class LiveInvoiceLines extends Component
         $this->calculateAmounts();
     }
 
+    public function onItemSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $i) {
+            $key = $orderNumber + 1;
+            $this->inputs[$orderNumber] = (int) $i;
+        }
+    }
+
     protected function currencyFormat($number)
     {
         return number_format($number, 2, '.', '');

@@ -1,4 +1,8 @@
-<tr wire:key="select2-{{ $value }}" data-number="{{ $value }}" class="item-tr">
+<tr class="cursor-grab" id="{{ $value }}">
+    <td colspan="5" class="m-0 p-0">
+        <table class="table table-sm table-items mb-0">
+            <tbody>
+            <tr wire:key="select2-{{ $value }}" data-number="{{ $value }}" class="item-tr">
     <td colspan="5" class="pt-3 bind-select2" style="position: relative;">
         @include('laravel-crm::partials.form.hidden',[
           'name' => 'invoiceLines['.$value.'][order_product_id]',
@@ -155,5 +159,9 @@
                ]
            ])
        @endif     
+    </td>
+</tr>
+            </tbody>
+        </table>
     </td>
 </tr>
