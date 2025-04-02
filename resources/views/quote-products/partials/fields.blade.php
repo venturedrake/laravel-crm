@@ -24,7 +24,7 @@
             ])
         </span>
         <span style="position: absolute;top:13%; right: 5px;">
-            <button type="button" class="btn btn-link btn-sm"><span class="fa fa-arrows-up-down-left-right"></span></button>
+            <button type="button" class="btn btn-link btn-sm"><span class="fa fa-arrows-v"></span></button>
             <button wire:click.prevent="remove({{ $value }})" type="button" class="btn btn-outline-danger btn-sm btn-close"><span class="fa fa-remove"></span></button>
         </span>
                 </td>
