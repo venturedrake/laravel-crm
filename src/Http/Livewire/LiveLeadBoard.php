@@ -23,11 +23,32 @@ class LiveLeadBoard extends KanbanBoard
         }
     }
 
+    public function onStageSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+    }
+
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
         Lead::find($recordId)->update([
             'pipeline_stage_id' => $stageId
         ]);
+
+        foreach ($fromOrderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+
+        foreach ($toOrderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
     }
 
     public function records(): Collection
