@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.3.0 - 2024-04-04
+### Added
+- Quote, Order, Invoice, Delivery & Purchase Order Item order drag & drop
+### Fixed
+- Fixed issue with Lead, Deal & Quote board drag & drop ordering
+
 ## 1.2.3 - 2025-02-25
 ### Added
 - Cache settings in view composer
