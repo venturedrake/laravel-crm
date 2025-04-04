@@ -28,7 +28,7 @@ class PurchaseOrder extends Model
 
     protected $searchable = [
         'reference',
-        'order_id',
+        'purchase_order_id',
         'person.first_name',
         'person.middle_name',
         'person.last_name',

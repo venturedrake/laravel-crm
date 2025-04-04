@@ -27,6 +27,7 @@ class Deal extends Model
     ];
 
     protected $searchable = [
+        'deal_id',
         'title',
         'person.first_name',
         'person.middle_name',
