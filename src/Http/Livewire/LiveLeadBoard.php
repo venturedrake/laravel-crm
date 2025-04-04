@@ -35,7 +35,7 @@ class LiveLeadBoard extends KanbanBoard
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
         Lead::find($recordId)->update([
-            'pipeline_stage_id' => $stageId
+            'pipeline_stage_id' => $stageId,
         ]);
 
         foreach ($fromOrderedIds as $orderNumber => $leadId) {

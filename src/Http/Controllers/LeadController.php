@@ -428,7 +428,7 @@ class LeadController extends Controller
         Lead::resetSearchValue($request);
         $params = Lead::filters($request);
 
-        $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
+        $leads = Lead::filter($params)->whereNull('converted_at')->orderBy('pipeline_stage_order')->oldest()->get();
 
         return view('laravel-crm::leads.board', [
             'leads' => $leads,

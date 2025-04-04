@@ -13,23 +13,25 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table(config('laravel-crm.db_table_prefix').'quote_products', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'leads', function (Blueprint $table) {
             $table->integer('pipeline_stage_order')->nullable()->after('pipeline_stage_id');
         });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'order_products', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'deals', function (Blueprint $table) {
             $table->integer('pipeline_stage_order')->nullable()->after('pipeline_stage_id');
         });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'invoice_lines', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'quotes', function (Blueprint $table) {
             $table->integer('pipeline_stage_order')->nullable()->after('pipeline_stage_id');
         });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'delivery_products', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'orders', function (Blueprint $table) {
             $table->integer('pipeline_stage_order')->nullable()->after('pipeline_stage_id');
         });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'purchase_order_lines', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'invoices', function (Blueprint $table) {
+            $table->integer('pipeline_stage_order')->nullable()->after('pipeline_stage_id');
+        });
+        Schema::table(config('laravel-crm.db_table_prefix').'deliveries', function (Blueprint $table) {
+            $table->integer('pipeline_stage_order')->nullable()->after('pipeline_stage_id');
+        });
+        Schema::table(config('laravel-crm.db_table_prefix').'purchase_orders', function (Blueprint $table) {
             $table->integer('pipeline_stage_order')->nullable()->after('pipeline_stage_id');
         });
     }
@@ -41,23 +43,25 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table(config('laravel-crm.db_table_prefix').'quote_products', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'leads', function (Blueprint $table) {
             $table->dropColumn('pipeline_stage_order');
         });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'order_products', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'deals', function (Blueprint $table) {
             $table->dropColumn('pipeline_stage_order');
         });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'invoice_lines', function (Blueprint $table) {
-            $table->dropColumn('pipeline_stage_order');;
-        });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'delivery_products', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'quotes', function (Blueprint $table) {
             $table->dropColumn('pipeline_stage_order');
         });
-
-        Schema::table(config('laravel-crm.db_table_prefix').'purchase_order_lines', function (Blueprint $table) {
+        Schema::table(config('laravel-crm.db_table_prefix').'orders', function (Blueprint $table) {
+            $table->dropColumn('pipeline_stage_order');
+        });
+        Schema::table(config('laravel-crm.db_table_prefix').'invoices', function (Blueprint $table) {
+            $table->dropColumn('pipeline_stage_order');
+        });
+        Schema::table(config('laravel-crm.db_table_prefix').'deliveries', function (Blueprint $table) {
+            $table->dropColumn('pipeline_stage_order');
+        });
+        Schema::table(config('laravel-crm.db_table_prefix').'purchase_orders', function (Blueprint $table) {
             $table->dropColumn('pipeline_stage_order');
         });
     }
