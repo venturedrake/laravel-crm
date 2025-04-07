@@ -60,9 +60,7 @@ class LiveQuoteItems extends Component
     public function mount($quote, $products, $old = null)
     {
         $this->quote = $quote;
-
-        $this->products = $products->sortBy('order');
-
+        $this->products = $products ? $products->sortBy('order') : null;
         $this->old = $old;
 
         if ($this->old) {

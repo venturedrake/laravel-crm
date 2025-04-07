@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.3.1 - 2024-04-07
+### Fixed
+- sortBy bug when creating new quotes, orders, invoices, deliveries & purchase orders
+
 ## 1.3.0 - 2024-04-04
 ### Added
 - Quote, Order, Invoice, Delivery & Purchase Order Item order drag & drop

@@ -40,7 +40,7 @@ class LiveDeliveryItems extends Component
     public function mount($delivery, $products, $old = null, $fromOrder = false)
     {
         $this->delivery = $delivery;
-        $this->products = $products;
+        $this->products = $products ? $products->sortBy('order') : null;;
         $this->old = $old;
         $this->fromOrder = $fromOrder;
 

@@ -67,7 +67,7 @@ class LiveOrderItems extends Component
     public function mount($order, $products, $old = null, $fromQuote = false)
     {
         $this->order = $order;
-        $this->products = $products->sortBy('order');
+        $this->products = $products ? $products->sortBy('order') : null;
         $this->old = $old;
         $this->fromQuote = $fromQuote;
 
