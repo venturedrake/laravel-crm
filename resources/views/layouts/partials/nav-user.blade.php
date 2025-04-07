@@ -6,7 +6,12 @@
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
         @if(Route::has('profile.edit'))
             <a class="dropdown-item" href="{{ route('profile.edit') }}">{{ __('Profile') }}</a>
-        @endif    
+        @elseif(Route::has('profile.show'))
+            <a class="dropdown-item" href="{{ route('profile.show') }}">{{ __('Profile') }}</a> 
+        @endif
+        @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::hasApiFeatures())
+            <a class="dropdown-item" href="{{ route('api-tokens.index') }}">{{ __('API Tokens') }}</a>
+        @endif        
         <a class="dropdown-item" href="{{ route('laravel-crm.logout') }}"
            onclick="event.preventDefault(); 
             document.getElementById('logout-form').submit();">
