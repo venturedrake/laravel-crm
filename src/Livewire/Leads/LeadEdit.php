@@ -9,7 +9,7 @@ use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 
-class LeadCreate extends Component
+class LeadEdit extends Component
 {
     use Toast;
 
@@ -61,8 +61,9 @@ class LeadCreate extends Component
 
     public $email_type;
 
-    public function mount()
+    public function mount(Lead $lead)
     {
+        $this->lead = $lead;
         $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
         $this->pipeline = Pipeline::where('model', get_class(new Lead))->first();
         $this->user_owner_id = auth()->user()->id;
@@ -162,11 +163,11 @@ class LeadCreate extends Component
 
     public function save()
     {
-        $this->success(ucfirst(trans('laravel-crm::lang.lead_created_successfully')));
+        $this->success(ucfirst(trans('laravel-crm::lang.lead_updated_successfully')));
     }
 
     public function render()
     {
-        return view('laravel-crm::livewire.leads.lead-create');
+        return view('laravel-crm::livewire.leads.lead-edit');
     }
 }

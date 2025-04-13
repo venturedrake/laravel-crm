@@ -514,4 +514,8 @@ return [
     'invoice_payment_instructions' => 'invoice payment instructions',
     'payment' => 'payment',
     'unallocated' => 'unallocated',
+
+    /* Version 2 */
+
+    'lead_created_successfully' => 'lead created successfully',
 ];

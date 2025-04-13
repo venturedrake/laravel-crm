@@ -71,38 +71,68 @@ function usersOptions($null = true)
 
 function phoneTypes($null = true)
 {
-    $array = [];
+    $items = [];
 
     if ($null) {
-        $array[''] = '';
+        $items[] = [
+            'id' => '',
+            'name' => '',
+        ];
     }
 
-    $array = array_merge($array, [
-        'work' => 'Work',
-        'home' => 'Home',
-        'mobile' => 'Mobile',
-        'fax' => 'Fax',
-        'other' => 'Other',
+    $items = array_merge($items, [
+        [
+            'id' => 'work',
+            'name' => 'Work',
+        ],
+        [
+            'id' => 'home',
+            'name' => 'Home',
+        ],
+        [
+            'id' => 'mobile',
+            'name' => 'Mobile',
+        ],
+        [
+            'id' => 'fax',
+            'name' => 'Fax',
+        ],
+        [
+            'id' => 'other',
+            'name' => 'Other',
+        ],
     ]);
 
-    return $array;
+    return $items;
 }
 
 function emailTypes($null = true)
 {
-    $array = [];
+    $items = [];
 
     if ($null) {
-        $array[''] = '';
+        $items[] = [
+            'id' => '',
+            'name' => '',
+        ];
     }
 
-    $array = array_merge($array, [
-        'work' => 'Work',
-        'home' => 'Home',
-        'other' => 'Other',
+    $items = array_merge($items, [
+        [
+            'id' => 'work',
+            'name' => 'Work',
+        ],
+        [
+            'id' => 'home',
+            'name' => 'Home',
+        ],
+        [
+            'id' => 'other',
+            'name' => 'Other',
+        ],
     ]);
 
-    return $array;
+    return $items;
 }
 
 function countries()
@@ -115,7 +145,10 @@ function countries()
      }*/
 
     foreach (CountryLoader::countries() as $country) {
-        $items[$country['name']] = $country['name'];
+        $items[] = [
+            'id' => $country['name'],
+            'name' => $country['name'],
+        ];
     }
 
     return $items;

@@ -6,6 +6,29 @@
     display: none;
 }
 
+.input input,
+.select input{
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    font-size: 100%;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    padding: 0;
+    border: none;
+}
+
+.input input:focus,
+.input input:active,
+.select input:focus,
+.select input:active{
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
 .input-neutral {
     @apply border-gray-400 focus:border-gray-400 focus:outline-gray-400
 }

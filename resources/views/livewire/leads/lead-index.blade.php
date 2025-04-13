@@ -52,7 +52,7 @@
         {{-- ACTIONS --}}
         <x-slot:actions>
             <x-mary-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
-            <x-mary-button label="Done" icon="o-check" class="btn-primary" @click="$wire.showFilters = false" />
+            <x-mary-button label="Done" icon="o-check" class="btn-primary text-white" @click="$wire.showFilters = false" />
         </x-slot:actions>
     </x-mary-drawer>
 </div>

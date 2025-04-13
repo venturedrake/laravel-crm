@@ -1,3 +1,3 @@
 <x-crm::app-layout>
-    EDIT
+    <livewire:crm-lead-edit lead="$lead" />
 </x-crm::app-layout>
