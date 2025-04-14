@@ -56,7 +56,7 @@
                         <x-mary-input wire:model="title" label="{{ ucfirst(__('laravel-crm::lang.title')) }}" />
                         <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
                         <div class="grid lg:grid-cols-2 gap-5">
-                            <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.value')) }}" wire:model="value" prefix="$" />
+                            <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.value')) }}" wire:model="amount" prefix="$" />
                             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
                         </div>
                         <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.stage')) }}" wire:model="pipeline_stage_id" :options="$pipeline->pipelineStages()->orderBy('order')->orderBy('id')->get() ?? []" />
