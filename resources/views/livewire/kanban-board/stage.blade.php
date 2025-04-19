@@ -1,5 +1,5 @@
 
-<div class="flex flex-col flex-shrink-0 w-80 card bg-base-300 rounded-lg py-4 px-5 shadow-sm">
+<div class="flex flex-col shrink-0 w-80 card bg-base-300 rounded-lg py-4 px-5 shadow-xs">
     <div class="card-header bg-light">
         <h3 class="card-title h5 mb-4">
             {{ $stage['name'] }} ({{ count($stage['records']) }})

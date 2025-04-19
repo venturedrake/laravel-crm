@@ -2,7 +2,7 @@
     {{-- HEADER --}}
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" class="mb-5" progress-indicator >
         {{--  SEARCH --}}
-        <x-slot:middle class="!justify-end">
+        <x-slot:middle class="justify-end!">
             <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" class="input-neutral" clearable />
         </x-slot:middle>
 
@@ -22,7 +22,7 @@
         </x-slot:actions>
     </x-mary-header>
 
-    <div wire:ignore class="flex flex-grow mt-4 space-x-6 overflow-auto">
+    <div wire:ignore class="flex grow mt-4 space-x-6 overflow-auto">
         @foreach($stages as $stage)
             @include('laravel-crm::livewire.kanban-board.stage', [
                 'stage' => $stage

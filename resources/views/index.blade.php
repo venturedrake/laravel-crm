@@ -32,7 +32,7 @@
     </x-slot>
 
     <div class="grid lg:grid-cols-4 gap-5 lg:gap-8">
-        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow truncate text-ellipsis">
+        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow-sm truncate text-ellipsis">
             <div class="flex items-center gap-3">
                 <!--[if BLOCK]><![endif]-->                <div class="  text-primary">
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
@@ -51,7 +51,7 @@
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
             </div>
-        </div>        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow">
+        </div>        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow-sm">
             <div class="flex items-center gap-3">
                 <!--[if BLOCK]><![endif]-->                <div class="  text-primary">
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
@@ -70,7 +70,7 @@
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
             </div>
-        </div>        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow">
+        </div>        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow-sm">
             <div class="flex items-center gap-3">
                 <!--[if BLOCK]><![endif]-->                <div class="  text-primary">
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
@@ -89,9 +89,9 @@
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                 </div>
             </div>
-        </div>        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow">
+        </div>        <div class="bg-base-100 rounded-lg px-5 py-4  w-full shadow-sm">
             <div class="flex items-center gap-3">
-                <!--[if BLOCK]><![endif]-->                <div class="  !text-pink-500">
+                <!--[if BLOCK]><![endif]-->                <div class="  text-pink-500!">
                     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
                     <svg class="inline w-9 h-9" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"></path>
