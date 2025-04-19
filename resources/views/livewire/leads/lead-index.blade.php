@@ -3,7 +3,7 @@
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" class="mb-5" progress-indicator >
         {{--  SEARCH --}}
         <x-slot:middle class="justify-end!">
-            <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" class="input-neutral" clearable />
+            <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
         </x-slot:middle>
 
         {{-- ACTIONS  --}}
@@ -13,7 +13,6 @@
                            :badge="$filterCount ?? 0"
                            badge-classes="font-mono text-white"
                            @click="$wire.showFilters = true"
-                           class="btn-outline"
                            responsive />
 
             <x-crm-index-toggle :layout="$layout" model="leads"/>

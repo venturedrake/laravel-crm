@@ -51,7 +51,7 @@
             @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::managesProfilePhotos())
                 <x-mary-avatar :image="auth()->user()->profile_photo_url" alt="{{ Auth::user()->name }}" />
             @else    
-            <x-mary-dropdown label="{{ auth()->user()->name }}" class="btn-neutral" right>
+            <x-mary-dropdown label="{{ auth()->user()->name }}" class="btn-neutral btn-sm" right>
                 @if(Route::has('profile.show'))
                     <x-mary-menu-item href="{{ route('profile.show') }}" title="{{ __('Profile') }}" />
                 @endif
@@ -70,10 +70,10 @@
     
     <x-mary-main with-nav full-width>
         
-        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-200">
+        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-200 pt-1">
 
             {{-- Activates the menu item when a route matches the `link` property --}}
-            <x-mary-menu activate-by-route class="bg-base-100 rounded-none">
+            <x-mary-menu activate-by-route class="w-full bg-base-100 rounded-none">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.dashboard')) }}" icon="bxs.dashboard" link="{{ url(route('laravel-crm.dashboard')) }}" />
                 <x-mary-menu-separator />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" icon="fas.crosshairs" link="{{ url(route('laravel-crm.leads.index')) }}" />
