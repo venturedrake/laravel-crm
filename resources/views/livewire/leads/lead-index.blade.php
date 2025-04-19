@@ -1,6 +1,6 @@
 <div>
     {{-- HEADER --}}
-    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" class="mb-5" progress-indicator >
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" progress-indicator >
         {{--  SEARCH --}}
         <x-slot:middle class="justify-end!">
             <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
@@ -11,7 +11,7 @@
             <x-mary-button label="Filters"
                            icon="o-funnel"
                            :badge="$filterCount ?? 0"
-                           badge-classes="font-mono text-white"
+                           badge-classes="font-mono badge-primary badge-soft"
                            @click="$wire.showFilters = true"
                            responsive />
 

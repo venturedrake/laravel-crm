@@ -11,9 +11,8 @@
             <x-mary-button label="Filters"
                            icon="o-funnel"
                            :badge="$filterCount ?? 0"
-                           badge-classes="font-mono text-white"
+                           badge-classes="font-mono badge-primary badge-soft"
                            @click="$wire.showFilters = true"
-                           class="btn-outline"
                            responsive />
 
             <x-crm-index-toggle :layout="$layout" model="leads"/>
