@@ -11,7 +11,7 @@
         "@tailwindcss/typography": "^0.5.10",
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
-        "daisyui": "^4.12.23",
+        "daisyui": "^5.0.27",
         "laravel-vite-plugin": "^1.0",
         "postcss": "^8.4.32",
         "tailwindcss": "^4.1.4",
