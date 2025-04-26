@@ -24,20 +24,21 @@ class LeadEdit extends Component
     public $person_id;
 
     public $person;
+
     public $showPeople = false;
 
     public $people;
 
     public $title;
-    
+
     public $description;
-    
+
     public $amount;
 
     public $currency;
 
     public $pipeline;
-    
+
     public $pipeline_stage_id;
 
     public array $labels;
@@ -82,7 +83,7 @@ class LeadEdit extends Component
         $this->labels = $lead->labels->pluck('id')->toArray();
         $this->user_owner_id = $lead->userOwner->id ?? null;
 
-        if($address = $lead->getPrimaryAddress()){
+        if ($address = $lead->getPrimaryAddress()) {
             $this->address_line_1 = $address->line_1;
             $this->address_line_2 = $address->line_2;
             $this->address_line_3 = $address->line_3;
@@ -91,16 +92,16 @@ class LeadEdit extends Component
             $this->address_postcode = $address->postcode;
             $this->address_country = $address->country;
         }
-        
-        if($email = $lead->getPrimaryEmail()){
+
+        if ($email = $lead->getPrimaryEmail()) {
             $this->email = $email->address;
             $this->email_type = $email->type;
         }
-        
-        if($phone = $lead->getPrimaryPhone()){
+
+        if ($phone = $lead->getPrimaryPhone()) {
             $this->phone = $phone->number;
             $this->phone_type = $phone->type;
-        };
+        }
     }
 
     public function updatedOrganization($value)

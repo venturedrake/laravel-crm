@@ -221,7 +221,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
-        if ((app()->version() >= 8 && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
+        if ((version_compare(app()->version(), '8', '>=') && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
             class_alias(config('auth.providers.users.model'), 'App\User');
             if (class_exists('App\Models\Team')) {
                 class_alias('App\Models\Team', 'App\Team');
@@ -342,7 +342,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            if (app()->version() >= 8.6) {
+            if (version_compare(app()->version(), '8.6', '>=')) {
                 $auditConfig = '/../config/audit-sanctum.php';
             } else {
                 $auditConfig = '/../config/audit.php';
@@ -484,7 +484,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
             // Publishing the seeders
             if (! class_exists('LaravelCrmTablesSeeder')) {
-                if (app()->version() >= 8) {
+                if (version_compare(app()->version(), '8', '>=')) {
                     $this->publishes([
                         __DIR__.'/../database/seeders/LaravelCrmTablesSeeder.php' => database_path(
                             'seeders/LaravelCrmTablesSeeder.php'
@@ -515,7 +515,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             ]);
 
             // Register the model factories
-            if (app()->version() < 8) {
+            if (version_compare(app()->version(), '8', '<')) {
                 $this->app->make('Illuminate\Database\Eloquent\Factory')
                     ->load(__DIR__.'/../database/factories');
             }
