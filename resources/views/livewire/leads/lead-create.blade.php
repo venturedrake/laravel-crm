@@ -90,12 +90,12 @@
                     <div class="grid gap-3 lg:px-3" wire:key="person">
                         <x-mary-input wire:model="phone" label="{{ ucfirst(__('laravel-crm::lang.phone')) }}">
                             <x-slot:append>
-                                <x-mary-select wire:model="phone_type" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(false)" class="rounded-s-none bg-base-200" />
+                                <x-mary-select wire:model="phone_type" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes(false)" class="join-item bg-base-200"/>
                             </x-slot:append>
                         </x-mary-input>
                         <x-mary-input wire:model="email" label="{{ ucfirst(__('laravel-crm::lang.email')) }}">
                             <x-slot:append>
-                                <x-mary-select wire:model="email_type" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(false)" class="rounded-s-none bg-base-200" />
+                                <x-mary-select wire:model="email_type" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes(false)" class="join-item bg-base-200" />
                             </x-slot:append>
                         </x-mary-input>
                     </div>

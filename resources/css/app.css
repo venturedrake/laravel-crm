@@ -17,7 +17,7 @@
     --color-accent: #B34105;
 }
 
-@plugin '@tailwindcss/forms';
+/*@plugin '@tailwindcss/forms';*/
 @plugin '@tailwindcss/typography';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
