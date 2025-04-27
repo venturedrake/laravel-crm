@@ -77,11 +77,14 @@ use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
+use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
+use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadEdit;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
+use VentureDrake\LaravelCrm\Livewire\Leads\LeadShow;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Contact;
@@ -570,8 +573,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         /* Version 2 Livewire Components */
         Livewire::component('crm-kanban-board', KanbanBoard::class);
+        Livewire::component('crm-activity-menu', ActivityMenu::class);
+        Livewire::component('crm-activity-tabs', ActivityTabs::class);
         Livewire::component('crm-lead-index', LeadIndex::class);
         Livewire::component('crm-lead-board', LeadBoard::class);
+        Livewire::component('crm-lead-show', LeadShow::class);
         Livewire::component('crm-lead-create', LeadCreate::class);
         Livewire::component('crm-lead-edit', LeadEdit::class);
 

@@ -4,7 +4,7 @@
 
         {{-- ACTIONS  --}}
         <x-slot:actions>
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}" link="{{ url(route('laravel-crm.leads.index')) }}" icon="fas.angle-double-left" class="btn-primary text-white" responsive />
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}" link="{{ url(route('laravel-crm.leads.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive />
         </x-slot:actions>
     </x-mary-header>
 
@@ -15,6 +15,25 @@
                 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" separator>
 
                     <div class="grid gap-3 lg:px-3" wire:key="details">
+                        <div class="autocomplete-input z-40">
+                            <x-mary-input wire:model.live="person" wire:keyup="searchPeople" wire:blur="hidePeople" label="{{ ucfirst(__('laravel-crm::lang.contact')) }}" icon="fas.user" />
+                            @if($showPeople)
+                                <div class="border border-solid border-primary absolute bg-white z-40 w-96">
+                                    @if(!empty($people))
+                                        @foreach($people as $person)
+                                            <x-mary-list-item wire:click="linkPerson({{ $person->id }})" :item="$person">
+                                                <x-slot:value>
+                                                    {{ $person->name }}
+                                                </x-slot:value>
+                                            </x-mary-list-item>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            @endif
+                            @if(! $person_id && $person)
+                                <x-mary-badge value="New" class="badge-primary autocomplete-new text-white" />
+                            @endif
+                        </div>
                         <div class="autocomplete-input z-50">
                             <x-mary-input wire:model.live="organization" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" label="{{ ucfirst(__('laravel-crm::lang.organization')) }}" icon="fas.building" />
                             @if($showOrganizations)
@@ -31,25 +50,6 @@
                                 </div>
                             @endif
                             @if(! $organization_id && $organization)
-                                <x-mary-badge value="New" class="badge-primary autocomplete-new text-white" />
-                            @endif
-                        </div>
-                        <div class="autocomplete-input z-40">
-                            <x-mary-input wire:model.live="person" wire:keyup="searchPeople" wire:blur="hidePeople" label="{{ ucfirst(__('laravel-crm::lang.contact_person')) }}" icon="fas.user" />
-                            @if($showPeople)
-                                <div class="border border-solid border-primary absolute bg-white z-40 w-96">
-                                    @if(!empty($people))
-                                        @foreach($people as $person)
-                                            <x-mary-list-item wire:click="linkPerson({{ $person->id }})" :item="$person">
-                                                <x-slot:value>
-                                                    {{ $person->name }}
-                                                </x-slot:value>
-                                            </x-mary-list-item>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            @endif
-                            @if(! $person_id && $person)
                                 <x-mary-badge value="New" class="badge-primary autocomplete-new text-white" />
                             @endif
                         </div>

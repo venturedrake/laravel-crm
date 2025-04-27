@@ -1,3 +1,3 @@
 <x-crm::app-layout>
-    SHOW
+    <livewire:crm-lead-show :lead="$lead" />
 </x-crm::app-layout>
