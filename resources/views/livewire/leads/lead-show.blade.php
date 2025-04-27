@@ -1,7 +1,7 @@
 <div>
     {{-- HEADER --}}
-    <x-mary-header title="{{ $lead->title }}" class="mb-5" progress-indicator >
-
+    <x-mary-header title="{{ $lead->title }}" subtitle="{{ ($lead->pipelineStage) ? $lead->pipelineStage->name : null  }}" class="mb-5" progress-indicator >
+       
         {{-- ACTIONS --}}
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}" link="{{ url(route('laravel-crm.leads.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive />
