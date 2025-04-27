@@ -163,16 +163,7 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
-        $email = $lead->getPrimaryEmail();
-        $phone = $lead->getPrimaryPhone();
-        $address = $lead->getPrimaryAddress();
-
-        return view('laravel-crm::leads.show', [
-            'lead' => $lead,
-            'email' => $email ?? null,
-            'phone' => $phone ?? null,
-            'address' => $address ?? null,
-        ]);
+        return view('laravel-crm::leads.show', compact('lead'));
     }
 
     /**
