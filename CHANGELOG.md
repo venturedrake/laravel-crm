@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.3.3 - 2025-05-24
+### Fixed
+- Fixed ug when adding new emails, phone numbers and addresses and setting as primary
+
 ## 1.3.2 - 2025-05-06
 ### Added
 - Better support for Jetstream teams
