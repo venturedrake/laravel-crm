@@ -25,7 +25,7 @@
             <div class="col-sm-1">
                 <div class="form-group" wire:ignore>
                     <label>{{ ucfirst(__('laravel-crm::lang.primary')) }}</label>
-                    <input type="checkbox" wire:model="primary.{{ $value }}" name="phones[{{ $value }}][primary]" data-toggle="toggle" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+                    <input type="checkbox" wire:model.defer="primary.{{ $value }}" name="phones[{{ $value }}][primary]" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                     @error('primary.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -40,7 +40,7 @@
         <script>
             $(document).ready(function () {
                 window.addEventListener('addPhoneInputs', event => {
-                    $('input[type=checkbox][data-toggle^=toggle]').bootstrapToggle('destroy').bootstrapToggle('refresh');
+                    $('input[name="phones[' + event.detail.value + '][primary]"]').bootstrapToggle('destroy').bootstrapToggle('refresh');
                 });
             });
         </script>
