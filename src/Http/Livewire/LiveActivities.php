@@ -24,7 +24,6 @@ class LiveActivities extends Component
     public function mount($model)
     {
         $this->model = $model;
-        $this->getActivities();
     }
 
     public function getActivities()
@@ -50,6 +49,7 @@ class LiveActivities extends Component
 
     public function render()
     {
+        $this->getActivities();
         return view('laravel-crm::livewire.activities');
     }
 }

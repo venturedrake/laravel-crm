@@ -25,8 +25,8 @@ class LiveCalls extends Component
 
     protected $listeners = [
         'addCallActivity' => 'addCallOn',
-        'callDeleted' => 'getCalls',
-        'callCompleted' => 'getCalls',
+        'callDeleted' => '$refresh',
+        'callCompleted' => '$refresh',
      ];
 
     public function boot(SettingService $settingService)
@@ -37,7 +37,6 @@ class LiveCalls extends Component
     public function mount($model)
     {
         $this->model = $model;
-        $this->getCalls();
 
         if (! $this->calls || ($this->calls && $this->calls->count() < 1)) {
             $this->showForm = true;
@@ -134,12 +133,11 @@ class LiveCalls extends Component
         $this->dispatchBrowserEvent('callFieldsReset');
 
         $this->addCallToggle();
-
-        $this->getCalls();
     }
 
     public function render()
     {
+        $this->getCalls();
         return view('laravel-crm::livewire.calls');
     }
 }
