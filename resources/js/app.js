@@ -327,6 +327,8 @@ const appJquery = function() {
 
             $('input[name="person_name"]').autocomplete({
                 source: people,
+                value: 'value',
+                label: 'label',
                 onSelectItem: appJquery.onSelectPerson,
                 highlightClass: 'text-danger',
                 treshold: 2,
@@ -357,6 +359,8 @@ const appJquery = function() {
         bindOrganisationAutocomplete: function (){
             $('input[name="organisation_name"]').autocomplete({
                 source: organisations,
+                value: 'value',
+                label: 'label',
                 onSelectItem: appJquery.onSelectOrganisation,
                 highlightClass: 'text-danger',
                 treshold: 2,

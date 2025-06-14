@@ -18,12 +18,66 @@ function clients()
     return json_encode($data);
 }
 
+function clientsWithDetails()
+{
+    $data = [];
+
+    foreach (Client::all() as $client) {
+        $label = '<strong>'.$client->name.'</strong>';
+
+        if ($contacts = $client->contacts()->get()) {
+            $label .= '<br />';
+
+            foreach ($contacts as $key => $contact) {
+                $label .= '<small>'.$contact->entityable->name.'</small>';
+                if ($contacts->last() != $contact) {
+                    $label .= ', ';
+                }
+            }
+        }
+
+        $data[] = [
+            'value' => $client->id,
+            'label' => $label,
+        ];
+    }
+
+    return json_encode($data);
+}
+
 function people()
 {
     $data = [];
 
     foreach (Person::all() as $person) {
         $data[$person->name] = $person->id;
+    }
+
+    return json_encode($data);
+}
+
+function peopleWithDetails()
+{
+    $data = [];
+
+    foreach (Person::all() as $person) {
+        $label = '<strong>'.$person->name.'</strong>';
+
+        if ($email = $person->getPrimaryEmail()) {
+            $label .= '<br />';
+            $label .= ' <small>'.$email->address.'</small>';
+        }
+
+        if ($address = $person->getPrimaryAddress()) {
+            $label .= '<br />';
+            $label .= ' <small>'.$address->state.', '.$address->code.'</small>';
+        }
+
+        $data[] = [
+            'value' => $person->id,
+            'label' => $label,
+            'name' => $person->name,
+        ];
     }
 
     return json_encode($data);
@@ -38,6 +92,53 @@ function organisations()
             $data[$organisation->name . ' (xero contact)'] = $organisation->id;
         } else {
             $data[$organisation->name] = $organisation->id;
+        }
+    }
+
+    return json_encode($data);
+}
+
+function organisationsWithDetails()
+{
+    $data = [];
+
+    foreach (Organisation::all() as $organisation) {
+        if ($organisation->xeroContact) {
+            $label = '<strong>'.$organisation->name. '</strong> (xero contact)';
+
+            if ($contacts = $organisation->contacts()->get()) {
+                $label .= '<br />';
+
+                foreach ($contacts as $key => $contact) {
+                    $label .= '<small>'.$contact->entityable->name.'</small>';
+                    if (end($contacts) != $key) {
+                        $label .= ', ';
+                    }
+                }
+            }
+
+            $data[] = [
+                'value' => $organisation->id,
+                'label' => $label,
+            ];
+        } else {
+            $label = '<strong>'.$organisation->name. '</strong>';
+
+            if ($contacts = $organisation->contacts()->get()) {
+                $label .= '<br />';
+
+                foreach ($contacts as $key => $contact) {
+                    $label .= '<small>'.$contact->entityable->name.'</small>';
+                    if (end($contacts) != $key) {
+                        $label .= ', ';
+                    }
+                }
+            }
+
+            $data[] = [
+                'value' => $organisation->id,
+                'label' => $label,
+            ];
         }
     }
 

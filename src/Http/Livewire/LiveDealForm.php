@@ -47,6 +47,13 @@ class LiveDealForm extends Component
         }
     }
 
+    public function updatedClientId($value)
+    {
+        if ($client = Client::find($value)) {
+            $this->client_name = $client->name;
+        }
+    }
+
     public function updatedClientName($value)
     {
         $this->generateTitle();
@@ -75,6 +82,8 @@ class LiveDealForm extends Component
     public function updatedOrganisationId($value)
     {
         if ($organisation = Organisation::find($value)) {
+            $this->organisation_name = $organisation->name;
+
             $address = $organisation->getPrimaryAddress();
             $this->dispatchBrowserEvent('selectedOrganisation', [
                 'id' => $value,
@@ -86,7 +95,6 @@ class LiveDealForm extends Component
                 'address_code' => $address->code ?? null,
                 'address_country' => $address->country ?? null,
             ]);
-            $this->organisation_name = $organisation->name;
         } else {
             $this->dispatchBrowserEvent('selectedOrganisation');
         }
@@ -100,6 +108,8 @@ class LiveDealForm extends Component
     public function updatedPersonId($value)
     {
         if ($person = Person::find($value)) {
+            $this->person_name = $person->name;
+
             $email = $person->getPrimaryEmail();
             $phone = $person->getPrimaryPhone();
             $this->dispatchBrowserEvent('selectedPerson', [
