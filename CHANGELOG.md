@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.4.0 - 2025-06-14
+### Added
+- More details on autocomplete dropdowns
+
 ## 1.3.4 - 2025-0609
 ### Fixed
 - Fixed bug when uploading files
