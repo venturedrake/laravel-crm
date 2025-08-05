@@ -88,7 +88,7 @@ class InvoiceController extends Controller
                 if ($invoice->organisation) {
                     $organisation_address = $invoice->organisation->getPrimaryAddress();
                 }
-                
+
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
                 ])
