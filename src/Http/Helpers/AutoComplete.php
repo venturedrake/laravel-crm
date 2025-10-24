@@ -39,6 +39,7 @@ function clientsWithDetails()
         $data[] = [
             'value' => $client->id,
             'label' => $label,
+            'name' => $client->name,
         ];
     }
 
@@ -120,6 +121,7 @@ function organisationsWithDetails()
             $data[] = [
                 'value' => $organisation->id,
                 'label' => $label,
+                'name' => $organisation->name,
             ];
         } else {
             $label = '<strong>'.$organisation->name. '</strong>';
@@ -138,6 +140,7 @@ function organisationsWithDetails()
             $data[] = [
                 'value' => $organisation->id,
                 'label' => $label,
+                'name' => $organisation->name,
             ];
         }
     }

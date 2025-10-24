@@ -14,9 +14,9 @@
                 'name' => 'client_name',
                 'label' => ucfirst(__('laravel-crm::lang.client')),
                 'prepend' => '<span class="fa fa-address-card" aria-hidden="true"></span>',
+                'value' => $client_name,
                 'attributes' => [
                     'autocomplete' => \Illuminate\Support\Str::random(),
-                    'wire:model' => 'client_name'  
                ],   
             ])  
         </span>    
@@ -37,7 +37,7 @@
 
     @else
 
-        <span class="autocomplete">
+    <span class="autocomplete">
         @include('laravel-crm::partials.form.hidden',[
             'name' => 'organisation_id',
              'attributes' => [
@@ -54,10 +54,10 @@
                 'label' => ucfirst(__('laravel-crm::lang.organization')),
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
                 'attributes' => [
-                    'autocomplete' => \Illuminate\Support\Str::random(),
-                    'wire:model' => 'organisation_name'  
+                    'autocomplete' => \Illuminate\Support\Str::random(), 
                ],
-               'required' => 'true'
+               'required' => 'true',
+                'value' => $organisation_name
             ])  
         </span>    
     </span>
@@ -97,9 +97,9 @@
                     'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
                     'attributes' => [
                        'autocomplete' => \Illuminate\Support\Str::random(),
-                       'wire:model' => 'person_name'        
                     ],
-                    'required' => 'true'
+                    'required' => 'true',
+                    'value' => $person_name 
                 ])
             </span>
         </span>
@@ -126,6 +126,9 @@
                         value: 'value',
                         label: 'label',
                         onSelectItem: function (item, element) {
+                            var itemSelected = clients.find(client => client.value ===  item.value)
+                            $(element).closest('form').find("input[name='client_name']").val(itemSelected.name)
+                            
                             @this.set('client_id',item.value);
                             @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
                             @this.set('organisation_name', $(element).closest('form').find("input[name='organisation_name']").val());
@@ -170,6 +173,9 @@
                         value: 'value',
                         label: 'label',
                         onSelectItem: function (item, element) {
+                            var itemSelected = organisations.find(organisation => organisation.value ===  item.value)
+                            $(element).closest('form').find("input[name='organisation_name']").val(itemSelected.name)
+                            
                             @this.set('client_id', $(element).closest('form').find("input[name='client_id']").val());
                             @this.set('client_name', $(element).closest('form').find("input[name='client_name']").val());
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
@@ -232,6 +238,9 @@
                         value: 'value',
                         label: 'label',
                         onSelectItem: function (item, element) {
+                            var itemSelected = people.find(person => person.value ===  item.value)
+                            $(element).closest('form').find("input[name='person_name']").val(itemSelected.name)
+                            
                             @this.set('client_id', $(element).closest('form').find("input[name='client_id']").val());
                             @this.set('client_name', $(element).closest('form').find("input[name='client_name']").val());
                             @this.set('person_id',item.value);
