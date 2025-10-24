@@ -1,11 +1,11 @@
 <div>
     <span class="autocomplete">
-        @include('laravel-crm::partials.form.hidden',[
-            'name' => 'client_id',
-             'attributes' => [
-                'wire:model' => 'client_id'        
-            ]   
-        ])
+        <span wire:ignore>
+            @include('laravel-crm::partials.form.hidden',[
+                'name' => 'client_id',
+                'value' => $client_id
+            ])
+         </span>
         <script type="text/javascript">
             let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clientsWithDetails() !!}
         </script>
@@ -38,12 +38,12 @@
     @else
 
     <span class="autocomplete">
-        @include('laravel-crm::partials.form.hidden',[
-            'name' => 'organisation_id',
-             'attributes' => [
-                'wire:model' => 'organisation_id'        
-            ]   
-        ])
+        <span wire:ignore>
+                 @include('laravel-crm::partials.form.hidden',[
+                    'name' => 'organisation_id',
+                    'value' => $organisation_id
+                ])
+             </span>
         <script type="text/javascript">
             let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsWithDetails() !!}
         </script>
@@ -80,12 +80,12 @@
     @else
         
         <span class="autocomplete">
-           @include('laravel-crm::partials.form.hidden',[
-               'name' => 'person_id',
-               'attributes' => [
-                    'wire:model' => 'person_id'        
-                ]   
-            ])
+           <span wire:ignore>
+                @include('laravel-crm::partials.form.hidden',[
+                   'name' => 'person_id',
+                   'value' => $person_id
+                ])
+            </span>
            <script type="text/javascript">
             let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\peopleWithDetails() !!}
            </script>
