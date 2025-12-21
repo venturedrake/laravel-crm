@@ -30,10 +30,10 @@
                 @endforeach 
             @endscope
             @scope('cell_pipeline_stage', $lead)
-                <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-primary text-white" />
+                <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-neutral text-white" />
             @endscope
             @scope('actions', $lead)
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" class="btn-sm btn-success text-white" />
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" class="btn-sm btn-primary" />
             <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.leads.show', $lead)) }}" class="btn-sm btn-square btn-outline" />
             <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.leads.edit', $lead)) }}" class="btn-sm btn-square btn-outline" />
             <x-mary-button wire:click="delete({{ $lead->id }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" wire:confirm="Are you sure?" spinner />
