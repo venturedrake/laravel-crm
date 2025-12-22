@@ -61,6 +61,18 @@ class LeadCreate extends Component
 
     public $email_type;
 
+    protected function rules()
+    {
+        return [
+            'person_name' => 'required_without_all:organization_name,organization_id|max:255',
+            'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
+            'organization_name' => 'required_without_all:person_name,person_id|max:255',
+            'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
+            'title' => 'required|max:255',
+            'amount' => 'nullable|numeric',
+        ];
+    }
+
     public function mount()
     {
         $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
@@ -162,6 +174,8 @@ class LeadCreate extends Component
 
     public function save()
     {
+        $this->validate();
+
         $this->success(ucfirst(trans('laravel-crm::lang.lead_created_successfully')));
     }
 

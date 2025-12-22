@@ -172,6 +172,7 @@ use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
+use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
@@ -527,6 +528,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         // View components
         Blade::componentNamespace('VentureDrake\\LaravelCrm\\View\\Components', 'crm');
         Blade::component('crm-index-toggle', IndexToggle::class);
+        Blade::component('crm-delete-confirm', DeleteConfirm::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
