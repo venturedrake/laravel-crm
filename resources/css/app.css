@@ -104,7 +104,16 @@
 
 .autocomplete-new {
     position: absolute !important;
-    right: 5px !important;
-    top: 35px !important;
+    right: 4px !important;
+    top:39px !important;
     z-index: 2;
+    border-radius: 1;
+}
+
+.crm-content > div.mb-10{
+    margin-bottom: calc(var(--spacing)*5) !important;
+}
+
+.drawer .drawer-content.lg\:px-10{
+    padding-inline: calc(var(--spacing)*5) !important;
 }

@@ -1,4 +1,4 @@
-<div>
+<div class="crm-content">
     {{-- HEADER --}}
     <x-mary-header title="{{ $lead->title }}" subtitle="{{ ($lead->pipelineStage) ? $lead->pipelineStage->name : null  }}" class="mb-5" progress-indicator >
        

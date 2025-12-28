@@ -15,7 +15,8 @@
 
         <!-- Scripts -->
         {{ \Illuminate\Support\Facades\Vite::useBuildDirectory('vendor/laravel-crm')->withEntryPoints(['resources/css/app.css', 'resources/js/app.js']) }}
-
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
+        
         <!-- Styles -->
         @livewireStyles
 
@@ -86,9 +87,11 @@
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.deliveries')) }}" icon="fas.shipping-fast" link="{{ url(route('laravel-crm.deliveries.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}" icon="fas.file-invoice-dollar" link="{{ url(route('laravel-crm.purchase-orders.index')) }}" />
                 <x-mary-menu-separator />
+{{--
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.customers')) }}" icon="fas.address-card" link="{{ url(route('laravel-crm.customers.index')) }}" />
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.organizations')) }}" icon="fas.building" link="{{ url(route('laravel-crm.organizations.index')) }}" />
+--}}
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.people')) }}" icon="fas.user-circle" link="{{ url(route('laravel-crm.people.index')) }}" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.organizations')) }}" icon="fas.building" link="{{ url(route('laravel-crm.organizations.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.users')) }}" icon="fas.user" link="{{ url(route('laravel-crm.users.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.teams')) }}" icon="fas.users" link="{{ url(route('laravel-crm.teams.index')) }}" />
                 <x-mary-menu-separator />

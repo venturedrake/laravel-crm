@@ -1,6 +1,6 @@
-<div>
+<div class="crm-content">
     {{-- HEADER --}}
-    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" progress-indicator >
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" progress-indicator>
         {{--  SEARCH --}}
         <x-slot:middle class="justify-end!">
             <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
@@ -30,7 +30,9 @@
                 @endforeach 
             @endscope
             @scope('cell_pipeline_stage', $lead)
-                <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-neutral text-white" />
+                @if($lead->pipelineStage)
+                    <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-neutral text-white" />
+                @endif
             @endscope
             @scope('actions', $lead)
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" class="btn-sm btn-primary" />

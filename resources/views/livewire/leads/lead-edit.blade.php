@@ -1,4 +1,4 @@
-<div>
+<div class="crm-content">
     {{-- HEADER --}}
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.edit_lead')) }}" class="mb-5" progress-indicator >
 

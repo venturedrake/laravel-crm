@@ -48,6 +48,7 @@
         "mpdf/mpdf": "^8.0",
         "owen-it/laravel-auditing": "^13.6|^14.0",
         "owenvoke/blade-fontawesome": "^2.8",
+        "php-flasher/flasher-laravel": "^2.3",
         "rappasoft/laravel-authentication-log": "^5.0",
         "rinvex/countries": "^8.1|^9.0",
         "robsontenorio/mary": "^1.0|^2.0",
@@ -72,7 +73,8 @@
             "src/Http/Helpers/AddressLine.php",
             "src/Http/Helpers/AutoComplete.php",
             "src/Http/Helpers/CheckAmount.php",
-            "src/Http/Helpers/Validate.php"
+            "src/Http/Helpers/Validate.php",
+            "src/Http/Helpers/PublicProperties.php"
         ]
     },
     "autoload-dev": {
