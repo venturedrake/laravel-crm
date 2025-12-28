@@ -79,6 +79,8 @@ use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealIndex;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
@@ -582,6 +584,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-lead-show', LeadShow::class);
         Livewire::component('crm-lead-create', LeadCreate::class);
         Livewire::component('crm-lead-edit', LeadEdit::class);
+        Livewire::component('crm-deal-index', DealIndex::class);
+        Livewire::component('crm-deal-board', DealBoard::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
