@@ -102,6 +102,11 @@ class LeadBoard extends KanbanBoard
         });
     }
 
+    public function updatedSearch()
+    {
+        $this->render();
+    }
+
     public function render()
     {
         $stages = $this->stages();
