@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Deals\Traits;
 
+use Carbon\Carbon;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
@@ -54,6 +55,8 @@ trait HasDealCommon
     public $amount;
 
     public $currency;
+
+    public ?Carbon $expected_close;
 
     public $pipeline;
 

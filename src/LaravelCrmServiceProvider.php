@@ -82,7 +82,9 @@ use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealIndex;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealShow;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
@@ -177,6 +179,7 @@ use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
 use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
+use VentureDrake\LaravelCrm\View\Components\Header;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
@@ -537,6 +540,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::componentNamespace('VentureDrake\\LaravelCrm\\View\\Components', 'crm');
         Blade::component('crm-index-toggle', IndexToggle::class);
         Blade::component('crm-delete-confirm', DeleteConfirm::class);
+        Blade::component('crm-header', Header::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
@@ -594,6 +598,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-lead-edit', LeadEdit::class);
         Livewire::component('crm-deal-index', DealIndex::class);
         Livewire::component('crm-deal-board', DealBoard::class);
+        Livewire::component('crm-deal-show', DealShow::class);
+        Livewire::component('crm-deal-create', DealCreate::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

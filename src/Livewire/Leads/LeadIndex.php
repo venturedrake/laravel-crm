@@ -53,6 +53,7 @@ class LeadIndex extends Component
     {
         return [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
+            ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
             ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
             ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
@@ -69,7 +70,8 @@ class LeadIndex extends Component
             ->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%$this->search%"))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))->paginate(25);
+            ->orderBy(...array_values($this->sortBy))
+            ->paginate(25);
     }
 
     public function delete($id)

@@ -23,7 +23,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$deals" link="/deals/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$deals" link="/deals/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap" :row-decoration="$rowDecoration">
             @scope('cell_labels', $deal)
                 @foreach($deal->labels as $label)
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
@@ -35,7 +35,12 @@
                 @endif
             @endscope
             @scope('actions', $deal)
-           {{-- <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" class="btn-sm btn-primary" />--}}
+            @if(!$deal->closed_at)
+                <x-mary-button wire:click="won({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.won')) }}" class="btn-sm btn-success text-white" />
+                <x-mary-button wire:click="lost({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.lost')) }}" class="btn-sm btn-error text-white" />
+            @else
+                <x-mary-button wire:click="reopen({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.reopen')) }}" class="btn-sm btn-outline" />
+            @endif
             <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.deals.show', $deal)) }}" class="btn-sm btn-square btn-outline" />
             <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.deals.edit', $deal)) }}" class="btn-sm btn-square btn-outline" />
             <x-mary-button onclick="modalDeleteDeal{{ $deal->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
