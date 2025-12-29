@@ -99,7 +99,7 @@ class LaravelCrmTablesSeeder extends Seeder
                 'value' => 1,
             ]);
         }
-        
+
         // Organization Types
         if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_organization_types')->first()) {
             $items = [

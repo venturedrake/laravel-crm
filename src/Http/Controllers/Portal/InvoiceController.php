@@ -78,7 +78,7 @@ class InvoiceController extends Controller
         }
 
         switch ($request->action) {
-            case "download":
+            case 'download':
                 if ($invoice->person) {
                     $email = $invoice->person->getPrimaryEmail();
                     $phone = $invoice->person->getPrimaryPhone();
@@ -88,7 +88,7 @@ class InvoiceController extends Controller
                 if ($invoice->organisation) {
                     $organisation_address = $invoice->organisation->getPrimaryAddress();
                 }
-                
+
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
                 ])

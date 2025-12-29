@@ -53,7 +53,7 @@ class OrderService
 
             foreach ($request->products as $product) {
                 $orderProductOrder++;
-                
+
                 if (isset($product['product_id']) && $product['quantity'] > 0) {
                     if (! Product::find($product['product_id'])) {
                         $newProduct = $this->addProduct($product, $request);

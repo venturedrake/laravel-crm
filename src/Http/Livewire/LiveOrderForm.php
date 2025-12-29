@@ -73,7 +73,7 @@ class LiveOrderForm extends Component
             $this->organisation_name = $organisation->name;
 
             $this->emit('orderOrganisationSelected', [
-                'id' => $this->organisation_id
+                'id' => $this->organisation_id,
             ]);
         }
     }

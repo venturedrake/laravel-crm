@@ -36,7 +36,7 @@ class LiveLunches extends Component
         'addLunchActivity' => 'addLunchOn',
         'lunchDeleted' => '$refresh',
         'lunchCompleted' => '$refresh',
-     ];
+    ];
 
     public function boot(SettingService $settingService)
     {
@@ -147,6 +147,7 @@ class LiveLunches extends Component
     public function render()
     {
         $this->getLunches();
+
         return view('laravel-crm::livewire.lunches');
     }
 }

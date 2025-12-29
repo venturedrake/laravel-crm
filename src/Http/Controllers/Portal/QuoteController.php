@@ -94,8 +94,8 @@ class QuoteController extends Controller
                 flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
 
                 break;
-                
-            case "download":
+
+            case 'download':
                 if ($quote->person) {
                     $email = $quote->person->getPrimaryEmail();
                     $phone = $quote->person->getPrimaryPhone();
@@ -105,7 +105,7 @@ class QuoteController extends Controller
                 if ($quote->organisation) {
                     $organisation_address = $quote->organisation->getPrimaryAddress();
                 }
-                
+
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
                 ])

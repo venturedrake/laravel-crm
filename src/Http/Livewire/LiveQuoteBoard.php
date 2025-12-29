@@ -15,7 +15,7 @@ class LiveQuoteBoard extends KanbanBoard
 
     public function stages(): Collection
     {
-        if ($pipeline = Pipeline::where('model', get_class(new Quote()))->first()) {
+        if ($pipeline = Pipeline::where('model', get_class(new Quote))->first()) {
             return $pipeline->pipelineStages()
                 ->orderBy('order')
                 ->orderBy('id')

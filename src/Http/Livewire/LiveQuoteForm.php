@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Customer;
-use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class LiveQuoteForm extends Component

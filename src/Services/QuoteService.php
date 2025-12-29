@@ -56,7 +56,7 @@ class QuoteService
 
             foreach ($request->products as $product) {
                 $quoteProductOrder++;
-                
+
                 if (isset($product['product_id']) && $product['quantity'] > 0) {
                     if (! Product::find($product['product_id'])) {
                         $newProduct = $this->addProduct($product, $request);

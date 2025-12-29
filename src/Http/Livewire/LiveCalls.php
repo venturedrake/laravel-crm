@@ -36,7 +36,7 @@ class LiveCalls extends Component
         'addCallActivity' => 'addCallOn',
         'callDeleted' => '$refresh',
         'callCompleted' => '$refresh',
-     ];
+    ];
 
     public function boot(SettingService $settingService)
     {
@@ -147,6 +147,7 @@ class LiveCalls extends Component
     public function render()
     {
         $this->getCalls();
+
         return view('laravel-crm::livewire.calls');
     }
 }

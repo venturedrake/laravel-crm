@@ -400,7 +400,7 @@ class LeadController extends Controller
         ], [
             'value' => 'board',
         ]);
-        
+
         return view('laravel-crm::leads.board');
     }
 }

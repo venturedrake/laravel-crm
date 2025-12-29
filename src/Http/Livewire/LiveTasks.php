@@ -29,7 +29,7 @@ class LiveTasks extends Component
         'addTaskActivity' => 'addTaskOn',
         'taskDeleted' => '$refresh',
         'taskCompleted' => '$refresh',
-     ];
+    ];
 
     public function boot(SettingService $settingService)
     {
@@ -124,6 +124,7 @@ class LiveTasks extends Component
     public function render()
     {
         $this->getTasks();
+
         return view('laravel-crm::livewire.tasks');
     }
 }

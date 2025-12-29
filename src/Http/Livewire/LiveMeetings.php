@@ -36,7 +36,7 @@ class LiveMeetings extends Component
         'addMeetingActivity' => 'addMeetingOn',
         'meetingDeleted' => '$refresh',
         'meetingCompleted' => '$refresh',
-     ];
+    ];
 
     public function boot(SettingService $settingService)
     {
@@ -147,6 +147,7 @@ class LiveMeetings extends Component
     public function render()
     {
         $this->getMeetings();
+
         return view('laravel-crm::livewire.meetings');
     }
 }

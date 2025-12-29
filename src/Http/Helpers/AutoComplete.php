@@ -105,7 +105,7 @@ function organisationsWithDetails()
 
     foreach (Organisation::all() as $organisation) {
         if ($organisation->xeroContact) {
-            $label = '<strong>'.$organisation->name. '</strong> (xero contact)';
+            $label = '<strong>'.$organisation->name.'</strong> (xero contact)';
 
             if ($contacts = $organisation->contacts()->get()) {
                 $label .= '<br />';
@@ -124,7 +124,7 @@ function organisationsWithDetails()
                 'name' => $organisation->name,
             ];
         } else {
-            $label = '<strong>'.$organisation->name. '</strong>';
+            $label = '<strong>'.$organisation->name.'</strong>';
 
             if ($contacts = $organisation->contacts()->get()) {
                 $label .= '<br />';

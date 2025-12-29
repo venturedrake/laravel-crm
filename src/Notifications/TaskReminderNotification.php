@@ -92,7 +92,7 @@ class TaskReminderNotification extends Notification
                 case 'Client':
                     $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.$this->task->taskable->id.'">'.$this->task->taskable->name.'</a></small>'));
                     break;
-                    
+
                 case 'Organization':
                     $mailMessage->line(new HtmlString('Organization: <a href="'.config('app.url').'/organization/'.$this->task->taskable->id.'">'.$this->task->taskable->name.'</a></small>'));
                     break;
