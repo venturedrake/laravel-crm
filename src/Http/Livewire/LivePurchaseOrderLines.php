@@ -67,7 +67,7 @@ class LivePurchaseOrderLines extends Component
     public function mount($purchaseOrder, $purchaseOrderLines, $old = null, $fromOrder = false)
     {
         $this->purchaseOrder = $purchaseOrder;
-        $this->purchaseOrderLines = $purchaseOrderLines;
+        $this->purchaseOrderLines = $purchaseOrderLines ? $purchaseOrderLines->sortBy('order') : null;
         $this->old = $old;
         $this->fromOrder = $fromOrder;
 

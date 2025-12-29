@@ -85,7 +85,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($order->orderProducts()->whereNotNull('product_id')->get() as $orderProduct)
+        @foreach($order->orderProducts()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $orderProduct)
             <tr>
                 <td>{{ $orderProduct->product->name }}</td>
                 <td>{{ money($orderProduct->price ?? null, $orderProduct->currency) }}</td>

@@ -52,7 +52,11 @@ class QuoteService
         $quote->labels()->sync($request->labels ?? []);
 
         if (isset($request->products)) {
+            $quoteProductOrder = 0;
+
             foreach ($request->products as $product) {
+                $quoteProductOrder++;
+                
                 if (isset($product['product_id']) && $product['quantity'] > 0) {
                     if (! Product::find($product['product_id'])) {
                         $newProduct = $this->addProduct($product, $request);
@@ -82,6 +86,7 @@ class QuoteService
                         'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                         'currency' => $request->currency,
                         'comments' => $product['comments'],
+                        'order' => $quoteProductOrder,
                     ]);
                 }
             }
@@ -117,8 +122,11 @@ class QuoteService
 
         if (isset($request->products)) {
             $quoteProductIds = [];
+            $quoteProductOrder = 0;
 
             foreach ($request->products as $product) {
+                $quoteProductOrder++;
+
                 if (isset($product['quote_product_id']) && $quoteProduct = QuoteProduct::find($product['quote_product_id'])) {
                     if (! isset($product['product_id']) || $product['quantity'] == 0) {
                         $quoteProduct->delete();
@@ -150,6 +158,7 @@ class QuoteService
                                 'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                                 'currency' => $request->currency,
                                 'comments' => $product['comments'],
+                                'order' => $quoteProductOrder,
                             ]);
 
                             $quoteProductIds[] = $quoteProduct->id;
@@ -183,6 +192,7 @@ class QuoteService
                             'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                             'currency' => $request->currency,
                             'comments' => $product['comments'],
+                            'order' => $quoteProductOrder,
                         ]);
 
                         $quoteProductIds[] = $quoteProduct->id;

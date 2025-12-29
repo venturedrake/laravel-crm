@@ -15,11 +15,20 @@ class LiveQuoteBoard extends KanbanBoard
 
     public function stages(): Collection
     {
-        if ($pipeline = Pipeline::where('model', get_class(new Quote))->first()) {
+        if ($pipeline = Pipeline::where('model', get_class(new Quote()))->first()) {
             return $pipeline->pipelineStages()
                 ->orderBy('order')
                 ->orderBy('id')
                 ->get();
+        }
+    }
+
+    public function onStageSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $quoteId) {
+            Quote::find($quoteId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
         }
     }
 
@@ -28,6 +37,18 @@ class LiveQuoteBoard extends KanbanBoard
         Quote::find($recordId)->update([
             'pipeline_stage_id' => $stageId,
         ]);
+
+        foreach ($fromOrderedIds as $orderNumber => $quoteId) {
+            Quote::find($quoteId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+
+        foreach ($toOrderedIds as $orderNumber => $quoteId) {
+            Quote::find($quoteId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
     }
 
     public function records(): Collection

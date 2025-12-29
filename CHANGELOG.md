@@ -18,6 +18,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed --->
 
+## 1.4.1- 2025-08-05
+### Fixed
+- Bug with default quote item ordering
+
+## 1.4.0 - 2025-06-14
+### Added
+- More details on autocomplete dropdowns
+
+## 1.3.4 - 2025-0609
+### Fixed
+- Fixed bug when uploading files
+- Fixed bug when deleting activity and the component not refreshing
+
+## 1.3.3 - 2025-05-24
+### Fixed
+- Fixed bug when adding new emails, phone numbers and addresses and setting as primary
+
+## 1.3.2 - 2025-05-06
+### Added
+- Better support for Jetstream teams
+### Fixed
+- Typo in task reminder with organization link
+
+## 1.3.1 - 2025-04-07
+### Fixed
+- sortBy bug when creating new quotes, orders, invoices, deliveries & purchase orders
+
+## 1.3.0 - 2025-04-04
+### Added
+- Quote, Order, Invoice, Delivery & Purchase Order Item order drag & drop
+### Fixed
+- Fixed issue with Lead, Deal & Quote board drag & drop ordering
+
+## 1.2.3 - 2025-02-25
+### Added
+- Cache settings in view composer
+- Create & add another PO from orders
+### Changed
+- Updated invoice payment instructions
+- Unallocated option for leads, orders, etc
+- Don't paginate boards
+### Fixed
+- Missing pipeline on lead to deal conversion
+- Archive command added to provider
+- Handle invalid payload on decrypt
+- Issue with searching on related fields
+- Missing client relation on person model
+
 ## 1.2.2 - 2024-08-25
 ### Fixed
 - Kanban board search

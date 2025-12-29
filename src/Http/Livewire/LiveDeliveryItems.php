@@ -41,7 +41,8 @@ class LiveDeliveryItems extends Component
     public function mount($delivery, $products, $old = null, $fromOrder = false)
     {
         $this->delivery = $delivery;
-        $this->products = $products;
+        $this->products = $products ? $products->sortBy('order') : null;
+
         $this->old = $old;
         $this->fromOrder = $fromOrder;
 
@@ -128,6 +129,14 @@ class LiveDeliveryItems extends Component
         }
 
         return $quantity;
+    }
+
+    public function onItemSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $i) {
+            $key = $orderNumber + 1;
+            $this->inputs[$orderNumber] = (int) $i;
+        }
     }
 
     public function render()

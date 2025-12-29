@@ -297,4 +297,8 @@ label span.required-label{
 .cursor-grab{
   cursor: -webkit-grab;
   cursor: grab;
-} 
+}
+
+tr.cursor-grab > td:hover{
+  background-color: #f8f9fa;
+}

@@ -119,7 +119,6 @@
     <x-mary-toast />
 
     @stack('modals')
-
     @livewireScripts
     @stack('livewire-js')
     </body>

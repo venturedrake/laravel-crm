@@ -4,44 +4,13 @@
              'name' => 'order_id',
              'value' => old('order_id', $invoice->order->id ?? $order->id ?? null),
         ])
-        <span class="autocomplete">
-             @include('laravel-crm::partials.form.hidden',[
-               'name' => 'person_id',
-               'value' => old('person_id', $purchaseOrder->person->id ?? $person->id ?? null),
-            ])
-            <script type="text/javascript">
-                let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
-            </script>
-            @include('laravel-crm::partials.form.text',[
-               'name' => 'person_name',
-               'label' => ucfirst(__('laravel-crm::lang.contact_person')),
-               'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
-               'value' => old('person_name', $purchaseOrder->person->name ?? $person->name ?? null),
-               'attributes' => [
-                  'autocomplete' => \Illuminate\Support\Str::random()
-               ],
-               'required' => 'true'
-            ])
-        </span>
-        <span class="autocomplete">
-            @include('laravel-crm::partials.form.hidden',[
-              'name' => 'organization_id',
-              'value' => old('organization_id', $purchaseOrder->organization->id ?? $organization->id ??  null),
-            ])
-            <script type="text/javascript">
-                let organizations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizations() !!}
-            </script>
-            @include('laravel-crm::partials.form.text',[
-                'name' => 'organization_name',
-                'label' => ucfirst(__('laravel-crm::lang.organization')),
-                'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
-                'value' => old('organization_name',$purchaseOrder->organization->name ?? $organization->name ?? null),
-                'attributes' => [
-                  'autocomplete' => \Illuminate\Support\Str::random()
-               ],
-               'required' => 'true'
-            ])
-        </span>
+
+        @livewire('purchase-order-form',[
+            'purchaseOrder' => $purchaseOrder ?? null,
+            'organisation' => $organisation ?? null,
+            'person' => $person ?? null
+        ])
+
         <div class="row">
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[

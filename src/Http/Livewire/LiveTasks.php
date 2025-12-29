@@ -27,9 +27,9 @@ class LiveTasks extends Component
 
     protected $listeners = [
         'addTaskActivity' => 'addTaskOn',
-        'taskDeleted' => 'getTasks',
-        'taskCompleted' => 'getTasks',
-    ];
+        'taskDeleted' => '$refresh',
+        'taskCompleted' => '$refresh',
+     ];
 
     public function boot(SettingService $settingService)
     {
@@ -39,7 +39,6 @@ class LiveTasks extends Component
     public function mount($model)
     {
         $this->model = $model;
-        $this->getTasks();
 
         if (! $this->tasks || ($this->tasks && $this->tasks->count() < 1)) {
             $this->showForm = true;
@@ -120,11 +119,11 @@ class LiveTasks extends Component
     private function resetFields()
     {
         $this->reset('name', 'description', 'due_at');
-        $this->getTasks();
     }
 
     public function render()
     {
+        $this->getTasks();
         return view('laravel-crm::livewire.tasks');
     }
 }

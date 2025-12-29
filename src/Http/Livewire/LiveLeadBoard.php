@@ -15,11 +15,20 @@ class LiveLeadBoard extends KanbanBoard
 
     public function stages(): Collection
     {
-        if ($pipeline = Pipeline::where('model', get_class(new Lead))->first()) {
+        if ($pipeline = Pipeline::where('model', get_class(new Lead()))->first()) {
             return $pipeline->pipelineStages()
                 ->orderBy('order')
                 ->orderBy('id')
                 ->get();
+        }
+    }
+
+    public function onStageSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
         }
     }
 
@@ -28,6 +37,18 @@ class LiveLeadBoard extends KanbanBoard
         Lead::find($recordId)->update([
             'pipeline_stage_id' => $stageId,
         ]);
+
+        foreach ($fromOrderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+
+        foreach ($toOrderedIds as $orderNumber => $leadId) {
+            Lead::find($leadId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
     }
 
     public function records(): Collection

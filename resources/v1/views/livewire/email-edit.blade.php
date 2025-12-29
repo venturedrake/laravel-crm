@@ -3,7 +3,7 @@
     <hr />
     @foreach($inputs as $key => $value)
         <input type="hidden" wire:model="emailId.{{ $value }}" name="emails[{{ $value }}][id]">
-        <div class="form-row">
+        <div class="form-row" wire:key="email-{{ $value }}">
             <div class="col-sm-6">
                 <div class="form-group @error('emails.'.$value.'.address') text-danger @enderror">
                     <label>{{ ucfirst(__('laravel-crm::lang.email')) }}</label>
@@ -25,7 +25,7 @@
             <div class="col-sm-1">
                 <div class="form-group" wire:ignore>
                     <label>{{ ucfirst(__('laravel-crm::lang.primary')) }}</label>
-                    <input type="checkbox" wire:model="primary.{{ $value }}" name="emails[{{ $value }}][primary]" data-toggle="toggle" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+                    <input type="checkbox" wire:model="primary.{{ $value }}" name="emails[{{ $value }}][primary]" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                     @error('primary.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -40,7 +40,7 @@
         <script>
             $(document).ready(function () {
                 window.addEventListener('addEmailInputs', event => {
-                    $('input[type=checkbox][data-toggle^=toggle]').bootstrapToggle('destroy').bootstrapToggle('refresh');
+                    $('input[name="emails[' + event.detail.value + '][primary]"]').bootstrapToggle('destroy').bootstrapToggle('refresh');
                 });
             });
         </script>

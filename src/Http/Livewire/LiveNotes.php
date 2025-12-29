@@ -28,9 +28,9 @@ class LiveNotes extends Component
 
     protected $listeners = [
         'addNoteActivity' => 'addNoteOn',
-        'noteDeleted' => 'getNotes',
-        'notePinned' => 'getNotes',
-        'noteUnpinned' => 'getNotes',
+        'noteDeleted' => '$refresh',
+        'notePinned' => '$refresh',
+        'noteUnpinned' => '$refresh',
     ];
 
     public function boot(SettingService $settingService)
@@ -42,7 +42,6 @@ class LiveNotes extends Component
     {
         $this->model = $model;
         $this->pinned = $pinned;
-        $this->getNotes();
 
         if (! $this->notes || ($this->notes && $this->notes->count() < 1)) {
             $this->showForm = true;
@@ -123,11 +122,13 @@ class LiveNotes extends Component
     private function resetFields()
     {
         $this->reset('content', 'noted_at');
-        $this->getNotes();
+
     }
 
     public function render()
     {
+        $this->getNotes();
+
         return view('laravel-crm::livewire.notes');
     }
 }

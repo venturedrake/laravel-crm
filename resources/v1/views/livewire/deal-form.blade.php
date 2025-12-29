@@ -7,7 +7,7 @@
             ]   
         ])
         <script type="text/javascript">
-            let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clients() !!}
+            let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clientsWithDetails() !!}
         </script>
         <span wire:ignore>
             @include('laravel-crm::partials.form.text',[
@@ -45,7 +45,7 @@
                 ]   
             ])
             <script type="text/javascript">
-                let organizations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizations() !!}
+                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsWithDetails() !!}
             </script>
             <span wire:ignore>
                 @include('laravel-crm::partials.form.text',[
@@ -86,7 +86,7 @@
                 ]   
             ])
            <script type="text/javascript">
-            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
+            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\peopleWithDetails() !!}
            </script>
             <span wire:ignore>
              @include('laravel-crm::partials.form.text',[
@@ -167,10 +167,11 @@
 
                     $('input[name="client_name"]').autocomplete({
                         source: clients,
+                        value: 'value',
+                        label: 'label',
                         onSelectItem: function (item, element) {
                             @this.set('client_id',item.value);
-                            @this.set('client_name',item.label);
-                            @this.set('organization_id', $(element).closest('form').find("input[name='organization_id']").val());
+                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             $(element).closest('.autocomplete').find('input[name="client_id"]').val(item.value).trigger('change');
@@ -210,10 +211,11 @@
 
                     $('input[name="person_name"]').autocomplete({
                         source: people,
+                        value: 'value',
+                        label: 'label',
                         onSelectItem: function (item, element) {
                             @this.set('person_id',item.value);
-                            @this.set('person_name',item.label);
-                            @this.set('organization_id', $(element).closest('form').find("input[name='organization_id']").val());
+                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
 
                             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
 
@@ -259,10 +261,12 @@
                         $('.autocomplete-person').find('input,select').removeAttr('disabled');
                     }
                 }
-
-                function bindOrganizationAutocomplete(){
-                    $('input[name="organization_name"]').autocomplete({
-                        source: organizations,
+                
+                function bindOrganisationAutocomplete(){
+                    $('input[name="organisation_name"]').autocomplete({
+                        source: organisations,
+                        value: 'value',
+                        label: 'label',
                         onSelectItem: function (item, element) {
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());

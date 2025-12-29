@@ -62,7 +62,7 @@ class LiveInvoiceLines extends Component
     public function mount($invoice, $invoiceLines, $old = null, $fromOrder = false)
     {
         $this->invoice = $invoice;
-        $this->invoiceLines = $invoiceLines;
+        $this->invoiceLines = $invoiceLines ? $invoiceLines->sortBy('order') : null;
         $this->old = $old;
         $this->fromOrder = $fromOrder;
 
@@ -199,6 +199,14 @@ class LiveInvoiceLines extends Component
         $this->dispatchBrowserEvent('removedItem', ['id' => $id]);
 
         $this->calculateAmounts();
+    }
+
+    public function onItemSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $i) {
+            $key = $orderNumber + 1;
+            $this->inputs[$orderNumber] = (int) $i;
+        }
     }
 
     protected function currencyFormat($number)

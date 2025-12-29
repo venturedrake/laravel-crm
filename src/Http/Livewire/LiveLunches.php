@@ -34,9 +34,9 @@ class LiveLunches extends Component
 
     protected $listeners = [
         'addLunchActivity' => 'addLunchOn',
-        'lunchDeleted' => 'getLunches',
-        'lunchCompleted' => 'getLunches',
-    ];
+        'lunchDeleted' => '$refresh',
+        'lunchCompleted' => '$refresh',
+     ];
 
     public function boot(SettingService $settingService)
     {
@@ -46,7 +46,6 @@ class LiveLunches extends Component
     public function mount($model)
     {
         $this->model = $model;
-        $this->getLunches();
 
         if (! $this->lunches || ($this->lunches && $this->lunches->count() < 1)) {
             $this->showForm = true;
@@ -143,12 +142,11 @@ class LiveLunches extends Component
         $this->dispatchBrowserEvent('lunchFieldsReset');
 
         $this->addLunchToggle();
-
-        $this->getLunches();
     }
 
     public function render()
     {
+        $this->getLunches();
         return view('laravel-crm::livewire.lunches');
     }
 }

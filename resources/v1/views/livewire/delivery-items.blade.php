@@ -15,7 +15,7 @@
                         <th scope="col" class="col-3 border-0">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
                 </thead>--}}
-                <tbody>
+               <tbody id="sortableItems">
                 @foreach($inputs as $key => $value)
                     @include('laravel-crm::delivery-products.partials.fields')
                 @endforeach
@@ -40,6 +40,22 @@
                         treshold: 2,
                     });
                 })*/
+
+                var el = document.getElementById('sortableItems');
+                var sortable = Sortable.create(el, {
+                    ghostClass: 'bg-secondary',
+                    dragClass: "bg-white",
+                    onEnd: function (evt) {
+                        const orderChanged = evt.oldIndex !== evt.newIndex;
+
+                        if (!orderChanged) {
+                            return;
+                        }
+
+                        const fromOrderedIds = [].slice.call(evt.from.children).map(child => child.id);
+                        @this.call('onItemSorted', fromOrderedIds);
+                    }
+                });
 
                 window.addEventListener('addedItem', event => {
                     $("tr[data-number='" + event.detail.id + "'] td.bind-select2 select[name^='products']").select2({

@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Livewire\Deals\Traits;
 
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Services\DealService;
-use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 

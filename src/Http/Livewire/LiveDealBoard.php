@@ -15,11 +15,20 @@ class LiveDealBoard extends KanbanBoard
 
     public function stages(): Collection
     {
-        if ($pipeline = Pipeline::where('model', get_class(new Deal))->first()) {
+        if ($pipeline = Pipeline::where('model', get_class(new Deal()))->first()) {
             return $pipeline->pipelineStages()
                 ->orderBy('order')
                 ->orderBy('id')
                 ->get();
+        }
+    }
+
+    public function onStageSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $dealId) {
+            Deal::find($dealId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
         }
     }
 
@@ -28,6 +37,18 @@ class LiveDealBoard extends KanbanBoard
         Deal::find($recordId)->update([
             'pipeline_stage_id' => $stageId,
         ]);
+
+        foreach ($fromOrderedIds as $orderNumber => $dealId) {
+            Deal::find($dealId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+
+        foreach ($toOrderedIds as $orderNumber => $dealId) {
+            Deal::find($dealId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
     }
 
     public function records(): Collection

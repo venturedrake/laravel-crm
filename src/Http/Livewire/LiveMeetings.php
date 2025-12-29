@@ -34,9 +34,9 @@ class LiveMeetings extends Component
 
     protected $listeners = [
         'addMeetingActivity' => 'addMeetingOn',
-        'meetingDeleted' => 'getMeetings',
-        'meetingCompleted' => 'getMeetings',
-    ];
+        'meetingDeleted' => '$refresh',
+        'meetingCompleted' => '$refresh',
+     ];
 
     public function boot(SettingService $settingService)
     {
@@ -46,7 +46,6 @@ class LiveMeetings extends Component
     public function mount($model)
     {
         $this->model = $model;
-        $this->getMeetings();
 
         if (! $this->meetings || ($this->meetings && $this->meetings->count() < 1)) {
             $this->showForm = true;
@@ -143,12 +142,11 @@ class LiveMeetings extends Component
         $this->dispatchBrowserEvent('meetingFieldsReset');
 
         $this->addMeetingToggle();
-
-        $this->getMeetings();
     }
 
     public function render()
     {
+        $this->getMeetings();
         return view('laravel-crm::livewire.meetings');
     }
 }

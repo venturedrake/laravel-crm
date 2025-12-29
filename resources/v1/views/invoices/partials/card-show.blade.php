@@ -109,7 +109,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($invoice->invoiceLines()->whereNotNull('product_id')->get() as $invoiceLine)
+                    @foreach($invoice->invoiceLines()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $invoiceLine)
                         <tr>
                             <td>
                                 {{ $invoiceLine->product->name }}

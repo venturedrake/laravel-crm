@@ -23,7 +23,7 @@
 
                 const fromStageId = evt.from.dataset.stageId;
                 const fromOrderedIds = [].slice.call(evt.from.children).map(child => child.id);
-
+                
                 if (sameContainer) {
                     @this.call('onStageSorted', fromOrderedIds);
                     return;
