@@ -1,6 +1,6 @@
-<div>
+<div class="crm-content">
     {{-- HEADER --}}
-    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" progress-indicator >
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" progress-indicator>
         {{--  SEARCH --}}
         <x-slot:middle class="justify-end!">
             <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.leads')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
@@ -30,13 +30,16 @@
                 @endforeach 
             @endscope
             @scope('cell_pipeline_stage', $lead)
-                <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-primary text-white" />
+                @if($lead->pipelineStage)
+                    <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-neutral text-white" />
+                @endif
             @endscope
             @scope('actions', $lead)
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" class="btn-sm btn-success text-white" />
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" class="btn-sm btn-success text-white"  />
             <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.leads.show', $lead)) }}" class="btn-sm btn-square btn-outline" />
             <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.leads.edit', $lead)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button wire:click="delete({{ $lead->id }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" wire:confirm="Are you sure?" spinner />
+            <x-mary-button onclick="modalDeleteLead{{ $lead->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+            <x-crm-delete-confirm model="lead" id="{{ $lead->id }}" />
             @endscope
         </x-mary-table>
     </x-mary-card>

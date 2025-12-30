@@ -23,11 +23,32 @@ class LiveDealBoard extends KanbanBoard
         }
     }
 
+    public function onStageSorted($orderedIds)
+    {
+        foreach ($orderedIds as $orderNumber => $dealId) {
+            Deal::find($dealId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+    }
+
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
         Deal::find($recordId)->update([
             'pipeline_stage_id' => $stageId,
         ]);
+
+        foreach ($fromOrderedIds as $orderNumber => $dealId) {
+            Deal::find($dealId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
+
+        foreach ($toOrderedIds as $orderNumber => $dealId) {
+            Deal::find($dealId)->update([
+                'pipeline_stage_order' => $orderNumber + 1,
+            ]);
+        }
     }
 
     public function records(): Collection

@@ -96,6 +96,16 @@ class QuoteController extends Controller
                 break;
 
             case 'download':
+                if ($quote->person) {
+                    $email = $quote->person->getPrimaryEmail();
+                    $phone = $quote->person->getPrimaryPhone();
+                    $address = $quote->person->getPrimaryAddress();
+                }
+
+                if ($quote->organisation) {
+                    $organisation_address = $quote->organisation->getPrimaryAddress();
+                }
+
                 return Pdf::setOption([
                     'fontDir' => public_path('vendor/laravel-crm/fonts'),
                 ])

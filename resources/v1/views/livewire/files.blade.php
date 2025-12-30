@@ -4,9 +4,14 @@
     @if($showForm)
         <form wire:submit.prevent="upload" id="inputUploadForm">
             @include('laravel-crm::livewire.components.partials.file.form-fields')
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.upload')) }}</button>
+            <div wire:loading>
+                Processing file...
             </div>
+            @if($file)
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.upload')) }}</button>
+                </div>
+            @endif
         </form>
     <hr/>
     @endif

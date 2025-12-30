@@ -1,30 +1,32 @@
-<x-mary-card class="mb-3 cursor-grab" id="{{ $record['id'] }}">
-    <span>{{ $record['title'] }}</span>
-    @if($record['labels'])
+<div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}">
+    <div class="grow-1 null">
+        <span>{{ $record['title'] }}</span>
+        @if($record['labels'])
+            <div class="mt-2">
+            @foreach($record['labels'] as $label)
+                <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+            @endforeach
+            </div>
+        @endif
         <div class="mt-2">
-        @foreach($record['labels'] as $label)
-            <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-        @endforeach
+            <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.show', $record['id'])) }}" class="link link-hover link-primary">{{ $record['number'] }}</a>
         </div>
-    @endif
-    <div class="mt-2">
-        <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.show', $record['id'])) }}" class="link link-hover link-primary">{{ $record['number'] }}</a>
-    </div>
-    {{--<x-slot:menu>
-        <x-mary-button icon="o-share" class="btn-circle btn-sm" />
-        <x-mary-icon name="o-heart" class="cursor-pointer" />
-    </x-slot:menu>--}}
-    <div class="flex justify-between mt-2">
-        <div>
-            @if($record['amount'])
-                {{ money($record['amount'], $record['currency']) }}
-            @endif
-        </div>
-        <div>
-            <x-mary-icon name="fas.user-circle" />
+        {{--<x-slot:menu>
+            <x-mary-button icon="o-share" class="btn-circle btn-sm" />
+            <x-mary-icon name="o-heart" class="cursor-pointer" />
+        </x-slot:menu>--}}
+        <div class="flex justify-between mt-2">
+            <div>
+                @if($record['amount'])
+                    {{ money($record['amount'], $record['currency']) }}
+                @endif
+            </div>
+            <div>
+                <x-mary-icon name="fas.user-circle" />
+            </div>
         </div>
     </div>
-</x-mary-card>
+</div>
 
 {{--
 <div class="card mb-3 cursor-grab" id="{{ $record['id'] }}">

@@ -22,6 +22,13 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/robsontenorio/mary/src/View/Components/**/*.php';
+@source '../../src/View/Components/**/*.php';
+
+/* Safelist specific classes */
+@source inline("bg-success");
+@source inline("bg-error");
+@source inline("bg-warning");
+@source inline("bg-white");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -104,7 +111,16 @@
 
 .autocomplete-new {
     position: absolute !important;
-    right: 5px !important;
-    top: 35px !important;
+    right: 4px !important;
+    top:39px !important;
     z-index: 2;
+    border-radius: 1;
+}
+
+.crm-content > div.mb-10{
+    margin-bottom: calc(var(--spacing)*5) !important;
+}
+
+.drawer .drawer-content.lg\:px-10{
+    padding-inline: calc(var(--spacing)*5) !important;
 }

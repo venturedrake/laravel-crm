@@ -15,10 +15,10 @@
                         <th scope="col" class="col-3 border-0">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
                 </thead>--}}
-                <tbody>
-                @foreach($inputs as $key => $value)
-                    @include('laravel-crm::quote-products.partials.fields')
-                @endforeach
+                <tbody id="sortableItems">
+                    @foreach($inputs as $key => $value)
+                        @include('laravel-crm::quote-products.partials.fields')
+                    @endforeach
                 </tbody>
                 <tfoot id="quoteProductsTotals" class="tfoot">
                  <tr>
@@ -135,6 +135,22 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
+                var el = document.getElementById('sortableItems');
+                var sortable = Sortable.create(el, {
+                    ghostClass: 'bg-secondary',
+                    dragClass: "bg-white",
+                    onEnd: function (evt) {
+                        const orderChanged = evt.oldIndex !== evt.newIndex;
+
+                        if (!orderChanged) {
+                            return;
+                        }
+                        
+                        const fromOrderedIds = [].slice.call(evt.from.children).map(child => child.id);
+                        @this.call('onItemSorted', fromOrderedIds);
+                    }
+                });
+                
                 window.addEventListener('addedItem', event => {
                     if($('meta[name=dynamic_products]').length > 0){
                         var tags = JSON.parse($('meta[name=dynamic_products]').attr('content'))

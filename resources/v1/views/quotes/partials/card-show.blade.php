@@ -121,7 +121,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($quote->quoteProducts()->whereNotNull('product_id')->get() as $quoteProduct)
+                    @foreach($quote->quoteProducts()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $quoteProduct)
                         <tr>
                             <td>
                                 {{ $quoteProduct->product->name }}

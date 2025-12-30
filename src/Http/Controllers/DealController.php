@@ -59,20 +59,7 @@ class DealController extends Controller
             return redirect(route('laravel-crm.deals.board'));
         }
 
-        Deal::resetSearchValue($request);
-        $params = Deal::filters($request);
-
-        if (Deal::filter($params)->get()->count() < 30) {
-            $deals = Deal::filter($params)->latest()->get();
-        } else {
-            $deals = Deal::filter($params)->latest()->paginate(30);
-        }
-
-        return view('laravel-crm::deals.index', [
-            'deals' => $deals,
-            'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
-        ]);
+        return view('laravel-crm::deals.index');
     }
 
     /**

@@ -44,6 +44,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryDetails;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
+use VentureDrake\LaravelCrm\Http\Livewire\LiveInvoiceForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveInvoiceLines;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
@@ -54,6 +55,7 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveProductForm;
+use VentureDrake\LaravelCrm\Http\Livewire\LivePurchaseOrderForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePurchaseOrderLines;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteForm;
@@ -79,6 +81,11 @@ use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealEdit;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealIndex;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealShow;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
@@ -172,6 +179,8 @@ use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
+use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
+use VentureDrake\LaravelCrm\View\Components\Header;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
@@ -381,8 +390,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
             // Publishing the migrations.
             $this->publishes([
-                __DIR__.'/../vendor/spatie/laravel-permission/database/migrations/create_permission_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_permission_tables.php', 1), // Spatie Permissions
-                __DIR__.'/../vendor/spatie/laravel-permission/database/migrations/add_teams_fields.php.stub' => $this->getMigrationFileName($filesystem, 'add_teams_fields.php', 2), // Spatie Permissions
+                __DIR__.'/../database/migrations/create_permission_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_permission_tables.php', 1), // Spatie Permissions
+                __DIR__.'/../database/migrations/add_teams_fields.php.stub' => $this->getMigrationFileName($filesystem, 'add_teams_fields.php', 2), // Spatie Permissions
                 __DIR__.'/../database/migrations/create_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_tables.php', 3),
                 __DIR__.'/../database/migrations/create_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_settings_table.php', 4),
                 __DIR__.'/../database/migrations/add_fields_to_roles_permissions_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_fields_to_roles_permissions_tables.php', 5),
@@ -402,9 +411,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_laravel_crm_contacts_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contacts_table.php', 19),
                 __DIR__.'/../database/migrations/create_laravel_crm_contact_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contact_types_table.php', 20),
                 __DIR__.'/../database/migrations/create_laravel_crm_contact_contact_type_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contact_contact_type_table.php', 21),
-                __DIR__.'/../vendor/owen-it/laravel-auditing/database/migrations/audits.stub' => $this->getMigrationFileName($filesystem, 'create_audits_table.php', 22), // Laravel auditing
-                __DIR__.'/../vendor/rappasoft/laravel-authentication-log/database/migrations/create_authentication_log_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_authentication_log_table.php', 23), // Laravel Authentication Log
-                __DIR__.'/../database/migrations/create_laravel_crm_organization_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_organization_types_table.php', 26),
+                __DIR__.'/../database/migrations/create_audits_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_audits_table.php', 22), // Laravel auditing
+                __DIR__.'/../database/migrations/create_devices_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_devices_table.php', 23), // Laravel Auth Checker
+                __DIR__.'/../database/migrations/create_logins_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_logins_table.php', 24), // Laravel Auth Checker
+                __DIR__.'/../database/migrations/update_logins_and_devices_table_user_relation.php.stub' => $this->getMigrationFileName($filesystem, 'update_logins_and_devices_table_user_relation.php', 25), // Laravel Auth Checker
+                __DIR__.'/../database/migrations/create_laravel_crm_organisation_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_organisation_types_table.php', 26),
                 __DIR__.'/../database/migrations/change_morph_col_names_on_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'change_morph_col_names_on_laravel_crm_notes_table.php', 27),
                 __DIR__.'/../database/migrations/add_related_note_to_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_related_note_to_laravel_crm_notes_table.php', 28),
                 __DIR__.'/../database/migrations/add_noted_at_to_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_noted_at_to_laravel_crm_notes_table.php', 29),
@@ -465,7 +476,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/add_comments_to_laravel_crm_invoice_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_comments_to_laravel_crm_invoice_lines_table.php', 84),
                 __DIR__.'/../database/migrations/add_default_to_laravel_crm_tax_rates_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_default_to_laravel_crm_tax_rates_table.php', 85),
                 __DIR__.'/../database/migrations/create_laravel_crm_industries_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_industries_table.php', 86),
-                __DIR__.'/../database/migrations/add_extra_fields_to_laravel_crm_organizations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_extra_fields_to_laravel_crm_organizations_table.php', 87),
+                __DIR__.'/../database/migrations/add_extra_fields_to_laravel_crm_organisations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_extra_fields_to_laravel_crm_organisations_table.php', 87),
                 __DIR__.'/../database/migrations/create_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_orders_table.php', 88),
                 __DIR__.'/../database/migrations/create_laravel_crm_purchase_order_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_order_lines_table.php', 89),
                 __DIR__.'/../database/migrations/create_laravel_crm_xero_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_purchase_orders_table.php', 90),
@@ -483,6 +494,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/add_user_to_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_user_to_laravel_crm_settings_table.php', 102),
                 __DIR__.'/../database/migrations/add_prefix_to_laravel_crm_leads_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_leads_table.php', 103),
                 __DIR__.'/../database/migrations/add_prefix_to_laravel_crm_deals_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_deals_table.php', 104),
+                __DIR__.'/../database/migrations/add_order_to_laravel_crm_items_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_order_to_laravel_crm_items_tables.php', 105),
+                __DIR__.'/../database/migrations/add_pipeline_order_to_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_pipeline_order_to_laravel_crm_tables.php', 106),
             ], 'migrations');
 
             // Publishing the seeders
@@ -527,6 +540,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         // View components
         Blade::componentNamespace('VentureDrake\\LaravelCrm\\View\\Components', 'crm');
         Blade::component('crm-index-toggle', IndexToggle::class);
+        Blade::component('crm-delete-confirm', DeleteConfirm::class);
+        Blade::component('crm-header', Header::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
@@ -557,7 +572,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('quote-items', LiveQuoteItems::class);
         Livewire::component('order-form', LiveOrderForm::class);
         Livewire::component('order-items', LiveOrderItems::class);
+        Livewire::component('invoice-form', LiveInvoiceForm::class);
         Livewire::component('delivery-items', LiveDeliveryItems::class);
+        Livewire::component('purchase-order-form', LivePurchaseOrderForm::class);
         Livewire::component('activity-menu', LiveActivityMenu::class);
         Livewire::component('xero-connect', XeroConnect::class);
         Livewire::component('activities', LiveActivities::class);
@@ -580,6 +597,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-lead-show', LeadShow::class);
         Livewire::component('crm-lead-create', LeadCreate::class);
         Livewire::component('crm-lead-edit', LeadEdit::class);
+        Livewire::component('crm-deal-index', DealIndex::class);
+        Livewire::component('crm-deal-board', DealBoard::class);
+        Livewire::component('crm-deal-show', DealShow::class);
+        Livewire::component('crm-deal-create', DealCreate::class);
+        Livewire::component('crm-deal-edit', DealEdit::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

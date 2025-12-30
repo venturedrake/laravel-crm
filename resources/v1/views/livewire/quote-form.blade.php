@@ -1,13 +1,13 @@
 <div>
     <span class="autocomplete">
-        @include('laravel-crm::partials.form.hidden',[
-            'name' => 'client_id',
-             'attributes' => [
-                'wire:model' => 'client_id'        
-            ]   
-        ])
+         <span wire:ignore>
+            @include('laravel-crm::partials.form.hidden',[
+                'name' => 'client_id',
+                'value' => $client_id
+            ])
+         </span>
         <script type="text/javascript">
-            let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clients() !!}
+            let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clientsWithDetails() !!}
         </script>
         <span wire:ignore>
             @include('laravel-crm::partials.form.text',[
@@ -16,8 +16,8 @@
                 'prepend' => '<span class="fa fa-address-card" aria-hidden="true"></span>',
                 'attributes' => [
                     'autocomplete' => \Illuminate\Support\Str::random(),
-                    'wire:model' => 'client_name'  
-               ]
+               ],
+               'value' => $client_name
             ])  
         </span>    
     </span>
@@ -38,14 +38,14 @@
     @else
         
         <span class="autocomplete">
-             @include('laravel-crm::partials.form.hidden',[
-                'name' => 'organization_id',
-                 'attributes' => [
-                    'wire:model' => 'organization_id'        
-                ]   
-            ])
+             <span wire:ignore>
+                 @include('laravel-crm::partials.form.hidden',[
+                    'name' => 'organisation_id',
+                    'value' => $organisation_id
+                ])
+             </span>
             <script type="text/javascript">
-                let organizations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizations(true) !!}
+                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsWithDetails() !!}
             </script>
             <span wire:ignore>
                 @include('laravel-crm::partials.form.text',[
@@ -54,9 +54,9 @@
                     'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
                     'attributes' => [
                         'autocomplete' => \Illuminate\Support\Str::random(),
-                        'wire:model' => 'organization_name'  
                    ],
-                   'required' => 'true'
+                   'required' => 'true',
+                   'value' => $organisation_name
                 ])      
             </span>
         </span>
@@ -73,20 +73,20 @@
             'attributes' => [
                 'wire:model' => 'person_id'        
             ],
-            'required' => 'true'
+            'required' => 'true',
         ])
 
     @else
     
         <span class="autocomplete">
-           @include('laravel-crm::partials.form.hidden',[
-               'name' => 'person_id',
-               'attributes' => [
-                    'wire:model' => 'person_id'        
-                ]   
-            ])
+            <span wire:ignore>
+                @include('laravel-crm::partials.form.hidden',[
+                   'name' => 'person_id',
+                   'value' => $person_id
+                ])
+            </span>
            <script type="text/javascript">
-            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
+            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\peopleWithDetails() !!}
            </script>
             <span wire:ignore>
              @include('laravel-crm::partials.form.text',[
@@ -95,9 +95,9 @@
                 'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
                 'attributes' => [
                    'autocomplete' => \Illuminate\Support\Str::random(),
-                   'wire:model' => 'person_name'        
                 ],
-                'required' => 'true'
+                'required' => 'true',
+                'value' => $person_name
             ])
             </span>
         </span>
@@ -167,10 +167,14 @@
 
                     $('input[name="client_name"]').autocomplete({
                         source: clients,
+                        value: 'value',
+                        label: 'label',
                         onSelectItem: function (item, element) {
+                            var itemSelected = clients.find(client => client.value ===  item.value)
+                            $(element).closest('form').find("input[name='client_name']").val(itemSelected.name)
+                            
                             @this.set('client_id',item.value);
-                            @this.set('client_name',item.label);
-                            @this.set('organization_id', $(element).closest('form').find("input[name='organization_id']").val());
+                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             $(element).closest('.autocomplete').find('input[name="client_id"]').val(item.value).trigger('change');
@@ -210,10 +214,14 @@
 
                     $('input[name="person_name"]').autocomplete({
                         source: people,
+                        value: 'value',
+                        label: 'label',
                         onSelectItem: function (item, element) {
+                            var itemSelected = people.find(person => person.value ===  item.value)
+                            $(element).closest('form').find("input[name='person_name']").val(itemSelected.name)
+                            
                             @this.set('person_id',item.value);
-                            @this.set('person_name',item.label);
-                            @this.set('organization_id', $(element).closest('form').find("input[name='organization_id']").val());
+                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
 
                             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
 
@@ -259,12 +267,16 @@
                         $('.autocomplete-person').find('input,select').removeAttr('disabled');
                     }
                 }
-
-                function bindOrganizationAutocomplete(){
-                    $('input[name="organization_name"]').autocomplete({
-                        source: organizations,
+                
+                function bindOrganisationAutocomplete(){
+                    $('input[name="organisation_name"]').autocomplete({
+                        source: organisations,
+                        value: 'value',
+                        label: 'label',
                         onSelectItem: function (item, element) {
-                            console.log(element);
+                            var itemSelected = organisations.find(organisation => organisation.value ===  item.value)
+                            $(element).closest('form').find("input[name='organisation_name']").val(itemSelected.name)
+                            
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             @this.set('organization_id', item.value);

@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Customer;
-use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class LiveDealForm extends Component
@@ -58,6 +57,13 @@ class LiveDealForm extends Component
         }
     }
 
+    public function updatedClientId($value)
+    {
+        if ($client = Client::find($value)) {
+            $this->client_name = $client->name;
+        }
+    }
+
     public function updatedClientName($value)
     {
         $this->generateTitle();
@@ -85,9 +91,11 @@ class LiveDealForm extends Component
 
     public function updatedOrganizationId($value)
     {
-        if ($organization = Organization::find($value)) {
-            $address = $organization->getPrimaryAddress();
-            $this->dispatchBrowserEvent('selectedOrganization', [
+        if ($organisation = Organisation::find($value)) {
+            $this->organisation_name = $organisation->name;
+
+            $address = $organisation->getPrimaryAddress();
+            $this->dispatchBrowserEvent('selectedOrganisation', [
                 'id' => $value,
                 'address_line1' => $address->line1 ?? null,
                 'address_line2' => $address->line2 ?? null,
@@ -97,7 +105,6 @@ class LiveDealForm extends Component
                 'address_code' => $address->code ?? null,
                 'address_country' => $address->country ?? null,
             ]);
-            $this->organization_name = $organization->name;
         } else {
             $this->dispatchBrowserEvent('selectedOrganization');
         }
@@ -111,6 +118,8 @@ class LiveDealForm extends Component
     public function updatedPersonId($value)
     {
         if ($person = Person::find($value)) {
+            $this->person_name = $person->name;
+
             $email = $person->getPrimaryEmail();
             $phone = $person->getPrimaryPhone();
             $this->dispatchBrowserEvent('selectedPerson', [

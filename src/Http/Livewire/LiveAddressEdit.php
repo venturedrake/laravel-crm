@@ -135,7 +135,7 @@ class LiveAddressEdit extends Component
         $this->i = $i;
         array_push($this->inputs, $i);
         $this->country[$i] = \VentureDrake\LaravelCrm\Models\Setting::country()->value;
-        $this->dispatchBrowserEvent('addAddressInputs');
+        $this->dispatchBrowserEvent('addAddressInputs', ['value' => $i]);
     }
 
     public function remove($i)

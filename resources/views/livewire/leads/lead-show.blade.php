@@ -1,7 +1,13 @@
-<div>
+<div class="crm-content">
     {{-- HEADER --}}
-    <x-mary-header title="{{ $lead->title }}" subtitle="{{ ($lead->pipelineStage) ? $lead->pipelineStage->name : null  }}" class="mb-5" progress-indicator >
-       
+    <x-crm-header title="{{ $lead->title }}" class="mb-5" progress-indicator >
+        {{-- BADGES --}}
+        <x-slot:badges>
+            @if($lead->pipelineStage)
+                <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-neutral text-white" />
+            @endif
+        </x-slot:badges>
+            
         {{-- ACTIONS --}}
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}" link="{{ url(route('laravel-crm.leads.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive />
@@ -18,13 +24,31 @@
                 <x-mary-button wire:click="delete({{ $lead->id }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" wire:confirm="Are you sure?" spinner />
             @endcan
         </x-slot:actions>
-    </x-mary-header>
-    <div class="grid lg:grid-cols-2 gap-8">
-        <div class="grid gap-y-8">
+    </x-crm-header>
+    <div class="grid lg:grid-cols-2 gap-5">
+        <div class="grid gap-y-5">
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" shadow separator>
-                <div class="grid gap-y-5">
+                <div class="grid gap-y-3">
                     <div class="flex flex-row gap-5">
-                        <x-mary-icon name="fas.tag" />
+                        <strong>{{ ucfirst(__('laravel-crm::lang.number')) }}</strong>
+                        <span>
+                        {{ $lead->lead_id }}
+                        </span>
+                    </div>
+                    <div class="flex flex-row gap-5">
+                        <strong>{{ ucfirst(__('laravel-crm::lang.value')) }}</strong>
+                        <span>
+                       {{ money($lead->amount, $lead->currency) }}
+                        </span>
+                    </div>
+                    <div class="flex flex-row gap-5">
+                        <strong>{{ ucfirst(__('laravel-crm::lang.description')) }}</strong>
+                        <span>
+                        {{ $lead->description }}
+                        </span>
+                    </div>
+                    <div class="flex flex-row gap-5">
+                        <strong>{{ ucfirst(__('laravel-crm::lang.labels')) }}</strong>
                         <span>
                         @foreach($lead->labels as $label)
                             <x-mary-badge value="{{ $label->name }}" class="badge-sm text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
@@ -32,19 +56,7 @@
                     </span>
                     </div>
                     <div class="flex flex-row gap-5">
-                        <x-mary-icon name="fas.dollar-sign" />
-                        <span>
-                       {{ money($lead->amount, $lead->currency) }}
-                        </span>
-                    </div>
-                    <div class="flex flex-row gap-5">
-                        <x-mary-icon name="fas.info" />
-                        <span>
-                        {{ $lead->description }}
-                        </span>
-                    </div>
-                    <div class="flex flex-row gap-5">
-                        <x-mary-icon name="fas.user" />
+                        <strong>{{ ucfirst(__('laravel-crm::lang.owner')) }}</strong>
                         <span>
                         @if( $lead->ownerUser)<a href="{{ route('laravel-crm.users.show', $lead->ownerUser) }}" class="link link-hover link-primary">{{ $lead->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
                         </span>

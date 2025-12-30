@@ -519,4 +519,6 @@ return [
 
     'lead_created_successfully' => 'lead created successfully',
     'lead_updated_successfully' => 'lead updated successfully',
+    'search_leads' => 'search leads',
+    'search_deals' => 'search deals',
 ];

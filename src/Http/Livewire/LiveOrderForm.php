@@ -3,8 +3,9 @@
 namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
-use VentureDrake\LaravelCrm\Models\Customer;
-use VentureDrake\LaravelCrm\Models\Organization;
+use VentureDrake\LaravelCrm\Models\Client;
+use VentureDrake\LaravelCrm\Models\Organisation;
+use VentureDrake\LaravelCrm\Models\Person;
 
 class LiveOrderForm extends Component
 {
@@ -44,6 +45,13 @@ class LiveOrderForm extends Component
         }
     }
 
+    public function updatedClientId($value)
+    {
+        if ($client = Client::find($value)) {
+            $this->client_name = $client->name;
+        }
+    }
+
     public function updatedClientName($value)
     {
         if ($this->client_id) {
@@ -61,10 +69,22 @@ class LiveOrderForm extends Component
 
     public function updatedOrganizationId($value)
     {
-        if ($organization = Organization::find($value)) {
-            $this->organization_name = $organization->name;
-            $this->emit('orderOrganizationSelected', [
-                'id' => $this->organization_id,
+        if ($organisation = Organisation::find($value)) {
+            $this->organisation_name = $organisation->name;
+
+            $this->emit('orderOrganisationSelected', [
+                'id' => $this->organisation_id,
+            ]);
+        }
+    }
+
+    public function updatedPersonId($value)
+    {
+        if ($person = Person::find($value)) {
+            $this->person_name = $person->name;
+
+            $this->emit('orderPersonSelected', [
+                'id' => $this->person_id,
             ]);
         }
     }

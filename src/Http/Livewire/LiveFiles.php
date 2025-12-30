@@ -28,7 +28,7 @@ class LiveFiles extends Component
 
     protected $listeners = [
         'addFileActivity' => 'addFileOn',
-        'fileDeleted' => 'getFiles',
+        'fileDeleted' => '$refresh',
     ];
 
     public function boot(SettingService $settingService)
@@ -40,7 +40,6 @@ class LiveFiles extends Component
     {
         $this->model = $model;
         $this->random = rand();
-        $this->getFiles();
 
         if (! $this->files || ($this->files && $this->files->count() < 1)) {
             $this->showForm = true;
@@ -120,11 +119,12 @@ class LiveFiles extends Component
     {
         $this->reset('file');
         $this->random = rand();
-        $this->getFiles();
     }
 
     public function render()
     {
+        $this->getFiles();
+
         return view('laravel-crm::livewire.files');
     }
 }

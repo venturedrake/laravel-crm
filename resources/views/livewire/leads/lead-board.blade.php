@@ -1,4 +1,4 @@
-<div>
+<div class="crm-content">
     {{-- HEADER --}}
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" class="mb-5" progress-indicator >
         {{--  SEARCH --}}
@@ -21,7 +21,7 @@
         </x-slot:actions>
     </x-mary-header>
 
-    <div wire:ignore class="flex grow mt-4 space-x-6 overflow-auto">
+    <div class="flex grow mt-4 space-x-6 overflow-auto">
         @foreach($stages as $stage)
             @include('laravel-crm::livewire.kanban-board.stage', [
                 'stage' => $stage

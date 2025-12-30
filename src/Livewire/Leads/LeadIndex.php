@@ -8,6 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
@@ -15,7 +16,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class LeadIndex extends Component
 {
-    use ClearsProperties, ResetsPaginationWhenPropsChanges, WithPagination;
+    use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -52,6 +53,7 @@ class LeadIndex extends Component
     {
         return [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
+            ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
             ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
             ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
@@ -68,7 +70,17 @@ class LeadIndex extends Component
             ->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%$this->search%"))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))->paginate(25);
+            ->orderBy(...array_values($this->sortBy))
+            ->paginate(25);
+    }
+
+    public function delete($id)
+    {
+        if ($lead = Lead::find($id)) {
+            $lead->delete();
+
+            $this->success(ucfirst(trans('laravel-crm::lang.lead_deleted')));
+        }
     }
 
     public function render()

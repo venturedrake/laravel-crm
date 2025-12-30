@@ -23,6 +23,7 @@ class Lead extends Model
     ];
 
     protected $searchable = [
+        'lead_id',
         'title',
         'person.first_name',
         'person.middle_name',
