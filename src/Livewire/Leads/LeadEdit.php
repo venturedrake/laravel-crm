@@ -27,7 +27,7 @@ class LeadEdit extends Component
         $this->person_id = $lead->person ? $lead->person->id : null;
         $this->person_name = $lead->person ? $lead->person->name : null;
 
-        /*if ($address = $lead->getPrimaryAddress()) {
+        if ($address = $lead->getPrimaryAddress()) {
             $this->address_line_1 = $address->line_1;
             $this->address_line_2 = $address->line_2;
             $this->address_line_3 = $address->line_3;
@@ -45,7 +45,7 @@ class LeadEdit extends Component
         if ($phone = $lead->getPrimaryPhone()) {
             $this->phone = $phone->number;
             $this->phone_type = $phone->type;
-        }*/
+        }
 
         $this->title = $lead->title;
         $this->description = $lead->description;
