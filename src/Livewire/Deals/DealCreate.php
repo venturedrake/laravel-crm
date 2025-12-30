@@ -23,6 +23,8 @@ class DealCreate extends Component
         $this->pipeline = Pipeline::where('model', get_class(new Deal))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
+
+        $this->addProduct();
     }
 
     public function updatedPersonName($value)
@@ -61,11 +63,11 @@ class DealCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $lead = $this->leadService->create($request, $person ?? null, $organization ?? null);
+        $deal = $this->dealService->create($request, $person ?? null, $organization ?? null);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.lead_created_successfully')),
-            redirectTo: route('laravel-crm.leads.index')
+            ucfirst(trans('laravel-crm::lang.deal_created_successfully')),
+            redirectTo: route('laravel-crm.deals.index')
         );
     }
 

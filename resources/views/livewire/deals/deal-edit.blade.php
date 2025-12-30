@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.create_deal')) }}" class="mb-5" progress-indicator >
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.edit_deal')) }}" class="mb-5" progress-indicator >
 
         {{-- ACTIONS  --}}
         <x-slot:actions>
@@ -129,7 +129,7 @@
         </div>
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" class="btn" link="{{ url(route('laravel-crm.deals.index')) }}" />
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.save')) }}" class="btn-primary text-white" type="submit" spinner="save" />
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.save_changes')) }}" class="btn-primary text-white" type="submit" spinner="save" />
         </x-slot:actions>
     </x-mary-form>
 </div>

@@ -10,10 +10,10 @@
 
    
     <x-mary-form wire:submit="save">
-        <div class="grid lg:grid-cols-2 gap-8">
+        <div class="grid lg:grid-cols-2 gap-5">
             <div>
                 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.contact')) }}" separator>
-                    <div class="grid gap-3 lg:px-3" wire:key="person">
+                    <div class="grid gap-3" wire:key="person">
                         <div class="autocomplete-input z-50">
                             <x-mary-input wire:model.live="person_name" wire:keyup="searchPeople" wire:blur="hidePeople" label="{{ ucfirst(__('laravel-crm::lang.name')) }}" icon="fas.user" />
                             @if($showPeople)
@@ -45,8 +45,8 @@
                         </x-mary-input>
                     </div>
                 </x-mary-card>
-                <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.organization')) }}" class="mb-8" separator>
-                    <div class="grid gap-3 lg:px-3" wire:key="organization">
+                <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.organization')) }}" separator>
+                    <div class="grid gap-3" wire:key="organization">
                         <div class="autocomplete-input z-40">
                             <x-mary-input wire:model.live="organization_name" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" label="{{ ucfirst(__('laravel-crm::lang.name')) }}" icon="fas.building" />
                             @if($showOrganizations)
@@ -82,7 +82,7 @@
             </div>
             <div>
                 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" separator>
-                    <div class="grid gap-3 lg:px-3" wire:key="details">
+                    <div class="grid gap-3" wire:key="details">
                         <x-mary-input wire:model="title" label="{{ ucfirst(__('laravel-crm::lang.title')) }}" />
                         <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
                         <div class="grid lg:grid-cols-2 gap-5">

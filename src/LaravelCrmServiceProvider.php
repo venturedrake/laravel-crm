@@ -83,6 +83,7 @@ use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
+use VentureDrake\LaravelCrm\Livewire\Deals\DealEdit;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealIndex;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealShow;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
@@ -600,6 +601,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-deal-board', DealBoard::class);
         Livewire::component('crm-deal-show', DealShow::class);
         Livewire::component('crm-deal-create', DealCreate::class);
+        Livewire::component('crm-deal-edit', DealEdit::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

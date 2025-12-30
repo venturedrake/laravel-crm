@@ -66,6 +66,8 @@ trait HasDealCommon
 
     public $user_owner_id;
 
+    public array $products = [];
+
     protected function rules()
     {
         return [
@@ -93,5 +95,21 @@ trait HasDealCommon
         $this->dealService = $dealService;
         $this->personService = $personService;
         $this->organizationService = $organizationService;
+    }
+
+    public function addProduct()
+    {
+        $this->products[] = [
+            'id' => null,
+            'name' => '',
+            'price' => 0,
+            'quantity' => 1,
+            'amount' => 0,
+        ];
+    }
+
+    public function deleteProduct($index)
+    {
+        unset($this->products[$index]);
     }
 }
