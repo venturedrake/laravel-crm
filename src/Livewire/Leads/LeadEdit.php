@@ -16,7 +16,7 @@ class LeadEdit extends Component
     use HasLeadCommon;
     use HasOrganizationSuggest;
     use HasPersonSuggest;
-    
+
     public ?Lead $lead = null;
 
     public function mount(Lead $lead)

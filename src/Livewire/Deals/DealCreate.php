@@ -63,7 +63,7 @@ class DealCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $deal = $this->dealService->create($request, $person ?? null, $organization ?? null);
+        $this->dealService->create($request, $person ?? null, $organization ?? null);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.deal_created_successfully')),

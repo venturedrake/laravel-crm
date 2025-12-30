@@ -1,6 +1,6 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Livewire\Leads;
+namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,11 +10,11 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Label;
-use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
-class LeadIndex extends Component
+class QuoteIndex extends Component
 {
     use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
 
@@ -53,21 +53,20 @@ class LeadIndex extends Component
     {
         return [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
-            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
-            ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],
-            ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
+            ['key' => 'quote_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
+            /*  ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
+            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
+            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],*/
+            /* ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact'))],
+            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization'))],*/
+            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))],
+            ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated'))],
         ];
     }
 
-    public function leads(): LengthAwarePaginator
+    public function quotes(): LengthAwarePaginator
     {
-        return Lead::whereNull('converted_at')
-            ->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%$this->search%"))
+        return Quote::when($this->search, fn (Builder $q) => $q->where('title', 'like', "%$this->search%"))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
@@ -76,21 +75,21 @@ class LeadIndex extends Component
 
     public function delete($id)
     {
-        if ($lead = Lead::find($id)) {
-            $lead->delete();
+        if ($quote = Quote::find($id)) {
+            $quote->delete();
 
-            $this->success(ucfirst(trans('laravel-crm::lang.lead_deleted')));
+            $this->success(ucfirst(trans('laravel-crm::lang.quote_deleted')));
         }
     }
 
     public function render()
     {
-        return view('laravel-crm::livewire.leads.lead-index', [
+        return view('laravel-crm::livewire.quotes.quote-index', [
             'users' => $this->users(),
             'labels' => $this->labels(),
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
-            'leads' => $this->leads(),
+            'quotes' => $this->quotes(),
         ]);
     }
 }

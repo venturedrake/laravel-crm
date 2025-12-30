@@ -92,6 +92,8 @@ use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadEdit;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadShow;
+use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
+use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteIndex;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Contact;
@@ -602,6 +604,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-deal-show', DealShow::class);
         Livewire::component('crm-deal-create', DealCreate::class);
         Livewire::component('crm-deal-edit', DealEdit::class);
+        Livewire::component('crm-quote-index', QuoteIndex::class);
+        Livewire::component('crm-quote-board', QuoteBoard::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

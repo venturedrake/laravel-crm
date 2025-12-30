@@ -299,7 +299,6 @@ return [
     'note_deleted' => 'note deleted',
     'back_to_search_results' => 'back to search results',
     'back_to_orders' => 'back to orders',
-    'back_to_organizations' => 'back to organizations',
     'add_order' => 'add order',
     'create_order' => 'create order',
     'no_tasks' => 'no tasks',
@@ -521,4 +520,9 @@ return [
     'lead_updated_successfully' => 'lead updated successfully',
     'search_leads' => 'search leads',
     'search_deals' => 'search deals',
+    'search_quotes' => 'search quotes',
+    'search_orders' => 'search orders',
+    'search_invoices' => 'search invoices',
+    'search_deliveries' => 'search deliveries',
+    'search_purchase_orders' => 'search purchase orders',
 ];

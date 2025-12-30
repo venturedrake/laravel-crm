@@ -177,7 +177,6 @@ class LeadController extends Controller
         $email = $lead->getPrimaryEmail();
         $phone = $lead->getPrimaryPhone();
         $address = $lead->getPrimaryAddress();
-        
 
         return view('laravel-crm::leads.edit', [
             'lead' => $lead,
