@@ -18,6 +18,8 @@ use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmArchive;
 use VentureDrake\LaravelCrm\Console\LaravelCrmContactTypes;
+use VentureDrake\LaravelCrm\Console\LaravelCrmDecrypt;
+use VentureDrake\LaravelCrm\Console\LaravelCrmEncrypt;
 use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
@@ -530,6 +532,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmContactTypes::class,
                 LaravelCrmFields::class,
                 LaravelCrmArchive::class,
+                LaravelCrmEncrypt::class,
+                LaravelCrmDecrypt::class,
             ]);
 
             // Register the model factories
