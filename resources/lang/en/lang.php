@@ -525,4 +525,9 @@ return [
     'search_invoices' => 'search invoices',
     'search_deliveries' => 'search deliveries',
     'search_purchase_orders' => 'search purchase orders',
+    'search_people' => 'search people',
+    'search_organizations' => 'search organizations',
+    'search_users' => 'search users',
+    'search_teams' => 'search teams',
+    'search_products' => 'search products',
 ];

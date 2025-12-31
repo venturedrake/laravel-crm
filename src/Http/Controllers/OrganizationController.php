@@ -29,7 +29,7 @@ class OrganizationController extends Controller
      */
     public function index(Request $request)
     {
-        Organization::resetSearchValue($request);
+        /*Organization::resetSearchValue($request);
         $params = Organization::filters($request);
         $organizations = Organization::filter($params);
 
@@ -58,11 +58,9 @@ class OrganizationController extends Controller
             } else {
                 $organizations = $organizations->sortable(['created_at' => 'desc'])->paginate(30);
             }
-        }
+        }*/
 
-        return view('laravel-crm::organizations.index', [
-            'organizations' => $organizations,
-        ]);
+        return view('laravel-crm::organizations.index');
     }
 
     /**

@@ -1,16 +1,3 @@
 <x-crm::app-layout>
-    <x-slot name="header">
-        <div class="mb-10">
-            <div class="flex flex-wrap gap-5 justify-between items-center">
-                <div>
-                    <div class="text-4xl font-extrabold ">
-                        {{ ucfirst(__('laravel-crm::lang.organizations')) }}
-                    </div>
-                </div>
-            </div>
-
-            <hr class="my-5">
-        </div>
-    </x-slot>
-    
+    <livewire:crm-organization-index layout="index" />
 </x-crm::app-layout>
