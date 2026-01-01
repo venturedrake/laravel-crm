@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
@@ -57,13 +56,6 @@ class Deal extends Model
             $this->attributes['amount'] = $value * 100;
         } else {
             $this->attributes['amount'] = null;
-        }
-    }
-
-    public function setExpectedCloseAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['expected_close'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }
     }
 

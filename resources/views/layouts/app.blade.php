@@ -83,7 +83,7 @@
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.activities')) }}" icon="fas.tasks" link="{{ url(route('laravel-crm.activities.index')) }}" />
                 <x-mary-menu-separator />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.orders')) }}" icon="fas.shopping-cart" link="{{ url(route('laravel-crm.orders.index')) }}" />
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.invoices')) }}" icon="fas.file-invoice" link="{{ url(route('laravel-crm.quotes.index')) }}" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.invoices')) }}" icon="fas.file-invoice" link="{{ url(route('laravel-crm.invoices.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.deliveries')) }}" icon="fas.shipping-fast" link="{{ url(route('laravel-crm.deliveries.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}" icon="fas.file-invoice-dollar" link="{{ url(route('laravel-crm.purchase-orders.index')) }}" />
                 <x-mary-menu-separator />

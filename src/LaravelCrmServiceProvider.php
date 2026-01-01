@@ -18,6 +18,8 @@ use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmArchive;
 use VentureDrake\LaravelCrm\Console\LaravelCrmContactTypes;
+use VentureDrake\LaravelCrm\Console\LaravelCrmDecrypt;
+use VentureDrake\LaravelCrm\Console\LaravelCrmEncrypt;
 use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
@@ -25,6 +27,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmOrganizationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
 use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
+use VentureDrake\LaravelCrm\Console\LaravelCrmV2;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveCall;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
@@ -86,12 +89,31 @@ use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealEdit;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealIndex;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealShow;
+use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryIndex;
+use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
+use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceEdit;
+use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceIndex;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadBoard;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadEdit;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadShow;
+use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
+use VentureDrake\LaravelCrm\Livewire\Orders\OrderEdit;
+use VentureDrake\LaravelCrm\Livewire\Orders\OrderIndex;
+use VentureDrake\LaravelCrm\Livewire\Organizations\OrganizationIndex;
+use VentureDrake\LaravelCrm\Livewire\People\PersonIndex;
+use VentureDrake\LaravelCrm\Livewire\Products\ProductIndex;
+use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderCreate;
+use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderEdit;
+use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderIndex;
+use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
+use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
+use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteEdit;
+use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteIndex;
+use VentureDrake\LaravelCrm\Livewire\Teams\TeamIndex;
+use VentureDrake\LaravelCrm\Livewire\Users\UserIndex;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Contact;
@@ -528,6 +550,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmContactTypes::class,
                 LaravelCrmFields::class,
                 LaravelCrmArchive::class,
+                LaravelCrmEncrypt::class,
+                LaravelCrmDecrypt::class,
+                LaravelCrmV2::class,
             ]);
 
             // Register the model factories
@@ -602,6 +627,26 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-deal-show', DealShow::class);
         Livewire::component('crm-deal-create', DealCreate::class);
         Livewire::component('crm-deal-edit', DealEdit::class);
+        Livewire::component('crm-quote-index', QuoteIndex::class);
+        Livewire::component('crm-quote-board', QuoteBoard::class);
+        Livewire::component('crm-quote-create', QuoteCreate::class);
+        Livewire::component('crm-quote-edit', QuoteEdit::class);
+        Livewire::component('crm-order-index', OrderIndex::class);
+        Livewire::component('crm-order-create', OrderCreate::class);
+        Livewire::component('crm-order-edit', OrderEdit::class);
+        Livewire::component('crm-invoice-index', InvoiceIndex::class);
+        Livewire::component('crm-invoice-create', InvoiceCreate::class);
+        Livewire::component('crm-invoice-edit', InvoiceEdit::class);
+        Livewire::component('crm-delivery-index', DeliveryIndex::class);
+        Livewire::component('crm-purchase-order-index', PurchaseOrderIndex::class);
+        Livewire::component('crm-purchase-order-create', PurchaseOrderCreate::class);
+        Livewire::component('crm-purchase-order-edit', PurchaseOrderEdit::class);
+
+        Livewire::component('crm-person-index', PersonIndex::class);
+        Livewire::component('crm-organization-index', OrganizationIndex::class);
+        Livewire::component('crm-user-index', UserIndex::class);
+        Livewire::component('crm-team-index', TeamIndex::class);
+        Livewire::component('crm-product-index', ProductIndex::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

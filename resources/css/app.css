@@ -124,3 +124,8 @@
 .drawer .drawer-content.lg\:px-10{
     padding-inline: calc(var(--spacing)*5) !important;
 }
+
+.cursor-grab{
+    cursor: -webkit-grab;
+    cursor: grab;
+}

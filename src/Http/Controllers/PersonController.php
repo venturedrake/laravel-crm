@@ -31,7 +31,7 @@ class PersonController extends Controller
      */
     public function index(Request $request)
     {
-        Person::resetSearchValue($request);
+        /*Person::resetSearchValue($request);
         $params = Person::filters($request);
         $people = Person::filter($params);
 
@@ -62,11 +62,9 @@ class PersonController extends Controller
             } else {
                 $people = $people->sortable(['created_at' => 'desc'])->paginate(30);
             }
-        }
+        }*/
 
-        return view('laravel-crm::people.index', [
-            'people' => $people,
-        ]);
+        return view('laravel-crm::people.index');
     }
 
     /**

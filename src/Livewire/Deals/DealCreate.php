@@ -30,16 +30,16 @@ class DealCreate extends Component
     public function updatedPersonName($value)
     {
         if (! $this->organization_name) {
-            $this->generateLeadString($value);
+            $this->generateTitleString($value);
         }
     }
 
     public function updatedOrganizationName($value)
     {
-        $this->generateLeadString($value);
+        $this->generateTitleString($value);
     }
 
-    protected function generateLeadString($value)
+    protected function generateTitleString($value)
     {
         $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.lead'));
     }
@@ -63,7 +63,7 @@ class DealCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $deal = $this->dealService->create($request, $person ?? null, $organization ?? null);
+        $this->dealService->create($request, $person ?? null, $organization ?? null);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.deal_created_successfully')),

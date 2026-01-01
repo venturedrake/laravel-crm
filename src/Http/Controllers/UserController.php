@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (config('laravel-crm.teams')) {
+        /*if (config('laravel-crm.teams')) {
             if (auth()->user()->currentTeam) {
                 $users = auth()->user()->currentTeam->allUsers();
 
@@ -38,11 +38,9 @@ class UserController extends Controller
             } else {
                 $users = User::latest()->paginate(30);
             }
-        }
+        }*/
 
-        return view('laravel-crm::users.index', [
-            'users' => $users ?? [],
-        ]);
+        return view('laravel-crm::users.index');
     }
 
     /**
