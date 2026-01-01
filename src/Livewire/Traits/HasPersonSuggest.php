@@ -42,7 +42,7 @@ trait HasPersonSuggest
             $this->person_name = $person->name;
 
             if (! $this->organization_name) {
-                $this->generateLeadString($person->name);
+                $this->generateTitleString($person->name);
             }
         }
 

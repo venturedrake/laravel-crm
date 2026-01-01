@@ -530,4 +530,5 @@ return [
     'search_users' => 'search users',
     'search_teams' => 'search teams',
     'search_products' => 'search products',
+    'quote_products' => 'quote products',
 ];

@@ -8,16 +8,18 @@
 
         {{-- ACTIONS  --}}
         <x-slot:actions>
-            <x-mary-button label="Filters"
+            {{--<x-mary-button label="Filters"
                            icon="o-funnel"
                            :badge="$filterCount ?? 0"
                            badge-classes="font-mono badge-primary badge-soft"
                            @click="$wire.showFilters = true"
-                           responsive />
+                           responsive />--}}
 
            {{-- <x-crm-index-toggle :layout="$layout" model="deliveries"/>--}}
 
+{{--
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_delivery')) }}" link="{{ url(route('laravel-crm.deliveries.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+--}}
         </x-slot:actions>
     </x-mary-header>
 
