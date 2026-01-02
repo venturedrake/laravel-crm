@@ -21,7 +21,7 @@ class TaxRateController extends Controller
             $taxRates = TaxRate::latest()->paginate(30);
         }
 
-        return view('laravel-crm::tax-rates.index', [
+        return view('laravel-crm::settings.tax-rates.tax-rate-index', [
             'taxRates' => $taxRates,
         ]);
     }

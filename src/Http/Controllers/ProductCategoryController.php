@@ -22,7 +22,7 @@ class ProductCategoryController extends Controller
             $productCategories = ProductCategory::latest()->paginate(30);
         }
 
-        return view('laravel-crm::product-categories.index', [
+        return view('laravel-crm::settings.product-categories.product-category-index', [
             'productCategories' => $productCategories,
         ]);
     }

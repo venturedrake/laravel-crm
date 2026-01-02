@@ -24,7 +24,7 @@ class LabelController extends Controller
             $labels = Label::latest()->paginate(30);
         }
 
-        return view('laravel-crm::labels.index', [
+        return view('laravel-crm::settings.labels.label-index', [
             'labels' => $labels,
         ]);
     }

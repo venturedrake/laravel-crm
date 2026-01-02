@@ -22,7 +22,7 @@ class FieldGroupController extends Controller
             $fieldGroups = FieldGroup::latest()->paginate(30);
         }
 
-        return view('laravel-crm::field-groups.index', [
+        return view('laravel-crm::settings.custom-field-groups.custom-field-group-index', [
             'fieldGroups' => $fieldGroups,
         ]);
     }

@@ -23,7 +23,7 @@ class FieldController extends Controller
             $fields = Field::latest()->paginate(30);
         }
 
-        return view('laravel-crm::fields.index', [
+        return view('laravel-crm::settings.custom-fields.custom-field-index', [
             'fields' => $fields,
         ]);
     }

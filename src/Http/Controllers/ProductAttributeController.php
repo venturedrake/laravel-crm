@@ -16,14 +16,14 @@ class ProductAttributeController extends Controller
      */
     public function index()
     {
-        if (ProductAttribute::all()->count() < 30) {
-            $productAttributes = ProductAttribute::latest()->get();
-        } else {
-            $productAttributes = ProductAttribute::latest()->paginate(30);
-        }
+        /* if (ProductAttribute::all()->count() < 30) {
+             $productAttributes = ProductAttribute::latest()->get();
+         } else {
+             $productAttributes = ProductAttribute::latest()->paginate(30);
+         }*/
 
-        return view('laravel-crm::product-attributes.index', [
-            'productAttributes' => $productAttributes,
+        return view('laravel-crm::settings.product-attributes.product-attribute-index', [
+            'productAttributes' => $productAttributes ?? [],
         ]);
     }
 
