@@ -63,8 +63,6 @@ trait HasQuoteCommon
 
     public $user_owner_id;
 
-    public array $products = [];
-
     protected function rules()
     {
         return [
@@ -92,29 +90,5 @@ trait HasQuoteCommon
         $this->leadService = $leadService;
         $this->personService = $personService;
         $this->organizationService = $organizationService;
-    }
-
-    public function quoteProducts()
-    {
-        //
-    }
-
-    public function addProduct()
-    {
-        $this->products[] = [
-            'id' => null,
-            'name' => null,
-            'quantity' => null,
-            'unit_price' => null,
-            'tax_rate' => null,
-            'tax_amount' => null,
-            'amount' => null,
-            'comments' => null,
-        ];
-    }
-
-    public function removeProduct($index)
-    {
-        unset($this->products[$index]);
     }
 }

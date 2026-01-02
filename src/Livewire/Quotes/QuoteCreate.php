@@ -23,8 +23,6 @@ class QuoteCreate extends Component
         $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
-
-        $this->addProduct();
     }
 
     public function updatedPersonName($value)

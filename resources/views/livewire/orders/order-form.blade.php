@@ -39,17 +39,11 @@
                     <x-mary-badge value="New" class="badge-info badge-sm rounded-md autocomplete-new text-white" />
                 @endif
             </div>
-            <x-mary-input wire:model="title" label="{{ ucfirst(__('laravel-crm::lang.title')) }}" />
             <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
             <div class="grid lg:grid-cols-2 gap-5">
                 <x-mary-input wire:model="reference" label="{{ ucfirst(__('laravel-crm::lang.reference')) }}" />
                 <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>
-            <div class="grid lg:grid-cols-2 gap-5">
-                <x-mary-datetime wire:model="issue_at" label="{{ ucfirst(__('laravel-crm::lang.issue_date')) }}" />
-                <x-mary-datetime wire:model="expire_at" label="{{ ucfirst(__('laravel-crm::lang.expiry_date')) }}" />
-            </div>
-            <x-mary-textarea wire:model="terms" label="{{ ucfirst(__('laravel-crm::lang.terms')) }}" rows="5" />
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.stage')) }}" wire:model="pipeline_stage_id" :options="$pipeline->pipelineStages()->orderBy('order')->orderBy('id')->get() ?? []" />
             <x-mary-choices-offline
                     wire:model="labels"
@@ -62,5 +56,5 @@
     </x-mary-card>
 </div>
 <div>
-    <livewire:crm-model-products :model="$quote ?? null" />
+    <livewire:crm-model-products :model="$order ?? null" />
 </div>
