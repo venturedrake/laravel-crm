@@ -47,6 +47,17 @@ trait HasPurchaseOrderCommon
 
     public $address_country = 'United States';
 
+    public array $deliveryTypes = [
+        ['id' => 'deliver', 'name' => 'Deliver'],
+        ['id' => 'pickup', 'name' => 'Pickup'],
+    ];
+
+    public $delivery_type = 'deliver';
+
+    public array $deliveryAddresses = [];
+
+    public $delivery_instructions;
+
     public $title;
 
     public $description;
