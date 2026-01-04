@@ -5,8 +5,7 @@
         </div>
         <div class="lg:col-span-8">
             <div class="crm-content">
-                {{-- HEADER --}}
-                <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.tax_rates')) }}" class="mb-5" progress-indicator></x-mary-header>
+                <livewire:crm-settings-tax-rate-edit :$taxRate />
             </div>
         </div>
     </div>

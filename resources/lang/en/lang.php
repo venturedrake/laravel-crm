@@ -531,4 +531,6 @@ return [
     'search_teams' => 'search teams',
     'search_products' => 'search products',
     'quote_products' => 'quote products',
+    'create_tax_rate' => 'create tax rate',
+    'tax_rate_created' => 'tax rate created',
 ];
