@@ -19,6 +19,7 @@
     },
     "name": "laravel-crm",
     "dependencies": {
+        "@melloware/coloris": "^0.25.0",
         "sortablejs": "^1.15.6"
     }
 }

@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use App\User;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLabelRequest;
@@ -16,17 +15,9 @@ class LabelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index()
     {
-        if (Label::all()->count() < 30) {
-            $labels = Label::latest()->get();
-        } else {
-            $labels = Label::latest()->paginate(30);
-        }
-
-        return view('laravel-crm::settings.labels.label-index', [
-            'labels' => $labels,
-        ]);
+        return view('laravel-crm::settings.labels.index');
     }
 
     /**
@@ -36,7 +27,7 @@ class LabelController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::labels.create');
+        return view('laravel-crm::settings.labels.create');
     }
 
     /**
@@ -67,7 +58,7 @@ class LabelController extends Controller
      */
     public function show(Label $label)
     {
-        return view('laravel-crm::labels.show', [
+        return view('laravel-crm::settings.labels.show', [
             'label' => $label,
         ]);
     }
@@ -80,7 +71,7 @@ class LabelController extends Controller
      */
     public function edit(Label $label)
     {
-        return view('laravel-crm::labels.edit', [
+        return view('laravel-crm::settings.labels.edit', [
             'label' => $label,
         ]);
     }

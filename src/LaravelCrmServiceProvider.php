@@ -115,6 +115,10 @@ use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteEdit;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateIndex;
@@ -664,6 +668,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-tax-rate-create', TaxRateCreate::class);
         Livewire::component('crm-settings-tax-rate-edit', TaxRateEdit::class);
         Livewire::component('crm-settings-tax-rate-show', TaxRateShow::class);
+
+        Livewire::component('crm-settings-label-index', LabelIndex::class);
+        Livewire::component('crm-settings-label-create', LabelCreate::class);
+        Livewire::component('crm-settings-label-edit', LabelEdit::class);
+        Livewire::component('crm-settings-label-show', LabelShow::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
