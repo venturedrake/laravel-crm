@@ -22,7 +22,7 @@ class PipelineStageController extends Controller
             $pipelineStages = PipelineStage::latest()->paginate(30);
         }
 
-        return view('laravel-crm::pipeline-stages.index', [
+        return view('laravel-crm::settings.pipeline-stages.pipeline-stage-index', [
             'pipelineStages' => $pipelineStages,
         ]);
     }

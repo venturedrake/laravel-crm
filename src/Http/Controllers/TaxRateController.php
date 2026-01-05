@@ -21,7 +21,7 @@ class TaxRateController extends Controller
             $taxRates = TaxRate::latest()->paginate(30);
         }
 
-        return view('laravel-crm::tax-rates.index', [
+        return view('laravel-crm::settings.tax-rates.index', [
             'taxRates' => $taxRates,
         ]);
     }
@@ -33,7 +33,7 @@ class TaxRateController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::tax-rates.create');
+        return view('laravel-crm::settings.tax-rates.create');
     }
 
     /**
@@ -69,7 +69,7 @@ class TaxRateController extends Controller
      */
     public function show(TaxRate $taxRate)
     {
-        return view('laravel-crm::tax-rates.show', [
+        return view('laravel-crm::settings.tax-rates.show', [
             'taxRate' => $taxRate,
         ]);
     }
@@ -82,7 +82,7 @@ class TaxRateController extends Controller
      */
     public function edit(TaxRate $taxRate)
     {
-        return view('laravel-crm::tax-rates.edit', [
+        return view('laravel-crm::settings.tax-rates.edit', [
             'taxRate' => $taxRate,
         ]);
     }

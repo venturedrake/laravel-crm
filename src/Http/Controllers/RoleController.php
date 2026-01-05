@@ -22,7 +22,7 @@ class RoleController extends Controller
             })
             ->get();
 
-        return view('laravel-crm::roles.index', [
+        return view('laravel-crm::settings.permissions.role-index', [
             'roles' => $roles,
         ]);
     }

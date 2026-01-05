@@ -99,11 +99,14 @@ use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadEdit;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadShow;
+use VentureDrake\LaravelCrm\Livewire\ModelProducts;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderEdit;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderIndex;
 use VentureDrake\LaravelCrm\Livewire\Organizations\OrganizationIndex;
 use VentureDrake\LaravelCrm\Livewire\People\PersonIndex;
+use VentureDrake\LaravelCrm\Livewire\Products\ProductCreate;
+use VentureDrake\LaravelCrm\Livewire\Products\ProductEdit;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductIndex;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderCreate;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderEdit;
@@ -112,6 +115,14 @@ use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteEdit;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateShow;
 use VentureDrake\LaravelCrm\Livewire\Teams\TeamIndex;
 use VentureDrake\LaravelCrm\Livewire\Users\UserIndex;
 use VentureDrake\LaravelCrm\Models\Activity;
@@ -201,6 +212,7 @@ use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
+use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
 use VentureDrake\LaravelCrm\View\Components\Header;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
@@ -647,6 +659,20 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-user-index', UserIndex::class);
         Livewire::component('crm-team-index', TeamIndex::class);
         Livewire::component('crm-product-index', ProductIndex::class);
+        Livewire::component('crm-product-create', ProductCreate::class);
+        Livewire::component('crm-product-edit', ProductEdit::class);
+
+        Livewire::component('crm-model-products', ModelProducts::class);
+
+        Livewire::component('crm-settings-tax-rate-index', TaxRateIndex::class);
+        Livewire::component('crm-settings-tax-rate-create', TaxRateCreate::class);
+        Livewire::component('crm-settings-tax-rate-edit', TaxRateEdit::class);
+        Livewire::component('crm-settings-tax-rate-show', TaxRateShow::class);
+
+        Livewire::component('crm-settings-label-index', LabelIndex::class);
+        Livewire::component('crm-settings-label-create', LabelCreate::class);
+        Livewire::component('crm-settings-label-edit', LabelEdit::class);
+        Livewire::component('crm-settings-label-show', LabelShow::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
@@ -757,6 +783,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         // Register the main class to use with the facade
         $this->app->singleton('laravel-crm', function () {
             return new LaravelCrm;
+        });
+
+        $this->app->singleton('laravel-crm.settings', function () {
+            return new SettingService;
         });
 
         $this->app->register(LaravelCrmEventServiceProvider::class);

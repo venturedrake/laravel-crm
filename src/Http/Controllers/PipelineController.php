@@ -22,7 +22,7 @@ class PipelineController extends Controller
             $pipelines = Pipeline::latest()->paginate(30);
         }
 
-        return view('laravel-crm::pipelines.index', [
+        return view('laravel-crm::settings.pipelines.pipeline-index', [
             'pipelines' => $pipelines,
         ]);
     }

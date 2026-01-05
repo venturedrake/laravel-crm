@@ -12,6 +12,10 @@ class TaxRate extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'default' => 'boolean',
+    ];
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'tax_rates';

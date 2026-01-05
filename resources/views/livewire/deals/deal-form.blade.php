@@ -68,7 +68,7 @@
     </x-mary-card>
 </div>
 <div>
-    <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" separator>
+    <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" class="mb-5" separator>
         <div class="grid gap-3" wire:key="details">
             <x-mary-input wire:model="title" label="{{ ucfirst(__('laravel-crm::lang.title')) }}" />
             <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />

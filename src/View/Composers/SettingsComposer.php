@@ -18,7 +18,7 @@ class SettingsComposer
             now()->addHour(),
             function () {
                 $defaults = [
-                    'dateFormat' => 'Y/m/d',
+                    'dateFormat' => 'Y-m-d',
                     'timeFormat' => 'H:i',
                     'timezone' => 'UTC',
                     'taxName' => 'Tax',
@@ -40,11 +40,11 @@ class SettingsComposer
                 }
 
                 return [
-                    'dateFormat' => Setting::where('name', 'date_format')->first()?->value ?? $defaults['dateFormat'],
-                    'timeFormat' => Setting::where('name', 'time_format')->first()?->value ?? $defaults['timeFormat'],
-                    'timezone' => Setting::where('name', 'timezone')->first()?->value ?? $defaults['timezone'],
-                    'taxName' => Setting::where('name', 'tax_name')->first()?->value ?? $defaults['taxName'],
-                    'dynamicProducts' => $dynamicProducts,
+                    'crmDateFormat' => Setting::where('name', 'date_format')->first()?->value ?? $defaults['dateFormat'],
+                    'crmTimeFormat' => Setting::where('name', 'time_format')->first()?->value ?? $defaults['timeFormat'],
+                    'crmTimezone' => Setting::where('name', 'timezone')->first()?->value ?? $defaults['timezone'],
+                    'crmTaxName' => Setting::where('name', 'tax_name')->first()?->value ?? $defaults['taxName'],
+                    'crmDynamicProducts' => $dynamicProducts,
                 ];
             }
         );

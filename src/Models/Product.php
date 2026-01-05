@@ -25,6 +25,10 @@ class Product extends Model
         'labels.id',
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     public function getSearchable()
     {
         return $this->searchable;
