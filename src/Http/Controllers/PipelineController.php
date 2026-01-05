@@ -22,7 +22,7 @@ class PipelineController extends Controller
             $pipelines = Pipeline::latest()->paginate(30);
         }
 
-        return view('laravel-crm::settings.pipelines.pipeline-index', [
+        return view('laravel-crm::settings.pipelines.index', [
             'pipelines' => $pipelines,
         ]);
     }
@@ -63,7 +63,7 @@ class PipelineController extends Controller
      */
     public function show(Pipeline $pipeline)
     {
-        return view('laravel-crm::pipelines.show', [
+        return view('laravel-crm::settings.pipelines.show', [
             'pipeline' => $pipeline,
         ]);
     }
@@ -76,7 +76,7 @@ class PipelineController extends Controller
      */
     public function edit(Pipeline $pipeline)
     {
-        return view('laravel-crm::pipelines.edit', [
+        return view('laravel-crm::settings.pipelines.edit', [
             'pipeline' => $pipeline,
         ]);
     }
