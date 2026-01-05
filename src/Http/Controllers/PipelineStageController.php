@@ -16,15 +16,7 @@ class PipelineStageController extends Controller
      */
     public function index()
     {
-        if (PipelineStage::all()->count() < 30) {
-            $pipelineStages = PipelineStage::latest()->get();
-        } else {
-            $pipelineStages = PipelineStage::latest()->paginate(30);
-        }
-
-        return view('laravel-crm::settings.pipeline-stages.pipeline-stage-index', [
-            'pipelineStages' => $pipelineStages,
-        ]);
+        return view('laravel-crm::settings.pipeline-stages.index');
     }
 
     /**
