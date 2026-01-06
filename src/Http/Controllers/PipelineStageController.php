@@ -26,7 +26,7 @@ class PipelineStageController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::pipeline-stages.create');
+        return view('laravel-crm::settings.pipeline-stages.create');
     }
 
     /**
@@ -57,7 +57,7 @@ class PipelineStageController extends Controller
      */
     public function show(PipelineStage $pipelineStage)
     {
-        return view('laravel-crm::pipeline-stages.show', [
+        return view('laravel-crm::settings.pipeline-stages.show', [
             'pipelineStage' => $pipelineStage,
         ]);
     }
@@ -70,7 +70,7 @@ class PipelineStageController extends Controller
      */
     public function edit(PipelineStage $pipelineStage)
     {
-        return view('laravel-crm::pipeline-stages.edit', [
+        return view('laravel-crm::settings.pipeline-stages.edit', [
             'pipelineStage' => $pipelineStage,
         ]);
     }

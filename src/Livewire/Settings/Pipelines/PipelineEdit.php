@@ -26,7 +26,7 @@ class PipelineEdit extends Component
         ]);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.label_updated')),
+            ucfirst(trans('laravel-crm::lang.pipeline_updated')),
             redirectTo: route('laravel-crm.pipelines.index')
         );
     }

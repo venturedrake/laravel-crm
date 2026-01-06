@@ -10,10 +10,22 @@ trait HasPipelineStageCommon
 
     public $name;
 
+    public $description;
+
+    public $pipeline_id;
+
+    public $pipelines;
+
     protected function rules()
     {
         return [
             'name' => 'required|max:255',
+            'pipeline_id' => 'required',
         ];
+    }
+
+    public function mountCommon()
+    {
+        $this->pipelines = \VentureDrake\LaravelCrm\Models\Pipeline::all();
     }
 }

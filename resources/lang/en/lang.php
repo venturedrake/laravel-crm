@@ -534,4 +534,5 @@ return [
     'create_tax_rate' => 'create tax rate',
     'tax_rate_created' => 'tax rate created',
     'pipeline_stage_deleted' => 'pipeline stage deleted',
+    'pipeline_stage_updated' => 'pipeline stage updated',
 ];

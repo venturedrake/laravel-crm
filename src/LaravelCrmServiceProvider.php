@@ -122,7 +122,9 @@ use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\PipelineStageEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\PipelineStageIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\PipelineStageShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateIndex;
@@ -673,6 +675,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-pipeline-show', PipelineShow::class);
 
         Livewire::component('crm-settings-pipeline-stage-index', PipelineStageIndex::class);
+        Livewire::component('crm-settings-pipeline-stage-edit', PipelineStageEdit::class);
+        Livewire::component('crm-settings-pipeline-stage-show', PipelineStageShow::class);
 
         Livewire::component('crm-settings-tax-rate-index', TaxRateIndex::class);
         Livewire::component('crm-settings-tax-rate-create', TaxRateCreate::class);
