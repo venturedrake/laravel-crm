@@ -1,15 +1,15 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero;
+namespace VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero;
 
 use Dcblogdev\Xero\Facades\Xero;
 use Livewire\Component;
+use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Setting;
-use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class XeroConnect extends Component
 {
-    use NotifyToast;
+    use Toast;
 
     public $tennantName;
 
@@ -86,7 +86,7 @@ class XeroConnect extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.integrations.xero.xero-connect')
+        return view('laravel-crm::livewire.settings.integrations.xero.xero-connect')
             ->layout('laravel-crm::layouts.app');
     }
 }

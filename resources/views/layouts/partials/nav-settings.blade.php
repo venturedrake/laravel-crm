@@ -13,9 +13,9 @@
         @can('view crm product categories')
             <x-mary-menu-item link="{{ url(route('laravel-crm.product-categories.index')) }}" title="{{ ucwords(__('laravel-crm::lang.product_categories')) }}"  />
         @endcan
-        @can('view crm product attributes')
+        {{--@can('view crm product attributes')
             <x-mary-menu-item link="{{ url(route('laravel-crm.product-attributes.index')) }}" title="{{ ucwords(__('laravel-crm::lang.product_attributes')) }}"  />
-        @endcan
+        @endcan--}}
         @can('view crm tax rates')
             <x-mary-menu-item link="{{ url(route('laravel-crm.tax-rates.index')) }}" title="{{ ucwords(__('laravel-crm::lang.tax_rates')) }}"  />
         @endcan
