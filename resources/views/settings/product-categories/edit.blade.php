@@ -1,12 +1,11 @@
 <x-crm::app-layout>
     <div class="grid lg:grid-cols-10 gap-5">
         <div class="lg:col-span-2">
-           @include('laravel-crm::layouts.partials.nav-settings')
+            @include('laravel-crm::layouts.partials.nav-settings')
         </div>
         <div class="lg:col-span-8">
             <div class="crm-content">
-                {{-- HEADER --}}
-                <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.product_categories')) }}" class="mb-5" progress-indicator></x-mary-header>
+                <livewire:crm-settings-product-category-edit :$productCategory />
             </div>
         </div>
     </div>
