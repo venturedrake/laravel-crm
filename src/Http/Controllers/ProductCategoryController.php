@@ -16,15 +16,7 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        if (ProductCategory::all()->count() < 30) {
-            $productCategories = ProductCategory::latest()->get();
-        } else {
-            $productCategories = ProductCategory::latest()->paginate(30);
-        }
-
-        return view('laravel-crm::settings.product-categories.product-category-index', [
-            'productCategories' => $productCategories,
-        ]);
+        return view('laravel-crm::settings.product-categories.index');
     }
 
     /**
@@ -34,7 +26,7 @@ class ProductCategoryController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::product-categories.create');
+        return view('laravel-crm::settings.product-categories.create');
     }
 
     /**
@@ -64,7 +56,7 @@ class ProductCategoryController extends Controller
      */
     public function show(ProductCategory $productCategory)
     {
-        return view('laravel-crm::product-categories.show', [
+        return view('laravel-crm::settings.product-categories.show', [
             'productCategory' => $productCategory,
         ]);
     }
@@ -77,7 +69,7 @@ class ProductCategoryController extends Controller
      */
     public function edit(ProductCategory $productCategory)
     {
-        return view('laravel-crm::product-categories.edit', [
+        return view('laravel-crm::settings.product-categories.edit', [
             'productCategory' => $productCategory,
         ]);
     }

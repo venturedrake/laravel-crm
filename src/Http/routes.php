@@ -1342,7 +1342,7 @@ Route::group(['prefix' => 'field-groups', 'middleware' => 'auth.laravel-crm'], f
 
 Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], function () {
     Route::group(['prefix' => 'xero'], function () {
-        Route::get('', \VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect::class)->name('laravel-crm.integrations.xero');
+        Route::get('', \VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect::class)->name('laravel-crm.integrations.xero');
 
         Route::get('connect', function () {
             return \Dcblogdev\Xero\Facades\Xero::connect();

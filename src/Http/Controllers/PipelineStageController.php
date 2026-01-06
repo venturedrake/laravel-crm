@@ -16,15 +16,7 @@ class PipelineStageController extends Controller
      */
     public function index()
     {
-        if (PipelineStage::all()->count() < 30) {
-            $pipelineStages = PipelineStage::latest()->get();
-        } else {
-            $pipelineStages = PipelineStage::latest()->paginate(30);
-        }
-
-        return view('laravel-crm::settings.pipeline-stages.pipeline-stage-index', [
-            'pipelineStages' => $pipelineStages,
-        ]);
+        return view('laravel-crm::settings.pipeline-stages.index');
     }
 
     /**
@@ -34,7 +26,7 @@ class PipelineStageController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::pipeline-stages.create');
+        return view('laravel-crm::settings.pipeline-stages.create');
     }
 
     /**
@@ -65,7 +57,7 @@ class PipelineStageController extends Controller
      */
     public function show(PipelineStage $pipelineStage)
     {
-        return view('laravel-crm::pipeline-stages.show', [
+        return view('laravel-crm::settings.pipeline-stages.show', [
             'pipelineStage' => $pipelineStage,
         ]);
     }
@@ -78,7 +70,7 @@ class PipelineStageController extends Controller
      */
     public function edit(PipelineStage $pipelineStage)
     {
-        return view('laravel-crm::pipeline-stages.edit', [
+        return view('laravel-crm::settings.pipeline-stages.edit', [
             'pipelineStage' => $pipelineStage,
         ]);
     }

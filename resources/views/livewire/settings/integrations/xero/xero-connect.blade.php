@@ -1,3 +1,64 @@
+<div class="grid lg:grid-cols-10 gap-5">
+    <div class="lg:col-span-2">
+        @include('laravel-crm::layouts.partials.nav-settings')
+    </div>
+    <div class="lg:col-span-8">
+        <div class="crm-content">
+            <x-mary-header title="Xero" class="mb-5" progress-indicator></x-mary-header>
+            <x-mary-card shadow separator>
+                <div class="grid gap-y-5">
+                    <p>Connect to xero accounting to sync contacts, products, quotes & generate invoices.</p>
+                    <hr />
+                    @if(isset($tenantName))
+                        <div role="alert" class="alert alert-info alert-soft">
+                            <span>You are connected to the Xero organization <strong>{{ $tenantName }}</strong>.</span>
+                        </div>
+                        <hr />
+                        <x-mary-button label="Disconnect Xero" link="{{ route('laravel-crm.integrations.xero.disconnect')  }}" class="btn btn-success btn-outline" />
+                        <hr />
+                        <h3>Settings</h3>
+                        <form wire:submit.prevent="updateSettings">
+                            <x-mary-toggle label="Sync Contacts" wire:model="setting_contacts" right />
+                            <x-mary-toggle label="Sync Products" wire:model="setting_products" right />
+                           {{-- <x-mary-toggle label="Create & Update Quotes" wire:model="setting_quotes" right />--}}
+                            <x-mary-toggle label="Create & Update Invoices" wire:model="setting_invoices" right />
+                            <hr />
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
+                            </div>
+                        </form>
+                    @else
+                        <x-mary-button label="Connect to Xero" link="{{ route('laravel-crm.integrations.xero.connect') }}" class="btn btn-outline" />
+                    @endif
+                </div>
+            </x-mary-card>
+        </div>
+    </div>
+</div>
+
+@push('livewire-js')
+    <script>
+        $(document).ready(function () {
+            $('#setting_contacts').change(function() {
+                @this.set('setting_contacts', $(this).prop('checked'));
+            })
+
+            $('#setting_products').change(function() {
+                @this.set('setting_products', $(this).prop('checked'));
+            })
+
+            $('#setting_quotes').change(function() {
+                @this.set('setting_quotes', $(this).prop('checked'));
+            })
+
+            $('#setting_invoices').change(function() {
+                @this.set('setting_invoices', $(this).prop('checked'));
+            })
+        });
+    </script>
+@endpush
+
+{{--
 <div>
     <div class="container-fluid pl-0">
         <div class="row">
@@ -40,12 +101,14 @@
                                             <input wire:model="setting_products" id="setting_products" type="checkbox" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                                         </td>
                                     </tr>
-                                    {{--<tr>
+                                    --}}
+{{--<tr>
                                         <td>Create & Update Quotes</td>
                                         <td wire:ignore class="disable-link text-right">
                                             <input wire:model="setting_quotes" id="setting_quotes" type="checkbox" name="setting_quotes" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
                                         </td>
-                                    </tr>--}}
+                                    </tr>--}}{{--
+
                                     <tr>
                                         <td>Create & Update Invoices</td>
                                         <td wire:ignore class="disable-link text-right">
@@ -90,4 +153,4 @@
             });
         </script>
     @endpush
-</div>
+</div>--}}
