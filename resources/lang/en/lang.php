@@ -535,4 +535,7 @@ return [
     'tax_rate_created' => 'tax rate created',
     'pipeline_stage_deleted' => 'pipeline stage deleted',
     'pipeline_stage_updated' => 'pipeline stage updated',
+    'custom_field_group_created' => 'custom field group created',
+    'custom_field_group_updated' => 'custom field group updated',
+    'custom_field_group_deleted' => 'custom field group deleted',
 ];

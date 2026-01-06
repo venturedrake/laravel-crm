@@ -115,6 +115,10 @@ use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteEdit;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelIndex;
@@ -696,6 +700,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-label-create', LabelCreate::class);
         Livewire::component('crm-settings-label-edit', LabelEdit::class);
         Livewire::component('crm-settings-label-show', LabelShow::class);
+
+        Livewire::component('crm-settings-custom-field-group-index', CustomFieldGroupIndex::class);
+        Livewire::component('crm-settings-custom-field-group-create', CustomFieldGroupCreate::class);
+        Livewire::component('crm-settings-custom-field-group-edit', CustomFieldGroupEdit::class);
+        Livewire::component('crm-settings-custom-field-group-show', CustomFieldGroupShow::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {

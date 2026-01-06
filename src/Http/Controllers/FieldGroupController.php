@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use App\User;
 use VentureDrake\LaravelCrm\Http\Requests\StoreFieldGroupRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateFieldGroupRequest;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
@@ -14,17 +13,9 @@ class FieldGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index()
     {
-        if (FieldGroup::all()->count() < 30) {
-            $fieldGroups = FieldGroup::latest()->get();
-        } else {
-            $fieldGroups = FieldGroup::latest()->paginate(30);
-        }
-
-        return view('laravel-crm::settings.custom-field-groups.custom-field-group-index', [
-            'fieldGroups' => $fieldGroups,
-        ]);
+        return view('laravel-crm::settings.custom-field-groups.index');
     }
 
     /**
@@ -34,7 +25,7 @@ class FieldGroupController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::field-groups.create');
+        return view('laravel-crm::settings.custom-field-groups.create');
     }
 
     /**
@@ -62,7 +53,7 @@ class FieldGroupController extends Controller
      */
     public function show(FieldGroup $fieldGroup)
     {
-        return view('laravel-crm::field-groups.show', [
+        return view('laravel-crm::settings.custom-field-groups.show', [
             'fieldGroup' => $fieldGroup,
         ]);
     }
@@ -75,7 +66,7 @@ class FieldGroupController extends Controller
      */
     public function edit(FieldGroup $fieldGroup)
     {
-        return view('laravel-crm::field-groups.edit', [
+        return view('laravel-crm::settings.custom-field-groups.edit', [
             'fieldGroup' => $fieldGroup,
         ]);
     }
