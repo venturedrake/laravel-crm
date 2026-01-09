@@ -119,6 +119,10 @@ use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroup
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelIndex;
@@ -700,6 +704,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-label-create', LabelCreate::class);
         Livewire::component('crm-settings-label-edit', LabelEdit::class);
         Livewire::component('crm-settings-label-show', LabelShow::class);
+
+        Livewire::component('crm-settings-custom-field-index', CustomFieldIndex::class);
+        Livewire::component('crm-settings-custom-field-create', CustomFieldCreate::class);
+        Livewire::component('crm-settings-custom-field-edit', CustomFieldEdit::class);
+        Livewire::component('crm-settings-custom-field-show', CustomFieldShow::class);
 
         Livewire::component('crm-settings-custom-field-group-index', CustomFieldGroupIndex::class);
         Livewire::component('crm-settings-custom-field-group-create', CustomFieldGroupCreate::class);

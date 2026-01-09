@@ -538,4 +538,8 @@ return [
     'custom_field_group_created' => 'custom field group created',
     'custom_field_group_updated' => 'custom field group updated',
     'custom_field_group_deleted' => 'custom field group deleted',
+    'back_to_custom_fields' => 'back to custom fields',
+    'custom_field_created' => 'custom field created',
+    'custom_field_updated' => 'custom field updated',
+    'custom_field_deleted' => 'custom field deleted',
 ];

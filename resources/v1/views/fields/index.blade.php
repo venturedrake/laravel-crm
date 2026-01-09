@@ -46,7 +46,7 @@
                                                 @foreach(\VentureDrake\LaravelCrm\Models\FieldModel::where('field_id', $field->id)->get() as $fieldModel)
                                                     <span class="badge badge-secondary">
                                                  {{ \Illuminate\Support\Str::plural(class_basename($fieldModel->model)) }}
-                                            </span>
+                                                    </span>
                                                 @endforeach
                                             </td>
                                             <td class="disable-link text-right">
