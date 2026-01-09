@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use App\User;
 use VentureDrake\LaravelCrm\Http\Requests\StoreFieldRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateFieldRequest;
 use VentureDrake\LaravelCrm\Models\Field;
@@ -15,17 +14,9 @@ class FieldController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index()
     {
-        if (Field::all()->count() < 30) {
-            $fields = Field::latest()->get();
-        } else {
-            $fields = Field::latest()->paginate(30);
-        }
-
-        return view('laravel-crm::settings.custom-fields.custom-field-index', [
-            'fields' => $fields,
-        ]);
+        return view('laravel-crm::settings.custom-fields.index');
     }
 
     /**
@@ -35,7 +26,7 @@ class FieldController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::fields.create');
+        return view('laravel-crm::settings.custom-fields.create');
     }
 
     /**
@@ -69,7 +60,7 @@ class FieldController extends Controller
      */
     public function show(Field $field)
     {
-        return view('laravel-crm::fields.show', [
+        return view('laravel-crm::settings.custom-fields.show', [
             'field' => $field,
         ]);
     }
@@ -82,7 +73,7 @@ class FieldController extends Controller
      */
     public function edit(Field $field)
     {
-        return view('laravel-crm::fields.edit', [
+        return view('laravel-crm::settings.custom-fields.edit', [
             'field' => $field,
         ]);
     }
