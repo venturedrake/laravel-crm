@@ -5,7 +5,7 @@
         </div>
         <div class="lg:col-span-8">
             <div class="crm-content">
-                <livewire:crm-settings-role-index />
+                <livewire:crm-settings-role-show :$role  />
             </div>
         </div>
     </div>

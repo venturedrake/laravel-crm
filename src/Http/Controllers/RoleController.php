@@ -16,15 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::crm()
-            ->when(config('laravel-crm.teams'), function ($query) {
-                return $query->where('team_id', auth()->user()->currentTeam->id);
-            })
-            ->get();
-
-        return view('laravel-crm::settings.permissions.role-index', [
-            'roles' => $roles,
-        ]);
+        return view('laravel-crm::settings.permissions.role-index');
     }
 
     /**
@@ -34,7 +26,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::roles.create', [
+        return view('laravel-crm::settings.permissions.role-create', [
             'permissions' => \VentureDrake\LaravelCrm\Models\Permission::all(),
         ]);
     }
@@ -84,7 +76,7 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        return view('laravel-crm::roles.show', [
+        return view('laravel-crm::settings.permissions.role-show', [
             'role' => $role,
         ]);
     }
@@ -97,7 +89,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        return view('laravel-crm::roles.edit', [
+        return view('laravel-crm::settings.permissions.role-edit', [
             'role' => $role,
             'permissions' => \VentureDrake\LaravelCrm\Models\Permission::all(),
         ]);

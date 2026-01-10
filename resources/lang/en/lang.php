@@ -542,4 +542,5 @@ return [
     'custom_field_created' => 'custom field created',
     'custom_field_updated' => 'custom field updated',
     'custom_field_deleted' => 'custom field deleted',
+    'role_created' => 'role created',
 ];

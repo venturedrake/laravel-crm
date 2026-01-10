@@ -127,6 +127,10 @@ use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineShow;
@@ -681,6 +685,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-product-edit', ProductEdit::class);
 
         Livewire::component('crm-model-products', ModelProducts::class);
+
+        Livewire::component('crm-settings-role-index', RoleIndex::class);
+        Livewire::component('crm-settings-role-create', RoleCreate::class);
+        Livewire::component('crm-settings-role-edit', RoleEdit::class);
+        Livewire::component('crm-settings-role-show', RoleShow::class);
 
         Livewire::component('crm-settings-pipeline-index', PipelineIndex::class);
         Livewire::component('crm-settings-pipeline-edit', PipelineEdit::class);
