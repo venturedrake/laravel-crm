@@ -99,6 +99,9 @@ use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadEdit;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadShow;
+use VentureDrake\LaravelCrm\Livewire\ModelAddresses;
+use VentureDrake\LaravelCrm\Livewire\ModelEmails;
+use VentureDrake\LaravelCrm\Livewire\ModelPhones;
 use VentureDrake\LaravelCrm\Livewire\ModelProducts;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderEdit;
@@ -141,6 +144,7 @@ use VentureDrake\LaravelCrm\Livewire\Settings\ProductCategories\ProductCategoryC
 use VentureDrake\LaravelCrm\Livewire\Settings\ProductCategories\ProductCategoryEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\ProductCategories\ProductCategoryIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\ProductCategories\ProductCategoryShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\SettingEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateIndex;
@@ -684,7 +688,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-product-create', ProductCreate::class);
         Livewire::component('crm-product-edit', ProductEdit::class);
 
+        Livewire::component('crm-model-phones', ModelPhones::class);
+        Livewire::component('crm-model-emails', ModelEmails::class);
+        Livewire::component('crm-model-addresses', ModelAddresses::class);
         Livewire::component('crm-model-products', ModelProducts::class);
+
+        Livewire::component('crm-settings-edit', SettingEdit::class);
 
         Livewire::component('crm-settings-role-index', RoleIndex::class);
         Livewire::component('crm-settings-role-create', RoleCreate::class);

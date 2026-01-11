@@ -29,7 +29,7 @@ class SettingController extends Controller
      */
     public function edit()
     {
-        $organizationName = $this->settingService->get('organization_name');
+        /*$organizationName = $this->settingService->get('organization_name');
         $vatNumber = $this->settingService->get('vat_number');
         $language = $this->settingService->get('language');
         $country = $this->settingService->get('country');
@@ -87,7 +87,9 @@ class SettingController extends Controller
             'emails' => $related->emails,
             'phones' => $related->phones,
             'addresses' => $related->addresses,
-        ]);
+        ]);*/
+
+        return view('laravel-crm::settings.edit');
     }
 
     /**
