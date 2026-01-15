@@ -10,7 +10,6 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Label;
-use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
@@ -34,6 +33,13 @@ class UserIndex extends Component
 
     public bool $showFilters = false;
 
+    public $dateFormat;
+
+    public function mount()
+    {
+        $this->dateFormat = app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format'));
+    }
+
     public function filterCount(): int
     {
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
@@ -52,21 +58,23 @@ class UserIndex extends Component
     public function headers()
     {
         return [
-            ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            /* ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
-            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
-            ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],*/
+            ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
+            ['key' => 'email', 'label' => ucfirst(__('laravel-crm::lang.email'))],
+            ['key' => 'email_verified_at', 'label' => ucwords(__('laravel-crm::lang.email_verified')), 'format' => fn ($row, $field) => ($field) ? $field->format($this->dateFormat) : null],
+            ['key' => 'crm_access', 'label' => ucfirst(__('laravel-crm::lang.CRM_Access')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
+            ['key' => 'role', 'label' => ucfirst(__('laravel-crm::lang.role')), 'sortable' => false],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
+            ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
+            ['key' => 'last_online_at', 'label' => ucwords(__('laravel-crm::lang.last_online')), 'format' => fn ($row, $field) => ($field) ? \Carbon\Carbon::parse($field)->diffForHumans() : ucfirst(__('laravel-crm::lang.never'))],
+
         ];
     }
 
     public function users(): LengthAwarePaginator
     {
-        return User::when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
+        return User::when($this->search, function (Builder $q) {
+            $q->where('name', 'like', "%$this->search%");
+        })->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);

@@ -24,20 +24,29 @@
     {{-- TABLE --}}
     <x-mary-card shadow>
         <x-mary-table :headers="$headers" :rows="$organizations" link="/organizations/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+            @scope('cell_xeroContact', $organization)
+                @if($organization->xeroContact)
+                    <img src="/vendor/laravel-crm/img/xero-icon.png" height="20"/>
+                @endif
+            @endscope
             @scope('cell_labels', $organization)
                 @foreach($organization->labels as $label)
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
                 @endforeach 
             @endscope
-            @scope('cell_pipeline_stage', $organization)
-                @if($organization->pipelineStage)
-                    <x-mary-badge :value="$organization->pipelineStage->name" class="badge badge-neutral text-white" />
-                @endif
+            @scope('cell_open_deals', $organization)
+                {{ $organization->deals->whereNull('closed_at')->count() }}
+            @endscope
+            @scope('cell_lost_deals', $organization)
+                {{ $organization->deals->where('closed_status', 'lost')->count() }}
+            @endscope
+            @scope('cell_won_deals', $organization)
+                {{ $organization->deals->where('closed_status', 'won')->count() }}
             @endscope
             @scope('actions', $organization)
             <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.organizations.show', $organization)) }}" class="btn-sm btn-square btn-outline" />
             <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.organizations.edit', $organization)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeleteLead{{ $organization->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+            <x-mary-button onclick="modalDeleteOrganization{{ $organization->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
             <x-crm-delete-confirm model="organization" id="{{ $organization->id }}" />
             @endscope
         </x-mary-table>

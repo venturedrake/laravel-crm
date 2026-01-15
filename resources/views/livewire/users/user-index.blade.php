@@ -17,28 +17,33 @@
 
            {{-- <x-crm-index-toggle :layout="$layout" model="users"/>--}}
 
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_user')) }}" link="{{ url(route('laravel-crm.users.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm users')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_user')) }}" link="{{ url(route('laravel-crm.users.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan
         </x-slot:actions>
     </x-mary-header>
 
     {{-- TABLE --}}
     <x-mary-card shadow>
         <x-mary-table :headers="$headers" :rows="$users" link="/users/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
-            @scope('cell_labels', $user)
-                @foreach($user->labels as $label)
-                    <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-                @endforeach 
-            @endscope
-            @scope('cell_pipeline_stage', $user)
-                @if($user->pipelineStage)
-                    <x-mary-badge :value="$user->pipelineStage->name" class="badge badge-neutral text-white" />
-                @endif
+            @scope('cell_role', $user)
+                {{ $user->roles()->first()->name ?? null }}
             @endscope
             @scope('actions', $user)
-            <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.users.show', $user)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.users.edit', $user)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeleteLead{{ $user->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-            <x-crm-delete-confirm model="user" id="{{ $user->id }}" />
+            @can('view crm users')
+                <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.users.show', $user)) }}" class="btn-sm btn-square btn-outline" />
+            @endcan
+            @can('edit crm users')
+                <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.users.edit', $user)) }}" class="btn-sm btn-square btn-outline" />
+            @endcan
+            @can('delete crm users')
+                @if(auth()->user()->id == $user->id)
+                    <x-mary-button icon="o-trash" class="btn-sm btn-square btn-error" disabled />
+                @else
+                    <x-mary-button onclick="modalDeleteUser{{ $user->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                    <x-crm-delete-confirm model="user" id="{{ $user->id }}" />
+                @endif
+            @endcan
             @endscope
         </x-mary-table>
     </x-mary-card>

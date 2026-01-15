@@ -52,21 +52,24 @@ class OrganizationIndex extends Component
     public function headers()
     {
         return [
-            ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            /* ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
+            ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
+            ['key' => 'xeroContact', 'label' => '', 'sortable' => false],
+            ['key' => 'organizationType.name', 'label' => ucfirst(__('laravel-crm::lang.type')), 'sortable' => false],
             ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
-            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],*/
+            ['key' => 'open_deals', 'label' => ucfirst(__('laravel-crm::lang.open_deals')), 'sortable' => false],
+            ['key' => 'lost_deals', 'label' => ucfirst(__('laravel-crm::lang.lost_deals')), 'sortable' => false],
+            ['key' => 'won_deals', 'label' => ucfirst(__('laravel-crm::lang.won_deals')), 'sortable' => false],
+            ['key' => 'next_activity', 'label' => ucfirst(__('laravel-crm::lang.next_activity')), 'sortable' => false],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
+            ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
         ];
     }
 
     public function organizations(): LengthAwarePaginator
     {
-        return Organization::when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
+        return Organization::when($this->search, function (Builder $q) {
+            $q->where('name', 'like', "%$this->search%");
+        })->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);

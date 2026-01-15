@@ -545,5 +545,5 @@ return [
     'role_created' => 'role created',
     'general' => 'general',
     'default_tax_name' => 'default tax name',
-    'default_tax_rate' => 'default tax rate',
+    'never' => 'never',
 ];

@@ -29,15 +29,25 @@
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
                 @endforeach 
             @endscope
-            @scope('cell_pipeline_stage', $person)
-                @if($person->pipelineStage)
-                    <x-mary-badge :value="$person->pipelineStage->name" class="badge badge-neutral text-white" />
-                @endif
+            @scope('cell_email', $person)
+                {{ $person->getPrimaryEmail()->address ?? null }}
+            @endscope
+            @scope('cell_phone', $person)
+                {{ $person->getPrimaryPhone()->number ?? null }}
+            @endscope
+            @scope('cell_open_deals', $person)
+                {{ $person->deals->whereNull('closed_at')->count() }}
+            @endscope
+            @scope('cell_lost_deals', $person)
+                {{ $person->deals->where('closed_status', 'lost')->count() }}
+            @endscope
+            @scope('cell_won_deals', $person)
+                {{ $person->deals->where('closed_status', 'won')->count() }}
             @endscope
             @scope('actions', $person)
             <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.people.show', $person)) }}" class="btn-sm btn-square btn-outline" />
             <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.people.edit', $person)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeleteLead{{ $person->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+            <x-mary-button onclick="modalDeletePerson{{ $person->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
             <x-crm-delete-confirm model="person" id="{{ $person->id }}" />
             @endscope
         </x-mary-table>

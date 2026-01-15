@@ -10,7 +10,6 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Label;
-use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Team;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -53,21 +52,19 @@ class TeamIndex extends Component
     public function headers()
     {
         return [
+            ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
+            ['key' => 'users', 'label' => ucfirst(__('laravel-crm::lang.users')), 'format' => fn ($row, $field) => count($field)],
+            ['key' => 'userCreated.name', 'label' => ucfirst(__('laravel-crm::lang.created_by')), 'format' => fn ($row, $field) => $field ?? null, 'sortable' => false],
+            ['key' => 'ownerUser.name', 'label' => ucfirst(__('laravel-crm::lang.owner')), 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            /* ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
-            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
-            ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],*/
-            ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
         ];
     }
 
     public function teams(): LengthAwarePaginator
     {
-        return Team::when($this->user_id, fn (Builder $q) => $q->whereIn('team_owner_id', $this->user_id))
+        return Team::when($this->search, function (Builder $q) {
+            $q->where('name', 'like', "%$this->search%");
+        })->when($this->user_id, fn (Builder $q) => $q->whereIn('team_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);
