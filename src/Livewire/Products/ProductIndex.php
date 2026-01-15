@@ -34,6 +34,16 @@ class ProductIndex extends Component
 
     public bool $showFilters = false;
 
+    public $dateFormat;
+
+    public $currency;
+
+    public function mount()
+    {
+        $this->dateFormat = app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format'));
+        $this->currency = app('laravel-crm.settings')->get('currency', config('laravel-crm.currency'));
+    }
+
     public function filterCount(): int
     {
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
@@ -52,21 +62,25 @@ class ProductIndex extends Component
     public function headers()
     {
         return [
-            ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            /* ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
-            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
-            ['key' => 'product.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],*/
+            ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
+            ['key' => 'xeroItem', 'label' => '', 'sortable' => false],
+            ['key' => 'code', 'label' => strtoupper(__('laravel-crm::lang.sku'))],
+            ['key' => 'productCategory.name', 'label' => ucfirst(__('laravel-crm::lang.category'))],
+            ['key' => 'unit', 'label' => ucfirst(__('laravel-crm::lang.unit'))],
+            ['key' => 'price', 'label' => ucfirst(__('laravel-crm::lang.price')).' ('.$this->currency.')'],
+            ['key' => 'taxRate.name', 'label' => ucfirst(__('laravel-crm::lang.tax'))],
+            ['key' => 'taxRate.name', 'label' => ucfirst(__('laravel-crm::lang.tax_rate'))],
+            ['key' => 'active', 'label' => ucfirst(__('laravel-crm::lang.active')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
+            ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
         ];
     }
 
     public function products(): LengthAwarePaginator
     {
-        return Product::when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
+        return Product::when($this->search, function (Builder $q) {
+            $q->where('name', 'like', "%$this->search%");
+        })->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);

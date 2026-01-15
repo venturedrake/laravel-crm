@@ -16,29 +16,35 @@
                            responsive />--}}
 
            {{-- <x-crm-index-toggle :layout="$layout" model="products"/>--}}
-
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_product')) }}" link="{{ url(route('laravel-crm.products.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm products')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_product')) }}" link="{{ url(route('laravel-crm.products.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan    
         </x-slot:actions>
     </x-mary-header>
 
     {{-- TABLE --}}
     <x-mary-card shadow>
         <x-mary-table :headers="$headers" :rows="$products" link="/products/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
-            @scope('cell_labels', $product)
-                @foreach($product->labels as $label)
-                    <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-                @endforeach 
+            @scope('cell_xeroItem', $product)
+                @if($product->xeroItem)<img src="/vendor/laravel-crm/img/xero-icon.png" height="20" />@endif
             @endscope
-            @scope('cell_pipeline_stage', $product)
-                @if($product->pipelineStage)
-                    <x-mary-badge :value="$product->pipelineStage->name" class="badge badge-neutral text-white" />
-                @endif
+            @scope('cell_price', $product)
+                {{ (isset($product->getDefaultPrice()->unit_price)) ? money($product->getDefaultPrice()->unit_price ?? null, $product->getDefaultPrice()->currency) : null }}
+            @endscope
+            @scope('cell_tax_rate', $product)
+                {{ $product->tax_rate ?? $product->taxRate->rate ?? 0 }}%   
             @endscope
             @scope('actions', $product)
-            <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.products.show', $product)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.products.edit', $product)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeleteLead{{ $product->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-            <x-crm-delete-confirm model="product" id="{{ $product->id }}" />
+            @can('view crm products')
+                <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.products.show', $product)) }}" class="btn-sm btn-square btn-outline" />
+            @endcan
+            @can('edit crm products')
+                <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.products.edit', $product)) }}" class="btn-sm btn-square btn-outline" />
+            @endcan
+            @can('delete crm products')
+                <x-mary-button onclick="modalDeleteLead{{ $product->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                <x-crm-delete-confirm model="product" id="{{ $product->id }}" />
+            @endcan
             @endscope
         </x-mary-table>
     </x-mary-card>
