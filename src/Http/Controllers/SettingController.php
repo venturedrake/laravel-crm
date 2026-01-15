@@ -29,66 +29,6 @@ class SettingController extends Controller
      */
     public function edit()
     {
-        /*$organizationName = $this->settingService->get('organization_name');
-        $vatNumber = $this->settingService->get('vat_number');
-        $language = $this->settingService->get('language');
-        $country = $this->settingService->get('country');
-        $currency = $this->settingService->get('currency');
-        $timezoneSetting = $this->settingService->get('timezone');
-        $logoFile = $this->settingService->get('logo_file');
-        $leadPrefix = $this->settingService->get('lead_prefix');
-        $dealPrefix = $this->settingService->get('deal_prefix');
-        $quotePrefix = $this->settingService->get('quote_prefix');
-        $orderPrefix = $this->settingService->get('order_prefix');
-        $invoicePrefix = $this->settingService->get('invoice_prefix');
-        $deliveryPrefix = $this->settingService->get('delivery_prefix');
-        $purchaseOrderPrefix = $this->settingService->get('purchase_order_prefix');
-        $quoteTerms = $this->settingService->get('quote_terms');
-        $invoiceContactDetails = $this->settingService->get('invoice_contact_details');
-        $invoiceTerms = $this->settingService->get('invoice_terms');
-        $invoicePaymentInstructions = $this->settingService->get('invoice_payment_instructions');
-        $purchaseOrderTerms = $this->settingService->get('purchase_order_terms');
-        $purchaseOrderDeliveryInstructions = $this->settingService->get('purchase_order_delivery_instructions');
-        $dateFormatSetting = $this->settingService->get('date_format');
-        $timeFormatSetting = $this->settingService->get('time_format');
-        $showRelatedActivity = $this->settingService->get('show_related_activity');
-        $dynamicProductsSetting = $this->settingService->get('dynamic_products');
-        $taxNameSetting = $this->settingService->get('tax_name');
-        $taxRateSetting = $this->settingService->get('tax_rate');
-        $related = $this->settingService->get('team');
-
-        return view('laravel-crm::settings.edit', [
-            'organizationName' => $organizationName,
-            'vatNumber' => $vatNumber,
-            'language' => $language,
-            'country' => $country,
-            'currency' => $currency,
-            'timezoneSetting' => $timezoneSetting,
-            'logoFile' => $logoFile,
-            'leadPrefix' => $leadPrefix,
-            'dealPrefix' => $dealPrefix,
-            'quotePrefix' => $quotePrefix,
-            'orderPrefix' => $orderPrefix,
-            'invoicePrefix' => $invoicePrefix,
-            'deliveryPrefix' => $deliveryPrefix,
-            'purchaseOrderPrefix' => $purchaseOrderPrefix,
-            'quoteTerms' => $quoteTerms,
-            'invoiceContactDetails' => $invoiceContactDetails,
-            'invoiceTerms' => $invoiceTerms,
-            'invoicePaymentInstructions' => $invoicePaymentInstructions,
-            'purchaseOrderTerms' => $purchaseOrderTerms,
-            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions,
-            'dateFormatSetting' => $dateFormatSetting,
-            'timeFormatSetting' => $timeFormatSetting,
-            'showRelatedActivity' => $showRelatedActivity,
-            'dynamicProductsSetting' => $dynamicProductsSetting,
-            'taxNameSetting' => $taxNameSetting,
-            'taxRateSetting' => $taxRateSetting,
-            'emails' => $related->emails,
-            'phones' => $related->phones,
-            'addresses' => $related->addresses,
-        ]);*/
-
         return view('laravel-crm::settings.edit');
     }
 
@@ -169,7 +109,8 @@ class SettingController extends Controller
         }
 
         if ($request->purchase_order_delivery_instructions) {
-            $this->settingService->set('purchase_order_delivery_instructions', $request->purchase_order_delivery_instructions);
+            $this->settingService->set('purchase_order_delivery_instructions',
+                $request->purchase_order_delivery_instructions);
         }
 
         $this->settingService->set('date_format', $request->date_format);

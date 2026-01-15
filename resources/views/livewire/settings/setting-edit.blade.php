@@ -7,12 +7,16 @@
                     <div class="grid gap-3" wire:key="details">
                         <x-mary-input wire:model="organizationName" label="{{ ucfirst(__('laravel-crm::lang.organization_name')) }}" required />
                         <x-mary-input wire:model="vatNumber" label="{{ ucfirst(__('laravel-crm::lang.vat_number')) }}" />
-                        @isset($logoFile)
+                        @if ($logoFile)
                             <div>
-                                <img src=" {{ ($logoFile) ? asset('storage/'.$logoFile->value) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
+                                <img src="{{ $logoFile->temporaryUrl() }}">
                             </div>
-                        @endisset
-                        <x-mary-file wire:model="logo" label="{{ ucfirst(__('laravel-crm::lang.logo')) }}" />
+                        @elseif($logo)
+                            <div>
+                                <img src=" {{ ($logo) ? asset('storage/'.$logo) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
+                            </div>
+                        @endif
+                        <x-mary-file wire:model="logoFile" label="{{ ucfirst(__('laravel-crm::lang.logo')) }}" />
                         <x-mary-select wire:model="country" label="{{ ucfirst(__('laravel-crm::lang.country')) }}" :options="$countries" required />
                         <x-mary-select wire:model="language" label="{{ ucfirst(__('laravel-crm::lang.language')) }}" :options="$languages" required />
                         <x-mary-select wire:model="currency" label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" :options="$currencies" required />
