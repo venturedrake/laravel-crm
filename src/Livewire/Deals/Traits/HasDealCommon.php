@@ -66,7 +66,14 @@ trait HasDealCommon
 
     public $user_owner_id;
 
-    public array $products = [];
+    public array $products;
+    
+    public array $productOptions = [
+        [
+            'id' => null,
+            'name' => null
+        ]
+    ];
 
     protected function rules()
     {
@@ -96,12 +103,33 @@ trait HasDealCommon
         $this->personService = $personService;
         $this->organizationService = $organizationService;
     }
+    
+    public function mountCommon()
+    {
+        foreach(\VentureDrake\LaravelCrm\Models\Product::orderBy('name')->get() as $product) {
+            $this->productOptions[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+            ];
+        }
+    }
+    
+    public function updatedProducts($value, $key)
+    {
+        foreach ($this->products as $index => $product) {
+            if($dealProduct = \VentureDrake\LaravelCrm\Models\Product::find($product['id'])){
+                $price = $dealProduct->getDefaultPrice()->unit_price ?? 0;
+                $quantity = $product['quantity'] ?? 1;
+                $this->products[$index]['price'] = $price;
+                $this->products[$index]['amount'] = $price * $quantity;
+            }
+        }
+    }
 
     public function addProduct()
     {
         $this->products[] = [
             'id' => null,
-            'name' => '',
             'price' => 0,
             'quantity' => 1,
             'amount' => 0,
