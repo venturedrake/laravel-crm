@@ -42,7 +42,7 @@
                 <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.products.edit', $product)) }}" class="btn-sm btn-square btn-outline" />
             @endcan
             @can('delete crm products')
-                <x-mary-button onclick="modalDeleteLead{{ $product->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                <x-mary-button onclick="modalDeleteProduct{{ $product->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
                 <x-crm-delete-confirm model="product" id="{{ $product->id }}" />
             @endcan
             @endscope

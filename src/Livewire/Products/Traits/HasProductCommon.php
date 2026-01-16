@@ -3,65 +3,70 @@
 namespace VentureDrake\LaravelCrm\Livewire\Products\Traits;
 
 use Mary\Traits\Toast;
-use VentureDrake\LaravelCrm\Services\LeadService;
-use VentureDrake\LaravelCrm\Services\OrganizationService;
-use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Models\TaxRate;
+use VentureDrake\LaravelCrm\Services\ProductService;
 
 trait HasProductCommon
 {
     use Toast;
 
-    protected LeadService $leadService;
+    protected ProductService $productService;
 
-    protected PersonService $personService;
+    public $name;
 
-    protected OrganizationService $organizationService;
+    public $code;
 
-    public $title;
+    public $barcode;
+
+    public array $productCategories = [
+        ['id' => null, 'name' => null],
+    ];
+
+    public $product_category;
+
+    public $purchase_account;
+
+    public $sales_account;
 
     public $description;
 
-    public $amount;
+    public $unit;
 
-    public $currency;
-
-    public array $labels;
+    public $unit_price;
 
     public array $taxRates = [
         ['id' => null, 'name' => null],
     ];
 
+    public $tax_rate_id;
+
+    public $tax_rate;
+
+    public $currency;
+
+    public $user_owner_id;
+
     protected function rules()
     {
         return [
-            'person_name' => 'required_without_all:organization_name,organization_id|max:255',
-            'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
-            'organization_name' => 'required_without_all:person_name,person_id|max:255',
-            'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
-            'title' => 'required|max:255',
-            'amount' => 'nullable|numeric',
+            'name' => 'required|max:255',
         ];
     }
 
-    protected function messages()
+    public function boot(ProductService $productService): void
     {
-        return [
-            'person_name.required_without_all' => 'The contact person field is required if no organization.',
-            'organization_name.required_without_all' => 'The organization field is required if no contact person.',
-            'person_id.required_without_all' => 'The contact person field is required if no organization.',
-            'organization_id.required_without_all' => 'The organization field is required of no contact person.',
-        ];
-    }
-
-    public function boot(LeadService $leadService, PersonService $personService, OrganizationService $organizationService): void
-    {
-        $this->leadService = $leadService;
-        $this->personService = $personService;
-        $this->organizationService = $organizationService;
+        $this->productService = $productService;
     }
 
     public function mountCommon()
     {
+        foreach (\VentureDrake\LaravelCrm\Models\ProductCategory::all() as $productCategory) {
+            $this->productCategories[] = [
+                'id' => $productCategory->id,
+                'name' => $productCategory->name,
+            ];
+        }
+
         foreach (\VentureDrake\LaravelCrm\Models\TaxRate::get() as $taxRate) {
             $this->taxRates[] = [
                 'id' => $taxRate->id,
@@ -69,8 +74,14 @@ trait HasProductCommon
                 'rate' => $taxRate->rate,
             ];
         }
+    }
 
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->user_owner_id = auth()->user()->id;
+    public function updatedTaxRateId($value)
+    {
+        if ($value) {
+            $this->tax_rate = TaxRate::find($value)->rate;
+        } else {
+            $this->tax_rate = number_format(app('laravel-crm.settings')->get('tax_rate', 0), 2);
+        }
     }
 }

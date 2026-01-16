@@ -47,12 +47,12 @@
                         <tbody>
                         @foreach($fieldGroup->fields as $field)
                             <tr class="has-link" data-url="{{ url(route('laravel-crm.fields.show',$field)) }}">
-                                <td>{{ ucwords(str_replace('_',' ',$field->type)) }}</td>
-                                <td>{{ $field->fieldGroup->name ?? null }}</td>
-                                <td>{{ $field->name }}</td>
-                                <td>{{ ($field->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
-                                <td>{{ $field->default }}</td>
-                                <td>{{ ($field->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
+                                <td class="px-0">{{ ucwords(str_replace('_',' ',$field->type)) }}</td>
+                                <td class="px-0">{{ $field->fieldGroup->name ?? null }}</td>
+                                <td class="px-0">{{ $field->name }}</td>
+                                <td class="px-0">{{ ($field->required == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
+                                <td class="px-0">{{ $field->default }}</td>
+                                <td class="px-0">{{ ($field->system == 1) ?  ucfirst(__('laravel-crm::lang.yes'))  : ucfirst(__('laravel-crm::lang.no')) }}</td>
                             </tr>
                         @endforeach
                         </tbody>

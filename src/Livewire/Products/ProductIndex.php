@@ -69,7 +69,7 @@ class ProductIndex extends Component
             ['key' => 'unit', 'label' => ucfirst(__('laravel-crm::lang.unit'))],
             ['key' => 'price', 'label' => ucfirst(__('laravel-crm::lang.price')).' ('.$this->currency.')'],
             ['key' => 'taxRate.name', 'label' => ucfirst(__('laravel-crm::lang.tax'))],
-            ['key' => 'taxRate.name', 'label' => ucfirst(__('laravel-crm::lang.tax_rate'))],
+            ['key' => 'taxRate.rate', 'label' => ucfirst(__('laravel-crm::lang.tax_rate')), 'format' => fn ($row, $field) => $field.'%'],
             ['key' => 'active', 'label' => ucfirst(__('laravel-crm::lang.active')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],

@@ -38,7 +38,7 @@
                         <tbody>
                         @foreach($productCategory->products as $product)
                             <tr>
-                                <td>{{ $product->name }}</td>
+                                <td class="px-0">{{ $product->name }}</td>
                                 <td class="text-center">{{ $product->active ? 'YES' : 'NO' }}</td>
                             </tr>
                         @endforeach

@@ -111,6 +111,7 @@ use VentureDrake\LaravelCrm\Livewire\People\PersonIndex;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductCreate;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductEdit;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductIndex;
+use VentureDrake\LaravelCrm\Livewire\Products\ProductShow;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderCreate;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderEdit;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderIndex;
@@ -679,7 +680,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-purchase-order-index', PurchaseOrderIndex::class);
         Livewire::component('crm-purchase-order-create', PurchaseOrderCreate::class);
         Livewire::component('crm-purchase-order-edit', PurchaseOrderEdit::class);
-
         Livewire::component('crm-person-index', PersonIndex::class);
         Livewire::component('crm-organization-index', OrganizationIndex::class);
         Livewire::component('crm-user-index', UserIndex::class);
@@ -687,6 +687,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-product-index', ProductIndex::class);
         Livewire::component('crm-product-create', ProductCreate::class);
         Livewire::component('crm-product-edit', ProductEdit::class);
+        Livewire::component('crm-product-show', ProductShow::class);
 
         Livewire::component('crm-model-phones', ModelPhones::class);
         Livewire::component('crm-model-emails', ModelEmails::class);
