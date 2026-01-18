@@ -18,7 +18,7 @@ class DealEdit extends Component
     public function mount(Deal $deal)
     {
         $this->mountCommon();
-        
+
         $this->lead = $deal;
         $this->organization_id = $deal->organization ? $deal->organization->id : null;
         $this->organization_name = $deal->organization ? $deal->organization->name : null;

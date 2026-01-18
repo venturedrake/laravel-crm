@@ -101,7 +101,6 @@
                         <x-mary-select wire:model.live="products.{{ $index }}.id" :options="$productOptions" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.item')) : null }}" />
                     </span>
                     <span class="lg:col-span-2">
-                        {{ $products[$index]['price'] }}
                         <x-mary-input wire:model.live="products.{{ $index }}.price" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.price'))  : null}}" prefix="$" money />
                     </span>
                     <span class="lg:col-span-2">

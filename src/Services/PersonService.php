@@ -182,7 +182,7 @@ class PersonService
                         'state' => $addressRequest['state'],
                         'code' => $addressRequest['code'],
                         'country' => $addressRequest['country'],
-                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                        'primary' => $addressRequest['primary'] ?? 0,
                     ]);
 
                     $addressIds[] = $address->id;

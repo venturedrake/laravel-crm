@@ -18,6 +18,10 @@ class Email extends Model
         'address',
     ];
 
+    protected $casts = [
+        'primary' => 'boolean',
+    ];
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'emails';

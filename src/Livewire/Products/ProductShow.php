@@ -9,7 +9,7 @@ use VentureDrake\LaravelCrm\Models\Product;
 class ProductShow extends Component
 {
     use Toast;
-    
+
     public Product $product;
 
     public function delete($id)

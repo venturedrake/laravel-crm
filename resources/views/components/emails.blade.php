@@ -1,21 +1,21 @@
-<x-mary-card title="{{ ucfirst(__('laravel-crm::lang.phone_numbers')) }}" class="mb-5" separator>
+<x-mary-card title="{{ ucfirst(__('laravel-crm::lang.emails')) }}" class="mb-5" separator>
     <x-slot:menu>
-        <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
+        <x-mary-button wire:click="addEmail" class="btn-sm btn-square" type="button" icon="fas.plus" />
     </x-slot:menu>
-    <div class="grid gap-3" wire:key="phones">
-        @foreach($phones as $index => $phone)
+    <div class="grid gap-3" wire:key="emails">
+        @foreach($emails as $index => $email)
             <div class="grid lg:grid-cols-12 gap-3">
                 <div class="col-span-5">
-                    <x-mary-input wire:model.blur="phones.{{ $index }}.number" label="{{ ucfirst(__('laravel-crm::lang.phone')) }}" />
+                    <x-mary-input wire:model.blur="emails.{{ $index }}.address" label="{{ ucfirst(__('laravel-crm::lang.email')) }}" />
                 </div>
                 <div class="col-span-4">
-                    <x-mary-select wire:model="phones.{{ $index }}.type" :options="$phoneTypes" label="{{ ucfirst(__('laravel-crm::lang.type')) }}"/>
+                    <x-mary-select wire:model="emails.{{ $index }}.type" :options="$emailTypes" label="{{ ucfirst(__('laravel-crm::lang.type')) }}"/>
                 </div>
                 <div class="col-span-2">
                     <fieldset class="fieldset py-0">
                         <legend class="fieldset-legend mb-0.5">{{ ucfirst(__('laravel-crm::lang.primary')) }}</legend>
                         <div class="pt-1 text-center">
-                            <x-mary-toggle wire:model="phones.{{ $index }}.primary"  />
+                            <x-mary-toggle wire:model="emails.{{ $index }}.primary"  />
                         </div>
                     </fieldset>
                 </div>
@@ -23,10 +23,9 @@
                     <fieldset class="fieldset py-0">
                         <legend class="fieldset-legend mb-0.5">&nbsp;</legend>
                         <div class="pt-1 text-center">
-                            <x-mary-button wire:click="delete({{ $index }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                            <x-mary-button wire:click="deleteEmail({{ $index }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
                         </div>
                     </fieldset>
-                    
                 </div>
             </div>
         @endforeach

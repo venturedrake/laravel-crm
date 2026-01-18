@@ -43,6 +43,10 @@ class Person extends Model
         'labels.id',
     ];
 
+    protected $casts = [
+        'birthday' => 'date',
+    ];
+
     public function getSearchable()
     {
         return $this->searchable;
@@ -58,7 +62,7 @@ class Person extends Model
         return trim($this->first_name.' '.$this->last_name);
     }
 
-    public function setBirthdayAttribute($value)
+    /*public function setBirthdayAttribute($value)
     {
         if ($value) {
             $this->attributes['birthday'] = Carbon::createFromFormat($this->dateFormat(), $this->decryptField($value));
@@ -70,7 +74,7 @@ class Person extends Model
         if ($value) {
             return Carbon::parse($this->decryptField($value))->format($this->dateFormat());
         }
-    }
+    }*/
 
     public function getFirstNameDecryptedAttribute()
     {

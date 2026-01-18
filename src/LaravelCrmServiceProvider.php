@@ -107,7 +107,10 @@ use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderEdit;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderIndex;
 use VentureDrake\LaravelCrm\Livewire\Organizations\OrganizationIndex;
+use VentureDrake\LaravelCrm\Livewire\People\PersonCreate;
+use VentureDrake\LaravelCrm\Livewire\People\PersonEdit;
 use VentureDrake\LaravelCrm\Livewire\People\PersonIndex;
+use VentureDrake\LaravelCrm\Livewire\People\PersonShow;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductCreate;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductEdit;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductIndex;
@@ -119,6 +122,9 @@ use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteEdit;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteIndex;
+use VentureDrake\LaravelCrm\Livewire\RelatedDeals;
+use VentureDrake\LaravelCrm\Livewire\RelatedOrganizations;
+use VentureDrake\LaravelCrm\Livewire\RelatedPeople;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupIndex;
@@ -240,9 +246,12 @@ use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\View\Components\Addresses;
 use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
+use VentureDrake\LaravelCrm\View\Components\Emails;
 use VentureDrake\LaravelCrm\View\Components\Header;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
+use VentureDrake\LaravelCrm\View\Components\Phones;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
 class LaravelCrmServiceProvider extends ServiceProvider
@@ -296,7 +305,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         if ((version_compare(app()->version(), '8', '>=') && class_exists('App\Models\User')) || (class_exists('App\Models\User') && ! class_exists('App\User'))) {
             class_alias(config('auth.providers.users.model'), 'App\User');
-            
+
             if (class_exists('App\Models\Team')) {
                 class_alias('App\Models\Team', 'App\Team');
             }
@@ -607,6 +616,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::component('crm-index-toggle', IndexToggle::class);
         Blade::component('crm-delete-confirm', DeleteConfirm::class);
         Blade::component('crm-header', Header::class);
+        Blade::component('crm-phones', Phones::class);
+        Blade::component('crm-emails', Emails::class);
+        Blade::component('crm-addresses', Addresses::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
@@ -682,6 +694,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-purchase-order-create', PurchaseOrderCreate::class);
         Livewire::component('crm-purchase-order-edit', PurchaseOrderEdit::class);
         Livewire::component('crm-person-index', PersonIndex::class);
+        Livewire::component('crm-person-create', PersonCreate::class);
+        Livewire::component('crm-person-edit', PersonEdit::class);
+        Livewire::component('crm-person-show', PersonShow::class);
         Livewire::component('crm-organization-index', OrganizationIndex::class);
         Livewire::component('crm-user-index', UserIndex::class);
         Livewire::component('crm-team-index', TeamIndex::class);
@@ -694,6 +709,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-model-emails', ModelEmails::class);
         Livewire::component('crm-model-addresses', ModelAddresses::class);
         Livewire::component('crm-model-products', ModelProducts::class);
+        Livewire::component('crm-related-people', RelatedPeople::class);
+        Livewire::component('crm-related-organizations', RelatedOrganizations::class);
+        Livewire::component('crm-related-deals', RelatedDeals::class);
 
         Livewire::component('crm-settings-edit', SettingEdit::class);
 

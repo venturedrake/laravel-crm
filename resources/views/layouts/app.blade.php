@@ -15,7 +15,11 @@
 
         <!-- Scripts -->
         {{ \Illuminate\Support\Facades\Vite::useBuildDirectory('vendor/laravel-crm')->withEntryPoints(['resources/css/app.css', 'resources/js/app.js']) }}
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.46.1/libs/currency/currency.js"></script>
+
+        {{-- Flatpickr  --}}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         
         <!-- Styles -->
         @livewireStyles

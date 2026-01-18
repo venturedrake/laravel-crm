@@ -1,6 +1,6 @@
 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.phone_numbers')) }}" class="mb-5" separator>
     <x-slot:menu>
-        <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
+        <x-mary-button wire:click="addPhone" class="btn-sm btn-square" type="button" icon="fas.plus" />
     </x-slot:menu>
     <div class="grid gap-3" wire:key="phones">
         @foreach($phones as $index => $phone)
@@ -23,10 +23,10 @@
                     <fieldset class="fieldset py-0">
                         <legend class="fieldset-legend mb-0.5">&nbsp;</legend>
                         <div class="pt-1 text-center">
-                            <x-mary-button wire:click="delete({{ $index }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                            <x-mary-button wire:click="deletePhone({{ $index }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
                         </div>
                     </fieldset>
-                    
+
                 </div>
             </div>
         @endforeach
