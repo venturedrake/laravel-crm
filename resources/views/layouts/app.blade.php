@@ -80,17 +80,17 @@
             {{-- Activates the menu item when a route matches the `link` property --}}
             <x-mary-menu activate-by-route class="w-full bg-base-100 rounded-none pt-3">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.dashboard')) }}" icon="bxs.dashboard" link="{{ url(route('laravel-crm.dashboard')) }}" />
-                <x-mary-menu-separator />
+                <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" icon="fas.crosshairs" link="{{ url(route('laravel-crm.leads.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.deals')) }}" icon="fas.dollar-sign" link="{{ url(route('laravel-crm.deals.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.quotes')) }}" icon="fas.file-lines" link="{{ url(route('laravel-crm.quotes.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.activities')) }}" icon="fas.tasks" link="{{ url(route('laravel-crm.activities.index')) }}" />
-                <x-mary-menu-separator />
+                <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.orders')) }}" icon="fas.shopping-cart" link="{{ url(route('laravel-crm.orders.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.invoices')) }}" icon="fas.file-invoice" link="{{ url(route('laravel-crm.invoices.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.deliveries')) }}" icon="fas.shipping-fast" link="{{ url(route('laravel-crm.deliveries.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}" icon="fas.file-invoice-dollar" link="{{ url(route('laravel-crm.purchase-orders.index')) }}" />
-                <x-mary-menu-separator />
+                <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
 {{--
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.customers')) }}" icon="fas.address-card" link="{{ url(route('laravel-crm.customers.index')) }}" />
 --}}
@@ -98,17 +98,17 @@
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.organizations')) }}" icon="fas.building" link="{{ url(route('laravel-crm.organizations.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.users')) }}" icon="fas.user" link="{{ url(route('laravel-crm.users.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.teams')) }}" icon="fas.users" link="{{ url(route('laravel-crm.teams.index')) }}" />
-                <x-mary-menu-separator />
+                <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.products')) }}" icon="fas.tag" link="{{ url(route('laravel-crm.products.index')) }}" />
                 <x-mary-menu-separator />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.settings')) }}" icon="fas.cog" link="{{ url(route('laravel-crm.settings.edit')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.updates')) }}" icon="fas.cloud-download-alt" link="{{ url(route('laravel-crm.updates.index')) }}" />
-                <x-mary-menu-separator />
+                {{--<hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="Messages" icon="o-envelope" link="###" />
                 <x-mary-menu-sub title="Settings" icon="o-cog-6-tooth">
                     <x-mary-menu-item title="Wifi" icon="o-wifi" link="####" />
                     <x-mary-menu-item title="Archives" icon="o-archive-box" link="####" />
-                </x-mary-menu-sub>
+                </x-mary-menu-sub>--}}
             </x-mary-menu>
         </x-slot:sidebar>
         <x-slot:content>
