@@ -546,4 +546,8 @@ return [
     'general' => 'general',
     'default_tax_name' => 'default tax name',
     'never' => 'never',
+    'deal_created_successfully' => 'deal created successfully',
+    'deal_updated_successfully' => 'deal updated successfully',
+    'quote_created_successfully' => 'quote created successfully',
+    'quote_updated_successfully' => 'quote updated successfully',
 ];

@@ -37,7 +37,7 @@ class LeadObserver
             $lead->number = 1000;
         }
 
-        $lead->prefix = $this->settingService->get('lead_prefix')->value;
+        $lead->prefix = $this->settingService->get('lead_prefix');
         $lead->lead_id = $lead->prefix.$lead->number;
     }
 

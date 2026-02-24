@@ -2,16 +2,17 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Quotes\Traits;
 
+use Carbon\Carbon;
 use Mary\Traits\Toast;
-use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Services\QuoteService;
 
 trait HasQuoteCommon
 {
     use Toast;
 
-    protected LeadService $leadService;
+    protected QuoteService $quoteService;
 
     protected PersonService $personService;
 
@@ -55,6 +56,12 @@ trait HasQuoteCommon
 
     public $currency;
 
+    public ?Carbon $issue_at;
+
+    public ?Carbon $expire_at;
+
+    public $terms;
+
     public $pipeline;
 
     public $pipeline_stage_id;
@@ -85,9 +92,9 @@ trait HasQuoteCommon
         ];
     }
 
-    public function boot(LeadService $leadService, PersonService $personService, OrganizationService $organizationService): void
+    public function boot(QuoteService $quoteService, PersonService $personService, OrganizationService $organizationService): void
     {
-        $this->leadService = $leadService;
+        $this->quoteService = $quoteService;
         $this->personService = $personService;
         $this->organizationService = $organizationService;
     }

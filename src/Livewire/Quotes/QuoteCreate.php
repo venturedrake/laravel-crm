@@ -19,10 +19,11 @@ class QuoteCreate extends Component
 
     public function mount()
     {
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
+        $this->currency = app('laravel-crm.settings')->get('currency', 'USD');
         $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
+        $this->terms = app('laravel-crm.settings')->get('quote_terms');
     }
 
     public function updatedPersonName($value)
@@ -39,7 +40,7 @@ class QuoteCreate extends Component
 
     protected function generateTitleString($value)
     {
-        $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.lead'));
+        $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.quote'));
     }
 
     public function save()
@@ -61,7 +62,7 @@ class QuoteCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
+        $this->quoteService->create($request, $person ?? null, $organization ?? null);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.quote_created_successfully')),

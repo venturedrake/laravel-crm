@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
@@ -70,20 +69,6 @@ class Quote extends Model
             return $value;
         } else {
             return $this->id;
-        }
-    }
-
-    public function setIssueAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['issue_at'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
-    }
-
-    public function setExpireAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['expire_at'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }
     }
 

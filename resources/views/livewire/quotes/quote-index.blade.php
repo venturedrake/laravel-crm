@@ -35,13 +35,29 @@
                 @endif
             @endscope
             @scope('actions', $quote)
-{{--
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" class="btn-sm btn-success text-white"  />
---}}
-            <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.quotes.show', $quote)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.quotes.edit', $quote)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeleteLead{{ $quote->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-            <x-crm-delete-confirm model="quote" id="{{ $quote->id }}" />
+                @php
+                    (!\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote)) ? $quoteError = true : $quoteError = false;
+                @endphp
+                @if($quoteError)
+                    <x-mary-button link="{{ url(route('laravel-crm.quotes.edit', $quote)) }}" class="btn-sm btn-warning" label="Error with quote, check amounts" />
+                @else
+                    <!--TBC-->
+                @endif    
+                @can('view crm quotes')
+                    @if(! $quoteError)
+                    <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.quotes.download', $quote)) }}" class="btn-sm btn-square btn-outline" />
+                @endif    
+                    <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.quotes.show', $quote)) }}" class="btn-sm btn-square btn-outline" />
+                @endcan
+                @can('edit crm quotes')
+                    @if(! $quote->accepted_at)
+                        <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.quotes.edit', $quote)) }}" class="btn-sm btn-square btn-outline" />
+                    @endif
+                @endcan
+                @can('delete crm quotes')
+                <x-mary-button onclick="modalDeleteQuote{{ $quote->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                <x-crm-delete-confirm model="quote" id="{{ $quote->id }}" />
+                @endcan
             @endscope
         </x-mary-table>
     </x-mary-card>

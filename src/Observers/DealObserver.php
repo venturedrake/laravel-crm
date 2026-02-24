@@ -37,7 +37,7 @@ class DealObserver
             $deal->number = 1000;
         }
 
-        $deal->prefix = $this->settingService->get('deal_prefix')->value;
+        $deal->prefix = $this->settingService->get('deal_prefix');
         $deal->deal_id = $deal->prefix.$deal->number;
     }
 

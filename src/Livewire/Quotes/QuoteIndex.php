@@ -9,7 +9,9 @@ use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Label;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -34,6 +36,13 @@ class QuoteIndex extends Component
 
     public bool $showFilters = false;
 
+    public ?Pipeline $pipeline = null;
+
+    public function mount()
+    {
+        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
+    }
+
     public function filterCount(): int
     {
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
@@ -54,12 +63,20 @@ class QuoteIndex extends Component
         return [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
             ['key' => 'quote_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
+            ['key' => 'reference', 'label' => ucfirst(__('laravel-crm::lang.reference'))],
+            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
+            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
+            ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
+            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
+            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))],
+            ['key' => 'total', 'label' => ucfirst(__('laravel-crm::lang.total')), 'format' => fn ($row, $field) => money($field, $row->currency)],
+            ['key' => 'issue_at', 'label' => ucwords(__('laravel-crm::lang.issue_date'))],
+            ['key' => 'expire_at', 'label' => ucwords(__('laravel-crm::lang.expiry_date'))],
             /*  ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
             ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
             ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],*/
             /* ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact'))],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization'))],*/
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated'))],
         ];
     }

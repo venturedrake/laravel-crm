@@ -37,7 +37,7 @@ class QuoteObserver
             $quote->number = 1000;
         }
 
-        $quote->prefix = $this->settingService->get('quote_prefix')->value;
+        $quote->prefix = $this->settingService->get('quote_prefix');
         $quote->quote_id = $quote->prefix.$quote->number;
     }
 

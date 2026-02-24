@@ -41,19 +41,14 @@ class QuoteController extends Controller
      * @var OrderService
      */
     private $orderService;
+    
 
-    /**
-     * @var SettingService
-     */
-    private $settingService;
-
-    public function __construct(QuoteService $quoteService, PersonService $personService, OrganizationService $organizationService, OrderService $orderService, SettingService $settingService)
+    public function __construct(QuoteService $quoteService, PersonService $personService, OrganizationService $organizationService, OrderService $orderService)
     {
         $this->quoteService = $quoteService;
         $this->personService = $personService;
         $this->organizationService = $organizationService;
         $this->orderService = $orderService;
-        $this->settingService = $settingService;
     }
 
     /**
@@ -74,20 +69,7 @@ class QuoteController extends Controller
             return redirect(route('laravel-crm.quotes.board'));
         }
 
-        Quote::resetSearchValue($request);
-        $params = Quote::filters($request);
-
-        if (Quote::filter($params)->get()->count() < 30) {
-            $quotes = Quote::filter($params)->latest()->get();
-        } else {
-            $quotes = Quote::filter($params)->latest()->paginate(30);
-        }
-
-        return view('laravel-crm::quotes.index', [
-            'quotes' => $quotes,
-            'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Quote))->first(),
-        ]);
+        return view('laravel-crm::quotes.index');
     }
 
     /**

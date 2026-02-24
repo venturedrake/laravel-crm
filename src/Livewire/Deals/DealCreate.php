@@ -43,7 +43,7 @@ class DealCreate extends Component
 
     protected function generateTitleString($value)
     {
-        $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.lead'));
+        $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.deal'));
     }
 
     public function save()
