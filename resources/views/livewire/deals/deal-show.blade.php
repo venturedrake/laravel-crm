@@ -34,6 +34,12 @@
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" shadow separator>
                 <div class="grid gap-y-3">
                     <div class="flex flex-row gap-5">
+                        <strong>{{ ucfirst(__('laravel-crm::lang.created')) }}</strong>
+                        <span>
+                        {{ $deal->created_at->diffForHumans() }}
+                        </span>
+                    </div>
+                    <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.number')) }}</strong>
                         <span>
                         {{ $deal->deal_id }}
@@ -54,7 +60,7 @@
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucwords(__('laravel-crm::lang.expected_close')) }}</strong>
                         <span>
-                        {{ $deal->expected_close_date ? $deal->expected_close_date->format('d/m/Y') : null }}
+                        {{ $deal->expected_close ? $deal->expected_close->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null }}
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
@@ -113,6 +119,30 @@
                         {{ ($address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) : null }}
                         </span>
                     </div>
+                </div>
+            </x-mary-card>
+            <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }} ({{ $deal->dealProducts->count() }})" shadow separator>
+                <div class="grid gap-y-5">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="px-0">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                            <th>{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
+                            <th>{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
+                            <th>{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($deal->dealProducts()->whereNotNull('product_id')->get() as $dealProduct)
+                                <tr> 
+                                    <td class="px-0">{{ $dealProduct->product->name }}</td>
+                                    <td>{{ money($dealProduct->price ?? null, $dealProduct->currency) }}</td>
+                                    <td>{{ $dealProduct->quantity }}</td>
+                                    <th>{{ money($dealProduct->amount ?? null, $dealProduct->currency) }}</th>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </x-mary-card>
         </div>

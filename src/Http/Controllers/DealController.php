@@ -2,11 +2,9 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use VentureDrake\LaravelCrm\Http\Requests\StoreDealRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
 use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -93,58 +91,6 @@ class DealController extends Controller
             'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
             'stage' => $request->stage ?? null,
         ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreDealRequest $request)
-    {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organization_name && ! $request->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($request->organization_id) {
-            $organization = Organization::find($request->organization_id);
-        }
-
-        if ($request->client_name && ! $request->client_id) {
-            $client = Customer::create([
-                'name' => $request->client_name,
-                'user_owner_id' => $request->user_owner_id,
-            ]);
-        } elseif ($request->client_id) {
-            $client = Customer::find($request->client_id);
-        }
-
-        if (isset($client)) {
-            if (isset($organization)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organization->getMorphClass(),
-                    'entityable_id' => $organization->id,
-                ]);
-            }
-
-            if (isset($person)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $person->getMorphClass(),
-                    'entityable_id' => $person->id,
-                ]);
-            }
-        }
-
-        $this->dealService->create($request, $person ?? null, $organization ?? null, $client ?? null);
-
-        flash(ucfirst(trans('laravel-crm::lang.deal_stored')))->success()->important();
-
-        return redirect(route('laravel-crm.deals.index'));
     }
 
     /**
@@ -334,60 +280,6 @@ class DealController extends Controller
                 'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
             ]);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function won(Deal $deal)
-    {
-        $deal->update([
-            'closed_status' => 'won',
-            'closed_at' => Carbon::now(),
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.deal_won')))->success()->important();
-
-        return back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function lost(Deal $deal)
-    {
-        $deal->update([
-            'closed_status' => 'lost',
-            'closed_at' => Carbon::now(),
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.deal_lost')))->success()->important();
-
-        return back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function reopen(Deal $deal)
-    {
-        $deal->update([
-            'closed_status' => null,
-            'closed_at' => null,
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.deal_reopened')))->success()->important();
-
-        return back();
     }
 
     public function list(Request $request)

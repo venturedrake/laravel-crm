@@ -49,12 +49,12 @@ class LeadEdit extends Component
 
         $this->title = $lead->title;
         $this->description = $lead->description;
-        $this->amount = $lead->amount;
+        $this->amount = $lead->amount / 100;
         $this->currency = $lead->currency;
         $this->pipeline = Pipeline::where('model', get_class(new Lead))->first();
         $this->pipeline_stage_id = $lead->pipelineStage->id ?? null;
         $this->labels = $lead->labels->pluck('id')->toArray();
-        $this->user_owner_id = $lead->userOwner->id ?? null;
+        $this->user_owner_id = $lead->ownerUser->id ?? null;
     }
 
     public function save()

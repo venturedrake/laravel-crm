@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Deals\Traits;
 
-use Carbon\Carbon;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
@@ -56,7 +55,7 @@ trait HasDealCommon
 
     public $currency;
 
-    public ?Carbon $expected_close;
+    public $expected_close;
 
     public $pipeline;
 
@@ -116,12 +115,18 @@ trait HasDealCommon
 
     public function updatedProducts($value, $key)
     {
+        $updating = explode('.', $key);
+
         foreach ($this->products as $index => $product) {
             if ($dealProduct = \VentureDrake\LaravelCrm\Models\Product::find($product['id'])) {
                 $price = $dealProduct->getDefaultPrice()->unit_price ?? 0;
-                $quantity = $product['quantity'] ?? 1;
+                $quantity = (int) $product['quantity'] ?? 1;
                 $this->products[$index]['price'] = ($price / 100);
                 $this->products[$index]['amount'] = ($price / 100) * $quantity;
+            } elseif ($updating[1] == 'id') {
+                $this->products[$index]['price'] = null;
+                $this->products[$index]['quantity'] = 1;
+                $this->products[$index]['amount'] = null;
             }
         }
     }
@@ -130,9 +135,9 @@ trait HasDealCommon
     {
         $this->products[] = [
             'id' => null,
-            'price' => 0,
+            'price' => null,
             'quantity' => 1,
-            'amount' => 0,
+            'amount' => null,
         ];
     }
 

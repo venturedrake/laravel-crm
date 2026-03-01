@@ -77,7 +77,7 @@
                     </thead>
                     <tbody>
                     @foreach($deal->dealProducts()->whereNotNull('product_id')->get() as $dealProduct)
-                        <tr>
+                        <tr class="hover:bg-base-300">
                             <td>{{ $dealProduct->product->name }}</td>
                             <td>{{ money($dealProduct->price ?? null, $dealProduct->currency) }}</td>
                             <td>{{ $dealProduct->quantity }}</td>

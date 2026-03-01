@@ -3,10 +3,13 @@
 namespace VentureDrake\LaravelCrm\Livewire\People;
 
 use Livewire\Component;
+use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class PersonShow extends Component
 {
+    use Toast;
+
     public Person $person;
 
     public function delete($id)

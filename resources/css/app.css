@@ -129,3 +129,7 @@
     cursor: -webkit-grab;
     cursor: grab;
 }
+
+.label:is(.input>*,.select>*):first-child{
+    margin-inline: -.75rem .35rem !important;
+}

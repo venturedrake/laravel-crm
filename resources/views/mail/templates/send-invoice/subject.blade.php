@@ -1,0 +1,1 @@
+Invoice {{ $invoice->invoice_id }} from {{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organization_name')->first()->value }} for {{ $invoice->organization->name  ?? null }} 

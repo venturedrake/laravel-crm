@@ -21,7 +21,8 @@
                 <x-mary-button link="{{ url(route('laravel-crm.leads.edit', $lead)) }}" icon="o-pencil-square" class="btn-sm btn-square btn-outline" responsive />
             @endcan
             @can('delete crm leads')
-                <x-mary-button wire:click="delete({{ $lead->id }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" wire:confirm="Are you sure?" spinner />
+                <x-mary-button onclick="modalDeleteLead{{ $lead->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                <x-crm-delete-confirm model="lead" id="{{ $lead->id }}" />
             @endcan
         </x-slot:actions>
     </x-crm-header>
@@ -29,6 +30,12 @@
         <div class="grid gap-y-5">
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" shadow separator>
                 <div class="grid gap-y-3">
+                    <div class="flex flex-row gap-5">
+                        <strong>{{ ucfirst(__('laravel-crm::lang.created')) }}</strong>
+                        <span>
+                        {{ $lead->created_at->diffForHumans() }}
+                        </span>
+                    </div>
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.number')) }}</strong>
                         <span>

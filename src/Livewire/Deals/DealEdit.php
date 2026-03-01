@@ -7,6 +7,8 @@ use VentureDrake\LaravelCrm\Livewire\Deals\Traits\HasDealCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Organization;
+use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class DealEdit extends Component
@@ -15,11 +17,13 @@ class DealEdit extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
+    public ?Deal $deal = null;
+
     public function mount(Deal $deal)
     {
         $this->mountCommon();
 
-        $this->lead = $deal;
+        $this->deal = $deal;
         $this->organization_id = $deal->organization ? $deal->organization->id : null;
         $this->organization_name = $deal->organization ? $deal->organization->name : null;
         $this->person_id = $deal->person ? $deal->person->id : null;
@@ -32,7 +36,17 @@ class DealEdit extends Component
         $this->pipeline_stage_id = $deal->pipelineStage->id ?? null;
         $this->expected_close = $deal->expected_close;
         $this->labels = $deal->labels->pluck('id')->toArray();
-        $this->user_owner_id = $deal->userOwner->id ?? null;
+        $this->user_owner_id = $deal->ownerUser->id ?? null;
+
+        foreach ($deal->dealProducts()->whereNotNull('product_id')->get() as $dealProduct) {
+            $this->products[] = [
+                'deal_product_id' => $dealProduct->id,
+                'id' => $dealProduct->product->id,
+                'price' => $dealProduct->price / 100,
+                'quantity' => $dealProduct->quantity,
+                'amount' => $dealProduct->amount / 100,
+            ];
+        }
 
         /*if ($address = $deal->getPrimaryAddress()) {
             $this->address_line_1 = $address->line_1;
@@ -57,9 +71,29 @@ class DealEdit extends Component
 
     public function save()
     {
-        // TODO
+        $this->validate();
 
-        $this->success(ucfirst(trans('laravel-crm::lang.deal_updated_successfully')));
+        // Create a request object to pass to services
+        $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
+
+        if ($this->person_name && ! $this->person_id) {
+            $person = $this->personService->createFromRelated($request);
+        } elseif ($this->person_id) {
+            $person = Person::find($this->person_id);
+        }
+
+        if ($this->organization_name && ! $this->organization_id) {
+            $organization = $this->organizationService->createFromRelated($request);
+        } elseif ($this->organization_id) {
+            $organization = Organization::find($this->organization_id);
+        }
+
+        $this->dealService->update($request, $this->deal, $person ?? null, $organization ?? null);
+
+        $this->success(
+            ucfirst(trans('laravel-crm::lang.deal_updated')),
+            redirectTo: route('laravel-crm.deals.index')
+        );
     }
 
     public function render()

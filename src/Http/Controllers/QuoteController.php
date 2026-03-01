@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,7 +17,6 @@ use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\QuoteService;
-use VentureDrake\LaravelCrm\Services\SettingService;
 
 class QuoteController extends Controller
 {
@@ -41,7 +39,6 @@ class QuoteController extends Controller
      * @var OrderService
      */
     private $orderService;
-    
 
     public function __construct(QuoteService $quoteService, PersonService $personService, OrganizationService $organizationService, OrderService $orderService)
     {
@@ -351,68 +348,6 @@ class QuoteController extends Controller
                 'pipeline' => Pipeline::where('model', get_class(new Quote))->first(),
             ]);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function accept(Quote $quote)
-    {
-        $quote->update([
-            'accepted_at' => Carbon::now(),
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.quote_accepted')))->success()->important();
-
-        return back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function reject(Quote $quote)
-    {
-        $quote->update([
-            'rejected_at' => Carbon::now(),
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
-
-        return back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function unaccept(Quote $quote)
-    {
-        $quote->update([
-            'accepted_at' => null,
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.quote_unaccepted')))->success()->important();
-
-        return back();
-    }
-
-    public function unreject(Quote $quote)
-    {
-        $quote->update([
-            'rejected_at' => null,
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.quote_unrejected')))->success()->important();
-
-        return back();
     }
 
     public function download(Quote $quote)

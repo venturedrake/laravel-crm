@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Services;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Deal;
-use VentureDrake\LaravelCrm\Models\DealProduct;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Repositories\DealRepository;
 
@@ -43,14 +42,14 @@ class DealService
 
         $deal->labels()->sync($request->labels ?? []);
 
-        if (isset($request->item_deal_product_id)) {
-            foreach ($request->item_deal_product_id as $dealProductKey => $dealProductValue) {
+        if (isset($request->products)) {
+            foreach ($request->products as $product) {
                 $deal->dealProducts()->create([
                     'external_id' => Uuid::uuid4()->toString(),
-                    'product_id' => $request->item_product_id[$dealProductKey],
-                    'price' => $request->item_price[$dealProductKey],
-                    'quantity' => $request->item_quantity[$dealProductKey],
-                    'amount' => $request->item_amount[$dealProductKey],
+                    'product_id' => $product['id'],
+                    'price' => $product['price'],
+                    'quantity' => $product['quantity'],
+                    'amount' => $product['amount'],
                 ]);
             }
         }
@@ -76,16 +75,22 @@ class DealService
 
         $deal->labels()->sync($request->labels ?? []);
 
-        if (isset($request->item_deal_product_id)) {
-            foreach ($request->item_deal_product_id as $dealProductKey => $dealProductValue) {
-                $dealProduct = DealProduct::find($dealProductValue);
-
-                if ($dealProduct) {
+        if (isset($request->products)) {
+            foreach ($request->products as $product) {
+                if (isset($product['deal_product_id']) && $dealProduct = $deal->dealProducts()->where('id', $product['deal_product_id'])->first()) {
                     $dealProduct->update([
-                        'product_id' => $request->item_product_id[$dealProductKey],
-                        'price' => $request->item_price[$dealProductKey],
-                        'quantity' => $request->item_quantity[$dealProductKey],
-                        'amount' => $request->item_amount[$dealProductKey],
+                        'product_id' => $product['id'],
+                        'price' => $product['price'],
+                        'quantity' => $product['quantity'],
+                        'amount' => $product['amount'],
+                    ]);
+                } else {
+                    $deal->dealProducts()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'product_id' => $product['id'],
+                        'price' => $product['price'],
+                        'quantity' => $product['quantity'],
+                        'amount' => $product['amount'],
                     ]);
                 }
             }

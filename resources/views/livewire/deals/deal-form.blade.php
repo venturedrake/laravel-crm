@@ -101,13 +101,13 @@
                         <x-mary-select wire:model.live="products.{{ $index }}.id" :options="$productOptions" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.item')) : null }}" />
                     </span>
                     <span class="lg:col-span-2">
-                        <x-mary-input wire:model.live="products.{{ $index }}.price" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.price'))  : null}}" prefix="$" money />
+                        <x-mary-input wire:model.blur="products.{{ $index }}.price" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.price'))  : null}}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" />
                     </span>
                     <span class="lg:col-span-2">
-                        <x-mary-input wire:model.blur="products.{{ $index }}.quantity" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.quantity')) : null }}" type="number" />
+                        <x-mary-input wire:model.live="products.{{ $index }}.quantity" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.quantity')) : null }}" type="number" />
                     </span>
                     <span class="lg:col-span-2">
-                        <x-mary-input wire:model="products.{{ $index }}.amount" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.amount')) : null }}" prefix="$" money readonly />
+                        <x-mary-input wire:model="products.{{ $index }}.amount" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.amount')) : null }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
                     </span>
                 </div>
             @endforeach

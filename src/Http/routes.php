@@ -183,18 +183,6 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
         ->name('laravel-crm.deals.destroy')
         ->middleware(['can:delete,deal']);
 
-    Route::get('{deal}/won', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@won')
-        ->name('laravel-crm.deals.won')
-        ->middleware(['can:update,deal']);
-
-    Route::get('{deal}/lost', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@lost')
-        ->name('laravel-crm.deals.lost')
-        ->middleware(['can:update,deal']);
-
-    Route::get('{deal}/reopen', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@reopen')
-        ->name('laravel-crm.deals.reopen')
-        ->middleware(['can:update,deal']);
-
     /* Deal Products */
 
     Route::group(['prefix' => '{deal}/products', 'middleware' => 'auth.laravel-crm'], function () {
@@ -267,26 +255,6 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
     Route::delete('{quote}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@destroy')
         ->name('laravel-crm.quotes.destroy')
         ->middleware(['can:delete,quote']);
-
-    Route::get('{quote}/accept', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@accept')
-        ->name('laravel-crm.quotes.accept')
-        ->middleware(['can:update,quote']);
-
-    Route::get('{quote}/reject', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@reject')
-        ->name('laravel-crm.quotes.reject')
-        ->middleware(['can:update,quote']);
-
-    Route::get('{quote}/unaccept', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@unaccept')
-        ->name('laravel-crm.quotes.unaccept')
-        ->middleware(['can:update,quote']);
-
-    Route::get('{quote}/unreject', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@unreject')
-        ->name('laravel-crm.quotes.unreject')
-        ->middleware(['can:update,quote']);
-
-    Route::post('{quote}/send', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@send')
-        ->name('laravel-crm.quotes.send')
-        ->middleware(['can:update,quote']);
 
     Route::get('{quote}/download', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@download')
         ->name('laravel-crm.quotes.download')

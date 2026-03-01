@@ -3,13 +3,13 @@
 namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
-use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
@@ -96,6 +96,54 @@ class QuoteIndex extends Component
             $quote->delete();
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_deleted')));
+        }
+    }
+
+    public function accept($id): void
+    {
+        if ($quote = Quote::find($id)) {
+            $quote->update([
+                'accepted_at' => Carbon::now(),
+                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Accepted')->first()->id ?? null,
+            ]);
+
+            $this->success(ucfirst(trans('laravel-crm::lang.quote_accepted')));
+        }
+    }
+
+    public function reject($id): void
+    {
+        if ($quote = Quote::find($id)) {
+            $quote->update([
+                'rejected_at' => Carbon::now(),
+                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Rejected')->first()->id ?? null,
+            ]);
+
+            $this->success(ucfirst(trans('laravel-crm::lang.quote_rejected')));
+        }
+    }
+
+    public function unaccept($id): void
+    {
+        if ($quote = Quote::find($id)) {
+            $quote->update([
+                'accepted_at' => null,
+                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
+            ]);
+
+            $this->success(ucfirst(trans('laravel-crm::lang.quote_unaccepted')));
+        }
+    }
+
+    public function unreject($id): void
+    {
+        if ($quote = Quote::find($id)) {
+            $quote->update([
+                'rejected_at' => null,
+                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
+            ]);
+
+            $this->success(ucfirst(trans('laravel-crm::lang.quote_unrejected')));
         }
     }
 

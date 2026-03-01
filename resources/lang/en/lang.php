@@ -550,4 +550,6 @@ return [
     'deal_updated_successfully' => 'deal updated successfully',
     'quote_created_successfully' => 'quote created successfully',
     'quote_updated_successfully' => 'quote updated successfully',
+    'send_me_a_copy' => 'send me a copy',
+    'quote_sent_successfully' => 'quote sent successfully',
 ];

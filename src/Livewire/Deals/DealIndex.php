@@ -60,6 +60,7 @@ class DealIndex extends Component
 
     public function headers()
     {
+        // app('laravel-crm.settings')->get('country', 'United States')
         return [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
             ['key' => 'deal_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
@@ -69,7 +70,7 @@ class DealIndex extends Component
             ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
             ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],
-            ['key' => 'expected_close', 'label' => ucwords(__('laravel-crm::lang.expected_close'))],
+            ['key' => 'expected_close', 'label' => ucwords(__('laravel-crm::lang.expected_close')), 'format' => fn ($row, $field) => ($field) ? $field->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
         ];
     }
