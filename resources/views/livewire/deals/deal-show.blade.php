@@ -25,7 +25,8 @@
                 <x-mary-button link="{{ url(route('laravel-crm.deals.edit', $deal)) }}" icon="o-pencil-square" class="btn-sm btn-square btn-outline" responsive />
             @endcan
             @can('delete crm deals')
-                <x-mary-button wire:click="delete({{ $deal->id }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" wire:confirm="Are you sure?" spinner />
+                <x-mary-button onclick="modalDeleteDeal{{ $deal->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                <x-crm-delete-confirm model="deal" id="{{ $deal->id }}" />
             @endcan
         </x-slot:actions>
     </x-crm-header>

@@ -93,17 +93,10 @@ class QuoteController extends Controller
                 break;
         }
 
-        $quoteTerms = $this->settingService->get('quote_terms');
-
         return view('laravel-crm::quotes.create', [
             'client' => $client ?? null,
             'organization' => $organization ?? null,
             'person' => $person ?? null,
-            'prefix' => $this->settingService->get('quote_prefix'),
-            'number' => (Quote::latest()->first()->number ?? 1000) + 1,
-            'quoteTerms' => $quoteTerms,
-            'pipeline' => Pipeline::where('model', get_class(new Quote))->first(),
-            'stage' => $request->stage ?? null,
         ]);
     }
 

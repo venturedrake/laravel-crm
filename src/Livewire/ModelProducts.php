@@ -10,6 +10,16 @@ class ModelProducts extends Component
 
     public array $data = [];
 
+    public $sub_total = 0;
+
+    public $discount = 0;
+
+    public $tax = 0;
+
+    public $adjustment = 0;
+
+    public $total = 0;
+
     public function mount()
     {
         if (! $this->model) {
