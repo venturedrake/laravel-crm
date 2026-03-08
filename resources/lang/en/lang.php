@@ -553,4 +553,6 @@ return [
     'send_me_a_copy' => 'send me a copy',
     'quote_sent_successfully' => 'quote sent successfully',
     'create' => 'create',
+    'product_created' => 'product created',
+    'select_product' => 'select product',
 ];

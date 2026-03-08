@@ -6,28 +6,31 @@
         <div class="overflow-x-auto">
             <table class="table">
                 <tbody id="sortableItems">
-                @foreach($data as $index => $product)
+                @foreach($products as $index => $product)
                     <tr class="hover:bg-base-300 cursor-grab">
-                        <td class="px-0 relative" colspan="2">
+                        <td class="px-3 relative" colspan="2">
                             <div class="space-y-3">
-                                <x-mary-select wire:model="data.{{ $index }}.id"
+                                <x-mary-select wire:model.live="products.{{ $index }}.id"
                                                :options="\VentureDrake\LaravelCrm\Models\Product::orderBy('name')->get() ?? []"
+                                               placeholder="{{ ucfirst(__('laravel-crm::lang.select_product')) }}"
                                                label="{{ ucfirst(__('laravel-crm::lang.name')) }}" single>
-                                    <x-slot:append>
-                                        <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create')) }}" icon="o-plus" class="join-item btn-primary" />
-                                    </x-slot:append>
+                                    @if($dynamicProducts)
+                                        <x-slot:append>
+                                            <x-mary-button @click="$wire.showCreateProduct = true" {{--label="{{ ucfirst(__('laravel-crm::lang.create')) }}"--}} icon="o-plus" class="join-item btn-primary" />
+                                        </x-slot:append>
+                                    @endif    
                                 </x-mary-select>
-                                <div class="absolute top-3 right-0">
+                                <div class="absolute top-3 right-3">
                                     <x-mary-icon name="fas.arrows-alt-v"/>
                                     <x-mary-button wire:click="remove({{ $index }})" class="btn-xs btn-error btn-square text-white" type="button" icon="fas.x" />
                                 </div>
                                 <div class="grid lg:grid-cols-4 gap-2">
-                                    <x-mary-input wire:model.blur="data.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
-                                    <x-mary-input wire:model.blur="data.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" type="number" />
-                                    <x-mary-input wire:model.blur="data.{{ $index }}.tax_amount" label="{{ ucfirst(__('laravel-crm::lang.tax')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
-                                    <x-mary-input wire:model.blur="data.{{ $index }}.amount" label="{{ ucfirst(__('laravel-crm::lang.amount')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
+                                    <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
+                                    <x-mary-input wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" type="number" />
+                                    <x-mary-input wire:model.blur="products.{{ $index }}.tax_amount" label="{{ ucfirst(__('laravel-crm::lang.tax')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
+                                    <x-mary-input wire:model.blur="products.{{ $index }}.amount" label="{{ ucfirst(__('laravel-crm::lang.amount')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
                                 </div>
-                                <x-mary-input wire:model.blur="data.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />
+                                <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />
                             </div>
                         </td>
                     </tr>
@@ -72,5 +75,17 @@
                 </tfoot>
             </table>
         </div>
+
+        <x-mary-drawer
+                wire:model="showCreateProduct"
+                title="{{ ucfirst(__('laravel-crm::lang.create_product')) }}"
+                separator
+                with-close-button
+                close-on-escape
+                class="w-11/12 lg:w-1/2"
+                right
+        >
+            <livewire:crm-product-create wire:model="showCreateProduct" layout="drawer" wire:key="crm-product-create" />
+        </x-mary-drawer>
     </div>
 </x-mary-card>

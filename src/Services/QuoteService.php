@@ -57,15 +57,15 @@ class QuoteService
             foreach ($request->products as $product) {
                 $quoteProductOrder++;
 
-                if (isset($product['product_id']) && $product['quantity'] > 0) {
-                    if (! Product::find($product['product_id'])) {
+                if (isset($product['id']) && $product['quantity'] > 0) {
+                    if (! Product::find($product['id'])) {
                         $newProduct = $this->addProduct($product, $request);
-                        $product['product_id'] = $newProduct->id;
+                        $product['id'] = $newProduct->id;
                     }
                 }
 
-                if (isset($product['product_id']) && $product['product_id'] > 0 && $product['quantity'] > 0) {
-                    if ($productForTax = Product::find($product['product_id'])) {
+                if (isset($product['id']) && $product['id'] > 0 && $product['quantity'] > 0) {
+                    if ($productForTax = Product::find($product['id'])) {
                         if ($productForTax->taxRate) {
                             $taxRate = $productForTax->taxRate->rate;
                         } elseif ($productForTax->tax_rate) {
@@ -78,7 +78,7 @@ class QuoteService
                     }
 
                     $quote->quoteProducts()->create([
-                        'product_id' => $product['product_id'],
+                        'product_id' => $product['id'],
                         'quantity' => $product['quantity'],
                         'price' => $product['unit_price'],
                         'amount' => $product['amount'],

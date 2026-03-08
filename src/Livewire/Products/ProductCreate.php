@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Products;
 
+use Livewire\Attributes\Modelable;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Products\Traits\HasProductCommon;
 use VentureDrake\LaravelCrm\Models\TaxRate;
@@ -9,6 +10,11 @@ use VentureDrake\LaravelCrm\Models\TaxRate;
 class ProductCreate extends Component
 {
     use HasProductCommon;
+
+    public $layout = 'full';
+
+    #[Modelable]
+    public bool $showCreateProduct = false;
 
     public function mount()
     {
@@ -23,7 +29,16 @@ class ProductCreate extends Component
         $this->user_owner_id = auth()->user()->id;
     }
 
-    public function save()
+    public function createProduct()
+    {
+        $this->save(false);
+
+        $this->dispatch('product-created');
+
+        $this->showCreateProduct = false;
+    }
+
+    public function save($redirect = true)
     {
         $this->validate();
 
@@ -32,10 +47,16 @@ class ProductCreate extends Component
 
         $product = $this->productService->create($request);
 
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.product_created')),
-            redirectTo: route('laravel-crm.products.index')
-        );
+        if ($redirect) {
+            $this->success(
+                ucfirst(trans('laravel-crm::lang.product_created')),
+                redirectTo: route('laravel-crm.products.index')
+            );
+        } else {
+            $this->success(
+                ucfirst(trans('laravel-crm::lang.product_created'))
+            );
+        }
     }
 
     public function render()

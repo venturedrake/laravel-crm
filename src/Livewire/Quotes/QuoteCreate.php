@@ -17,6 +17,10 @@ class QuoteCreate extends Component
     use HasPersonSuggest;
     use HasQuoteCommon;
 
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+
     public function mount()
     {
         $this->currency = app('laravel-crm.settings')->get('currency', 'USD');

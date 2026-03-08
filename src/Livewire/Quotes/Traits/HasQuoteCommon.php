@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Quotes\Traits;
 
-use Carbon\Carbon;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -54,11 +53,13 @@ trait HasQuoteCommon
 
     public $amount;
 
+    public $reference;
+
     public $currency;
 
-    public ?Carbon $issue_at;
+    public $issue_at;
 
-    public ?Carbon $expire_at;
+    public $expire_at;
 
     public $terms;
 
@@ -69,6 +70,18 @@ trait HasQuoteCommon
     public array $labels;
 
     public $user_owner_id;
+
+    public array $products;
+
+    public $sub_total = 0;
+
+    public $discount = 0;
+
+    public $tax = 0;
+
+    public $adjustment = 0;
+
+    public $total = 0;
 
     protected function rules()
     {
@@ -97,5 +110,13 @@ trait HasQuoteCommon
         $this->quoteService = $quoteService;
         $this->personService = $personService;
         $this->organizationService = $organizationService;
+    }
+
+    public function updateProducts($products, $sub_total = 0, $tax = 0, $total = 0): void
+    {
+        $this->products = $products;
+        $this->sub_total = $sub_total;
+        $this->tax = $tax;
+        $this->total = $total;
     }
 }

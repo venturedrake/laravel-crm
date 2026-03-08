@@ -62,5 +62,5 @@
     </x-mary-card>
 </div>
 <div>
-    <livewire:crm-model-products :model="$quote ?? null" />
+   <livewire:crm-model-products :model="$quote ?? null" />
 </div>
