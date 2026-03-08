@@ -23,8 +23,9 @@ class QuoteCreate extends Component
 
     public function mount()
     {
+        $this->mountCommon();
+        
         $this->currency = app('laravel-crm.settings')->get('currency', 'USD');
-        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
         $this->terms = app('laravel-crm.settings')->get('quote_terms');

@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Livewire\Quotes\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\QuoteService;
@@ -110,6 +112,10 @@ trait HasQuoteCommon
         $this->quoteService = $quoteService;
         $this->personService = $personService;
         $this->organizationService = $organizationService;
+    }
+    
+    public function mountCommon(){
+        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
     }
 
     public function updateProducts($products, $sub_total = 0, $tax = 0, $total = 0): void
