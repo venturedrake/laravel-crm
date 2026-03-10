@@ -113,8 +113,9 @@ trait HasQuoteCommon
         $this->personService = $personService;
         $this->organizationService = $organizationService;
     }
-    
-    public function mountCommon(){
+
+    public function mountCommon()
+    {
         $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
     }
 

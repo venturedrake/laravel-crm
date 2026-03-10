@@ -38,7 +38,7 @@
                 @php
                     (!\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote)) ? $quoteError = true : $quoteError = false;
                 @endphp
-                <div class="flex gap-1">
+                <div class="flex gap-1 justify-end">
                 @if(! $quote->order && !$quoteError)
                     <livewire:crm-quote-send :key="'quote-send-'.$quote->id" :$quote />
                 @endif

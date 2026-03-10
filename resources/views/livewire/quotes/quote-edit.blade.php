@@ -7,15 +7,13 @@
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_quotes')) }}" link="{{ url(route('laravel-crm.quotes.index')) }}" icon="fas.angle-double-left" class="btn-sm" responsive />
         </x-slot:actions>
     </x-mary-header>
-
-   
-    <x-mary-form wire:submit="save">
-        <div class="grid lg:grid-cols-2 gap-5">
-            @include('laravel-crm::livewire.quotes.quote-form')
-        </div>
-        <x-slot:actions>
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" class="btn" link="{{ url(route('laravel-crm.quotes.index')) }}" />
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.save_changes')) }}" class="btn-primary text-white" type="submit" spinner="save" />
-        </x-slot:actions>
-    </x-mary-form>
+    
+    <div class="grid lg:grid-cols-2 gap-5">
+        @include('laravel-crm::livewire.quotes.quote-form')
+    </div>
+    <hr class="border-t-[length:var(--border)] border-base-content/10 my-3">
+    <div class="flex justify-end gap-3">
+        <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" class="btn" link="{{ url(route('laravel-crm.quotes.index')) }}" />
+        <x-mary-button wire:click="save" label="{{ ucfirst(__('laravel-crm::lang.save_changes')) }}" class="btn-primary text-white" type="submit" spinner="save" />
+    </div>
 </div>

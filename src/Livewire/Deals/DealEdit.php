@@ -34,7 +34,7 @@ class DealEdit extends Component
         $this->currency = $deal->currency;
         $this->pipeline = Pipeline::where('model', get_class(new Deal))->first();
         $this->pipeline_stage_id = $deal->pipelineStage->id ?? null;
-        $this->expected_close = $deal->expected_close;
+        $this->expected_close = $deal->expected_close->format('Y-m-d') ?? null;
         $this->labels = $deal->labels->pluck('id')->toArray();
         $this->user_owner_id = $deal->ownerUser->id ?? null;
 

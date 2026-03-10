@@ -8,8 +8,6 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
-use VentureDrake\LaravelCrm\Models\Quote;
 
 class QuoteCreate extends Component
 {
@@ -24,7 +22,7 @@ class QuoteCreate extends Component
     public function mount()
     {
         $this->mountCommon();
-        
+
         $this->currency = app('laravel-crm.settings')->get('currency', 'USD');
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;

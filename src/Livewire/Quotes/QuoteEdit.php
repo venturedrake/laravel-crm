@@ -8,7 +8,6 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
 
 class QuoteEdit extends Component
@@ -16,13 +15,13 @@ class QuoteEdit extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
     use HasQuoteCommon;
-    
+
     public ?Quote $quote = null;
 
     public function mount(Quote $quote)
     {
         $this->mountCommon();
-        
+
         $this->quote = $quote;
         $this->organization_id = $quote->organization ? $quote->organization->id : null;
         $this->organization_name = $quote->organization ? $quote->organization->name : null;
@@ -32,20 +31,21 @@ class QuoteEdit extends Component
         $this->description = $quote->description;
         $this->reference = $quote->reference;
         $this->currency = $quote->currency;
-        $this->issue_at = $quote->issue_at;
-        $this->expire_at = $quote->expire_at;
+        $this->issue_at = $quote->issue_at->format('Y-m-d') ?? null;
+        $this->expire_at = $quote->expire_at->format('Y-m-d') ?? null;
+        $this->terms = $quote->terms;
         $this->pipeline_stage_id = $quote->pipelineStage->id ?? null;
         $this->labels = $quote->labels->pluck('id')->toArray();
         $this->user_owner_id = $quote->ownerUser->id ?? null;
-        
-        foreach($quote->quoteProducts() as $product) {
-            // TBC
-        }
-        
+
         $this->sub_total = $quote->subtotal / 100;
         $this->tax = $quote->tax / 100;
         $this->total = $quote->total / 100;
     }
+
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
 
     public function save()
     {
@@ -66,7 +66,7 @@ class QuoteEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $this->quoteService->update($request, $this->quote,  $person ?? null, $organization ?? null);
+        $this->quoteService->update($request, $this->quote, $person ?? null, $organization ?? null);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.quote_updated_successfully')),

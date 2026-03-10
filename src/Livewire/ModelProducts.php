@@ -33,14 +33,33 @@ class ModelProducts extends Component
     {
         if (! $this->model) {
             $this->add();
+        } else {
+            switch (class_basename($this->model)) {
+                case 'Quote':
+                    foreach ($this->model->quoteProducts as $product) {
+                        $this->products[] = [
+                            'quote_product_id' => $product->id,
+                            'id' => $product->product_id,
+                            'name' => $product->name,
+                            'quantity' => $product->quantity,
+                            'unit_price' => $product->price / 100,
+                            'tax_rate' => $product->tax_rate,
+                            'tax_amount' => $product->tax_amount / 100,
+                            'amount' => $product->amount / 100,
+                            'comments' => $product->comments,
+                        ];
+                    }
+                    break;
+            }
+
+            $this->sub_total = $this->model->subtotal / 100;
+            $this->tax = $this->model->tax / 100;
+            $this->total = $this->model->total / 100;
+
+            $this->dispatch('model-products-updated', products: $this->products, sub_total: $this->sub_total, tax: $this->tax, total: $this->total);
         }
 
         $this->dynamicProducts = (app('laravel-crm.settings')->get('dynamic_products')) ? true : false;
-    }
-
-    public function products()
-    {
-        //
     }
 
     public function updatedProducts($value, $key)
