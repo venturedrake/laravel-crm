@@ -83,7 +83,23 @@ class QuoteIndex extends Component
 
     public function quotes(): LengthAwarePaginator
     {
-        return Quote::when($this->search, fn (Builder $q) => $q->where('title', 'like', "%$this->search%"))
+        return Quote::select(
+            config('laravel-crm.db_table_prefix').'quotes.*',
+            config('laravel-crm.db_table_prefix').'people.first_name',
+            config('laravel-crm.db_table_prefix').'people.last_name',
+            config('laravel-crm.db_table_prefix').'organizations.name'
+        )
+            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'quotes.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'quotes.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
+            ->when($this->search, function (Builder $q) {
+                $q->where(function ($q) {
+                    $q->orWhere(config('laravel-crm.db_table_prefix').'quotes.title', 'like', "%$this->search%")
+                        ->orWhere(config('laravel-crm.db_table_prefix').'organizations.name', 'like', "%$this->search%")
+                        ->orWhere(config('laravel-crm.db_table_prefix').'people.first_name', 'like', "%$this->search%")
+                        ->orWhere(config('laravel-crm.db_table_prefix').'people.last_name', 'like', "%$this->search%")
+                        ->orWhereRaw('CONCAT('.config('laravel-crm.db_table_prefix')."people.first_name, ' ', ".config('laravel-crm.db_table_prefix').'people.last_name) like ?', ["%$this->search%"]);
+                });
+            })
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))

@@ -18,6 +18,10 @@ class QuoteEdit extends Component
 
     public ?Quote $quote = null;
 
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+
     public function mount(Quote $quote)
     {
         $this->mountCommon();
@@ -42,10 +46,6 @@ class QuoteEdit extends Component
         $this->tax = $quote->tax / 100;
         $this->total = $quote->total / 100;
     }
-
-    protected $listeners = [
-        'model-products-updated' => 'updateProducts',
-    ];
 
     public function save()
     {

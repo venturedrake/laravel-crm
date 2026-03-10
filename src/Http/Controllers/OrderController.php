@@ -71,18 +71,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        Order::resetSearchValue($request);
-        $params = Order::filters($request);
-
-        if (Order::filter($params)->get()->count() < 30) {
-            $orders = Order::filter($params)->latest()->get();
-        } else {
-            $orders = Order::filter($params)->latest()->paginate(30);
-        }
-
-        return view('laravel-crm::orders.index', [
-            'orders' => $orders,
-        ]);
+        return view('laravel-crm::orders.index');
     }
 
     /**

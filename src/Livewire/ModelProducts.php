@@ -50,6 +50,22 @@ class ModelProducts extends Component
                         ];
                     }
                     break;
+
+                case 'Order':
+                    foreach ($this->model->orderProducts as $product) {
+                        $this->products[] = [
+                            'order_product_id' => $product->id,
+                            'id' => $product->product_id,
+                            'name' => $product->name,
+                            'quantity' => $product->quantity,
+                            'unit_price' => $product->price / 100,
+                            'tax_rate' => $product->tax_rate,
+                            'tax_amount' => $product->tax_amount / 100,
+                            'amount' => $product->amount / 100,
+                            'comments' => $product->comments,
+                        ];
+                    }
+                    break;
             }
 
             $this->sub_total = $this->model->subtotal / 100;

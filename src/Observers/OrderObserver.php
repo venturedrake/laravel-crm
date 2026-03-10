@@ -37,7 +37,7 @@ class OrderObserver
             $order->number = 1000;
         }
 
-        $order->prefix = $this->settingService->get('order_prefix')->value;
+        $order->prefix = $this->settingService->get('order_prefix');
         $order->order_id = $order->prefix.$order->number;
     }
 

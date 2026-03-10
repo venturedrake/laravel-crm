@@ -9,7 +9,6 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class OrderEdit extends Component
 {
@@ -17,12 +16,31 @@ class OrderEdit extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
-    public function mount()
+    public ?Order $order = null;
+
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+
+    public function mount(Order $order)
     {
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->pipeline = Pipeline::where('model', get_class(new Order))->first();
-        $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
-        $this->user_owner_id = auth()->user()->id;
+        $this->mountCommon();
+
+        $this->order = $order;
+        $this->organization_id = $order->organization ? $order->organization->id : null;
+        $this->organization_name = $order->organization ? $order->organization->name : null;
+        $this->person_id = $order->person ? $order->person->id : null;
+        $this->person_name = $order->person ? $order->person->name : null;
+        $this->description = $order->description;
+        $this->reference = $order->reference;
+        $this->currency = $order->currency;
+        $this->pipeline_stage_id = $order->pipelineStage->id ?? null;
+        $this->labels = $order->labels->pluck('id')->toArray();
+        $this->user_owner_id = $order->ownerUser->id ?? null;
+
+        $this->sub_total = $order->subtotal / 100;
+        $this->tax = $order->tax / 100;
+        $this->total = $order->total / 100;
     }
 
     public function save()
@@ -47,13 +65,13 @@ class OrderEdit extends Component
         /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.order_updated_successfully')),
+            ucfirst(trans('laravel-crm::lang.order_updated')),
             redirectTo: route('laravel-crm.orders.index')
         );
     }
 
     public function render()
     {
-        return view('laravel-crm::livewire.order.order-create');
+        return view('laravel-crm::livewire.orders.order-edit');
     }
 }

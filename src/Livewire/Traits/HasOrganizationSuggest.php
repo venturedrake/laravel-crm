@@ -33,6 +33,10 @@ trait HasOrganizationSuggest
         if ($organization = Organization::find($id)) {
             $this->organization_id = $id;
             $this->organization_name = $organization->name;
+
+            if (method_exists($this, 'generateTitleString')) {
+                $this->generateTitleString($organization->name);
+            }
         }
 
         $this->showOrganizations = false;

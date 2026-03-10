@@ -6,10 +6,8 @@ use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Orders\Traits\HasOrderCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
-use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class OrderCreate extends Component
 {
@@ -17,10 +15,15 @@ class OrderCreate extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+
     public function mount()
     {
+        $this->mountCommon();
+
         $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->pipeline = Pipeline::where('model', get_class(new Order))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
     }
@@ -44,10 +47,10 @@ class OrderCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
+        $this->orderService->create($request, $person ?? null, $organization ?? null);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.order_created_successfully')),
+            ucfirst(trans('laravel-crm::lang.order_created')),
             redirectTo: route('laravel-crm.orders.index')
         );
     }

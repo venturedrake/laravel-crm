@@ -3,7 +3,9 @@
 namespace VentureDrake\LaravelCrm\Livewire\Orders\Traits;
 
 use Mary\Traits\Toast;
-use VentureDrake\LaravelCrm\Services\LeadService;
+use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
@@ -11,7 +13,7 @@ trait HasOrderCommon
 {
     use Toast;
 
-    protected LeadService $leadService;
+    protected OrderService $orderService;
 
     protected PersonService $personService;
 
@@ -47,11 +49,11 @@ trait HasOrderCommon
 
     public $address_country = 'United States';
 
-    public $title;
-
     public $description;
 
     public $amount;
+
+    public $reference;
 
     public $currency;
 
@@ -63,6 +65,18 @@ trait HasOrderCommon
 
     public $user_owner_id;
 
+    public array $products;
+
+    public $sub_total = 0;
+
+    public $discount = 0;
+
+    public $tax = 0;
+
+    public $adjustment = 0;
+
+    public $total = 0;
+
     protected function rules()
     {
         return [
@@ -70,7 +84,6 @@ trait HasOrderCommon
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
-            'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
         ];
     }
@@ -85,10 +98,23 @@ trait HasOrderCommon
         ];
     }
 
-    public function boot(LeadService $leadService, PersonService $personService, OrganizationService $organizationService): void
+    public function boot(OrderService $orderService, PersonService $personService, OrganizationService $organizationService): void
     {
-        $this->leadService = $leadService;
+        $this->orderService = $orderService;
         $this->personService = $personService;
         $this->organizationService = $organizationService;
+    }
+
+    public function mountCommon()
+    {
+        $this->pipeline = Pipeline::where('model', get_class(new Order))->first();
+    }
+
+    public function updateProducts($products, $sub_total = 0, $tax = 0, $total = 0): void
+    {
+        $this->products = $products;
+        $this->sub_total = $sub_total;
+        $this->tax = $tax;
+        $this->total = $total;
     }
 }

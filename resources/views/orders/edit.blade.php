@@ -1,3 +1,3 @@
 <x-crm::app-layout>
-    <livewire:crm-order-edit />
+    <livewire:crm-order-edit :$order />
 </x-crm::app-layout>

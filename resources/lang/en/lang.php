@@ -555,4 +555,5 @@ return [
     'create' => 'create',
     'product_created' => 'product created',
     'select_product' => 'select product',
+    'order_created' => 'order created',
 ];

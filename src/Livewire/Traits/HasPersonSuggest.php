@@ -36,12 +36,11 @@ trait HasPersonSuggest
 
     public function linkPerson($id)
     {
-
         if ($person = Person::find($id)) {
             $this->person_id = $id;
             $this->person_name = $person->name;
 
-            if (! $this->organization_name) {
+            if (! $this->organization_name && method_exists($this, 'generateTitleString')) {
                 $this->generateTitleString($person->name);
             }
         }
