@@ -26,7 +26,7 @@
                         @include('laravel-crm::partials.form.text',[
                            'name' => 'subject',
                            'label' => ucfirst(__('laravel-crm::lang.subject')),
-                           'value' => old('subject', 'Invitation to join Laravel CRM'),
+                           'value' => old('subject', 'Invitation to join '.config('app.name')),
                          ])
                         @include('laravel-crm::partials.form.textarea',[
                           'name' => 'message',
