@@ -106,6 +106,7 @@ use VentureDrake\LaravelCrm\Livewire\ModelProducts;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderEdit;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderIndex;
+use VentureDrake\LaravelCrm\Livewire\Orders\OrderShow;
 use VentureDrake\LaravelCrm\Livewire\Organizations\OrganizationCreate;
 use VentureDrake\LaravelCrm\Livewire\Organizations\OrganizationEdit;
 use VentureDrake\LaravelCrm\Livewire\Organizations\OrganizationIndex;
@@ -691,6 +692,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-quote-edit', QuoteEdit::class);
         Livewire::component('crm-quote-send', QuoteSend::class);
         Livewire::component('crm-order-index', OrderIndex::class);
+        Livewire::component('crm-order-show', OrderShow::class);
         Livewire::component('crm-order-create', OrderCreate::class);
         Livewire::component('crm-order-edit', OrderEdit::class);
         Livewire::component('crm-invoice-index', InvoiceIndex::class);

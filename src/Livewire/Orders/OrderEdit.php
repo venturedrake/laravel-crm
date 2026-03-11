@@ -62,7 +62,7 @@ class OrderEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
+        $this->orderService->update($request, $this->order, $person ?? null, $organization ?? null);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.order_updated')),
