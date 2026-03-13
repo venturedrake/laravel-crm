@@ -60,14 +60,30 @@
                     <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.invoices.download', $invoice)) }}" class="btn-sm btn-square btn-outline" />
                 @endif
             @endcan--}}
+            <livewire:crm-invoice-send :key="'invoice-send-'.$invoice->id" :$invoice />
+            @if(! $invoice->xeroInvoice)
+                @if(! $invoice->fully_paid_at)
+                    <livewire:crm-invoice-pay :key="'invoice-pay-'.$invoice->id" :$invoice />
+                @endif
+            @endif 
+            @can('view crm invoices')
+                <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.invoices.download', $invoice)) }}" class="btn-sm btn-square btn-outline" />
+            @endcan
             | <livewire:crm-activity-menu /> |
-            @can('edit crm invoices')
-                <x-mary-button link="{{ url(route('laravel-crm.invoices.edit', $invoice)) }}" icon="o-pencil-square" class="btn-sm btn-square btn-outline" responsive />
-            @endcan
-            @can('delete crm invoices')
-                <x-mary-button onclick="modalDeleteInvoice{{ $invoice->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-                <x-crm-delete-confirm model="invoice" id="{{ $invoice->id }}" />           
-            @endcan
+            @if(! $invoice->xeroInvoice)
+                @if($invoice->amount_paid <= 0)
+                    @can('edit crm invoices')
+                        <x-mary-button link="{{ url(route('laravel-crm.invoices.edit', $invoice)) }}" icon="o-pencil-square" class="btn-sm btn-square btn-outline" responsive />
+                    @endcan
+                    @can('delete crm invoices')
+                        <x-mary-button onclick="modalDeleteInvoice{{ $invoice->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                        <x-crm-delete-confirm model="invoice" id="{{ $invoice->id }}" />           
+                    @endcan
+                @endif
+            @endif
+            @if($invoice->xeroInvoice)
+                <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
+            @endif
         </x-slot:actions>
     </x-crm-header>
     <div class="grid lg:grid-cols-2 gap-5">
