@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
@@ -75,27 +74,6 @@ class Invoice extends Model
         return money($this->total, $this->currency).' - '.($this->organization->name ?? $this->person->name ?? null);
     }
 
-    public function setIssueDateAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['issue_date'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
-    }
-
-    public function setDueDateAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['due_date'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
-    }
-
-    public function setFullyPaidAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['fully_paid_at'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
-    }
-
     public function setSubtotalAttribute($value)
     {
         if (isset($value)) {
@@ -134,7 +112,7 @@ class Invoice extends Model
 
     public function getAmountDueAttribute($value)
     {
-        if ($value) {
+        if ($value >= 0) {
             return $value;
         } else {
             return $this->total;

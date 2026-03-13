@@ -66,6 +66,22 @@ class ModelProducts extends Component
                         ];
                     }
                     break;
+
+                case 'Invoice':
+                    foreach ($this->model->invoiceLines as $invoiceLine) {
+                        $this->products[] = [
+                            'invoice_line_id' => $invoiceLine->id,
+                            'id' => $invoiceLine->product_id,
+                            'name' => $invoiceLine->name,
+                            'quantity' => $invoiceLine->quantity,
+                            'unit_price' => $invoiceLine->price / 100,
+                            'tax_rate' => $invoiceLine->tax_rate,
+                            'tax_amount' => $invoiceLine->tax_amount / 100,
+                            'amount' => $invoiceLine->amount / 100,
+                            'comments' => $invoiceLine->comments,
+                        ];
+                    }
+                    break;
             }
 
             $this->sub_total = $this->model->subtotal / 100;

@@ -556,4 +556,7 @@ return [
     'product_created' => 'product created',
     'select_product' => 'select product',
     'order_created' => 'order created',
+    'invoice_paid' => 'invoice paid',
+    'due_today' => 'due today',
+    'due_yesterday' => 'due yesterday',
 ];

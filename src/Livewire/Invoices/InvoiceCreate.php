@@ -6,10 +6,8 @@ use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Invoices\Traits\HasInvoiceCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
-use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class InvoiceCreate extends Component
 {
@@ -17,12 +15,18 @@ class InvoiceCreate extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+
     public function mount()
     {
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->pipeline = Pipeline::where('model', get_class(new Invoice))->first();
+        $this->mountCommon();
+
+        $this->currency = app('laravel-crm.settings')->get('currency', 'USD');
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
+        $this->terms = app('laravel-crm.settings')->get('invoice_terms');
     }
 
     public function save()
@@ -44,10 +48,10 @@ class InvoiceCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
+        $this->invoiceService->create($request, $person ?? null, $organization ?? null);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.invoice_created_successfully')),
+            ucfirst(trans('laravel-crm::lang.invoice_created')),
             redirectTo: route('laravel-crm.invoices.index')
         );
     }

@@ -12,8 +12,4 @@ If you have any questions, please let us know.
 
 Thanks,
 {{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organization_name')->first()->value }}
-@if($invoice->terms)
-    
-Terms
-{{ $invoice->terms }}
-@endif   
+{{ ($invoice->terms) ? "\nTerms:\n" . $invoice->terms : null }}

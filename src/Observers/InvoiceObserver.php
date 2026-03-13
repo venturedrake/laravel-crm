@@ -37,7 +37,7 @@ class InvoiceObserver
             $invoice->number = 1000;
         }
 
-        $invoice->prefix = $this->settingService->get('invoice_prefix')->value;
+        $invoice->prefix = $this->settingService->get('invoice_prefix');
         $invoice->invoice_id = $invoice->prefix.$invoice->number;
     }
 

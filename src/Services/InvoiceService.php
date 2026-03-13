@@ -44,21 +44,22 @@ class InvoiceService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        if (isset($request->invoiceLines)) {
+        if (isset($request->products)) {
             $invoiceLineOrder = 0;
 
-            foreach ($request->invoiceLines as $invoiceLine) {
+            foreach ($request->products as $product) {
+                $invoiceLine = $product;
                 $invoiceLineOrder++;
 
-                if (isset($invoiceLine['product_id']) && $invoiceLine['quantity'] > 0) {
-                    if (! Product::find($invoiceLine['product_id'])) {
+                if (isset($invoiceLine['id']) && $invoiceLine['quantity'] > 0) {
+                    if (! Product::find($invoiceLine['id'])) {
                         $newProduct = $this->addProduct($invoiceLine, $request);
-                        $invoiceLine['product_id'] = $newProduct->id;
+                        $invoiceLine['id'] = $newProduct->id;
                     }
                 }
 
-                if (isset($invoiceLine['product_id']) && $invoiceLine['product_id'] > 0 && $invoiceLine['quantity'] > 0) {
-                    if ($product = Product::find($invoiceLine['product_id'])) {
+                if (isset($invoiceLine['id']) && $invoiceLine['id'] > 0 && $invoiceLine['quantity'] > 0) {
+                    if ($product = Product::find($invoiceLine['id'])) {
                         if ($product->taxRate) {
                             $taxRate = $product->taxRate->rate;
                         } elseif ($product->tax_rate) {
@@ -71,9 +72,9 @@ class InvoiceService
                     }
 
                     $invoice->invoiceLines()->create([
-                        'product_id' => $invoiceLine['product_id'],
+                        'product_id' => $invoiceLine['id'],
                         'quantity' => $invoiceLine['quantity'],
-                        'price' => $invoiceLine['price'],
+                        'price' => $invoiceLine['unit_price'],
                         'amount' => $invoiceLine['amount'],
                         'tax_rate' => $taxRate ?? 0,
                         'tax_amount' => $invoiceLine['amount'] * ($taxRate / 100),
@@ -148,24 +149,24 @@ class InvoiceService
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
-        if (isset($request->invoiceLines)) {
+        if (isset($request->products)) {
             $invoiceLineIds = [];
             $invoiceLineOrder = 0;
 
-            foreach ($request->invoiceLines as $line) {
+            foreach ($request->products as $line) {
                 $invoiceLineOrder++;
 
                 if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
-                    if (! isset($line['product_id']) || $line['quantity'] == 0) {
+                    if (! isset($line['id']) || $line['quantity'] == 0) {
                         $invoiceLine->delete();
                     } else {
-                        if (! Product::find($line['product_id'])) {
+                        if (! Product::find($line['id'])) {
                             $newProduct = $this->addProduct($line, $request);
-                            $line['product_id'] = $newProduct->id;
+                            $line['id'] = $newProduct->id;
                         }
 
-                        if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                            if ($product = Product::find($invoiceLine['product_id'])) {
+                        if (isset($line['id']) && $line['id'] > 0 && $line['quantity'] > 0) {
+                            if ($product = Product::find($invoiceLine['id'])) {
                                 if ($product->taxRate) {
                                     $taxRate = $product->taxRate->rate;
                                 } elseif ($product->tax_rate) {
@@ -178,9 +179,9 @@ class InvoiceService
                             }
 
                             $invoiceLine->update([
-                                'product_id' => $line['product_id'],
+                                'product_id' => $line['id'],
                                 'quantity' => $line['quantity'],
-                                'price' => $line['price'],
+                                'price' => $line['unit_price'],
                                 'amount' => $line['amount'],
                                 'tax_rate' => $taxRate ?? 0,
                                 'tax_amount' => $line['amount'] * ($taxRate / 100),
@@ -192,14 +193,14 @@ class InvoiceService
                             $invoiceLineIds[] = $invoiceLine->id;
                         }
                     }
-                } elseif (isset($line['product_id']) && $line['quantity'] > 0) {
-                    if (! Product::find($line['product_id'])) {
+                } elseif (isset($line['id']) && $line['quantity'] > 0) {
+                    if (! Product::find($line['id'])) {
                         $newProduct = $this->addProduct($line, $request);
-                        $line['product_id'] = $newProduct->id;
+                        $line['id'] = $newProduct->id;
                     }
 
-                    if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                        if ($product = Product::find($line['product_id'])) {
+                    if (isset($line['id']) && $line['id'] > 0 && $line['quantity'] > 0) {
+                        if ($product = Product::find($line['id'])) {
                             if ($product->taxRate) {
                                 $taxRate = $product->taxRate->rate;
                             } elseif ($product->tax_rate) {
@@ -212,9 +213,9 @@ class InvoiceService
                         }
 
                         $invoiceLine = $invoice->invoiceLines()->create([
-                            'product_id' => $line['product_id'],
+                            'product_id' => $line['id'],
                             'quantity' => $line['quantity'],
-                            'price' => $line['price'],
+                            'price' => $line['unit_price'],
                             'amount' => $line['amount'],
                             'tax_rate' => $taxRate ?? 0,
                             'tax_amount' => $line['amount'] * ($taxRate / 100),
@@ -241,7 +242,7 @@ class InvoiceService
     protected function addProduct($product, $request)
     {
         $newProduct = Product::create([
-            'name' => $product['product_id'],
+            'name' => $product['id'],
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 

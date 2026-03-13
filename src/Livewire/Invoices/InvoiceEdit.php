@@ -9,7 +9,6 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class InvoiceEdit extends Component
 {
@@ -17,12 +16,26 @@ class InvoiceEdit extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
-    public function mount()
+    public Invoice $invoice;
+
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+
+    public function mount(Invoice $invoice)
     {
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->pipeline = Pipeline::where('model', get_class(new Invoice))->first();
-        $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
-        $this->user_owner_id = auth()->user()->id;
+        $this->invoice = $invoice;
+        $this->organization_id = $invoice->organization ? $invoice->organization->id : null;
+        $this->organization_name = $invoice->organization ? $invoice->organization->name : null;
+        $this->person_id = $invoice->person ? $invoice->person->id : null;
+        $this->person_name = $invoice->person ? $invoice->person->name : null;
+        $this->reference = $invoice->reference;
+        $this->currency = $invoice->currency;
+        $this->issue_date = $invoice->issue_date->format('Y-m-d') ?? null;
+        $this->due_date = $invoice->due_date->format('Y-m-d') ?? null;
+        $this->terms = $invoice->terms;
+        $this->pipeline_stage_id = $invoice->pipelineStage->id ?? null;
+        $this->user_owner_id = $invoice->ownerUser->id ?? null;
     }
 
     public function save()
@@ -44,10 +57,10 @@ class InvoiceEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
+        $this->invoiceService->update($request, $this->invoice, $person ?? null, $organization ?? null);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.invoice_updated_successfully')),
+            ucfirst(trans('laravel-crm::lang.invoice_updated')),
             redirectTo: route('laravel-crm.invoices.index')
         );
     }
