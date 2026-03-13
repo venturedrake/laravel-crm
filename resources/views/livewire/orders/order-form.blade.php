@@ -54,6 +54,70 @@
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.owner')) }}" wire:model="user_owner_id" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false)" />
         </div>
     </x-mary-card>
+    <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.addresses')) }}" class="mt-5" separator>
+        <div class="grid gap-3" wire:key="addresses">
+            <x-mary-tabs wire:model="selectedAddressTab">
+                <x-mary-tab name="billing" label="Billing">
+                    <div class="grid lg:grid-cols-12 gap-3">
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.billing.contact" label="{{ ucfirst(__('laravel-crm::lang.contact_name')) }}" />
+                        </div>
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.billing.phone" label="{{ ucfirst(__('laravel-crm::lang.contact_phone')) }}" />
+                        </div>
+                    </div>
+                    <x-mary-input wire:model="addresses.billing.line1" label="{{ ucfirst(__('laravel-crm::lang.line_1')) }}" />
+                    <x-mary-input wire:model="addresses.billing.line2" label="{{ ucfirst(__('laravel-crm::lang.line_2')) }}" />
+                    <x-mary-input wire:model="addresses.billing.line3" label="{{ ucfirst(__('laravel-crm::lang.line_3')) }}" />
+                    <div class="grid lg:grid-cols-12 gap-3">
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.billing.city" label="{{ ucfirst(__('laravel-crm::lang.suburb')) }}" />
+                        </div>
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.billing.state" label="{{ ucfirst(__('laravel-crm::lang.state')) }}" />
+                        </div>
+                    </div>
+                    <div class="grid lg:grid-cols-12 gap-3">
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.billing.code" label="{{ ucfirst(__('laravel-crm::lang.postcode')) }}" />
+                        </div>
+                        <div class="col-span-6">
+                            <x-mary-select wire:model="addresses.billing.country" label="{{ ucfirst(__('laravel-crm::lang.country')) }}" :options="$countries" required />
+                        </div>
+                    </div>
+                </x-mary-tab>
+                <x-mary-tab name="shipping" label="Shipping">
+                    <div class="grid lg:grid-cols-12 gap-3">
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.shipping.contact" label="{{ ucfirst(__('laravel-crm::lang.contact_name')) }}" />
+                        </div>
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.shipping.phone" label="{{ ucfirst(__('laravel-crm::lang.contact_phone')) }}" />
+                        </div>
+                    </div>
+                    <x-mary-input wire:model="addresses.shipping.line1" label="{{ ucfirst(__('laravel-crm::lang.line_1')) }}" />
+                    <x-mary-input wire:model="addresses.shipping.line2" label="{{ ucfirst(__('laravel-crm::lang.line_2')) }}" />
+                    <x-mary-input wire:model="addresses.shipping.line3" label="{{ ucfirst(__('laravel-crm::lang.line_3')) }}" />
+                    <div class="grid lg:grid-cols-12 gap-3">
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.shipping.city" label="{{ ucfirst(__('laravel-crm::lang.suburb')) }}" />
+                        </div>
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.shipping.state" label="{{ ucfirst(__('laravel-crm::lang.state')) }}" />
+                        </div>
+                    </div>
+                    <div class="grid lg:grid-cols-12 gap-3">
+                        <div class="col-span-6">
+                            <x-mary-input wire:model="addresses.shipping.code" label="{{ ucfirst(__('laravel-crm::lang.postcode')) }}" />
+                        </div>
+                        <div class="col-span-6">
+                            <x-mary-select wire:model="addresses.shipping.country" label="{{ ucfirst(__('laravel-crm::lang.country')) }}" :options="$countries" required />
+                        </div>
+                    </div>
+                </x-mary-tab>
+            </x-mary-tabs>
+        </div>
+    </x-mary-card>
 </div>
 <div>
     <livewire:crm-model-products :model="$order ?? null" />

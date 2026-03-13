@@ -6,6 +6,7 @@ use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Orders\Traits\HasOrderCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -37,6 +38,47 @@ class OrderEdit extends Component
         $this->pipeline_stage_id = $order->pipelineStage->id ?? null;
         $this->labels = $order->labels->pluck('id')->toArray();
         $this->user_owner_id = $order->ownerUser->id ?? null;
+
+        $billingAddressTypeId = AddressType::where('name', 'Billing')->first()->id ?? null;
+        $shippingAddressTypeId = AddressType::where('name', 'Shipping')->first()->id ?? null;
+
+        foreach ($this->order->addresses as $address) {
+            if ($address->address_type_id == $billingAddressTypeId) {
+                $this->addresses['billing'] = [
+                    'id' => $address->id,
+                    'address_type_id' => $address->address_type_id,
+                    'contact' => $address->contact,
+                    'phone' => $address->phone,
+                    'address' => $address->address,
+                    'line1' => $address->line1,
+                    'line2' => $address->line2,
+                    'line3' => $address->line3,
+                    'city' => $address->city,
+                    'state' => $address->state,
+                    'code' => $address->code,
+                    'country' => $address->country,
+                    'primary' => $address->primary,
+                ];
+            }
+
+            if ($address->address_type_id == $shippingAddressTypeId) {
+                $this->addresses['shipping'] = [
+                    'id' => $address->id,
+                    'address_type_id' => $address->address_type_id,
+                    'contact' => $address->contact,
+                    'phone' => $address->phone,
+                    'address' => $address->address,
+                    'line1' => $address->line1,
+                    'line2' => $address->line2,
+                    'line3' => $address->line3,
+                    'city' => $address->city,
+                    'state' => $address->state,
+                    'code' => $address->code,
+                    'country' => $address->country,
+                    'primary' => $address->primary,
+                ];
+            }
+        }
 
         $this->sub_total = $order->subtotal / 100;
         $this->tax = $order->tax / 100;

@@ -73,12 +73,30 @@
                         {{ $order->reference }}
                         </span>
                     </div>
+                    @hasquotesenabled
+                    @if($order->quote)
+                        <div class="flex flex-row gap-5">
+                            <strong>{{ ucfirst(__('laravel-crm::lang.quote')) }}</strong>
+                            <span>
+                                <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}">{{ $order->quote->quote_id }}</a>
+                            </span>
+                        </div>
+                    @endif
+                    @endhasquotesenabled
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.description')) }}</strong>
                         <span>
                         {{ $order->description }}
                         </span>
                     </div>
+                    @foreach($order->addresses as $address)
+                        <div class="flex flex-row gap-5">
+                            <strong>{{ ($address->addressType) ? ucfirst($address->addressType->name).' ' : null }}{{ ucfirst(__('laravel-crm::lang.address')) }}</strong>
+                            <span>
+                               {{ \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) }} {{ ($address->primary) ? '(Primary)' : null }}
+                            </span>
+                        </div>
+                    @endforeach
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.labels')) }}</strong>
                         <span>

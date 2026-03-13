@@ -94,7 +94,7 @@ class OrderService
             foreach ($request->addresses as $addressRequest) {
                 $address = $order->addresses()->create([
                     'external_id' => Uuid::uuid4()->toString(),
-                    'address_type_id' => $addressRequest['type'] ?? null,
+                    'address_type_id' => $addressRequest['address_type_id'] ?? null,
                     'address' => $addressRequest['address'] ?? null,
                     'name' => $addressRequest['name'] ?? null,
                     'contact' => $addressRequest['contact'] ?? null,
@@ -233,7 +233,7 @@ class OrderService
             foreach ($addresses as $addressRequest) {
                 if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
                     $address->update([
-                        'address_type_id' => $addressRequest['type'] ?? null,
+                        'address_type_id' => $addressRequest['address_type_id'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
                         'name' => $addressRequest['name'] ?? null,
                         'contact' => $addressRequest['contact'] ?? null,
@@ -252,7 +252,7 @@ class OrderService
                 } else {
                     $address = $order->addresses()->create([
                         'external_id' => Uuid::uuid4()->toString(),
-                        'address_type_id' => $addressRequest['type'] ?? null,
+                        'address_type_id' => $addressRequest['address_type_id'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
                         'name' => $addressRequest['name'] ?? null,
                         'contact' => $addressRequest['contact'] ?? null,

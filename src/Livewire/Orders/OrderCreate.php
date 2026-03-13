@@ -6,6 +6,7 @@ use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Orders\Traits\HasOrderCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 
@@ -26,6 +27,11 @@ class OrderCreate extends Component
         $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
+
+        $this->addresses['billing']['address_type_id'] = AddressType::where('name', 'Billing')->first()->id ?? null;
+        $this->addresses['shipping']['address_type_id'] = AddressType::where('name', 'Shipping')->first()->id ?? null;
+        $this->addresses['billing']['country'] = app('laravel-crm.settings')->get('country', 'United States');
+        $this->addresses['shipping']['country'] = app('laravel-crm.settings')->get('country', 'United States');
     }
 
     public function save()

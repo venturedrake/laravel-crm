@@ -63,7 +63,7 @@ class Order extends Model
 
     public function getTitleAttribute()
     {
-        return money($this->total, $this->currency).' - '.($this->client->name ?? $this->organization->name ?? $this->organization->person->name ?? null);
+        return money($this->total, $this->currency).' - '.($this->organization->name ?? $this->person->name ?? null);
     }
 
     public function setSubtotalAttribute($value)

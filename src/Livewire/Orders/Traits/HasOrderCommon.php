@@ -35,19 +35,38 @@ trait HasOrderCommon
 
     public $organization_name;
 
-    public $address_line_1;
+    public $countries;
 
-    public $address_line_2;
-
-    public $address_line_3;
-
-    public $address_suburb;
-
-    public $address_state;
-
-    public $address_postcode;
-
-    public $address_country = 'United States';
+    public array $addresses = [
+        'billing' => [
+            'id' => null,
+            'address_type_id',
+            'contact' => null,
+            'phone' => null,
+            'line1' => null,
+            'line2' => null,
+            'line3' => null,
+            'city' => null,
+            'state' => null,
+            'code' => null,
+            'country' => null,
+            'primary' => 1,
+        ],
+        'shipping' => [
+            'id' => null,
+            'address_type_id',
+            'contact' => null,
+            'phone' => null,
+            'line1' => null,
+            'line2' => null,
+            'line3' => null,
+            'city' => null,
+            'state' => null,
+            'code' => null,
+            'country' => null,
+            'primary' => 1,
+        ],
+    ];
 
     public $description;
 
@@ -76,6 +95,8 @@ trait HasOrderCommon
     public $adjustment = 0;
 
     public $total = 0;
+
+    public $selectedAddressTab = 'billing';
 
     protected function rules()
     {
@@ -107,6 +128,7 @@ trait HasOrderCommon
 
     public function mountCommon()
     {
+        $this->countries = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries();
         $this->pipeline = Pipeline::where('model', get_class(new Order))->first();
     }
 
