@@ -54,18 +54,7 @@ class PurchaseOrderController extends Controller
      */
     public function index(Request $request)
     {
-        PurchaseOrder::resetSearchValue($request);
-        $params = PurchaseOrder::filters($request);
-
-        if (PurchaseOrder::filter($params)->get()->count() < 30) {
-            $purchaseOrders = PurchaseOrder::filter($params)->latest()->get();
-        } else {
-            $purchaseOrders = PurchaseOrder::filter($params)->latest()->paginate(30);
-        }
-
-        return view('laravel-crm::purchase-orders.index', [
-            'purchaseOrders' => $purchaseOrders,
-        ]);
+        return view('laravel-crm::purchase-orders.index');
     }
 
     /**
@@ -92,25 +81,12 @@ class PurchaseOrderController extends Controller
                 break;
         }
 
-        $related = $this->settingService->get('team');
-
-        $addresses = [];
-        foreach ($related->addresses()->get() as $address) {
-            $addresses[$address->id] = $address->address;
-        }
-
-        $purchaseOrderTerms = $this->settingService->get('purchase_order_terms');
-        $purchaseOrderDeliveryInstructions = $this->settingService->get('purchase_order_delivery_instructions');
-
         return view('laravel-crm::purchase-orders.create', [
             'person' => $person ?? null,
             'organization' => $organization ?? null,
             'order' => $order ?? null,
             'prefix' => $this->settingService->get('purchase_order_prefix'),
             'number' => (PurchaseOrder::latest()->first()->number ?? 1000) + 1,
-            'addresses' => $addresses,
-            'purchaseOrderTerms' => $purchaseOrderTerms,
-            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions,
         ]);
     }
 

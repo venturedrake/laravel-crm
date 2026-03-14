@@ -13,16 +13,19 @@ use VentureDrake\LaravelCrm\Models\Quote;
 
 class PurchaseOrderCreate extends Component
 {
+    use HasPurchaseOrderCommon;
     use HasOrganizationSuggest;
     use HasPersonSuggest;
-    use HasPurchaseOrderCommon;
-
+    
     public function mount()
     {
+        $this->mountCommon();
+        
         $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
+        $this->terms = app('laravel-crm.settings')->get('purchase_order_terms');
+        $this->delivery_instructions = app('laravel-crm.settings')->get('purchase_order_delivery_instructions');
     }
 
     public function save()
@@ -47,7 +50,7 @@ class PurchaseOrderCreate extends Component
         /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.purchase_order_created_successfully')),
+            ucfirst(trans('laravel-crm::lang.purchase_order_created')),
             redirectTo: route('laravel-crm.purchase-orders.index')
         );
     }
