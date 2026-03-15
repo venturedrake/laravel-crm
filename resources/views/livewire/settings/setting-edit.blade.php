@@ -76,9 +76,9 @@
                 </x-mary-card>
             </div>
             <div>
-                <livewire:crm-model-phones />
-                <livewire:crm-model-emails />
-                <livewire:crm-model-addresses />
+                <x-crm-phones :$phones :$phoneTypes />
+                <x-crm-emails :$emails :$emailTypes />
+                <x-crm-addresses :$addresses :$addressTypes :$countries />
             </div>
         </div>
         <x-slot:actions>

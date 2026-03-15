@@ -62,15 +62,15 @@ class PurchaseOrderService
             $total = 0;
 
             foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
-                if (isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['quantity'] > 0) {
-                    if (! Product::find($purchaseOrderLine['product_id'])) {
+                if (isset($purchaseOrderLine['id']) && $purchaseOrderLine['quantity'] > 0) {
+                    if (! Product::find($purchaseOrderLine['id'])) {
                         $newProduct = $this->addProduct($purchaseOrderLine, $request);
-                        $purchaseOrderLine['product_id'] = $newProduct->id;
+                        $purchaseOrderLine['id'] = $newProduct->id;
                     }
                 }
 
-                if (isset($purchaseOrderLine['product_id']) && $purchaseOrderLine['product_id'] > 0 && $purchaseOrderLine['quantity'] > 0) {
-                    if ($product = Product::find($purchaseOrderLine['product_id'])) {
+                if (isset($purchaseOrderLine['id']) && $purchaseOrderLine['id'] > 0 && $purchaseOrderLine['quantity'] > 0) {
+                    if ($product = Product::find($purchaseOrderLine['id'])) {
                         if ($product->taxRate) {
                             $taxRate = $product->taxRate->rate;
                         } elseif ($product->tax_rate) {
@@ -87,7 +87,7 @@ class PurchaseOrderService
                     $total += ($purchaseOrderLine['amount'] + ($purchaseOrderLine['amount'] * ($taxRate / 100)));
 
                     $purchaseOrder->purchaseOrderLines()->create([
-                        'product_id' => $purchaseOrderLine['product_id'],
+                        'product_id' => $purchaseOrderLine['id'],
                         'quantity' => $purchaseOrderLine['quantity'],
                         'price' => $purchaseOrderLine['price'],
                         'amount' => $purchaseOrderLine['amount'],

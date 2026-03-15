@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
+use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Models\Address;
+use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\Phone;
 
 class SettingEdit extends Component
 {
@@ -85,6 +89,23 @@ class SettingEdit extends Component
 
     public $related;
 
+    public array $phoneTypes = [];
+
+    public array $phones = [];
+
+    public array $emailTypes = [];
+
+    public array $emails = [];
+
+    public array $addressTypes = [
+        [
+            'id' => null,
+            'name' => null,
+        ],
+    ];
+
+    public array $addresses = [];
+
     protected function rules()
     {
         return [
@@ -157,7 +178,66 @@ class SettingEdit extends Component
         $this->dynamicProducts = (app('laravel-crm.settings')->get('dynamic_products')) ? true : false;
         $this->taxName = app('laravel-crm.settings')->get('tax_name');
         $this->taxRate = app('laravel-crm.settings')->get('tax_rate');
-        $this->related = app('laravel-crm.settings')->get('team');
+        $this->related = app('laravel-crm.settings')->first('team');
+
+        $this->phoneTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes();
+        $this->emailTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes();
+
+        foreach (\VentureDrake\LaravelCrm\Models\AddressType::all() as $addressType) {
+            $this->addressTypes[] = [
+                'id' => $addressType->id,
+                'name' => $addressType->name,
+            ];
+        }
+
+        if ($this->related->phones->count() == 0) {
+            $this->addPhone();
+        } else {
+            foreach ($this->related->phones as $phone) {
+                $this->phones[] = [
+                    'id' => $phone->id,
+                    'number' => $phone->number,
+                    'type' => $phone->type,
+                    'primary' => $phone->primary,
+                ];
+            }
+        }
+
+        if ($this->related->emails->count() == 0) {
+            $this->addEmail();
+        } else {
+            foreach ($this->related->emails as $email) {
+                $this->emails[] = [
+                    'id' => $email->id,
+                    'address' => $email->address,
+                    'type' => $email->type,
+                    'primary' => $email->primary,
+                ];
+            }
+        }
+
+        if ($this->related->addresses->count() == 0) {
+            $this->addAddress();
+        } else {
+            foreach ($this->related->addresses as $address) {
+                $this->addresses[] = [
+                    'id' => $address->id,
+                    'type' => $address->address_type_id,
+                    'name' => $address->name,
+                    'contact' => $address->contact,
+                    'phone' => $address->phone,
+                    /* 'address' => $address->address, */
+                    'line1' => $address->line1,
+                    'line2' => $address->line2,
+                    'line3' => $address->line3,
+                    'city' => $address->city,
+                    'state' => $address->state,
+                    'code' => $address->code,
+                    'country' => $address->country,
+                    'primary' => $address->primary,
+                ];
+            }
+        }
     }
 
     public function save()
@@ -260,16 +340,188 @@ class SettingEdit extends Component
         app('laravel-crm.settings')->set('dynamic_products', $this->dynamicProducts);
         app('laravel-crm.settings')->set('show_related_activity', $this->showRelatedActivity);
 
-        $related = app('laravel-crm.settings')->get('team');
+        $related = app('laravel-crm.settings')->first('team');
 
-        // TODO:: related
-        /*$this->updateRelatedPhones($related, $this->phones);
+        $this->updateRelatedPhones($related, $this->phones);
         $this->updateRelatedEmails($related, $this->emails);
-        $this->updateRelatedAddresses($related, $this->addresses);*/
+        $this->updateRelatedAddresses($related, $this->addresses);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.settings_updated'))
         );
+    }
+
+    public function addPhone()
+    {
+        $this->phones[] = [
+            'id' => null,
+            'number' => null,
+            'type' => null,
+            'primary' => null,
+        ];
+    }
+
+    public function deletePhone($index)
+    {
+        unset($this->phones[$index]);
+    }
+
+    public function addEmail()
+    {
+        $this->emails[] = [
+            'id' => null,
+            'address' => null,
+            'type' => null,
+            'primary' => null,
+        ];
+    }
+
+    public function deleteEmail($index)
+    {
+        unset($this->emails[$index]);
+    }
+
+    public function addAddress()
+    {
+        $this->addresses[] = [
+            'id' => null,
+            'type' => null,
+            'name' => null,
+            'contact' => null,
+            'phone' => null,
+            'address' => null,
+            'line1' => null,
+            'line2' => null,
+            'line3' => null,
+            'city' => null,
+            'state' => null,
+            'code' => null,
+            'country' => app('laravel-crm.settings')->get('country', 'United States'),
+        ];
+    }
+
+    public function deleteAddress($index)
+    {
+        unset($this->addresses[$index]);
+    }
+
+    protected function updateRelatedPhones($setting, $phones)
+    {
+        $phoneIds = [];
+        if ($phones) {
+            foreach ($phones as $phoneRequest) {
+                if ($phoneRequest['id'] && $phone = Phone::find($phoneRequest['id'])) {
+                    $phone->update([
+                        'number' => $phoneRequest['number'],
+                        'type' => $phoneRequest['type'],
+                        'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                    $phoneIds[] = $phone->id;
+                } elseif ($phoneRequest['number']) {
+                    $phone = $setting->phones()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'number' => $phoneRequest['number'],
+                        'type' => $phoneRequest['type'],
+                        'primary' => ((isset($phoneRequest['primary']) && $phoneRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+                    $phoneIds[] = $phone->id;
+                }
+            }
+        }
+
+        foreach ($setting->phones as $phone) {
+            if (! in_array($phone->id, $phoneIds)) {
+                $phone->delete();
+            }
+        }
+    }
+
+    protected function updateRelatedEmails($setting, $emails)
+    {
+        $emailIds = [];
+
+        if ($emails) {
+            foreach ($emails as $emailRequest) {
+                if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
+                    $email->update([
+                        'address' => $emailRequest['address'],
+                        'type' => $emailRequest['type'],
+                        'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $emailIds[] = $email->id;
+                } elseif ($emailRequest['address']) {
+                    $email = $setting->emails()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address' => $emailRequest['address'],
+                        'type' => $emailRequest['type'],
+                        'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $emailIds[] = $email->id;
+                }
+            }
+        }
+
+        foreach ($setting->emails as $email) {
+            if (! in_array($email->id, $emailIds)) {
+                $email->delete();
+            }
+        }
+    }
+
+    protected function updateRelatedAddresses($setting, $addresses)
+    {
+        $addressIds = [];
+
+        if ($addresses) {
+            foreach ($addresses as $addressRequest) {
+                if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
+                    $address->update([
+                        'address_type_id' => $addressRequest['type'] ?? null,
+                        'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'] ?? null,
+                        'contact' => $addressRequest['contact'] ?? null,
+                        'phone' => $addressRequest['phone'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $addressIds[] = $address->id;
+                } else {
+                    $address = $setting->addresses()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address_type_id' => $addressRequest['type'] ?? null,
+                        'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'] ?? null,
+                        'contact' => $addressRequest['contact'] ?? null,
+                        'phone' => $addressRequest['phone'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    ]);
+
+                    $addressIds[] = $address->id;
+                }
+            }
+        }
+
+        foreach ($setting->addresses as $address) {
+            if (! in_array($address->id, $addressIds)) {
+                $address->delete();
+            }
+        }
     }
 
     public function render()

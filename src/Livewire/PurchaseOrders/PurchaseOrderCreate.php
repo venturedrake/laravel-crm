@@ -8,19 +8,17 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
-use VentureDrake\LaravelCrm\Models\Quote;
 
 class PurchaseOrderCreate extends Component
 {
-    use HasPurchaseOrderCommon;
     use HasOrganizationSuggest;
     use HasPersonSuggest;
-    
+    use HasPurchaseOrderCommon;
+
     public function mount()
     {
         $this->mountCommon();
-        
+
         $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
@@ -47,7 +45,7 @@ class PurchaseOrderCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
+        $this->purchaseOrderService->create($request, $person ?? null, $organization ?? null);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.purchase_order_created')),

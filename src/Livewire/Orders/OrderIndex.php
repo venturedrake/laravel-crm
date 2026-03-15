@@ -75,7 +75,7 @@ class OrderIndex extends Component
             ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
             ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))],
+            /* ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))], */
             ['key' => 'subtotal', 'label' => ucfirst(__('laravel-crm::lang.sub_total')), 'format' => fn ($row, $field) => money($field, $row->currency)],
             ['key' => 'discount', 'label' => ucfirst(__('laravel-crm::lang.discount')), 'format' => fn ($row, $field) => money($field, $row->currency)],
             ['key' => 'tax', 'label' => ucfirst(__('laravel-crm::lang.tax')), 'format' => fn ($row, $field) => money($field, $row->currency)],

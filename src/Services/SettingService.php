@@ -25,6 +25,11 @@ class SettingService
         return Arr::get($this->all(), $name, $default);
     }
 
+    public function first(string $name)
+    {
+        return Setting::where('name', $name)->first();
+    }
+
     public function set($name, $value, $label = null)
     {
         return Setting::updateOrCreate([

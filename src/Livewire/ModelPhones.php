@@ -18,14 +18,9 @@ class ModelPhones extends Component
     {
         $this->phoneTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes();
 
-        /*if (! $this->model) {
+        if (! $this->model) {
             $this->add();
-        }*/
-    }
-
-    public function phones()
-    {
-        //
+        }
     }
 
     public function add()

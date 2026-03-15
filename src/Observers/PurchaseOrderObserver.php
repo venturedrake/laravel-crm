@@ -37,7 +37,7 @@ class PurchaseOrderObserver
             $purchaseOrder->number = 1000;
         }
 
-        $purchaseOrder->prefix = $this->settingService->get('purchase_order_prefix')->value;
+        $purchaseOrder->prefix = $this->settingService->get('purchase_order_prefix');
         $purchaseOrder->purchase_order_id = $purchaseOrder->prefix.$purchaseOrder->number;
     }
 

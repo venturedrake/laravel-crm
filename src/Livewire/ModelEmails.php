@@ -17,11 +17,6 @@ class ModelEmails extends Component
         }
     }
 
-    public function emails()
-    {
-        //
-    }
-
     public function add()
     {
         $this->data[] = [

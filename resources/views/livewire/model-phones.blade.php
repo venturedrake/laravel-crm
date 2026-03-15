@@ -26,7 +26,6 @@
                             <x-mary-button wire:click="delete({{ $index }})" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
                         </div>
                     </fieldset>
-                    
                 </div>
             </div>
         @endforeach

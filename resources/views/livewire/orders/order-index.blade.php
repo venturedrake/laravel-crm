@@ -78,7 +78,7 @@
                     {{ money($order->tax, $order->currency) }}
                 @endif
             @endscope
-            @scope('cell_tax', $order)
+            @scope('cell_total', $order)
                 @php
                     (! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($order)) ? $totalError = true : $totalError = false;
                 @endphp

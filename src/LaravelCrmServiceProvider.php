@@ -125,6 +125,7 @@ use VentureDrake\LaravelCrm\Livewire\Products\ProductShow;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderCreate;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderEdit;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderIndex;
+use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderSend;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteEdit;
@@ -708,6 +709,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-purchase-order-index', PurchaseOrderIndex::class);
         Livewire::component('crm-purchase-order-create', PurchaseOrderCreate::class);
         Livewire::component('crm-purchase-order-edit', PurchaseOrderEdit::class);
+        Livewire::component('crm-purchase-order-send', PurchaseOrderSend::class);
         Livewire::component('crm-person-index', PersonIndex::class);
         Livewire::component('crm-person-create', PersonCreate::class);
         Livewire::component('crm-person-edit', PersonEdit::class);

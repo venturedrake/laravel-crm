@@ -50,11 +50,11 @@
             <x-mary-textarea wire:model="terms" label="{{ ucfirst(__('laravel-crm::lang.terms')) }}" rows="5" />
         </div>
     </x-mary-card>
-    <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.delivery')) }}" separator>
+    <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.delivery_details')) }}" separator>
         <div class="grid gap-3" wire:key="delivery">
-            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.type')) }}" wire:model="delivery_type" :options="$deliveryTypes" />
+            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.type')) }}" wire:model.live="delivery_type" :options="$deliveryTypes" />
             @if($delivery_type == 'deliver')
-                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.delivery_address')) }}" wire:model="delivery_address" :options="$deliveryAddresses" />
+                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.delivery_address')) }}" wire:model="delivery_address" :options="$deliveryAddresses" placeholder="Select address" single />
                 <x-mary-textarea wire:model="delivery_instructions" label="{{ ucfirst(__('laravel-crm::lang.delivery_instructions')) }}" rows="5" />
             @endif    
         </div>

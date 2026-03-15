@@ -51,8 +51,6 @@
                     @endif
                     @can('view crm invoices')
                         <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.invoices.download', $invoice)) }}" class="btn-sm btn-square btn-outline" />
-                    @endcan
-                    @can('view crm invoices')
                         <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.invoices.show', $invoice)) }}" class="btn-sm btn-square btn-outline" />
                     @endcan
                     @if(! $invoice->xeroInvoice)

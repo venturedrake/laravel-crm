@@ -6,8 +6,4 @@ If you have any questions, please let us know.
 
 Thanks,
 {{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organization_name')->first()->value }}
-@if($purchaseOrder->terms)
-    
-Terms
-{{ $purchaseOrder->terms }}
-@endif   
+{{ ($purchaseOrder->terms) ? "\nTerms:\n" . $purchaseOrder->terms : null }}

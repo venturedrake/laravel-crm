@@ -3,10 +3,8 @@
 namespace VentureDrake\LaravelCrm\Livewire\PurchaseOrders\Traits;
 
 use Mary\Traits\Toast;
-use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
-use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\PurchaseOrderService;
@@ -25,6 +23,38 @@ trait HasPurchaseOrderCommon
 
     public $person_name;
 
+    public $organization_id;
+
+    public $organization_name;
+
+    public $reference;
+
+    public $currency;
+
+    public $issue_date;
+
+    public $delivery_date;
+
+    public $terms;
+
+    public $pipeline;
+
+    public $pipeline_stage_id;
+
+    public $user_owner_id;
+
+    public array $products;
+
+    public $sub_total = 0;
+
+    public $discount = 0;
+
+    public $tax = 0;
+
+    public $adjustment = 0;
+
+    public $total = 0;
+
     public array $deliveryTypes = [
         ['id' => 'deliver', 'name' => 'Deliver'],
         ['id' => 'pickup', 'name' => 'Pickup'],
@@ -34,15 +64,9 @@ trait HasPurchaseOrderCommon
 
     public array $deliveryAddresses = [];
 
+    public $delivery_address;
+
     public $delivery_instructions;
-
-    public $currency;
-
-    public $pipeline;
-
-    public $pipeline_stage_id;
-
-    public $user_owner_id;
 
     protected function rules()
     {
@@ -73,12 +97,15 @@ trait HasPurchaseOrderCommon
 
     public function mountCommon()
     {
-        $this->pipeline = Pipeline::where('model', get_class(new PurchaseOrder()))->first();
+        $this->pipeline = Pipeline::where('model', get_class(new PurchaseOrder))->first();
 
-        $related = app('laravel-crm.settings')->get('team');
-        
-        foreach ($related->addresses()->get() as $address) {
-            $this->deliveryAddresses[$address->id] = $address->address;
+        $related = app('laravel-crm.settings')->first('team');
+
+        foreach ($related->addresses as $address) {
+            $this->deliveryAddresses[] = [
+                'id' => $address->id,
+                'name' => $address->address,
+            ];
         }
     }
 

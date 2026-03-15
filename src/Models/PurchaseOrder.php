@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
@@ -72,20 +71,6 @@ class PurchaseOrder extends Model
     public function getTitleAttribute()
     {
         return money($this->total, $this->currency).' - '.($this->organization->name ?? $this->person->name ?? null);
-    }
-
-    public function setIssueDateAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['issue_date'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
-    }
-
-    public function setDeliveryDateAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['delivery_date'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
     }
 
     public function setSubtotalAttribute($value)

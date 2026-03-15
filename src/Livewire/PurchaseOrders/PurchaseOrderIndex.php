@@ -10,7 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Label;
-use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -35,6 +35,13 @@ class PurchaseOrderIndex extends Component
 
     public bool $showFilters = false;
 
+    public ?Pipeline $pipeline = null;
+
+    public function mount()
+    {
+        $this->pipeline = Pipeline::where('model', get_class(new PurchaseOrder))->first();
+    }
+
     public function filterCount(): int
     {
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
@@ -52,22 +59,52 @@ class PurchaseOrderIndex extends Component
 
     public function headers()
     {
-        return [
+        $headers = [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            /* ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
-            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
+            ['key' => 'purchase_order_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
+            ['key' => 'reference', 'label' => ucfirst(__('laravel-crm::lang.reference'))],
+        ];
+
+        if (auth()->user()->can('view crm orders')) {
+            $headers = array_merge($headers, [
+                ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order'))],
+            ]);
+        }
+
+        $headers = array_merge($headers, [
             ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],*/
-            ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
-        ];
+            /* ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))], */
+            ['key' => 'issue_date', 'label' => ucwords(__('laravel-crm::lang.issue_date')), 'format' => fn ($row, $field) => ($field) ? $field->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null],
+            ['key' => 'delivery_date', 'label' => ucwords(__('laravel-crm::lang.delivery_date')), 'format' => fn ($row, $field) => ($field) ? $field->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null],
+            ['key' => 'delivery_type', 'label' => ucfirst(__('laravel-crm::lang.delivery_type')), 'format' => fn ($row, $field) => ($field) ? ucfirst($field) : null],
+            ['key' => 'total', 'label' => ucfirst(__('laravel-crm::lang.amount')), 'format' => fn ($row, $field) => money($field, $row->currency)],
+            ['key' => 'sent', 'label' => ucfirst(__('laravel-crm::lang.sent'))],
+        ]
+        );
+
+        return $headers;
     }
 
     public function purchaseOrders(): LengthAwarePaginator
     {
-        return PurchaseOrder::when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
+        return PurchaseOrder::select(
+            config('laravel-crm.db_table_prefix').'purchase_orders.*',
+            config('laravel-crm.db_table_prefix').'people.first_name',
+            config('laravel-crm.db_table_prefix').'people.last_name',
+            config('laravel-crm.db_table_prefix').'organizations.name'
+        )
+            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'purchase_orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
+            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'purchase_orders.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
+            ->when($this->search, function (Builder $q) {
+                $q->where(function ($q) {
+                    $q->orWhere(config('laravel-crm.db_table_prefix').'organizations.name', 'like', "%$this->search%")
+                        ->orWhere(config('laravel-crm.db_table_prefix').'people.first_name', 'like', "%$this->search%")
+                        ->orWhere(config('laravel-crm.db_table_prefix').'people.last_name', 'like', "%$this->search%")
+                        ->orWhereRaw('CONCAT('.config('laravel-crm.db_table_prefix')."people.first_name, ' ', ".config('laravel-crm.db_table_prefix').'people.last_name) like ?', ["%$this->search%"]);
+                });
+            })
+            ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);

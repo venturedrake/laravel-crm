@@ -21,11 +21,6 @@ class ModelAddresses extends Component
         }
     }
 
-    public function addresses()
-    {
-        //
-    }
-
     public function add()
     {
         $this->data[] = [
