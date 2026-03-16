@@ -9,20 +9,43 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\Quote;
 
 class PurchaseOrderEdit extends Component
 {
+    use HasPurchaseOrderCommon;
     use HasOrganizationSuggest;
     use HasPersonSuggest;
-    use HasPurchaseOrderCommon;
+    
+    public PurchaseOrder $purchaseOrder;
 
-    public function mount()
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+   
+
+    public function mount(PurchaseOrder $purchaseOrder)
     {
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
-        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
-        $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
-        $this->user_owner_id = auth()->user()->id;
+        $this->mountCommon();
+        
+        $this->purchaseOrder = $purchaseOrder;
+        $this->organization_id = $purchaseOrder->organization ? $purchaseOrder->organization->id : null;
+        $this->organization_name = $purchaseOrder->organization ? $purchaseOrder->organization->name : null;
+        $this->person_id = $purchaseOrder->person ? $purchaseOrder->person->id : null;
+        $this->person_name = $purchaseOrder->person ? $purchaseOrder->person->name : null;
+        $this->reference = $purchaseOrder->reference;
+        $this->currency = $purchaseOrder->currency;
+        $this->issue_date = $purchaseOrder->issue_date->format('Y-m-d') ?? null;
+        $this->delivery_date = $purchaseOrder->delivery_date->format('Y-m-d') ?? null;
+        $this->terms = $purchaseOrder->terms;
+        $this->pipeline_stage_id = $purchaseOrder->pipelineStage->id ?? null;
+        $this->user_owner_id = $purchaseOrder->ownerUser->id ?? null;
+        $this->delivery_instructions = $purchaseOrder->delivery_instructions ?? null;
+        
+        if ($purchaseOrder->address) {
+            $this->delivery_address = $purchaseOrder->address->id;
+        }
     }
 
     public function save()
@@ -44,10 +67,10 @@ class PurchaseOrderEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        /* $this->leadService->create($request, $person ?? null, $organization ?? null); */
+        $this->purchaseOrderService->update($request, $this->purchaseOrder, $person ?? null, $organization ?? null); 
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.purchase_order_updated_successfully')),
+            ucfirst(trans('laravel-crm::lang.purchase_order_updated')),
             redirectTo: route('laravel-crm.purchase-orders.index')
         );
     }
