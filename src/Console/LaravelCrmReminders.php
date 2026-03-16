@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Console;
 
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
@@ -71,7 +72,7 @@ class LaravelCrmReminders extends Command
             ->orderBy('due_at', 'asc')
             ->get() as $task) {
             if ($task->user_assigned_id) {
-                $user = \App\User::find($task->user_assigned_id);
+                $user = User::find($task->user_assigned_id);
                 $this->info('Sending task #'.$task->id.' reminder to '.$user->name);
 
                 $user->notify(
@@ -90,7 +91,7 @@ class LaravelCrmReminders extends Command
             ->orderBy('start_at', 'asc')
             ->get() as $call) {
             if ($call->user_assigned_id) {
-                $user = \App\User::find($call->user_assigned_id);
+                $user = User::find($call->user_assigned_id);
                 $this->info('Sending call #'.$call->id.' reminder to '.$user->name);
 
                 $user->notify(
@@ -109,7 +110,7 @@ class LaravelCrmReminders extends Command
             ->orderBy('start_at', 'asc')
             ->get() as $meeting) {
             if ($meeting->user_assigned_id) {
-                $user = \App\User::find($meeting->user_assigned_id);
+                $user = User::find($meeting->user_assigned_id);
                 $this->info('Sending meeting #'.$meeting->id.' reminder to '.$user->name);
 
                 $user->notify(
@@ -128,7 +129,7 @@ class LaravelCrmReminders extends Command
             ->orderBy('start_at', 'asc')
             ->get() as $lunch) {
             if ($lunch->user_assigned_id) {
-                $user = \App\User::find($lunch->user_assigned_id);
+                $user = User::find($lunch->user_assigned_id);
                 $this->info('Sending lunch #'.$lunch->id.' reminder to '.$user->name);
 
                 $user->notify(

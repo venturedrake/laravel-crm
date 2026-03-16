@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use App\User;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 
@@ -28,16 +30,16 @@ class Team extends Model
 
     public function userCreated()
     {
-        return $this->belongsTo(\App\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Get all of the users the team belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function users()
     {
-        return $this->belongsToMany(\App\User::class, 'crm_team_user', 'crm_team_id', 'user_id');
+        return $this->belongsToMany(User::class, 'crm_team_user', 'crm_team_id', 'user_id');
     }
 }

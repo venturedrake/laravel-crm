@@ -6,6 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use Closure;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Setting;
@@ -15,7 +16,7 @@ class Settings
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)

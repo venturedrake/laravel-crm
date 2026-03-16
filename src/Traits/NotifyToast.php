@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
+use Symfony\Component\HttpFoundation\Response;
+
 trait NotifyToast
 {
     /**
@@ -9,7 +11,7 @@ trait NotifyToast
      *
      * @param  string  $message
      * @param  string  $route
-     * @return void|\Symfony\Component\HttpFoundation\Response
+     * @return void|Response
      */
     public function notify($message, $route = null, $routeParams = [], $level = 'success')
     {

@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Settings\Pipelines;
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -23,7 +24,7 @@ class PipelineIndex extends Component
     {
         return [
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'model', 'label' => ucfirst(__('laravel-crm::lang.attached_to')), 'format' => fn ($row, $field) => ucwords(\Illuminate\Support\Str::snake(class_basename($field), ' '))],
+            ['key' => 'model', 'label' => ucfirst(__('laravel-crm::lang.attached_to')), 'format' => fn ($row, $field) => ucwords(Str::snake(class_basename($field), ' '))],
         ];
     }
 

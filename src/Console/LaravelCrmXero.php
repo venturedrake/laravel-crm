@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Console;
 
+use App\User;
 use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Console\Command;
 use VentureDrake\LaravelCrm\Models\Organization;
@@ -51,7 +52,7 @@ class LaravelCrmXero extends Command
                             if (! $organization) {
                                 $organization = Organization::create([
                                     'name' => $contact['Name'],
-                                    'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
+                                    'user_owner_id' => User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
                                 ]);
                             } else {
                                 $organization->update([
@@ -75,7 +76,7 @@ class LaravelCrmXero extends Command
                                     $person = Person::create([
                                         'first_name' => $contact['FirstName'] ?? null,
                                         'last_name' => $contact['LastName'] ?? null,
-                                        'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
+                                        'user_owner_id' => User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
                                         'organization_id' => $organization->id,
                                     ]);
                                 } else {
@@ -130,7 +131,7 @@ class LaravelCrmXero extends Command
                                         'tax_rate' => $this->taxTypePercentage($item),
                                         'name' => $item['Name'],
                                         'description' => $item['Description'] ?? null,
-                                        'user_owner_id' => \App\User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
+                                        'user_owner_id' => User::where('email', config('laravel-crm.crm_owner'))->first()->id ?? null,
                                     ]);
                                 } else {
                                     $product->update([
@@ -145,7 +146,7 @@ class LaravelCrmXero extends Command
 
                                 if ((isset($item['SalesDetails']['UnitPrice']))) {
                                     $product->productPrices()->updateOrCreate([
-                                        'currency' => \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD',
+                                        'currency' => Setting::currency()->value ?? 'USD',
                                     ], [
                                         'unit_price' => $item['SalesDetails']['UnitPrice'],
                                     ]);

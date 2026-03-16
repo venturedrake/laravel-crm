@@ -8,6 +8,9 @@ use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Models\PipelineStageProbability;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
@@ -22,7 +25,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
     public function run()
     {
         // Pipelines stage probabilities
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipeline_probabilities')->first()) {
+        if (! Setting::where('name', 'db_seeded_pipeline_probabilities')->first()) {
             $items = [
                 [
                     [
@@ -135,7 +138,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\PipelineStageProbability::firstOrCreate($item[0], $item[1]);
+                PipelineStageProbability::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
@@ -147,7 +150,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
         }
 
         // Pipelines
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipelines')->first()) {
+        if (! Setting::where('name', 'db_seeded_pipelines')->first()) {
             $items = [
                 [
                     [
@@ -215,7 +218,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\Pipeline::firstOrCreate($item[0], $item[1]);
+                Pipeline::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
@@ -227,7 +230,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
         }
 
         // Pipelines stages
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_pipelines_stages')->first()) {
+        if (! Setting::where('name', 'db_seeded_pipelines_stages')->first()) {
             $items = [
                 // Leads
                 [
@@ -579,7 +582,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\PipelineStage::firstOrCreate($item[0], $item[1]);
+                PipelineStage::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([

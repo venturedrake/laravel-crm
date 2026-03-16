@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use VentureDrake\LaravelCrm\Models\Team;
 
 trait HasCrmTeams
@@ -9,7 +10,7 @@ trait HasCrmTeams
     /**
      * Get all of the teams the user belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function crmTeams()
     {

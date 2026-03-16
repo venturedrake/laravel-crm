@@ -46,16 +46,16 @@ class PurchaseOrderLine extends Model
 
     public function purchaseOrder()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\PurchaseOrder::class);
+        return $this->belongsTo(PurchaseOrder::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function productVariation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\ProductVariation::class);
+        return $this->belongsTo(ProductVariation::class);
     }
 }

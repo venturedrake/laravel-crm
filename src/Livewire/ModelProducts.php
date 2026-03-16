@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire;
 
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 
 class ModelProducts extends Component
@@ -123,7 +124,7 @@ class ModelProducts extends Component
         $taxTotal = 0;
 
         if ($updating[1] == 'id') {
-            $product = \VentureDrake\LaravelCrm\Models\Product::find($value);
+            $product = Product::find($value);
 
             if ($product) {
                 $price = $product->getDefaultPrice()->unit_price ?? 0;
@@ -147,7 +148,7 @@ class ModelProducts extends Component
                 $this->products[$updating[0]]['amount'] = ($price / 100) * $quantity;
             }
         } else {
-            if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->products[$updating[0]]['id'])) {
+            if ($product = Product::find($this->products[$updating[0]]['id'])) {
                 $quantity = (int) $this->products[$updating[0]]['quantity'] ?? 1;
 
                 if ($product && $product->taxRate) {

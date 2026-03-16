@@ -112,7 +112,7 @@ class LiveDeliveryItems extends Component
 
     public function loadItemDefault($id)
     {
-        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])) {
+        if ($product = Product::find($this->product_id[$id])) {
             $this->quantity[$id] = 1;
         } else {
             $this->quantity[$id] = null;

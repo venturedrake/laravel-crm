@@ -8,27 +8,24 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
-use VentureDrake\LaravelCrm\Models\Quote;
 
 class PurchaseOrderEdit extends Component
 {
-    use HasPurchaseOrderCommon;
     use HasOrganizationSuggest;
     use HasPersonSuggest;
-    
+    use HasPurchaseOrderCommon;
+
     public PurchaseOrder $purchaseOrder;
 
     protected $listeners = [
         'model-products-updated' => 'updateProducts',
     ];
-   
 
     public function mount(PurchaseOrder $purchaseOrder)
     {
         $this->mountCommon();
-        
+
         $this->purchaseOrder = $purchaseOrder;
         $this->organization_id = $purchaseOrder->organization ? $purchaseOrder->organization->id : null;
         $this->organization_name = $purchaseOrder->organization ? $purchaseOrder->organization->name : null;
@@ -42,7 +39,7 @@ class PurchaseOrderEdit extends Component
         $this->pipeline_stage_id = $purchaseOrder->pipelineStage->id ?? null;
         $this->user_owner_id = $purchaseOrder->ownerUser->id ?? null;
         $this->delivery_instructions = $purchaseOrder->delivery_instructions ?? null;
-        
+
         if ($purchaseOrder->address) {
             $this->delivery_address = $purchaseOrder->address->id;
         }
@@ -67,7 +64,7 @@ class PurchaseOrderEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $this->purchaseOrderService->update($request, $this->purchaseOrder, $person ?? null, $organization ?? null); 
+        $this->purchaseOrderService->update($request, $this->purchaseOrder, $person ?? null, $organization ?? null);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.purchase_order_updated')),

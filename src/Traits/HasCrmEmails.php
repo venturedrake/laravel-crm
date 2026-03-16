@@ -2,11 +2,13 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
+use VentureDrake\LaravelCrm\Models\Email;
+
 trait HasCrmEmails
 {
     public function emails()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Email::class, 'emailable');
+        return $this->morphMany(Email::class, 'emailable');
     }
 
     public function getPrimaryEmail()

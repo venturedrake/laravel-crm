@@ -3,13 +3,15 @@
 namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Spatie\Permission\PermissionRegistrar;
 
 class TeamsPermission
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -19,7 +21,7 @@ class TeamsPermission
         }
 
         if (config('laravel-crm.teams') && auth()->user()->currentTeam) {
-            app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->currentTeam->id);
+            app(PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->currentTeam->id);
         }
 
         return $next($request);

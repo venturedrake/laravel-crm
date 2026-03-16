@@ -46,16 +46,16 @@ class InvoiceLine extends Model
 
     public function invoice()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Invoice::class);
+        return $this->belongsTo(Invoice::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function productVariation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\ProductVariation::class);
+        return $this->belongsTo(ProductVariation::class);
     }
 }

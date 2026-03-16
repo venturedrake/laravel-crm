@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
@@ -41,7 +42,7 @@ class Product extends Model
 
     public function productPrices()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\ProductPrice::class);
+        return $this->hasMany(ProductPrice::class);
     }
 
     public function getDefaultPrice()
@@ -51,37 +52,37 @@ class Product extends Model
 
     public function productVariations()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\ProductVariation::class);
+        return $this->hasMany(ProductVariation::class);
     }
 
     public function productCategory()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\ProductCategory::class);
+        return $this->belongsTo(ProductCategory::class);
     }
 
     public function createdByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_created_id');
+        return $this->belongsTo(User::class, 'user_created_id');
     }
 
     public function updatedByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_updated_id');
+        return $this->belongsTo(User::class, 'user_updated_id');
     }
 
     public function deletedByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_deleted_id');
+        return $this->belongsTo(User::class, 'user_deleted_id');
     }
 
     public function restoredByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_restored_id');
+        return $this->belongsTo(User::class, 'user_restored_id');
     }
 
     public function ownerUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_owner_id');
+        return $this->belongsTo(User::class, 'user_owner_id');
     }
 
     public function scopeActive($query)
@@ -94,11 +95,11 @@ class Product extends Model
      */
     public function xeroItem()
     {
-        return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroItem::class);
+        return $this->hasOne(XeroItem::class);
     }
 
     public function taxRate()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\TaxRate::class);
+        return $this->belongsTo(TaxRate::class);
     }
 }

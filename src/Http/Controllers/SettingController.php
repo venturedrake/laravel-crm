@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use DB;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateSettingRequest;
 use VentureDrake\LaravelCrm\Models\Address;
@@ -25,7 +27,7 @@ class SettingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit()
     {
@@ -35,9 +37,9 @@ class SettingController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(UpdateSettingRequest $request)
     {

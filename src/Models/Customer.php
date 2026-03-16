@@ -67,11 +67,11 @@ class Customer extends Model
      */
     public function labels()
     {
-        return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphToMany(Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
     public function contacts()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Contact::class, 'contactable');
+        return $this->morphMany(Contact::class, 'contactable');
     }
 }

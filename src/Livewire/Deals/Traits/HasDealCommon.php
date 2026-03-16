@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Deals\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -105,7 +106,7 @@ trait HasDealCommon
 
     public function mountCommon()
     {
-        foreach (\VentureDrake\LaravelCrm\Models\Product::orderBy('name')->get() as $product) {
+        foreach (Product::orderBy('name')->get() as $product) {
             $this->productOptions[] = [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -118,7 +119,7 @@ trait HasDealCommon
         $updating = explode('.', $key);
 
         foreach ($this->products as $index => $product) {
-            if ($dealProduct = \VentureDrake\LaravelCrm\Models\Product::find($product['id'])) {
+            if ($dealProduct = Product::find($product['id'])) {
                 $price = $dealProduct->getDefaultPrice()->unit_price ?? 0;
                 $quantity = (int) $product['quantity'] ?? 1;
                 $this->products[$index]['price'] = ($price / 100);

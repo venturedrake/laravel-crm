@@ -8,6 +8,7 @@ use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Address;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Phone;
 
@@ -183,7 +184,7 @@ class SettingEdit extends Component
         $this->phoneTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes();
         $this->emailTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes();
 
-        foreach (\VentureDrake\LaravelCrm\Models\AddressType::all() as $addressType) {
+        foreach (AddressType::all() as $addressType) {
             $this->addressTypes[] = [
                 'id' => $addressType->id,
                 'name' => $addressType->name,

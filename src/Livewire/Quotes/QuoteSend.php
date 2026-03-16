@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Mail\SendQuote;
 
 class QuoteSend extends Component
 {
@@ -89,7 +90,7 @@ class QuoteSend extends Component
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->save(storage_path($this->pdf));
 
-        Mail::send(new \VentureDrake\LaravelCrm\Mail\SendQuote([
+        Mail::send(new SendQuote([
             'to' => $this->to,
             'subject' => $this->subject,
             'message' => $this->message,

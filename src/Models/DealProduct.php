@@ -37,16 +37,16 @@ class DealProduct extends Model
 
     public function deal()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Deal::class);
+        return $this->belongsTo(Deal::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function productVariation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\ProductVariation::class);
+        return $this->belongsTo(ProductVariation::class);
     }
 }

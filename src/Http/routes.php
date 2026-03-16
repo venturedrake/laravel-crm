@@ -1,7 +1,9 @@
 <?php
 
+use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
 
 /* Public Routes */
 
@@ -1310,15 +1312,15 @@ Route::group(['prefix' => 'field-groups', 'middleware' => 'auth.laravel-crm'], f
 
 Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], function () {
     Route::group(['prefix' => 'xero'], function () {
-        Route::get('', \VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect::class)->name('laravel-crm.integrations.xero');
+        Route::get('', XeroConnect::class)->name('laravel-crm.integrations.xero');
 
         Route::get('connect', function () {
-            return \Dcblogdev\Xero\Facades\Xero::connect();
+            return Xero::connect();
         })->name('laravel-crm.integrations.xero.connect');
 
         Route::get('disconnect', function () {
-            if (\Dcblogdev\Xero\Facades\Xero::isConnected()) {
-                \Dcblogdev\Xero\Facades\Xero::disconnect();
+            if (Xero::isConnected()) {
+                Xero::disconnect();
             }
 
             return redirect(route('laravel-crm.integrations.xero'));

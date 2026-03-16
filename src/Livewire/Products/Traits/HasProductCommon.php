@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Products\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\ProductCategory;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\ProductService;
 
@@ -60,14 +61,14 @@ trait HasProductCommon
 
     public function mountCommon()
     {
-        foreach (\VentureDrake\LaravelCrm\Models\ProductCategory::all() as $productCategory) {
+        foreach (ProductCategory::all() as $productCategory) {
             $this->productCategories[] = [
                 'id' => $productCategory->id,
                 'name' => $productCategory->name,
             ];
         }
 
-        foreach (\VentureDrake\LaravelCrm\Models\TaxRate::get() as $taxRate) {
+        foreach (TaxRate::get() as $taxRate) {
             $this->taxRates[] = [
                 'id' => $taxRate->id,
                 'name' => $taxRate->name,

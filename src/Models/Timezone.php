@@ -17,6 +17,6 @@ class Timezone extends Model
 
     public function organizations()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Organization::class);
+        return $this->hasMany(Organization::class);
     }
 }

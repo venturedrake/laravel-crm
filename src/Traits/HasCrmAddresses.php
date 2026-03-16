@@ -2,11 +2,13 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
+use VentureDrake\LaravelCrm\Models\Address;
+
 trait HasCrmAddresses
 {
     public function addresses()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function getPrimaryAddress()

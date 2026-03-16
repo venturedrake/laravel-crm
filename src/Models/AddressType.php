@@ -19,6 +19,6 @@ class AddressType extends Model
 
     public function addresses()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Address::class);
+        return $this->hasMany(Address::class);
     }
 }

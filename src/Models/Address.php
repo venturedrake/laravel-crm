@@ -54,6 +54,6 @@ class Address extends Model
 
     public function addressType()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\AddressType::class);
+        return $this->belongsTo(AddressType::class);
     }
 }

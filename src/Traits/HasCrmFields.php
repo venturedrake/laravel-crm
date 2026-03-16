@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Traits;
 
 use VentureDrake\LaravelCrm\Models\FieldModel;
+use VentureDrake\LaravelCrm\Models\FieldValue;
 
 trait HasCrmFields
 {
@@ -25,7 +26,7 @@ trait HasCrmFields
 
     public function fields()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\FieldValue::class, 'field_valueable');
+        return $this->morphMany(FieldValue::class, 'field_valueable');
     }
 
     /*public function metas()

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\People\Traits;
 
 use Carbon\Carbon;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Services\PersonService;
 
 trait HasPersonCommon
@@ -91,7 +92,7 @@ trait HasPersonCommon
         $this->phoneTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes();
         $this->emailTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes();
 
-        foreach (\VentureDrake\LaravelCrm\Models\AddressType::all() as $addressType) {
+        foreach (AddressType::all() as $addressType) {
             $this->addressTypes[] = [
                 'id' => $addressType->id,
                 'name' => $addressType->name,

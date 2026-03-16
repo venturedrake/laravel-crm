@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Models\Role;
 
 class HasCrmAccess
@@ -10,7 +11,7 @@ class HasCrmAccess
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)

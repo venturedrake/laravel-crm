@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Mail\SendInvoice;
 use VentureDrake\LaravelCrm\Models\Invoice;
 
 class InvoiceSend extends Component
@@ -90,7 +91,7 @@ class InvoiceSend extends Component
                 'logo' => $this->settingService->get('logo_file')->value ?? null,
             ])->save(storage_path($this->pdf));
 
-        Mail::send(new \VentureDrake\LaravelCrm\Mail\SendInvoice([
+        Mail::send(new SendInvoice([
             'to' => $this->to,
             'subject' => $this->subject,
             'message' => $this->message,

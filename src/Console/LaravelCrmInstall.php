@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Console;
 
+use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\File;
@@ -127,7 +128,7 @@ class LaravelCrmInstall extends Command
             '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
         ]);
 
-        if (\App\User::where('crm_access')->count() < 1) {
+        if (User::where('crm_access')->count() < 1) {
             $this->info('Create your default owner user');
 
             $firstname = $this->ask('Whats your first name?');
@@ -135,7 +136,7 @@ class LaravelCrmInstall extends Command
             $email = $this->ask('Whats your email address?');
             $password = $this->secret('Enter a password');
 
-            if ($user = \App\User::where('email', $email)->first()) {
+            if ($user = User::where('email', $email)->first()) {
                 $this->info('User already exists, granting crm access...');
 
                 $user->update([
@@ -148,7 +149,7 @@ class LaravelCrmInstall extends Command
 
                 $this->info('User access and role updated.');
             } else {
-                $user = \App\User::forceCreate([
+                $user = User::forceCreate([
                     'name' => trim($firstname.' '.$lastname),
                     'email' => $email,
                     'password' => Hash::make($password),

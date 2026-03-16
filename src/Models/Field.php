@@ -19,11 +19,11 @@ class Field extends Model
 
     public function fieldGroup()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\FieldGroup::class);
+        return $this->belongsTo(FieldGroup::class);
     }
 
     public function fieldOptions()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\FieldOption::class);
+        return $this->hasMany(FieldOption::class);
     }
 }

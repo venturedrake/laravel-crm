@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use VentureDrake\LaravelCrm\Models\Meeting;
 
 class MeetingController extends Controller
@@ -10,7 +11,7 @@ class MeetingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -30,7 +31,7 @@ class MeetingController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -40,7 +41,7 @@ class MeetingController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -51,7 +52,7 @@ class MeetingController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Meeting $meeting)
     {
@@ -62,7 +63,7 @@ class MeetingController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Meeting $meeting)
     {
@@ -73,7 +74,7 @@ class MeetingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Meeting $meeting)
     {
@@ -84,7 +85,7 @@ class MeetingController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Meeting $meeting)
     {

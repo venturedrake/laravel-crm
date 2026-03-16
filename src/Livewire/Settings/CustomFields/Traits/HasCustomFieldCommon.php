@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
 
 trait HasCustomFieldCommon
@@ -44,7 +45,7 @@ trait HasCustomFieldCommon
 
     public function mountCommon()
     {
-        $this->groups = ['' => ''] + \VentureDrake\LaravelCrm\Models\FieldGroup::orderBy('name')->get()->toArray();
+        $this->groups = ['' => ''] + FieldGroup::orderBy('name')->get()->toArray();
     }
 
     public function updatedType($value): void

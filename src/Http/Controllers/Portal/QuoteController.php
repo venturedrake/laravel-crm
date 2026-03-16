@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\SettingService;
@@ -24,7 +25,7 @@ class QuoteController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -35,7 +36,7 @@ class QuoteController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Request $request, Quote $quote)
     {
@@ -68,7 +69,7 @@ class QuoteController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function process(Quote $quote, Request $request)
     {

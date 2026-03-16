@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use Spatie\Permission\PermissionRegistrar;
 
 class LaravelCrmPermissions extends Command
 {
@@ -55,7 +56,7 @@ class LaravelCrmPermissions extends Command
         } else {
             $this->comment('Clearing permissions cache');
 
-            app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
             $tableNames = config('permission.table_names');
 

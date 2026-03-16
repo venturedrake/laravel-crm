@@ -19,7 +19,7 @@ class FieldValue extends Model
 
     public function field()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Field::class);
+        return $this->belongsTo(Field::class);
     }
 
     /**

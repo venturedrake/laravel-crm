@@ -19,6 +19,6 @@ class FieldGroup extends Model
 
     public function fields()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Field::class);
+        return $this->hasMany(Field::class);
     }
 }

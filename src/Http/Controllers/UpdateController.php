@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Models\Setting;
 
@@ -13,7 +14,7 @@ class UpdateController extends Controller
     /**
      * Display update information
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -61,7 +62,7 @@ class UpdateController extends Controller
     /**
      * Update
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request)
     {

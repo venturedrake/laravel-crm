@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Users;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -65,7 +66,7 @@ class UserIndex extends Component
             ['key' => 'role', 'label' => ucfirst(__('laravel-crm::lang.role')), 'sortable' => false],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            ['key' => 'last_online_at', 'label' => ucwords(__('laravel-crm::lang.last_online')), 'format' => fn ($row, $field) => ($field) ? \Carbon\Carbon::parse($field)->diffForHumans() : ucfirst(__('laravel-crm::lang.never'))],
+            ['key' => 'last_online_at', 'label' => ucwords(__('laravel-crm::lang.last_online')), 'format' => fn ($row, $field) => ($field) ? Carbon::parse($field)->diffForHumans() : ucfirst(__('laravel-crm::lang.never'))],
 
         ];
     }

@@ -3,6 +3,10 @@
 namespace VentureDrake\LaravelCrm\Livewire\Organizations\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\AddressType;
+use VentureDrake\LaravelCrm\Models\Industry;
+use VentureDrake\LaravelCrm\Models\OrganizationType;
+use VentureDrake\LaravelCrm\Models\Timezone;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 
 trait HasOrganizationCommon
@@ -97,21 +101,21 @@ trait HasOrganizationCommon
 
     public function mountCommon()
     {
-        foreach (\VentureDrake\LaravelCrm\Models\OrganizationType::all() as $organizationType) {
+        foreach (OrganizationType::all() as $organizationType) {
             $this->organizationTypes[] = [
                 'id' => $organizationType->id,
                 'name' => $organizationType->name,
             ];
         }
 
-        foreach (\VentureDrake\LaravelCrm\Models\Industry::all() as $industry) {
+        foreach (Industry::all() as $industry) {
             $this->industries[] = [
                 'id' => $industry->id,
                 'name' => $industry->name,
             ];
         }
 
-        foreach (\VentureDrake\LaravelCrm\Models\Timezone::all() as $timezone) {
+        foreach (Timezone::all() as $timezone) {
             $this->timezones[] = [
                 'id' => $timezone->id,
                 'name' => $timezone->name,
@@ -121,7 +125,7 @@ trait HasOrganizationCommon
         $this->phoneTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\phoneTypes();
         $this->emailTypes = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\emailTypes();
 
-        foreach (\VentureDrake\LaravelCrm\Models\AddressType::all() as $addressType) {
+        foreach (AddressType::all() as $addressType) {
             $this->addressTypes[] = [
                 'id' => $addressType->id,
                 'name' => $addressType->name,

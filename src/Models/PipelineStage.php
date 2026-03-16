@@ -19,26 +19,26 @@ class PipelineStage extends Model
 
     public function pipeline()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Pipeline::class);
+        return $this->belongsTo(Pipeline::class);
     }
 
     public function pipelineStageProbability()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\PipelineStageProbability::class);
+        return $this->belongsTo(PipelineStageProbability::class);
     }
 
     public function leads()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Lead::class);
+        return $this->hasMany(Lead::class);
     }
 
     public function deals()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);
+        return $this->hasMany(Deal::class);
     }
 
     public function quotes()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Quote::class);
+        return $this->hasMany(Quote::class);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm;
 
+use App\Team;
+use App\User;
 use Dcblogdev\Xero\Models\XeroToken;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
@@ -126,6 +128,7 @@ use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderCreate;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderEdit;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderIndex;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderSend;
+use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderShow;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteEdit;
@@ -255,6 +258,37 @@ use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
+use VentureDrake\LaravelCrm\Policies\CallPolicy;
+use VentureDrake\LaravelCrm\Policies\ContactPolicy;
+use VentureDrake\LaravelCrm\Policies\CustomerPolicy;
+use VentureDrake\LaravelCrm\Policies\DealPolicy;
+use VentureDrake\LaravelCrm\Policies\DeliveryPolicy;
+use VentureDrake\LaravelCrm\Policies\FieldGroupPolicy;
+use VentureDrake\LaravelCrm\Policies\FieldOptionPolicy;
+use VentureDrake\LaravelCrm\Policies\FieldPolicy;
+use VentureDrake\LaravelCrm\Policies\FilePolicy;
+use VentureDrake\LaravelCrm\Policies\InvoicePolicy;
+use VentureDrake\LaravelCrm\Policies\LabelPolicy;
+use VentureDrake\LaravelCrm\Policies\LeadPolicy;
+use VentureDrake\LaravelCrm\Policies\LunchPolicy;
+use VentureDrake\LaravelCrm\Policies\MeetingPolicy;
+use VentureDrake\LaravelCrm\Policies\NotePolicy;
+use VentureDrake\LaravelCrm\Policies\OrderPolicy;
+use VentureDrake\LaravelCrm\Policies\OrganizationPolicy;
+use VentureDrake\LaravelCrm\Policies\PermissionPolicy;
+use VentureDrake\LaravelCrm\Policies\PersonPolicy;
+use VentureDrake\LaravelCrm\Policies\PipelinePolicy;
+use VentureDrake\LaravelCrm\Policies\PipelineStagePolicy;
+use VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy;
+use VentureDrake\LaravelCrm\Policies\ProductPolicy;
+use VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy;
+use VentureDrake\LaravelCrm\Policies\QuotePolicy;
+use VentureDrake\LaravelCrm\Policies\RolePolicy;
+use VentureDrake\LaravelCrm\Policies\SettingPolicy;
+use VentureDrake\LaravelCrm\Policies\TaskPolicy;
+use VentureDrake\LaravelCrm\Policies\TaxRatePolicy;
+use VentureDrake\LaravelCrm\Policies\TeamPolicy;
+use VentureDrake\LaravelCrm\Policies\UserPolicy;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\View\Components\Addresses;
 use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
@@ -272,38 +306,38 @@ class LaravelCrmServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\User' => \VentureDrake\LaravelCrm\Policies\UserPolicy::class,
-        'App\Models\User' => \VentureDrake\LaravelCrm\Policies\UserPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Team' => \VentureDrake\LaravelCrm\Policies\TeamPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Setting' => \VentureDrake\LaravelCrm\Policies\SettingPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Role' => \VentureDrake\LaravelCrm\Policies\RolePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Permission' => \VentureDrake\LaravelCrm\Policies\PermissionPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Lead' => \VentureDrake\LaravelCrm\Policies\LeadPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Deal' => \VentureDrake\LaravelCrm\Policies\DealPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Quote' => \VentureDrake\LaravelCrm\Policies\QuotePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Order' => \VentureDrake\LaravelCrm\Policies\OrderPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Invoice' => \VentureDrake\LaravelCrm\Policies\InvoicePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Customer' => \VentureDrake\LaravelCrm\Policies\CustomerPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Person' => \VentureDrake\LaravelCrm\Policies\PersonPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Organization' => \VentureDrake\LaravelCrm\Policies\OrganizationPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Contact' => \VentureDrake\LaravelCrm\Policies\ContactPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Product' => \VentureDrake\LaravelCrm\Policies\ProductPolicy::class,
-        'VentureDrake\LaravelCrm\Models\ProductCategory' => \VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy::class,
-        'VentureDrake\LaravelCrm\Models\TaxRate' => \VentureDrake\LaravelCrm\Policies\TaxRatePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Label' => \VentureDrake\LaravelCrm\Policies\LabelPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Task' => \VentureDrake\LaravelCrm\Policies\TaskPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Note' => \VentureDrake\LaravelCrm\Policies\NotePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Call' => \VentureDrake\LaravelCrm\Policies\CallPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Meeting' => \VentureDrake\LaravelCrm\Policies\MeetingPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Lunch' => \VentureDrake\LaravelCrm\Policies\LunchPolicy::class,
-        'VentureDrake\LaravelCrm\Models\File' => \VentureDrake\LaravelCrm\Policies\FilePolicy::class,
-        'VentureDrake\LaravelCrm\Models\Field' => \VentureDrake\LaravelCrm\Policies\FieldPolicy::class,
-        'VentureDrake\LaravelCrm\Models\FieldGroup' => \VentureDrake\LaravelCrm\Policies\FieldGroupPolicy::class,
-        'VentureDrake\LaravelCrm\Models\FieldOption' => \VentureDrake\LaravelCrm\Policies\FieldOptionPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Delivery' => \VentureDrake\LaravelCrm\Policies\DeliveryPolicy::class,
-        'VentureDrake\LaravelCrm\Models\PurchaseOrder' => \VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Pipeline' => \VentureDrake\LaravelCrm\Policies\PipelinePolicy::class,
-        'VentureDrake\LaravelCrm\Models\PipelineStage' => \VentureDrake\LaravelCrm\Policies\PipelineStagePolicy::class,
+        'App\User' => UserPolicy::class,
+        'App\Models\User' => UserPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Team' => TeamPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Setting' => SettingPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Role' => RolePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Permission' => PermissionPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Lead' => LeadPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Deal' => DealPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Quote' => QuotePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Order' => OrderPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Invoice' => InvoicePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Customer' => CustomerPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Person' => PersonPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Organization' => OrganizationPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Contact' => ContactPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Product' => ProductPolicy::class,
+        'VentureDrake\LaravelCrm\Models\ProductCategory' => ProductCategoryPolicy::class,
+        'VentureDrake\LaravelCrm\Models\TaxRate' => TaxRatePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Label' => LabelPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Task' => TaskPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Note' => NotePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Call' => CallPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Meeting' => MeetingPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Lunch' => LunchPolicy::class,
+        'VentureDrake\LaravelCrm\Models\File' => FilePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Field' => FieldPolicy::class,
+        'VentureDrake\LaravelCrm\Models\FieldGroup' => FieldGroupPolicy::class,
+        'VentureDrake\LaravelCrm\Models\FieldOption' => FieldOptionPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Delivery' => DeliveryPolicy::class,
+        'VentureDrake\LaravelCrm\Models\PurchaseOrder' => PurchaseOrderPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Pipeline' => PipelinePolicy::class,
+        'VentureDrake\LaravelCrm\Models\PipelineStage' => PipelineStagePolicy::class,
     ];
 
     /**
@@ -406,13 +440,13 @@ class LaravelCrmServiceProvider extends ServiceProvider
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
         } else {
-            \App\User::observe(UserObserver::class);
+            User::observe(UserObserver::class);
         }
 
         if (class_exists('App\Models\Team')) {
             \App\Models\Team::observe(TeamObserver::class);
         } elseif (class_exists('App\Team')) {
-            \App\Team::observe(TeamObserver::class);
+            Team::observe(TeamObserver::class);
         }
 
         // Paginate on Collection
@@ -707,6 +741,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-invoice-pay', InvoicePay::class);
         Livewire::component('crm-delivery-index', DeliveryIndex::class);
         Livewire::component('crm-purchase-order-index', PurchaseOrderIndex::class);
+        Livewire::component('crm-purchase-order-show', PurchaseOrderShow::class);
         Livewire::component('crm-purchase-order-create', PurchaseOrderCreate::class);
         Livewire::component('crm-purchase-order-edit', PurchaseOrderEdit::class);
         Livewire::component('crm-purchase-order-send', PurchaseOrderSend::class);

@@ -6,6 +6,7 @@ use App\Team;
 use Carbon\Carbon;
 use DB;
 use Ramsey\Uuid\Uuid;
+use Spatie\Permission\PermissionRegistrar;
 use VentureDrake\LaravelCrm\Models\Role;
 
 class TeamObserver
@@ -27,7 +28,7 @@ class TeamObserver
      */
     public function created(Team $team)
     {
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $tableNames = config('permission.table_names');
 

@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
@@ -113,32 +114,32 @@ class Order extends Model
 
     public function person()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
+        return $this->belongsTo(Person::class);
     }
 
     public function organization()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
+        return $this->belongsTo(Organization::class);
     }
 
     public function client()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Customer::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function orderProducts()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\OrderProduct::class);
+        return $this->hasMany(OrderProduct::class);
     }
 
     public function deal()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Deal::class);
+        return $this->belongsTo(Deal::class);
     }
 
     public function quote()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Quote::class);
+        return $this->belongsTo(Quote::class);
     }
 
     /**
@@ -146,37 +147,37 @@ class Order extends Model
      */
     public function customFieldValues()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\FieldValue::class, 'custom_field_valueable');
+        return $this->morphMany(FieldValue::class, 'custom_field_valueable');
     }
 
     public function createdByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_created_id');
+        return $this->belongsTo(User::class, 'user_created_id');
     }
 
     public function updatedByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_updated_id');
+        return $this->belongsTo(User::class, 'user_updated_id');
     }
 
     public function deletedByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_deleted_id');
+        return $this->belongsTo(User::class, 'user_deleted_id');
     }
 
     public function restoredByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_restored_id');
+        return $this->belongsTo(User::class, 'user_restored_id');
     }
 
     public function ownerUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_owner_id');
+        return $this->belongsTo(User::class, 'user_owner_id');
     }
 
     public function assignedToUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_assigned_id');
+        return $this->belongsTo(User::class, 'user_assigned_id');
     }
 
     /**
@@ -184,27 +185,27 @@ class Order extends Model
      */
     public function labels()
     {
-        return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphToMany(Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
     public function purchaseOrders()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\PurchaseOrder::class);
+        return $this->hasMany(PurchaseOrder::class);
     }
 
     public function invoices()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Invoice::class);
+        return $this->hasMany(Invoice::class);
     }
 
     public function deliveries()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Delivery::class);
+        return $this->hasMany(Delivery::class);
     }
 
     public function addresses()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function getBillingAddress()

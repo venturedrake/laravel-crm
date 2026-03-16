@@ -2,7 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 use VentureDrake\LaravelCrm\Http\Requests\StoreRoleRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateRoleRequest;
 use VentureDrake\LaravelCrm\Models\Role;
@@ -12,7 +15,7 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -22,7 +25,7 @@ class RoleController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -34,8 +37,8 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(StoreRoleRequest $request)
     {
@@ -44,7 +47,7 @@ class RoleController extends Controller
             $permissionsArray[] = Permission::where('id', $permissionKey)->first()->name;
         }
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         if (config('laravel-crm.teams')) {
             $role = Role::create([
@@ -72,7 +75,7 @@ class RoleController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Role $role)
     {
@@ -85,7 +88,7 @@ class RoleController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Role $role)
     {
@@ -98,9 +101,9 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
@@ -110,7 +113,7 @@ class RoleController extends Controller
                 $permissionsArray[] = Permission::where('id', $permissionKey)->first()->name;
             }
 
-            app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
             $role->update([
                 'name' => $request->name,
                 'description' => $request->description,
@@ -128,7 +131,7 @@ class RoleController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Role $role)
     {

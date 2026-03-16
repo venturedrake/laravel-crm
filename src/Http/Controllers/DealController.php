@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
 use VentureDrake\LaravelCrm\Models\Customer;
@@ -42,7 +43,7 @@ class DealController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -63,7 +64,7 @@ class DealController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create(Request $request)
     {
@@ -97,7 +98,7 @@ class DealController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Deal $deal)
     {
@@ -124,7 +125,7 @@ class DealController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Deal $deal)
     {
@@ -149,9 +150,9 @@ class DealController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(UpdateDealRequest $request, Deal $deal)
     {
@@ -203,7 +204,7 @@ class DealController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Deal $deal)
     {
@@ -296,7 +297,7 @@ class DealController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function board(Request $request)
     {

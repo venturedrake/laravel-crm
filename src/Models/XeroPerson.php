@@ -22,6 +22,6 @@ class XeroPerson extends Model
      */
     public function person()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Person::class);
+        return $this->belongsTo(Person::class);
     }
 }

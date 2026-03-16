@@ -10,6 +10,7 @@ use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\Setting;
 
 class LeadCreate extends Component
 {
@@ -19,7 +20,7 @@ class LeadCreate extends Component
 
     public function mount()
     {
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
+        $this->currency = Setting::currency()->value ?? 'USD';
         $this->pipeline = Pipeline::where('model', get_class(new Lead))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;

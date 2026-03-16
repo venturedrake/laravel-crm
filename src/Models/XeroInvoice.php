@@ -22,6 +22,6 @@ class XeroInvoice extends Model
      */
     public function invoice()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Invoice::class);
+        return $this->belongsTo(Invoice::class);
     }
 }

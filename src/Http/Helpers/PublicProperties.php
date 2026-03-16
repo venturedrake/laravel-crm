@@ -2,10 +2,12 @@
 
 namespace VentureDrake\LaravelCrm\Http\Helpers\PublicProperties;
 
+use Illuminate\Http\Request;
+
 function asRequest($object)
 {
     // Convert public property name to request input format
-    $request = new \Illuminate\Http\Request;
+    $request = new Request;
     $reflection = new \ReflectionClass($object);
 
     $publicAttributes = [];

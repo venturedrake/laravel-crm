@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 
 trait HasPipelineStageCommon
 {
@@ -26,6 +27,6 @@ trait HasPipelineStageCommon
 
     public function mountCommon()
     {
-        $this->pipelines = \VentureDrake\LaravelCrm\Models\Pipeline::all();
+        $this->pipelines = Pipeline::all();
     }
 }

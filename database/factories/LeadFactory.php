@@ -2,10 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Database\Factories;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+/** @var Factory $factory */
 
 use Carbon\Carbon;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factory;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;

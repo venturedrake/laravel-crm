@@ -22,6 +22,6 @@ class XeroPurchaseOrder extends Model
      */
     public function purchaseOrder()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\PurchaseOrder::class);
+        return $this->belongsTo(PurchaseOrder::class);
     }
 }

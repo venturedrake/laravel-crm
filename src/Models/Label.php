@@ -28,7 +28,7 @@ class Label extends Model
      */
     public function leads()
     {
-        return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Lead::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphedByMany(Lead::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
     /**
@@ -36,7 +36,7 @@ class Label extends Model
      */
     public function deals()
     {
-        return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Deal::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphedByMany(Deal::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
     /**
@@ -44,7 +44,7 @@ class Label extends Model
      */
     public function people()
     {
-        return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Person::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphedByMany(Person::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
     /**
@@ -52,6 +52,6 @@ class Label extends Model
      */
     public function organizations()
     {
-        return $this->morphedByMany(\VentureDrake\LaravelCrm\Models\Organization::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphedByMany(Organization::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 }

@@ -65,7 +65,7 @@ class Organization extends Model
 
     public function people()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Person::class);
+        return $this->hasMany(Person::class);
     }
 
     /**
@@ -73,7 +73,7 @@ class Organization extends Model
      */
     public function emails()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Email::class, 'emailable');
+        return $this->morphMany(Email::class, 'emailable');
     }
 
     public function getPrimaryEmail()
@@ -86,7 +86,7 @@ class Organization extends Model
      */
     public function phones()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Phone::class, 'phoneable');
+        return $this->morphMany(Phone::class, 'phoneable');
     }
 
     public function getPrimaryPhone()
@@ -96,7 +96,7 @@ class Organization extends Model
 
     public function addresses()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function getPrimaryAddress()
@@ -116,7 +116,7 @@ class Organization extends Model
 
     public function deals()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Deal::class);
+        return $this->hasMany(Deal::class);
     }
 
     /**
@@ -124,7 +124,7 @@ class Organization extends Model
      */
     public function labels()
     {
-        return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
+        return $this->morphToMany(Label::class, config('laravel-crm.db_table_prefix').'labelable');
     }
 
     public function organizationType()
@@ -134,7 +134,7 @@ class Organization extends Model
 
     public function contacts()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Contact::class, 'contactable');
+        return $this->morphMany(Contact::class, 'contactable');
     }
 
     /**
@@ -142,16 +142,16 @@ class Organization extends Model
      */
     public function xeroContact()
     {
-        return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroContact::class);
+        return $this->hasOne(XeroContact::class);
     }
 
     public function client()
     {
-        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Customer::class, 'clientable');
+        return $this->morphOne(Customer::class, 'clientable');
     }
 
     public function timezone()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Timezone::class);
+        return $this->belongsTo(Timezone::class);
     }
 }

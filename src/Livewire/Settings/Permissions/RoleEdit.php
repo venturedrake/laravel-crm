@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Settings\Permissions;
 
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\Traits\HasRoleCommon;
 use VentureDrake\LaravelCrm\Models\Role;
 
@@ -30,7 +31,7 @@ class RoleEdit extends Component
                 $permissionsArray[] = Permission::where('id', $permission)->first()->name;
             }
 
-            app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
             $this->role->update([
                 'name' => $this->name,

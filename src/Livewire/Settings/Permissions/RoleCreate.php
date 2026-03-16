@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Settings\Permissions;
 
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\Traits\HasRoleCommon;
 use VentureDrake\LaravelCrm\Models\Role;
 
@@ -21,7 +22,7 @@ class RoleCreate extends Component
             $permissionsArray[] = Permission::where('id', $permission)->first()->name;
         }
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         if (config('laravel-crm.teams')) {
             $role = Role::create([

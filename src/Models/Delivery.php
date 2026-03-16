@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Models;
 
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -81,47 +82,47 @@ class Delivery extends Model
 
     public function order()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Order::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function deliveryProducts()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\DeliveryProduct::class);
+        return $this->hasMany(DeliveryProduct::class);
     }
 
     public function createdByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_created_id');
+        return $this->belongsTo(User::class, 'user_created_id');
     }
 
     public function updatedByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_updated_id');
+        return $this->belongsTo(User::class, 'user_updated_id');
     }
 
     public function deletedByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_deleted_id');
+        return $this->belongsTo(User::class, 'user_deleted_id');
     }
 
     public function restoredByUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_restored_id');
+        return $this->belongsTo(User::class, 'user_restored_id');
     }
 
     public function ownerUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_owner_id');
+        return $this->belongsTo(User::class, 'user_owner_id');
     }
 
     public function assignedToUser()
     {
-        return $this->belongsTo(\App\User::class, 'user_assigned_id');
+        return $this->belongsTo(User::class, 'user_assigned_id');
     }
 
     public function addresses()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function getShippingAddress()

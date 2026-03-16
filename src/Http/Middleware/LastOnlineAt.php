@@ -5,13 +5,14 @@ namespace VentureDrake\LaravelCrm\Http\Middleware;
 use Carbon\Carbon;
 use Closure;
 use DB;
+use Illuminate\Http\Request;
 
 class LastOnlineAt
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)

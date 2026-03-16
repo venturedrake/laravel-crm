@@ -19,6 +19,6 @@ class PipelineStageProbability extends Model
 
     public function pipelineStage()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\PipelineStage::class);
+        return $this->hasMany(PipelineStage::class);
     }
 }

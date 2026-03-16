@@ -2,6 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
+use VentureDrake\LaravelCrm\Models\Address;
+use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\Phone;
+use VentureDrake\LaravelCrm\Models\Setting;
+
 trait HasCrmAccess
 {
     public function hasCrmAccess()
@@ -16,7 +21,7 @@ trait HasCrmAccess
 
     public function emails()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Email::class, 'emailable');
+        return $this->morphMany(Email::class, 'emailable');
     }
 
     public function getPrimaryEmail()
@@ -26,7 +31,7 @@ trait HasCrmAccess
 
     public function phones()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Phone::class, 'phoneable');
+        return $this->morphMany(Phone::class, 'phoneable');
     }
 
     public function getPrimaryPhone()
@@ -36,7 +41,7 @@ trait HasCrmAccess
 
     public function addresses()
     {
-        return $this->morphMany(\VentureDrake\LaravelCrm\Models\Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function getPrimaryAddress()
@@ -46,6 +51,6 @@ trait HasCrmAccess
 
     public function crmSettings()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Setting::class);
+        return $this->hasMany(Setting::class);
     }
 }

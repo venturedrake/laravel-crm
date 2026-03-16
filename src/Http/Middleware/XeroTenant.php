@@ -5,13 +5,14 @@ namespace VentureDrake\LaravelCrm\Http\Middleware;
 use Closure;
 use Dcblogdev\Xero\Facades\Xero;
 use Dcblogdev\Xero\Models\XeroToken;
+use Illuminate\Http\Request;
 
 class XeroTenant
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)

@@ -21,6 +21,6 @@ class ProductCategory extends Model
 
     public function products()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\Product::class);
+        return $this->hasMany(Product::class);
     }
 }

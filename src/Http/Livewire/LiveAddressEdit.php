@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\AddressType;
+use VentureDrake\LaravelCrm\Models\Setting;
 
 class LiveAddressEdit extends Component
 {
@@ -134,7 +135,7 @@ class LiveAddressEdit extends Component
         $i = $i + 1;
         $this->i = $i;
         array_push($this->inputs, $i);
-        $this->country[$i] = \VentureDrake\LaravelCrm\Models\Setting::country()->value;
+        $this->country[$i] = Setting::country()->value;
         $this->dispatchBrowserEvent('addAddressInputs', ['value' => $i]);
     }
 

@@ -2,8 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use App\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\Response;
 use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Delivery;
@@ -20,7 +22,7 @@ class DashboardController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -36,7 +38,7 @@ class DashboardController extends Controller
                 $usersOnline = [];
             }
         } else {
-            $usersOnline = \App\User::whereDate('last_online_at', '>=', Carbon::now()->subMinutes(20)->toDateString())->get();
+            $usersOnline = User::whereDate('last_online_at', '>=', Carbon::now()->subMinutes(20)->toDateString())->get();
         }
 
         $today = today();

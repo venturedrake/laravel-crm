@@ -37,16 +37,16 @@ class QuoteProduct extends Model
 
     public function quote()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Quote::class);
+        return $this->belongsTo(Quote::class);
     }
 
     public function product()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function productVariation()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\ProductVariation::class);
+        return $this->belongsTo(ProductVariation::class);
     }
 }

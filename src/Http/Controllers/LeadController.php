@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
@@ -52,7 +53,7 @@ class LeadController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -73,7 +74,7 @@ class LeadController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create(Request $request)
     {
@@ -106,8 +107,8 @@ class LeadController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(StoreLeadRequest $request)
     {
@@ -159,7 +160,7 @@ class LeadController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Lead  $lead
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Lead $lead)
     {
@@ -170,7 +171,7 @@ class LeadController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Lead  $lead
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Lead $lead)
     {
@@ -190,9 +191,9 @@ class LeadController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  \App\Lead  $lead
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(UpdateLeadRequest $request, Lead $lead)
     {
@@ -244,7 +245,7 @@ class LeadController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Lead  $lead
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Lead $lead)
     {
@@ -329,7 +330,7 @@ class LeadController extends Controller
      * Show the form for converting the specified resource.
      *
      * @param  \App\Lead  $lead
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function convertToDeal(Lead $lead)
     {
@@ -349,8 +350,8 @@ class LeadController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function storeAsDeal(StoreLeadRequest $request, Lead $lead)
     {
@@ -391,7 +392,7 @@ class LeadController extends Controller
     /**
      * Display a leads board
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function board(Request $request)
     {

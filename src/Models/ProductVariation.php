@@ -19,11 +19,11 @@ class ProductVariation extends Model
 
     public function product()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function productPrices()
     {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\ProductPrice::class);
+        return $this->hasMany(ProductPrice::class);
     }
 }

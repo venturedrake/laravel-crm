@@ -22,6 +22,6 @@ class XeroContact extends Model
      */
     public function organization()
     {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Organization::class);
+        return $this->belongsTo(Organization::class);
     }
 }

@@ -6,8 +6,15 @@ use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
+use VentureDrake\LaravelCrm\Models\AddressType;
+use VentureDrake\LaravelCrm\Models\ContactType;
+use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\LeadStatus;
+use VentureDrake\LaravelCrm\Models\OrganizationType;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\Timezone;
 
 class LaravelCrmTablesSeeder extends Seeder
 {
@@ -19,7 +26,7 @@ class LaravelCrmTablesSeeder extends Seeder
     public function run()
     {
         // Labels
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_labels')->first()) {
+        if (! Setting::where('name', 'db_seeded_labels')->first()) {
             $items = [
                 [
                     [
@@ -54,7 +61,7 @@ class LaravelCrmTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\Label::firstOrCreate($item[0], $item[1]);
+                Label::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
@@ -66,7 +73,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Lead statuses (DEPRECATED)
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_lead_statuses')->first()) {
+        if (! Setting::where('name', 'db_seeded_lead_statuses')->first()) {
             $items = [
                 [
                     [
@@ -89,7 +96,7 @@ class LaravelCrmTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\LeadStatus::firstOrCreate($item[0], $item[1]);
+                LeadStatus::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
@@ -101,7 +108,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Organization Types
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_organization_types')->first()) {
+        if (! Setting::where('name', 'db_seeded_organization_types')->first()) {
             $items = [
                 [
                     [
@@ -138,7 +145,7 @@ class LaravelCrmTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\OrganizationType::firstOrCreate($item[0], $item[1]);
+                OrganizationType::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
@@ -150,7 +157,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Address types
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_address_types')->first()) {
+        if (! Setting::where('name', 'db_seeded_address_types')->first()) {
             $items = [
                 [
                     [
@@ -203,7 +210,7 @@ class LaravelCrmTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\AddressType::firstOrCreate($item[0], $item[1]);
+                AddressType::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
@@ -215,7 +222,7 @@ class LaravelCrmTablesSeeder extends Seeder
         }
 
         // Contact types
-        if (! \VentureDrake\LaravelCrm\Models\Setting::where('name', 'db_seeded_contact_types')->first()) {
+        if (! Setting::where('name', 'db_seeded_contact_types')->first()) {
             $items = [
                 [
                     [
@@ -236,7 +243,7 @@ class LaravelCrmTablesSeeder extends Seeder
             ];
 
             foreach ($items as $item) {
-                \VentureDrake\LaravelCrm\Models\ContactType::firstOrCreate($item[0], $item[1]);
+                ContactType::firstOrCreate($item[0], $item[1]);
             }
 
             Setting::updateOrCreate([
@@ -256,10 +263,10 @@ class LaravelCrmTablesSeeder extends Seeder
             $zones['offset'] = date('P', $timestamp);
             $zones['diff_from_gtm'] = 'UTC/GMT '.date('P', $timestamp);
 
-            \VentureDrake\LaravelCrm\Models\Timezone::updateOrCreate(['name' => $zone], $zones);
+            Timezone::updateOrCreate(['name' => $zone], $zones);
         }
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         Permission::firstOrCreate(['name' => 'create crm leads', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm leads', 'crm_permission' => 1]);

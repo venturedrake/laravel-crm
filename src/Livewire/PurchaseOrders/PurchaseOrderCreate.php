@@ -8,6 +8,7 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Setting;
 
 class PurchaseOrderCreate extends Component
 {
@@ -23,7 +24,7 @@ class PurchaseOrderCreate extends Component
     {
         $this->mountCommon();
 
-        $this->currency = \VentureDrake\LaravelCrm\Models\Setting::currency()->value ?? 'USD';
+        $this->currency = Setting::currency()->value ?? 'USD';
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
         $this->terms = app('laravel-crm.settings')->get('purchase_order_terms');

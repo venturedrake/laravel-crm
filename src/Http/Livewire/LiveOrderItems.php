@@ -141,7 +141,7 @@ class LiveOrderItems extends Component
 
     public function loadItemDefault($id)
     {
-        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])) {
+        if ($product = Product::find($this->product_id[$id])) {
             $this->unit_price[$id] = ($product->getDefaultPrice()->unit_price / 100);
             $this->quantity[$id] = 1;
         } else {
@@ -173,7 +173,7 @@ class LiveOrderItems extends Component
 
         for ($i = 1; $i <= $this->i; $i++) {
             if (isset($this->product_id[$i])) {
-                $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i]);
+                $product = Product::find($this->product_id[$i]);
 
                 if ($product && $product->taxRate) {
                     $taxRate = $product->taxRate->rate;

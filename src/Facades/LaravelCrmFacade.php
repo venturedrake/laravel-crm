@@ -3,9 +3,10 @@
 namespace VentureDrake\LaravelCrm\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use VentureDrake\LaravelCrm\LaravelCrm;
 
 /**
- * @see \VentureDrake\LaravelCrm\LaravelCrm
+ * @see LaravelCrm
  */
 class LaravelCrmFacade extends Facade
 {

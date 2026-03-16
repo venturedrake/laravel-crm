@@ -25,7 +25,7 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $model
+     * @param  UpdatingUser  $model
      * @return mixed
      */
     public function view(User $user, UpdatingUser $updatingUser)
@@ -50,7 +50,7 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $model
+     * @param  UpdatingUser  $model
      * @return mixed
      */
     public function update(User $user, UpdatingUser $updatingUser)
@@ -63,7 +63,7 @@ class UserPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\User  $model
+     * @param  UpdatingUser  $model
      * @return mixed
      */
     public function delete(User $user, UpdatingUser $updatingUser)
@@ -76,7 +76,7 @@ class UserPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\User  $model
+     * @param  UpdatingUser  $model
      * @return mixed
      */
     public function restore(User $user, UpdatingUser $updatingUser)
@@ -89,7 +89,7 @@ class UserPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\User  $model
+     * @param  UpdatingUser  $model
      * @return mixed
      */
     public function forceDelete(User $user, UpdatingUser $updatingUser)
