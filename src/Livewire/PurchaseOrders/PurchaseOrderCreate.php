@@ -15,6 +15,10 @@ class PurchaseOrderCreate extends Component
     use HasPersonSuggest;
     use HasPurchaseOrderCommon;
 
+    protected $listeners = [
+        'model-products-updated' => 'updateProducts',
+    ];
+
     public function mount()
     {
         $this->mountCommon();

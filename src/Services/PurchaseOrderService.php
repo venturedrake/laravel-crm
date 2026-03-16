@@ -56,12 +56,12 @@ class PurchaseOrderService
             $purchaseOrder->address()->save($deliveryAddress);
         }
 
-        if (isset($request->purchaseOrderLines)) {
+        if (isset($request->products)) {
             $subTotal = 0;
             $tax = 0;
             $total = 0;
 
-            foreach ($request->purchaseOrderLines as $purchaseOrderLine) {
+            foreach ($request->products as $purchaseOrderLine) {
                 if (isset($purchaseOrderLine['id']) && $purchaseOrderLine['quantity'] > 0) {
                     if (! Product::find($purchaseOrderLine['id'])) {
                         $newProduct = $this->addProduct($purchaseOrderLine, $request);
@@ -89,7 +89,7 @@ class PurchaseOrderService
                     $purchaseOrder->purchaseOrderLines()->create([
                         'product_id' => $purchaseOrderLine['id'],
                         'quantity' => $purchaseOrderLine['quantity'],
-                        'price' => $purchaseOrderLine['price'],
+                        'price' => $purchaseOrderLine['unit_price'],
                         'amount' => $purchaseOrderLine['amount'],
                         'tax_rate' => $taxRate ?? 0,
                         'tax_amount' => $purchaseOrderLine['amount'] * ($taxRate / 100),

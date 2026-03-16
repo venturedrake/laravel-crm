@@ -24,6 +24,8 @@ class InvoiceEdit extends Component
 
     public function mount(Invoice $invoice)
     {
+        $this->mountCommon();
+        
         $this->invoice = $invoice;
         $this->organization_id = $invoice->organization ? $invoice->organization->id : null;
         $this->organization_name = $invoice->organization ? $invoice->organization->name : null;

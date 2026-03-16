@@ -82,6 +82,22 @@ class ModelProducts extends Component
                         ];
                     }
                     break;
+
+                case 'PurchaseOrder':
+                    foreach ($this->model->purchaseOrderLines as $purchaseOrderLine) {
+                        $this->products[] = [
+                            'purchase_order_line_id' => $purchaseOrderLine->id,
+                            'id' => $purchaseOrderLine->product_id,
+                            'name' => $purchaseOrderLine->name,
+                            'quantity' => $purchaseOrderLine->quantity,
+                            'unit_price' => $purchaseOrderLine->price / 100,
+                            'tax_rate' => $purchaseOrderLine->tax_rate,
+                            'tax_amount' => $purchaseOrderLine->tax_amount / 100,
+                            'amount' => $purchaseOrderLine->amount / 100,
+                            'comments' => $purchaseOrderLine->comments,
+                        ];
+                    }
+                    break;
             }
 
             $this->sub_total = $this->model->subtotal / 100;
