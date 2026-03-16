@@ -202,8 +202,28 @@ class PurchaseOrderController extends Controller
      */
     public function edit(PurchaseOrder $purchaseOrder)
     {
+        if ($purchaseOrder->person) {
+            $email = $purchaseOrder->person->getPrimaryEmail();
+            $phone = $purchaseOrder->person->getPrimaryPhone();
+        }
+
+        if ($purchaseOrder->organization) {
+            $address = $purchaseOrder->organization->getPrimaryAddress();
+        }
+
+        $related = $this->settingService->get('team');
+
+        $addresses = [];
+        foreach ($related->addresses()->get() as $address) {
+            $addresses[$address->id] = $address->address;
+        }
+
         return view('laravel-crm::purchase-orders.edit', [
-            'purchaseOrder' => $purchaseOrder
+            'purchaseOrder' => $purchaseOrder,
+            'email' => $email ?? null,
+            'phone' => $phone ?? null,
+            'address' => $address ?? null,
+            'addresses' => $addresses,
         ]);
     }
 

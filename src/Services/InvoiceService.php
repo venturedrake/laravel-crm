@@ -47,7 +47,8 @@ class InvoiceService
         if (isset($request->products)) {
             $invoiceLineOrder = 0;
 
-            foreach ($request->products as $invoiceLine) {
+            foreach ($request->products as $product) {
+                $invoiceLine = $product;
                 $invoiceLineOrder++;
 
                 if (isset($invoiceLine['id']) && $invoiceLine['quantity'] > 0) {
