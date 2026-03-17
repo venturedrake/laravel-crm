@@ -1,6 +1,6 @@
-@push('livewire-js')
-    <script>
-    window.onload = () => {
+@script
+<script>
+    $wire.on('board-loaded', () => {
         @php foreach($stages as $stage){ @endphp
         Sortable.create(document.getElementById('{{ $stage['stageRecordsId'] }}'), {
             group: '{{ $sortableBetweenStages ? $stage['group'] : $stage['id'] }}',
@@ -23,7 +23,7 @@
 
                 const fromStageId = evt.from.dataset.stageId;
                 const fromOrderedIds = [].slice.call(evt.from.children).map(child => child.id);
-                
+
                 if (sameContainer) {
                     @this.call('onStageSorted', fromOrderedIds);
                     return;
@@ -36,7 +36,6 @@
             },
         });
         @php } @endphp
-        
-    }
+    });
 </script>
-@endpush    
+@endscript

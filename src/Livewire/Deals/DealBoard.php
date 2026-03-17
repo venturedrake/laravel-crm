@@ -125,6 +125,8 @@ class DealBoard extends KanbanBoard
                 return $stage;
             });
 
+        $this->dispatch('board-loaded');
+
         return view('laravel-crm::livewire.deals.deal-board', [
             'users' => $this->users(),
             'labels' => $this->labels(),

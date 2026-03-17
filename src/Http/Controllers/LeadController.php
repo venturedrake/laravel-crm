@@ -2,22 +2,15 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Models\Customer;
-use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
-use VentureDrake\LaravelCrm\Services\DealService;
-use VentureDrake\LaravelCrm\Services\LeadService;
-use VentureDrake\LaravelCrm\Services\OrganizationService;
-use VentureDrake\LaravelCrm\Services\PersonService;
 
 class LeadController extends Controller
 {

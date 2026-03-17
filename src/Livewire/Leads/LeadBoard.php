@@ -142,6 +142,8 @@ class LeadBoard extends KanbanBoard
                 return $stage;
             });
 
+        $this->dispatch('board-loaded');
+
         return view('laravel-crm::livewire.leads.lead-board', [
             'users' => $this->users(),
             'labels' => $this->labels(),
