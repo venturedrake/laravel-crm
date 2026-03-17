@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
-use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
 use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Lead;
@@ -105,58 +104,6 @@ class LeadController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function store(StoreLeadRequest $request)
-    {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organization_name && ! $request->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($request->organization_id) {
-            $organization = Organization::find($request->organization_id);
-        }
-
-        if ($request->client_name && ! $request->client_id) {
-            $client = Customer::create([
-                'name' => $request->client_name,
-                'user_owner_id' => $request->user_owner_id,
-            ]);
-        } elseif ($request->client_id) {
-            $client = Customer::find($request->client_id);
-        }
-
-        if (isset($client)) {
-            if (isset($organization)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organization->getMorphClass(),
-                    'entityable_id' => $organization->id,
-                ]);
-            }
-
-            if (isset($person)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $person->getMorphClass(),
-                    'entityable_id' => $person->id,
-                ]);
-            }
-        }
-
-        $lead = $this->leadService->create($request, $person ?? null, $organization ?? null, $client ?? null);
-
-        flash(ucfirst(trans('laravel-crm::lang.lead_stored')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.index'));
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Lead  $lead
@@ -175,85 +122,7 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead)
     {
-        $email = $lead->getPrimaryEmail();
-        $phone = $lead->getPrimaryPhone();
-        $address = $lead->getPrimaryAddress();
-
-        return view('laravel-crm::leads.edit', [
-            'lead' => $lead,
-            'email' => $email ?? null,
-            'phone' => $phone ?? null,
-            'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  \App\Lead  $lead
-     * @return Response
-     */
-    public function update(UpdateLeadRequest $request, Lead $lead)
-    {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organization_name && ! $request->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $organization = Organization::find($request->organization_id);
-        }
-
-        if ($request->client_name && ! $request->client_id) {
-            $client = Customer::create([
-                'name' => $request->client_name,
-                'user_owner_id' => $request->user_owner_id,
-            ]);
-        } elseif ($request->client_id) {
-            $client = Customer::find($request->client_id);
-        }
-
-        if (isset($client)) {
-            if (isset($organization)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organization->getMorphClass(),
-                    'entityable_id' => $organization->id,
-                ]);
-            }
-
-            if (isset($person)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $person->getMorphClass(),
-                    'entityable_id' => $person->id,
-                ]);
-            }
-        }
-
-        $lead = $this->leadService->update($request, $lead, $person ?? null, $organization ?? null, $client ?? null);
-
-        flash(ucfirst(trans('laravel-crm::lang.lead_updated')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.show', $lead));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Lead  $lead
-     * @return Response
-     */
-    public function destroy(Lead $lead)
-    {
-        $lead->delete();
-
-        flash(ucfirst(trans('laravel-crm::lang.lead_deleted')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.index'));
+        return view('laravel-crm::leads.edit', compact('lead'));
     }
 
     public function search(Request $request)

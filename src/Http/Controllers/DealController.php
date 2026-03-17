@@ -6,40 +6,15 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use VentureDrake\LaravelCrm\Http\Requests\UpdateDealRequest;
 use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
-use VentureDrake\LaravelCrm\Services\DealService;
-use VentureDrake\LaravelCrm\Services\OrganizationService;
-use VentureDrake\LaravelCrm\Services\PersonService;
 
 class DealController extends Controller
 {
-    /**
-     * @var DealService
-     */
-    private $dealService;
-
-    /**
-     * @var PersonService
-     */
-    private $personService;
-
-    /**
-     * @var OrganizationService
-     */
-    private $organizationService;
-
-    public function __construct(DealService $dealService, PersonService $personService, OrganizationService $organizationService)
-    {
-        $this->dealService = $dealService;
-        $this->personService = $personService;
-        $this->organizationService = $organizationService;
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -69,27 +44,29 @@ class DealController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
+            case 'lead':
+                $fromModel = Lead::find($request->id);
+                break;
+
             case 'client':
-                $client = Customer::find($request->id);
+                $fromModel = Customer::find($request->id);
 
                 break;
 
             case 'organization':
-                $organization = Organization::find($request->id);
+                $fromModel = Organization::find($request->id);
 
                 break;
 
             case 'person':
-                $person = Person::find($request->id);
+                $fromModel = Person::find($request->id);
 
                 break;
         }
 
         return view('laravel-crm::deals.create', [
-            'client' => $client ?? null,
-            'organization' => $organization ?? null,
-            'person' => $person ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
+            'fromModelType' => $request->model,
+            'fromModelId' => $request->id,
             'stage' => $request->stage ?? null,
         ]);
     }
@@ -129,90 +106,7 @@ class DealController extends Controller
      */
     public function edit(Deal $deal)
     {
-        if ($deal->person) {
-            $email = $deal->person->getPrimaryEmail();
-            $phone = $deal->person->getPrimaryPhone();
-        }
-
-        if ($deal->organization) {
-            $address = $deal->organization->getPrimaryAddress();
-        }
-
-        return view('laravel-crm::deals.edit', [
-            'deal' => $deal,
-            'email' => $email ?? null,
-            'phone' => $phone ?? null,
-            'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(UpdateDealRequest $request, Deal $deal)
-    {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organization_name && ! $request->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($request->organization_id) {
-            $organization = Organization::find($request->organization_id);
-        }
-
-        if ($request->client_name && ! $request->client_id) {
-            $client = Customer::create([
-                'name' => $request->client_name,
-                'user_owner_id' => $request->user_owner_id,
-            ]);
-        } elseif ($request->client_id) {
-            $client = Customer::find($request->client_id);
-        }
-
-        if (isset($client)) {
-            if (isset($organization)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $organization->getMorphClass(),
-                    'entityable_id' => $organization->id,
-                ]);
-            }
-
-            if (isset($person)) {
-                $client->contacts()->firstOrCreate([
-                    'entityable_type' => $person->getMorphClass(),
-                    'entityable_id' => $person->id,
-                ]);
-            }
-        }
-
-        $deal = $this->dealService->update($request, $deal, $person ?? null, $organization ?? null, $client ?? null);
-
-        flash(ucfirst(trans('laravel-crm::lang.deal_updated')))->success()->important();
-
-        return redirect(route('laravel-crm.deals.show', $deal));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy(Deal $deal)
-    {
-        $deal->delete();
-
-        flash(ucfirst(trans('laravel-crm::lang.deal_deleted')))->success()->important();
-
-        return redirect(route('laravel-crm.deals.index'));
+        return view('laravel-crm::deals.edit', compact('deal'));
     }
 
     public function search(Request $request)

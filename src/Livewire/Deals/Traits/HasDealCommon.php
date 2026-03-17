@@ -56,7 +56,7 @@ trait HasDealCommon
 
     public $currency;
 
-    public $expected_close;
+    public $expected_close = null;
 
     public $pipeline;
 
@@ -95,6 +95,11 @@ trait HasDealCommon
             'person_id.required_without_all' => 'The contact person field is required if no organization.',
             'organization_id.required_without_all' => 'The organization field is required of no contact person.',
         ];
+    }
+
+    public function updatedAmount($value): void
+    {
+        $this->amount = str_replace(',', '', $value);
     }
 
     public function boot(DealService $dealService, PersonService $personService, OrganizationService $organizationService): void

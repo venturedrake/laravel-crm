@@ -85,6 +85,11 @@ trait HasLeadCommon
         ];
     }
 
+    public function updatedAmount($value): void
+    {
+        $this->amount = str_replace(',', '', $value);
+    }
+
     public function boot(LeadService $leadService, PersonService $personService, OrganizationService $organizationService): void
     {
         $this->leadService = $leadService;

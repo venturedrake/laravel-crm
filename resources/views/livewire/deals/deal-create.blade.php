@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.create_deal')) }}" class="mb-5" progress-indicator >
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.create_deal')) }}{{ ($fromModelType) ? ' from '.$fromModelType : null }}" class="mb-5" progress-indicator >
 
         {{-- ACTIONS  --}}
         <x-slot:actions>

@@ -125,14 +125,6 @@ Route::group(['prefix' => 'leads', 'middleware' => 'auth.laravel-crm'], function
     Route::delete('{lead}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@destroy')
         ->name('laravel-crm.leads.destroy')
         ->middleware(['can:delete,lead']);
-
-    Route::get('{lead}/convert', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@convertToDeal')
-        ->name('laravel-crm.leads.convert-to-deal')
-        ->middleware(['can:update,lead']);
-
-    Route::post('{lead}/convert', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@storeAsDeal')
-        ->name('laravel-crm.leads.store-as-deal')
-        ->middleware(['can:update,lead']);
 });
 
 /* Deals */

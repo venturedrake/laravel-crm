@@ -13,7 +13,7 @@
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}" link="{{ url(route('laravel-crm.leads.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive />
             @hasdealsenabled
             @can('edit crm leads')
-                | <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" link="{{ route('laravel-crm.leads.convert-to-deal',$lead) }}" class="btn-sm btn-success text-white" responsive />
+                | <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" link="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $lead->id]) }}" class="btn-sm btn-success text-white" responsive  />
             @endcan
             @endhasdealsenabled
             | <livewire:crm-activity-menu /> |
