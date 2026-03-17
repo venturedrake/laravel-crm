@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Deals;
 
+use Carbon\Carbon;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Deals\Traits\HasDealCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
@@ -93,6 +94,19 @@ class DealCreate extends Component
         }
 
         $this->dealService->create($request, $person ?? null, $organization ?? null);
+
+        switch ($this->fromModelType) {
+            case 'lead':
+                $this->fromModel->update([
+                    'converted_at' => Carbon::now(),
+                ]);
+
+                $this->success(
+                    ucfirst(trans('laravel-crm::lang.lead_converted_to_deal')),
+                    redirectTo: route('laravel-crm.deals.index')
+                );
+                break;
+        }
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.deal_created_successfully')),

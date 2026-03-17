@@ -5,9 +5,9 @@
             {{ $stage['name'] }} ({{ count($stage['records']) }})
         </h3>
         @isset($stage['description'] )
-            <small class="mb-0 text-muted">
+          {{--  <small class="mb-0 text-muted">
                 {{ $stage['description'] }}
-            </small>
+            </small>--}}
         @endisset
     </div>
     <div class="card-body p-0">

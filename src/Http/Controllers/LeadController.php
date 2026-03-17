@@ -22,34 +22,6 @@ use VentureDrake\LaravelCrm\Services\PersonService;
 class LeadController extends Controller
 {
     /**
-     * @var LeadService
-     */
-    private $leadService;
-
-    /**
-     * @var DealService
-     */
-    private $dealService;
-
-    /**
-     * @var PersonService
-     */
-    private $personService;
-
-    /**
-     * @var OrganizationService
-     */
-    private $organizationService;
-
-    public function __construct(LeadService $leadService, DealService $dealService, PersonService $personService, OrganizationService $organizationService)
-    {
-        $this->leadService = $leadService;
-        $this->dealService = $dealService;
-        $this->personService = $personService;
-        $this->organizationService = $organizationService;
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return Response
@@ -193,58 +165,6 @@ class LeadController extends Controller
                 'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
             ]);
         }
-    }
-
-    /**
-     * Show the form for converting the specified resource.
-     *
-     * @param  \App\Lead  $lead
-     * @return Response
-     */
-    public function convertToDeal(Lead $lead)
-    {
-        $email = $lead->getPrimaryEmail();
-        $phone = $lead->getPrimaryPhone();
-        $address = $lead->getPrimaryAddress();
-
-        return view('laravel-crm::leads.convert', [
-            'lead' => $lead,
-            'email' => $email ?? null,
-            'phone' => $phone ?? null,
-            'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal))->first(),
-        ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function storeAsDeal(StoreLeadRequest $request, Lead $lead)
-    {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organization_name && ! $request->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($request->organization_id) {
-            $organization = Organization::find($request->organization_id);
-        }
-
-        $this->dealService->create($request, $person ?? null, $organization ?? null);
-
-        $lead->update([
-            'converted_at' => Carbon::now(),
-        ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.lead_converted_to_deal')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.index'));
     }
 
     public function list(Request $request)

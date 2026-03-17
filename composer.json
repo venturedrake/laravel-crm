@@ -85,6 +85,9 @@
         }
     },
     "scripts": {
+        "post-package-update": [
+            "@php artisan flasher:install --ansi --force"
+        ],
         "test": "vendor/bin/phpunit --colors=always",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
         "format": "vendor/bin/pint -v",
