@@ -24,7 +24,7 @@ class DealCreate extends Component
 
     public $fromModelId;
 
-    protected $fromModel;
+    public $fromModel;
 
     public $lead_id;
 
@@ -94,7 +94,7 @@ class DealCreate extends Component
         }
 
         $this->dealService->create($request, $person ?? null, $organization ?? null);
-
+        
         switch ($this->fromModelType) {
             case 'lead':
                 $this->fromModel->update([
