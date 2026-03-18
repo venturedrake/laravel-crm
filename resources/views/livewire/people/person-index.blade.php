@@ -16,8 +16,9 @@
                            responsive />
 
            {{-- <x-crm-index-toggle :layout="$layout" model="people"/>--}}
-
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_person')) }}" link="{{ url(route('laravel-crm.people.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm people')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_person')) }}" link="{{ url(route('laravel-crm.people.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan
         </x-slot:actions>
     </x-mary-header>
 
@@ -45,10 +46,21 @@
                 {{ $person->deals->where('closed_status', 'won')->count() }}
             @endscope
             @scope('actions', $person)
-            <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.people.show', $person)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.people.edit', $person)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeletePerson{{ $person->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-            <x-crm-delete-confirm model="person" id="{{ $person->id }}" />
+                @hasleadsenabled
+                    @can('create crm leads')
+                        <a href="{{ url(route('laravel-crm.leads.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.crosshairs" /></button></a>
+                    @endcan
+                @endhasleadsenabled
+                @can('view crm people')
+                    <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.people.show', $person)) }}" class="btn-sm btn-square btn-outline" />
+                @endcan
+                @can('edit crm people')
+                    <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.people.edit', $person)) }}" class="btn-sm btn-square btn-outline" />
+                @endcan
+                @can('delete crm people')
+                    <x-mary-button onclick="modalDeletePerson{{ $person->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                    <x-crm-delete-confirm model="person" id="{{ $person->id }}" />
+                @endcan
             @endscope
         </x-mary-table>
     </x-mary-card>

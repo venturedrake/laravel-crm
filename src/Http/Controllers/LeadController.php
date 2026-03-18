@@ -43,27 +43,29 @@ class LeadController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
+            case 'lead':
+                $fromModel = Lead::find($request->id);
+                break;
+
             case 'client':
-                $client = Customer::find($request->id);
+                $fromModel = Customer::find($request->id);
 
                 break;
 
             case 'organization':
-                $organization = Organization::find($request->id);
+                $fromModel = Organization::find($request->id);
 
                 break;
 
             case 'person':
-                $person = Person::find($request->id);
+                $fromModel = Person::find($request->id);
 
                 break;
         }
 
         return view('laravel-crm::leads.create', [
-            'client' => $client ?? null,
-            'organization' => $organization ?? null,
-            'person' => $person ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead))->first(),
+            'fromModelType' => $request->model,
+            'fromModelId' => $request->id,
             'stage' => $request->stage ?? null,
         ]);
     }

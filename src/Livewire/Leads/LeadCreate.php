@@ -18,12 +18,40 @@ class LeadCreate extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
+    public $fromModelType;
+
+    public $fromModelId;
+
+    protected $fromModel;
+
     public function mount()
     {
         $this->currency = Setting::currency()->value ?? 'USD';
         $this->pipeline = Pipeline::where('model', get_class(new Lead))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
+
+        switch ($this->fromModelType) {
+            case 'person':
+                if ($person = Person::find($this->fromModelId)) {
+                    $this->fromModel = $person;
+                    $this->person_id = $person->id;
+                    $this->person_name = $person->name;
+                }
+                break;
+
+            case 'organization':
+                if ($organization = Organization::find($this->fromModelId)) {
+                    $this->fromModel = $organization;
+                    $this->organization_id = $organization->id;
+                    $this->organization_name = $organization->name;
+                }
+                break;
+        }
+
+        if (request()->has('stage')) {
+            $this->pipeline_stage_id = request()->stage;
+        }
     }
 
     public function updatedPersonName($value)

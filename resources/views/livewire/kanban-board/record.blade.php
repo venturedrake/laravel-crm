@@ -18,7 +18,11 @@
                 @switch($model)
                     @case('lead')
                     <x-mary-dropdown  class="btn-xs btn-square" right>
-                        <x-mary-menu-item link="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.convert')) }}" />
+                        <li>
+                            <a class="my-0.5 py-1.5 px-4 hover:text-inherit whitespace-nowrap" href="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $record['id']]) }}" wire:navigate draggable="false">
+                                <span class="mary-hideable whitespace-nowrap truncate">{{ ucfirst(__('laravel-crm::lang.convert')) }}</span>
+                            </a>
+                        </li>
                         <x-mary-menu-item link="{{ route('laravel-crm.leads.show', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
                         <x-mary-menu-item link="{{ route('laravel-crm.leads.edit', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
                         <x-mary-menu-item onclick="modalDeleteLead{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />

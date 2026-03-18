@@ -44,10 +44,21 @@
                 {{ $organization->deals->where('closed_status', 'won')->count() }}
             @endscope
             @scope('actions', $organization)
-            <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.organizations.show', $organization)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.organizations.edit', $organization)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeleteOrganization{{ $organization->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-            <x-crm-delete-confirm model="organization" id="{{ $organization->id }}" />
+                @hasleadsenabled
+                @can('create crm leads')
+                    <a href="{{ url(route('laravel-crm.leads.create',  ['model' => 'organization', 'id' => $organization->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.crosshairs" /></button></a>
+                @endcan
+                @endhasleadsenabled
+                @can('view crm organizations')
+                    <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.organizations.show', $organization)) }}" class="btn-sm btn-square btn-outline" />
+                @endcan
+                @can('edit crm organizations')
+                    <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.organizations.edit', $organization)) }}" class="btn-sm btn-square btn-outline" />
+                @endcan
+                @can('delete crm organizations')
+                    <x-mary-button onclick="modalDeleteOrganization{{ $organization->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                    <x-crm-delete-confirm model="organization" id="{{ $organization->id }}" />
+                @endcan
             @endscope
         </x-mary-table>
     </x-mary-card>
