@@ -559,4 +559,7 @@ return [
     'invoice_paid' => 'invoice paid',
     'due_today' => 'due today',
     'due_yesterday' => 'due yesterday',
+    'view' => 'view',
+    'edit' => 'edit',
+    'delete' => 'delete',
 ];

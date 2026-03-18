@@ -1,20 +1,33 @@
 <div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}">
     <div class="grow-1 null">
-        <span>{{ $record['title'] }}</span>
-        @if($record['labels'])
-            <div class="mt-2">
-            @foreach($record['labels'] as $label)
-                <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-            @endforeach
+        <div class="flex justify-between">
+            <div>
+                <span>{{ $record['title'] }}</span>
+                @if($record['labels'])
+                    <div class="mt-2">
+                        @foreach($record['labels'] as $label)
+                            <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+                        @endforeach
+                    </div>
+                @endif
+                <div class="mt-2">
+                    <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.show', $record['id'])) }}" class="link link-hover link-primary">{{ $record['number'] }}</a>
+                </div>
             </div>
-        @endif
-        <div class="mt-2">
-            <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.show', $record['id'])) }}" class="link link-hover link-primary">{{ $record['number'] }}</a>
+            <div class="ml-2">
+                @switch($model)
+                    @case('lead')
+                    <x-mary-dropdown  class="btn-xs btn-square" right>
+                        <x-mary-menu-item link="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.convert')) }}" />
+                        <x-mary-menu-item link="{{ route('laravel-crm.leads.show', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
+                        <x-mary-menu-item link="{{ route('laravel-crm.leads.edit', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
+                        <x-mary-menu-item onclick="modalDeleteLead{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
+                    </x-mary-dropdown>
+                    <x-crm-delete-confirm model="lead" id="{{ $record['id'] }}" />
+                    @break
+                @endswitch
+            </div>
         </div>
-        {{--<x-slot:menu>
-            <x-mary-button icon="o-share" class="btn-circle btn-sm" />
-            <x-mary-icon name="o-heart" class="cursor-pointer" />
-        </x-slot:menu>--}}
         <div class="flex justify-between mt-2">
             <div>
                 @if($record['amount'])

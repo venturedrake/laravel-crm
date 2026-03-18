@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Leads;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
@@ -12,6 +13,8 @@ use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class LeadBoard extends KanbanBoard
 {
+    use Toast;
+
     public $layout = 'board';
 
     public $model = 'lead';
@@ -122,6 +125,15 @@ class LeadBoard extends KanbanBoard
     public function updatedSearch()
     {
         $this->render();
+    }
+
+    public function delete($id)
+    {
+        if ($lead = Lead::find($id)) {
+            $lead->delete();
+
+            $this->success(ucfirst(trans('laravel-crm::lang.lead_deleted')));
+        }
     }
 
     public function render()
