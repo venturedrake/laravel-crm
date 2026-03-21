@@ -94,7 +94,7 @@ class DealCreate extends Component
         }
 
         $this->dealService->create($request, $person ?? null, $organization ?? null);
-        
+
         switch ($this->fromModelType) {
             case 'lead':
                 $this->fromModel->update([

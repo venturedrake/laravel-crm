@@ -439,7 +439,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
-        } else {
+        } elseif (class_exists('App\User')) {
             User::observe(UserObserver::class);
         }
 
