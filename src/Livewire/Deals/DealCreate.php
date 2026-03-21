@@ -52,6 +52,26 @@ class DealCreate extends Component
                     $this->currency = $lead->currency;
                 }
                 break;
+
+            case 'person':
+                if ($person = Person::find($this->fromModelId)) {
+                    $this->fromModel = $person;
+                    $this->person_id = $person->id;
+                    $this->person_name = $person->name;
+                }
+                break;
+
+            case 'organization':
+                if ($organization = Organization::find($this->fromModelId)) {
+                    $this->fromModel = $organization;
+                    $this->organization_id = $organization->id;
+                    $this->organization_name = $organization->name;
+                }
+                break;
+        }
+
+        if (request()->has('stage')) {
+            $this->pipeline_stage_id = request()->stage;
         }
 
         $this->addProduct();

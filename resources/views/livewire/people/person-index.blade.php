@@ -51,6 +51,11 @@
                         <a href="{{ url(route('laravel-crm.leads.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.crosshairs" /></button></a>
                     @endcan
                 @endhasleadsenabled
+                @hasdealsenabled
+                    @can('create crm deals')
+                        <a href="{{ url(route('laravel-crm.deals.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.dollar-sign" /></button></a>
+                    @endcan
+                @endhasdealsenabled
                 @can('view crm people')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.people.show', $person)) }}" class="btn-sm btn-square btn-outline" />
                 @endcan
