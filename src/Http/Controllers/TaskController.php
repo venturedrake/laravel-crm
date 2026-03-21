@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use VentureDrake\LaravelCrm\Models\Task;
 
@@ -16,17 +15,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::where('user_assigned_id', auth()->user()->id)->latest();
-
-        if ($tasks->count() < 30) {
-            $tasks = $tasks->get();
-        } else {
-            $tasks = $tasks->paginate(30);
-        }
-
-        return view('laravel-crm::tasks.index', [
-            'tasks' => $tasks ?? [],
-        ]);
+        return view('laravel-crm::tasks.index');
     }
 
     /**
@@ -36,50 +25,27 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return view('laravel-crm::tasks.create');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show(Task $task)
     {
-        //
+        return view('laravel-crm::tasks.show', compact('task'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function edit($id)
+    public function edit(Task $task)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        return view('laravel-crm::tasks.edit', compact('task'));
     }
 
     /**
