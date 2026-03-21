@@ -68,7 +68,6 @@ class QuoteIndex extends Component
             ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
             ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))],
             ['key' => 'total', 'label' => ucfirst(__('laravel-crm::lang.total')), 'format' => fn ($row, $field) => money($field, $row->currency)],
             ['key' => 'issue_at', 'label' => ucwords(__('laravel-crm::lang.issue_date')), 'format' => fn ($row, $field) => ($field) ? $field->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null],
             ['key' => 'expire_at', 'label' => ucwords(__('laravel-crm::lang.expiry_date')), 'format' => fn ($row, $field) => ($field) ? $field->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null],
@@ -77,6 +76,7 @@ class QuoteIndex extends Component
             ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],*/
             /* ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact'))],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization'))],*/
+            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated'))],
         ];
     }
