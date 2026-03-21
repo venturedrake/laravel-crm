@@ -16,4 +16,3 @@ class TaskRepository
         return Task::find($id);
     }
 }
-

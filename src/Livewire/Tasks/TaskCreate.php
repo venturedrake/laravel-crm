@@ -24,7 +24,7 @@ class TaskCreate extends Component
         $this->taskService->create($request);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.task_created_successfully')),
+            ucfirst(trans('laravel-crm::lang.task_created')),
             redirectTo: route('laravel-crm.tasks.index')
         );
     }
@@ -34,4 +34,3 @@ class TaskCreate extends Component
         return view('laravel-crm::livewire.tasks.task-create');
     }
 }
-

@@ -38,4 +38,3 @@ class TaskShow extends Component
         return view('laravel-crm::livewire.tasks.task-show');
     }
 }
-

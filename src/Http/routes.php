@@ -545,11 +545,9 @@ Route::group(['prefix' => 'tasks', 'middleware' => 'auth.laravel-crm'], function
         ->name('laravel-crm.tasks.edit')
         ->middleware(['can:update,task']);
 
-
     Route::delete('{task}', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@destroy')
         ->name('laravel-crm.tasks.destroy')
         ->middleware(['can:delete,task']);
-
 
     Route::get('{task}/complete', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@complete')
         ->name('laravel-crm.tasks.complete')

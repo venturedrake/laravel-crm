@@ -80,11 +80,15 @@
             <x-mary-menu activate-by-route class="w-full bg-base-100 rounded-none pt-3">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.dashboard')) }}" icon="bxs.dashboard" link="{{ url(route('laravel-crm.dashboard')) }}" />
                 <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.tasks')) }}" icon="fas.tasks" link="{{ url(route('laravel-crm.tasks.index')) }}" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.email')) }}" icon="fas.envelope" link="#" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.sms')) }}" icon="fas.sms" link="#" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.social')) }}" icon="fas.share-alt" link="#" />
+                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.activity')) }}" icon="fas.timeline" link="{{ url(route('laravel-crm.activities.index')) }}" />
+                <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" icon="fas.crosshairs" link="{{ url(route('laravel-crm.leads.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.deals')) }}" icon="fas.dollar-sign" link="{{ url(route('laravel-crm.deals.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.quotes')) }}" icon="fas.file-lines" link="{{ url(route('laravel-crm.quotes.index')) }}" />
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.tasks')) }}" icon="fas.check-square" link="{{ url(route('laravel-crm.tasks.index')) }}" />
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.activities')) }}" icon="fas.tasks" link="{{ url(route('laravel-crm.activities.index')) }}" />
                 <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.orders')) }}" icon="fas.shopping-cart" link="{{ url(route('laravel-crm.orders.index')) }}" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.invoices')) }}" icon="fas.file-invoice" link="{{ url(route('laravel-crm.invoices.index')) }}" />

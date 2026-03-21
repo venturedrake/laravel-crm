@@ -15,7 +15,9 @@
                            @click="$wire.showFilters = true"
                            responsive />
 
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_task')) }}" link="{{ url(route('laravel-crm.tasks.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm tasks')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_task')) }}" link="{{ url(route('laravel-crm.tasks.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan
         </x-slot:actions>
     </x-mary-header>
 
@@ -30,13 +32,23 @@
                 @endif
             @endscope
             @scope('actions', $task)
-                @if(! $task->completed_at)
-                    <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.complete')) }}" wire:click="complete({{ $task->id }})" class="btn-sm btn-success text-white" spinner />
-                @endif
-                <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.tasks.show', $task)) }}" class="btn-sm btn-square btn-outline" />
-                <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.tasks.edit', $task)) }}" class="btn-sm btn-square btn-outline" />
-                <x-mary-button onclick="modalDeleteTask{{ $task->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-                <x-crm-delete-confirm model="task" id="{{ $task->id }}" />
+                <div class="flex gap-1 justify-end">
+                    @can('edit crm invoices')
+                        @if(! $task->completed_at)
+                            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.complete')) }}" wire:click="complete({{ $task->id }})" class="btn-sm btn-success text-white" spinner />
+                        @endif
+                    @endcan
+                    @can('view crm invoices')
+                    <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.tasks.show', $task)) }}" class="btn-sm btn-square btn-outline" />
+                    @endcan    
+                    @can('edit crm invoices')
+                        <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.tasks.edit', $task)) }}" class="btn-sm btn-square btn-outline" />
+                    @endcan
+                    @can('delete crm invoices')
+                        <x-mary-button onclick="modalDeleteTask{{ $task->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                        <x-crm-delete-confirm model="task" id="{{ $task->id }}" />
+                    @endcan
+                </div>
             @endscope
         </x-mary-table>
     </x-mary-card>

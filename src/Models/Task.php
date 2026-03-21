@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
@@ -38,13 +37,6 @@ class Task extends Model
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'tasks';
-    }
-
-    public function setDueAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['due_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
-        }
     }
 
     /**

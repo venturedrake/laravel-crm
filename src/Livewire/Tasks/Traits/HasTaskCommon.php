@@ -37,4 +37,3 @@ trait HasTaskCommon
         $this->taskService = $taskService;
     }
 }
-

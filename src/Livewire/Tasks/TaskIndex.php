@@ -47,10 +47,12 @@ class TaskIndex extends Component
     {
         return [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'due_at', 'label' => ucfirst(__('laravel-crm::lang.due_date')), 'format' => fn ($row, $field) => $field ? $field->diffForHumans() : '-'],
+            ['key' => 'completed_at', 'label' => ucfirst(__('laravel-crm::lang.status')), 'format' => fn ($row, $field) => $field ? $field->diffForHumans() : '-', 'sortable' => false],
+            ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.task'))],
+            ['key' => 'description', 'label' => ucfirst(__('laravel-crm::lang.description'))],
+            ['key' => 'due_at', 'label' => ucfirst(__('laravel-crm::lang.due')), 'format' => fn ($row, $field) => $field ? $field->diffForHumans() : '-'],
+            ['key' => 'ownerUser.name', 'label' => ucfirst(__('laravel-crm::lang.created_by')), 'sortable' => false],
             ['key' => 'assignedToUser.name', 'label' => ucfirst(__('laravel-crm::lang.assigned_to')), 'sortable' => false],
-            ['key' => 'completed_at', 'label' => ucfirst(__('laravel-crm::lang.completed')), 'format' => fn ($row, $field) => $field ? $field->diffForHumans() : '-', 'sortable' => false],
         ];
     }
 
@@ -94,4 +96,3 @@ class TaskIndex extends Component
         ]);
     }
 }
-

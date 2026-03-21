@@ -17,7 +17,7 @@ class TaskEdit extends Component
         $this->task = $task;
         $this->name = $task->name;
         $this->description = $task->description;
-        $this->due_at = $task->due_at ? $task->due_at->format($task->dateFormat().' H:i') : null;
+        $this->due_at = $task->due_at ? $task->due_at->format('Y-m-d') : null;
         $this->user_owner_id = $task->user_owner_id;
         $this->user_assigned_id = $task->user_assigned_id;
     }
@@ -31,7 +31,7 @@ class TaskEdit extends Component
         $this->taskService->update($request, $this->task);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.task_updated_successfully')),
+            ucfirst(trans('laravel-crm::lang.task_updated')),
             redirectTo: route('laravel-crm.tasks.index')
         );
     }
@@ -41,4 +41,3 @@ class TaskEdit extends Component
         return view('laravel-crm::livewire.tasks.task-edit');
     }
 }
-

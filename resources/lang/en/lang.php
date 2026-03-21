@@ -570,4 +570,6 @@ return [
     'view' => 'view',
     'edit' => 'edit',
     'delete' => 'delete',
+    'sms' => 'SMS',
+    'social' => 'social',
 ];
