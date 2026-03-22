@@ -18,7 +18,7 @@
                 @switch($model)
                     @case('lead')
                         @canany(['view crm leads', 'edit crm leads', 'delete crm leads'])
-                            <x-mary-dropdown  class="btn-xs btn-square" right>
+                            <x-mary-dropdown class="btn-xs btn-square" right>
                                 @can('edit crm leads')
                                     <li>
                                         <a class="my-0.5 py-1.5 px-4 hover:text-inherit whitespace-nowrap" href="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $record['id']]) }}" wire:navigate draggable="false">
@@ -38,6 +38,30 @@
                             </x-mary-dropdown>
                         @endcanany
                     @break
+
+                    @case('deal')
+                        @canany(['view crm deals', 'edit crm deals', 'delete crm deals'])
+                            <x-mary-dropdown class="btn-xs btn-square" right>
+                                @can('edit crm deals')
+                                    @if(!\VentureDrake\LaravelCrm\Models\Deal::find($record['id'])->closed_at)
+                                        <x-mary-menu-item  wire:click="won({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.won')) }}" />
+                                        <x-mary-menu-item  wire:click="lost({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.lost')) }}" />
+                                    @else
+                                        <x-mary-menu-item  wire:click="reopen({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.reopen')) }}" />
+                                    @endif
+                                @endcan
+                                @can('view crm deals')
+                                    <x-mary-menu-item link="{{ route('laravel-crm.deals.show', ['deal' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
+                                @endcan
+                                @can('edit crm deals')
+                                    <x-mary-menu-item link="{{ route('laravel-crm.deals.edit', ['deal' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
+                                @endcan
+                                @can('delete crm deals')
+                                    <x-mary-menu-item onclick="modalDeleteDeal{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
+                                @endcan
+                            </x-mary-dropdown>
+                        @endcanany
+                        @break
                 @endswitch
             </div>
         </div>
@@ -53,4 +77,12 @@
         </div>
     </div>
 </div>
-<x-crm-delete-confirm model="lead" id="{{ $record['id'] }}" />
+@switch($model)
+    @case('lead')
+        <x-crm-delete-confirm model="lead" id="{{ $record['id'] }}" />
+        @break
+        
+    @case('deal')
+        <x-crm-delete-confirm model="deal" id="{{ $record['id'] }}" />
+        @break
+@endswitch

@@ -3,8 +3,10 @@
 namespace VentureDrake\LaravelCrm\Livewire\Deals;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Label;
@@ -12,6 +14,8 @@ use VentureDrake\LaravelCrm\Models\Pipeline;
 
 class DealBoard extends KanbanBoard
 {
+    use Toast;
+
     public $layout = 'board';
 
     public $model = 'deal';
@@ -26,6 +30,8 @@ class DealBoard extends KanbanBoard
     public ?array $label_id = [];
 
     public bool $showFilters = false;
+
+    public ?Pipeline $pipeline = null;
 
     public function filterCount(): int
     {
@@ -107,8 +113,49 @@ class DealBoard extends KanbanBoard
         $this->render();
     }
 
+    public function won($id)
+    {
+        if ($deal = Deal::find($id)) {
+            $deal->update([
+                'closed_status' => 'won',
+                'closed_at' => Carbon::now(),
+                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Closed Won')->first()->id ?? null,
+            ]);
+
+            $this->success(ucfirst(trans('laravel-crm::lang.deal_won')));
+        }
+    }
+
+    public function lost($id)
+    {
+        if ($deal = Deal::find($id)) {
+            $deal->update([
+                'closed_status' => 'lost',
+                'closed_at' => Carbon::now(),
+                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Closed Lost')->first()->id ?? null,
+            ]);
+
+            $this->success(ucfirst(trans('laravel-crm::lang.deal_lost')));
+        }
+    }
+
+    public function reopen($id)
+    {
+        if ($deal = Deal::find($id)) {
+            $deal->update([
+                'closed_status' => null,
+                'closed_at' => null,
+                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Pending')->first()->id ?? null,
+            ]);
+
+            $this->success(ucfirst(trans('laravel-crm::lang.deal_reopened')));
+        }
+    }
+
     public function render()
     {
+        $this->pipeline = Pipeline::where('model', get_class(new Deal))->first();
+
         $stages = $this->stages();
 
         $records = $this->records();

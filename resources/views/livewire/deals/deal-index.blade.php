@@ -16,8 +16,9 @@
                            responsive />
 
             <x-crm-index-toggle :layout="$layout" model="deals"/>
-
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_deal')) }}" link="{{ url(route('laravel-crm.deals.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm deals')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_deal')) }}" link="{{ url(route('laravel-crm.deals.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan    
         </x-slot:actions>
     </x-mary-header>
 
@@ -36,16 +37,24 @@
             @endscope
             @scope('actions', $deal)
                 <div class="flex gap-1 justify-end">
-                    @if(!$deal->closed_at)
-                        <x-mary-button wire:click="won({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.won')) }}" class="btn-sm btn-success text-white" />
-                        <x-mary-button wire:click="lost({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.lost')) }}" class="btn-sm btn-error text-white" />
-                    @else
-                        <x-mary-button wire:click="reopen({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.reopen')) }}" class="btn-sm btn-outline" />
-                    @endif
-                    <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.deals.show', $deal)) }}" class="btn-sm btn-square btn-outline" />
-                    <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.deals.edit', $deal)) }}" class="btn-sm btn-square btn-outline" />
-                    <x-mary-button onclick="modalDeleteDeal{{ $deal->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-                    <x-crm-delete-confirm model="deal" id="{{ $deal->id }}" />
+                    @can('edit crm deals')
+                        @if(!$deal->closed_at)
+                            <x-mary-button wire:click="won({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.won')) }}" class="btn-sm btn-success text-white" />
+                            <x-mary-button wire:click="lost({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.lost')) }}" class="btn-sm btn-error text-white" />
+                        @else
+                            <x-mary-button wire:click="reopen({{ $deal->id }})" label="{{ ucfirst(__('laravel-crm::lang.reopen')) }}" class="btn-sm btn-outline" />
+                        @endif
+                    @endcan
+                    @can('view crm deals')
+                        <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.deals.show', $deal)) }}" class="btn-sm btn-square btn-outline" />
+                    @endcan
+                    @can('edit crm deals')
+                        <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.deals.edit', $deal)) }}" class="btn-sm btn-square btn-outline" />
+                    @endcan
+                    @can('delete crm deals')
+                        <x-mary-button onclick="modalDeleteDeal{{ $deal->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                        <x-crm-delete-confirm model="deal" id="{{ $deal->id }}" />
+                    @endcan
                 </div>
             @endscope
         </x-mary-table>
