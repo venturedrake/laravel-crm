@@ -15,9 +15,10 @@
                            @click="$wire.showFilters = true"
                            responsive />
 
-           {{-- <x-crm-index-toggle :layout="$layout" model="orders"/>--}}
-
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" link="{{ url(route('laravel-crm.orders.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            {{-- <x-crm-index-toggle :layout="$layout" model="orders"/>--}}
+            @can('edit crm orders')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" link="{{ url(route('laravel-crm.orders.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan
         </x-slot:actions>
     </x-mary-header>
 

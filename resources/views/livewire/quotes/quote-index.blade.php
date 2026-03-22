@@ -16,8 +16,9 @@
                            responsive />
 
             <x-crm-index-toggle :layout="$layout" model="quotes"/>
-
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_quote')) }}" link="{{ url(route('laravel-crm.quotes.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm quotes')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_quote')) }}" link="{{ url(route('laravel-crm.quotes.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan    
         </x-slot:actions>
     </x-mary-header>
 
@@ -65,8 +66,8 @@
                     @endcan
                     @can('view crm quotes')
                         @if(! $quoteError)
-                        <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.quotes.download', $quote)) }}" class="btn-sm btn-square btn-outline" />
-                    @endif    
+                            <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.quotes.download', $quote)) }}" class="btn-sm btn-square btn-outline" />
+                        @endif    
                         <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.quotes.show', $quote)) }}" class="btn-sm btn-square btn-outline" />
                     @endcan
                     @can('edit crm quotes')
@@ -75,8 +76,8 @@
                         @endif
                     @endcan
                     @can('delete crm quotes')
-                    <x-mary-button onclick="modalDeleteQuote{{ $quote->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-                    <x-crm-delete-confirm model="quote" id="{{ $quote->id }}" />
+                        <x-mary-button onclick="modalDeleteQuote{{ $quote->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                        <x-crm-delete-confirm model="quote" id="{{ $quote->id }}" />
                     @endcan
                 </div>
             @endscope

@@ -83,53 +83,26 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case 'client':
-                $client = Customer::find($request->id);
-
-                break;
-
             case 'organization':
-                $organization = Organization::find($request->id);
+                $fromModel = Organization::find($request->id);
 
                 break;
 
             case 'person':
-                $person = Person::find($request->id);
+                $fromModel = Person::find($request->id);
 
                 break;
 
             case 'quote':
-                $quote = Quote::find($request->id);
-                $client = $quote->client;
-                $organization = $quote->organization;
-                $person = $quote->person;
-
-                $addressIds = [];
-
-                if ($address = $quote->organization->getBillingAddress()) {
-                    $addressIds[] = $address->id;
-                }
-
-                if ($address = $quote->organization->getShippingAddress()) {
-                    $addressIds[] = $address->id;
-                }
-
-                $addresses = Address::whereIn('id', $addressIds)->get();
+                $fromModel = Quote::find($request->id);
 
                 break;
         }
 
-        $orderTerms = $this->settingService->get('order_terms');
-
         return view('laravel-crm::orders.create', [
-            'quote' => $quote ?? null,
-            'client' => $client ?? null,
-            'organization' => $organization ?? null,
-            'person' => $person ?? null,
-            'addresses' => $addresses ?? null,
-            'prefix' => $this->settingService->get('order_prefix'),
-            'number' => (Order::latest()->first()->number ?? 1000) + 1,
-            'orderTerms' => $orderTerms,
+            'fromModelType' => $request->model,
+            'fromModelId' => $request->id,
+            'stage' => $request->stage ?? null,
         ]);
     }
 

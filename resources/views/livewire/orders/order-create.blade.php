@@ -1,6 +1,9 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" class="mb-5" progress-indicator >
+    <x-mary-header class="mb-5" progress-indicator >
+        <x-slot:title>
+            {{ ucfirst(__('laravel-crm::lang.create_order')) }} @isset($quote){{ __('laravel-crm::lang.from_quote') }} <a href="{{ route('laravel-crm.quotes.show', $quote) }}" class="link link-hover link-primary">{{ $quote->quote_id }}</a> @endisset
+        </x-slot:title>
 
         {{-- ACTIONS  --}}
         <x-slot:actions>

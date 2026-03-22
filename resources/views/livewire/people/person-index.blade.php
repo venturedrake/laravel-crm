@@ -61,6 +61,11 @@
                         <a href="{{ url(route('laravel-crm.quotes.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.file-lines" /></button></a>
                     @endcan
                 @endhasquotesenabled
+                @hasordersenabled
+                    @can('create crm orders')
+                        <a href="{{ url(route('laravel-crm.orders.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.shopping-cart" /></button></a>
+                    @endcan
+                @endhasordersenabled
                 @can('view crm people')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.people.show', $person)) }}" class="btn-sm btn-square btn-outline" />
                 @endcan

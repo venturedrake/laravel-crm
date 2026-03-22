@@ -2,42 +2,50 @@
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" separator>
         <div class="grid gap-3" wire:key="details">
             <div class="autocomplete-input z-50">
-                <x-mary-input wire:model.live="person_name" wire:keyup="searchPeople" wire:blur="hidePeople" label="{{ ucfirst(__('laravel-crm::lang.contact_person')) }}" icon="fas.user" />
-                @if($showPeople)
-                    <div class="border border-solid border-primary absolute bg-white z-40 w-96">
-                        @if(!empty($people))
-                            @foreach($people as $person)
-                                <x-mary-list-item wire:click="linkPerson({{ $person->id }})" :item="$person">
-                                    <x-slot:value>
-                                        {{ $person->name }}
-                                    </x-slot:value>
-                                </x-mary-list-item>
-                            @endforeach
-                        @endif
-                    </div>
-                @endif
-                @if(! $person_id && $person_name)
-                    <x-mary-badge value="New" class="badge-info badge-sm rounded-md autocomplete-new text-white" />
+                @if(isset($quote))
+                    <x-mary-input wire:model.live="person_name" wire:keyup="searchPeople" wire:blur="hidePeople" label="{{ ucfirst(__('laravel-crm::lang.contact_person')) }}" icon="fas.user" readonly />
+                @else
+                    <x-mary-input wire:model.live="person_name" wire:keyup="searchPeople" wire:blur="hidePeople" label="{{ ucfirst(__('laravel-crm::lang.contact_person')) }}" icon="fas.user" />
+                    @if($showPeople)
+                        <div class="border border-solid border-primary absolute bg-white z-40 w-96">
+                            @if(!empty($people))
+                                @foreach($people as $person)
+                                    <x-mary-list-item wire:click="linkPerson({{ $person->id }})" :item="$person">
+                                        <x-slot:value>
+                                            {{ $person->name }}
+                                        </x-slot:value>
+                                    </x-mary-list-item>
+                                @endforeach
+                            @endif
+                        </div>
+                    @endif
+                    @if(! $person_id && $person_name)
+                        <x-mary-badge value="New" class="badge-info badge-sm rounded-md autocomplete-new text-white" />
+                    @endif
                 @endif
             </div>
             <div class="autocomplete-input z-40">
-                <x-mary-input wire:model.live="organization_name" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" label="{{ ucfirst(__('laravel-crm::lang.organization')) }}" icon="fas.building" />
-                @if($showOrganizations)
-                    <div class="border border-solid border-primary absolute bg-white z-50 w-96">
-                        @if(!empty($organizations))
-                            @foreach($organizations as $organization)
-                                <x-mary-list-item wire:click="linkOrganization({{ $organization->id }})" :item="$organization">
-                                    <x-slot:value>
-                                        {{ $organization->name }}
-                                    </x-slot:value>
-                                </x-mary-list-item>
-                            @endforeach
-                        @endif
-                    </div>
-                @endif
-                @if(! $organization_id && $organization_name)
-                    <x-mary-badge value="New" class="badge-info badge-sm rounded-md autocomplete-new text-white" />
-                @endif
+                @if(isset($quote))
+                    <x-mary-input wire:model.live="organization_name" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" label="{{ ucfirst(__('laravel-crm::lang.organization')) }}" icon="fas.building" readonly />
+                @else    
+                    <x-mary-input wire:model.live="organization_name" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" label="{{ ucfirst(__('laravel-crm::lang.organization')) }}" icon="fas.building" />
+                    @if($showOrganizations)
+                        <div class="border border-solid border-primary absolute bg-white z-50 w-96">
+                            @if(!empty($organizations))
+                                @foreach($organizations as $organization)
+                                    <x-mary-list-item wire:click="linkOrganization({{ $organization->id }})" :item="$organization">
+                                        <x-slot:value>
+                                            {{ $organization->name }}
+                                        </x-slot:value>
+                                    </x-mary-list-item>
+                                @endforeach
+                            @endif
+                        </div>
+                    @endif
+                    @if(! $organization_id && $organization_name)
+                        <x-mary-badge value="New" class="badge-info badge-sm rounded-md autocomplete-new text-white" />
+                    @endif
+                @endif    
             </div>
             <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
             <div class="grid lg:grid-cols-2 gap-5">

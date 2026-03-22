@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Mail\SendQuote;
@@ -31,6 +32,8 @@ class QuoteSend extends Component
 
     public $signedUrl;
 
+    public $type = 'button';
+
     /**
      * Returns validation rules.
      *
@@ -51,6 +54,14 @@ class QuoteSend extends Component
         $this->to = ($quote->person) ? ($quote->person->getPrimaryEmail()->address ?? null) : null;
         $this->subject = view('laravel-crm::mail.templates.send-quote.subject', ['quote' => $this->quote])->render();
         $this->message = view('laravel-crm::mail.templates.send-quote.message', ['quote' => $this->quote])->render();
+    }
+
+    #[On('quote-send')]
+    public function toggle($id)
+    {
+        if ($this->quote->id === $id) {
+            $this->showSendQuote = ! $this->showSendQuote;
+        }
     }
 
     public function send()

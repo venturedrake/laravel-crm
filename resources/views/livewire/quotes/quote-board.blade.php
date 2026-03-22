@@ -16,8 +16,9 @@
                            responsive />
 
             <x-crm-index-toggle :layout="$layout" model="quotes"/>
-
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_quote')) }}" link="{{ url(route('laravel-crm.quotes.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm quotes')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_quote')) }}" link="{{ url(route('laravel-crm.quotes.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan
         </x-slot:actions>
     </x-mary-header>
 
