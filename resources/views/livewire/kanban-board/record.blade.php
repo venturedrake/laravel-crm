@@ -17,16 +17,26 @@
             <div class="ml-2">
                 @switch($model)
                     @case('lead')
-                    <x-mary-dropdown  class="btn-xs btn-square" right>
-                        <li>
-                            <a class="my-0.5 py-1.5 px-4 hover:text-inherit whitespace-nowrap" href="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $record['id']]) }}" wire:navigate draggable="false">
-                                <span class="mary-hideable whitespace-nowrap truncate">{{ ucfirst(__('laravel-crm::lang.convert')) }}</span>
-                            </a>
-                        </li>
-                        <x-mary-menu-item link="{{ route('laravel-crm.leads.show', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
-                        <x-mary-menu-item link="{{ route('laravel-crm.leads.edit', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
-                        <x-mary-menu-item onclick="modalDeleteLead{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
-                    </x-mary-dropdown>
+                        @canany(['view crm leads', 'edit crm leads', 'delete crm leads'])
+                            <x-mary-dropdown  class="btn-xs btn-square" right>
+                                @can('edit crm leads')
+                                    <li>
+                                        <a class="my-0.5 py-1.5 px-4 hover:text-inherit whitespace-nowrap" href="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $record['id']]) }}" wire:navigate draggable="false">
+                                            <span class="mary-hideable whitespace-nowrap truncate">{{ ucfirst(__('laravel-crm::lang.convert')) }}</span>
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('view crm leads')
+                                    <x-mary-menu-item link="{{ route('laravel-crm.leads.show', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
+                                @endcan
+                                @can('edit crm leads')
+                                    <x-mary-menu-item link="{{ route('laravel-crm.leads.edit', ['lead' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
+                                @endcan
+                                @can('delete crm leads')
+                                    <x-mary-menu-item onclick="modalDeleteLead{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
+                                @endcan
+                            </x-mary-dropdown>
+                        @endcanany
                     @break
                 @endswitch
             </div>

@@ -46,14 +46,19 @@
             @scope('actions', $organization)
                 @hasleadsenabled
                     @can('create crm leads')
-                        <a href="{{ url(route('laravel-crm.leads.create',  ['model' => 'organization', 'id' => $organization->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.crosshairs" /></button></a>
+                        <a href="{{ url(route('laravel-crm.leads.create',  ['model' => 'organization', 'id' => $organization->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.crosshairs" /></button></a>
                     @endcan
                 @endhasleadsenabled
                 @hasleadsenabled
                     @can('create crm deals')
-                        <a href="{{ url(route('laravel-crm.deals.create',  ['model' => 'organization', 'id' => $organization->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.dollar-sign" /></button></a>
+                        <a href="{{ url(route('laravel-crm.deals.create',  ['model' => 'organization', 'id' => $organization->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.dollar-sign" /></button></a>
                     @endcan
                 @endhasleadsenabled
+                @hasquotesenabled
+                    @can('create crm quotes')
+                        <a href="{{ url(route('laravel-crm.quotes.create',  ['model' => 'organization', 'id' => $organization->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.file-lines" /></button></a>
+                    @endcan
+                @endhasquotesenabled
                 @can('view crm organizations')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.organizations.show', $organization)) }}" class="btn-sm btn-square btn-outline" />
                 @endcan

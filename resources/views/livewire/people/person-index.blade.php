@@ -48,14 +48,19 @@
             @scope('actions', $person)
                 @hasleadsenabled
                     @can('create crm leads')
-                        <a href="{{ url(route('laravel-crm.leads.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.crosshairs" /></button></a>
+                        <a href="{{ url(route('laravel-crm.leads.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.crosshairs" /></button></a>
                     @endcan
                 @endhasleadsenabled
                 @hasdealsenabled
                     @can('create crm deals')
-                        <a href="{{ url(route('laravel-crm.deals.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.dollar-sign" /></button></a>
+                        <a href="{{ url(route('laravel-crm.deals.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.dollar-sign" /></button></a>
                     @endcan
                 @endhasdealsenabled
+                @hasquotesenabled
+                    @can('create crm quotes')
+                        <a href="{{ url(route('laravel-crm.quotes.create',  ['model' => 'person', 'id' => $person->id])) }}"><button class="btn btn-sm btn-outline btn-rectangle"><x-mary-icon name="o-arrow-right" /><x-mary-icon name="fas.file-lines" /></button></a>
+                    @endcan
+                @endhasquotesenabled
                 @can('view crm people')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.people.show', $person)) }}" class="btn-sm btn-square btn-outline" />
                 @endcan

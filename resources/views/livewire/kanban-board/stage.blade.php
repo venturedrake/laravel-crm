@@ -18,10 +18,13 @@
                 ])
             @endforeach
         </span>
-        <div class="card-footer">
-         <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.create', ['stage' => $stage['id']])) }}" class="btn btn-primary btn-block text-white">Add
-             {{ $model }}</a>
-        </div>
+        @can('create crm '.\Illuminate\Support\Str::plural($model))
+            <div class="card-footer">
+                 <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.create', ['stage' => $stage['id']])) }}" class="btn btn-primary btn-block text-white">Add
+                     {{ $model }}
+                 </a>
+            </div>
+        @endcan    
     </div>
 </div>
 

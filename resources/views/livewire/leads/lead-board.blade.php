@@ -16,8 +16,9 @@
                            responsive />
 
             <x-crm-index-toggle :layout="$layout" model="leads"/>
-
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_lead')) }}" link="{{ url(route('laravel-crm.leads.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @can('create crm leads')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_lead')) }}" link="{{ url(route('laravel-crm.leads.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+            @endcan
         </x-slot:actions>
     </x-mary-header>
 

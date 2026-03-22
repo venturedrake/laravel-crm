@@ -133,3 +133,9 @@
 .label:is(.input>*,.select>*):first-child{
     margin-inline: -.75rem .35rem !important;
 }
+
+.btn-rectangle {
+    width: calc(var(--size) * 2);
+    height: var(--size);
+    padding-inline:0
+}

@@ -195,22 +195,12 @@ class DealController extends Controller
      */
     public function board(Request $request)
     {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_deals')->first();
-
         auth()->user()->crmSettings()->updateOrCreate([
             'name' => 'view_deals',
         ], [
             'value' => 'board',
         ]);
 
-        Deal::resetSearchValue($request);
-        $params = Deal::filters($request);
-
-        $deals = Deal::filter($params)->latest()->get();
-
-        return view('laravel-crm::deals.board', [
-            'deals' => $deals,
-            'viewSetting' => $viewSetting->value ?? null,
-        ]);
+        return view('laravel-crm::deals.board');
     }
 }
