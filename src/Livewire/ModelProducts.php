@@ -10,6 +10,8 @@ class ModelProducts extends Component
 {
     public $model = null;
 
+    public ?string $from;
+
     public array $products = [];
 
     public $sub_total = 0;
@@ -37,33 +39,34 @@ class ModelProducts extends Component
         } else {
             switch (class_basename($this->model)) {
                 case 'Quote':
-                    foreach ($this->model->quoteProducts as $product) {
+                    foreach ($this->model->quoteProducts as $quoteProduct) {
                         $this->products[] = [
-                            'quote_product_id' => $product->id,
-                            'id' => $product->product_id,
-                            'name' => $product->name,
-                            'quantity' => $product->quantity,
-                            'unit_price' => $product->price / 100,
-                            'tax_rate' => $product->tax_rate,
-                            'tax_amount' => $product->tax_amount / 100,
-                            'amount' => $product->amount / 100,
-                            'comments' => $product->comments,
+                            'quote_product_id' => $quoteProduct->id,
+                            'id' => $quoteProduct->product_id,
+                            'name' => $quoteProduct->product->name,
+                            'quantity' => $quoteProduct->quantity,
+                            'unit_price' => $quoteProduct->price / 100,
+                            'tax_rate' => $quoteProduct->tax_rate,
+                            'tax_amount' => $quoteProduct->tax_amount / 100,
+                            'amount' => $quoteProduct->amount / 100,
+                            'comments' => $quoteProduct->comments,
                         ];
                     }
+
                     break;
 
                 case 'Order':
-                    foreach ($this->model->orderProducts as $product) {
+                    foreach ($this->model->orderProducts as $orderProduct) {
                         $this->products[] = [
-                            'order_product_id' => $product->id,
-                            'id' => $product->product_id,
-                            'name' => $product->name,
-                            'quantity' => $product->quantity,
-                            'unit_price' => $product->price / 100,
-                            'tax_rate' => $product->tax_rate,
-                            'tax_amount' => $product->tax_amount / 100,
-                            'amount' => $product->amount / 100,
-                            'comments' => $product->comments,
+                            'order_product_id' => $orderProduct->id,
+                            'id' => $orderProduct->product_id,
+                            'name' => $orderProduct->product->name,
+                            'quantity' => $orderProduct->quantity,
+                            'unit_price' => $orderProduct->price / 100,
+                            'tax_rate' => $orderProduct->tax_rate,
+                            'tax_amount' => $orderProduct->tax_amount / 100,
+                            'amount' => $orderProduct->amount / 100,
+                            'comments' => $orderProduct->comments,
                         ];
                     }
                     break;
@@ -73,7 +76,7 @@ class ModelProducts extends Component
                         $this->products[] = [
                             'invoice_line_id' => $invoiceLine->id,
                             'id' => $invoiceLine->product_id,
-                            'name' => $invoiceLine->name,
+                            'name' => $invoiceLine->product->name,
                             'quantity' => $invoiceLine->quantity,
                             'unit_price' => $invoiceLine->price / 100,
                             'tax_rate' => $invoiceLine->tax_rate,

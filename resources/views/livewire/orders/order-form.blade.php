@@ -128,5 +128,5 @@
     </x-mary-card>
 </div>
 <div>
-    <livewire:crm-model-products :model="$order ?? null" />
+    <livewire:crm-model-products :model="$fromModel ?? $order ?? null" :from="$fromModel ? class_basename($fromModel) : null" />
 </div>

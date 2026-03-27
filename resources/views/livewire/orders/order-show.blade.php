@@ -78,7 +78,7 @@
                         <div class="flex flex-row gap-5">
                             <strong>{{ ucfirst(__('laravel-crm::lang.quote')) }}</strong>
                             <span>
-                                <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}">{{ $order->quote->quote_id }}</a>
+                                <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}" class="link link-hover link-primary">{{ $order->quote->quote_id }}</a>
                             </span>
                         </div>
                     @endif

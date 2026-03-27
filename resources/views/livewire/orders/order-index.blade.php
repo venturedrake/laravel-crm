@@ -37,7 +37,7 @@
             @endscope
             @scope('cell_quote', $order)
                 @if($order->quote)
-                    <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}">{{ $order->quote->quote_id }}</a>
+                    <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}" class="link link-hover link-primary">{{ $order->quote->quote_id }}</a>
                 @endif
             @endscope
             @scope('cell_pipeline_stage', $order)
@@ -107,11 +107,6 @@
                         @if($subTotalError || $taxError || $totalError)
                             <x-mary-button link="{{ url(route('laravel-crm.orders.edit', $order)) }}" class="btn-sm btn-warning" label="Error with order, check amounts" />
                         @else
-                            @if(! $order->deliveryComplete())
-                                @haspurchaseordersenabled
-                                    <x-mary-button link="{{ route('laravel-crm.purchase-orders.create',['model' => 'order', 'id' => $order->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.purchase')) }}" />
-                                @endhaspurchaseordersenabled
-                            @endif
                             @if(! $order->invoiceComplete())
                                 @hasinvoicesenabled
                                     <x-mary-button link="{{ route('laravel-crm.invoices.create',['model' => 'order', 'id' => $order->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.invoice')) }}" />
@@ -121,6 +116,11 @@
                                 @hasdeliveriesenabled
                                     <x-mary-button link="{{ route('laravel-crm.deliveries.create',['model' => 'order', 'id' => $order->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.delivery')) }}" />
                                 @endhasdeliveriesenabled
+                            @endif
+                            @if(! $order->deliveryComplete())
+                                @haspurchaseordersenabled
+                                    <x-mary-button link="{{ route('laravel-crm.purchase-orders.create',['model' => 'order', 'id' => $order->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.purchase')) }}" />
+                                @endhaspurchaseordersenabled
                             @endif
                         @endif
                     @endcan

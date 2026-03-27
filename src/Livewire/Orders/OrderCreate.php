@@ -52,6 +52,8 @@ class OrderCreate extends Component
         switch ($this->fromModelType) {
             case 'quote':
                 if ($quote = Quote::find($this->fromModelId)) {
+                    $this->lead_id = $quote->lead_id;
+                    $this->deal_id = $quote->deal_id;
                     $this->fromModel = $quote;
                     $this->quote = $quote;
                     $this->quote_id = $quote->id;

@@ -67,7 +67,7 @@ class OrderIndex extends Component
 
         if (auth()->user()->can('view crm quotes')) {
             $headers = array_merge($headers, [
-                ['key' => 'quote', 'label' => ucfirst(__('laravel-crm::lang.quote'))],
+                ['key' => 'quote', 'label' => ucfirst(__('laravel-crm::lang.quote')), 'disableLink' => true],
             ]);
         }
 
