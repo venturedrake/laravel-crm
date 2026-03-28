@@ -32,9 +32,9 @@
                 @endif
             @endscope
             @scope('cell_order', $purchaseOrder)
-            @if($purchaseOrder->order)
-                <a href="{{ route('laravel-crm.orders.show', $purchaseOrder->order) }}">{{ $purchaseOrder->order->order_id }}</a>
-            @endif
+                @if($purchaseOrder->order)
+                    <a href="{{ route('laravel-crm.orders.show', $purchaseOrder->order) }}" class="link link-hover link-primary">{{ $purchaseOrder->order->order_id }}</a>
+                @endif
             @endscope
             @scope('cell_sent', $purchaseOrder)
                 @if($purchaseOrder->sent != 1)

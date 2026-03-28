@@ -1,6 +1,9 @@
 <div class="crm-content">
     {{-- HEADER --}}
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.create_purchase_order')) }}" class="mb-5" progress-indicator >
+        <x-slot:title>
+            {{ ucfirst(__('laravel-crm::lang.create_purchase_order')) }} @isset($order){{ __('laravel-crm::lang.from_order') }} <a href="{{ route('laravel-crm.orders.show', $order) }}" class="link link-hover link-primary">{{ $order->order_id }}</a> @endisset
+        </x-slot:title>
 
         {{-- ACTIONS  --}}
         <x-slot:actions>

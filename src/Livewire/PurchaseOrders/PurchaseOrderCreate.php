@@ -6,8 +6,10 @@ use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\Traits\HasPurchaseOrderCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
+use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
 
 class PurchaseOrderCreate extends Component
@@ -15,6 +17,24 @@ class PurchaseOrderCreate extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
     use HasPurchaseOrderCommon;
+
+    public $fromModelType;
+
+    public $fromModelId;
+
+    public $fromModel;
+
+    public $lead_id;
+
+    public $deal_id;
+
+    public ?Quote $quote = null;
+
+    public $quote_id;
+
+    public ?Order $order = null;
+
+    public $order_id;
 
     protected $listeners = [
         'model-products-updated' => 'updateProducts',
@@ -29,6 +49,24 @@ class PurchaseOrderCreate extends Component
         $this->user_owner_id = auth()->user()->id;
         $this->terms = app('laravel-crm.settings')->get('purchase_order_terms');
         $this->delivery_instructions = app('laravel-crm.settings')->get('purchase_order_delivery_instructions');
+
+        switch ($this->fromModelType) {
+            case 'order':
+                if ($order = Order::find($this->fromModelId)) {
+                    $this->lead_id = $order->lead_id;
+                    $this->deal_id = $order->deal_id;
+                    $this->quote_id = $order->quote_id;
+                    $this->fromModel = $order;
+                    $this->order = $order;
+                    $this->order_id = $order->id;
+                    $this->currency = $order->currency;
+                }
+                break;
+        }
+
+        if (request()->has('stage')) {
+            $this->pipeline_stage_id = request()->stage;
+        }
     }
 
     public function save()

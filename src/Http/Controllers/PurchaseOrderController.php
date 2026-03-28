@@ -66,28 +66,26 @@ class PurchaseOrderController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case 'person':
-                $person = Person::find($request->id);
+            case 'organization':
+                $fromModel = Organization::find($request->id);
 
                 break;
 
-            case 'organization':
-                $organization = Organization::find($request->id);
+            case 'person':
+                $fromModel = Person::find($request->id);
 
                 break;
 
             case 'order':
-                $order = Order::find($request->id);
+                $fromModel = Order::find($request->id);
 
                 break;
         }
 
         return view('laravel-crm::purchase-orders.create', [
-            'person' => $person ?? null,
-            'organization' => $organization ?? null,
-            'order' => $order ?? null,
-            'prefix' => $this->settingService->get('purchase_order_prefix'),
-            'number' => (PurchaseOrder::latest()->first()->number ?? 1000) + 1,
+            'fromModelType' => $request->model,
+            'fromModelId' => $request->id,
+            'stage' => $request->stage ?? null,
         ]);
     }
 

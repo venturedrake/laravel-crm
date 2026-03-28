@@ -7,7 +7,6 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use VentureDrake\LaravelCrm\Http\Requests\StoreInvoiceRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateInvoiceRequest;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
@@ -55,18 +54,7 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        Invoice::resetSearchValue($request);
-        $params = Invoice::filters($request);
-
-        if (Invoice::filter($params)->get()->count() < 30) {
-            $invoices = Invoice::filter($params)->latest()->get();
-        } else {
-            $invoices = Invoice::filter($params)->latest()->paginate(30);
-        }
-
-        return view('laravel-crm::invoices.index', [
-            'invoices' => $invoices,
-        ]);
+        return view('laravel-crm::invoices.index');
     }
 
     /**
@@ -77,61 +65,27 @@ class InvoiceController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case 'person':
-                $person = Person::find($request->id);
+            case 'organization':
+                $fromModel = Organization::find($request->id);
 
                 break;
 
-            case 'organization':
-                $organization = Organization::find($request->id);
+            case 'person':
+                $fromModel = Person::find($request->id);
 
                 break;
 
             case 'order':
-                $order = Order::find($request->id);
-                $person = $order->person;
-                $organization = $order->organization;
+                $fromModel = Order::find($request->id);
 
                 break;
         }
 
-        $invoiceTerms = $this->settingService->get('invoice_terms');
-
         return view('laravel-crm::invoices.create', [
-            'person' => $person ?? null,
-            'organization' => $organization ?? null,
-            'order' => $order ?? null,
-            'prefix' => $this->settingService->get('invoice_prefix'),
-            'number' => (Invoice::latest()->first()->number ?? 1000) + 1,
-            'invoiceTerms' => $invoiceTerms,
+            'fromModelType' => $request->model,
+            'fromModelId' => $request->id,
+            'stage' => $request->stage ?? null,
         ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function store(StoreInvoiceRequest $request)
-    {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
-
-        if ($request->organization_name && ! $request->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($request->organization_id) {
-            $organization = Organization::find($request->organization_id);
-        }
-
-        $this->invoiceService->create($request, $person ?? null, $organization ?? null);
-
-        flash(ucfirst(trans('laravel-crm::lang.invoice_created')))->success()->important();
-
-        return redirect(route('laravel-crm.invoices.index'));
     }
 
     /**

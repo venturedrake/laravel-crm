@@ -8,6 +8,8 @@ use VentureDrake\LaravelCrm\Models\TaxRate;
 
 class ModelProducts extends Component
 {
+    public ?string $creating;
+
     public $model = null;
 
     public ?string $from;
@@ -57,11 +59,38 @@ class ModelProducts extends Component
 
                 case 'Order':
                     foreach ($this->model->orderProducts as $orderProduct) {
+                        if ($this->from == 'Order') {
+                            $quantities = [];
+                            $quantityRemaining = $orderProduct->quantity;
+
+                            foreach ($this->model->invoices as $invoice) {
+                                if ($invoiceProduct = $invoice->invoiceLines()->where('order_product_id', $orderProduct->id)->first()) {
+                                    $quantityRemaining -= $invoiceProduct->quantity;
+                                }
+                            }
+
+                            for ($i = 0; $i <= $quantityRemaining; $i++) {
+                                $quantities[] = [
+                                    'id' => $i,
+                                    'name' => $i,
+                                ];
+                            }
+                        } elseif ($this->creating == 'PurchaseOrder' && $this->from == 'Order') {
+                            $quantityRemaining = $orderProduct->quantity;
+
+                            foreach ($this->model->purchaseOrders as $purchaseOrder) {
+                                if ($purchaseOrderProduct = $purchaseOrder->purchaseOrderLines()->where('purchase_order_product_id', $orderProduct->id)->first()) {
+                                    $quantityRemaining -= $purchaseOrderProduct->quantity;
+                                }
+                            }
+                        }
+
                         $this->products[] = [
                             'order_product_id' => $orderProduct->id,
                             'id' => $orderProduct->product_id,
                             'name' => $orderProduct->product->name,
-                            'quantity' => $orderProduct->quantity,
+                            'quantities' => $quantities ?? [],
+                            'quantity' => $quantityRemaining ?? $orderProduct->quantity,
                             'unit_price' => $orderProduct->price / 100,
                             'tax_rate' => $orderProduct->tax_rate,
                             'tax_amount' => $orderProduct->tax_amount / 100,

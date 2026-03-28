@@ -12,7 +12,7 @@
                     <tr class="hover:bg-base-300 cursor-grab">
                         <td class="px-3 relative" colspan="2">
                             <div class="space-y-3">
-                                @if($from == 'Quote')
+                                @if(in_array($from, ['Quote', 'Order']))
                                     <x-mary-input wire:model="products.{{ $index }}.name" readonly />
                                 @else
                                     <x-mary-select wire:model.live="products.{{ $index }}.id"
@@ -32,18 +32,24 @@
                                     </div>
                                 @endif
                                 <div class="grid lg:grid-cols-4 gap-2">
-                                    @if($from == 'Quote')
+                                    @if(in_array($from, ['Quote', 'Order']) && $creating != 'PurchaseOrder')
                                         <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
                                     @else
                                         <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
+                                    @endif
+
+                                    @if(in_array($from, ['Order']) && $creating != 'PurchaseOrder')
+                                        <x-mary-select wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" :options="$products[$index]['quantities']" />
+                                    @else
+                                        <x-mary-input wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" type="number" />
                                     @endif    
-                                    
-                                    <x-mary-input wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" type="number" />
+                                        
+                                        
                                     <x-mary-input wire:model.blur="products.{{ $index }}.tax_amount" label="{{ ucfirst(__('laravel-crm::lang.tax')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
                                     <x-mary-input wire:model.blur="products.{{ $index }}.amount" label="{{ ucfirst(__('laravel-crm::lang.amount')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
                                 </div>
 
-                                @if($from == 'Quote')
+                                @if(in_array($from, ['Quote', 'Order']))
                                     <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" readonly />
                                 @else
                                     <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />

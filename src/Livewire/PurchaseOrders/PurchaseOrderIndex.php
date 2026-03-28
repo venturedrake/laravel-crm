@@ -67,7 +67,7 @@ class PurchaseOrderIndex extends Component
 
         if (auth()->user()->can('view crm orders')) {
             $headers = array_merge($headers, [
-                ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order'))],
+                ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order')), 'disableLink' => true],
             ]);
         }
 

@@ -31,6 +31,11 @@
                     <x-mary-badge :value="$invoice->pipelineStage->name" class="badge badge-neutral text-white" />
                 @endif
             @endscope
+            @scope('cell_order', $invoice)
+                @if($invoice->order)
+                    <a href="{{ route('laravel-crm.orders.show', $invoice->order) }}" class="link link-hover link-primary">{{ $invoice->order->order_id }}</a>
+                @endif
+            @endscope
             @scope('cell_overdue_by', $invoice)
                 @if(! $invoice->fully_paid_at && abs($invoice->due_date->diffinDays()) > 0 && $invoice->due_date < \Carbon\Carbon::now()->timezone($this->timezone ))
                     {{ $invoice->due_date->diffForHumans() }}
