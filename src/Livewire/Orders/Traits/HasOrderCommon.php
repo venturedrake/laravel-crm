@@ -96,6 +96,12 @@ trait HasOrderCommon
 
     public $total = 0;
 
+    public $fromModelType = null;
+
+    public $fromModelId = null;
+
+    public $fromModel = null;
+
     public $selectedAddressTab = 'billing';
 
     protected function rules()

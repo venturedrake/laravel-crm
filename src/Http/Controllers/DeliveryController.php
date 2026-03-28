@@ -13,7 +13,6 @@ use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
-use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\DeliveryService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -78,41 +77,26 @@ class DeliveryController extends Controller
     public function create(Request $request)
     {
         switch ($request->model) {
-            case 'person':
-                $person = Person::find($request->id);
-
-                break;
-
-            case 'organization':
-                $organization = Organization::find($request->id);
-
-                break;
-
             case 'order':
-                $order = Order::find($request->id);
-                $client = $order->client;
-                $person = $order->person;
-                $organization = $order->organization;
+                $fromModel = Order::find($request->id);
 
-                $addressIds = [];
+                /*  $addressIds = [];
 
-                if ($address = $order->getShippingAddress()) {
-                    $addressIds[] = $address->id;
-                } elseif ($address = $order->organization->getShippingAddress()) {
-                    $addressIds[] = $address->id;
-                }
+                  if ($address = $order->getShippingAddress()) {
+                      $addressIds[] = $address->id;
+                  } elseif ($address = $order->organization->getShippingAddress()) {
+                      $addressIds[] = $address->id;
+                  }
 
-                $addresses = Address::whereIn('id', $addressIds)->get();
+                  $addresses = Address::whereIn('id', $addressIds)->get();*/
 
                 break;
         }
 
         return view('laravel-crm::deliveries.create', [
-            'client' => $client ?? null,
-            'person' => $person ?? null,
-            'organization' => $organization ?? null,
-            'order' => $order ?? null,
-            'addresses' => $addresses ?? null,
+            'fromModelType' => $request->model,
+            'fromModelId' => $request->id,
+            'stage' => $request->stage ?? null,
         ]);
     }
 

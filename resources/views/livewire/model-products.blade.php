@@ -31,73 +31,80 @@
                                         <x-mary-button wire:click="remove({{ $index }})" class="btn-xs btn-error btn-square text-white" type="button" icon="fas.x" />
                                     </div>
                                 @endif
-                                <div class="grid lg:grid-cols-4 gap-2">
-                                    @if(in_array($from, ['Quote', 'Order']) && $creating != 'PurchaseOrder')
-                                        <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
-                                    @else
-                                        <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
+                                <div class="grid {{ ($creating != 'Delivery') ? 'lg:grid-cols-4' : null }} gap-2">
+                                    @if($creating != 'Delivery')
+                                        @if(in_array($from, ['Quote', 'Order']) && $creating != 'PurchaseOrder')
+                                            <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
+                                        @else
+                                            <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
+                                        @endif
                                     @endif
 
                                     @if(in_array($from, ['Order']) && $creating != 'PurchaseOrder')
                                         <x-mary-select wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" :options="$products[$index]['quantities']" />
                                     @else
                                         <x-mary-input wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" type="number" />
+                                    @endif
+
+                                    @if($creating != 'Delivery')    
+                                        <x-mary-input wire:model.blur="products.{{ $index }}.tax_amount" label="{{ ucfirst(__('laravel-crm::lang.tax')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
+                                        <x-mary-input wire:model.blur="products.{{ $index }}.amount" label="{{ ucfirst(__('laravel-crm::lang.amount')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
                                     @endif    
-                                        
-                                        
-                                    <x-mary-input wire:model.blur="products.{{ $index }}.tax_amount" label="{{ ucfirst(__('laravel-crm::lang.tax')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
-                                    <x-mary-input wire:model.blur="products.{{ $index }}.amount" label="{{ ucfirst(__('laravel-crm::lang.amount')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
                                 </div>
 
-                                @if(in_array($from, ['Quote', 'Order']))
-                                    <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" readonly />
-                                @else
-                                    <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />
-                                @endif
+                                @if($creating != 'Delivery')
+                                    @if(in_array($from, ['Quote', 'Order']))
+                                        <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" readonly />
+                                    @else
+                                        <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />
+                                    @endif
+                                @endif    
                             </div>
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
-                <tfoot id="quoteProductsTotals">
-                @if(! $from)
+                @if($creating != 'Delivery')
+                    <tfoot id="quoteProductsTotals">
+                    @if(! $from)
+                        <tr>
+                            <td class="text-right px-0 py-3 border-y border-base-content/10" colspan="2">
+                                <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
+                            </td>
+                        </tr>
+                    @endif
                     <tr>
-                        <td class="text-right px-0 py-3 border-y border-base-content/10" colspan="2">
-                            <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
+                        <td class="text-right pb-1 pt-3 pr-5">{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</td>
+                        <td class="text-right pb-1 pt-3 px-0">
+                            <x-mary-input wire:model="sub_total" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
                         </td>
                     </tr>
-                @endif
-                <tr>
-                    <td class="text-right pb-1 pt-3 pr-5">{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</td>
-                    <td class="text-right pb-1 pt-3 px-0">
-                        <x-mary-input wire:model="sub_total" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.discount')) }}</td>
-                    <td class="text-right py-1 px-0">
-                        <x-mary-input wire:model="discount" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.tax')) }}</td>
-                    <td class="text-right py-1 px-0">
-                        <x-mary-input wire:model="tax" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</td>
-                    <td class="text-right py-1 px-0">
-                        <x-mary-input wire:model="adjustment" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.total')) }}</td>
-                    <td class="text-right py-1 px-0">
-                        <x-mary-input wire:model="total" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
-                    </td>
-                </tr>
-                </tfoot>
+                    <tr>
+                        <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.discount')) }}</td>
+                        <td class="text-right py-1 px-0">
+                            <x-mary-input wire:model="discount" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.tax')) }}</td>
+                        <td class="text-right py-1 px-0">
+                            <x-mary-input wire:model="tax" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</td>
+                        <td class="text-right py-1 px-0">
+                            <x-mary-input wire:model="adjustment" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right py-1 pr-5">{{ ucfirst(__('laravel-crm::lang.total')) }}</td>
+                        <td class="text-right py-1 px-0">
+                            <x-mary-input wire:model="total" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" readonly />
+                        </td>
+                    </tr>
+                    </tfoot>
+                @endif    
             </table>
         </div>
 

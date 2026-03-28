@@ -18,12 +18,6 @@ class OrderCreate extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
-    public $fromModelType;
-
-    public $fromModelId;
-
-    public $fromModel;
-
     public $lead_id;
 
     public $deal_id;

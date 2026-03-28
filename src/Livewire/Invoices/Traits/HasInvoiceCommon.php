@@ -57,6 +57,12 @@ trait HasInvoiceCommon
 
     public $total = 0;
 
+    public $fromModelType = null;
+
+    public $fromModelId = null;
+
+    public $fromModel = null;
+
     protected function rules()
     {
         return [

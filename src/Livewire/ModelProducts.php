@@ -8,7 +8,7 @@ use VentureDrake\LaravelCrm\Models\TaxRate;
 
 class ModelProducts extends Component
 {
-    public ?string $creating;
+    public ?string $creating = null;
 
     public $model = null;
 
@@ -59,7 +59,7 @@ class ModelProducts extends Component
 
                 case 'Order':
                     foreach ($this->model->orderProducts as $orderProduct) {
-                        if ($this->from == 'Order') {
+                        if ($this->creating == 'Invoice' && $this->from == 'Order') {
                             $quantities = [];
                             $quantityRemaining = $orderProduct->quantity;
 
@@ -75,14 +75,30 @@ class ModelProducts extends Component
                                     'name' => $i,
                                 ];
                             }
+                        } elseif ($this->creating == 'Delivery' && $this->from == 'Order') {
+                            $quantities = [];
+                            $quantityRemaining = $orderProduct->quantity;
+
+                            /*foreach ($this->model->invoices as $invoice) {
+                                if ($invoiceProduct = $invoice->invoiceLines()->where('order_product_id', $orderProduct->id)->first()) {
+                                    $quantityRemaining -= $invoiceProduct->quantity;
+                                }
+                            }*/
+
+                            for ($i = 0; $i <= $quantityRemaining; $i++) {
+                                $quantities[] = [
+                                    'id' => $i,
+                                    'name' => $i,
+                                ];
+                            }
                         } elseif ($this->creating == 'PurchaseOrder' && $this->from == 'Order') {
                             $quantityRemaining = $orderProduct->quantity;
 
-                            foreach ($this->model->purchaseOrders as $purchaseOrder) {
-                                if ($purchaseOrderProduct = $purchaseOrder->purchaseOrderLines()->where('purchase_order_product_id', $orderProduct->id)->first()) {
-                                    $quantityRemaining -= $purchaseOrderProduct->quantity;
-                                }
-                            }
+                            /* foreach ($this->model->purchaseOrders as $purchaseOrder) {
+                                 if ($purchaseOrderProduct = $purchaseOrder->purchaseOrderLines()->where('purchase_order_product_id', $orderProduct->id)->first()) {
+                                     $quantityRemaining -= $purchaseOrderProduct->quantity;
+                                 }
+                             }*/
                         }
 
                         $this->products[] = [

@@ -91,6 +91,7 @@ use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealEdit;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealIndex;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealShow;
+use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryCreate;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryIndex;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceEdit;
@@ -748,6 +749,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-invoice-send', InvoiceSend::class);
         Livewire::component('crm-invoice-pay', InvoicePay::class);
         Livewire::component('crm-delivery-index', DeliveryIndex::class);
+        Livewire::component('crm-delivery-create', DeliveryCreate::class);
         Livewire::component('crm-purchase-order-index', PurchaseOrderIndex::class);
         Livewire::component('crm-purchase-order-show', PurchaseOrderShow::class);
         Livewire::component('crm-purchase-order-create', PurchaseOrderCreate::class);
