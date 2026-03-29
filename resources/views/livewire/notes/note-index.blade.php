@@ -12,14 +12,24 @@
     </x-mary-card>
     @if(count($notes) > 0)
         @foreach($notes as $note)
-            <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.notes')) }}">
-                <x-slot:title>
-                    {{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}
-                </x-slot:title>
-                <div>
-                    {!! $note->content !!}
+            <x-mary-card>
+                <div class="grid gap-3">
+                    <div class="flex justify-between">
+                        <div class="font-bold">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</div>
+                        <x-mary-dropdown right>
+                            <x-slot:trigger>
+                                <x-mary-icon name="o-ellipsis-horizontal" class="w-9 h-9"/> 
+                            </x-slot:trigger>
+                            <x-mary-menu-item link="#" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
+                            <x-mary-menu-item link="#" title="{{ ucfirst(__('laravel-crm::lang.pin_this_note')) }}" />
+                            <x-mary-menu-item link="#" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
+                        </x-mary-dropdown>
+                    </div>
+                    <div>{!! $note->content !!}</div>
                     @if($note->noted_at)
-                        <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->noted_at->format('h:i A') }} on {{ $note->noted_at->toFormattedDateString() }}" class="badge badge-neutral text-white"  />
+                        <div>
+                            <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->noted_at->format('h:i A') }} on {{ $note->noted_at->toFormattedDateString() }}" class="badge-soft badge-sm" />
+                        </div>
                     @endif
                 </div>
             </x-mary-card>

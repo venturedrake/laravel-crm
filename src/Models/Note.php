@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
@@ -28,13 +27,6 @@ class Note extends Model
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'notes';
-    }
-
-    public function setNotedAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['noted_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
-        }
     }
 
     /**
