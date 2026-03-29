@@ -111,6 +111,7 @@ use VentureDrake\LaravelCrm\Livewire\ModelAddresses;
 use VentureDrake\LaravelCrm\Livewire\ModelEmails;
 use VentureDrake\LaravelCrm\Livewire\ModelPhones;
 use VentureDrake\LaravelCrm\Livewire\ModelProducts;
+use VentureDrake\LaravelCrm\Livewire\Notes\NoteIndex;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderEdit;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderIndex;
@@ -773,6 +774,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-product-create', ProductCreate::class);
         Livewire::component('crm-product-edit', ProductEdit::class);
         Livewire::component('crm-product-show', ProductShow::class);
+
+        Livewire::component('crm-notes-index', NoteIndex::class);
 
         Livewire::component('crm-model-phones', ModelPhones::class);
         Livewire::component('crm-model-emails', ModelEmails::class);

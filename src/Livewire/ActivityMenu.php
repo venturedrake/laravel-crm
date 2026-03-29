@@ -8,32 +8,32 @@ class ActivityMenu extends Component
 {
     public function addNote()
     {
-        $this->dispatch('addNoteActivity');
+        $this->dispatch('select-activity-tab', 'notes');
     }
 
     public function addTask()
     {
-        $this->dispatch('addTaskActivity');
+        $this->dispatch('select-activity-tab', 'tasks');
     }
 
     public function addCall()
     {
-        $this->dispatch('addCallActivity');
+        $this->dispatch('select-activity-tab', 'calls');
     }
 
     public function addMeeting()
     {
-        $this->dispatch('addMeetingActivity');
+        $this->dispatch('select-activity-tab', 'meetings');
     }
 
     public function addLunch()
     {
-        $this->dispatch('addLunchActivity');
+        $this->dispatch('select-activity-tab', 'lunches');
     }
 
     public function addFile()
     {
-        $this->dispatch('addFileActivity');
+        $this->dispatch('select-activity-tab', 'files');
     }
 
     public function render()
