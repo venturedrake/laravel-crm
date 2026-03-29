@@ -106,7 +106,7 @@ class OrderService
                     'state' => $addressRequest['state'],
                     'code' => $addressRequest['code'],
                     'country' => $addressRequest['country'],
-                    'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    'primary' => true,
                 ]);
             }
         }

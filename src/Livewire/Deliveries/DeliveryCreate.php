@@ -4,15 +4,12 @@ namespace VentureDrake\LaravelCrm\Livewire\Deliveries;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\Traits\HasDeliveryCommon;
-use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
-use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Order;
 
 class DeliveryCreate extends Component
 {
     use HasDeliveryCommon;
-    use HasOrganizationSuggest;
-    use HasPersonSuggest;
 
     public ?Order $order = null;
 
@@ -28,6 +25,9 @@ class DeliveryCreate extends Component
 
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;
         $this->user_owner_id = auth()->user()->id;
+
+        $this->addresses['shipping']['address_type_id'] = AddressType::where('name', 'Shipping')->first()->id ?? null;
+        $this->addresses['shipping']['country'] = app('laravel-crm.settings')->get('country', 'United States');
 
         switch ($this->fromModelType) {
             case 'order':
@@ -46,7 +46,7 @@ class DeliveryCreate extends Component
 
     public function save()
     {
-        $this->validate();
+        // $this->validate();
 
         // Create a request object to pass to services
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);

@@ -1,5 +1,5 @@
 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }}" separator>
-    @if(! $from)
+    @if(! $from && class_basename($model) != 'Delivery')
         <x-slot:menu>
             <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
         </x-slot:menu>
@@ -12,7 +12,7 @@
                     <tr class="hover:bg-base-300 cursor-grab">
                         <td class="px-3 relative" colspan="2">
                             <div class="space-y-3">
-                                @if(in_array($from, ['Quote', 'Order']))
+                                @if(in_array($from, ['Quote', 'Order']) || class_basename($model) == 'Delivery')
                                     <x-mary-input wire:model="products.{{ $index }}.name" readonly />
                                 @else
                                     <x-mary-select wire:model.live="products.{{ $index }}.id"
@@ -66,7 +66,7 @@
                 </tbody>
                 @if($creating != 'Delivery')
                     <tfoot id="quoteProductsTotals">
-                    @if(! $from)
+                    @if(! $from && class_basename($model) != 'Delivery')
                         <tr>
                             <td class="text-right px-0 py-3 border-y border-base-content/10" colspan="2">
                                 <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />

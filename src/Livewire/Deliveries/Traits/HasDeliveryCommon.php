@@ -6,7 +6,6 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\DeliveryService;
-use VentureDrake\LaravelCrm\Services\InvoiceService;
 
 trait HasDeliveryCommon
 {
@@ -51,9 +50,9 @@ trait HasDeliveryCommon
 
     public $fromModel = null;
 
-    public function boot(InvoiceService $invoiceService): void
+    public function boot(DeliveryService $deliveryService): void
     {
-        $this->invoiceService = $invoiceService;
+        $this->deliveryService = $deliveryService;
     }
 
     public function mountCommon()

@@ -79,11 +79,11 @@ class ModelProducts extends Component
                             $quantities = [];
                             $quantityRemaining = $orderProduct->quantity;
 
-                            /*foreach ($this->model->invoices as $invoice) {
-                                if ($invoiceProduct = $invoice->invoiceLines()->where('order_product_id', $orderProduct->id)->first()) {
-                                    $quantityRemaining -= $invoiceProduct->quantity;
+                            foreach ($this->model->deliveries as $delivery) {
+                                if ($deliveryProduct = $delivery->deliveryProducts()->where('order_product_id', $orderProduct->id)->first()) {
+                                    $quantityRemaining -= $deliveryProduct->quantity;
                                 }
-                            }*/
+                            }
 
                             for ($i = 0; $i <= $quantityRemaining; $i++) {
                                 $quantities[] = [
@@ -94,11 +94,11 @@ class ModelProducts extends Component
                         } elseif ($this->creating == 'PurchaseOrder' && $this->from == 'Order') {
                             $quantityRemaining = $orderProduct->quantity;
 
-                            /* foreach ($this->model->purchaseOrders as $purchaseOrder) {
-                                 if ($purchaseOrderProduct = $purchaseOrder->purchaseOrderLines()->where('purchase_order_product_id', $orderProduct->id)->first()) {
+                            /*foreach ($this->model->purchaseOrders as $purchaseOrder) {
+                                 if ($purchaseOrderProduct = $purchaseOrder->purchaseOrderLines()->where('order_product_id', $orderProduct->id)->first()) {
                                      $quantityRemaining -= $purchaseOrderProduct->quantity;
                                  }
-                             }*/
+                            }*/
                         }
 
                         $this->products[] = [
@@ -130,6 +130,18 @@ class ModelProducts extends Component
                             'comments' => $invoiceLine->comments,
                         ];
                     }
+                    break;
+
+                case 'Delivery':
+                    foreach ($this->model->deliveryProducts as $deliveryProduct) {
+                        $this->products[] = [
+                            'delivery_product_id' => $deliveryProduct->id,
+                            'id' => $deliveryProduct->orderProduct->product_id,
+                            'name' => $deliveryProduct->orderProduct->product->name,
+                            'quantity' => $deliveryProduct->quantity,
+                        ];
+                    }
+
                     break;
 
                 case 'PurchaseOrder':

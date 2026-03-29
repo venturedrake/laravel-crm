@@ -46,7 +46,7 @@ class DeliveryService
             foreach ($request->addresses as $addressRequest) {
                 $address = $delivery->addresses()->create([
                     'external_id' => Uuid::uuid4()->toString(),
-                    'address_type_id' => 6,
+                    'address_type_id' => $addressRequest['address_type_id'] ?? null,
                     'address' => $addressRequest['address'] ?? null,
                     'name' => $addressRequest['name'] ?? null,
                     'contact' => $addressRequest['contact'] ?? null,
@@ -58,7 +58,7 @@ class DeliveryService
                     'state' => $addressRequest['state'],
                     'code' => $addressRequest['code'],
                     'country' => $addressRequest['country'],
-                    'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                    'primary' => true,
                 ]);
             }
         }
@@ -77,7 +77,7 @@ class DeliveryService
             foreach ($request->addresses as $addressRequest) {
                 if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
                     $address->update([
-                        'address_type_id' => 6,
+                        'address_type_id' => $addressRequest['address_type_id'] ?? null,
                         'address' => $addressRequest['address'] ?? null,
                         'name' => $addressRequest['name'] ?? null,
                         'contact' => $addressRequest['contact'] ?? null,
@@ -89,7 +89,7 @@ class DeliveryService
                         'state' => $addressRequest['state'],
                         'code' => $addressRequest['code'],
                         'country' => $addressRequest['country'],
-                        'primary' => ((isset($addressRequest['primary']) && $addressRequest['primary'] == 'on') ? 1 : 0),
+                        'primary' => true,
                     ]);
                 }
             }

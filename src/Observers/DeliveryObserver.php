@@ -37,7 +37,7 @@ class DeliveryObserver
             $delivery->number = 1000;
         }
 
-        $delivery->prefix = $this->settingService->get('delivery_prefix')->value;
+        $delivery->prefix = $this->settingService->get('delivery_prefix');
         $delivery->delivery_id = $delivery->prefix.$delivery->number;
     }
 

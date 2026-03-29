@@ -5,22 +5,6 @@
         <x-slot:middle class="justify-end!">
             <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.search_deliveries')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
         </x-slot:middle>
-
-        {{-- ACTIONS  --}}
-        <x-slot:actions>
-            {{--<x-mary-button label="Filters"
-                           icon="o-funnel"
-                           :badge="$filterCount ?? 0"
-                           badge-classes="font-mono badge-primary badge-soft"
-                           @click="$wire.showFilters = true"
-                           responsive />--}}
-
-           {{-- <x-crm-index-toggle :layout="$layout" model="deliveries"/>--}}
-
-{{--
-            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_delivery')) }}" link="{{ url(route('laravel-crm.deliveries.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
---}}
-        </x-slot:actions>
     </x-mary-header>
 
     {{-- TABLE --}}
@@ -31,16 +15,35 @@
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
                 @endforeach 
             @endscope
+            @scope('cell_order', $delivery)
+                @if($delivery->order)
+                    <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}" class="link link-hover link-primary">{{ $delivery->order->order_id }}</a>
+                @endif
+            @endscope
+            @scope('cell_address', $delivery)
+                @if($address = $delivery->getShippingAddress())
+                    {{ \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($address) }}
+                @endif
+            @endscope
             @scope('cell_pipeline_stage', $delivery)
                 @if($delivery->pipelineStage)
                     <x-mary-badge :value="$delivery->pipelineStage->name" class="badge badge-neutral text-white" />
                 @endif
             @endscope
             @scope('actions', $delivery)
-            <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.deliveries.show', $delivery)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.deliveries.edit', $delivery)) }}" class="btn-sm btn-square btn-outline" />
-            <x-mary-button onclick="modalDeleteLead{{ $delivery->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-            <x-crm-delete-confirm model="delivery" id="{{ $delivery->id }}" />
+            <div class="flex gap-1 justify-end">
+                @can('view crm deliveries')
+                    <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.deliveries.download', $delivery)) }}" class="btn-sm btn-square btn-outline" />
+                    <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.deliveries.show', $delivery)) }}" class="btn-sm btn-square btn-outline" />
+                @endcan
+                @can('edit crm deliveries')
+                    <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.deliveries.edit', $delivery)) }}" class="btn-sm btn-square btn-outline" />
+                @endcan
+                @can('delete crm deliveries')
+                    <x-mary-button onclick="modalDeleteDelivery{{ $delivery->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                    <x-crm-delete-confirm model="delivery" id="{{ $delivery->id }}" />
+                @endcan
+            </div>
             @endscope
         </x-mary-table>
     </x-mary-card>

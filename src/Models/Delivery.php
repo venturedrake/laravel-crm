@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
@@ -20,6 +19,11 @@ class Delivery extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'delivery_expected' => 'datetime',
+        'delivered_on' => 'datetime',
+    ];
 
     protected $searchable = [
         'reference',
@@ -49,34 +53,6 @@ class Delivery extends Model
     {
         if ($this->order) {
             return money($this->order->total, $this->order->currency).' - '.($this->order->client->name ?? $this->order->organization->name ?? $this->order->organization->person->name ?? null);
-        }
-    }
-
-    public function setDeliveryExpectedAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['delivery_expected'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
-    }
-
-    public function getDeliveryExpectedAttribute($value)
-    {
-        if ($value) {
-            return Carbon::parse($value)->format($this->dateFormat());
-        }
-    }
-
-    public function setDeliveredOnAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['delivered_on'] = Carbon::createFromFormat($this->dateFormat(), $value);
-        }
-    }
-
-    public function getDeliveredOnAttribute($value)
-    {
-        if ($value) {
-            return Carbon::parse($value)->format($this->dateFormat());
         }
     }
 
