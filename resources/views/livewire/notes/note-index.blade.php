@@ -18,7 +18,7 @@
                         <div class="font-bold">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</div>
                         <x-mary-dropdown right>
                             <x-slot:trigger>
-                                <x-mary-icon name="o-ellipsis-horizontal" class="w-9 h-9"/> 
+                                <x-mary-icon name="o-ellipsis-horizontal" /> 
                             </x-slot:trigger>
                             <x-mary-menu-item link="#" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
                             <x-mary-menu-item link="#" title="{{ ucfirst(__('laravel-crm::lang.pin_this_note')) }}" />
