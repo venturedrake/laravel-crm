@@ -65,15 +65,33 @@ class NoteIndex extends Component
             $this->notes = $this->model->notes()->where('pinned', 1)->latest()->get();
         } else {
             $noteIds = [];
+            $relatedIds = [];
 
             foreach ($this->model->notes()->latest()->get() as $note) {
                 $noteIds[] = $note->id;
             }
 
-            if (app('laravel-crm.settings')->get('show_related_activity') == 1 && method_exists($this->model, 'contacts')) {
-                foreach ($this->model->contacts as $contact) {
-                    foreach ($contact->entityable->notes()->latest()->get() as $note) {
+            if (app('laravel-crm.settings')->get('show_related_activity') == 1) {
+                if (method_exists($this->model, 'contacts')) {
+                    foreach ($this->model->contacts as $contact) {
+                        foreach ($contact->entityable->notes()->latest()->get() as $note) {
+                            $noteIds[] = $note->id;
+                            $relatedIds[] = $note->id;
+                        }
+                    }
+                }
+
+                if (method_exists($this->model, 'organization') && $this->model->organization) {
+                    foreach ($this->model->organization->notes()->latest()->get() as $note) {
                         $noteIds[] = $note->id;
+                        $relatedIds[] = $note->id;
+                    }
+                }
+
+                if (method_exists($this->model, 'person') && $this->model->person) {
+                    foreach ($this->model->person->notes()->latest()->get() as $note) {
+                        $noteIds[] = $note->id;
+                        $relatedIds[] = $note->id;
                     }
                 }
             }
@@ -91,6 +109,7 @@ class NoteIndex extends Component
                 'content' => $note->content,
                 'pinned' => $note->pinned,
                 'noted_at' => $note->noted_at->toDateTimeString(),
+                'related' => (in_array($note->id, $relatedIds) ? true : false),
             ]);
         }
     }

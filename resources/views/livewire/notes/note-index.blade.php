@@ -17,7 +17,24 @@
             <x-mary-card>
                 <div class="grid gap-3">
                     <div class="flex justify-between">
-                        <div class="font-bold">{{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}</div>
+                        <div class="font-bold text-lg">
+                            {{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}<br />
+                            @if($data[$note->id]['related'])
+                                <div class="flex flex-row gap-2 mt-1">
+                                    @if(class_basename($note->noteable->getMorphClass()) == 'Person')
+                                        <x-mary-icon name="fas.user-circle" class="text-sm" />
+                                            <span class="text-sm">
+                                            <a href="{{ route('laravel-crm.people.show',$note->noteable) }}" class="link link-hover link-primary">{{ $note->noteable->name }}</a>
+                                        </span>
+                                    @elseif(class_basename($note->noteable->getMorphClass()) == 'Organization')
+                                        <x-mary-icon name="fas.building" class="text-sm" />
+                                        <span class="text-sm">
+                                            <a href="{{ route('laravel-crm.organizations.show',$note->noteable) }}" class="link link-hover link-primary">{{ $note->noteable->name }}</a>
+                                        </span>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
                         <x-mary-dropdown right>
                             <x-slot:trigger>
                                 <x-mary-icon name="o-ellipsis-horizontal" /> 
@@ -31,6 +48,7 @@
                             <x-mary-menu-item onclick="modalDeleteNote{{ $note->id }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
                         </x-mary-dropdown>
                     </div>
+                    
                     @if(! empty($data[$note->id]['editing']))
                         <x-mary-form wire:submit="update({{ $note->id }})">
                             <div class="grid gap-3" wire:key="note-update-{{ $note->id }}">
@@ -42,10 +60,11 @@
                                 <x-mary-button wire:click="update({{ $note->id }})" label="{{ ucfirst(__('laravel-crm::lang.save_changes')) }}" class="btn-primary text-white" type="button" spinner="save" />
                             </x-slot:actions>
                         </x-mary-form>
-                    @else    
+                    @else
                         <div>
                             {!! $note->content !!}
                         </div>
+                        
                         @if($note->noted_at)
                             <div>
                                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.noted_at')) }} {{ $note->noted_at->format('h:i A') }} on {{ $note->noted_at->toFormattedDateString() }}" class="badge-soft badge-sm" />
