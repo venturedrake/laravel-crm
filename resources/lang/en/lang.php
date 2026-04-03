@@ -573,4 +573,7 @@ return [
     'sms' => 'SMS',
     'social' => 'social',
     'pin_this_note' => 'pin this note',
+    'unpin_this_note' => 'unpin this note',
+    'note_pinned' => 'note pinned',
+    'note_unpinned' => 'note unpinned',
 ];

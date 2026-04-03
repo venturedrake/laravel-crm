@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Notes;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use Ramsey\Uuid\Uuid;
@@ -22,6 +23,10 @@ class NoteIndex extends Component
     public $noted_at;
 
     public $showForm = false;
+
+    public array $data = [];
+
+    public array $revert = [];
 
     public function save()
     {
@@ -53,6 +58,7 @@ class NoteIndex extends Component
         $this->resetFields();
     }
 
+    #[On('note-updated-pin')]
     public function getNotes()
     {
         if ($this->pinned) {
@@ -75,6 +81,87 @@ class NoteIndex extends Component
             if (count($noteIds) > 0) {
                 $this->notes = Note::whereIn('id', $noteIds)->latest()->get();
             }
+        }
+
+        foreach ($this->notes as $note) {
+            $this->data[$note->id] = array_merge([
+                'editing' => false,
+            ], $this->data[$note->id] ?? [], [
+                'id' => $note->id,
+                'content' => $note->content,
+                'pinned' => $note->pinned,
+                'noted_at' => $note->noted_at->toDateTimeString(),
+            ]);
+        }
+    }
+
+    public function edit($id)
+    {
+        $this->revert[$id] = $this->data[$id];
+        $this->data[$id]['editing'] = true;
+
+    }
+
+    public function cancel($id)
+    {
+        $this->data[$id]['editing'] = false;
+        $this->data[$id] = $this->revert[$id];
+    }
+
+    public function update($id)
+    {
+        $this->validate([
+            'data.'.$id.'.content' => 'required',
+        ]);
+
+        if ($note = $this->model->notes()->find($id)) {
+            $note->update([
+                'content' => $this->data[$id]['content'],
+                'noted_at' => $this->data[$id]['noted_at'],
+            ]);
+        }
+
+        $this->dispatch('note-updated');
+
+        $this->success(
+            ucfirst(trans('laravel-crm::lang.note_updated'))
+        );
+
+        $this->data[$id]['editing'] = false;
+    }
+
+    public function pin($id)
+    {
+        if ($note = $this->model->notes()->find($id)) {
+            $note->update(['pinned' => 1]);
+        }
+
+        $this->success(
+            ucfirst(trans('laravel-crm::lang.note_pinned'))
+        );
+
+        $this->dispatch('note-updated-pin');
+    }
+
+    public function unpin($id)
+    {
+        if ($note = $this->model->notes()->find($id)) {
+            $note->update(['pinned' => 0]);
+        }
+
+        $this->success(
+            ucfirst(trans('laravel-crm::lang.note_unpinned'))
+        );
+
+        $this->dispatch('note-updated-pin');
+    }
+
+    public function delete($id)
+    {
+        if ($note = $this->model->notes()->find($id)) {
+            $note->delete();
+
+            $this->success(ucfirst(trans('laravel-crm::lang.note_deleted')));
         }
     }
 

@@ -1,4 +1,5 @@
 <div>
+    <livewire:crm-notes-index :$model :pinned="true" />
     <x-mary-tabs wire:model="activeTab">
         <x-mary-tab name="activity" label="{{ ucfirst(__('laravel-crm::lang.activity')) }}">
             <div>Activity</div>
