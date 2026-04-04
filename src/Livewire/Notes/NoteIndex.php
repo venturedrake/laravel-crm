@@ -108,7 +108,7 @@ class NoteIndex extends Component
                 'id' => $note->id,
                 'content' => $note->content,
                 'pinned' => $note->pinned,
-                'noted_at' => $note->noted_at->toDateTimeString(),
+                'noted_at' => ($note->noted_at) ? $note->noted_at->toDateTimeString() : null,
                 'related' => (in_array($note->id, $relatedIds) ? true : false),
             ]);
         }
