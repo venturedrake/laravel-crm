@@ -85,25 +85,24 @@
                             </x-slot:actions>
                         </x-mary-form>
                     @else
-                        @if($call->description)
-                            <div>{!! $call->description !!}</div>
-                        @endif
-                        @if($call->location)
-                            <div>
-                                <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.location')) }}: {{ $call->location }}" class="badge-soft badge-sm" />
+                        <hr />
+                        <h2 class="font-bold">{{ ucfirst(__('laravel-crm::lang.guests')) }}</h2>
+                        @if(count($call->contacts) > 0)
+                            <div class="flex flex-row gap-2 flex-wrap mb-1">
+                                @foreach($call->contacts as $contact)
+                                    <x-mary-icon name="fas.user-circle" class="text-sm" />
+                                    <span class="text-sm">
+                                        <a href="{{ route('laravel-crm.people.show', $contact->entityable) }}" class="link link-hover link-primary">{{ $contact->entityable->name }}</a>
+                                    </span>
+                                @endforeach
                             </div>
                         @endif
-                        <div class="flex flex-row gap-2 mt-1">
-                            @if($call->ownerUser)
-                                <small>{{ ucfirst(__('laravel-crm::lang.owner')) }}: <a href="{{ route('laravel-crm.users.show', $call->ownerUser) }}" class="link link-hover link-primary">{{ $call->ownerUser->name }}</a></small>
-                            @endif
-                            @if($call->ownerUser && $call->assignedToUser)
-                                <small>|</small>
-                            @endif
-                            @if($call->assignedToUser)
-                                <small>{{ ucfirst(__('laravel-crm::lang.assigned_to')) }}: <a href="{{ route('laravel-crm.users.show', $call->assignedToUser) }}" class="link link-hover link-primary">{{ $call->assignedToUser->name }}</a></small>
-                            @endif
-                        </div>
+                        <hr />
+                        <h2 class="font-bold">{{ ucfirst(__('laravel-crm::lang.location')) }}</h2>
+                        {{ $call->location }}
+                        <hr />
+                        <h2 class="font-bold">{{ ucfirst(__('laravel-crm::lang.description')) }}</h2>
+                        {{ $call->description }}
                         <x-crm-delete-confirm model="call" id="{{ $call->id }}" />
                     @endif
                 </div>

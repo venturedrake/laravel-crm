@@ -146,6 +146,7 @@ class CallRelated extends Component
                 'user_owner_id' => $call->user_owner_id,
                 'user_assigned_id' => $call->user_assigned_id,
                 'related' => in_array($call->id, $relatedIds),
+                'guests' => $call->contacts->pluck('id')->toArray(),
             ]);
         }
     }
@@ -180,6 +181,21 @@ class CallRelated extends Component
                 'user_owner_id' => $this->data[$id]['user_owner_id'],
                 'user_assigned_id' => $this->data[$id]['user_assigned_id'],
             ]);
+
+            foreach ($this->guests as $personId) {
+                if ($person = Person::find($personId)) {
+                    $this->call->contacts()->firstOrCreate([
+                        'entityable_type' => $person->getMorphClass(),
+                        'entityable_id' => $person->id,
+                    ]);
+
+                    foreach ($this->call->contacts as $contact) {
+                        if (! in_array($contact->entityable_id, $this->guests)) {
+                            $contact->delete();
+                        }
+                    }
+                }
+            }
         }
 
         $this->dispatch('call-updated');
