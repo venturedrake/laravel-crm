@@ -97,6 +97,7 @@ use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryCreate;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryEdit;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryIndex;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryShow;
+use VentureDrake\LaravelCrm\Livewire\Files\FileRelated;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceEdit;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceIndex;
@@ -786,6 +787,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-call-related', CallRelated::class);
         Livewire::component('crm-meeting-related', MeetingRelated::class);
         Livewire::component('crm-lunch-related', LunchRelated::class);
+        Livewire::component('crm-file-related', FileRelated::class);
 
         Livewire::component('crm-model-phones', ModelPhones::class);
         Livewire::component('crm-model-emails', ModelEmails::class);

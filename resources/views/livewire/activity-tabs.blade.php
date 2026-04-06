@@ -32,7 +32,9 @@
             </div>
         </x-mary-tab>
         <x-mary-tab name="files" label="{{ ucfirst(__('laravel-crm::lang.files')) }}">
-            <div>Files</div>
+            <div>
+                <livewire:crm-file-related :$model />
+            </div>
         </x-mary-tab>
     </x-mary-tabs>
 </div>

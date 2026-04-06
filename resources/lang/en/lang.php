@@ -588,4 +588,6 @@ return [
     'add_call' => 'add call',
     'add_meeting' => 'add meeting',
     'add_lunch' => 'add lunch',
+    'file_uploaded' => 'file uploaded',
+    'file_deleted' => 'file deleted',
 ];
