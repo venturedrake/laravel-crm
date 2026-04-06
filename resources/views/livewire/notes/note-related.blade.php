@@ -16,7 +16,7 @@
         @foreach($notes as $note)
             <x-mary-card>
                 <div class="grid gap-3">
-                    <div class="flex justify-between">
+                    <div class="flex justify-between items-start">
                         <div class="font-bold text-lg">
                             {{ $note->created_at->diffForHumans() }} - {{ $note->createdByUser->name }}<br />
                             @if($data[$note->id]['related'])

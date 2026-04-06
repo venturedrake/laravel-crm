@@ -194,6 +194,6 @@ class NoteRelated extends Component
     {
         $this->getNotes();
 
-        return view('laravel-crm::livewire.notes.note-index');
+        return view('laravel-crm::livewire.notes.note-related');
     }
 }

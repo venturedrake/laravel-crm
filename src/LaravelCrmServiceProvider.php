@@ -84,6 +84,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
+use VentureDrake\LaravelCrm\Livewire\Activities\ActivityIndex;
 use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
@@ -111,7 +112,6 @@ use VentureDrake\LaravelCrm\Livewire\ModelAddresses;
 use VentureDrake\LaravelCrm\Livewire\ModelEmails;
 use VentureDrake\LaravelCrm\Livewire\ModelPhones;
 use VentureDrake\LaravelCrm\Livewire\ModelProducts;
-use VentureDrake\LaravelCrm\Livewire\Activities\ActivityIndex;
 use VentureDrake\LaravelCrm\Livewire\Notes\NoteRelated;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderEdit;
@@ -177,6 +177,7 @@ use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateShow;
 use VentureDrake\LaravelCrm\Livewire\Tasks\TaskCreate;
 use VentureDrake\LaravelCrm\Livewire\Tasks\TaskEdit;
 use VentureDrake\LaravelCrm\Livewire\Tasks\TaskIndex;
+use VentureDrake\LaravelCrm\Livewire\Tasks\TaskRelated;
 use VentureDrake\LaravelCrm\Livewire\Tasks\TaskShow;
 use VentureDrake\LaravelCrm\Livewire\Teams\TeamIndex;
 use VentureDrake\LaravelCrm\Livewire\Users\UserIndex;
@@ -731,6 +732,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-task-show', TaskShow::class);
         Livewire::component('crm-task-create', TaskCreate::class);
         Livewire::component('crm-task-edit', TaskEdit::class);
+        Livewire::component('crm-task-related', TaskRelated::class);
         Livewire::component('crm-deal-index', DealIndex::class);
         Livewire::component('crm-deal-board', DealBoard::class);
         Livewire::component('crm-deal-show', DealShow::class);
@@ -777,7 +779,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-product-show', ProductShow::class);
 
         Livewire::component('crm-activity-index', ActivityIndex::class);
-        Livewire::component('crm-notes-related', NoteRelated::class);
+        Livewire::component('crm-note-related', NoteRelated::class);
 
         Livewire::component('crm-model-phones', ModelPhones::class);
         Livewire::component('crm-model-emails', ModelEmails::class);

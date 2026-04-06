@@ -578,4 +578,9 @@ return [
     'note_unpinned' => 'note unpinned',
     'note_created' => 'note created',
     'note_updated' => 'note updated',
+    'whens_it_due' => 'when is it due?',
+    'further_details' => 'further details',
+    'who_requested_the_task' => 'who requested the task?',
+    'who_is_responsible' => 'who is responsible?',
+    'requested_by' => 'requested by',
 ];

@@ -1,5 +1,5 @@
 <div>
-    <livewire:crm-notes-related :$model :pinned="true" />
+    <livewire:crm-note-related :$model :pinned="true" />
     <x-mary-tabs wire:model="activeTab">
         <x-mary-tab name="activity" label="{{ ucfirst(__('laravel-crm::lang.activity')) }}">
             <div>
@@ -8,11 +8,13 @@
         </x-mary-tab>
         <x-mary-tab name="notes" label="{{ ucfirst(__('laravel-crm::lang.notes')) }}">
             <div>
-                <livewire:crm-notes-related :$model />
+                <livewire:crm-note-related :$model />
             </div>
         </x-mary-tab>
         <x-mary-tab name="tasks" label="{{ ucfirst(__('laravel-crm::lang.tasks')) }}">
-            <div>Tasks</div>
+            <div>
+                <livewire:crm-task-related :$model />
+            </div>
         </x-mary-tab>
         <x-mary-tab name="calls" label="{{ ucfirst(__('laravel-crm::lang.calls')) }}">
             <div>Calls</div>
