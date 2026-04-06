@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
@@ -38,20 +37,6 @@ class Lunch extends Model
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'lunches';
-    }
-
-    public function setStartAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['start_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
-        }
-    }
-
-    public function setFinishAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['finish_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
-        }
     }
 
     /**

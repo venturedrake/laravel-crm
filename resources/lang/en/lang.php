@@ -586,4 +586,6 @@ return [
     'start_at' => 'start at',
     'finish_at' => 'finish at',
     'add_call' => 'add call',
+    'add_meeting' => 'add meeting',
+    'add_lunch' => 'add lunch',
 ];

@@ -109,6 +109,8 @@ use VentureDrake\LaravelCrm\Livewire\Leads\LeadCreate;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadEdit;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadIndex;
 use VentureDrake\LaravelCrm\Livewire\Leads\LeadShow;
+use VentureDrake\LaravelCrm\Livewire\Lunches\LunchRelated;
+use VentureDrake\LaravelCrm\Livewire\Meetings\MeetingRelated;
 use VentureDrake\LaravelCrm\Livewire\ModelAddresses;
 use VentureDrake\LaravelCrm\Livewire\ModelEmails;
 use VentureDrake\LaravelCrm\Livewire\ModelPhones;
@@ -782,6 +784,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-activity-index', ActivityIndex::class);
         Livewire::component('crm-note-related', NoteRelated::class);
         Livewire::component('crm-call-related', CallRelated::class);
+        Livewire::component('crm-meeting-related', MeetingRelated::class);
+        Livewire::component('crm-lunch-related', LunchRelated::class);
 
         Livewire::component('crm-model-phones', ModelPhones::class);
         Livewire::component('crm-model-emails', ModelEmails::class);

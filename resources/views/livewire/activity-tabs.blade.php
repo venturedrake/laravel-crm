@@ -22,10 +22,14 @@
             </div>
         </x-mary-tab>
         <x-mary-tab name="meetings" label="{{ ucfirst(__('laravel-crm::lang.meetings')) }}">
-            <div>Meetings</div>
+            <div>
+                <livewire:crm-meeting-related :$model />
+            </div>
         </x-mary-tab>
         <x-mary-tab name="lunches" label="{{ ucfirst(__('laravel-crm::lang.lunches')) }}">
-            <div>Lunches</div>
+            <div>
+                <livewire:crm-lunch-related :$model />
+            </div>
         </x-mary-tab>
         <x-mary-tab name="files" label="{{ ucfirst(__('laravel-crm::lang.files')) }}">
             <div>Files</div>
