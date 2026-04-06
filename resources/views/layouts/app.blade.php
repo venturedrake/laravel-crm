@@ -59,9 +59,9 @@
                 @if(Route::has('profile.show'))
                     <x-mary-menu-item href="{{ route('profile.show') }}" title="{{ __('Profile') }}" />
                 @endif
-                @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::hasApiFeatures())
+              {{--  @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-mary-menu-item href="{{ route('api-tokens.index') }}" title="{{ __('API Tokens') }}" />
-                @endif
+                @endif--}}
                     <x-mary-menu-separator />
                     <form method="POST" action="{{ route('logout') }}" x-data>
                         @csrf
