@@ -17,7 +17,9 @@
             </div>
         </x-mary-tab>
         <x-mary-tab name="calls" label="{{ ucfirst(__('laravel-crm::lang.calls')) }}">
-            <div>Calls</div>
+            <div>
+                <livewire:crm-call-related :$model />
+            </div>
         </x-mary-tab>
         <x-mary-tab name="meetings" label="{{ ucfirst(__('laravel-crm::lang.meetings')) }}">
             <div>Meetings</div>

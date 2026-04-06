@@ -40,20 +40,6 @@ class Call extends Model
         return config('laravel-crm.db_table_prefix').'calls';
     }
 
-    public function setStartAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['start_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
-        }
-    }
-
-    public function setFinishAtAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['finish_at'] = Carbon::createFromFormat($this->dateFormat().' H:i', $value);
-        }
-    }
-
     /**
      * Get all of the owning callable models.
      */

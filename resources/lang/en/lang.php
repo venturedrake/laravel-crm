@@ -583,4 +583,7 @@ return [
     'who_requested_the_task' => 'who requested the task?',
     'who_is_responsible' => 'who is responsible?',
     'requested_by' => 'requested by',
+    'start_at' => 'start at',
+    'finish_at' => 'finish at',
+    'add_call' => 'add call',
 ];

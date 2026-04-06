@@ -87,6 +87,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Livewire\Activities\ActivityIndex;
 use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
+use VentureDrake\LaravelCrm\Livewire\Calls\CallRelated;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealEdit;
@@ -780,6 +781,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         Livewire::component('crm-activity-index', ActivityIndex::class);
         Livewire::component('crm-note-related', NoteRelated::class);
+        Livewire::component('crm-call-related', CallRelated::class);
 
         Livewire::component('crm-model-phones', ModelPhones::class);
         Livewire::component('crm-model-emails', ModelEmails::class);
