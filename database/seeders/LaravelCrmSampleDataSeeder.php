@@ -21,8 +21,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
     public function run()
     {
 
-        $this->command->line('Sedding organisations...');
-        factory(Organization::class, 100)->create();
+        $this->command->line('Seeding organizations...');
+        // factory(Organization::class, 100)->create();
 
         $this->command->line('Seeding people...');
         factory(Person::class, 200)->create();
