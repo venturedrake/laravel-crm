@@ -8,7 +8,7 @@ use Mary\Traits\Toast;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Note;
 
-class NoteIndex extends Component
+class NoteRelated extends Component
 {
     use Toast;
 
@@ -41,8 +41,8 @@ class NoteIndex extends Component
         ]);
 
         $this->model->activities()->create([
-            'causable_type' => auth()->user()->getMorphClass(),
-            'causable_id' => auth()->user()->id,
+            'causeable_type' => auth()->user()->getMorphClass(),
+            'causeable_id' => auth()->user()->id,
             'timelineable_type' => $this->model->getMorphClass(),
             'timelineable_id' => $this->model->id,
             'recordable_type' => $note->getMorphClass(),
@@ -50,6 +50,7 @@ class NoteIndex extends Component
         ]);
 
         $this->dispatch('note-added');
+        $this->dispatch('activity-logged');
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.note_created'))

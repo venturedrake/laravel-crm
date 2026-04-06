@@ -576,4 +576,6 @@ return [
     'unpin_this_note' => 'unpin this note',
     'note_pinned' => 'note pinned',
     'note_unpinned' => 'note unpinned',
+    'note_created' => 'note created',
+    'note_updated' => 'note updated',
 ];
