@@ -26,56 +26,51 @@
         </x-slot:actions>
     </x-crm-header>
 
-    <div class="grid lg:grid-cols-2 gap-5">
-        <div class="grid gap-y-5">
-            <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" shadow separator>
-                <div class="grid gap-y-3">
-                    <div class="flex flex-row gap-5">
-                        <strong>{{ ucfirst(__('laravel-crm::lang.created')) }}</strong>
-                        <span>{{ $task->created_at->diffForHumans() }}</span>
-                    </div>
-                    @if($task->due_at)
+    <div class="grid gap-y-5">
+        <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" shadow separator>
+            <div class="grid gap-y-3">
+                <div class="flex flex-row gap-5">
+                    <strong>{{ ucfirst(__('laravel-crm::lang.created')) }}</strong>
+                    <span>{{ $task->created_at->diffForHumans() }}</span>
+                </div>
+                @if($task->due_at)
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.due_date')) }}</strong>
                         <span>{{ $task->due_at->diffForHumans() }}</span>
                     </div>
-                    @endif
-                    @if($task->completed_at)
+                @endif
+                @if($task->completed_at)
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.completed')) }}</strong>
                         <span>{{ $task->completed_at->diffForHumans() }}</span>
                     </div>
-                    @endif
-                    <div class="flex flex-row gap-5">
-                        <strong>{{ ucfirst(__('laravel-crm::lang.description')) }}</strong>
-                        <span>{{ $task->description }}</span>
-                    </div>
-                    <div class="flex flex-row gap-5">
-                        <strong>{{ ucfirst(__('laravel-crm::lang.owner')) }}</strong>
-                        <span>
-                            @if($task->ownerUser)
-                                <a href="{{ route('laravel-crm.users.show', $task->ownerUser) }}" class="link link-hover link-primary">{{ $task->ownerUser->name }}</a>
-                            @else
-                                {{ ucfirst(__('laravel-crm::lang.unallocated')) }}
-                            @endif
-                        </span>
-                    </div>
-                    <div class="flex flex-row gap-5">
-                        <strong>{{ ucfirst(__('laravel-crm::lang.assigned_to')) }}</strong>
-                        <span>
-                            @if($task->assignedToUser)
-                                <a href="{{ route('laravel-crm.users.show', $task->assignedToUser) }}" class="link link-hover link-primary">{{ $task->assignedToUser->name }}</a>
-                            @else
-                                {{ ucfirst(__('laravel-crm::lang.unallocated')) }}
-                            @endif
-                        </span>
-                    </div>
+                @endif
+                <div class="flex flex-row gap-5">
+                    <strong>{{ ucfirst(__('laravel-crm::lang.description')) }}</strong>
+                    <span>{{ $task->description }}</span>
                 </div>
-            </x-mary-card>
-        </div>
-        <div>
-            <livewire:crm-activity-tabs :model="$task" />
-        </div>
+                <div class="flex flex-row gap-5">
+                    <strong>{{ ucfirst(__('laravel-crm::lang.owner')) }}</strong>
+                    <span>
+                            @if($task->ownerUser)
+                            <a href="{{ route('laravel-crm.users.show', $task->ownerUser) }}" class="link link-hover link-primary">{{ $task->ownerUser->name }}</a>
+                        @else
+                            {{ ucfirst(__('laravel-crm::lang.unallocated')) }}
+                        @endif
+                        </span>
+                </div>
+                <div class="flex flex-row gap-5">
+                    <strong>{{ ucfirst(__('laravel-crm::lang.assigned_to')) }}</strong>
+                    <span>
+                            @if($task->assignedToUser)
+                            <a href="{{ route('laravel-crm.users.show', $task->assignedToUser) }}" class="link link-hover link-primary">{{ $task->assignedToUser->name }}</a>
+                        @else
+                            {{ ucfirst(__('laravel-crm::lang.unallocated')) }}
+                        @endif
+                        </span>
+                </div>
+            </div>
+        </x-mary-card>
     </div>
 </div>
 

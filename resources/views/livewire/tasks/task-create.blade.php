@@ -8,9 +8,7 @@
     </x-mary-header>
 
     <x-mary-form wire:submit="save">
-        <div class="grid lg:grid-cols-2 gap-5">
-            @include('laravel-crm::livewire.tasks.task-form')
-        </div>
+        @include('laravel-crm::livewire.tasks.task-form')
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" class="btn" link="{{ url(route('laravel-crm.tasks.index')) }}" />
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.save')) }}" class="btn-primary text-white" type="submit" spinner="save" />
