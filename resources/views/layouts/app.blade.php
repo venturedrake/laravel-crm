@@ -105,14 +105,38 @@
                 <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.products')) }}" icon="fas.tag" link="{{ url(route('laravel-crm.products.index')) }}" />
                 <x-mary-menu-separator />
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.settings')) }}" icon="fas.cog" link="{{ url(route('laravel-crm.settings.edit')) }}" />
+                <x-mary-menu-sub title="{{ ucfirst(__('laravel-crm::lang.settings')) }}" icon="fas.cog" link="###">
+                    @can('view crm settings')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.settings.edit')) }}" title="{{ ucwords(__('laravel-crm::lang.general_settings')) }}"  />
+                    @endcan
+                    @can('view crm roles')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.roles.index')) }}" title="{{ new \Illuminate\Support\HtmlString(ucwords(__('laravel-crm::lang.roles_and_permissions'))) }}"  />
+                    @endcan
+                    @can('view crm pipelines')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.pipelines.index')) }}" title="{{ ucwords(__('laravel-crm::lang.pipelines')) }}"  />
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.pipeline-stages.index')) }}" title="{{ ucwords(__('laravel-crm::lang.pipeline_stages')) }}"  />
+                    @endcan
+                    @can('view crm product categories')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.product-categories.index')) }}" title="{{ ucwords(__('laravel-crm::lang.product_categories')) }}"  />
+                    @endcan
+                    {{--@can('view crm product attributes')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.product-attributes.index')) }}" title="{{ ucwords(__('laravel-crm::lang.product_attributes')) }}"  />
+                    @endcan--}}
+                    @can('view crm tax rates')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.tax-rates.index')) }}" title="{{ ucwords(__('laravel-crm::lang.tax_rates')) }}"  />
+                    @endcan
+                    @can('view crm labels')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.labels.index')) }}" title="{{ ucwords(__('laravel-crm::lang.labels')) }}"  />
+                    @endcan
+                    @can('view crm fields')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.fields.index')) }}" title="{{ ucwords(__('laravel-crm::lang.custom_fields')) }}"  />
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.field-groups.index')) }}" title="{{ ucwords(__('laravel-crm::lang.custom_field_groups')) }}"  />
+                    @endcan
+                    @can('view crm integrations')
+                        <x-mary-menu-item link="{{ url(route('laravel-crm.integrations.xero')) }}" title="{{ ucwords(__('laravel-crm::lang.integrations')) }}"  />
+                    @endcan
+                </x-mary-menu-sub>
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.updates')) }}" icon="fas.cloud-download-alt" link="{{ url(route('laravel-crm.updates.index')) }}" />
-                {{--<hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
-                <x-mary-menu-item title="Messages" icon="o-envelope" link="###" />
-                <x-mary-menu-sub title="Settings" icon="o-cog-6-tooth">
-                    <x-mary-menu-item title="Wifi" icon="o-wifi" link="####" />
-                    <x-mary-menu-item title="Archives" icon="o-archive-box" link="####" />
-                </x-mary-menu-sub>--}}
             </x-mary-menu>
         </x-slot:sidebar>
         <x-slot:content>
