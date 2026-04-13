@@ -23,6 +23,7 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/robsontenorio/mary/src/View/Components/**/*.php';
 @source '../../src/View/Components/**/*.php';
+@source '../../resources/views/**/*.blade.php';
 
 /* Safelist specific classes */
 @source inline("bg-success");

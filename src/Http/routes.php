@@ -5,53 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
 
-/* Public Routes */
-
-Route::get('crm-login', function () {
-    return redirect(route('login'));
-
-    return View::make('laravel-crm::auth.login');
-})->name('laravel-crm.login');
-
-Route::post('crm-login', function () {
-    //
-});
-
-Route::post('crm-logout', function () {
-    //
-})->name('laravel-crm.logout');
-
-Route::get('crm-register', function () {
-    return redirect(route('register'));
-})->name('laravel-crm.register');
-
-Route::post('crm-register', function () {
-    //
-});
-
-Route::get('crm-password/reset', function () {
-    //
-})->name('laravel-crm.password.request');
-
-Route::post('crm-password/email', function () {
-    //
-});
-
-Route::get('crm-password/reset/{token}', function () {
-    //
-})->name('laravel-crm.password.reset');
-
-Route::post('crm-password/reset', function () {
-    //
-})->name('laravel-crm.password.update');
-
-Route::get('crm-password/confirm', function () {
-    //
-})->name('laravel-crm.password.confirm');
-
-Route::get('crm-password/confirm', function () {
-    //
-});
+/* Portal Routes (public, no auth) */
 
 Route::group(['prefix' => 'p'], function () {
     Route::prefix('quotes')->group(function () {

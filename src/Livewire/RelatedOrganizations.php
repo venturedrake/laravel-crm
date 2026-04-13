@@ -10,7 +10,7 @@ class RelatedOrganizations extends Component
     use HasOrganizationSuggest;
 
     public $showAddRelatedOrganization = false;
-    
+
     public $model = null;
 
     public array $data = [];

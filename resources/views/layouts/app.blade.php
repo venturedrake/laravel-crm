@@ -34,7 +34,7 @@
             </label>
             <x-mary-popover>
                 <x-slot:trigger>
-                    <a class="navbar-brand text-2xl font-extrabold" href="{{ url(route('laravel-crm.dashboard')) }}" @can('view crm updates')data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}"@endcan><img src="{{ asset('vendor/laravel-crm/img/laravel-crm-logo.png') }}" width="215" class="dark:hidden" /> <img src="{{ asset('vendor/laravel-crm/img/laravel-crm-dark-logo.png') }}" width="215" class="hidden dark:inline" /> </a>
+                    <a class="navbar-brand text-2xl font-extrabold" href="{{ url(route('laravel-crm.dashboard')) }}" @can('view crm updates')data-toggle="tooltip" data-placement="bottom" title="v{{ config('laravel-crm.version') }}"@endcan><img src="{{ asset('vendor/laravel-crm/img/laravel-crm-logo.png') }}" width="215" class="block dark:hidden" /> <img src="{{ asset('vendor/laravel-crm/img/laravel-crm-dark-logo.png') }}" width="215" class="hidden dark:inline" /> </a>
                 </x-slot:trigger>
                 <x-slot:content>
                     Version {{ config('laravel-crm.version') }} <br>
@@ -63,9 +63,9 @@
                     <x-mary-menu-item href="{{ route('api-tokens.index') }}" title="{{ __('API Tokens') }}" />
                 @endif--}}
                     <x-mary-menu-separator />
-                    <form method="POST" action="{{ route('logout') }}" x-data>
+                    <form method="POST" action="{{ route('laravel-crm.logout') }}" x-data>
                         @csrf
-                        <x-mary-menu-item href="{{ route('logout') }}" @click.prevent="$root.submit();"  title="{{ __('Log Out') }}" />
+                        <x-mary-menu-item href="{{ route('laravel-crm.logout') }}" @click.prevent="$root.submit();"  title="{{ __('Log Out') }}" />
                     </form>
             </x-mary-dropdown>
             @endif    

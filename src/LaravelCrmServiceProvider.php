@@ -87,6 +87,9 @@ use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
 use VentureDrake\LaravelCrm\Livewire\Activities\ActivityIndex;
 use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
+use VentureDrake\LaravelCrm\Livewire\Auth\ForgotPassword;
+use VentureDrake\LaravelCrm\Livewire\Auth\Login;
+use VentureDrake\LaravelCrm\Livewire\Auth\ResetPassword;
 use VentureDrake\LaravelCrm\Livewire\Calls\CallRelated;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
@@ -724,6 +727,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('delivery-details', LiveDeliveryDetails::class);
 
         /* Version 2 Livewire Components */
+        Livewire::component('crm-auth-login', Login::class);
+        Livewire::component('crm-auth-forgot-password', ForgotPassword::class);
+        Livewire::component('crm-auth-reset-password', ResetPassword::class);
         Livewire::component('crm-kanban-board', KanbanBoard::class);
         Livewire::component('crm-activity-menu', ActivityMenu::class);
         Livewire::component('crm-activity-tabs', ActivityTabs::class);
@@ -957,11 +963,37 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
     protected function registerRoutes()
     {
+        // Auth routes — only 'web' middleware, no crm/crm-api (those require auth)
+        Route::group($this->authRouteConfiguration(), function () {
+            if (config('laravel-crm.user_interface')) {
+                $this->loadRoutesFrom(__DIR__.'/Http/auth-routes.php');
+            }
+        });
+
+        // Main CRM routes — full middleware stack
         Route::group($this->routeConfiguration(), function () {
             if (config('laravel-crm.user_interface')) {
                 $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
             }
         });
+    }
+
+    protected function authRouteConfiguration()
+    {
+        if (config('laravel-crm.route_subdomain')) {
+            $host = explode('.', request()->getHost());
+            if (count($host) == 3) {
+                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 2)].'.'.end($host);
+            } elseif (count($host) == 4) {
+                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 3)].'.'.$host[(count($host) - 2)].'.'.end($host);
+            }
+        }
+
+        return [
+            'domain' => $domain ?? null,
+            'prefix' => (config('laravel-crm.route_prefix')) ? config('laravel-crm.route_prefix') : null,
+            'middleware' => ['web'],
+        ];
     }
 
     protected function routeConfiguration()

@@ -13,9 +13,9 @@ class RelatedPeople extends Component
 {
     use HasPersonSuggest;
     use Toast;
-    
+
     public $showAddRelatedPerson = false;
-    
+
     public $model = null;
 
     public array $data = [];
