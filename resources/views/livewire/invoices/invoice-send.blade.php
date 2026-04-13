@@ -20,7 +20,7 @@
     
             <x-slot:actions>
                 <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" @click="$wire.showSendInvoice = false" />
-                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.send')) }}" class="btn-primary" type="submit" spinner="send" />
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.send')) }}" class="btn-primary text-white" type="submit" spinner="send" />
             </x-slot:actions>
         </x-mary-form>
     </x-mary-drawer>

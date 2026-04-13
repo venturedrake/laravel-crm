@@ -40,7 +40,7 @@ trait HasPersonSuggest
             $this->person_id = $id;
             $this->person_name = $person->name;
 
-            if (! $this->organization_name && method_exists($this, 'generateTitleString')) {
+            if (property_exists($this, 'organization_name') && ! $this->organization_name && method_exists($this, 'generateTitleString')) {
                 $this->generateTitleString($person->name);
             }
         }

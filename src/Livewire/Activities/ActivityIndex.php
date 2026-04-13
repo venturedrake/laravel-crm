@@ -34,6 +34,8 @@ class ActivityIndex extends Component
         if (count($activityIds) > 0) {
             return Activity::whereIn('id', $activityIds)->latest()->get();
         }
+        
+        return [];
     }
 
     public function render()
