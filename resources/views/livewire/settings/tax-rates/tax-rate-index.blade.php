@@ -5,7 +5,7 @@
         </x-slot:actions>
     </x-mary-header>
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$taxRates" link="/tax-rates/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$taxRates" :link="route('laravel-crm.tax-rates.show', ['taxRate' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('actions', $taxRate)
                 @can('view crm tax rates')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.tax-rates.show', $taxRate)) }}" class="btn-sm btn-square btn-outline" />

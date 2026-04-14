@@ -5,7 +5,7 @@
         </x-slot:actions>
     </x-mary-header>
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$fields" link="/fields/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$fields" :link="route('laravel-crm.fields.show', ['field' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_attached_to', $field)
                 @foreach(\VentureDrake\LaravelCrm\Models\FieldModel::where('field_id', $field->id)->get() as $fieldModel)
                     <span class="badge badge-neutral badge-sm">

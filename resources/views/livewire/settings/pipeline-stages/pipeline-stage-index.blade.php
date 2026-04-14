@@ -1,7 +1,7 @@
 <div class="crm-content">
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.pipeline_stages')) }}" progress-indicator></x-mary-header>
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$pipelineStages" link="/pipeline-stages/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$pipelineStages" :link="route('laravel-crm.pipeline-stages.show', ['pipelineStage' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('actions', $pipelineStage)
                 @can('view crm pipelines')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.pipeline-stages.show', $pipelineStage)) }}" class="btn-sm btn-square btn-outline" />

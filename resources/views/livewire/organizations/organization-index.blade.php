@@ -23,7 +23,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$organizations" link="/organizations/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$organizations" :link="route('laravel-crm.organizations.show', ['organization' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_xeroContact', $organization)
                 @if($organization->xeroContact)
                     <img src="/vendor/laravel-crm/img/xero-icon.png" height="20"/>

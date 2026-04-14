@@ -5,7 +5,7 @@
         </x-slot:actions>
     </x-mary-header>
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$productCategories" link="/product-categories/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$productCategories" :link="route('laravel-crm.product-categories.show', ['productCategory' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('actions', $productCategory)
                 @can('view crm product categories')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.product-categories.show', $productCategory)) }}" class="btn-sm btn-square btn-outline" />

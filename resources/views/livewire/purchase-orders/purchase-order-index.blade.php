@@ -25,7 +25,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$purchaseOrders" link="/purchase-orders/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$purchaseOrders" :link="route('laravel-crm.purchase-orders.show', ['purchaseOrder' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_pipeline_stage', $purchaseOrder)
                 @if($purchaseOrder->pipelineStage)
                     <x-mary-badge :value="$purchaseOrder->pipelineStage->name" class="badge badge-neutral text-white" />

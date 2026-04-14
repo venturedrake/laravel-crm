@@ -5,7 +5,7 @@
         </x-slot:actions>
     </x-mary-header>
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$labels" link="/labels/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$labels" :link="route('laravel-crm.labels.show', ['label' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_color', $label)
                 <span class="badge text-white" style="background-color: #{{ $label->hex }}; padding: 6px 8px;">
                     #{{ $label->hex }}

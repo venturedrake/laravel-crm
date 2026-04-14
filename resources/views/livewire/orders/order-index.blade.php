@@ -24,7 +24,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$orders" link="/orders/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$orders" :link="route('laravel-crm.orders.show', ['order' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_labels', $order)
                 @foreach($order->labels as $label)
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />

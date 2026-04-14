@@ -24,7 +24,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$teams" link="/teams/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$teams" :link="route('laravel-crm.teams.show', ['team' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('actions', $team)
             @can('view crm teams')
                 <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.teams.show', $team)) }}" class="btn-sm btn-square btn-outline" />

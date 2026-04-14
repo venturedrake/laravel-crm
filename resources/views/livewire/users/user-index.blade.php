@@ -25,7 +25,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$users" link="/users/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$users" :link="route('laravel-crm.users.show', ['user' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_role', $user)
                 {{ $user->roles()->first()->name ?? null }}
             @endscope

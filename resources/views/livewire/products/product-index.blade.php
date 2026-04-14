@@ -24,7 +24,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$products" link="/products/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$products" :link="route('laravel-crm.products.show', ['product' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_xeroItem', $product)
                 @if($product->xeroItem)<img src="/vendor/laravel-crm/img/xero-icon.png" height="20" />@endif
             @endscope

@@ -5,7 +5,7 @@
         </x-slot:actions>
     </x-mary-header>
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$fieldGroups" link="/field-groups/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$fieldGroups" :link="route('laravel-crm.field-groups.show', ['fieldGroup' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('actions', $fieldGroup)
                 @can('view crm fields')
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.field-groups.show', $fieldGroup)) }}" class="btn-sm btn-square btn-outline" />

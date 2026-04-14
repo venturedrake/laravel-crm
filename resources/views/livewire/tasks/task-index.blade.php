@@ -23,7 +23,7 @@
 
     {{-- TABLE --}}
     <x-mary-card shadow>
-        <x-mary-table :headers="$headers" :rows="$tasks" link="/tasks/{id}" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
+        <x-mary-table :headers="$headers" :rows="$tasks" :link="route('laravel-crm.tasks.show', ['task' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_completed_at', $task)
                 @if($task->completed_at)
                     <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.completed')) }}" class="badge-success text-white" />
