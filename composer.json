@@ -55,7 +55,7 @@
         "robsontenorio/mary": "^1.0|^2.0",
         "spatie/laravel-permission": "^6.0",
         "torann/geoip": "^3.0",
-        "venturedrake/laravel-encryptable": "^0.1.2"
+        "venturedrake/laravel-encryptable": "dev-master"
     },
     "require-dev": {
         "laravel/boost": "^2.3",
