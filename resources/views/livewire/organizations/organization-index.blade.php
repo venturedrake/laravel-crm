@@ -32,7 +32,7 @@
             @scope('cell_labels', $organization)
                 @foreach($organization->labels as $label)
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-                @endforeach 
+                @endforeach
             @endscope
             @scope('cell_open_deals', $organization)
                 {{ $organization->deals->whereNull('closed_at')->count() }}

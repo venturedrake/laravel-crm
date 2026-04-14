@@ -26,9 +26,9 @@
     <x-mary-card shadow>
         <x-mary-table :headers="$headers" :rows="$deals" :link="route('laravel-crm.deals.show', ['deal' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap" :row-decoration="$rowDecoration">
             @scope('cell_labels', $deal)
-                @foreach($deal->labels as $label)
-                    <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-                @endforeach 
+            @foreach($deal->labels as $label)
+                <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+            @endforeach
             @endscope
             @scope('cell_pipeline_stage', $deal)
                 @if($deal->pipelineStage)

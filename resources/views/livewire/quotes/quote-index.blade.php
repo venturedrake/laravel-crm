@@ -28,7 +28,7 @@
             @scope('cell_labels', $quote)
                 @foreach($quote->labels as $label)
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-                @endforeach 
+                @endforeach
             @endscope
             @scope('cell_pipeline_stage', $quote)
                 @if($quote->pipelineStage)

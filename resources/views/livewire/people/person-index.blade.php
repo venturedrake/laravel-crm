@@ -28,7 +28,7 @@
             @scope('cell_labels', $person)
                 @foreach($person->labels as $label)
                     <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
-                @endforeach 
+                @endforeach
             @endscope
             @scope('cell_email', $person)
                 {{ $person->getPrimaryEmail()->address ?? null }}
