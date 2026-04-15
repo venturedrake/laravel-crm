@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
+use VentureDrake\LaravelCrm\Console\LaravelCrmAddUser;
 use VentureDrake\LaravelCrm\Console\LaravelCrmArchive;
 use VentureDrake\LaravelCrm\Console\LaravelCrmContactTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmDecrypt;
@@ -651,6 +652,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             // Registering package commands.
             $this->commands([
                 LaravelCrmInstall::class,
+                LaravelCrmAddUser::class,
                 LaravelCrmUpdate::class,
                 LaravelCrmPermissions::class,
                 LaravelCrmLabels::class,

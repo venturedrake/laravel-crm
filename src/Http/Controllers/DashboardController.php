@@ -75,7 +75,7 @@ class DashboardController extends Controller
             'totalInvoicesCount' => Invoice::count(),
             'totalDeliveriesCount' => Delivery::count(),
             'totalPurchaseOrdersCount' => PurchaseOrder::count(),
-            'totalClientsCount' => Customer::count(),
+            /*'totalClientsCount' => Customer::count(),*/
             'totalOrganizationsCount' => Organization::count(),
             'totalPeopleCount' => Person::count(),
             'usersOnline' => $usersOnline,

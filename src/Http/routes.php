@@ -27,6 +27,14 @@ Route::group(['prefix' => 'p'], function () {
 
 /* Private Routes */
 
+/* Root Prefix Redirect */
+
+if (config('laravel-crm.route_prefix')) {
+    Route::get('/', function () {
+        return redirect()->route('laravel-crm.dashboard');
+    })->name('laravel-crm.root');
+}
+
 /* Dashboard */
 
 Route::get('dashboard', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
