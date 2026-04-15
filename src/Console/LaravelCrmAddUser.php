@@ -104,4 +104,3 @@ class LaravelCrmAddUser extends Command
         return 0;
     }
 }
-

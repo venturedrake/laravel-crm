@@ -92,6 +92,7 @@ use VentureDrake\LaravelCrm\Livewire\Auth\ForgotPassword;
 use VentureDrake\LaravelCrm\Livewire\Auth\Login;
 use VentureDrake\LaravelCrm\Livewire\Auth\ResetPassword;
 use VentureDrake\LaravelCrm\Livewire\Calls\CallRelated;
+use VentureDrake\LaravelCrm\Livewire\Dashboard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealEdit;
@@ -730,6 +731,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('delivery-details', LiveDeliveryDetails::class);
 
         /* Version 2 Livewire Components */
+        Livewire::component('crm-dashboard', Dashboard::class);
         Livewire::component('crm-auth-login', Login::class);
         Livewire::component('crm-auth-forgot-password', ForgotPassword::class);
         Livewire::component('crm-auth-reset-password', ResetPassword::class);
