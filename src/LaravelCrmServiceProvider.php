@@ -29,6 +29,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganizationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
+use VentureDrake\LaravelCrm\Console\LaravelCrmSampleData;
 use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
 use VentureDrake\LaravelCrm\Console\LaravelCrmV2;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
@@ -667,6 +668,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmEncrypt::class,
                 LaravelCrmDecrypt::class,
                 LaravelCrmV2::class,
+                LaravelCrmSampleData::class,
             ]);
 
             // Register the model factories
