@@ -631,4 +631,5 @@ return [
     'my_activity' => 'my activity',
     'all_activity' => 'all activity',
     'no_activities' => 'no activities found',
+    'all' => 'all',
 ];
