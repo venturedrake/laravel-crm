@@ -1648,14 +1648,36 @@ class LaravelCrmSampleDataSeeder extends Seeder
     {
         $this->command->info('Seeding activities (tasks, notes, calls, meetings, lunches)...');
 
-        $this->seedTasks();
-        $this->seedNotes();
-        $this->seedCalls();
-        $this->seedMeetings();
-        $this->seedLunches();
+        $allEntities = $this->getAllEntitiesForActivities();
+
+        $this->seedTasks($allEntities);
+        $this->seedNotes($allEntities);
+        $this->seedCalls($allEntities);
+        $this->seedMeetings($allEntities);
+        $this->seedLunches($allEntities);
     }
 
-    protected function seedTasks(): void
+    /**
+     * Collect every entity that should receive activities.
+     */
+    protected function getAllEntitiesForActivities(): Collection
+    {
+        $allEntities = collect();
+
+        foreach ([Lead::class, Deal::class, Quote::class, Order::class, Invoice::class, Delivery::class, PurchaseOrder::class, Person::class, Organization::class] as $modelClass) {
+            $modelClass::select('id', 'created_at')->get()->each(function ($model) use (&$allEntities, $modelClass) {
+                $allEntities->push([
+                    'type' => $modelClass,
+                    'id' => $model->id,
+                    'date' => Carbon::parse($model->created_at),
+                ]);
+            });
+        }
+
+        return $allEntities;
+    }
+
+    protected function seedTasks(Collection $allEntities): void
     {
         $taskNames = [
             'Follow up with client', 'Send proposal document', 'Schedule product demo',
@@ -1675,76 +1697,50 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'Required for compliance and record keeping.',
         ];
 
-        $allEntities = collect();
-
-        // Add leads
-        Lead::inRandomOrder()->take(700)->get()->each(function ($lead) use (&$allEntities) {
-            $allEntities->push(['type' => Lead::class, 'id' => $lead->id, 'date' => Carbon::parse($lead->created_at)]);
-        });
-
-        // Add deals
-        Deal::inRandomOrder()->take(500)->get()->each(function ($deal) use (&$allEntities) {
-            $allEntities->push(['type' => Deal::class, 'id' => $deal->id, 'date' => Carbon::parse($deal->created_at)]);
-        });
-
-        // Add orders
-        Order::inRandomOrder()->take(175)->get()->each(function ($order) use (&$allEntities) {
-            $allEntities->push(['type' => Order::class, 'id' => $order->id, 'date' => Carbon::parse($order->created_at)]);
-        });
-
-        // Add quotes
-        Quote::inRandomOrder()->take(150)->get()->each(function ($quote) use (&$allEntities) {
-            $allEntities->push(['type' => Quote::class, 'id' => $quote->id, 'date' => Carbon::parse($quote->created_at)]);
-        });
-
-        // Add invoices
-        Invoice::inRandomOrder()->take(100)->get()->each(function ($invoice) use (&$allEntities) {
-            $allEntities->push(['type' => Invoice::class, 'id' => $invoice->id, 'date' => Carbon::parse($invoice->created_at)]);
-        });
-
         $taskCount = 0;
         foreach ($allEntities as $entity) {
-            $taskDate = $entity['date']->copy()->addDays(mt_rand(1, 30));
-            if ($taskDate->gt(now()->addDays(30))) {
-                $taskDate = now()->subDays(mt_rand(1, 60));
+            $numTasks = mt_rand(3, 5);
+            for ($i = 0; $i < $numTasks; $i++) {
+                $taskDate = $entity['date']->copy()->addDays(mt_rand(1, 90));
+                if ($taskDate->gt(now()->addDays(30))) {
+                    $taskDate = now()->subDays(mt_rand(1, 60));
+                }
+
+                $isCompleted = $taskDate->lt(now()->subDays(3)) && mt_rand(1, 100) <= 80;
+
+                $task = Task::create([
+                    'name' => $taskNames[array_rand($taskNames)],
+                    'description' => $taskDescriptions[array_rand($taskDescriptions)],
+                    'due_at' => $taskDate,
+                    'completed_at' => $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5)) : null,
+                    'taskable_type' => $entity['type'],
+                    'taskable_id' => $entity['id'],
+                    'user_created_id' => $this->userId,
+                    'user_owner_id' => $this->userId,
+                    'user_assigned_id' => $this->userId,
+                ]);
+
+                Activity::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
+                    'causeable_id' => $this->userId,
+                    'timelineable_type' => $entity['type'],
+                    'timelineable_id' => $entity['id'],
+                    'recordable_type' => Task::class,
+                    'recordable_id' => $task->id,
+                    'description' => 'Task created',
+                ]);
+
+                $this->backdateModel($task, $taskDate);
+                $this->backdateModel($task->activity, $taskDate);
+                $taskCount++;
             }
-
-            $isCompleted = $taskDate->lt(now()->subDays(3)) && mt_rand(1, 100) <= 80;
-            $isFuture = $taskDate->gt(now());
-
-            $task = Task::create([
-                'name' => $taskNames[array_rand($taskNames)],
-                'description' => $taskDescriptions[array_rand($taskDescriptions)],
-                'due_at' => $taskDate,
-                'completed_at' => $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5)) : null,
-                'taskable_type' => $entity['type'],
-                'taskable_id' => $entity['id'],
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
-                'user_assigned_id' => $this->userId,
-            ]);
-
-            // Create activity record for timeline
-            Activity::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
-                'causeable_id' => $this->userId,
-                'timelineable_type' => $entity['type'],
-                'timelineable_id' => $entity['id'],
-                'recordable_type' => Task::class,
-                'recordable_id' => $task->id,
-                'description' => 'Task created',
-            ]);
-
-            $this->backdateModel($task, $taskDate);
-            $this->backdateModel($task->activity, $taskDate);
-            $taskCount++;
         }
 
         $this->command->info("  → Created {$taskCount} tasks");
     }
 
-    protected function seedNotes(): void
+    protected function seedNotes(Collection $allEntities): void
     {
         $noteContents = [
             'Client expressed strong interest in our enterprise solution. They need a proposal by next week.',
@@ -1764,70 +1760,45 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'Email sent with updated pricing matrix and service level agreement.',
         ];
 
-        $allEntities = collect();
-
-        Lead::inRandomOrder()->take(850)->get()->each(function ($lead) use (&$allEntities) {
-            $allEntities->push(['type' => Lead::class, 'id' => $lead->id, 'date' => Carbon::parse($lead->created_at)]);
-        });
-
-        Deal::inRandomOrder()->take(700)->get()->each(function ($deal) use (&$allEntities) {
-            $allEntities->push(['type' => Deal::class, 'id' => $deal->id, 'date' => Carbon::parse($deal->created_at)]);
-        });
-
-        Person::inRandomOrder()->take(350)->get()->each(function ($person) use (&$allEntities) {
-            $allEntities->push(['type' => Person::class, 'id' => $person->id, 'date' => Carbon::parse($person->created_at)]);
-        });
-
-        Organization::inRandomOrder()->take(175)->get()->each(function ($org) use (&$allEntities) {
-            $allEntities->push(['type' => Organization::class, 'id' => $org->id, 'date' => Carbon::parse($org->created_at)]);
-        });
-
-        // Add quotes
-        Quote::inRandomOrder()->take(200)->get()->each(function ($quote) use (&$allEntities) {
-            $allEntities->push(['type' => Quote::class, 'id' => $quote->id, 'date' => Carbon::parse($quote->created_at)]);
-        });
-
-        // Add invoices
-        Invoice::inRandomOrder()->take(140)->get()->each(function ($invoice) use (&$allEntities) {
-            $allEntities->push(['type' => Invoice::class, 'id' => $invoice->id, 'date' => Carbon::parse($invoice->created_at)]);
-        });
-
         $noteCount = 0;
         foreach ($allEntities as $entity) {
-            $noteDate = $entity['date']->copy()->addDays(mt_rand(0, 30));
-            if ($noteDate->gt(now())) {
-                $noteDate = now()->subDays(mt_rand(1, 14));
+            $numNotes = mt_rand(3, 5);
+            for ($i = 0; $i < $numNotes; $i++) {
+                $noteDate = $entity['date']->copy()->addDays(mt_rand(0, 90));
+                if ($noteDate->gt(now())) {
+                    $noteDate = now()->subDays(mt_rand(1, 14));
+                }
+
+                $note = Note::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'content' => $noteContents[array_rand($noteContents)],
+                    'noted_at' => $noteDate,
+                    'noteable_type' => $entity['type'],
+                    'noteable_id' => $entity['id'],
+                    'user_created_id' => $this->userId,
+                ]);
+
+                Activity::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
+                    'causeable_id' => $this->userId,
+                    'timelineable_type' => $entity['type'],
+                    'timelineable_id' => $entity['id'],
+                    'recordable_type' => Note::class,
+                    'recordable_id' => $note->id,
+                    'description' => 'Note added',
+                ]);
+
+                $this->backdateModel($note, $noteDate);
+                $this->backdateModel($note->activity, $noteDate);
+                $noteCount++;
             }
-
-            $note = Note::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'content' => $noteContents[array_rand($noteContents)],
-                'noted_at' => $noteDate,
-                'noteable_type' => $entity['type'],
-                'noteable_id' => $entity['id'],
-                'user_created_id' => $this->userId,
-            ]);
-
-            Activity::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
-                'causeable_id' => $this->userId,
-                'timelineable_type' => $entity['type'],
-                'timelineable_id' => $entity['id'],
-                'recordable_type' => Note::class,
-                'recordable_id' => $note->id,
-                'description' => 'Note added',
-            ]);
-
-            $this->backdateModel($note, $noteDate);
-            $this->backdateModel($note->activity, $noteDate);
-            $noteCount++;
         }
 
         $this->command->info("  → Created {$noteCount} notes");
     }
 
-    protected function seedCalls(): void
+    protected function seedCalls(Collection $allEntities): void
     {
         $callNames = [
             'Discovery call', 'Follow-up call', 'Pricing discussion', 'Technical review',
@@ -1835,63 +1806,52 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'Demo follow-up', 'Renewal call', 'Cold call', 'Referral call',
         ];
 
-        $allEntities = collect();
-
-        Lead::inRandomOrder()->take(350)->get()->each(function ($lead) use (&$allEntities) {
-            $allEntities->push(['type' => Lead::class, 'id' => $lead->id, 'date' => Carbon::parse($lead->created_at)]);
-        });
-
-        Deal::inRandomOrder()->take(350)->get()->each(function ($deal) use (&$allEntities) {
-            $allEntities->push(['type' => Deal::class, 'id' => $deal->id, 'date' => Carbon::parse($deal->created_at)]);
-        });
-
-        Person::inRandomOrder()->take(175)->get()->each(function ($person) use (&$allEntities) {
-            $allEntities->push(['type' => Person::class, 'id' => $person->id, 'date' => Carbon::parse($person->created_at)]);
-        });
-
         $callCount = 0;
         foreach ($allEntities as $entity) {
-            $callDate = $entity['date']->copy()->addDays(mt_rand(1, 21));
-            if ($callDate->gt(now())) {
-                $callDate = now()->subDays(mt_rand(1, 14));
+            $numCalls = mt_rand(3, 5);
+            for ($i = 0; $i < $numCalls; $i++) {
+                $callDate = $entity['date']->copy()->addDays(mt_rand(1, 60));
+                if ($callDate->gt(now())) {
+                    $callDate = now()->subDays(mt_rand(1, 14));
+                }
+
+                $duration = mt_rand(5, 60);
+                $startAt = $callDate->copy()->setTime($this->randomBiasedInt(9, 17), mt_rand(0, 59));
+                $finishAt = $startAt->copy()->addMinutes($duration);
+
+                $call = Call::create([
+                    'name' => $callNames[array_rand($callNames)],
+                    'description' => 'Call lasting approximately '.$duration.' minutes.',
+                    'start_at' => $startAt,
+                    'finish_at' => $finishAt,
+                    'callable_type' => $entity['type'],
+                    'callable_id' => $entity['id'],
+                    'user_created_id' => $this->userId,
+                    'user_owner_id' => $this->userId,
+                    'user_assigned_id' => $this->userId,
+                ]);
+
+                Activity::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
+                    'causeable_id' => $this->userId,
+                    'timelineable_type' => $entity['type'],
+                    'timelineable_id' => $entity['id'],
+                    'recordable_type' => Call::class,
+                    'recordable_id' => $call->id,
+                    'description' => 'Call logged',
+                ]);
+
+                $this->backdateModel($call, $callDate);
+                $this->backdateModel($call->activity, $callDate);
+                $callCount++;
             }
-
-            $duration = mt_rand(5, 60); // minutes
-            $startAt = $callDate->copy()->setTime($this->randomBiasedInt(9, 17), mt_rand(0, 59));
-            $finishAt = $startAt->copy()->addMinutes($duration);
-
-            $call = Call::create([
-                'name' => $callNames[array_rand($callNames)],
-                'description' => 'Call lasting approximately '.$duration.' minutes.',
-                'start_at' => $startAt,
-                'finish_at' => $finishAt,
-                'callable_type' => $entity['type'],
-                'callable_id' => $entity['id'],
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
-                'user_assigned_id' => $this->userId,
-            ]);
-
-            Activity::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
-                'causeable_id' => $this->userId,
-                'timelineable_type' => $entity['type'],
-                'timelineable_id' => $entity['id'],
-                'recordable_type' => Call::class,
-                'recordable_id' => $call->id,
-                'description' => 'Call logged',
-            ]);
-
-            $this->backdateModel($call, $callDate);
-            $this->backdateModel($call->activity, $callDate);
-            $callCount++;
         }
 
         $this->command->info("  → Created {$callCount} calls");
     }
 
-    protected function seedMeetings(): void
+    protected function seedMeetings(Collection $allEntities): void
     {
         $meetingNames = [
             'Initial discovery meeting', 'Product demo', 'Requirements workshop',
@@ -1905,64 +1865,53 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'Client Office', 'Board Room', 'Meeting Room 2', 'Offsite Venue',
         ];
 
-        $allEntities = collect();
-
-        Deal::inRandomOrder()->take(280)->get()->each(function ($deal) use (&$allEntities) {
-            $allEntities->push(['type' => Deal::class, 'id' => $deal->id, 'date' => Carbon::parse($deal->created_at)]);
-        });
-
-        Lead::inRandomOrder()->take(140)->get()->each(function ($lead) use (&$allEntities) {
-            $allEntities->push(['type' => Lead::class, 'id' => $lead->id, 'date' => Carbon::parse($lead->created_at)]);
-        });
-
-        Organization::inRandomOrder()->take(100)->get()->each(function ($org) use (&$allEntities) {
-            $allEntities->push(['type' => Organization::class, 'id' => $org->id, 'date' => Carbon::parse($org->created_at)]);
-        });
-
         $meetingCount = 0;
         foreach ($allEntities as $entity) {
-            $meetingDate = $entity['date']->copy()->addDays(mt_rand(3, 30));
-            if ($meetingDate->gt(now()->addDays(14))) {
-                $meetingDate = now()->subDays(mt_rand(1, 30));
+            $numMeetings = mt_rand(3, 5);
+            for ($i = 0; $i < $numMeetings; $i++) {
+                $meetingDate = $entity['date']->copy()->addDays(mt_rand(3, 90));
+                if ($meetingDate->gt(now()->addDays(14))) {
+                    $meetingDate = now()->subDays(mt_rand(1, 30));
+                }
+
+                $startHour = $this->randomBiasedInt(9, 16);
+                $duration = [30, 60, 90, 120][array_rand([30, 60, 90, 120])];
+                $startAt = $meetingDate->copy()->setTime($startHour, (mt_rand(0, 1) === 0 ? 0 : 30));
+                $finishAt = $startAt->copy()->addMinutes($duration);
+
+                $meeting = Meeting::create([
+                    'name' => $meetingNames[array_rand($meetingNames)],
+                    'description' => 'Meeting at '.$meetingLocations[array_rand($meetingLocations)].'. Duration: '.$duration.' minutes.',
+                    'start_at' => $startAt,
+                    'finish_at' => $finishAt,
+                    'meetingable_type' => $entity['type'],
+                    'meetingable_id' => $entity['id'],
+                    'user_created_id' => $this->userId,
+                    'user_owner_id' => $this->userId,
+                    'user_assigned_id' => $this->userId,
+                ]);
+
+                Activity::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
+                    'causeable_id' => $this->userId,
+                    'timelineable_type' => $entity['type'],
+                    'timelineable_id' => $entity['id'],
+                    'recordable_type' => Meeting::class,
+                    'recordable_id' => $meeting->id,
+                    'description' => 'Meeting scheduled',
+                ]);
+
+                $this->backdateModel($meeting, $meetingDate);
+                $this->backdateModel($meeting->activity, $meetingDate);
+                $meetingCount++;
             }
-
-            $startHour = $this->randomBiasedInt(9, 16);
-            $duration = [30, 60, 90, 120][array_rand([30, 60, 90, 120])];
-            $startAt = $meetingDate->copy()->setTime($startHour, (mt_rand(0, 1) === 0 ? 0 : 30));
-            $finishAt = $startAt->copy()->addMinutes($duration);
-
-            $meeting = Meeting::create([
-                'name' => $meetingNames[array_rand($meetingNames)],
-                'description' => 'Meeting at '.$meetingLocations[array_rand($meetingLocations)].'. Duration: '.$duration.' minutes.',
-                'start_at' => $startAt,
-                'finish_at' => $finishAt,
-                'meetingable_type' => $entity['type'],
-                'meetingable_id' => $entity['id'],
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
-                'user_assigned_id' => $this->userId,
-            ]);
-
-            Activity::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
-                'causeable_id' => $this->userId,
-                'timelineable_type' => $entity['type'],
-                'timelineable_id' => $entity['id'],
-                'recordable_type' => Meeting::class,
-                'recordable_id' => $meeting->id,
-                'description' => 'Meeting scheduled',
-            ]);
-
-            $this->backdateModel($meeting, $meetingDate);
-            $this->backdateModel($meeting->activity, $meetingDate);
-            $meetingCount++;
         }
 
         $this->command->info("  → Created {$meetingCount} meetings");
     }
 
-    protected function seedLunches(): void
+    protected function seedLunches(Collection $allEntities): void
     {
         $lunchNames = [
             'Client lunch', 'Business lunch', 'Relationship building lunch',
@@ -1976,63 +1925,48 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'Sushi Bar', 'French Café',
         ];
 
-        $allEntities = collect();
-
-        Deal::inRandomOrder()->take(140)->get()->each(function ($deal) use (&$allEntities) {
-            $allEntities->push(['type' => Deal::class, 'id' => $deal->id, 'date' => Carbon::parse($deal->created_at)]);
-        });
-
-        Lead::inRandomOrder()->take(70)->get()->each(function ($lead) use (&$allEntities) {
-            $allEntities->push(['type' => Lead::class, 'id' => $lead->id, 'date' => Carbon::parse($lead->created_at)]);
-        });
-
-        Organization::inRandomOrder()->take(70)->get()->each(function ($org) use (&$allEntities) {
-            $allEntities->push(['type' => Organization::class, 'id' => $org->id, 'date' => Carbon::parse($org->created_at)]);
-        });
-
-        Person::inRandomOrder()->take(50)->get()->each(function ($person) use (&$allEntities) {
-            $allEntities->push(['type' => Person::class, 'id' => $person->id, 'date' => Carbon::parse($person->created_at)]);
-        });
-
         $lunchCount = 0;
         foreach ($allEntities as $entity) {
-            $lunchDate = $entity['date']->copy()->addDays(mt_rand(3, 30));
-            if ($lunchDate->gt(now()->addDays(14))) {
-                $lunchDate = now()->subDays(mt_rand(1, 30));
+            $numLunches = mt_rand(3, 5);
+            for ($i = 0; $i < $numLunches; $i++) {
+                $lunchDate = $entity['date']->copy()->addDays(mt_rand(3, 90));
+                if ($lunchDate->gt(now()->addDays(14))) {
+                    $lunchDate = now()->subDays(mt_rand(1, 30));
+                }
+
+                $duration = [60, 90, 120][array_rand([60, 90, 120])];
+                $startAt = $lunchDate->copy()->setTime($this->randomBiasedInt(11, 13), (mt_rand(0, 1) === 0 ? 0 : 30));
+                $finishAt = $startAt->copy()->addMinutes($duration);
+                $location = $lunchLocations[array_rand($lunchLocations)];
+
+                $lunch = Lunch::create([
+                    'name' => $lunchNames[array_rand($lunchNames)],
+                    'description' => 'Lunch at '.$location.'. Duration: '.$duration.' minutes.',
+                    'start_at' => $startAt,
+                    'finish_at' => $finishAt,
+                    'location' => $location,
+                    'lunchable_type' => $entity['type'],
+                    'lunchable_id' => $entity['id'],
+                    'user_created_id' => $this->userId,
+                    'user_owner_id' => $this->userId,
+                    'user_assigned_id' => $this->userId,
+                ]);
+
+                Activity::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
+                    'causeable_id' => $this->userId,
+                    'timelineable_type' => $entity['type'],
+                    'timelineable_id' => $entity['id'],
+                    'recordable_type' => Lunch::class,
+                    'recordable_id' => $lunch->id,
+                    'description' => 'Lunch scheduled',
+                ]);
+
+                $this->backdateModel($lunch, $lunchDate);
+                $this->backdateModel($lunch->activity, $lunchDate);
+                $lunchCount++;
             }
-
-            $duration = [60, 90, 120][array_rand([60, 90, 120])];
-            $startAt = $lunchDate->copy()->setTime($this->randomBiasedInt(11, 13), (mt_rand(0, 1) === 0 ? 0 : 30));
-            $finishAt = $startAt->copy()->addMinutes($duration);
-            $location = $lunchLocations[array_rand($lunchLocations)];
-
-            $lunch = Lunch::create([
-                'name' => $lunchNames[array_rand($lunchNames)],
-                'description' => 'Lunch at '.$location.'. Duration: '.$duration.' minutes.',
-                'start_at' => $startAt,
-                'finish_at' => $finishAt,
-                'location' => $location,
-                'lunchable_type' => $entity['type'],
-                'lunchable_id' => $entity['id'],
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
-                'user_assigned_id' => $this->userId,
-            ]);
-
-            Activity::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'causeable_type' => config('auth.providers.users.model', 'App\Models\User'),
-                'causeable_id' => $this->userId,
-                'timelineable_type' => $entity['type'],
-                'timelineable_id' => $entity['id'],
-                'recordable_type' => Lunch::class,
-                'recordable_id' => $lunch->id,
-                'description' => 'Lunch scheduled',
-            ]);
-
-            $this->backdateModel($lunch, $lunchDate);
-            $this->backdateModel($lunch->activity, $lunchDate);
-            $lunchCount++;
         }
 
         $this->command->info("  → Created {$lunchCount} lunches");
