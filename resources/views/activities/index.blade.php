@@ -12,5 +12,5 @@
             <hr class="my-5">
         </div>
     </x-slot>
-    
+
 </x-crm::app-layout>
