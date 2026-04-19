@@ -15,17 +15,7 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        $activities = Activity::latest();
-
-        if ($activities->count() < 30) {
-            $activities = $activities->get();
-        } else {
-            $activities = $activities->paginate(30);
-        }
-
-        return view('laravel-crm::activities.index', [
-            'activities' => $activities ?? [],
-        ]);
+        return view('laravel-crm::activities.index');
     }
 
     /**

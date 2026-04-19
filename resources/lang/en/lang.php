@@ -628,4 +628,7 @@ return [
     'upcoming' => 'upcoming',
     'view_all' => 'view all',
     'open' => 'open',
+    'my_activity' => 'my activity',
+    'all_activity' => 'all activity',
+    'no_activities' => 'no activities found',
 ];

@@ -86,6 +86,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
 use VentureDrake\LaravelCrm\Http\Middleware\XeroTenant;
+use VentureDrake\LaravelCrm\Livewire\Activities\ActivityFeed;
 use VentureDrake\LaravelCrm\Livewire\Activities\ActivityIndex;
 use VentureDrake\LaravelCrm\Livewire\ActivityMenu;
 use VentureDrake\LaravelCrm\Livewire\ActivityTabs;
@@ -804,6 +805,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-product-edit', ProductEdit::class);
         Livewire::component('crm-product-show', ProductShow::class);
 
+        Livewire::component('crm-activity-feed', ActivityFeed::class);
         Livewire::component('crm-activity-index', ActivityIndex::class);
         Livewire::component('crm-note-item', NoteItem::class);
         Livewire::component('crm-note-related', NoteRelated::class);
