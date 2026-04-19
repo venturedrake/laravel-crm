@@ -42,9 +42,20 @@
     </x-mary-drawer>
     <div class="grid gap-y-5">
         @foreach($this->contacts as $contact)
-            <x-mary-list-item wire:click="showContact({{ $contact->id }})" :item="$contact">
+            <x-mary-list-item :item="$contact">
                 <x-slot:value>
-                    {{ $contact->contactable->name }}
+                    <div class="flex flex-row justify-between">
+                        <div class="flex flex-row items-center gap-2">
+                            <x-mary-icon name="fas.user-circle" />
+                            <a href="{{ route('laravel-crm.people.show', $contact->entityable) }}" class="link link-hover link-primary">
+                                {{ $contact->entityable->name }}
+                            </a>
+                        </div>
+                        <div>
+                            <x-mary-button wire:click="remove({{ $contact->entityable->id }})" class="btn-xs btn-error btn-square text-white" type="button" icon="fas.x" />
+                        </div>
+                    </div>
+                   
                 </x-slot:value>
             </x-mary-list-item>
         @endforeach

@@ -50,4 +50,3 @@ class LaravelCrmSampleData extends Command
         return 0;
     }
 }
-

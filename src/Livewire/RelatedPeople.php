@@ -18,8 +18,6 @@ class RelatedPeople extends Component
 
     public $model = null;
 
-    public array $data = [];
-
     public $person_id;
 
     public $person_name;
@@ -68,13 +66,37 @@ class RelatedPeople extends Component
 
         $this->showAddRelatedPerson = false;
         $this->reset('person_id', 'person_name');
-        $this->success('Related contact added');
+
+        $this->success(
+            ucfirst(trans('laravel-crm::lang.related_contact_added'))
+        );
+
         $this->dispatch('related-contacts-updated');
     }
 
-    public function remove($index)
+    public function remove($id)
     {
-        unset($this->data[$index]);
+        if ($person = Person::find($id)) {
+            $this->model->contacts()
+                ->where([
+                    'entityable_type' => $person->getMorphClass(),
+                    'entityable_id' => $person->id,
+                ])
+                ->delete();
+
+            $person->contacts()
+                ->where([
+                    'entityable_type' => $this->model->getMorphClass(),
+                    'entityable_id' => $this->model->id,
+                ])
+                ->delete();
+
+            $this->success(
+                ucfirst(trans('laravel-crm::lang.related_contact_removed'))
+            );
+
+            $this->dispatch('related-contacts-updated');
+        }
     }
 
     public function render()
