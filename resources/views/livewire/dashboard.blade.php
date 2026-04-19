@@ -116,7 +116,7 @@
         @hasinvoicesenabled
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.revenue')) }}" shadow separator>
                 <div class="h-72">
-                    <x-mary-chart wire:model="revenueChart" />
+                    <x-mary-chart wire:model="revenueChart" class="!h-full" />
                 </div>
             </x-mary-card>
         @endhasinvoicesenabled
@@ -124,7 +124,7 @@
         @hasdealsenabled
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.deals')) }} {{ ucfirst(__('laravel-crm::lang.pipeline')) }}" shadow separator>
                 <div class="h-72">
-                    <x-mary-chart wire:model="pipelineChart" />
+                    <x-mary-chart wire:model="pipelineChart" class="!h-full" />
                 </div>
             </x-mary-card>
         @endhasdealsenabled
@@ -135,7 +135,7 @@
         @hasleadsenabled
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.leads')) }} vs {{ ucfirst(__('laravel-crm::lang.deals')) }}" shadow separator>
                 <div class="h-72">
-                    <x-mary-chart wire:model="leadsVsDealsChart" />
+                    <x-mary-chart wire:model="leadsVsDealsChart" class="!h-full" />
                 </div>
             </x-mary-card>
         @endhasleadsenabled
@@ -143,7 +143,7 @@
         @hasdealsenabled
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.deal')) }} {{ ucfirst(__('laravel-crm::lang.status')) }}" shadow separator>
                 <div class="h-72">
-                    <x-mary-chart wire:model="dealStatusChart" />
+                    <x-mary-chart wire:model="dealStatusChart" class="!h-full" />
                 </div>
             </x-mary-card>
         @endhasdealsenabled
