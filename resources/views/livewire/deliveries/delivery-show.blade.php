@@ -23,7 +23,7 @@
             @endcan
         </x-slot:actions>
     </x-crm-header>
-    <div class="grid lg:grid-cols-2 gap-5">
+    <div class="grid lg:grid-cols-2 gap-5 items-start">
         <div class="grid gap-y-5">
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" shadow separator>
                 <div class="grid gap-y-3">

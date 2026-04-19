@@ -27,7 +27,7 @@
         <x-mary-table :headers="$headers" :rows="$quotes" :link="route('laravel-crm.quotes.show', ['quote' => '[id]'])" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_labels', $quote)
                 @foreach($quote->labels as $label)
-                    <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+                    <x-mary-badge :value="$label->name" class="text-white" :style="'border-color: #'.$label->hex.'; background-color: #'.$label->hex" />
                 @endforeach
             @endscope
             @scope('cell_pipeline_stage', $quote)

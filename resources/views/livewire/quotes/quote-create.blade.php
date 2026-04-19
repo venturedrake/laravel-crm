@@ -5,7 +5,7 @@
         </x-slot:actions>
     </x-mary-header>
 
-    <div class="grid lg:grid-cols-2 gap-5">
+    <div class="grid lg:grid-cols-2 gap-5 items-start">
         @include('laravel-crm::livewire.quotes.quote-form')
     </div>
     <hr class="border-t-[length:var(--border)] border-base-content/10 my-3">

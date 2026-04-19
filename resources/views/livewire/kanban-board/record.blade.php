@@ -6,7 +6,7 @@
                 @if($record['labels'])
                     <div class="mt-2">
                         @foreach($record['labels'] as $label)
-                            <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+                            <x-mary-badge :value="$label->name" class="text-white" :style="'border-color: #'.$label->hex.'; background-color: #'.$label->hex" />
                         @endforeach
                     </div>
                 @endif

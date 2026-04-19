@@ -2,15 +2,15 @@
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" separator>
         <div class="grid gap-3" wire:key="organization">
             <x-mary-input wire:model="name" label="{{ ucwords(__('laravel-crm::lang.name')) }}" />
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-select wire:model="organization_type_id" label="{{ ucfirst(__('laravel-crm::lang.type')) }}" :options="$organizationTypes" />
                 <x-mary-input wire:model="vat_number" label="{{ ucfirst(__('laravel-crm::lang.vat_number')) }}" />
             </div>
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-select wire:model="industry_id" label="{{ ucfirst(__('laravel-crm::lang.industry')) }}" :options="$industries" />
                 <x-mary-select wire:model="timezone_id" label="{{ ucfirst(__('laravel-crm::lang.timezone')) }}" :options="$timezones" />
             </div>
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="number_of_employees" label="{{ ucfirst(__('laravel-crm::lang.number_of_employees')) }}" />
                 <x-mary-input wire:model="annual_revenue" label="{{ ucfirst(__('laravel-crm::lang.annual_revenue')) }}" prefix="$" money />
             </div>

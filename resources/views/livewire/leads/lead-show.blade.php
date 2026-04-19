@@ -26,7 +26,7 @@
             @endcan
         </x-slot:actions>
     </x-crm-header>
-    <div class="grid lg:grid-cols-2 gap-5">
+    <div class="grid lg:grid-cols-2 gap-5 items-start">
         <div class="grid gap-y-5">
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" shadow separator>
                 <div class="grid gap-y-3">
@@ -58,7 +58,7 @@
                         <strong>{{ ucfirst(__('laravel-crm::lang.labels')) }}</strong>
                         <span>
                         @foreach($lead->labels as $label)
-                            <x-mary-badge value="{{ $label->name }}" class="badge-sm text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+                            <x-mary-badge :value="$label->name" class="badge-sm text-white" :style="'border-color: #'.$label->hex.'; background-color: #'.$label->hex" />
                         @endforeach
                     </span>
                     </div>

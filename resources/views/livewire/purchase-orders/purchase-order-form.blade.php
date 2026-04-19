@@ -39,11 +39,11 @@
                     <x-mary-badge value="New" class="badge-info badge-sm rounded-md autocomplete-new text-white" />
                 @endif
             </div>
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="reference" label="{{ ucfirst(__('laravel-crm::lang.reference')) }}" />
                 <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-datetime wire:model="issue_date" label="{{ ucfirst(__('laravel-crm::lang.issue_date')) }}" />
                 <x-mary-datetime wire:model="delivery_date" label="{{ ucfirst(__('laravel-crm::lang.delivery_date')) }}" />
             </div>

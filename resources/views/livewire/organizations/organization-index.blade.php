@@ -31,7 +31,7 @@
             @endscope
             @scope('cell_labels', $organization)
                 @foreach($organization->labels as $label)
-                    <x-mary-badge value="{{ $label->name }}" class="text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+                    <x-mary-badge :value="$label->name" class="text-white" :style="'border-color: #'.$label->hex.'; background-color: #'.$label->hex" />
                 @endforeach
             @endscope
             @scope('cell_open_deals', $organization)

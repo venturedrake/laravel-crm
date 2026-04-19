@@ -8,7 +8,7 @@
     </x-mary-header>
     
     <x-mary-form wire:submit="save">
-        <div class="grid lg:grid-cols-2 gap-5">
+        <div class="grid lg:grid-cols-2 gap-5 items-start">
            @include('laravel-crm::livewire.deliveries.delivery-form')
         </div>
         <x-slot:actions>

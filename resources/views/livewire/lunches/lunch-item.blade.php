@@ -1,4 +1,4 @@
-<x-mary-card>
+<x-mary-card class="border border-base-300 mt-2">
     <div class="grid gap-3">
         <div class="flex justify-between items-start">
             <div class="font-bold text-lg">

@@ -56,11 +56,11 @@
             <x-mary-input wire:model="address_line_1" label="{{ ucfirst(__('laravel-crm::lang.address_line_1')) }}" />
             <x-mary-input wire:model="address_line_2" label="{{ ucfirst(__('laravel-crm::lang.address_line_2')) }}" />
             <x-mary-input wire:model="address_line_3" label="{{ ucfirst(__('laravel-crm::lang.address_line_3')) }}" />
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="address_suburb" label="{{ ucfirst(__('laravel-crm::lang.suburb')) }}" />
                 <x-mary-input wire:model="address_state" label="{{ ucfirst(__('laravel-crm::lang.state')) }}" />
             </div>
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="address_postcode" label="{{ ucfirst(__('laravel-crm::lang.postcode')) }}" />
                 <x-mary-select wire:model="address_country" label="{{ ucfirst(__('laravel-crm::lang.country')) }}" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries()" />
             </div>
@@ -72,7 +72,7 @@
         <div class="grid gap-3" wire:key="details">
             <x-mary-input wire:model="title" label="{{ ucfirst(__('laravel-crm::lang.title')) }}" />
             <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input label="{{ ucfirst(__('laravel-crm::lang.value')) }}" wire:model="amount" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
                 <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>

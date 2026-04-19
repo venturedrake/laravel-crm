@@ -41,11 +41,11 @@
             </div>
             <x-mary-input wire:model="title" label="{{ ucfirst(__('laravel-crm::lang.title')) }}" />
             <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="reference" label="{{ ucfirst(__('laravel-crm::lang.reference')) }}" />
                 <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-datetime wire:model="issue_at" label="{{ ucfirst(__('laravel-crm::lang.issue_date')) }}" />
                 <x-mary-datetime wire:model="expire_at" label="{{ ucfirst(__('laravel-crm::lang.expiry_date')) }}" />
             </div>

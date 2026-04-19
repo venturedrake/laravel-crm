@@ -322,6 +322,7 @@ use VentureDrake\LaravelCrm\View\Components\Emails;
 use VentureDrake\LaravelCrm\View\Components\Header;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
 use VentureDrake\LaravelCrm\View\Components\Phones;
+use VentureDrake\LaravelCrm\View\Components\TimelineItem;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
 class LaravelCrmServiceProvider extends ServiceProvider
@@ -692,6 +693,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::component('crm-phones', Phones::class);
         Blade::component('crm-emails', Emails::class);
         Blade::component('crm-addresses', Addresses::class);
+        Blade::component('crm-timeline-item', TimelineItem::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);

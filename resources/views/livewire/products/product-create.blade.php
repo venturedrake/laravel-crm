@@ -9,7 +9,7 @@
 
     @if($layout == 'full')
         <x-mary-form wire:submit="save">
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 @include('laravel-crm::livewire.products.product-form', [
                      'layout' => $layout
                  ])
@@ -28,7 +28,7 @@
         </x-mary-form>
     @else
         <x-mary-form wire:submit="createProduct">
-            <div class="grid lg:grid-cols-2 gap-5">
+            <div class="grid lg:grid-cols-2 gap-5 items-start">
                 @include('laravel-crm::livewire.products.product-form', [
                      'layout' => $layout
                  ])

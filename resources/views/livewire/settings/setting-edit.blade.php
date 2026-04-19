@@ -1,7 +1,7 @@
 <div class="crm-content">
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.settings')) }}" class="mb-5" progress-indicator ></x-mary-header>
     <x-mary-form wire:submit="save">
-        <div class="grid lg:grid-cols-2 gap-5">
+        <div class="grid lg:grid-cols-2 gap-5 items-start">
             <div>
                 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.general')) }}" separator>
                     <div class="grid gap-3" wire:key="details">
