@@ -34,8 +34,6 @@ class LunchRelated extends Component
 
     public array $data = [];
 
-    public array $revert = [];
-
     public function mount(): void
     {
         $this->user_owner_id = auth()->user()->id;
@@ -94,6 +92,7 @@ class LunchRelated extends Component
     }
 
     #[On('lunch-updated')]
+    #[On('lunch-added')]
     public function getLunches(): void
     {
         $lunchIds = [];
@@ -135,83 +134,9 @@ class LunchRelated extends Component
         }
 
         foreach ($this->lunches as $lunch) {
-            $this->data[$lunch->id] = array_merge([
-                'editing' => false,
-            ], $this->data[$lunch->id] ?? [], [
-                'id' => $lunch->id,
-                'name' => $lunch->name,
-                'description' => $lunch->description,
-                'start_at' => $lunch->start_at ? $lunch->start_at->format('Y-m-d\TH:i') : null,
-                'finish_at' => $lunch->finish_at ? $lunch->finish_at->format('Y-m-d\TH:i') : null,
-                'location' => $lunch->location,
-                'user_owner_id' => $lunch->user_owner_id,
-                'user_assigned_id' => $lunch->user_assigned_id,
+            $this->data[$lunch->id] = [
                 'related' => in_array($lunch->id, $relatedIds),
-                'guests' => $lunch->contacts->pluck('entityable_id')->toArray(),
-            ]);
-        }
-    }
-
-    public function edit($id): void
-    {
-        $this->revert[$id] = $this->data[$id];
-        $this->data[$id]['editing'] = true;
-    }
-
-    public function cancel($id): void
-    {
-        $this->data[$id]['editing'] = false;
-        $this->data[$id] = $this->revert[$id];
-    }
-
-    public function update($id): void
-    {
-        $this->validate([
-            'data.'.$id.'.name' => 'required|max:255',
-            'data.'.$id.'.start_at' => 'required',
-            'data.'.$id.'.finish_at' => 'required',
-        ]);
-
-        if ($lunch = $this->model->lunches()->find($id)) {
-            $lunch->update([
-                'name' => $this->data[$id]['name'],
-                'description' => $this->data[$id]['description'],
-                'start_at' => $this->normalizeDatetime($this->data[$id]['start_at']),
-                'finish_at' => $this->normalizeDatetime($this->data[$id]['finish_at']),
-                'location' => $this->data[$id]['location'],
-                'user_owner_id' => $this->data[$id]['user_owner_id'],
-                'user_assigned_id' => $this->data[$id]['user_assigned_id'],
-            ]);
-
-            $newGuestIds = $this->data[$id]['guests'] ?? [];
-
-            $lunch->contacts()->whereNotIn('entityable_id', $newGuestIds)->delete();
-
-            foreach ($newGuestIds as $personId) {
-                if ($person = Person::find($personId)) {
-                    $lunch->contacts()->firstOrCreate([
-                        'entityable_type' => $person->getMorphClass(),
-                        'entityable_id' => $person->id,
-                    ]);
-                }
-            }
-        }
-
-        $this->dispatch('lunch-updated');
-
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.lunch_updated'))
-        );
-
-        $this->data[$id]['editing'] = false;
-    }
-
-    public function delete($id): void
-    {
-        if ($lunch = $this->model->lunches()->find($id)) {
-            $lunch->delete();
-
-            $this->success(ucfirst(trans('laravel-crm::lang.lunch_deleted')));
+            ];
         }
     }
 

@@ -82,7 +82,7 @@
                         <strong>{{ ucfirst(__('laravel-crm::lang.labels')) }}</strong>
                         <span>
                         @foreach($person->labels as $label)
-                                <x-mary-badge value="{{ $label->name }}" class="badge-sm text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+                            <x-mary-badge value="{{ $label->name }}" class="badge-sm text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}"  />
                         @endforeach
                     </span>
                     </div>

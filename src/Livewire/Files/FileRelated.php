@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Files;
 
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -18,7 +17,7 @@ class FileRelated extends Component
 
     public $files = [];
 
-    public array $relatedFileIds = [];
+    public array $data = [];
 
     public $uploadedFile;
 
@@ -63,10 +62,11 @@ class FileRelated extends Component
     }
 
     #[On('file-updated')]
+    #[On('file-added')]
     public function getFiles(): void
     {
         $fileIds = [];
-        $this->relatedFileIds = [];
+        $relatedIds = [];
 
         foreach ($this->model->files()->latest()->get() as $file) {
             $fileIds[] = $file->id;
@@ -77,7 +77,7 @@ class FileRelated extends Component
                 foreach ($this->model->contacts as $contact) {
                     foreach ($contact->entityable->files()->latest()->get() as $file) {
                         $fileIds[] = $file->id;
-                        $this->relatedFileIds[] = $file->id;
+                        $relatedIds[] = $file->id;
                     }
                 }
             }
@@ -85,14 +85,14 @@ class FileRelated extends Component
             if (method_exists($this->model, 'organization') && $this->model->organization) {
                 foreach ($this->model->organization->files()->latest()->get() as $file) {
                     $fileIds[] = $file->id;
-                    $this->relatedFileIds[] = $file->id;
+                    $relatedIds[] = $file->id;
                 }
             }
 
             if (method_exists($this->model, 'person') && $this->model->person) {
                 foreach ($this->model->person->files()->latest()->get() as $file) {
                     $fileIds[] = $file->id;
-                    $this->relatedFileIds[] = $file->id;
+                    $relatedIds[] = $file->id;
                 }
             }
         }
@@ -102,25 +102,11 @@ class FileRelated extends Component
         } else {
             $this->files = collect();
         }
-    }
 
-    public function download(int $id): mixed
-    {
-        $file = File::find($id);
-
-        if ($file) {
-            return Storage::disk($file->disk)->download($file->file, $file->name);
-        }
-
-        return null;
-    }
-
-    public function delete(int $id): void
-    {
-        if ($file = $this->model->files()->find($id)) {
-            $file->delete();
-
-            $this->success(ucfirst(trans('laravel-crm::lang.file_deleted')));
+        foreach ($this->files as $file) {
+            $this->data[$file->id] = [
+                'related' => in_array($file->id, $relatedIds),
+            ];
         }
     }
 

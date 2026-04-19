@@ -29,8 +29,6 @@ class TaskRelated extends Component
 
     public array $data = [];
 
-    public array $revert = [];
-
     public function mount(): void
     {
         $this->user_owner_id = auth()->user()->id;
@@ -75,6 +73,7 @@ class TaskRelated extends Component
     }
 
     #[On('task-updated')]
+    #[On('task-added')]
     public function getTasks(): void
     {
         $taskIds = [];
@@ -116,73 +115,9 @@ class TaskRelated extends Component
         }
 
         foreach ($this->tasks as $task) {
-            $this->data[$task->id] = array_merge([
-                'editing' => false,
-            ], $this->data[$task->id] ?? [], [
-                'id' => $task->id,
-                'name' => $task->name,
-                'description' => $task->description,
-                'due_at' => $task->due_at ? $task->due_at->toDateTimeString() : null,
-                'completed_at' => $task->completed_at ? $task->completed_at->toDateTimeString() : null,
-                'user_owner_id' => $task->user_owner_id,
-                'user_assigned_id' => $task->user_assigned_id,
+            $this->data[$task->id] = [
                 'related' => in_array($task->id, $relatedIds),
-            ]);
-        }
-    }
-
-    public function edit($id): void
-    {
-        $this->revert[$id] = $this->data[$id];
-        $this->data[$id]['editing'] = true;
-    }
-
-    public function cancel($id): void
-    {
-        $this->data[$id]['editing'] = false;
-        $this->data[$id] = $this->revert[$id];
-    }
-
-    public function update($id): void
-    {
-        $this->validate([
-            'data.'.$id.'.name' => 'required|max:255',
-        ]);
-
-        if ($task = $this->model->tasks()->find($id)) {
-            $task->update([
-                'name' => $this->data[$id]['name'],
-                'description' => $this->data[$id]['description'],
-                'due_at' => $this->data[$id]['due_at'],
-                'user_owner_id' => $this->data[$id]['user_owner_id'],
-                'user_assigned_id' => $this->data[$id]['user_assigned_id'],
-            ]);
-        }
-
-        $this->dispatch('task-updated');
-
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.task_updated'))
-        );
-
-        $this->data[$id]['editing'] = false;
-    }
-
-    public function complete($id): void
-    {
-        if ($task = $this->model->tasks()->find($id)) {
-            $task->update(['completed_at' => now()]);
-
-            $this->success(ucfirst(trans('laravel-crm::lang.task_completed')));
-        }
-    }
-
-    public function delete($id): void
-    {
-        if ($task = $this->model->tasks()->find($id)) {
-            $task->delete();
-
-            $this->success(ucfirst(trans('laravel-crm::lang.task_deleted')));
+            ];
         }
     }
 

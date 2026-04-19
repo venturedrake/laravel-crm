@@ -34,8 +34,6 @@ class MeetingRelated extends Component
 
     public array $data = [];
 
-    public array $revert = [];
-
     public function mount(): void
     {
         $this->user_owner_id = auth()->user()->id;
@@ -94,6 +92,7 @@ class MeetingRelated extends Component
     }
 
     #[On('meeting-updated')]
+    #[On('meeting-added')]
     public function getMeetings(): void
     {
         $meetingIds = [];
@@ -135,83 +134,9 @@ class MeetingRelated extends Component
         }
 
         foreach ($this->meetings as $meeting) {
-            $this->data[$meeting->id] = array_merge([
-                'editing' => false,
-            ], $this->data[$meeting->id] ?? [], [
-                'id' => $meeting->id,
-                'name' => $meeting->name,
-                'description' => $meeting->description,
-                'start_at' => $meeting->start_at ? $meeting->start_at->format('Y-m-d\TH:i') : null,
-                'finish_at' => $meeting->finish_at ? $meeting->finish_at->format('Y-m-d\TH:i') : null,
-                'location' => $meeting->location,
-                'user_owner_id' => $meeting->user_owner_id,
-                'user_assigned_id' => $meeting->user_assigned_id,
+            $this->data[$meeting->id] = [
                 'related' => in_array($meeting->id, $relatedIds),
-                'guests' => $meeting->contacts->pluck('entityable_id')->toArray(),
-            ]);
-        }
-    }
-
-    public function edit($id): void
-    {
-        $this->revert[$id] = $this->data[$id];
-        $this->data[$id]['editing'] = true;
-    }
-
-    public function cancel($id): void
-    {
-        $this->data[$id]['editing'] = false;
-        $this->data[$id] = $this->revert[$id];
-    }
-
-    public function update($id): void
-    {
-        $this->validate([
-            'data.'.$id.'.name' => 'required|max:255',
-            'data.'.$id.'.start_at' => 'required',
-            'data.'.$id.'.finish_at' => 'required',
-        ]);
-
-        if ($meeting = $this->model->meetings()->find($id)) {
-            $meeting->update([
-                'name' => $this->data[$id]['name'],
-                'description' => $this->data[$id]['description'],
-                'start_at' => $this->normalizeDatetime($this->data[$id]['start_at']),
-                'finish_at' => $this->normalizeDatetime($this->data[$id]['finish_at']),
-                'location' => $this->data[$id]['location'],
-                'user_owner_id' => $this->data[$id]['user_owner_id'],
-                'user_assigned_id' => $this->data[$id]['user_assigned_id'],
-            ]);
-
-            $newGuestIds = $this->data[$id]['guests'] ?? [];
-
-            $meeting->contacts()->whereNotIn('entityable_id', $newGuestIds)->delete();
-
-            foreach ($newGuestIds as $personId) {
-                if ($person = Person::find($personId)) {
-                    $meeting->contacts()->firstOrCreate([
-                        'entityable_type' => $person->getMorphClass(),
-                        'entityable_id' => $person->id,
-                    ]);
-                }
-            }
-        }
-
-        $this->dispatch('meeting-updated');
-
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.meeting_updated'))
-        );
-
-        $this->data[$id]['editing'] = false;
-    }
-
-    public function delete($id): void
-    {
-        if ($meeting = $this->model->meetings()->find($id)) {
-            $meeting->delete();
-
-            $this->success(ucfirst(trans('laravel-crm::lang.meeting_deleted')));
+            ];
         }
     }
 

@@ -24,7 +24,7 @@ class CallRelated extends Component
 
     public $finish_at;
 
-    public array $guests;
+    public array $guests = [];
 
     public $location;
 
@@ -33,8 +33,6 @@ class CallRelated extends Component
     public $user_assigned_id;
 
     public array $data = [];
-
-    public array $revert = [];
 
     public function mount(): void
     {
@@ -93,10 +91,11 @@ class CallRelated extends Component
     }
 
     #[On('call-updated')]
+    #[On('call-added')]
     public function getCalls(): void
     {
-        $callIds = [];
         $relatedIds = [];
+        $callIds = [];
 
         foreach ($this->model->calls()->latest()->get() as $call) {
             $callIds[] = $call->id;
@@ -134,85 +133,9 @@ class CallRelated extends Component
         }
 
         foreach ($this->calls as $call) {
-            $this->data[$call->id] = array_merge([
-                'editing' => false,
-            ], $this->data[$call->id] ?? [], [
-                'id' => $call->id,
-                'name' => $call->name,
-                'description' => $call->description,
-                'start_at' => $call->start_at ? $call->start_at->format('Y-m-d\TH:i') : null,
-                'finish_at' => $call->finish_at ? $call->finish_at->format('Y-m-d\TH:i') : null,
-                'location' => $call->location,
-                'user_owner_id' => $call->user_owner_id,
-                'user_assigned_id' => $call->user_assigned_id,
+            $this->data[$call->id] = [
                 'related' => in_array($call->id, $relatedIds),
-                'guests' => $call->contacts->pluck('id')->toArray(),
-            ]);
-        }
-    }
-
-    public function edit($id): void
-    {
-        $this->revert[$id] = $this->data[$id];
-        $this->data[$id]['editing'] = true;
-    }
-
-    public function cancel($id): void
-    {
-        $this->data[$id]['editing'] = false;
-        $this->data[$id] = $this->revert[$id];
-    }
-
-    public function update($id): void
-    {
-        $this->validate([
-            'data.'.$id.'.name' => 'required|max:255',
-            'data.'.$id.'.start_at' => 'required',
-            'data.'.$id.'.finish_at' => 'required',
-        ]);
-
-        if ($call = $this->model->calls()->find($id)) {
-            $call->update([
-                'name' => $this->data[$id]['name'],
-                'description' => $this->data[$id]['description'],
-                'start_at' => $this->normalizeDatetime($this->data[$id]['start_at']),
-                'finish_at' => $this->normalizeDatetime($this->data[$id]['finish_at']),
-                'location' => $this->data[$id]['location'],
-                'user_owner_id' => $this->data[$id]['user_owner_id'],
-                'user_assigned_id' => $this->data[$id]['user_assigned_id'],
-            ]);
-
-            foreach ($this->guests as $personId) {
-                if ($person = Person::find($personId)) {
-                    $this->call->contacts()->firstOrCreate([
-                        'entityable_type' => $person->getMorphClass(),
-                        'entityable_id' => $person->id,
-                    ]);
-
-                    foreach ($this->call->contacts as $contact) {
-                        if (! in_array($contact->entityable_id, $this->guests)) {
-                            $contact->delete();
-                        }
-                    }
-                }
-            }
-        }
-
-        $this->dispatch('call-updated');
-
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.call_updated'))
-        );
-
-        $this->data[$id]['editing'] = false;
-    }
-
-    public function delete($id): void
-    {
-        if ($call = $this->model->calls()->find($id)) {
-            $call->delete();
-
-            $this->success(ucfirst(trans('laravel-crm::lang.call_deleted')));
+            ];
         }
     }
 
@@ -223,7 +146,7 @@ class CallRelated extends Component
 
     private function resetFields(): void
     {
-        $this->reset('name', 'description', 'start_at', 'finish_at', 'location');
+        $this->reset('name', 'description', 'start_at', 'finish_at', 'location', 'guests');
         $this->user_owner_id = auth()->user()->id;
         $this->user_assigned_id = auth()->user()->id;
     }

@@ -26,8 +26,6 @@ class NoteRelated extends Component
 
     public array $data = [];
 
-    public array $revert = [];
-
     public function save()
     {
         $data = $this->validate([
@@ -60,13 +58,16 @@ class NoteRelated extends Component
     }
 
     #[On('note-updated-pin')]
+    #[On('note-added')]
+    #[On('note-updated')]
     public function getNotes()
     {
+        $relatedIds = [];
+
         if ($this->pinned) {
             $this->notes = $this->model->notes()->where('pinned', 1)->latest()->get();
         } else {
             $noteIds = [];
-            $relatedIds = [];
 
             foreach ($this->model->notes()->latest()->get() as $note) {
                 $noteIds[] = $note->id;
@@ -103,85 +104,9 @@ class NoteRelated extends Component
         }
 
         foreach ($this->notes as $note) {
-            $this->data[$note->id] = array_merge([
-                'editing' => false,
-            ], $this->data[$note->id] ?? [], [
-                'id' => $note->id,
-                'content' => $note->content,
-                'pinned' => $note->pinned,
-                'noted_at' => ($note->noted_at) ? $note->noted_at->toDateTimeString() : null,
-                'related' => (in_array($note->id, $relatedIds) ? true : false),
-            ]);
-        }
-    }
-
-    public function edit($id)
-    {
-        $this->revert[$id] = $this->data[$id];
-        $this->data[$id]['editing'] = true;
-
-    }
-
-    public function cancel($id)
-    {
-        $this->data[$id]['editing'] = false;
-        $this->data[$id] = $this->revert[$id];
-    }
-
-    public function update($id)
-    {
-        $this->validate([
-            'data.'.$id.'.content' => 'required',
-        ]);
-
-        if ($note = $this->model->notes()->find($id)) {
-            $note->update([
-                'content' => $this->data[$id]['content'],
-                'noted_at' => $this->data[$id]['noted_at'],
-            ]);
-        }
-
-        $this->dispatch('note-updated');
-
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.note_updated'))
-        );
-
-        $this->data[$id]['editing'] = false;
-    }
-
-    public function pin($id)
-    {
-        if ($note = $this->model->notes()->find($id)) {
-            $note->update(['pinned' => 1]);
-        }
-
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.note_pinned'))
-        );
-
-        $this->dispatch('note-updated-pin');
-    }
-
-    public function unpin($id)
-    {
-        if ($note = $this->model->notes()->find($id)) {
-            $note->update(['pinned' => 0]);
-        }
-
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.note_unpinned'))
-        );
-
-        $this->dispatch('note-updated-pin');
-    }
-
-    public function delete($id)
-    {
-        if ($note = $this->model->notes()->find($id)) {
-            $note->delete();
-
-            $this->success(ucfirst(trans('laravel-crm::lang.note_deleted')));
+            $this->data[$note->id] = [
+                'related' => in_array($note->id, $relatedIds),
+            ];
         }
     }
 
