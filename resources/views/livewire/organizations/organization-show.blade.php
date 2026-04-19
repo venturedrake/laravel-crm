@@ -98,7 +98,7 @@
                         <strong>{{ ucfirst(__('laravel-crm::lang.labels')) }}</strong>
                         <span>
                         @foreach($organization->labels as $label)
-                            <x-mary-badge value="{{ $label->name }}" class="badge-sm text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
+                                <x-mary-badge value="{{ $label->name }}" class="badge-sm text-white" style="border-color: #{{ $label->hex }}; background-color: #{{ $label->hex }}" />
                         @endforeach
                     </span>
                     </div>
@@ -118,7 +118,7 @@
             </x-mary-card>
             <livewire:crm-related-people :model="$organization" />
             <livewire:crm-related-organizations :model="$organization" />
-            <livewire:crm-related-deals :model="$organization" />
+            {{--<livewire:crm-related-deals :model="$organization" />--}}
         </div>
         <div>
             <livewire:crm-activity-tabs :model="$organization" />
