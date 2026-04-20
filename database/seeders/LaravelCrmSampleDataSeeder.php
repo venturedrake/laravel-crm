@@ -769,7 +769,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'lead_source_id' => $leadSources->isNotEmpty() ? $leadSources->random()->id : null,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
-                'converted_at' => $isConverted ? $date->copy()->addDays(mt_rand(7, 60)) : null,
+                'converted_at' => $isConverted ? $date->copy()->addDays(mt_rand(7, 60))->min(now()) : null,
                 'user_created_id' => $this->userId,
                 'user_owner_id' => $this->userId,
                 'user_assigned_id' => $this->userId,
@@ -860,6 +860,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
                         ? $stages->firstWhere('name', 'Pending')
                         : $stages->firstWhere('name', 'Draft');
                 }
+            }
+
+            if ($closedAt && $closedAt->gt(now())) {
+                $closedAt = now();
             }
 
             $deal = Deal::create([
@@ -970,6 +974,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
+            if ($closedAt && $closedAt->gt(now())) {
+                $closedAt = now();
+            }
+
             $deal = Deal::create([
                 'title' => $person->first_name.' '.$person->last_name.' - '.($org->name ?? 'Direct').' deal',
                 'description' => 'Business opportunity with '.($org->name ?? $person->first_name.' '.$person->last_name),
@@ -1068,6 +1076,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             } elseif ($daysSince > 7) {
                 $stage = $stages->firstWhere('name', 'Sent');
+            }
+
+            if ($acceptedAt && $acceptedAt->gt(now())) {
+                $acceptedAt = now();
+            }
+            if ($rejectedAt && $rejectedAt->gt(now())) {
+                $rejectedAt = now();
             }
 
             // Build line items
@@ -1232,6 +1247,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             } elseif ($daysSince > 3) {
                 $stage = $stages->whereIn('name', ['Draft', 'Sent'])->random();
+            }
+
+            if ($acceptedAt && $acceptedAt->gt(now())) {
+                $acceptedAt = now();
+            }
+            if ($rejectedAt && $rejectedAt->gt(now())) {
+                $rejectedAt = now();
             }
 
             $lineItems = $this->generateLineItems(mt_rand(1, 5));
@@ -1435,6 +1457,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
+            if ($fullyPaidAt && $fullyPaidAt->gt(now())) {
+                $fullyPaidAt = now();
+            }
+
             $invoice = Invoice::create([
                 'reference' => 'INV-'.strtoupper(substr(md5($order->id.time().$invoiceCount), 0, 8)),
                 'order_id' => $order->id,
@@ -1520,6 +1546,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $stage = $stages->firstWhere('name', 'Sent');
             } elseif ($daysSince > 7) {
                 $stage = $stages->firstWhere('name', 'Packed');
+            }
+
+            if ($deliveredOn && $deliveredOn->gt(now())) {
+                $deliveredOn = now();
             }
 
             $delivery = Delivery::create([
@@ -1707,12 +1737,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
 
                 $isCompleted = $taskDate->lt(now()->subDays(3)) && mt_rand(1, 100) <= 80;
+                $completedAt = $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5))->min(now()) : null;
 
                 $task = Task::create([
                     'name' => $taskNames[array_rand($taskNames)],
                     'description' => $taskDescriptions[array_rand($taskDescriptions)],
                     'due_at' => $taskDate,
-                    'completed_at' => $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5)) : null,
+                    'completed_at' => $completedAt,
                     'taskable_type' => $entity['type'],
                     'taskable_id' => $entity['id'],
                     'user_created_id' => $this->userId,
@@ -1731,8 +1762,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Task created',
                 ]);
 
-                $this->backdateModel($task, $taskDate);
-                $this->backdateModel($task->activity, $taskDate);
+                $createdAt = $taskDate->copy()->min(now());
+                $this->backdateModel($task, $createdAt);
+                $this->backdateModel($task->activity, $createdAt);
                 $taskCount++;
             }
         }
@@ -1902,8 +1934,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Meeting scheduled',
                 ]);
 
-                $this->backdateModel($meeting, $meetingDate);
-                $this->backdateModel($meeting->activity, $meetingDate);
+                $createdAt = $meetingDate->copy()->min(now());
+                $this->backdateModel($meeting, $createdAt);
+                $this->backdateModel($meeting->activity, $createdAt);
                 $meetingCount++;
             }
         }
@@ -1963,8 +1996,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Lunch scheduled',
                 ]);
 
-                $this->backdateModel($lunch, $lunchDate);
-                $this->backdateModel($lunch->activity, $lunchDate);
+                $createdAt = $lunchDate->copy()->min(now());
+                $this->backdateModel($lunch, $createdAt);
+                $this->backdateModel($lunch->activity, $createdAt);
                 $lunchCount++;
             }
         }
