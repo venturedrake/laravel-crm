@@ -38,6 +38,11 @@ use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
+use VentureDrake\LaravelCrm\Models\Field;
+use VentureDrake\LaravelCrm\Models\FieldGroup;
+use VentureDrake\LaravelCrm\Models\FieldModel;
+use VentureDrake\LaravelCrm\Models\FieldOption;
+use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\Task;
 
@@ -161,6 +166,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->seedPurchaseOrders();
         $this->seedActivities();
         $this->seedLabels();
+        $this->seedCustomFieldGroups();
 
         // Re-enable auditing
         $this->enableAuditing();
@@ -2089,6 +2095,116 @@ class LaravelCrmSampleDataSeeder extends Seeder
         });
 
         $this->command->info("  → Attached labels to {$attached} entities");
+    }
+
+    // =========================================================================
+    // Custom Field Groups & Fields
+    // =========================================================================
+
+    protected function seedCustomFieldGroups(): void
+    {
+        $this->command->info('Seeding custom field groups & fields...');
+
+        $groups = [
+            [
+                'name' => 'Lead Qualification',
+                'fields' => [
+                    ['type' => 'select',   'name' => 'Lead Source Channel', 'options' => [['value' => 'website', 'label' => 'Website'], ['value' => 'referral', 'label' => 'Referral'], ['value' => 'event', 'label' => 'Event'], ['value' => 'cold_outreach', 'label' => 'Cold Outreach']]],
+                    ['type' => 'text',     'name' => 'Competitor Mentioned'],
+                    ['type' => 'checkbox', 'name' => 'Decision Maker Contacted', 'default' => '0'],
+                    ['type' => 'date',     'name' => 'Initial Contact Date'],
+                    ['type' => 'textarea', 'name' => 'Qualification Notes'],
+                ],
+                'models' => ['VentureDrake\LaravelCrm\Models\Lead'],
+            ],
+            [
+                'name' => 'Deal Details',
+                'fields' => [
+                    ['type' => 'text',              'name' => 'Contract Reference'],
+                    ['type' => 'select',            'name' => 'Deal Priority', 'options' => [['value' => 'low', 'label' => 'Low'], ['value' => 'medium', 'label' => 'Medium'], ['value' => 'high', 'label' => 'High'], ['value' => 'critical', 'label' => 'Critical']]],
+                    ['type' => 'checkbox',          'name' => 'NDA Signed', 'default' => '0'],
+                    ['type' => 'date',              'name' => 'Expected Close Date'],
+                    ['type' => 'checkbox_multiple', 'name' => 'Products of Interest', 'options' => [['value' => 'software', 'label' => 'Software'], ['value' => 'hardware', 'label' => 'Hardware'], ['value' => 'services', 'label' => 'Professional Services'], ['value' => 'support', 'label' => 'Support Contract']]],
+                ],
+                'models' => ['VentureDrake\LaravelCrm\Models\Deal'],
+            ],
+            [
+                'name' => 'Contact Profile',
+                'fields' => [
+                    ['type' => 'select',   'name' => 'Preferred Contact Method', 'options' => [['value' => 'email', 'label' => 'Email'], ['value' => 'phone', 'label' => 'Phone'], ['value' => 'sms', 'label' => 'SMS'], ['value' => 'video', 'label' => 'Video Call']]],
+                    ['type' => 'text',     'name' => 'LinkedIn Profile URL'],
+                    ['type' => 'radio',    'name' => 'Communication Frequency', 'options' => [['value' => 'weekly', 'label' => 'Weekly'], ['value' => 'monthly', 'label' => 'Monthly'], ['value' => 'quarterly', 'label' => 'Quarterly']]],
+                    ['type' => 'checkbox', 'name' => 'Newsletter Subscriber', 'default' => '0'],
+                    ['type' => 'textarea', 'name' => 'Personal Notes'],
+                ],
+                'models' => ['VentureDrake\LaravelCrm\Models\Person', 'VentureDrake\LaravelCrm\Models\Organization'],
+            ],
+            [
+                'name' => 'Company Information',
+                'fields' => [
+                    ['type' => 'select',   'name' => 'Industry Sector', 'options' => [['value' => 'tech', 'label' => 'Technology'], ['value' => 'finance', 'label' => 'Finance'], ['value' => 'healthcare', 'label' => 'Healthcare'], ['value' => 'retail', 'label' => 'Retail'], ['value' => 'manufacturing', 'label' => 'Manufacturing'], ['value' => 'other', 'label' => 'Other']]],
+                    ['type' => 'text',     'name' => 'Company Registration Number'],
+                    ['type' => 'radio',    'name' => 'Company Size', 'options' => [['value' => '1_10', 'label' => '1–10'], ['value' => '11_50', 'label' => '11–50'], ['value' => '51_200', 'label' => '51–200'], ['value' => '201_plus', 'label' => '201+']]],
+                    ['type' => 'checkbox', 'name' => 'Publicly Listed', 'default' => '0'],
+                    ['type' => 'date',     'name' => 'Relationship Since'],
+                ],
+                'models' => ['VentureDrake\LaravelCrm\Models\Organization'],
+            ],
+            [
+                'name' => 'Project & Delivery',
+                'fields' => [
+                    ['type' => 'text',     'name' => 'Project Code'],
+                    ['type' => 'select',   'name' => 'Delivery Region', 'options' => [['value' => 'north_america', 'label' => 'North America'], ['value' => 'europe', 'label' => 'Europe'], ['value' => 'apac', 'label' => 'Asia Pacific'], ['value' => 'latam', 'label' => 'Latin America'], ['value' => 'mea', 'label' => 'MEA']]],
+                    ['type' => 'date',     'name' => 'Promised Delivery Date'],
+                    ['type' => 'checkbox', 'name' => 'Express Shipping', 'default' => '0'],
+                    ['type' => 'textarea', 'name' => 'Special Instructions'],
+                ],
+                'models' => ['VentureDrake\LaravelCrm\Models\Quote', 'VentureDrake\LaravelCrm\Models\Order', 'VentureDrake\LaravelCrm\Models\Invoice'],
+            ],
+        ];
+
+        $total = 0;
+
+        foreach ($groups as $groupData) {
+            $group = FieldGroup::create([
+                'external_id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+                'name'        => $groupData['name'],
+            ]);
+
+            foreach ($groupData['fields'] as $order => $fieldData) {
+                $field = Field::create([
+                    'external_id'    => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+                    'field_group_id' => $group->id,
+                    'type'           => $fieldData['type'],
+                    'name'           => $fieldData['name'],
+                    'required'       => false,
+                    'default'        => $fieldData['default'] ?? null,
+                ]);
+
+                if (isset($fieldData['options'])) {
+                    foreach ($fieldData['options'] as $i => $opt) {
+                        FieldOption::create([
+                            'external_id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+                            'field_id'    => $field->id,
+                            'value'       => $opt['value'],
+                            'label'       => $opt['label'],
+                            'order'       => $i + 1,
+                        ]);
+                    }
+                }
+
+                foreach ($groupData['models'] as $model) {
+                    FieldModel::firstOrCreate([
+                        'field_id' => $field->id,
+                        'model'    => $model,
+                    ]);
+                }
+
+                $total++;
+            }
+        }
+
+        $this->command->info("  → Created ".count($groups)." custom field groups with {$total} fields");
     }
 
     // =========================================================================
