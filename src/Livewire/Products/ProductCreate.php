@@ -47,6 +47,8 @@ class ProductCreate extends Component
 
         $product = $this->productService->create($request);
 
+        $this->saveCustomFields($product);
+
         if ($redirect) {
             $this->success(
                 ucfirst(trans('laravel-crm::lang.product_created')),

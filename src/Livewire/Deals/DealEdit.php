@@ -67,6 +67,8 @@ class DealEdit extends Component
             $this->phone = $phone->number;
             $this->phone_type = $phone->type;
         }*/
+
+        $this->loadCustomFields($deal);
     }
 
     public function save()
@@ -89,6 +91,8 @@ class DealEdit extends Component
         }
 
         $this->dealService->update($request, $this->deal, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($this->deal->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.deal_updated')),

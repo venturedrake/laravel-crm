@@ -20,6 +20,8 @@ class TaskEdit extends Component
         $this->due_at = $task->due_at ? $task->due_at->format('Y-m-d') : null;
         $this->user_owner_id = $task->user_owner_id;
         $this->user_assigned_id = $task->user_assigned_id;
+
+        $this->loadCustomFields($task);
     }
 
     public function save()
@@ -29,6 +31,8 @@ class TaskEdit extends Component
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
         $this->taskService->update($request, $this->task);
+
+        $this->saveCustomFields($this->task->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.task_updated')),

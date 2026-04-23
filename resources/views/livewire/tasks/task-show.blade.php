@@ -71,6 +71,7 @@
                 </div>
             </div>
         </x-mary-card>
+        <x-crm-custom-field-values :model="$task" :group="true" />
     </div>
 </div>
 

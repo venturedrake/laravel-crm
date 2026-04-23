@@ -90,7 +90,9 @@ class LeadCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $this->leadService->create($request, $person ?? null, $organization ?? null);
+        $lead = $this->leadService->create($request, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($lead);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.lead_created_successfully')),

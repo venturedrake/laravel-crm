@@ -21,7 +21,9 @@ class TaskCreate extends Component
 
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
-        $this->taskService->create($request);
+        $task = $this->taskService->create($request);
+
+        $this->saveCustomFields($task);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.task_created')),

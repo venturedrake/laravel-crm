@@ -85,6 +85,7 @@
                     </div>
                 </div>
             </x-mary-card>
+            <x-crm-custom-field-values :model="$product" :group="true" />
         </div>
         <div class="grid gap-y-5">
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.prices')) }}" shadow separator>

@@ -113,6 +113,7 @@
                     </div>
                 </div>
             </x-mary-card>
+            <x-crm-custom-field-values :model="$order" :group="true" />
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.contact')) }}" shadow separator>
                 <div class="grid gap-y-5">
                     <div class="flex flex-row gap-5">

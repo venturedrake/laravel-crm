@@ -43,6 +43,8 @@ class PurchaseOrderEdit extends Component
         if ($purchaseOrder->address) {
             $this->delivery_address = $purchaseOrder->address->id;
         }
+
+        $this->loadCustomFields($purchaseOrder);
     }
 
     public function save()
@@ -65,6 +67,8 @@ class PurchaseOrderEdit extends Component
         }
 
         $this->purchaseOrderService->update($request, $this->purchaseOrder, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($this->purchaseOrder->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.purchase_order_updated')),

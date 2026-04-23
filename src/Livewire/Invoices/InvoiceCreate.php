@@ -84,7 +84,9 @@ class InvoiceCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $this->invoiceService->create($request, $person ?? null, $organization ?? null);
+        $invoice = $this->invoiceService->create($request, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($invoice);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.invoice_created')),

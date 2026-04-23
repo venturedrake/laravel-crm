@@ -38,6 +38,8 @@ class InvoiceEdit extends Component
         $this->terms = $invoice->terms;
         $this->pipeline_stage_id = $invoice->pipelineStage->id ?? null;
         $this->user_owner_id = $invoice->ownerUser->id ?? null;
+
+        $this->loadCustomFields($invoice);
     }
 
     public function save()
@@ -60,6 +62,8 @@ class InvoiceEdit extends Component
         }
 
         $this->invoiceService->update($request, $this->invoice, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($this->invoice->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.invoice_updated')),

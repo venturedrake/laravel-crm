@@ -29,6 +29,8 @@ class ProductEdit extends Component
         $this->tax_rate = $this->product->tax_rate;
         $this->currency = (isset($this->product->getDefaultPrice()->currency)) ? $this->product->getDefaultPrice()->currency : app('laravel-crm.settings')->get('currency', 'USD');
         $this->user_owner_id = $this->product->user_owner_id;
+
+        $this->loadCustomFields($this->product);
     }
 
     public function save()
@@ -39,6 +41,8 @@ class ProductEdit extends Component
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
         $this->productService->update($this->product, $request);
+
+        $this->saveCustomFields($this->product->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.product_updated')),

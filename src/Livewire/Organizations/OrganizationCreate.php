@@ -33,6 +33,8 @@ class OrganizationCreate extends Component
 
         $organization->labels()->sync($request->labels ?? []);
 
+        $this->saveCustomFields($organization);
+
         $this->success(
             ucfirst(trans('laravel-crm::lang.organization_created')),
             redirectTo: route('laravel-crm.organizations.index')

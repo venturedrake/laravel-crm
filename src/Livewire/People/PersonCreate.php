@@ -33,6 +33,8 @@ class PersonCreate extends Component
 
         $person->labels()->sync($request->labels ?? []);
 
+        $this->saveCustomFields($person);
+
         $this->success(
             ucfirst(trans('laravel-crm::lang.person_created')),
             redirectTo: route('laravel-crm.people.index')

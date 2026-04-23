@@ -94,6 +94,7 @@
                     </div>
                 </div>
             </x-mary-card>
+            <x-crm-custom-field-values :model="$person" :group="true" />
             <livewire:crm-related-people :model="$person" />
             <livewire:crm-related-organizations :model="$person" />
            {{-- <livewire:crm-related-deals :model="$person" />--}}

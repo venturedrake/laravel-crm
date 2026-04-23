@@ -113,7 +113,9 @@ class DealCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $this->dealService->create($request, $person ?? null, $organization ?? null);
+        $deal = $this->dealService->create($request, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($deal);
 
         switch ($this->fromModelType) {
             case 'lead':

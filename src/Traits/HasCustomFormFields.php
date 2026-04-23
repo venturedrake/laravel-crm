@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Traits;
 
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Validation\Rule;
 use VentureDrake\LaravelCrm\Models\FieldModel;
 
@@ -139,5 +140,68 @@ trait HasCustomFormFields
         }
 
         return $attributes;
+    }
+
+    /**
+     * Hydrate the `$fields` property from a model's stored FieldValue rows.
+     * Call this from a component's mount() method when editing.
+     */
+    protected function loadCustomFields(EloquentModel $model): void
+    {
+        if (! method_exists($model, 'fields')) {
+            return;
+        }
+
+        foreach ($model->fields as $fieldValue) {
+            if (! $fieldValue->field) {
+                continue;
+            }
+
+            $value = $fieldValue->value;
+
+            if (in_array($fieldValue->field->type, ['checkbox_multiple'], true)) {
+                $decoded = is_string($value) ? json_decode($value, true) : $value;
+                $value = is_array($decoded) ? $decoded : [];
+            } elseif ($fieldValue->field->type === 'checkbox') {
+                $value = (bool) $value;
+            }
+
+            $this->fields[$fieldValue->field_id] = $value;
+        }
+    }
+
+    /**
+     * Persist the submitted `$fields` values onto the related model.
+     * Call this from a component's save() method after the parent model
+     * has been created/updated.
+     */
+    protected function saveCustomFields(EloquentModel $model): void
+    {
+        if (! method_exists($model, 'fields')) {
+            return;
+        }
+
+        foreach ($this->customFields() as $field) {
+            if (! array_key_exists($field->id, $this->fields)) {
+                continue;
+            }
+
+            $value = $this->fields[$field->id];
+
+            if (is_array($value)) {
+                $value = json_encode(array_values(array_filter($value, fn ($v) => $v !== null && $v !== '')));
+            } elseif (is_bool($value)) {
+                $value = $value ? '1' : '0';
+            } elseif ($value === null) {
+                $value = null;
+            } else {
+                $value = (string) $value;
+            }
+
+            $model->fields()->updateOrCreate(
+                ['field_id' => $field->id],
+                ['value' => $value]
+            );
+        }
     }
 }

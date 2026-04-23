@@ -76,6 +76,8 @@ class OrganizationEdit extends Component
                 ];
             }
         }
+
+        $this->loadCustomFields($this->organization);
     }
 
     public function save()
@@ -88,6 +90,8 @@ class OrganizationEdit extends Component
         $this->organizationService->update($this->organization, $request);
 
         $this->organization->labels()->sync($request->labels ?? []);
+
+        $this->saveCustomFields($this->organization->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.organization_updated')),

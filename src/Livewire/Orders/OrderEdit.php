@@ -83,6 +83,8 @@ class OrderEdit extends Component
         $this->sub_total = $order->subtotal / 100;
         $this->tax = $order->tax / 100;
         $this->total = $order->total / 100;
+
+        $this->loadCustomFields($order);
     }
 
     public function save()
@@ -105,6 +107,8 @@ class OrderEdit extends Component
         }
 
         $this->orderService->update($request, $this->order, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($this->order->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.order_updated')),

@@ -88,7 +88,9 @@ class PurchaseOrderCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $this->purchaseOrderService->create($request, $person ?? null, $organization ?? null);
+        $purchaseOrder = $this->purchaseOrderService->create($request, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($purchaseOrder);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.purchase_order_created')),

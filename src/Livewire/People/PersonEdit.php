@@ -74,6 +74,8 @@ class PersonEdit extends Component
                 ];
             }
         }
+
+        $this->loadCustomFields($this->person);
     }
 
     public function save()
@@ -86,6 +88,8 @@ class PersonEdit extends Component
         $this->personService->update($this->person, $request);
 
         $this->person->labels()->sync($request->labels ?? []);
+
+        $this->saveCustomFields($this->person->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.person_updated')),

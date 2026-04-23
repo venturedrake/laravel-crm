@@ -55,6 +55,8 @@ class LeadEdit extends Component
         $this->pipeline_stage_id = $lead->pipelineStage->id ?? null;
         $this->labels = $lead->labels->pluck('id')->toArray();
         $this->user_owner_id = $lead->ownerUser->id ?? null;
+
+        $this->loadCustomFields($lead);
     }
 
     public function save()
@@ -77,6 +79,8 @@ class LeadEdit extends Component
         }
 
         $this->leadService->update($request, $this->lead, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($this->lead->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.lead_updated_successfully')),

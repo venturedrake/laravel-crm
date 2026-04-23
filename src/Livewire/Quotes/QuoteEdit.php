@@ -45,6 +45,8 @@ class QuoteEdit extends Component
         $this->sub_total = $quote->subtotal / 100;
         $this->tax = $quote->tax / 100;
         $this->total = $quote->total / 100;
+
+        $this->loadCustomFields($quote);
     }
 
     public function save()
@@ -67,6 +69,8 @@ class QuoteEdit extends Component
         }
 
         $this->quoteService->update($request, $this->quote, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($this->quote->fresh());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.quote_updated_successfully')),

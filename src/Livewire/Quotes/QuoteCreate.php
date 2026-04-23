@@ -129,7 +129,9 @@ class QuoteCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
-        $this->quoteService->create($request, $person ?? null, $organization ?? null);
+        $quote = $this->quoteService->create($request, $person ?? null, $organization ?? null);
+
+        $this->saveCustomFields($quote);
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.quote_created_successfully')),
