@@ -8,9 +8,11 @@ use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 
 trait HasOrderCommon
 {
+    use HasCustomFormFields;
     use Toast;
 
     protected OrderService $orderService;
@@ -104,25 +106,35 @@ trait HasOrderCommon
 
     public $selectedAddressTab = 'billing';
 
+    protected function customFieldsModel(): string
+    {
+        return Order::class;
+    }
+
     protected function rules()
     {
-        return [
+        return array_merge([
             'person_name' => 'required_without_all:organization_name,organization_id|max:255',
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
             'amount' => 'nullable|numeric',
-        ];
+        ], $this->customFieldRules());
     }
 
     protected function messages()
     {
-        return [
+        return array_merge([
             'person_name.required_without_all' => 'The contact person field is required if no organization.',
             'organization_name.required_without_all' => 'The organization field is required if no contact person.',
             'person_id.required_without_all' => 'The contact person field is required if no organization.',
             'organization_id.required_without_all' => 'The organization field is required of no contact person.',
-        ];
+        ], $this->customFieldMessages());
+    }
+
+    protected function validationAttributes()
+    {
+        return $this->customFieldValidationAttributes();
     }
 
     public function boot(OrderService $orderService, PersonService $personService, OrganizationService $organizationService): void

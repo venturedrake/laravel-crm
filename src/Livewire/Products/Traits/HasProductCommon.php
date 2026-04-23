@@ -3,12 +3,15 @@
 namespace VentureDrake\LaravelCrm\Livewire\Products\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductCategory;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\ProductService;
+use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 
 trait HasProductCommon
 {
+    use HasCustomFormFields;
     use Toast;
 
     protected ProductService $productService;
@@ -47,11 +50,26 @@ trait HasProductCommon
 
     public $user_owner_id;
 
+    protected function customFieldsModel(): string
+    {
+        return Product::class;
+    }
+
     protected function rules()
     {
-        return [
+        return array_merge([
             'name' => 'required|max:255',
-        ];
+        ], $this->customFieldRules());
+    }
+
+    protected function messages()
+    {
+        return $this->customFieldMessages();
+    }
+
+    protected function validationAttributes()
+    {
+        return $this->customFieldValidationAttributes();
     }
 
     public function boot(ProductService $productService): void

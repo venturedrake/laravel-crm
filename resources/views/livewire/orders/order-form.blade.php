@@ -60,6 +60,7 @@
                     placeholder="Search ..."
                     searchable />
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.owner')) }}" wire:model="user_owner_id" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false)" />
+            <x-crm-custom-fields :model="$order ?? new \VentureDrake\LaravelCrm\Models\Order()" />
         </div>
     </x-mary-card>
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.addresses')) }}" class="mt-5" separator>

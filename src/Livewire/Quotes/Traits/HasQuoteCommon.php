@@ -8,9 +8,11 @@ use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\QuoteService;
+use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 
 trait HasQuoteCommon
 {
+    use HasCustomFormFields;
     use Toast;
 
     protected QuoteService $quoteService;
@@ -85,26 +87,36 @@ trait HasQuoteCommon
 
     public $total = 0;
 
+    protected function customFieldsModel(): string
+    {
+        return Quote::class;
+    }
+
     protected function rules()
     {
-        return [
+        return array_merge([
             'person_name' => 'required_without_all:organization_name,organization_id|max:255',
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
-        ];
+        ], $this->customFieldRules());
     }
 
     protected function messages()
     {
-        return [
+        return array_merge([
             'person_name.required_without_all' => 'The contact person field is required if no organization.',
             'organization_name.required_without_all' => 'The organization field is required if no contact person.',
             'person_id.required_without_all' => 'The contact person field is required if no organization.',
             'organization_id.required_without_all' => 'The organization field is required of no contact person.',
-        ];
+        ], $this->customFieldMessages());
+    }
+
+    protected function validationAttributes()
+    {
+        return $this->customFieldValidationAttributes();
     }
 
     public function boot(QuoteService $quoteService, PersonService $personService, OrganizationService $organizationService): void

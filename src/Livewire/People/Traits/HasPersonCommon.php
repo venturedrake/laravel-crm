@@ -5,10 +5,13 @@ namespace VentureDrake\LaravelCrm\Livewire\People\Traits;
 use Carbon\Carbon;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\AddressType;
+use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 
 trait HasPersonCommon
 {
+    use HasCustomFormFields;
     use Toast;
 
     protected PersonService $personService;
@@ -65,21 +68,31 @@ trait HasPersonCommon
 
     public array $addresses = [];
 
+    protected function customFieldsModel(): string
+    {
+        return Person::class;
+    }
+
     protected function rules()
     {
-        return [
+        return array_merge([
             'first_name' => 'required|max:255',
             'phones.*.type' => 'required_with:phones.*.number',
             'emails.*.type' => 'required_with:emails.*.address',
-        ];
+        ], $this->customFieldRules());
     }
 
     protected function messages()
     {
-        return [
+        return array_merge([
             'phones.*.type.required_with' => 'The type field is required',
             'emails.*.type.required_with' => 'The type field is required',
-        ];
+        ], $this->customFieldMessages());
+    }
+
+    protected function validationAttributes()
+    {
+        return $this->customFieldValidationAttributes();
     }
 
     public function boot(PersonService $personService): void

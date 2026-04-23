@@ -5,12 +5,15 @@ namespace VentureDrake\LaravelCrm\Livewire\Organizations\Traits;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Industry;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\OrganizationType;
 use VentureDrake\LaravelCrm\Models\Timezone;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
+use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 
 trait HasOrganizationCommon
 {
+    use HasCustomFormFields;
     use Toast;
 
     protected OrganizationService $organizationService;
@@ -77,21 +80,31 @@ trait HasOrganizationCommon
 
     public array $addresses = [];
 
+    protected function customFieldsModel(): string
+    {
+        return Organization::class;
+    }
+
     protected function rules()
     {
-        return [
+        return array_merge([
             'name' => 'required|max:255',
             'phones.*.type' => 'required_with:phones.*.number',
             'emails.*.type' => 'required_with:emails.*.address',
-        ];
+        ], $this->customFieldRules());
     }
 
     protected function messages()
     {
-        return [
+        return array_merge([
             'phones.*.type.required_with' => 'The type field is required',
             'emails.*.type.required_with' => 'The type field is required',
-        ];
+        ], $this->customFieldMessages());
+    }
+
+    protected function validationAttributes()
+    {
+        return $this->customFieldValidationAttributes();
     }
 
     public function boot(OrganizationService $organizationService): void
