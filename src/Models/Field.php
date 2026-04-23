@@ -26,4 +26,9 @@ class Field extends Model
     {
         return $this->hasMany(FieldOption::class);
     }
+
+    public function fieldModels()
+    {
+        return $this->hasMany(FieldModel::class);
+    }
 }

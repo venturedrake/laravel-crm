@@ -590,6 +590,7 @@ return [
     'add_lunch' => 'add lunch',
     'file_uploaded' => 'file uploaded',
     'file_deleted' => 'file deleted',
+    'team_created' => 'team created',
 
     // Auth
     'login' => 'login',

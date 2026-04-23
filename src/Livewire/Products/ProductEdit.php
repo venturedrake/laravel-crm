@@ -12,6 +12,8 @@ class ProductEdit extends Component
 
     public Product $product;
 
+    public $layout = 'full';
+
     public function mount()
     {
         $this->mountCommon();

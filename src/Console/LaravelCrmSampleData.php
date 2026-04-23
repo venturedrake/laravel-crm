@@ -30,7 +30,7 @@ class LaravelCrmSampleData extends Command
     public function handle()
     {
         if ($this->option('fresh')) {
-            if (! $this->confirm('This will delete all CRM entity data (organizations, people, leads, deals, quotes, orders, invoices, deliveries, purchase orders, activities). Settings, pipelines, labels, and permissions will be preserved. Continue?')) {
+            if (! $this->confirm('This will delete all CRM entity data (organizations, people, leads, deals, quotes, orders, invoices, deliveries, purchase orders, activities, custom field groups/fields/values, plus the 5 sample users and 3 sample teams created by this seeder). Settings, pipelines, labels, permissions, and any non-sample users/teams will be preserved. Continue?')) {
                 $this->info('Aborted.');
 
                 return 0;

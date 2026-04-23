@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Address;
@@ -43,11 +45,34 @@ use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
+use VentureDrake\LaravelCrm\Models\Role;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\Task;
+use VentureDrake\LaravelCrm\Models\Team;
 
 class LaravelCrmSampleDataSeeder extends Seeder
 {
+    /**
+     * The fixed email addresses of sample users created by this seeder.
+     * Only these users will be removed on a fresh run — existing users are never touched.
+     */
+    protected const SAMPLE_USER_EMAILS = [
+        'alice.chambers@example.com',
+        'ben.hartley@example.com',
+        'clara.moss@example.com',
+        'david.okonkwo@example.com',
+        'eva.steinberg@example.com',
+    ];
+
+    /**
+     * The fixed names of sample teams created by this seeder.
+     */
+    protected const SAMPLE_TEAM_NAMES = [
+        'Sales Team',
+        'Support Team',
+        'Operations Team',
+    ];
+
     /**
      * The start date for sample data (3 years ago).
      */
@@ -119,6 +144,16 @@ class LaravelCrmSampleDataSeeder extends Seeder
     protected $invoices;
 
     /**
+     * Seeded sample users collection (IDs only for quick random access).
+     */
+    protected $sampleUserIds;
+
+    /**
+     * Seeded sample teams collection.
+     */
+    protected $sampleTeams;
+
+    /**
      * Run the database seeds.
      */
     public function run(bool $fresh = false): void
@@ -157,6 +192,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // auto-creates FieldValue rows when each entity is created.
         $this->seedCustomFieldGroups();
 
+        $this->seedUsersAndTeams();
         $this->seedLeadSources();
         $this->seedProductCategoriesAndProducts();
         $this->seedOrganizations();
@@ -323,6 +359,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'people', 'organizations',
             'product_prices', 'products', 'product_categories',
             'lead_sources',
+            // Custom fields seeded by seedCustomFieldGroups()
+            'field_values', 'field_models', 'field_options', 'fields', 'field_groups',
         ];
 
         // Also truncate the labelables pivot table
@@ -338,7 +376,110 @@ class LaravelCrmSampleDataSeeder extends Seeder
             }
         }
 
+        // Remove only the sample teams created by this seeder (not user-created teams)
+        $userModel = app(config('auth.providers.users.model', 'App\Models\User'));
+        $sampleUserIds = $userModel::whereIn('email', self::SAMPLE_USER_EMAILS)->pluck('id');
+
+        if (Schema::hasTable('crm_team_user')) {
+            DB::table('crm_team_user')
+                ->whereIn('crm_team_id', function ($q) {
+                    $q->select('id')->from('crm_teams')->whereIn('name', self::SAMPLE_TEAM_NAMES);
+                })
+                ->delete();
+        }
+
+        if (Schema::hasTable('crm_teams')) {
+            DB::table('crm_teams')->whereIn('name', self::SAMPLE_TEAM_NAMES)->delete();
+        }
+
+        // Remove only the known sample users — never touch pre-existing users
+        if ($sampleUserIds->isNotEmpty()) {
+            $userModel::whereIn('id', $sampleUserIds)->delete();
+        }
+
         Schema::enableForeignKeyConstraints();
+    }
+
+    // =========================================================================
+    // Users & Teams
+    // =========================================================================
+
+    protected function seedUsersAndTeams(): void
+    {
+        $this->command->info('Seeding sample users and teams...');
+
+        $userModel = app(config('auth.providers.users.model', 'App\Models\User'));
+
+        $sampleUsers = [
+            ['name' => 'Alice Chambers',  'email' => self::SAMPLE_USER_EMAILS[0]],
+            ['name' => 'Ben Hartley',     'email' => self::SAMPLE_USER_EMAILS[1]],
+            ['name' => 'Clara Moss',      'email' => self::SAMPLE_USER_EMAILS[2]],
+            ['name' => 'David Okonkwo',   'email' => self::SAMPLE_USER_EMAILS[3]],
+            ['name' => 'Eva Steinberg',   'email' => self::SAMPLE_USER_EMAILS[4]],
+        ];
+
+        $createdUserIds = [$this->userId];
+
+        // CRM roles available for sample users (excludes "Owner")
+        $assignableRoles = Role::crmNotOwner()->get();
+
+        foreach ($sampleUsers as $data) {
+            // firstOrCreate ensures we never overwrite or duplicate an existing user
+            $user = $userModel::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => $data['name'],
+                    'password' => Hash::make(Str::random(30)),
+                    'crm_access' => true,
+                    'email_verified_at' => now(),
+                ]
+            );
+
+            // Always ensure sample users have CRM access (in case they pre-existed without it)
+            if (! $user->crm_access) {
+                $user->forceFill(['crm_access' => true])->save();
+            }
+
+            // Assign a random non-Owner CRM role (if any are available and the user model supports roles)
+            if ($assignableRoles->isNotEmpty() && method_exists($user, 'syncRoles')) {
+                $user->syncRoles([$assignableRoles->random()]);
+            }
+
+            $createdUserIds[] = $user->id;
+        }
+
+        // Store IDs (including the primary user) for random assignment
+        $this->sampleUserIds = collect($createdUserIds);
+
+        // Seed 3 CRM teams using the constant names
+        $teamData = [
+            ['name' => self::SAMPLE_TEAM_NAMES[0], 'users' => array_slice($createdUserIds, 0, 3)],
+            ['name' => self::SAMPLE_TEAM_NAMES[1], 'users' => array_slice($createdUserIds, 1, 3)],
+            ['name' => self::SAMPLE_TEAM_NAMES[2], 'users' => array_slice($createdUserIds, 3)],
+        ];
+
+        $this->sampleTeams = collect();
+
+        foreach ($teamData as $td) {
+            $team = Team::firstOrCreate(
+                ['name' => $td['name']],
+                ['user_id' => $this->userId]
+            );
+            $team->users()->syncWithoutDetaching($td['users']);
+            $this->sampleTeams->push($team);
+        }
+
+        $this->command->info('  → Created/found 5 sample users and 3 teams');
+    }
+
+    /**
+     * Return a random user ID from the seeded sample user pool.
+     */
+    protected function randomUserId(): int
+    {
+        return $this->sampleUserIds
+            ? $this->sampleUserIds->random()
+            : $this->userId;
     }
 
     // =========================================================================
@@ -412,8 +553,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'High-quality '.$productData['name'].' for business operations.',
                     'product_category_id' => $category->id,
                     'active' => true,
-                    'user_created_id' => $this->userId,
-                    'user_owner_id' => $this->userId,
+                    'user_created_id' => $this->randomUserId(),
+                    'user_owner_id' => $this->randomUserId(),
                 ]);
 
                 ProductPrice::create([
@@ -551,8 +692,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $org = Organization::create([
                 'name' => $name,
                 'description' => $name.' is a leading company in its industry.',
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
             ]);
 
             $this->backdateModel($org, $date);
@@ -656,8 +797,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'last_name' => $lastName,
                 'organization_id' => $org->id,
                 'description' => $jobTitles[array_rand($jobTitles)].' at '.$org->name,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
             ]);
 
             $this->backdateModel($person, $date);
@@ -780,8 +921,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
                 'converted_at' => $isConverted ? $date->copy()->addDays(mt_rand(7, 60))->min(now()) : null,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -889,8 +1030,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'expected_close' => $date->copy()->addDays(mt_rand(30, 120)),
                 'closed_status' => $closedStatus,
                 'closed_at' => $closedAt,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1000,8 +1141,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'expected_close' => $date->copy()->addDays(mt_rand(30, 180)),
                 'closed_status' => $closedStatus,
                 'closed_at' => $closedAt,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1122,8 +1263,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'expire_at' => $date->copy()->addDays(30),
                 'accepted_at' => $acceptedAt,
                 'rejected_at' => $rejectedAt,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1180,8 +1321,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'pipeline_stage_id' => $stage->id ?? null,
                 'issue_at' => $date,
                 'expire_at' => $date->copy()->addDays(30),
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1296,8 +1437,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'expire_at' => $date->copy()->addDays(30),
                 'accepted_at' => $acceptedAt,
                 'rejected_at' => $rejectedAt,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1378,8 +1519,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'adjustments' => ($quote->adjustments ?? 0) / 100,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1487,8 +1628,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'fully_paid_at' => $fullyPaidAt,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1569,8 +1710,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'delivered_on' => $deliveredOn,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1652,8 +1793,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'delivery_date' => $date->copy()->addDays(mt_rand(14, 45)),
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
-                'user_created_id' => $this->userId,
-                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
 
@@ -1756,8 +1897,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'completed_at' => $completedAt,
                     'taskable_type' => $entity['type'],
                     'taskable_id' => $entity['id'],
-                    'user_created_id' => $this->userId,
-                    'user_owner_id' => $this->userId,
+                    'user_created_id' => $this->randomUserId(),
+                    'user_owner_id' => $this->randomUserId(),
                     'user_assigned_id' => $this->userId,
                 ]);
 
@@ -1817,7 +1958,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'noted_at' => $noteDate,
                     'noteable_type' => $entity['type'],
                     'noteable_id' => $entity['id'],
-                    'user_created_id' => $this->userId,
+                    'user_created_id' => $this->randomUserId(),
                 ]);
 
                 Activity::create([
@@ -1868,8 +2009,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'finish_at' => $finishAt,
                     'callable_type' => $entity['type'],
                     'callable_id' => $entity['id'],
-                    'user_created_id' => $this->userId,
-                    'user_owner_id' => $this->userId,
+                    'user_created_id' => $this->randomUserId(),
+                    'user_owner_id' => $this->randomUserId(),
                     'user_assigned_id' => $this->userId,
                 ]);
 
@@ -1928,8 +2069,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'finish_at' => $finishAt,
                     'meetingable_type' => $entity['type'],
                     'meetingable_id' => $entity['id'],
-                    'user_created_id' => $this->userId,
-                    'user_owner_id' => $this->userId,
+                    'user_created_id' => $this->randomUserId(),
+                    'user_owner_id' => $this->randomUserId(),
                     'user_assigned_id' => $this->userId,
                 ]);
 
@@ -1990,8 +2131,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'location' => $location,
                     'lunchable_type' => $entity['type'],
                     'lunchable_id' => $entity['id'],
-                    'user_created_id' => $this->userId,
-                    'user_owner_id' => $this->userId,
+                    'user_created_id' => $this->randomUserId(),
+                    'user_owner_id' => $this->randomUserId(),
                     'user_assigned_id' => $this->userId,
                 ]);
 
