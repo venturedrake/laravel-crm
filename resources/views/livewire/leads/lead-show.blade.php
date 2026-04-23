@@ -68,7 +68,7 @@
                         @if( $lead->ownerUser)<a href="{{ route('laravel-crm.users.show', $lead->ownerUser) }}" class="link link-hover link-primary">{{ $lead->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
                         </span>
                     </div>
-                    <x-crm-custom-field-values :model="$lead" />
+                    <x-crm-custom-field-values :model="$lead"/>
                 </div>
             </x-mary-card>
             <x-crm-custom-field-values :model="$lead" :group="true" />

@@ -24,4 +24,3 @@ class CustomFieldValues extends Component
         return view('laravel-crm::components.custom-field-values');
     }
 }
-

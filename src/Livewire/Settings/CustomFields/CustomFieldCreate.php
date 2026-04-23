@@ -19,7 +19,7 @@ class CustomFieldCreate extends Component
             'external_id' => Uuid::uuid4()->toString(),
             'type' => $this->type,
             'name' => $this->name,
-            'field_group_id' => $this->field_group_id,
+            'field_group_id' => $this->field_group_id ?: null,
             'required' => $this->required,
             'default' => $this->default,
         ]);

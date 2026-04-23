@@ -116,6 +116,7 @@
                             </div>
                         @endif
                     @endif
+                    <x-crm-custom-field-values :model="$purchaseOrder" />
                 </div>
             </x-mary-card>
             <x-crm-custom-field-values :model="$purchaseOrder" :group="true" />

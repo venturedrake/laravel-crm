@@ -21,7 +21,7 @@ class CustomFieldEdit extends Component
         $this->field->update([
             'type' => $this->type,
             'name' => $this->name,
-            'field_group_id' => $this->field_group_id,
+            'field_group_id' => $this->field_group_id ?: null,
             'required' => $this->required,
             'default' => $this->default,
         ]);

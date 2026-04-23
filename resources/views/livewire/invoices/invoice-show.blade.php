@@ -126,6 +126,7 @@
                         {{ $invoice->terms }}
                         </span>
                     </div>
+                    <x-crm-custom-field-values :model="$invoice" />
                 </div>
             </x-mary-card>
             <x-crm-custom-field-values :model="$invoice" :group="true" />

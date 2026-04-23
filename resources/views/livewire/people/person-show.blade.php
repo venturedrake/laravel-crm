@@ -92,6 +92,7 @@
                         @if( $person->ownerUser)<a href="{{ route('laravel-crm.users.show', $person->ownerUser) }}" class="link link-hover link-primary">{{ $person->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
                         </span>
                     </div>
+                    <x-crm-custom-field-values :model="$person" />
                 </div>
             </x-mary-card>
             <x-crm-custom-field-values :model="$person" :group="true" />
