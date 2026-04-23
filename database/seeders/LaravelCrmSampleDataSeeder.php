@@ -16,6 +16,10 @@ use VentureDrake\LaravelCrm\Models\DealProduct;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\DeliveryProduct;
 use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\Field;
+use VentureDrake\LaravelCrm\Models\FieldGroup;
+use VentureDrake\LaravelCrm\Models\FieldModel;
+use VentureDrake\LaravelCrm\Models\FieldOption;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\Label;
@@ -38,11 +42,6 @@ use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
-use VentureDrake\LaravelCrm\Models\Field;
-use VentureDrake\LaravelCrm\Models\FieldGroup;
-use VentureDrake\LaravelCrm\Models\FieldModel;
-use VentureDrake\LaravelCrm\Models\FieldOption;
-use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\Task;
 
@@ -2167,28 +2166,28 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         foreach ($groups as $groupData) {
             $group = FieldGroup::create([
-                'external_id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
-                'name'        => $groupData['name'],
+                'external_id' => Uuid::uuid4()->toString(),
+                'name' => $groupData['name'],
             ]);
 
             foreach ($groupData['fields'] as $order => $fieldData) {
                 $field = Field::create([
-                    'external_id'    => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+                    'external_id' => Uuid::uuid4()->toString(),
                     'field_group_id' => $group->id,
-                    'type'           => $fieldData['type'],
-                    'name'           => $fieldData['name'],
-                    'required'       => false,
-                    'default'        => $fieldData['default'] ?? null,
+                    'type' => $fieldData['type'],
+                    'name' => $fieldData['name'],
+                    'required' => false,
+                    'default' => $fieldData['default'] ?? null,
                 ]);
 
                 if (isset($fieldData['options'])) {
                     foreach ($fieldData['options'] as $i => $opt) {
                         FieldOption::create([
-                            'external_id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
-                            'field_id'    => $field->id,
-                            'value'       => $opt['value'],
-                            'label'       => $opt['label'],
-                            'order'       => $i + 1,
+                            'external_id' => Uuid::uuid4()->toString(),
+                            'field_id' => $field->id,
+                            'value' => $opt['value'],
+                            'label' => $opt['label'],
+                            'order' => $i + 1,
                         ]);
                     }
                 }
@@ -2196,7 +2195,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 foreach ($groupData['models'] as $model) {
                     FieldModel::firstOrCreate([
                         'field_id' => $field->id,
-                        'model'    => $model,
+                        'model' => $model,
                     ]);
                 }
 
@@ -2204,7 +2203,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             }
         }
 
-        $this->command->info("  → Created ".count($groups)." custom field groups with {$total} fields");
+        $this->command->info('  → Created '.count($groups)." custom field groups with {$total} fields");
     }
 
     // =========================================================================

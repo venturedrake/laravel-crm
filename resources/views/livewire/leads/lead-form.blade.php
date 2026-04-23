@@ -84,6 +84,7 @@
                     placeholder="Search ..."
                     searchable />
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.owner')) }}" wire:model="user_owner_id" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false)" />
+            <x-crm-custom-fields :model="$lead ?? new \VentureDrake\LaravelCrm\Models\Lead()" />
         </div>
     </x-mary-card>
 </div>

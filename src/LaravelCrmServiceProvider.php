@@ -318,6 +318,7 @@ use VentureDrake\LaravelCrm\Policies\TeamPolicy;
 use VentureDrake\LaravelCrm\Policies\UserPolicy;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\View\Components\Addresses;
+use VentureDrake\LaravelCrm\View\Components\CustomFields;
 use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
 use VentureDrake\LaravelCrm\View\Components\Emails;
 use VentureDrake\LaravelCrm\View\Components\Header;
@@ -695,6 +696,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::component('crm-emails', Emails::class);
         Blade::component('crm-addresses', Addresses::class);
         Blade::component('crm-timeline-item', TimelineItem::class);
+        Blade::component('crm-custom-fields', CustomFields::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
