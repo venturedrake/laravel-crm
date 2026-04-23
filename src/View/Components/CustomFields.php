@@ -12,7 +12,8 @@ class CustomFields extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public $model
+        public $model,
+        public bool $group = false
     ) {}
 
     /**

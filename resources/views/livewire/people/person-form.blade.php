@@ -32,9 +32,9 @@
                     searchable />
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.owner')) }}" wire:model="user_owner_id" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false)" />
             <x-crm-custom-fields :model="$person ?? new \VentureDrake\LaravelCrm\Models\Person()" />
-
         </div>
     </x-mary-card>
+    <x-crm-custom-fields :model="$person ?? new \VentureDrake\LaravelCrm\Models\Person()" :group="true" />
 </div>
 <div>
     <x-crm-phones :$phones :$phoneTypes />

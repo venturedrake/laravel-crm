@@ -61,6 +61,7 @@
             <x-crm-custom-fields :model="$quote ?? new \VentureDrake\LaravelCrm\Models\Quote()" />
         </div>
     </x-mary-card>
+    <x-crm-custom-fields :model="$quote ?? new \VentureDrake\LaravelCrm\Models\Quote()" :group="true" />
 </div>
 <div>
    <livewire:crm-model-products :model="$quote ?? null" />

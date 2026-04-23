@@ -90,6 +90,7 @@
             <x-crm-custom-fields :model="$deal ?? new \VentureDrake\LaravelCrm\Models\Deal()" />
         </div>
     </x-mary-card>
+    <x-crm-custom-fields :model="$deal ?? new \VentureDrake\LaravelCrm\Models\Deal()" :group="true" />
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }}" separator>
         <x-slot:menu>
             <x-mary-button wire:click="addProduct" class="btn-sm btn-square" type="button" icon="fas.plus" />

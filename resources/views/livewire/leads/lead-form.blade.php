@@ -87,4 +87,5 @@
             <x-crm-custom-fields :model="$lead ?? new \VentureDrake\LaravelCrm\Models\Lead()" />
         </div>
     </x-mary-card>
+    <x-crm-custom-fields :model="$lead ?? new \VentureDrake\LaravelCrm\Models\Lead()" :group="true" />
 </div>

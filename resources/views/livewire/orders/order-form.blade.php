@@ -63,6 +63,7 @@
             <x-crm-custom-fields :model="$order ?? new \VentureDrake\LaravelCrm\Models\Order()" />
         </div>
     </x-mary-card>
+    <x-crm-custom-fields :model="$order ?? new \VentureDrake\LaravelCrm\Models\Order()" :group="true" />
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.addresses')) }}" class="mt-5" separator>
         <div class="grid gap-3" wire:key="addresses">
             <x-mary-tabs wire:model="selectedAddressTab">

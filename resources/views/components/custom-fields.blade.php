@@ -1,5 +1,6 @@
 @props([
-    'model'
+    'model',
+    'group' => false,
 ])
 @php
     if($model->id) {
@@ -7,51 +8,56 @@
     } else {
         $fields = \VentureDrake\LaravelCrm\Models\FieldModel::where('model', get_class($model))->get();
     }
+
+    if ($group) {
+        $ungrouped = $fields->filter(fn($f) => !$f->field || !$f->field->field_group_id);
+        $grouped   = $fields->filter(fn($f) => $f->field && $f->field->field_group_id)
+                            ->groupBy(fn($f) => $f->field->field_group_id);
+    }
 @endphp
-@foreach($fields as $fieldValueOrModel)
-    @if($fieldValueOrModel->field)
-        @switch($fieldValueOrModel->field->type)
-            @case('text')
-                <x-mary-input wire:model="fields.{{ $fieldValueOrModel->field->id }}" label="{{ ucfirst(__($fieldValueOrModel->field->name)) }}" />
-                
-                @break
-            {{--@case('textarea')
-                @include('laravel-crm::partials.form.textarea',[
-                   'name' => 'fields['.$fieldValueOrModel->field->id.']',
-                   'label' => ucfirst(__($fieldValueOrModel->field->name)),
-                   'rows' => 5,
-                   'value' => old('fields['.$fieldValueOrModel->field->id.']', $fieldValueOrModel->value ?? null) 
-                ])
-                @break
-            @case('select')
-                @include('laravel-crm::partials.form.select',[
-                   'name' => 'fields['.$fieldValueOrModel->field->id.']',
-                   'label' => ucfirst(__($fieldValueOrModel->field->name)),
-                   'options' => ['' => ''] + $fieldValueOrModel->field->fieldOptions->pluck('label','id')->toArray(),
-                   'value' => old('fields['.$fieldValueOrModel->field->id.']', $fieldValueOrModel->value ?? null) 
-               ])
-                @break
-            @case('checkbox')
-                @include('laravel-crm::partials.form.checkbox',[
-                   'name' => 'fields['.$fieldValueOrModel->field->id.']',
-                   'label' => ucfirst(__($fieldValueOrModel->field->name)),
-                   'value' => old('fields['.$fieldValueOrModel->field->id.']', $fieldValueOrModel->value ?? null) 
-               ])
-                @break
-            @case('checkbox_multiple')
-                <x-form-group label="{{ ucfirst(__($fieldValueOrModel->field->name)) }}">
-                    @foreach($fieldValueOrModel->field->fieldOptions as $fieldOption)
-                        <x-form-checkbox name="fields[{{ $fieldValueOrModel->field->id }}]" value="{{ $fieldOption->id }}" label="{{ $fieldOption->label }}" />
-                    @endforeach
-                </x-form-group>
-                @break
-            @case('radio')
-                <x-form-group name="fields[{{ $fieldValueOrModel->field->id }}]" label="{{ ucfirst(__($fieldValueOrModel->field->name)) }}">
-                    @foreach($fieldValueOrModel->field->fieldOptions as $fieldOption)
-                        <x-form-radio name="fields[{{ $fieldValueOrModel->field->id }}]" value="{{ $fieldOption->id }}" label="{{ $fieldOption->label }}" />
-                    @endforeach
-                </x-form-group>
-                @break--}}
-        @endswitch
-    @endif
-@endforeach  
+
+@if($group)
+    {{-- Ungrouped fields --}}
+    @foreach($ungrouped as $fieldValueOrModel)
+        @if($fieldValueOrModel->field)
+            @php
+                $field = $fieldValueOrModel->field;
+                $key   = 'fields.'.$field->id;
+                $label = ucfirst(__($field->name));
+            @endphp
+            @include('laravel-crm::components.custom-fields._field', compact('field', 'key', 'label'))
+        @endif
+    @endforeach
+
+    {{-- Grouped fields --}}
+    @foreach($grouped as $groupId => $groupFields)
+        @php
+            $groupName = $groupFields->first()->field->fieldGroup->name ?? '';
+        @endphp
+        <x-mary-card title="{{ $groupName }}" class="mt-5" separator>
+            <div class="grid gap-3" wire:key="custom-field-group-{{ $groupId }}">
+                @foreach($groupFields as $fieldValueOrModel)
+                    @if($fieldValueOrModel->field)
+                        @php
+                            $field = $fieldValueOrModel->field;
+                            $key   = 'fields.'.$field->id;
+                            $label = ucfirst(__($field->name));
+                        @endphp
+                        @include('laravel-crm::components.custom-fields._field', compact('field', 'key', 'label'))
+                    @endif
+                @endforeach
+            </div>
+        </x-mary-card>
+    @endforeach
+@else
+    {{-- Flat list — ungrouped fields only --}}
+    @foreach($fields->filter(fn($f) => $f->field && !$f->field->field_group_id) as $fieldValueOrModel)
+        @php
+            $field = $fieldValueOrModel->field;
+            $key   = 'fields.'.$field->id;
+            $label = ucfirst(__($field->name));
+        @endphp
+        @include('laravel-crm::components.custom-fields._field', compact('field', 'key', 'label'))
+    @endforeach
+@endif
+
