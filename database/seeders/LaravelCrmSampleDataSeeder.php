@@ -20,6 +20,7 @@ use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
 use VentureDrake\LaravelCrm\Models\FieldOption;
+use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\Label;
@@ -152,6 +153,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Disable query log to prevent memory issues with large dataset
         DB::disableQueryLog();
 
+        // Custom fields must be seeded FIRST so HasCrmFields::booted()
+        // auto-creates FieldValue rows when each entity is created.
+        $this->seedCustomFieldGroups();
+
         $this->seedLeadSources();
         $this->seedProductCategoriesAndProducts();
         $this->seedOrganizations();
@@ -165,7 +170,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->seedPurchaseOrders();
         $this->seedActivities();
         $this->seedLabels();
-        $this->seedCustomFieldGroups();
+        $this->seedCustomFieldValues();
 
         // Re-enable auditing
         $this->enableAuditing();
@@ -2158,7 +2163,18 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     ['type' => 'checkbox', 'name' => 'Express Shipping', 'default' => '0'],
                     ['type' => 'textarea', 'name' => 'Special Instructions'],
                 ],
-                'models' => ['VentureDrake\LaravelCrm\Models\Quote', 'VentureDrake\LaravelCrm\Models\Order', 'VentureDrake\LaravelCrm\Models\Invoice'],
+                'models' => ['VentureDrake\LaravelCrm\Models\Quote', 'VentureDrake\LaravelCrm\Models\Order'],
+            ],
+            [
+                'name' => 'Product Details',
+                'fields' => [
+                    ['type' => 'text',     'name' => 'SKU'],
+                    ['type' => 'select',   'name' => 'Warranty Period', 'options' => [['value' => '1_year', 'label' => '1 Year'], ['value' => '2_year', 'label' => '2 Years'], ['value' => '3_year', 'label' => '3 Years'], ['value' => 'lifetime', 'label' => 'Lifetime']]],
+                    ['type' => 'checkbox', 'name' => 'Requires Installation', 'default' => '0'],
+                    ['type' => 'radio',    'name' => 'Availability', 'options' => [['value' => 'in_stock', 'label' => 'In Stock'], ['value' => 'pre_order', 'label' => 'Pre-Order'], ['value' => 'discontinued', 'label' => 'Discontinued']]],
+                    ['type' => 'textarea', 'name' => 'Product Notes'],
+                ],
+                'models' => ['VentureDrake\LaravelCrm\Models\Product'],
             ],
         ];
 
@@ -2204,6 +2220,176 @@ class LaravelCrmSampleDataSeeder extends Seeder
         }
 
         $this->command->info('  → Created '.count($groups)." custom field groups with {$total} fields");
+    }
+
+    // =========================================================================
+    // Custom Field Values
+    // =========================================================================
+
+    protected function seedCustomFieldValues(): void
+    {
+        $this->command->info('Seeding custom field values...');
+
+        // Sample data pools
+        $competitors = ['Salesforce', 'HubSpot', 'Pipedrive', 'Zoho CRM', 'Microsoft Dynamics', 'Monday.com', 'ActiveCampaign'];
+        $qualNotes = ['Strong interest, budget confirmed.', 'Evaluating multiple vendors.', 'Referred by existing client.', 'Initial inquiry, needs follow-up.', 'Decision expected next quarter.', 'Budget not yet approved.'];
+        $personalNotes = ['Key decision maker.', 'Very responsive via email.', 'Prefers morning calls.', 'Met at industry conference.', 'Do not call before 9am.'];
+        $specialInstr = ['Fragile, handle with care.', 'Delivery to loading dock only.', 'Call ahead before delivery.', 'No signature required.', 'Leave with reception.'];
+        $productNotes = ['Best-seller in Q1 and Q3.', 'Requires annual maintenance.', 'Eligible for volume discounts.', 'Recently updated to v2.', 'Replacement model available.'];
+        $linkedInPrefixes = ['john-smith', 'jane-doe', 'robert-jones', 'mary-williams', 'michael-brown', 'sarah-taylor'];
+
+        // Helper to load a model's fields keyed by field name
+        $loadFields = function (string $modelClass): Collection {
+            return Field::whereHas('fieldModels', fn ($q) => $q->where('model', $modelClass))
+                ->with('fieldOptions')
+                ->get()
+                ->keyBy('name');
+        };
+
+        // --- Leads (75% coverage) ---
+        $this->command->info('  → Lead custom field values...');
+        $lf = $loadFields(Lead::class);
+        Lead::chunk(500, function ($leads) use ($lf, $competitors, $qualNotes) {
+            foreach ($leads as $lead) {
+                if (mt_rand(1, 100) > 75) {
+                    continue;
+                }
+                $this->setFieldValue($lead, $lf->get('Lead Source Channel'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($lead, $lf->get('Competitor Mentioned'), fn () => $competitors[array_rand($competitors)]);
+                $this->setFieldValue($lead, $lf->get('Decision Maker Contacted'), fn () => mt_rand(0, 1) ? '1' : '0');
+                $this->setFieldValue($lead, $lf->get('Initial Contact Date'), fn () => now()->subDays(mt_rand(5, 400))->format('Y-m-d'));
+                $this->setFieldValue($lead, $lf->get('Qualification Notes'), fn () => $qualNotes[array_rand($qualNotes)]);
+            }
+        });
+
+        // --- Deals (75% coverage) ---
+        $this->command->info('  → Deal custom field values...');
+        $df = $loadFields(Deal::class);
+        Deal::chunk(500, function ($deals) use ($df) {
+            foreach ($deals as $deal) {
+                if (mt_rand(1, 100) > 75) {
+                    continue;
+                }
+                $this->setFieldValue($deal, $df->get('Contract Reference'), fn () => 'CON-'.strtoupper(substr(md5(mt_rand()), 0, 6)));
+                $this->setFieldValue($deal, $df->get('Deal Priority'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($deal, $df->get('NDA Signed'), fn () => mt_rand(0, 1) ? '1' : '0');
+                $this->setFieldValue($deal, $df->get('Expected Close Date'), fn () => now()->addDays(mt_rand(10, 180))->format('Y-m-d'));
+                $this->setFieldValue($deal, $df->get('Products of Interest'), function ($f) {
+                    $sample = $f->fieldOptions->random(mt_rand(1, min(3, $f->fieldOptions->count())));
+
+                    return json_encode($sample->pluck('value')->values()->all());
+                });
+            }
+        });
+
+        // --- Quotes (80% coverage) ---
+        $this->command->info('  → Quote custom field values...');
+        $qf = $loadFields(Quote::class);
+        Quote::chunk(500, function ($quotes) use ($qf, $specialInstr) {
+            foreach ($quotes as $quote) {
+                if (mt_rand(1, 100) > 80) {
+                    continue;
+                }
+                $this->setFieldValue($quote, $qf->get('Project Code'), fn () => 'PROJ-'.mt_rand(1000, 9999));
+                $this->setFieldValue($quote, $qf->get('Delivery Region'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($quote, $qf->get('Promised Delivery Date'), fn () => now()->addDays(mt_rand(14, 90))->format('Y-m-d'));
+                $this->setFieldValue($quote, $qf->get('Express Shipping'), fn () => mt_rand(1, 100) <= 20 ? '1' : '0');
+                $this->setFieldValue($quote, $qf->get('Special Instructions'), fn () => mt_rand(1, 100) <= 40 ? $specialInstr[array_rand($specialInstr)] : null);
+            }
+        });
+
+        // --- Orders (80% coverage) ---
+        $this->command->info('  → Order custom field values...');
+        $of = $loadFields(Order::class);
+        Order::chunk(500, function ($orders) use ($of, $specialInstr) {
+            foreach ($orders as $order) {
+                if (mt_rand(1, 100) > 80) {
+                    continue;
+                }
+                $this->setFieldValue($order, $of->get('Project Code'), fn () => 'PROJ-'.mt_rand(1000, 9999));
+                $this->setFieldValue($order, $of->get('Delivery Region'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($order, $of->get('Promised Delivery Date'), fn () => now()->addDays(mt_rand(7, 60))->format('Y-m-d'));
+                $this->setFieldValue($order, $of->get('Express Shipping'), fn () => mt_rand(1, 100) <= 20 ? '1' : '0');
+                $this->setFieldValue($order, $of->get('Special Instructions'), fn () => mt_rand(1, 100) <= 40 ? $specialInstr[array_rand($specialInstr)] : null);
+            }
+        });
+
+        // --- People (70% coverage) ---
+        $this->command->info('  → Person custom field values...');
+        $pf = $loadFields(Person::class);
+        Person::chunk(500, function ($people) use ($pf, $personalNotes, $linkedInPrefixes) {
+            foreach ($people as $person) {
+                if (mt_rand(1, 100) > 70) {
+                    continue;
+                }
+                $this->setFieldValue($person, $pf->get('Preferred Contact Method'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($person, $pf->get('LinkedIn Profile URL'), fn () => 'https://linkedin.com/in/'.$linkedInPrefixes[array_rand($linkedInPrefixes)].'-'.mt_rand(10, 99));
+                $this->setFieldValue($person, $pf->get('Communication Frequency'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($person, $pf->get('Newsletter Subscriber'), fn () => mt_rand(1, 100) <= 60 ? '1' : '0');
+                $this->setFieldValue($person, $pf->get('Personal Notes'), fn () => mt_rand(1, 100) <= 50 ? $personalNotes[array_rand($personalNotes)] : null);
+            }
+        });
+
+        // --- Organizations (70% coverage) ---
+        $this->command->info('  → Organization custom field values...');
+        $orgContactFields = $loadFields(Organization::class)->only(['Preferred Contact Method', 'LinkedIn Profile URL', 'Communication Frequency', 'Newsletter Subscriber', 'Personal Notes']);
+        $orgCompanyFields = $loadFields(Organization::class)->only(['Industry Sector', 'Company Registration Number', 'Company Size', 'Publicly Listed', 'Relationship Since']);
+        $orgAllFields = $orgContactFields->merge($orgCompanyFields);
+        Organization::chunk(200, function ($orgs) use ($orgAllFields) {
+            foreach ($orgs as $org) {
+                if (mt_rand(1, 100) > 70) {
+                    continue;
+                }
+                $this->setFieldValue($org, $orgAllFields->get('Preferred Contact Method'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($org, $orgAllFields->get('LinkedIn Profile URL'), fn () => 'https://linkedin.com/company/'.strtolower(preg_replace('/[^a-z0-9]/i', '-', $org->name)));
+                $this->setFieldValue($org, $orgAllFields->get('Communication Frequency'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($org, $orgAllFields->get('Newsletter Subscriber'), fn () => mt_rand(1, 100) <= 55 ? '1' : '0');
+                $this->setFieldValue($org, $orgAllFields->get('Industry Sector'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($org, $orgAllFields->get('Company Registration Number'), fn () => 'REG-'.mt_rand(10000000, 99999999));
+                $this->setFieldValue($org, $orgAllFields->get('Company Size'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($org, $orgAllFields->get('Publicly Listed'), fn () => mt_rand(1, 100) <= 15 ? '1' : '0');
+                $this->setFieldValue($org, $orgAllFields->get('Relationship Since'), fn () => now()->subDays(mt_rand(180, 1800))->format('Y-m-d'));
+            }
+        });
+
+        // --- Products (90% coverage — small dataset) ---
+        $this->command->info('  → Product custom field values...');
+        $prdf = $loadFields(Product::class);
+        Product::chunk(200, function ($products) use ($prdf, $productNotes) {
+            foreach ($products as $product) {
+                $this->setFieldValue($product, $prdf->get('SKU'), fn () => 'SKU-'.strtoupper(substr(md5($product->name), 0, 4)).'-'.mt_rand(100, 999));
+                $this->setFieldValue($product, $prdf->get('Warranty Period'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
+                $this->setFieldValue($product, $prdf->get('Requires Installation'), fn () => mt_rand(1, 100) <= 30 ? '1' : '0');
+                $this->setFieldValue($product, $prdf->get('Availability'), fn ($f) => $f->fieldOptions->count() > 0 ? ($f->fieldOptions->count() > 2 ? $f->fieldOptions->first()->value : $f->fieldOptions->random()->value) : null);
+                $this->setFieldValue($product, $prdf->get('Product Notes'), fn () => mt_rand(1, 100) <= 60 ? $productNotes[array_rand($productNotes)] : null);
+            }
+        });
+
+        $this->command->info('  → Custom field values seeded.');
+    }
+
+    /**
+     * Update a single FieldValue row for a model instance.
+     * The row was already created by HasCrmFields::booted() when the entity was created.
+     * Skips silently if the field is null or the resolved value is null.
+     */
+    protected function setFieldValue($model, ?Field $field, \Closure $valueFn): void
+    {
+        if (! $field) {
+            return;
+        }
+
+        $value = $valueFn($field);
+
+        if ($value === null) {
+            return;
+        }
+
+        FieldValue::where([
+            'field_id' => $field->id,
+            'field_valueable_type' => get_class($model),
+            'field_valueable_id' => $model->id,
+        ])->update(['value' => $value]);
     }
 
     // =========================================================================
