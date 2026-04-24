@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use VentureDrake\LaravelCrm\Http\Requests\StoreClientRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateClientRequest;
 use VentureDrake\LaravelCrm\Models\Customer;
@@ -19,7 +20,7 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return View
      */
     public function index(Request $request)
     {
@@ -47,7 +48,7 @@ class CustomerController extends Controller
                 $clients = $clients->paginate(30);
             }
         } else {
-            if ($clients->count() < 30) {
+            if ($clients->count() <= 30) {
                 $clients = $clients->sortable(['created_at' => 'desc'])->get();
             } else {
                 $clients = $clients->sortable(['created_at' => 'desc'])->paginate(30);
