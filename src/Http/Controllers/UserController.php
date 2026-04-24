@@ -26,22 +26,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        /*if (config('laravel-crm.teams')) {
-            if (auth()->user()->currentTeam) {
-                $users = auth()->user()->currentTeam->allUsers();
-
-                if ($users->count() > 30) {
-                    $users = $users->paginate(30);
-                }
-            }
-        } else {
-            if (User::all()->count() < 30) {
-                $users = User::latest()->get();
-            } else {
-                $users = User::latest()->paginate(30);
-            }
-        }*/
-
         return view('laravel-crm::users.index');
     }
 

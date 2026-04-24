@@ -4,17 +4,20 @@ A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into
 
 ## Workspace Overview
 
-This package is developed across a **three-project workspace**:
+This package is developed across a **four-project workspace**:
 
 | Project | Path | Purpose |
 |---|---|---|
 | **Package** (this repo) | `/Users/andrewdrake/Packages/laravel-crm` | CRM package source — all CRM code lives here |
-| **Laravel 13 Host** | `/Users/andrewdrake/Sites/laravelcrm-v2` | Laravel 13 + Fortify + Flux UI host app (Livewire starter kit) — separate project, does NOT consume CRM package |
-| **Premium Host** | `/Users/andrewdrake/Sites/laravel-crm-premium` | Laravel 11 + Jetstream host app with Xero integration |
+| **Laravel 12 Host** (primary) | `/Users/andrewdrake/Sites/laravel-12-crm-v2` | Clean Laravel 12 host that **consumes** the package via Composer path repo — primary dev/test host |
+| **Laravel 13 Host** | `/Users/andrewdrake/Sites/laravelcrm-v2` | Laravel 13 + Fortify + Flux UI Livewire starter kit — standalone, does **not** consume CRM package |
+| **Docs** | `/Users/andrewdrake/Sites/laravel-crm-docs` | Markdown docs site (per-feature `.md` files: leads, deals, quotes, etc.) — update when adding/changing user-facing features |
 
-The Premium host requires this package via a Composer **path repository** (`"url": "../../Packages/laravel-crm"`), so changes to package source are reflected immediately without `composer update`.
+The Laravel 12 host requires this package via a Composer **path repository** with the symlink `vendor/venturedrake/laravel-crm -> ../../../../Packages/laravel-crm/`, so changes to package source are reflected immediately without `composer update`.
 
-**Key workflow**: Edit package code here in `/Users/andrewdrake/Packages/laravel-crm/`, test immediately in the Premium host app via browser or artisan. No publish step needed for code — only run `php artisan vendor:publish` when updating config, views, or assets.
+> A separate **Premium Host** (`/Users/andrewdrake/Sites/laravel-crm-premium`, Laravel 11 + Jetstream + Xero) exists on disk but is **not** part of the current workspace; only use it when explicitly testing Xero/Jetstream-specific behavior.
+
+**Key workflow**: Edit package code here in `/Users/andrewdrake/Packages/laravel-crm/`, test immediately in the Laravel 12 host via browser or `php artisan` from `/Users/andrewdrake/Sites/laravel-12-crm-v2`. No publish step needed for code — only run `php artisan vendor:publish` when updating config, views, or assets.
 
 ## Architecture
 
@@ -44,12 +47,16 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 **KanbanBoard**: Reusable `src/Livewire/KanbanBoard.php` component with views in `resources/views/livewire/kanban-board/` — used by leads, deals, and quotes board views.
 
 ### Shared Livewire traits
-Traits in `src/Traits/` (not `src/Livewire/Traits/`) are shared across Livewire components and models:
+Traits in `src/Traits/` are shared across Livewire components and models:
 - `HasGlobalSettings` — access to global CRM settings
 - `NotifyToast` — toast notification helper (used alongside `Mary\Traits\Toast`)
 - `SearchFilters` — reusable search/filter logic for index components
 - `ResetsPaginationWhenPropsChanges` — auto-reset pagination when filter properties change
 - `ClearsProperties` — bulk-clear component properties
+- `HasCrmFields` / `HasCustomFormFields` — attach user-defined custom fields to models / render them in Livewire forms (seeded via `laravelcrm:fields`)
+
+Form-specific traits live in `src/Livewire/Traits/`:
+- `HasPersonSuggest`, `HasOrganizationSuggest` — typeahead/autocomplete suggestions used by lead/deal/quote create+edit forms
 
 ## Key Model Conventions
 
@@ -71,7 +78,7 @@ Traits in `src/Traits/` (not `src/Livewire/Traits/`) are shared across Livewire 
 - **Icons**: ForkAwesome (`<x-forkawesome-*>`), Boxicons (`<x-bx-*>`), FontAwesome (`<x-far-*>` / `<x-fas-*>`)
 - **JS globals**: `sortablejs` (kanban drag-and-drop) and `vanilla-picker` (color picker) exposed on `window` via `resources/js/app.js`
 - All translatable strings use `__('laravel-crm::lang.key')` with `ucfirst()` — add keys to `resources/lang/`
-- **Blade components** registered with `crm-` prefix: `crm-header`, `crm-delete-confirm`, `crm-index-toggle`, `crm-phones`, `crm-emails`, `crm-addresses`, `crm-note`, `crm-app-layout`, `crm-timeline-item` — view components in `src/View/Components/`
+- **Blade components** registered with `crm-` prefix: `crm-header`, `crm-delete-confirm`, `crm-index-toggle`, `crm-phones`, `crm-emails`, `crm-addresses`, `crm-note`, `crm-app-layout`, `crm-timeline-item`, `crm-custom-fields`, `crm-custom-field-values` — view components in `src/View/Components/`
 - **Global helpers** autoloaded via `composer.json` `files` array in `src/Http/Helpers/`: `SelectOptions`, `PersonName`, `AddressLine`, `AutoComplete`, `CheckAmount`, `Validate`, `PublicProperties`
 
 ## Routing & Access Control
@@ -86,19 +93,34 @@ Traits in `src/Traits/` (not `src/Livewire/Traits/`) are shared across Livewire 
 
 ## Host Apps (Development / Testing)
 
-### Host 1: Laravel 13 (`laravelcrm-v2`)
+### Host 1: Laravel 12 — primary (`laravel-12-crm-v2`)
+
+| Aspect | Detail |
+|---|---|
+| **Path** | `/Users/andrewdrake/Sites/laravel-12-crm-v2` |
+| **Laravel version** | 12.x — clean scaffold (no Jetstream / Fortify / Sanctum) |
+| **Role** | Primary host that consumes this package via Composer path repo (symlinked `vendor/venturedrake/laravel-crm`) |
+| **DB** | MySQL, database `laravel_12_crm_v2_dev`, table prefix `crm_` (default) |
+| **URL** | `http://localhost` (via `php artisan serve` or `composer dev`), CRM at `/crm` |
+| **Teams** | `LARAVEL_CRM_TEAMS` not set — single-tenant mode |
+| **Encryption** | `LARAVEL_CRM_ENCRYPT_DB_FIELDS=false` |
+| **User model** | `App\Models\User` uses `HasFactory`, `Notifiable`, `HasRoles` (Spatie), `HasCrmAccess`, `HasCrmTeams` |
+| **Frontend** | Host: Tailwind v4 + Vite 6; package builds independently via its own `vite.config.js` |
+| **Dev command** | `composer dev` (server + queue + `pail` logs + Vite concurrently) |
+
+### Host 2: Laravel 13 standalone (`laravelcrm-v2`)
 
 | Aspect | Detail |
 |---|---|
 | **Path** | `/Users/andrewdrake/Sites/laravelcrm-v2` |
 | **Laravel version** | 13.x — Livewire starter kit with Fortify + Flux UI |
-| **Role** | Separate Laravel project in workspace; does **not** consume the CRM package |
+| **Role** | Separate Laravel project in workspace; does **not** consume the CRM package — used for reference/experiments only |
 | **DB** | SQLite (`database/database.sqlite`) |
 | **URL** | `http://laravelcrm-v2.test` (Herd) |
 | **Frontend** | Tailwind v4 + Flux UI v2 + Vite |
 | **Testing** | Pest v4 |
 
-### Host 2: Premium (`laravel-crm-premium`)
+### Host 3: Premium (`laravel-crm-premium`) — on-disk only, not in workspace
 
 | Aspect | Detail |
 |---|---|
@@ -111,6 +133,7 @@ Traits in `src/Traits/` (not `src/Livewire/Traits/`) are shared across Livewire 
 | **Frontend** | Host has its own Tailwind v3 + DaisyUI v4 build; package builds independently via its own `vite.config.js` |
 | **Providers** | `AppServiceProvider`, `FortifyServiceProvider`, `JetstreamServiceProvider` |
 | **Dev command** | `composer dev` (runs server + queue + logs + Vite concurrently) |
+| **Use when** | Testing Xero integration, Jetstream-specific flows, or empty-table-prefix configurations |
 
 ## Developer Workflows
 
@@ -137,9 +160,12 @@ php artisan laravelcrm:permissions          # seed roles & permissions
 php artisan laravelcrm:sample-data          # generate dev sample data
 php artisan laravelcrm:add-user             # add a user with CRM access
 php artisan laravelcrm:labels               # seed default labels
-php artisan laravelcrm:address-types        # seed address types
-php artisan laravelcrm:organization-types   # seed organization types
-php artisan laravelcrm:contact-types        # seed contact types
+php artisan laravelcrm:fields               # seed default custom fields / field groups
+php artisan laravelcrm:addresstypes         # seed address types
+php artisan laravelcrm:organizationtypes    # seed organization types
+php artisan laravelcrm:contacttypes         # seed contact types
+php artisan laravelcrm:update               # re-publish + migrate + reseed (run after package update)
+php artisan laravelcrm:v2                   # one-shot v1 → v2 migration helper
 php artisan laravelcrm:encrypt              # encrypt sensitive DB fields
 php artisan laravelcrm:decrypt              # decrypt sensitive DB fields
 php artisan laravelcrm:xero contacts        # sync Xero contacts
@@ -175,4 +201,5 @@ php artisan laravelcrm:archive              # archive old records (scheduled dai
 - **PDF generation**: `barryvdh/laravel-dompdf` and `mpdf/mpdf` for quotes/invoices
 - **Audit log**: `owen-it/laravel-auditing` — all models auto-audited; use `saveQuietly()` (defined on base `Model`) to bypass events
 - **GeoIP**: `torann/geoip` + `geoip2/geoip2` for location-aware features
+- **Laravel Boost**: `laravel/boost` (dev) is installed — AI agents can use its MCP tooling for guideline lookups and tinker introspection when available
 

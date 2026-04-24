@@ -148,6 +148,7 @@ return [
     'user_stored' => 'user stored',
     'user_updated' => 'user updated',
     'user_deleted' => 'user deleted',
+    'leave_blank_to_keep_current_password' => 'leave blank to keep current password',
     'user_invitation_sent' => 'user invitation sent',
     'CRM_Access' => 'CRM Access',
     'email_verified' => 'email verified',

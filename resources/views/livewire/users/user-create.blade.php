@@ -10,7 +10,7 @@
     
     <x-mary-form wire:submit="save">
         <div class="grid lg:grid-cols-2 gap-5 items-start">
-           @include('laravel-crm::livewire.users.user-form')
+           @include('laravel-crm::livewire.users.user-form', ['isCreate' => true])
         </div>
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" class="btn" link="{{ url(route('laravel-crm.users.index')) }}" />
