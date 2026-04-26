@@ -11,17 +11,28 @@ class BelongsToTeamsScopeTest extends TestCase
     {
         config()->set('laravel-crm.teams', false);
 
-        $a = Lead::create(['title' => 'A', 'team_id' => 1]);
-        $b = Lead::create(['title' => 'B', 'team_id' => 2]);
+        Lead::create(['title' => 'A', 'team_id' => 1]);
+        Lead::create(['title' => 'B', 'team_id' => 2]);
 
         // Without teams + auth, the scope should not filter.
         $this->assertSame(2, Lead::count());
     }
 
-    public function test_all_teams_macro_bypasses_global_scope(): void
+    public function test_belongs_to_teams_scope_method_exists_on_model(): void
     {
-        $builder = Lead::query();
+        // The BelongsToTeams trait registers a global scope via bootBelongsToTeams().
+        // The scope class is applied per-query; we assert the boot method exists
+        // which is what Laravel hooks into automatically.
+        $this->assertTrue(method_exists(Lead::class, 'bootBelongsToTeams'));
+    }
 
-        $this->assertTrue(method_exists($builder, 'macro') || $builder->hasMacro('allTeams'));
+    public function test_belongs_to_teams_global_scope_class_is_registered(): void
+    {
+        $scopes = Lead::query()->getModel()->getGlobalScopes();
+
+        $this->assertArrayHasKey(
+            \VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope::class,
+            $scopes
+        );
     }
 }
