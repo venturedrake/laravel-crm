@@ -24,6 +24,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
+use VentureDrake\LaravelCrm\Console\LaravelCrmSampleData;
 use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveCall;
@@ -506,6 +507,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmContactTypes::class,
                 LaravelCrmFields::class,
                 LaravelCrmArchive::class,
+                LaravelCrmSampleData::class,
             ]);
 
             // Register the model factories
