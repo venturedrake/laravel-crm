@@ -81,7 +81,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "VentureDrake\\LaravelCRM\\Tests\\" : "tests"
+            "VentureDrake\\LaravelCrm\\Tests\\" : "tests"
         }
     },
     "scripts": {

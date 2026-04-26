@@ -26,7 +26,7 @@ class LaravelCrmFields extends Command
      *
      * @var string
      */
-    protected $description = 'Install Laravel CRM package';
+    protected $description = 'Update Laravel CRM custom fields';
 
     /**
      * The Composer instance.

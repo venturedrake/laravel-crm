@@ -2,16 +2,32 @@
 
 namespace VentureDrake\LaravelCrm\Tests;
 
+use Illuminate\Support\Facades\Cache;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use VentureDrake\LaravelCrm\LaravelCrmFacade;
+use OwenIt\Auditing\AuditingServiceProvider;
+use Spatie\Permission\PermissionServiceProvider;
+use VentureDrake\LaravelCrm\Facades\LaravelCrmFacade;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
-use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Tests\Stubs\User;
+use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
-class TestCase extends OrchestraTestCase
+abstract class TestCase extends OrchestraTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        SettingsComposer::$cachedParameters = null;
+        Cache::flush();
+    }
+
     protected function getPackageProviders($app)
     {
         return [
+            PermissionServiceProvider::class,
+            AuditingServiceProvider::class,
+            LivewireServiceProvider::class,
             LaravelCrmServiceProvider::class,
         ];
     }
@@ -25,29 +41,43 @@ class TestCase extends OrchestraTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        include_once __DIR__.'/../database/migrations/create_laravel_crm_tables.php.stub';
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('database.connections.testing', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+            'foreign_key_constraints' => false,
+        ]);
 
-        (new \CreateLaravelCrmTables)->up();
+        $app['config']->set('auth.providers.users.model', User::class);
+        $app['config']->set('cache.default', 'array');
+        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+        $app['config']->set('app.cipher', 'AES-256-CBC');
+
+        $app['config']->set('laravel-crm.db_table_prefix', 'crm_');
+        $app['config']->set('laravel-crm.teams', false);
+        $app['config']->set('laravel-crm.encrypt_db_fields', false);
+        $app['config']->set('laravel-crm.route_prefix', 'crm');
+        $app['config']->set('laravel-crm.user_interface', true);
+
+        $app['config']->set('audit.console', true);
     }
 
-    /** @test */
-    public function the_crm_route_can_be_accessed()
+    protected function defineDatabaseMigrations()
     {
-        $this->get('/laravel-crm')
-            ->assertViewIs('laravel-crm::index')
-            ->assertStatus(200);
+        TestSchema::up();
     }
 
-    /** @test */
-    public function it_can_access_the_database()
+    protected function actingAsUser(array $attributes = []): User
     {
-        /* $lead = new Lead();
-         $lead->name = 'Tim Drake';
-         $lead->save();
+        $user = User::create(array_merge([
+            'name' => 'Test User',
+            'email' => 'test'.uniqid().'@example.com',
+            'password' => bcrypt('secret'),
+        ], $attributes));
 
-         $newLead = Lead::find($lead->id);
+        $this->actingAs($user);
 
-         $this->assertSame($newLead->name, 'Tim Drake');*/
-        $this->assertTrue(true);
+        return $user;
     }
 }
