@@ -39,12 +39,24 @@ class LaravelCrmSampleData extends Command
         'fields',
         'field_groups',
 
-        // Activities
+        // Activities (the `activities` timeline rows reference every other
+        // CRM record polymorphically, so they MUST be truncated before any
+        // of their hosts to prevent dangling timelineable_id pointers).
+        'activities',
         'tasks',
         'notes',
         'calls',
         'meetings',
         'lunches',
+
+        // Sales document line items (children must be truncated before parents
+        // so leftover rows can never collide with newly-seeded parent IDs).
+        'delivery_products',
+        'purchase_order_lines',
+        'invoice_lines',
+        'order_products',
+        'quote_products',
+        'deal_products',
 
         // Sales documents
         'deliveries',
@@ -64,11 +76,14 @@ class LaravelCrmSampleData extends Command
         'addresses',
         'files',
 
-        // Catalogue
+        // Catalogue (children first)
+        'product_prices',
+        'product_variations',
         'products',
         'product_categories',
 
         // Core entities
+        'contact_contact_type',
         'people',
         'organisations',
         'organizations',
