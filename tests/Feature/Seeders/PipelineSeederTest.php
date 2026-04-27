@@ -5,8 +5,15 @@ namespace VentureDrake\LaravelCrm\Tests\Feature\Seeders;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmPipelineTablesSeeder;
+use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Delivery;
+use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Tests\TestCase;
 
 /**
@@ -128,20 +135,20 @@ class PipelineSeederTest extends TestCase
         $this->runSeeder();
 
         $map = [
-            'Lead Pipeline'          => \VentureDrake\LaravelCrm\Models\Lead::class,
-            'Deal Pipeline'          => \VentureDrake\LaravelCrm\Models\Deal::class,
-            'Quote Pipeline'         => \VentureDrake\LaravelCrm\Models\Quote::class,
-            'Order Pipeline'         => \VentureDrake\LaravelCrm\Models\Order::class,
-            'Invoice Pipeline'       => \VentureDrake\LaravelCrm\Models\Invoice::class,
-            'Delivery Pipeline'      => \VentureDrake\LaravelCrm\Models\Delivery::class,
-            'Purchase Order Pipeline' => \VentureDrake\LaravelCrm\Models\PurchaseOrder::class,
+            'Lead Pipeline' => Lead::class,
+            'Deal Pipeline' => Deal::class,
+            'Quote Pipeline' => Quote::class,
+            'Order Pipeline' => Order::class,
+            'Invoice Pipeline' => Invoice::class,
+            'Delivery Pipeline' => Delivery::class,
+            'Purchase Order Pipeline' => PurchaseOrder::class,
         ];
 
         $prefix = config('laravel-crm.db_table_prefix');
 
         foreach ($map as $pipelineName => $modelClass) {
             $this->assertDatabaseHas($prefix.'pipelines', [
-                'name'  => $pipelineName,
+                'name' => $pipelineName,
                 'model' => $modelClass,
             ]);
         }
@@ -238,7 +245,7 @@ class PipelineSeederTest extends TestCase
         $this->runSeeder();
 
         $leadPipeline = Pipeline::where('name', 'Lead Pipeline')->first();
-        $prefix       = config('laravel-crm.db_table_prefix');
+        $prefix = config('laravel-crm.db_table_prefix');
 
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Closed Won',  'pipeline_id' => $leadPipeline->id]);
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Closed Lost', 'pipeline_id' => $leadPipeline->id]);
@@ -249,7 +256,7 @@ class PipelineSeederTest extends TestCase
         $this->runSeeder();
 
         $pipeline = Pipeline::where('name', 'Deal Pipeline')->first();
-        $prefix   = config('laravel-crm.db_table_prefix');
+        $prefix = config('laravel-crm.db_table_prefix');
 
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Closed Won',  'pipeline_id' => $pipeline->id]);
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Closed Lost', 'pipeline_id' => $pipeline->id]);
@@ -260,7 +267,7 @@ class PipelineSeederTest extends TestCase
         $this->runSeeder();
 
         $pipeline = Pipeline::where('name', 'Quote Pipeline')->first();
-        $prefix   = config('laravel-crm.db_table_prefix');
+        $prefix = config('laravel-crm.db_table_prefix');
 
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Accepted', 'pipeline_id' => $pipeline->id]);
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Rejected', 'pipeline_id' => $pipeline->id]);
@@ -272,7 +279,7 @@ class PipelineSeederTest extends TestCase
         $this->runSeeder();
 
         $pipeline = Pipeline::where('name', 'Invoice Pipeline')->first();
-        $prefix   = config('laravel-crm.db_table_prefix');
+        $prefix = config('laravel-crm.db_table_prefix');
 
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Paid', 'pipeline_id' => $pipeline->id]);
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Awaiting Payment', 'pipeline_id' => $pipeline->id]);
@@ -317,6 +324,3 @@ class PipelineSeederTest extends TestCase
         $this->assertDatabaseCount(config('laravel-crm.db_table_prefix').'pipeline_stage_probabilities', 12);
     }
 }
-
-
-

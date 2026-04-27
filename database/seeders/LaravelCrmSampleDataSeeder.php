@@ -13,6 +13,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Helper\ProgressBar;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Address;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\DealProduct;
@@ -49,6 +50,7 @@ use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Role;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\Task;
+use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\Team;
 
 class LaravelCrmSampleDataSeeder extends Seeder
@@ -103,6 +105,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
      * Currency code from settings.
      */
     protected string $currency = 'USD';
+
+    /**
+     * Default tax rate record (GST 10%), created if none exist.
+     */
+    protected ?TaxRate $defaultTaxRate = null;
 
     /**
      * Seeded products collection.
@@ -213,6 +220,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         $this->seedUsersAndTeams();
         $this->seedLeadSources();
+        $this->seedDefaultTaxRate();
         $this->seedProductCategoriesAndProducts();
 
         $this->command->line('');
@@ -601,6 +609,23 @@ class LaravelCrmSampleDataSeeder extends Seeder
     // Products
     // =========================================================================
 
+    protected function seedDefaultTaxRate(): void
+    {
+        if (TaxRate::count() === 0) {
+            $this->defaultTaxRate = TaxRate::create([
+                'name' => 'GST',
+                'description' => 'Goods and Services Tax',
+                'rate' => 10,
+                'default' => true,
+            ]);
+            $this->command->info('  → Created default tax rate: GST 10%');
+        } else {
+            $this->defaultTaxRate = TaxRate::where('default', true)->first()
+                ?? TaxRate::first();
+            $this->command->info("  → Using existing tax rate: {$this->defaultTaxRate->name} {$this->defaultTaxRate->rate}%");
+        }
+    }
+
     protected function seedProductCategoriesAndProducts(): void
     {
         $this->command->info('Seeding product categories and products...');
@@ -649,6 +674,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'code' => strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $productData['name']), 0, 3)).'-'.mt_rand(100, 999),
                     'description' => 'High-quality '.$productData['name'].' for business operations.',
                     'product_category_id' => $category->id,
+                    'tax_rate_id' => $this->defaultTaxRate->id ?? null,
                     'active' => true,
                     'user_created_id' => $this->randomUserId(),
                     'user_owner_id' => $this->randomUserId(),
@@ -665,7 +691,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             }
         }
 
-        $this->products = Product::with('productPrices')->get();
+        $this->products = Product::with(['productPrices', 'taxRate'])->get();
         $this->command->info("  → Created {$this->products->count()} products in ".count($categories).' categories');
     }
 
@@ -784,6 +810,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         $bar = $this->createProgressBar(count($orgNames));
 
+        $billingTypeId = AddressType::where('name', 'Billing')->first()->id ?? null;
+        $shippingTypeId = AddressType::where('name', 'Shipping')->first()->id ?? null;
+
         foreach ($orgNames as $name) {
             $date = $this->weightedRandomDate();
             $city = $cities[array_rand($cities)];
@@ -819,9 +848,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'phoneable_id' => $org->id,
             ]);
 
-            // Address
+            // Primary billing address
             Address::create([
                 'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => $billingTypeId,
                 'line1' => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
                 'line2' => mt_rand(0, 3) === 0 ? 'Suite '.mt_rand(100, 999) : null,
                 'city' => $city['city'],
@@ -832,6 +862,23 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'addressable_type' => Organization::class,
                 'addressable_id' => $org->id,
             ]);
+
+            // ~50% of orgs also get a separate shipping address
+            if (mt_rand(1, 100) <= 50) {
+                $shippingCity = $cities[array_rand($cities)];
+                Address::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'address_type_id' => $shippingTypeId,
+                    'line1' => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
+                    'city' => $shippingCity['city'],
+                    'state' => $shippingCity['state'],
+                    'code' => $shippingCity['code'],
+                    'country' => $shippingCity['country'],
+                    'primary' => false,
+                    'addressable_type' => Organization::class,
+                    'addressable_id' => $org->id,
+                ]);
+            }
 
             $bar->advance();
         }
@@ -891,6 +938,30 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $count = 800;
         $bar = $this->createProgressBar($count);
 
+        $personCities = [
+            ['city' => 'New York', 'state' => 'NY', 'country' => 'United States', 'code' => '10001'],
+            ['city' => 'Los Angeles', 'state' => 'CA', 'country' => 'United States', 'code' => '90001'],
+            ['city' => 'Chicago', 'state' => 'IL', 'country' => 'United States', 'code' => '60601'],
+            ['city' => 'Houston', 'state' => 'TX', 'country' => 'United States', 'code' => '77001'],
+            ['city' => 'Phoenix', 'state' => 'AZ', 'country' => 'United States', 'code' => '85001'],
+            ['city' => 'San Francisco', 'state' => 'CA', 'country' => 'United States', 'code' => '94102'],
+            ['city' => 'Seattle', 'state' => 'WA', 'country' => 'United States', 'code' => '98101'],
+            ['city' => 'Denver', 'state' => 'CO', 'country' => 'United States', 'code' => '80201'],
+            ['city' => 'Boston', 'state' => 'MA', 'country' => 'United States', 'code' => '02101'],
+            ['city' => 'Austin', 'state' => 'TX', 'country' => 'United States', 'code' => '73301'],
+            ['city' => 'Miami', 'state' => 'FL', 'country' => 'United States', 'code' => '33101'],
+            ['city' => 'Atlanta', 'state' => 'GA', 'country' => 'United States', 'code' => '30301'],
+            ['city' => 'London', 'state' => '', 'country' => 'United Kingdom', 'code' => 'EC1A 1BB'],
+            ['city' => 'Sydney', 'state' => 'NSW', 'country' => 'Australia', 'code' => '2000'],
+            ['city' => 'Toronto', 'state' => 'ON', 'country' => 'Canada', 'code' => 'M5H 2N2'],
+        ];
+        $personStreets = ['Main St', 'Oak Ave', 'Elm St', 'Park Blvd', 'First Ave',
+            'Maple Dr', 'Cedar Ln', 'Pine St', 'Lake Rd', 'Hill St'];
+        $homeTypeId = AddressType::where('name', 'Home')->first()->id
+            ?? AddressType::first()->id
+            ?? null;
+        $workTypeId = AddressType::where('name', 'Billing')->first()->id ?? $homeTypeId;
+
         for ($i = 0; $i < $count; $i++) {
             $firstName = $firstNames[array_rand($firstNames)];
             $lastName = $lastNames[array_rand($lastNames)];
@@ -929,6 +1000,38 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'primary' => true,
                     'phoneable_type' => Person::class,
                     'phoneable_id' => $person->id,
+                ]);
+            }
+
+            // Address — every person gets a primary address
+            $pCity = $personCities[array_rand($personCities)];
+            Address::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => $workTypeId,
+                'line1' => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
+                'city' => $pCity['city'],
+                'state' => $pCity['state'],
+                'code' => $pCity['code'],
+                'country' => $pCity['country'],
+                'primary' => true,
+                'addressable_type' => Person::class,
+                'addressable_id' => $person->id,
+            ]);
+
+            // ~30% of people also get a second (home) address
+            if (mt_rand(1, 100) <= 30) {
+                $pCity2 = $personCities[array_rand($personCities)];
+                Address::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'address_type_id' => $homeTypeId,
+                    'line1' => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
+                    'city' => $pCity2['city'],
+                    'state' => $pCity2['state'],
+                    'code' => $pCity2['code'],
+                    'country' => $pCity2['country'],
+                    'primary' => false,
+                    'addressable_type' => Person::class,
+                    'addressable_id' => $person->id,
                 ]);
             }
 
@@ -1167,7 +1270,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'price' => $item['price'],
                     'amount' => $item['amount'],
                     'currency' => $this->currency,
-                    'tax_rate' => 10,
+                    'tax_rate' => $item['tax_rate'],
                 ]);
                 $dealSubtotal += $item['amount'];
             }
@@ -1285,7 +1388,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'price' => $item['price'],
                     'amount' => $item['amount'],
                     'currency' => $this->currency,
-                    'tax_rate' => 10,
+                    'tax_rate' => $item['tax_rate'],
                 ]);
                 $dealSubtotal += $item['amount'];
             }
@@ -1321,6 +1424,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $stages = $this->getPipelineStages(Quote::class);
 
         // Quote stages: 13=Draft, 14=Sent, 15=Accepted, 16=Rejected, 17=Ordered
+        // NOTE: quotes are seeded as Draft/Sent/Accepted/Rejected only.
+        // The "Ordered" stage is set by seedOrders() after an order is actually created from an accepted quote.
 
         $wonDeals = Deal::where('closed_status', 'won')->get();
         $this->command->line("    <fg=gray>Won deals to convert: {$wonDeals->count()}</>");
@@ -1331,6 +1436,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             // 80% of won deals get a quote
             if (mt_rand(1, 100) > 80) {
                 $bar->advance();
+
                 continue;
             }
 
@@ -1349,15 +1455,17 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             if ($daysSince > 30) {
                 $rand = mt_rand(1, 100);
-                if ($rand <= 70) {
+                if ($rand <= 53) {
+                    // ~53% accepted (part of the 70% decided)
                     $stage = $stages->firstWhere('name', 'Accepted');
                     $acceptedAt = $date->copy()->addDays(mt_rand(5, 30));
-                } elseif ($rand <= 85) {
-                    $stage = $stages->firstWhere('name', 'Ordered');
-                    $acceptedAt = $date->copy()->addDays(mt_rand(5, 20));
-                } else {
+                } elseif ($rand <= 70) {
+                    // ~17% rejected (part of the 70% decided)
                     $stage = $stages->firstWhere('name', 'Rejected');
                     $rejectedAt = $date->copy()->addDays(mt_rand(7, 30));
+                } else {
+                    // 30% still Sent (awaiting decision)
+                    $stage = $stages->firstWhere('name', 'Sent');
                 }
             } elseif ($daysSince > 7) {
                 $stage = $stages->firstWhere('name', 'Sent');
@@ -1373,8 +1481,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             // Build line items
             $lineItems = $this->generateLineItems(mt_rand(1, 4));
             $subtotal = array_sum(array_column($lineItems, 'amount'));
-            $taxRate = 10; // 10% tax
-            $tax = round($subtotal * $taxRate / 100, 2);
+            $tax = array_sum(array_column($lineItems, 'tax_amount')) / 100; // tax_amount is cents; model mutator expects dollars
             $total = $subtotal + $tax;
 
             $quote = Quote::create([
@@ -1412,7 +1519,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'price' => $item['price'],
                     'amount' => $item['amount'],
                     'currency' => $this->currency,
-                    'tax_rate' => $taxRate,
+                    'tax_rate' => $item['tax_rate'],
+                    'tax_amount' => $item['tax_amount'],
                 ]);
             }
 
@@ -1440,8 +1548,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $lineItems = $this->generateLineItems(mt_rand(1, 3));
             $subtotal = array_sum(array_column($lineItems, 'amount'));
-            $taxRate = 10;
-            $tax = round($subtotal * $taxRate / 100, 2);
+            $tax = array_sum(array_column($lineItems, 'tax_amount')) / 100; // tax_amount is cents; model mutator expects dollars
             $total = $subtotal + $tax;
 
             $quote = Quote::create([
@@ -1476,7 +1583,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'price' => $item['price'],
                     'amount' => $item['amount'],
                     'currency' => $this->currency,
-                    'tax_rate' => $taxRate,
+                    'tax_rate' => $item['tax_rate'],
+                    'tax_amount' => $item['tax_amount'],
                 ]);
             }
 
@@ -1523,16 +1631,16 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             if ($daysSince > 45) {
                 $rand = mt_rand(1, 100);
-                if ($rand <= 55) {
+                if ($rand <= 53) {
+                    // ~53% accepted (part of the 70% decided)
                     $stage = $stages->firstWhere('name', 'Accepted');
                     $acceptedAt = $date->copy()->addDays(mt_rand(5, 30));
-                } elseif ($rand <= 75) {
-                    $stage = $stages->firstWhere('name', 'Ordered');
-                    $acceptedAt = $date->copy()->addDays(mt_rand(5, 20));
-                } elseif ($rand <= 90) {
+                } elseif ($rand <= 70) {
+                    // ~17% rejected (part of the 70% decided)
                     $stage = $stages->firstWhere('name', 'Rejected');
                     $rejectedAt = $date->copy()->addDays(mt_rand(7, 30));
                 } else {
+                    // 30% still Sent (awaiting decision)
                     $stage = $stages->firstWhere('name', 'Sent');
                 }
             } elseif ($daysSince > 14) {
@@ -1559,8 +1667,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $lineItems = $this->generateLineItems(mt_rand(1, 5));
             $subtotal = array_sum(array_column($lineItems, 'amount'));
-            $taxRate = 10;
-            $tax = round($subtotal * $taxRate / 100, 2);
+            $tax = array_sum(array_column($lineItems, 'tax_amount')) / 100; // tax_amount is cents; model mutator expects dollars
 
             // Occasionally apply a discount (20% of quotes)
             $discount = 0;
@@ -1601,7 +1708,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'price' => $item['price'],
                     'amount' => $item['amount'],
                     'currency' => $this->currency,
-                    'tax_rate' => $taxRate,
+                    'tax_rate' => $item['tax_rate'],
+                    'tax_amount' => $item['tax_amount'],
                 ]);
             }
 
@@ -1638,9 +1746,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $bar = $this->createProgressBar($acceptedQuotes->count());
 
         foreach ($acceptedQuotes as $quote) {
-            // 85% of accepted quotes become orders
-            if (mt_rand(1, 100) > 85) {
+            // 80% of accepted quotes become orders
+            if (mt_rand(1, 100) > 80) {
                 $bar->advance();
+
                 continue;
             }
 
@@ -1683,6 +1792,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             // Create OrderProduct records from QuoteProducts
             foreach ($quote->quoteProducts as $qp) {
+                $opAmount = $qp->amount / 100;
+                $opTaxRate = $qp->tax_rate ?? ($this->defaultTaxRate->rate ?? 10);
                 OrderProduct::create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'order_id' => $order->id,
@@ -1690,9 +1801,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'quote_product_id' => $qp->id,
                     'quantity' => $qp->quantity,
                     'price' => $qp->price / 100, // Convert back from stored cents
-                    'amount' => $qp->amount / 100,
+                    'amount' => $opAmount,
                     'currency' => $this->currency,
-                    'tax_rate' => $qp->tax_rate ?? 10,
+                    'tax_rate' => $opTaxRate,
+                    'tax_amount' => round($opAmount * $opTaxRate, 2), // cents (no mutator on OrderProduct)
                 ]);
             }
 
@@ -1712,8 +1824,87 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $bar->finish();
         $this->command->newLine();
 
+        // ── Standalone orders (created directly, no quote) ──────────────────────
+        $currentOrderCount = Order::count();
+        $targetOrderTotal = max($currentOrderCount + 300, (int) ($currentOrderCount * 1.25));
+        $standaloneNeeded = $targetOrderTotal - $currentOrderCount;
+
+        $this->command->line("    <fg=gray>Creating {$standaloneNeeded} standalone orders (no quote)…</>");
+        $bar = $this->createProgressBar(max(1, $standaloneNeeded));
+
+        $standaloneOrderTitles = [
+            'Direct order from %s', 'Purchase order — %s', '%s — direct purchase',
+            'Order for %s', 'Supply order — %s', '%s — bulk order',
+            'Repeat order from %s', 'Ad-hoc order — %s', '%s — special order',
+        ];
+
+        for ($i = 0; $i < $standaloneNeeded; $i++) {
+            $date = $this->weightedRandomDate();
+            $person = $this->people->random();
+            $org = $person->organization;
+
+            $daysSince = $date->diffInDays(now());
+            $stage = $stages->first(); // Draft
+
+            if ($daysSince > 60) {
+                $stage = $stages->firstWhere('name', 'Completed') ?? $stages->last();
+            } elseif ($daysSince > 30) {
+                $stage = $stages->whereIn('name', ['Invoiced', 'Delivered'])->random();
+            } elseif ($daysSince > 14) {
+                $stage = $stages->firstWhere('name', 'Open');
+            }
+
+            $lineItems = $this->generateLineItems(mt_rand(1, 4));
+            $subtotal = array_sum(array_column($lineItems, 'amount'));
+            $tax = array_sum(array_column($lineItems, 'tax_amount')) / 100; // tax_amount is cents; model mutator expects dollars
+            $discount = mt_rand(1, 100) <= 15 ? round($subtotal * mt_rand(5, 15) / 100, 2) : 0;
+            $total = $subtotal - $discount + $tax;
+
+            $titleTemplate = $standaloneOrderTitles[array_rand($standaloneOrderTitles)];
+            $orgName = $org->name ?? ($person->first_name ?? 'Client');
+
+            $order = Order::create([
+                'reference' => 'ORD-'.strtoupper(substr(md5(mt_rand().$i.time()), 0, 8)),
+                'person_id' => $person->id,
+                'organization_id' => $org->id ?? null,
+                'currency' => $this->currency,
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'total' => $total,
+                'discount' => $discount,
+                'adjustments' => 0,
+                'pipeline_id' => $pipelineId,
+                'pipeline_stage_id' => $stage->id ?? null,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
+                'user_assigned_id' => $this->userId,
+            ]);
+
+            foreach ($lineItems as $item) {
+                OrderProduct::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'order_id' => $order->id,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'amount' => $item['amount'],
+                    'currency' => $this->currency,
+                    'tax_rate' => $item['tax_rate'],
+                    'tax_amount' => $item['tax_amount'],
+                ]);
+            }
+
+            $this->backdateModel($order, $date);
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->newLine();
+
         $this->orders = Order::with('orderProducts')->get();
-        $this->command->info("  → Created {$this->orders->count()} orders");
+        $fromQuotes = Order::whereNotNull('quote_id')->count();
+        $standalone = Order::whereNull('quote_id')->count();
+        $this->command->info("  → Created {$this->orders->count()} orders ({$fromQuotes} from quotes, {$standalone} standalone)");
     }
 
     // =========================================================================
@@ -1820,9 +2011,106 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $bar->finish();
         $this->command->newLine();
 
+        // ── Standalone invoices (created directly, no order) ─────────────────
+        $currentInvoiceCount = Invoice::count();
+        $standaloneInvoicesNeeded = max(150, (int) ($currentInvoiceCount * 0.2));
+        $this->command->line("    <fg=gray>Creating {$standaloneInvoicesNeeded} standalone invoices (no order)…</>");
+        $bar = $this->createProgressBar(max(1, $standaloneInvoicesNeeded));
+        $standaloneInvoiceCount = 0;
+
+        for ($i = 0; $i < $standaloneInvoicesNeeded; $i++) {
+            $date = $this->weightedRandomDate();
+            $person = $this->people->random();
+            $org = $person->organization;
+
+            $daysSince = $date->diffInDays(now());
+            $fullyPaidAt = null;
+            $stage = $stages->first(); // Draft
+
+            $lineItems = $this->generateLineItems(mt_rand(1, 4));
+            $subtotal = array_sum(array_column($lineItems, 'amount'));
+            $tax = array_sum(array_column($lineItems, 'tax_amount')) / 100;
+            $discount = mt_rand(1, 100) <= 10 ? round($subtotal * mt_rand(5, 10) / 100, 2) : 0;
+            $total = $subtotal - $discount + $tax;
+            $amountPaid = 0;
+            $amountDue = $total;
+
+            if ($daysSince > 45) {
+                $rand = mt_rand(1, 100);
+                if ($rand <= 70) {
+                    $stage = $stages->firstWhere('name', 'Paid');
+                    $fullyPaidAt = $date->copy()->addDays(mt_rand(15, 45));
+                    $amountPaid = $total;
+                    $amountDue = 0;
+                } else {
+                    $stage = $stages->firstWhere('name', 'Awaiting Payment');
+                }
+            } elseif ($daysSince > 14) {
+                $rand = mt_rand(1, 100);
+                if ($rand <= 35) {
+                    $stage = $stages->firstWhere('name', 'Paid');
+                    $fullyPaidAt = $date->copy()->addDays(mt_rand(10, 30));
+                    $amountPaid = $total;
+                    $amountDue = 0;
+                } elseif ($rand <= 65) {
+                    $stage = $stages->firstWhere('name', 'Awaiting Payment');
+                } else {
+                    $stage = $stages->firstWhere('name', 'Awaiting Approval');
+                }
+            }
+
+            if ($fullyPaidAt && $fullyPaidAt->gt(now())) {
+                $fullyPaidAt = now();
+            }
+
+            $invoice = Invoice::create([
+                'reference' => 'INV-'.strtoupper(substr(md5(mt_rand().$i.time()), 0, 8)),
+                'person_id' => $person->id,
+                'organization_id' => $org->id ?? null,
+                'currency' => $this->currency,
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'total' => $total,
+                'discount' => $discount,
+                'amount_paid' => $amountPaid,
+                'amount_due' => $amountDue,
+                'issue_date' => $date,
+                'due_date' => $date->copy()->addDays(mt_rand(14, 30)),
+                'fully_paid_at' => $fullyPaidAt,
+                'pipeline_id' => $pipelineId,
+                'pipeline_stage_id' => $stage->id ?? null,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
+                'user_assigned_id' => $this->userId,
+            ]);
+
+            foreach ($lineItems as $item) {
+                InvoiceLine::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'invoice_id' => $invoice->id,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'amount' => $item['amount'],
+                    'tax_rate' => $item['tax_rate'],
+                    'tax_amount' => round($item['amount'] * $item['tax_rate'] / 100, 2),
+                    'currency' => $this->currency,
+                ]);
+            }
+
+            $this->backdateModel($invoice, $date);
+            $standaloneInvoiceCount++;
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->newLine();
+
         $this->invoices = Invoice::all();
         $paidCount = Invoice::whereNotNull('fully_paid_at')->count();
-        $this->command->info("  → Created {$this->invoices->count()} invoices ({$paidCount} fully paid)");
+        $fromOrders = Invoice::whereNotNull('order_id')->count();
+        $standaloneInvoices = Invoice::whereNull('order_id')->count();
+        $this->command->info("  → Created {$this->invoices->count()} invoices ({$fromOrders} from orders, {$standaloneInvoices} standalone, {$paidCount} fully paid)");
     }
 
     // =========================================================================
@@ -1846,6 +2134,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             // 75% of orders get a delivery
             if (mt_rand(1, 100) > 75) {
                 $bar->advance();
+
                 continue;
             }
 
@@ -1928,6 +2217,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         foreach ($this->orders as $order) {
             if (mt_rand(1, 100) > 40) {
                 $bar->advance();
+
                 continue;
             }
 
@@ -1950,8 +2240,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             // PO amounts are typically cost-based (lower than sale price)
             $subtotal = round(($order->subtotal / 100) * 0.4, 2); // 40% of order subtotal as cost
-            $taxRate = 10;
-            $tax = round($subtotal * $taxRate / 100, 2);
+            $poTaxRate = $this->defaultTaxRate->rate ?? 10;
+            $tax = round($subtotal * $poTaxRate / 100, 2);
             $total = $subtotal + $tax;
 
             // Pick a random supplier organization
@@ -1978,15 +2268,16 @@ class LaravelCrmSampleDataSeeder extends Seeder
             // Create PO line items
             foreach ($order->orderProducts as $op) {
                 $costPrice = ($op->price / 100) * 0.4; // 40% of sale price
+                $lineAmount = round($costPrice * $op->quantity, 2);
                 PurchaseOrderLine::create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'purchase_order_id' => $po->id,
                     'product_id' => $op->product_id,
                     'quantity' => $op->quantity,
                     'price' => $costPrice,
-                    'amount' => round($costPrice * $op->quantity, 2),
-                    'tax_rate' => $taxRate,
-                    'tax_amount' => round($costPrice * $op->quantity * $taxRate / 100, 2),
+                    'amount' => $lineAmount,
+                    'tax_rate' => $poTaxRate,
+                    'tax_amount' => round($lineAmount * $poTaxRate / 100, 2),
                     'currency' => $this->currency,
                 ]);
             }
@@ -1999,7 +2290,78 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $bar->finish();
         $this->command->newLine();
 
-        $this->command->info("  → Created {$poCount} purchase orders");
+        // ── Standalone purchase orders (created directly, no order) ──────────
+        $standalonePONeeded = max(100, (int) ($poCount * 0.3));
+        $this->command->line("    <fg=gray>Creating {$standalonePONeeded} standalone purchase orders (no order)…</>");
+        $bar = $this->createProgressBar(max(1, $standalonePONeeded));
+        $poTaxRate = $this->defaultTaxRate->rate ?? 10;
+
+        for ($i = 0; $i < $standalonePONeeded; $i++) {
+            $date = $this->weightedRandomDate();
+            $supplier = $this->organizations->random();
+            $contact = $supplier->people->first() ?? $this->people->random();
+
+            $daysSince = $date->diffInDays(now());
+            $stage = $stages->first(); // Draft
+
+            if ($daysSince > 45) {
+                $stage = $stages->firstWhere('name', 'Paid');
+            } elseif ($daysSince > 21) {
+                $stage = $stages->firstWhere('name', 'Approved');
+            } elseif ($daysSince > 7) {
+                $stage = $stages->firstWhere('name', 'Awaiting Approval');
+            }
+
+            $lineItems = $this->generateLineItems(mt_rand(1, 4));
+            // PO prices at cost (~40% of list)
+            $subtotal = round(array_sum(array_column($lineItems, 'amount')) * 0.4, 2);
+            $tax = round($subtotal * $poTaxRate / 100, 2);
+            $total = $subtotal + $tax;
+
+            $po = PurchaseOrder::create([
+                'reference' => 'PO-'.strtoupper(substr(md5(mt_rand().$i.time()), 0, 8)),
+                'person_id' => $contact->id,
+                'organization_id' => $supplier->id,
+                'currency' => $this->currency,
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'total' => $total,
+                'issue_date' => $date,
+                'delivery_date' => $date->copy()->addDays(mt_rand(14, 45)),
+                'pipeline_id' => $pipelineId,
+                'pipeline_stage_id' => $stage->id ?? null,
+                'user_created_id' => $this->randomUserId(),
+                'user_owner_id' => $this->randomUserId(),
+                'user_assigned_id' => $this->userId,
+            ]);
+
+            foreach ($lineItems as $item) {
+                $costPrice = round($item['price'] * 0.4, 2);
+                $lineAmount = round($costPrice * $item['quantity'], 2);
+                PurchaseOrderLine::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'purchase_order_id' => $po->id,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $costPrice,
+                    'amount' => $lineAmount,
+                    'tax_rate' => $poTaxRate,
+                    'tax_amount' => round($lineAmount * $poTaxRate / 100, 2),
+                    'currency' => $this->currency,
+                ]);
+            }
+
+            $this->backdateModel($po, $date);
+            $poCount++;
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->newLine();
+
+        $fromOrders = PurchaseOrder::whereNotNull('order_id')->count();
+        $standalonePOs = PurchaseOrder::whereNull('order_id')->count();
+        $this->command->info("  → Created {$poCount} purchase orders ({$fromOrders} from orders, {$standalonePOs} standalone)");
     }
 
     // =========================================================================
@@ -2780,11 +3142,18 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $adjustedPrice = round($unitPrice * 0.9, 2); // 10% volume discount
             }
 
+            $lineAmount = round($adjustedPrice * $quantity, 2);
+            $itemTaxRate = $product->taxRate->rate ?? ($this->defaultTaxRate->rate ?? 10);
+            // tax_amount stored as cents (no mutator on QuoteProduct/OrderProduct)
+            $taxAmount = round($lineAmount * $itemTaxRate, 2);
+
             $items[] = [
                 'product_id' => $product->id,
                 'quantity' => $quantity,
                 'price' => $adjustedPrice,
-                'amount' => round($adjustedPrice * $quantity, 2),
+                'amount' => $lineAmount,
+                'tax_rate' => $itemTaxRate,
+                'tax_amount' => $taxAmount,
             ];
 
             if (count($usedProductIds) >= $this->products->count()) {

@@ -6,6 +6,34 @@
                 <livewire:crm-activity-index :$model />
             </div>
         </x-mary-tab>
+        @if($model->orders)
+            <x-mary-tab name="orders" label="{{ ucfirst(__('laravel-crm::lang.orders')) }}">
+                <div>
+                    <livewire:crm-order-related-index :$model />
+                </div>
+            </x-mary-tab>
+        @endif
+        @if($model->invoices)
+            <x-mary-tab name="invoices" label="{{ ucfirst(__('laravel-crm::lang.invoices')) }}">
+                <div>
+                    <livewire:crm-invoice-related-index :$model />
+                </div>
+            </x-mary-tab>
+        @endif
+        @if($model->deliveries)
+            <x-mary-tab name="deliveries" label="{{ ucfirst(__('laravel-crm::lang.deliveries')) }}">
+                <div>
+                    <livewire:crm-delivery-related-index :$model />
+                </div>
+            </x-mary-tab>
+        @endif
+        @if($model->purchaseOrders)
+            <x-mary-tab name="purchase-order" label="{{ ucwords(__('laravel-crm::lang.purchase_orders')) }}">
+                <div>
+                    <livewire:crm-purchase-order-related-index :$model />
+                </div>
+            </x-mary-tab>
+        @endif
         <x-mary-tab name="notes" label="{{ ucfirst(__('laravel-crm::lang.notes')) }}">
             <div>
                 <livewire:crm-note-related :$model />
