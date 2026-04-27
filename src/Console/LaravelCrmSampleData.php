@@ -75,6 +75,29 @@ class LaravelCrmSampleData extends Command
     ];
 
     /**
+     * Tables that must NEVER be truncated by --fresh, regardless of what
+     * appears in $sampleTables. Acts as a defensive safeguard so that
+     * existing application users (and their auth-related data) are
+     * preserved across sample-data resets.
+     *
+     * @var array<int, string>
+     */
+    protected $protectedTables = [
+        'users',
+        'password_resets',
+        'password_reset_tokens',
+        'personal_access_tokens',
+        'sessions',
+        'failed_jobs',
+        'migrations',
+        'permissions',
+        'roles',
+        'model_has_permissions',
+        'model_has_roles',
+        'role_has_permissions',
+    ];
+
+    /**
      * Execute the console command.
      *
      * @return int
@@ -84,9 +107,10 @@ class LaravelCrmSampleData extends Command
         if ($this->option('fresh')) {
             $this->warn('=========================================================');
             $this->warn(' --fresh will TRUNCATE all CRM sample data tables.');
-            $this->warn(' Existing users will be preserved, but every other CRM');
-            $this->warn(' record (leads, deals, organisations, people, etc.)');
-            $this->warn(' will be permanently removed.');
+            $this->warn(' Existing users (and their roles/permissions) will be');
+            $this->warn(' preserved, but every other CRM record (leads, deals,');
+            $this->warn(' organisations, people, etc.) will be permanently');
+            $this->warn(' removed.');
             $this->warn('=========================================================');
 
             if (! $this->confirm('Are you sure you want to continue?', false)) {
@@ -122,6 +146,15 @@ class LaravelCrmSampleData extends Command
             foreach ($this->sampleTables as $table) {
                 $name = $prefix.$table;
 
+                // Defensive: never truncate a protected table even if it
+                // somehow ended up in $sampleTables, and never touch the
+                // raw `users` table no matter the prefix.
+                if ($this->isProtected($table) || $this->isProtected($name)) {
+                    $this->warn("Skipping protected table: {$name}");
+
+                    continue;
+                }
+
                 if (! Schema::hasTable($name)) {
                     continue;
                 }
@@ -139,5 +172,12 @@ class LaravelCrmSampleData extends Command
             Schema::enableForeignKeyConstraints();
         }
     }
-}
 
+    /**
+     * Determine whether a given table name is on the protected list.
+     */
+    protected function isProtected(string $table): bool
+    {
+        return in_array($table, $this->protectedTables, true);
+    }
+}
