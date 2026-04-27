@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Console\Helper\ProgressBar;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Call;
@@ -158,8 +159,18 @@ class LaravelCrmSampleDataSeeder extends Seeder
      */
     public function run(bool $fresh = false): void
     {
+        $startTime = microtime(true);
+
         $this->startDate = now()->subYears(3)->startOfDay();
         $this->endDate = now();
+
+        $this->command->line('');
+        $this->command->line('  <fg=cyan;options=bold>╔══════════════════════════════════════════════╗</>');
+        $this->command->line('  <fg=cyan;options=bold>║       Laravel CRM — Sample Data Seeder       ║</>');
+        $this->command->line('  <fg=cyan;options=bold>╚══════════════════════════════════════════════╝</>');
+        $this->command->line('');
+        $this->command->line("  Date range: <comment>{$this->startDate->toDateString()}</comment> → <comment>{$this->endDate->toDateString()}</comment> (3 years)");
+        $this->command->line('');
 
         // Get the first user with CRM access, or the first user
         $userModel = app(config('auth.providers.users.model', 'App\Models\User'));
@@ -170,13 +181,18 @@ class LaravelCrmSampleDataSeeder extends Seeder
             return;
         }
         $this->userId = $user->id;
+        $this->command->line("  Primary user: <comment>{$user->name}</comment> (ID: {$user->id})");
 
         // Get currency from settings
         $currencySetting = Setting::where('name', 'currency')->first();
         $this->currency = $currencySetting->value ?? 'USD';
+        $this->command->line("  Currency:     <comment>{$this->currency}</comment>");
+        $this->command->line('');
 
         // Cache pipeline data
         $this->cachePipelineData();
+        $this->command->line('  Pipelines cached: <comment>'.count($this->pipelineIds).' models</comment>');
+        $this->command->line('');
 
         if ($fresh) {
             $this->truncateSampleData();
@@ -188,6 +204,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Disable query log to prevent memory issues with large dataset
         DB::disableQueryLog();
 
+        $this->command->line('  <fg=yellow>── Phase 1/4: Foundation data ──────────────────</>');
+        $this->command->line('');
+
         // Custom fields must be seeded FIRST so HasCrmFields::booted()
         // auto-creates FieldValue rows when each entity is created.
         $this->seedCustomFieldGroups();
@@ -195,21 +214,81 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->seedUsersAndTeams();
         $this->seedLeadSources();
         $this->seedProductCategoriesAndProducts();
+
+        $this->command->line('');
+        $this->command->line('  <fg=yellow>── Phase 2/4: Core CRM entities ────────────────</>');
+        $this->command->line('');
+
         $this->seedOrganizations();
         $this->seedPeople();
         $this->seedLeads();
         $this->seedDeals();
         $this->seedQuotes();
+
+        $this->command->line('');
+        $this->command->line('  <fg=yellow>── Phase 3/4: Transactions ─────────────────────</>');
+        $this->command->line('');
+
         $this->seedOrders();
         $this->seedInvoices();
         $this->seedDeliveries();
         $this->seedPurchaseOrders();
+
+        $this->command->line('');
+        $this->command->line('  <fg=yellow>── Phase 4/4: Activities, labels & custom fields</>');
+        $this->command->line('');
+
         $this->seedActivities();
         $this->seedLabels();
         $this->seedCustomFieldValues();
 
         // Re-enable auditing
         $this->enableAuditing();
+
+        $elapsed = round(microtime(true) - $startTime, 1);
+        $this->printSummary($elapsed);
+    }
+
+    /**
+     * Print a final summary of all seeded record counts.
+     */
+    protected function printSummary(float $elapsed): void
+    {
+        $this->command->line('');
+        $this->command->line('  <fg=cyan;options=bold>╔══════════════════════════════════════════════╗</>');
+        $this->command->line('  <fg=cyan;options=bold>║               Seeding Complete               ║</>');
+        $this->command->line('  <fg=cyan;options=bold>╚══════════════════════════════════════════════╝</>');
+        $this->command->line('');
+
+        $rows = [
+            ['Organizations',   Organization::count()],
+            ['People',          Person::count()],
+            ['Leads',           Lead::count()],
+            ['Deals',           Deal::count()],
+            ['Quotes',          Quote::count()],
+            ['Orders',          Order::count()],
+            ['Invoices',        Invoice::count()],
+            ['Deliveries',      Delivery::count()],
+            ['Purchase Orders', PurchaseOrder::count()],
+            ['Products',        Product::count()],
+            ['Activities',      Activity::count()],
+            ['Tasks',           Task::count()],
+            ['Notes',           Note::count()],
+            ['Calls',           Call::count()],
+            ['Meetings',        Meeting::count()],
+            ['Lunches',         Lunch::count()],
+        ];
+
+        foreach ($rows as [$label, $count]) {
+            $pad = str_pad($label, 20);
+            $this->command->line("    <fg=white>{$pad}</> <fg=green;options=bold>".number_format($count).'</>');
+        }
+
+        $this->command->line('');
+        $totalRecords = array_sum(array_column($rows, 1));
+        $this->command->line('    <fg=white>'.str_pad('Total records', 20).'</> <fg=cyan;options=bold>'.number_format($totalRecords).'</>');
+        $this->command->line('    <fg=white>'.str_pad('Time elapsed', 20).'</> <fg=cyan;options=bold>'.$elapsed.'s</>');
+        $this->command->line('');
     }
 
     // =========================================================================
@@ -323,6 +402,22 @@ class LaravelCrmSampleDataSeeder extends Seeder
     protected function enableAuditing(): void
     {
         config(['audit.enabled' => true]);
+    }
+
+    /**
+     * Create a styled progress bar bound to the current Artisan output.
+     */
+    protected function createProgressBar(int $total): ProgressBar
+    {
+        $bar = new ProgressBar($this->command->getOutput(), $total);
+        $bar->setFormat('    %current%/%max% [%bar%] %percent:3s%%  %elapsed:6s% / ~%estimated:-6s%  %memory:6s%');
+        $bar->setBarCharacter('<fg=green>█</>');
+        $bar->setEmptyBarCharacter('<fg=gray>░</>');
+        $bar->setProgressCharacter('<fg=green>▓</>');
+        $bar->setBarWidth(40);
+        $bar->start();
+
+        return $bar;
     }
 
     /**
@@ -498,6 +593,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 ['external_id' => Uuid::uuid4()->toString()]
             );
         }
+
+        $this->command->info('  → Seeded '.count($sources).' lead sources: '.implode(', ', $sources));
     }
 
     // =========================================================================
@@ -685,6 +782,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'com', 'co', 'io', 'tech', 'biz', 'net', 'org',
         ];
 
+        $bar = $this->createProgressBar(count($orgNames));
+
         foreach ($orgNames as $name) {
             $date = $this->weightedRandomDate();
             $city = $cities[array_rand($cities)];
@@ -733,7 +832,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'addressable_type' => Organization::class,
                 'addressable_id' => $org->id,
             ]);
+
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->organizations = Organization::all();
         $this->command->info("  → Created {$this->organizations->count()} organizations");
@@ -785,6 +889,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
 
         $count = 800;
+        $bar = $this->createProgressBar($count);
+
         for ($i = 0; $i < $count; $i++) {
             $firstName = $firstNames[array_rand($firstNames)];
             $lastName = $lastNames[array_rand($lastNames)];
@@ -825,7 +931,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'phoneable_id' => $person->id,
                 ]);
             }
+
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->people = Person::all();
         $this->command->info("  → Created {$this->people->count()} people");
@@ -861,8 +972,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         $count = 4000;
         $converted = [];
+        $bar = $this->createProgressBar($count);
 
         for ($i = 0; $i < $count; $i++) {
+
             $date = $this->weightedRandomDate();
             $person = $this->people->random();
             $org = $person->organization;
@@ -931,7 +1044,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
             if ($isConverted) {
                 $converted[] = $lead;
             }
+
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->leads = Lead::all();
         $this->command->info("  → Created {$this->leads->count()} leads (".count($converted).' converted)');
@@ -953,6 +1071,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Create deals from converted leads
         $convertedLeads = Lead::whereNotNull('converted_at')->get();
         $dealCount = 0;
+        $this->command->line("    <fg=gray>Converting {$convertedLeads->count()} leads into deals…</>");
+        $bar = $this->createProgressBar($convertedLeads->count());
 
         foreach ($convertedLeads as $lead) {
             $date = $lead->converted_at ?? Carbon::parse($lead->created_at)->addDays(mt_rand(7, 30));
@@ -1059,10 +1179,17 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($deal, $date);
             $dealCount++;
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         // Create some standalone deals (not from leads)
         $standaloneDealCount = 600;
+        $this->command->line("    <fg=gray>Creating {$standaloneDealCount} standalone deals…</>");
+        $bar = $this->createProgressBar($standaloneDealCount);
+
         for ($i = 0; $i < $standaloneDealCount; $i++) {
             $date = $this->weightedRandomDate();
             $person = $this->people->random();
@@ -1169,7 +1296,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
             ]);
 
             $this->backdateModel($deal, $date);
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->deals = Deal::all();
         $totalWon = Deal::where('closed_status', 'won')->count();
@@ -1192,11 +1323,14 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Quote stages: 13=Draft, 14=Sent, 15=Accepted, 16=Rejected, 17=Ordered
 
         $wonDeals = Deal::where('closed_status', 'won')->get();
+        $this->command->line("    <fg=gray>Won deals to convert: {$wonDeals->count()}</>");
         $quoteCount = 0;
+        $bar = $this->createProgressBar($wonDeals->count());
 
         foreach ($wonDeals as $deal) {
             // 80% of won deals get a quote
             if (mt_rand(1, 100) > 80) {
+                $bar->advance();
                 continue;
             }
 
@@ -1284,10 +1418,17 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($quote, $date);
             $quoteCount++;
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         // Add quotes from open/pending deals
         $pendingDeals = Deal::whereNull('closed_status')->take(200)->get();
+        $this->command->line("    <fg=gray>Quoting {$pendingDeals->count()} open/pending deals…</>");
+        $bar = $this->createProgressBar($pendingDeals->count());
+
         foreach ($pendingDeals as $deal) {
             $dealCreatedAt = Carbon::parse($deal->created_at);
             $date = $dealCreatedAt->copy()->addDays(mt_rand(1, 14));
@@ -1340,7 +1481,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
             }
 
             $this->backdateModel($quote, $date);
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         // Add standalone quotes (not linked to deals) — fills out to ~55/month
         $standaloneQuoteTitles = [
@@ -1354,6 +1499,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $targetTotal = 2000; // ~55/month over 36 months
         $standaloneNeeded = max(0, $targetTotal - $currentQuoteCount);
         $standaloneCreated = 0;
+
+        if ($standaloneNeeded > 0) {
+            $this->command->line("    <fg=gray>Creating {$standaloneNeeded} standalone quotes…</>");
+        }
+        $bar = $this->createProgressBar(max(1, $standaloneNeeded));
 
         for ($i = 0; $i < $standaloneNeeded; $i++) {
             $date = $this->weightedRandomDate();
@@ -1457,7 +1607,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($quote, $date);
             $standaloneCreated++;
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->quotes = Quote::with('quoteProducts')->get();
         $accepted = Quote::whereNotNull('accepted_at')->count();
@@ -1479,11 +1633,14 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Order stages: 18=Draft, 19=Open, 20=Invoiced, 21=Delivered, 22=Completed
 
         $acceptedQuotes = Quote::whereNotNull('accepted_at')->with('quoteProducts')->get();
+        $this->command->line("    <fg=gray>Accepted quotes to convert: {$acceptedQuotes->count()}</>");
         $orderCount = 0;
+        $bar = $this->createProgressBar($acceptedQuotes->count());
 
         foreach ($acceptedQuotes as $quote) {
             // 85% of accepted quotes become orders
             if (mt_rand(1, 100) > 85) {
+                $bar->advance();
                 continue;
             }
 
@@ -1549,7 +1706,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($order, $date);
             $orderCount++;
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->orders = Order::with('orderProducts')->get();
         $this->command->info("  → Created {$this->orders->count()} orders");
@@ -1569,6 +1730,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Invoice stages: 23=Draft, 24=Awaiting Approval, 25=Awaiting Payment, 26=Paid
 
         $invoiceCount = 0;
+        $this->command->line("    <fg=gray>Orders to invoice: {$this->orders->count()}</>");
+        $bar = $this->createProgressBar($this->orders->count());
 
         foreach ($this->orders as $order) {
             $orderCreatedAt = Carbon::parse($order->created_at);
@@ -1651,7 +1814,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($invoice, $date);
             $invoiceCount++;
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->invoices = Invoice::all();
         $paidCount = Invoice::whereNotNull('fully_paid_at')->count();
@@ -1672,10 +1839,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Delivery stages: 27=Draft, 28=Packed, 29=Sent, 30=Delivered
 
         $deliveryCount = 0;
+        $this->command->line("    <fg=gray>Orders eligible for delivery: {$this->orders->count()} (75% rate → ~".round($this->orders->count() * 0.75).' expected)</>');
+        $bar = $this->createProgressBar($this->orders->count());
 
         foreach ($this->orders as $order) {
             // 75% of orders get a delivery
             if (mt_rand(1, 100) > 75) {
+                $bar->advance();
                 continue;
             }
 
@@ -1727,7 +1897,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($delivery, $date);
             $deliveryCount++;
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $totalDelivered = Delivery::whereNotNull('delivered_on')->count();
         $this->command->info("  → Created {$deliveryCount} deliveries ({$totalDelivered} delivered)");
@@ -1747,10 +1921,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // PO stages: 31=Draft, 32=Awaiting Approval, 33=Approved, 34=Paid
 
         $poCount = 0;
+        $this->command->line("    <fg=gray>Orders eligible for purchase orders: {$this->orders->count()} (40% rate → ~".round($this->orders->count() * 0.4).' expected)</>');
+        $bar = $this->createProgressBar($this->orders->count());
 
         // Create POs for ~40% of orders
         foreach ($this->orders as $order) {
             if (mt_rand(1, 100) > 40) {
+                $bar->advance();
                 continue;
             }
 
@@ -1816,7 +1993,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($po, $date);
             $poCount++;
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->command->newLine();
 
         $this->command->info("  → Created {$poCount} purchase orders");
     }
@@ -1830,6 +2011,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->command->info('Seeding activities (tasks, notes, calls, meetings, lunches)...');
 
         $allEntities = $this->getAllEntitiesForActivities();
+
+        $this->command->line("    <fg=gray>Entity pool: {$allEntities->count()} records across 9 model types</>");
+        $this->command->line('    <fg=gray>Estimated activities: ~'.number_format($allEntities->count() * 4 * 5).' total rows</>');
 
         $this->seedTasks($allEntities);
         $this->seedNotes($allEntities);
@@ -1845,8 +2029,14 @@ class LaravelCrmSampleDataSeeder extends Seeder
     {
         $allEntities = collect();
 
-        foreach ([Lead::class, Deal::class, Quote::class, Order::class, Invoice::class, Delivery::class, PurchaseOrder::class, Person::class, Organization::class] as $modelClass) {
-            $modelClass::select('id', 'created_at')->get()->each(function ($model) use (&$allEntities, $modelClass) {
+        $modelClasses = [Lead::class, Deal::class, Quote::class, Order::class, Invoice::class, Delivery::class, PurchaseOrder::class, Person::class, Organization::class];
+
+        foreach ($modelClasses as $modelClass) {
+            $records = $modelClass::select('id', 'created_at')->get();
+            $shortName = class_basename($modelClass);
+            $this->command->line("    <fg=gray>  {$shortName}: {$records->count()} records</>");
+
+            $records->each(function ($model) use (&$allEntities, $modelClass) {
                 $allEntities->push([
                     'type' => $modelClass,
                     'id' => $model->id,
@@ -1879,6 +2069,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
 
         $taskCount = 0;
+        $bar = $this->createProgressBar($allEntities->count());
+
         foreach ($allEntities as $entity) {
             $numTasks = mt_rand(3, 5);
             for ($i = 0; $i < $numTasks; $i++) {
@@ -1918,8 +2110,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->backdateModel($task->activity, $createdAt);
                 $taskCount++;
             }
+
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->command->newLine();
         $this->command->info("  → Created {$taskCount} tasks");
     }
 
@@ -1944,6 +2140,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
 
         $noteCount = 0;
+        $bar = $this->createProgressBar($allEntities->count());
+
         foreach ($allEntities as $entity) {
             $numNotes = mt_rand(3, 5);
             for ($i = 0; $i < $numNotes; $i++) {
@@ -1976,8 +2174,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->backdateModel($note->activity, $noteDate);
                 $noteCount++;
             }
+
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->command->newLine();
         $this->command->info("  → Created {$noteCount} notes");
     }
 
@@ -1990,6 +2192,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
 
         $callCount = 0;
+        $bar = $this->createProgressBar($allEntities->count());
+
         foreach ($allEntities as $entity) {
             $numCalls = mt_rand(3, 5);
             for ($i = 0; $i < $numCalls; $i++) {
@@ -2029,8 +2233,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->backdateModel($call->activity, $callDate);
                 $callCount++;
             }
+
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->command->newLine();
         $this->command->info("  → Created {$callCount} calls");
     }
 
@@ -2049,6 +2257,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
 
         $meetingCount = 0;
+        $bar = $this->createProgressBar($allEntities->count());
+
         foreach ($allEntities as $entity) {
             $numMeetings = mt_rand(3, 5);
             for ($i = 0; $i < $numMeetings; $i++) {
@@ -2090,8 +2300,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->backdateModel($meeting->activity, $createdAt);
                 $meetingCount++;
             }
+
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->command->newLine();
         $this->command->info("  → Created {$meetingCount} meetings");
     }
 
@@ -2110,6 +2324,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
 
         $lunchCount = 0;
+        $bar = $this->createProgressBar($allEntities->count());
+
         foreach ($allEntities as $entity) {
             $numLunches = mt_rand(3, 5);
             for ($i = 0; $i < $numLunches; $i++) {
@@ -2152,8 +2368,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->backdateModel($lunch->activity, $createdAt);
                 $lunchCount++;
             }
+
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->command->newLine();
         $this->command->info("  → Created {$lunchCount} lunches");
     }
 

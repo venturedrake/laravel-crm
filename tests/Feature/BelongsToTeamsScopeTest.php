@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Tests\Feature;
 
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
 use VentureDrake\LaravelCrm\Tests\TestCase;
 
 class BelongsToTeamsScopeTest extends TestCase
@@ -31,7 +32,7 @@ class BelongsToTeamsScopeTest extends TestCase
         $scopes = Lead::query()->getModel()->getGlobalScopes();
 
         $this->assertArrayHasKey(
-            \VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope::class,
+            BelongsToTeamsScope::class,
             $scopes
         );
     }

@@ -516,11 +516,11 @@ class LaravelCrmInstall extends Command
      */
     private function assignOwnerRole(object $user, string $userClass): void
     {
-        $roleTable     = config('permission.table_names.roles', 'roles');
+        $roleTable = config('permission.table_names.roles', 'roles');
         $modelHasRoles = config('permission.table_names.model_has_roles', 'model_has_roles');
-        $morphKey      = config('permission.column_names.model_morph_key', 'model_id');
-        $teamFk        = config('permission.column_names.team_foreign_key', 'team_id');
-        $teamsEnabled  = (bool) config('permission.teams', false);
+        $morphKey = config('permission.column_names.model_morph_key', 'model_id');
+        $teamFk = config('permission.column_names.team_foreign_key', 'team_id');
+        $teamsEnabled = (bool) config('permission.teams', false);
 
         $role = DB::table($roleTable)
             ->where('name', 'Owner')
@@ -551,8 +551,8 @@ class LaravelCrmInstall extends Command
         }
 
         $row = [
-            'role_id'   => $role->id,
-            $morphKey   => $user->getKey(),
+            'role_id' => $role->id,
+            $morphKey => $user->getKey(),
             'model_type' => $userClass,
         ];
 

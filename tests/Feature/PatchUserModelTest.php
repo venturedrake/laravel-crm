@@ -38,8 +38,8 @@ class PatchUserModelTest extends TestCase
     {
         $traits = [
             'VentureDrake\LaravelCrm\Traits\HasCrmAccess' => 'HasCrmAccess',
-            'VentureDrake\LaravelCrm\Traits\HasCrmTeams'  => 'HasCrmTeams',
-            'Spatie\Permission\Traits\HasRoles'            => 'HasRoles',
+            'VentureDrake\LaravelCrm\Traits\HasCrmTeams' => 'HasCrmTeams',
+            'Spatie\Permission\Traits\HasRoles' => 'HasRoles',
         ];
 
         preg_match('/\bclass\s+(\w+)\b/', $contents, $classMatch);
@@ -270,4 +270,3 @@ PHP;
         $this->assertStringContainsString('HasCrmAccess', $patched);
     }
 }
-

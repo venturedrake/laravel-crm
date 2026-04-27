@@ -73,11 +73,11 @@ class InstallCommandTest extends TestCase
     private function seedOwnerRole(int $id = 9001): object
     {
         DB::table('roles')->insertOrIgnore([
-            'id'         => $id,
-            'name'       => 'Owner',
+            'id' => $id,
+            'name' => 'Owner',
             'guard_name' => 'web',
-            'crm_role'   => 1,
-            'team_id'    => null,
+            'crm_role' => 1,
+            'team_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -90,20 +90,20 @@ class InstallCommandTest extends TestCase
         $role = $this->seedOwnerRole();
 
         $user = User::create([
-            'name'     => 'Owner User',
-            'email'    => 'owner-'.uniqid().'@example.com',
+            'name' => 'Owner User',
+            'email' => 'owner-'.uniqid().'@example.com',
             'password' => bcrypt('secret'),
         ]);
 
         DB::table('model_has_roles')->insert([
-            'role_id'    => $role->id,
-            'model_id'   => $user->getKey(),
+            'role_id' => $role->id,
+            'model_id' => $user->getKey(),
             'model_type' => get_class($user),
         ]);
 
         $this->assertDatabaseHas('model_has_roles', [
-            'role_id'    => $role->id,
-            'model_id'   => $user->getKey(),
+            'role_id' => $role->id,
+            'model_id' => $user->getKey(),
             'model_type' => get_class($user),
         ]);
     }
@@ -113,14 +113,14 @@ class InstallCommandTest extends TestCase
         $role = $this->seedOwnerRole(9002);
 
         $user = User::create([
-            'name'     => 'Owner2',
-            'email'    => 'owner2-'.uniqid().'@example.com',
+            'name' => 'Owner2',
+            'email' => 'owner2-'.uniqid().'@example.com',
             'password' => bcrypt('secret'),
         ]);
 
         $row = [
-            'role_id'    => $role->id,
-            'model_id'   => $user->getKey(),
+            'role_id' => $role->id,
+            'model_id' => $user->getKey(),
             'model_type' => get_class($user),
         ];
 
@@ -145,16 +145,16 @@ class InstallCommandTest extends TestCase
         $role = $this->seedOwnerRole(9003);
 
         $user = User::create([
-            'name'     => 'TeamOwner',
-            'email'    => 'teamowner-'.uniqid().'@example.com',
+            'name' => 'TeamOwner',
+            'email' => 'teamowner-'.uniqid().'@example.com',
             'password' => bcrypt('secret'),
         ]);
 
         $teamsEnabled = (bool) config('permission.teams', false);
 
         $row = [
-            'role_id'    => $role->id,
-            'model_id'   => $user->getKey(),
+            'role_id' => $role->id,
+            'model_id' => $user->getKey(),
             'model_type' => get_class($user),
         ];
 
@@ -176,22 +176,22 @@ class InstallCommandTest extends TestCase
     {
         // Seed a non-CRM role with the same name — should NOT be picked up.
         DB::table('roles')->insertOrIgnore([
-            'id'         => 9004,
-            'name'       => 'Owner-ncr',
+            'id' => 9004,
+            'name' => 'Owner-ncr',
             'guard_name' => 'web',
-            'crm_role'   => 0,
-            'team_id'    => null,
+            'crm_role' => 0,
+            'team_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         // Seed the real CRM owner role.
         DB::table('roles')->insertOrIgnore([
-            'id'         => 9005,
-            'name'       => 'Owner-crm',
+            'id' => 9005,
+            'name' => 'Owner-crm',
             'guard_name' => 'web',
-            'crm_role'   => 1,
-            'team_id'    => null,
+            'crm_role' => 1,
+            'team_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -205,4 +205,3 @@ class InstallCommandTest extends TestCase
         $this->assertSame(1, (int) $role->crm_role);
     }
 }
-
