@@ -196,6 +196,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->command->line("  Currency:     <comment>{$this->currency}</comment>");
         $this->command->line('');
 
+        // Ensure Deal pipeline has intermediate stages before caching
+        $this->ensureDealPipelineStages();
+
         // Cache pipeline data
         $this->cachePipelineData();
         $this->command->line('  Pipelines cached: <comment>'.count($this->pipelineIds).' models</comment>');
@@ -309,8 +312,108 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         foreach ($pipelines as $pipeline) {
             $this->pipelineIds[$pipeline->model] = $pipeline->id;
-            $this->pipelineStages[$pipeline->model] = $pipeline->pipelineStages->sortBy('id')->values();
+            $this->pipelineStages[$pipeline->model] = $pipeline->pipelineStages->sortBy('order')->sortBy('id')->values();
         }
+    }
+
+    /**
+     * Ensure the Deal pipeline has all intermediate stages (Qualified, Proposal Sent, Negotiation).
+     * Safe to run multiple times — uses firstOrCreate by name.
+     */
+    protected function ensureDealPipelineStages(): void
+    {
+        $dealPipeline = Pipeline::where('name', 'Deal Pipeline')->first();
+        if (! $dealPipeline) {
+            return;
+        }
+
+        $existingNames = PipelineStage::where('pipeline_id', $dealPipeline->id)
+            ->pluck('name')
+            ->toArray();
+
+        $intermediateStages = [
+            ['name' => 'Qualified',     'order' => 2, 'pipeline_stage_probability_id' => 3],
+            ['name' => 'Proposal Sent', 'order' => 3, 'pipeline_stage_probability_id' => 5],
+            ['name' => 'Negotiation',   'order' => 4, 'pipeline_stage_probability_id' => 7],
+        ];
+
+        foreach ($intermediateStages as $stageData) {
+            if (! in_array($stageData['name'], $existingNames)) {
+                PipelineStage::create([
+                    'name' => $stageData['name'],
+                    'pipeline_id' => $dealPipeline->id,
+                    'pipeline_stage_probability_id' => $stageData['pipeline_stage_probability_id'],
+                    'order' => $stageData['order'],
+                ]);
+            }
+        }
+
+        // Also ensure order values are set sensibly on existing core stages
+        PipelineStage::where('pipeline_id', $dealPipeline->id)
+            ->where('name', 'Draft')->where('order', 0)->update(['order' => 1]);
+        PipelineStage::where('pipeline_id', $dealPipeline->id)
+            ->where('name', 'Pending')->where('order', 0)->update(['order' => 5]);
+        PipelineStage::where('pipeline_id', $dealPipeline->id)
+            ->where('name', 'Closed Won')->where('order', 0)->update(['order' => 6]);
+        PipelineStage::where('pipeline_id', $dealPipeline->id)
+            ->where('name', 'Closed Lost')->where('order', 0)->update(['order' => 7]);
+    }
+
+    /**
+     * Select an open (non-closed) Deal pipeline stage based on deal age,
+     * creating a realistic sales funnel distribution across all open stages.
+     *
+     * Stage funnel order: Draft → Qualified → Proposal Sent → Negotiation → Pending
+     * Newer deals land in early stages; older open deals in later stages.
+     */
+    protected function selectOpenDealStage(int $daysSince, Collection $stages): ?PipelineStage
+    {
+        $closedNames = ['Closed Won', 'Closed Lost'];
+        $openStages = $stages->whereNotIn('name', $closedNames)->values();
+
+        if ($openStages->isEmpty()) {
+            return $stages->first();
+        }
+
+        // Preferred funnel order — stages not present are automatically skipped
+        $funnelOrder = ['Draft', 'Qualified', 'Proposal Sent', 'Negotiation', 'Pending'];
+        $ordered = collect($funnelOrder)
+            ->map(fn ($name) => $openStages->firstWhere('name', $name))
+            ->filter()
+            ->values();
+
+        if ($ordered->isEmpty()) {
+            return $openStages->random();
+        }
+
+        $count = $ordered->count();
+
+        // Weight distribution per age bracket (index maps to $ordered positions)
+        // More weight on early stages for new deals; later stages for older deals.
+        $allWeights = match (true) {
+            $daysSince <= 7  => [75, 20, 5,  0,  0],
+            $daysSince <= 14 => [40, 35, 20, 5,  0],
+            $daysSince <= 30 => [15, 25, 35, 20, 5],
+            default          => [5,  10, 25, 40, 20],
+        };
+
+        $weights = array_slice($allWeights, 0, $count);
+        $total = array_sum($weights);
+
+        if ($total === 0) {
+            return $openStages->random();
+        }
+
+        $rand = mt_rand(1, $total);
+        $cumulative = 0;
+        foreach ($ordered as $idx => $stage) {
+            $cumulative += $weights[$idx] ?? 0;
+            if ($rand <= $cumulative) {
+                return $stage;
+            }
+        }
+
+        return $ordered->last();
     }
 
     protected function getPipelineId(string $modelClass): ?int
@@ -1169,7 +1272,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $pipelineId = $this->getPipelineId(Deal::class);
         $stages = $this->getPipelineStages(Deal::class);
 
-        // Deal stage IDs: 9=Draft, 10=Pending, 11=Closed Won, 12=Closed Lost
+        // Deal pipeline stages (open): Draft, Qualified, Proposal Sent, Negotiation, Pending
+        // Deal pipeline stages (closed): Closed Won, Closed Lost
 
         // Create deals from converted leads
         $convertedLeads = Lead::whereNotNull('converted_at')->get();
@@ -1197,10 +1301,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     $stage = $stages->firstWhere('name', 'Closed Lost');
                     $closedAt = $date->copy()->addDays(mt_rand(7, 35));
                 } else {
-                    // Still open — even split between Draft and Pending
-                    $stage = mt_rand(1, 100) <= 50
-                        ? $stages->firstWhere('name', 'Pending')
-                        : $stages->firstWhere('name', 'Draft');
+                    // Still open — spread across pipeline stages based on age
+                    $stage = $this->selectOpenDealStage($daysSince, $stages);
                 }
             } elseif ($daysSince > 14) {
                 // Mid-age deals: mix of resolved and open
@@ -1214,9 +1316,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     $stage = $stages->firstWhere('name', 'Closed Lost');
                     $closedAt = $date->copy()->addDays(mt_rand(5, 18));
                 } else {
-                    $stage = mt_rand(1, 100) <= 45
-                        ? $stages->firstWhere('name', 'Pending')
-                        : $stages->firstWhere('name', 'Draft');
+                    $stage = $this->selectOpenDealStage($daysSince, $stages);
                 }
             } else {
                 // Recent deals: mostly open, few resolved
@@ -1230,9 +1330,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     $stage = $stages->firstWhere('name', 'Closed Lost');
                     $closedAt = $date->copy()->addDays(mt_rand(2, 10));
                 } else {
-                    $stage = mt_rand(1, 100) <= 35
-                        ? $stages->firstWhere('name', 'Pending')
-                        : $stages->firstWhere('name', 'Draft');
+                    $stage = $this->selectOpenDealStage($daysSince, $stages);
                 }
             }
 
@@ -1316,10 +1414,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     $stage = $stages->firstWhere('name', 'Closed Lost');
                     $closedAt = $date->copy()->addDays(mt_rand(7, 40));
                 } else {
-                    // Open — even split across Draft and Pending
-                    $stage = mt_rand(1, 100) <= 50
-                        ? $stages->firstWhere('name', 'Pending')
-                        : $stages->firstWhere('name', 'Draft');
+                    // Open — spread across pipeline stages based on age
+                    $stage = $this->selectOpenDealStage($daysSince, $stages);
                 }
             } elseif ($daysSince > 14) {
                 // Mid-age: some resolved, many still open
@@ -1333,9 +1429,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     $stage = $stages->firstWhere('name', 'Closed Lost');
                     $closedAt = $date->copy()->addDays(mt_rand(5, 15));
                 } else {
-                    $stage = mt_rand(1, 100) <= 45
-                        ? $stages->firstWhere('name', 'Pending')
-                        : $stages->firstWhere('name', 'Draft');
+                    $stage = $this->selectOpenDealStage($daysSince, $stages);
                 }
             } else {
                 // Recent deals: mostly open, a few resolved quickly
@@ -1349,9 +1443,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     $stage = $stages->firstWhere('name', 'Closed Lost');
                     $closedAt = $date->copy()->addDays(mt_rand(1, 8));
                 } else {
-                    $stage = mt_rand(1, 100) <= 30
-                        ? $stages->firstWhere('name', 'Pending')
-                        : $stages->firstWhere('name', 'Draft');
+                    $stage = $this->selectOpenDealStage($daysSince, $stages);
                 }
             }
 

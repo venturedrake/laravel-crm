@@ -322,6 +322,40 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                         'name' => 'Draft',
                         'pipeline_id' => 2,
                         'pipeline_stage_probability_id' => 1,
+                        'order' => 1,
+                    ],
+                ],
+                [
+                    [
+                        'id' => 35,
+                    ],
+                    [
+                        'name' => 'Qualified',
+                        'pipeline_id' => 2,
+                        'pipeline_stage_probability_id' => 3,
+                        'order' => 2,
+                    ],
+                ],
+                [
+                    [
+                        'id' => 36,
+                    ],
+                    [
+                        'name' => 'Proposal Sent',
+                        'pipeline_id' => 2,
+                        'pipeline_stage_probability_id' => 5,
+                        'order' => 3,
+                    ],
+                ],
+                [
+                    [
+                        'id' => 37,
+                    ],
+                    [
+                        'name' => 'Negotiation',
+                        'pipeline_id' => 2,
+                        'pipeline_stage_probability_id' => 7,
+                        'order' => 4,
                     ],
                 ],
                 [
@@ -332,6 +366,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                         'name' => 'Pending',
                         'pipeline_id' => 2,
                         'pipeline_stage_probability_id' => 9,
+                        'order' => 5,
                     ],
                 ],
                 [
@@ -342,6 +377,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                         'name' => 'Closed Won',
                         'pipeline_id' => 2,
                         'pipeline_stage_probability_id' => 11,
+                        'order' => 6,
                     ],
                 ],
                 [
@@ -352,6 +388,7 @@ class LaravelCrmPipelineTablesSeeder extends Seeder
                         'name' => 'Closed Lost',
                         'pipeline_id' => 2,
                         'pipeline_stage_probability_id' => 12,
+                        'order' => 7,
                     ],
                 ],
                 // Quotes
