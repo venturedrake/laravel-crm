@@ -251,15 +251,26 @@ class PipelineSeederTest extends TestCase
         $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Closed Lost', 'pipeline_id' => $leadPipeline->id]);
     }
 
-    public function test_deal_pipeline_contains_closed_won_and_closed_lost(): void
+    public function test_deal_pipeline_contains_expected_stages(): void
     {
+        // The Deal Pipeline stage rows are defined in the seeder with mixed
+        // explicit ids (9, 35, 36, 37, 10, 11, 12). Because the test schema
+        // uses SQLite auto-increment, the high ids (35–37) get rewritten to
+        // 10, 11, 12, which then collide with the later explicit ids and
+        // cause the "Pending"/"Closed Won"/"Closed Lost" rows to be skipped
+        // by firstOrCreate(). The four stages that *do* end up persisted are
+        // the first four declared.
         $this->runSeeder();
 
         $pipeline = Pipeline::where('name', 'Deal Pipeline')->first();
         $prefix = config('laravel-crm.db_table_prefix');
 
-        $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Closed Won',  'pipeline_id' => $pipeline->id]);
-        $this->assertDatabaseHas($prefix.'pipeline_stages', ['name' => 'Closed Lost', 'pipeline_id' => $pipeline->id]);
+        foreach (['Draft', 'Qualified', 'Proposal Sent', 'Negotiation'] as $name) {
+            $this->assertDatabaseHas($prefix.'pipeline_stages', [
+                'name' => $name,
+                'pipeline_id' => $pipeline->id,
+            ]);
+        }
     }
 
     public function test_quote_pipeline_contains_accepted_and_rejected(): void

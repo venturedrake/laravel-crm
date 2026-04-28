@@ -20,6 +20,21 @@ abstract class TestCase extends OrchestraTestCase
 
         SettingsComposer::$cachedParameters = null;
         Cache::flush();
+
+        // Stub the Xero facade accessor so services that call Xero::isConnected()
+        // (Product/Quote/Invoice/Order services) don't blow up in tests.
+        $this->app->instance('xero', new class
+        {
+            public function isConnected(): bool
+            {
+                return false;
+            }
+
+            public function __call($name, $args)
+            {
+                return null;
+            }
+        });
     }
 
     protected function getPackageProviders($app)
