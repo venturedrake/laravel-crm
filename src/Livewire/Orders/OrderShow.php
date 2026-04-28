@@ -30,9 +30,15 @@ class OrderShow extends Component
     public function mount(Order $order)
     {
         $this->order = $order;
-        /* $this->email = $lead->getPrimaryEmail();
-         $this->phone = $lead->getPrimaryPhone();
-         $this->address = $lead->getPrimaryAddress();*/
+
+        if ($order->person) {
+            $this->email = $order->person->getPrimaryEmail();
+            $this->phone = $order->person->getPrimaryPhone();
+        }
+
+        if ($order->organization) {
+            $this->address = $order->organization->getPrimaryAddress();
+        }
 
         $this->pipeline = Pipeline::where('model', get_class(new Order))->first();
         $this->taxName = app('laravel-crm.settings')->get('tax_name', 'Tax');

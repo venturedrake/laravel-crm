@@ -36,7 +36,10 @@ class PurchaseOrderShow extends Component
         if ($purchaseOrder->person) {
             $this->email = $purchaseOrder->person->getPrimaryEmail();
             $this->phone = $purchaseOrder->person->getPrimaryPhone();
-            $this->address = $purchaseOrder->person->getPrimaryAddress();
+        }
+
+        if ($purchaseOrder->organization) {
+            $this->address = $purchaseOrder->organization->getPrimaryAddress();
         }
 
         $this->pipeline = Pipeline::where('model', get_class(new PurchaseOrder))->first();

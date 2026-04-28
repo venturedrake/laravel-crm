@@ -168,8 +168,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
     {
         $startTime = microtime(true);
 
-        $this->startDate = now()->subYears(3)->startOfDay();
-        $this->endDate = now();
+        $this->startDate = now('UTC')->subYears(3)->startOfDay();
+        $this->endDate = now('UTC');
 
         $this->command->line('');
         $this->command->line('  <fg=cyan;options=bold>╔══════════════════════════════════════════════╗</>');
@@ -481,7 +481,14 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $hour = $this->randomBiasedInt(8, 18);
         $minute = mt_rand(0, 59);
 
-        return $date->setTime($hour, $minute, mt_rand(0, 59));
+        $result = $date->setTime($hour, $minute, mt_rand(0, 59));
+
+        // Never return a date in the future — cap at endDate
+        if ($result->gt($this->endDate)) {
+            return $this->endDate->copy();
+        }
+
+        return $result;
     }
 
     /**
@@ -637,7 +644,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'name' => $data['name'],
                     'password' => Hash::make(Str::random(30)),
                     'crm_access' => true,
-                    'email_verified_at' => now(),
+                    'email_verified_at' => now('UTC'),
                 ]
             );
 
@@ -913,8 +920,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         $bar = $this->createProgressBar(count($orgNames));
 
-        $billingTypeId = AddressType::where('name', 'Billing')->first()->id ?? null;
-        $shippingTypeId = AddressType::where('name', 'Shipping')->first()->id ?? null;
+        // Address type IDs. Type 1 = Current (always the primary), others are
+        // the "second address" pool (Billing 5, Shipping 6, Business 4).
+        $currentTypeId  = AddressType::where('name', 'Current')->first()->id  ?? 1;
+        $billingTypeId  = AddressType::where('name', 'Billing')->first()->id  ?? 5;
+        $shippingTypeId = AddressType::where('name', 'Shipping')->first()->id ?? 6;
+        $businessTypeId = AddressType::where('name', 'Business')->first()->id ?? 4;
+        $secondOrgTypes = [$billingTypeId, $shippingTypeId, $businessTypeId];
 
         foreach ($orgNames as $name) {
             $date = $this->weightedRandomDate();
@@ -929,7 +941,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($org, $date);
 
-            // Email
+            // Email — always present
             $slug = strtolower(preg_replace('/[^a-z0-9]/i', '', $name));
             $domain = $domains[array_rand($domains)];
             Email::create([
@@ -939,9 +951,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'primary' => true,
                 'emailable_type' => Organization::class,
                 'emailable_id' => $org->id,
+                'created_at' => $date,
+                'updated_at' => $date,
             ]);
 
-            // Phone
+            // Phone — always present
             Phone::create([
                 'external_id' => Uuid::uuid4()->toString(),
                 'number' => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
@@ -949,39 +963,43 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'primary' => true,
                 'phoneable_type' => Organization::class,
                 'phoneable_id' => $org->id,
+                'created_at' => $date,
+                'updated_at' => $date,
             ]);
 
-            // Primary billing address
+            // Primary address — always "Current" (type 1)
             Address::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address_type_id' => $billingTypeId,
-                'line1' => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
-                'line2' => mt_rand(0, 3) === 0 ? 'Suite '.mt_rand(100, 999) : null,
-                'city' => $city['city'],
-                'state' => $city['state'],
-                'code' => $city['code'],
-                'country' => $city['country'],
-                'primary' => true,
+                'external_id'      => Uuid::uuid4()->toString(),
+                'address_type_id'  => $currentTypeId,
+                'line1'            => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
+                'line2'            => mt_rand(0, 3) === 0 ? 'Suite '.mt_rand(100, 999) : null,
+                'city'             => $city['city'],
+                'state'            => $city['state'],
+                'code'             => $city['code'],
+                'country'          => $city['country'],
+                'primary'          => true,
                 'addressable_type' => Organization::class,
-                'addressable_id' => $org->id,
+                'addressable_id'   => $org->id,
+                'created_at'       => $date,
+                'updated_at'       => $date,
             ]);
 
-            // ~50% of orgs also get a separate shipping address
-            if (mt_rand(1, 100) <= 50) {
-                $shippingCity = $cities[array_rand($cities)];
-                Address::create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'address_type_id' => $shippingTypeId,
-                    'line1' => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
-                    'city' => $shippingCity['city'],
-                    'state' => $shippingCity['state'],
-                    'code' => $shippingCity['code'],
-                    'country' => $shippingCity['country'],
-                    'primary' => false,
-                    'addressable_type' => Organization::class,
-                    'addressable_id' => $org->id,
-                ]);
-            }
+            // Second address — always present, random type (Billing / Shipping / Business)
+            $secondCity = $cities[array_rand($cities)];
+            Address::create([
+                'external_id'      => Uuid::uuid4()->toString(),
+                'address_type_id'  => $secondOrgTypes[array_rand($secondOrgTypes)],
+                'line1'            => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
+                'city'             => $secondCity['city'],
+                'state'            => $secondCity['state'],
+                'code'             => $secondCity['code'],
+                'country'          => $secondCity['country'],
+                'primary'          => false,
+                'addressable_type' => Organization::class,
+                'addressable_id'   => $org->id,
+                'created_at'       => $date,
+                'updated_at'       => $date,
+            ]);
 
             $bar->advance();
         }
@@ -1041,6 +1059,15 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $count = 800;
         $bar = $this->createProgressBar($count);
 
+        // Address type IDs. Type 1 = Current (always the primary).
+        // Second address type is drawn from Postal, Previous, Business.
+        $currentTypeId  = AddressType::where('name', 'Current')->first()->id  ?? 1;
+        $postalTypeId   = AddressType::where('name', 'Postal')->first()->id   ?? 3;
+        $previousTypeId = AddressType::where('name', 'Previous')->first()->id ?? 2;
+        $businessTypeId = AddressType::where('name', 'Business')->first()->id ?? 4;
+        $secondPersonTypes = [$postalTypeId, $previousTypeId, $businessTypeId];
+
+        // City/street data for person addresses (reuse org city list pattern)
         $personCities = [
             ['city' => 'New York', 'state' => 'NY', 'country' => 'United States', 'code' => '10001'],
             ['city' => 'Los Angeles', 'state' => 'CA', 'country' => 'United States', 'code' => '90001'],
@@ -1060,10 +1087,6 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
         $personStreets = ['Main St', 'Oak Ave', 'Elm St', 'Park Blvd', 'First Ave',
             'Maple Dr', 'Cedar Ln', 'Pine St', 'Lake Rd', 'Hill St'];
-        $homeTypeId = AddressType::where('name', 'Home')->first()->id
-            ?? AddressType::first()->id
-            ?? null;
-        $workTypeId = AddressType::where('name', 'Billing')->first()->id ?? $homeTypeId;
 
         for ($i = 0; $i < $count; $i++) {
             $firstName = $firstNames[array_rand($firstNames)];
@@ -1083,7 +1106,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($person, $date);
 
-            // Email
+            // Email — always present
             $orgSlug = strtolower(preg_replace('/[^a-z0-9]/i', '', $org->name));
             Email::create([
                 'external_id' => Uuid::uuid4()->toString(),
@@ -1092,51 +1115,55 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'primary' => true,
                 'emailable_type' => Person::class,
                 'emailable_id' => $person->id,
+                'created_at' => $date,
+                'updated_at' => $date,
             ]);
 
-            // Phone (70% have a phone)
-            if (mt_rand(1, 100) <= 70) {
-                Phone::create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'number' => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
-                    'type' => 'work',
-                    'primary' => true,
-                    'phoneable_type' => Person::class,
-                    'phoneable_id' => $person->id,
-                ]);
-            }
+            // Phone — always present (removed the 70% gate)
+            Phone::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'number' => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
+                'type' => 'work',
+                'primary' => true,
+                'phoneable_type' => Person::class,
+                'phoneable_id' => $person->id,
+                'created_at' => $date,
+                'updated_at' => $date,
+            ]);
 
-            // Address — every person gets a primary address
+            // Primary address — always "Current" (type 1)
             $pCity = $personCities[array_rand($personCities)];
             Address::create([
-                'external_id' => Uuid::uuid4()->toString(),
-                'address_type_id' => $workTypeId,
-                'line1' => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
-                'city' => $pCity['city'],
-                'state' => $pCity['state'],
-                'code' => $pCity['code'],
-                'country' => $pCity['country'],
-                'primary' => true,
+                'external_id'      => Uuid::uuid4()->toString(),
+                'address_type_id'  => $currentTypeId,
+                'line1'            => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
+                'city'             => $pCity['city'],
+                'state'            => $pCity['state'],
+                'code'             => $pCity['code'],
+                'country'          => $pCity['country'],
+                'primary'          => true,
                 'addressable_type' => Person::class,
-                'addressable_id' => $person->id,
+                'addressable_id'   => $person->id,
+                'created_at'       => $date,
+                'updated_at'       => $date,
             ]);
 
-            // ~30% of people also get a second (home) address
-            if (mt_rand(1, 100) <= 30) {
-                $pCity2 = $personCities[array_rand($personCities)];
-                Address::create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'address_type_id' => $homeTypeId,
-                    'line1' => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
-                    'city' => $pCity2['city'],
-                    'state' => $pCity2['state'],
-                    'code' => $pCity2['code'],
-                    'country' => $pCity2['country'],
-                    'primary' => false,
-                    'addressable_type' => Person::class,
-                    'addressable_id' => $person->id,
-                ]);
-            }
+            // Second address — always present, random type (Postal / Previous / Business)
+            $pCity2 = $personCities[array_rand($personCities)];
+            Address::create([
+                'external_id'      => Uuid::uuid4()->toString(),
+                'address_type_id'  => $secondPersonTypes[array_rand($secondPersonTypes)],
+                'line1'            => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
+                'city'             => $pCity2['city'],
+                'state'            => $pCity2['state'],
+                'code'             => $pCity2['code'],
+                'country'          => $pCity2['country'],
+                'primary'          => false,
+                'addressable_type' => Person::class,
+                'addressable_id'   => $person->id,
+                'created_at'       => $date,
+                'updated_at'       => $date,
+            ]);
 
             $bar->advance();
         }
@@ -1194,7 +1221,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $amount = $this->randomAmount(500, 75000);
 
             // Determine stage based on age and randomness
-            $daysSinceCreation = $date->diffInDays(now());
+            $daysSinceCreation = $date->diffInDays(now('UTC'));
             $isConverted = false;
             $stage = $stages->first(); // Default: New
 
@@ -1239,7 +1266,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'lead_source_id' => $leadSources->isNotEmpty() ? $leadSources->random()->id : null,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
-                'converted_at' => $isConverted ? $date->copy()->addDays(mt_rand(7, 60))->min(now()) : null,
+                'converted_at' => $isConverted ? $date->copy()->addDays(mt_rand(7, 60))->min(now('UTC')) : null,
                 'user_created_id' => $this->randomUserId(),
                 'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
@@ -1285,7 +1312,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $date = $lead->converted_at ?? Carbon::parse($lead->created_at)->addDays(mt_rand(7, 30));
             $amount = ($lead->amount ?? mt_rand(50000, 7500000)) / 100; // Convert from stored cents back to dollars
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $closedStatus = null;
             $closedAt = null;
 
@@ -1334,8 +1361,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($closedAt && $closedAt->gt(now())) {
-                $closedAt = now();
+            if ($closedAt && $closedAt->gt(now('UTC'))) {
+                $closedAt = now('UTC');
             }
 
             $deal = Deal::create([
@@ -1369,6 +1396,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'amount' => $item['amount'],
                     'currency' => $this->currency,
                     'tax_rate' => $item['tax_rate'],
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
                 $dealSubtotal += $item['amount'];
             }
@@ -1397,7 +1426,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $org = $person->organization;
             $amount = $this->randomAmount(1000, 100000);
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $closedStatus = null;
             $closedAt = null;
             $stage = $stages->first();
@@ -1447,8 +1476,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($closedAt && $closedAt->gt(now())) {
-                $closedAt = now();
+            if ($closedAt && $closedAt->gt(now('UTC'))) {
+                $closedAt = now('UTC');
             }
 
             $deal = Deal::create([
@@ -1481,6 +1510,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'amount' => $item['amount'],
                     'currency' => $this->currency,
                     'tax_rate' => $item['tax_rate'],
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
                 $dealSubtotal += $item['amount'];
             }
@@ -1534,11 +1565,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $dealCreatedAt = Carbon::parse($deal->created_at);
             $date = $dealCreatedAt->copy()->addDays(mt_rand(3, 21));
-            if ($date->gt(now())) {
-                $date = now()->subDays(mt_rand(1, 7));
+            if ($date->gt(now('UTC'))) {
+                $date = now('UTC')->subDays(mt_rand(1, 7));
             }
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
 
             // Determine stage
             $acceptedAt = null;
@@ -1563,11 +1594,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $stage = $stages->firstWhere('name', 'Sent');
             }
 
-            if ($acceptedAt && $acceptedAt->gt(now())) {
-                $acceptedAt = now();
+            if ($acceptedAt && $acceptedAt->gt(now('UTC'))) {
+                $acceptedAt = now('UTC');
             }
-            if ($rejectedAt && $rejectedAt->gt(now())) {
-                $rejectedAt = now();
+            if ($rejectedAt && $rejectedAt->gt(now('UTC'))) {
+                $rejectedAt = now('UTC');
             }
 
             // Build line items
@@ -1613,6 +1644,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'currency' => $this->currency,
                     'tax_rate' => $item['tax_rate'],
                     'tax_amount' => $item['tax_amount'],
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -1632,8 +1665,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         foreach ($pendingDeals as $deal) {
             $dealCreatedAt = Carbon::parse($deal->created_at);
             $date = $dealCreatedAt->copy()->addDays(mt_rand(1, 14));
-            if ($date->gt(now())) {
-                $date = now()->subDays(mt_rand(1, 3));
+            if ($date->gt(now('UTC'))) {
+                $date = now('UTC')->subDays(mt_rand(1, 3));
             }
 
             $stage = $stages->whereIn('name', ['Draft', 'Sent'])->random();
@@ -1677,6 +1710,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'currency' => $this->currency,
                     'tax_rate' => $item['tax_rate'],
                     'tax_amount' => $item['tax_amount'],
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -1714,7 +1749,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $titleTemplate = $standaloneQuoteTitles[array_rand($standaloneQuoteTitles)];
             $title = sprintf($titleTemplate, $orgName);
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
 
             // Determine stage based on age
             $acceptedAt = null;
@@ -1750,11 +1785,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $stage = $stages->whereIn('name', ['Draft', 'Sent'])->random();
             }
 
-            if ($acceptedAt && $acceptedAt->gt(now())) {
-                $acceptedAt = now();
+            if ($acceptedAt && $acceptedAt->gt(now('UTC'))) {
+                $acceptedAt = now('UTC');
             }
-            if ($rejectedAt && $rejectedAt->gt(now())) {
-                $rejectedAt = now();
+            if ($rejectedAt && $rejectedAt->gt(now('UTC'))) {
+                $rejectedAt = now('UTC');
             }
 
             $lineItems = $this->generateLineItems(mt_rand(1, 5));
@@ -1802,6 +1837,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'currency' => $this->currency,
                     'tax_rate' => $item['tax_rate'],
                     'tax_amount' => $item['tax_amount'],
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -1847,11 +1884,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $quoteAcceptedAt = $quote->accepted_at;
             $date = $quoteAcceptedAt->copy()->addDays(mt_rand(1, 14));
-            if ($date->gt(now())) {
-                $date = now()->subDays(mt_rand(1, 3));
+            if ($date->gt(now('UTC'))) {
+                $date = now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 60) {
@@ -1897,6 +1934,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'currency' => $this->currency,
                     'tax_rate' => $opTaxRate,
                     'tax_amount' => round($opAmount * $opTaxRate, 2), // cents (no mutator on OrderProduct)
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -1909,6 +1948,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             }
 
             $this->backdateModel($order, $date);
+            $this->createOrderAddresses($order, $date);
             $orderCount++;
             $bar->advance();
         }
@@ -1935,7 +1975,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $person = $this->people->random();
             $org = $person->organization;
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 60) {
@@ -1983,10 +2023,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'currency' => $this->currency,
                     'tax_rate' => $item['tax_rate'],
                     'tax_amount' => $item['tax_amount'],
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
             $this->backdateModel($order, $date);
+            $this->createOrderAddresses($order, $date);
             $bar->advance();
         }
 
@@ -2019,11 +2062,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
         foreach ($this->orders as $order) {
             $orderCreatedAt = Carbon::parse($order->created_at);
             $date = $orderCreatedAt->copy()->addDays(mt_rand(1, 14));
-            if ($date->gt(now())) {
-                $date = now()->subDays(mt_rand(1, 3));
+            if ($date->gt(now('UTC'))) {
+                $date = now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $fullyPaidAt = null;
             $amountPaid = 0;
             $amountDue = $order->total / 100; // Convert from stored cents
@@ -2054,8 +2097,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($fullyPaidAt && $fullyPaidAt->gt(now())) {
-                $fullyPaidAt = now();
+            if ($fullyPaidAt && $fullyPaidAt->gt(now('UTC'))) {
+                $fullyPaidAt = now('UTC');
             }
 
             $invoice = Invoice::create([
@@ -2092,6 +2135,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'tax_rate' => $op->tax_rate ?? 10,
                     'tax_amount' => round(($op->amount / 100) * (($op->tax_rate ?? 10) / 100), 2),
                     'currency' => $this->currency,
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -2115,7 +2160,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $person = $this->people->random();
             $org = $person->organization;
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $fullyPaidAt = null;
             $stage = $stages->first(); // Draft
 
@@ -2151,8 +2196,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($fullyPaidAt && $fullyPaidAt->gt(now())) {
-                $fullyPaidAt = now();
+            if ($fullyPaidAt && $fullyPaidAt->gt(now('UTC'))) {
+                $fullyPaidAt = now('UTC');
             }
 
             $invoice = Invoice::create([
@@ -2187,6 +2232,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'tax_rate' => $item['tax_rate'],
                     'tax_amount' => round($item['amount'] * $item['tax_rate'] / 100, 2),
                     'currency' => $this->currency,
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -2232,26 +2279,31 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $orderCreatedAt = Carbon::parse($order->created_at);
             $date = $orderCreatedAt->copy()->addDays(mt_rand(3, 21));
-            if ($date->gt(now())) {
-                $date = now()->subDays(mt_rand(1, 3));
+            if ($date->gt(now('UTC'))) {
+                $date = now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $deliveredOn = null;
             $deliveryExpected = $date->copy()->addDays(mt_rand(5, 21));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 30) {
+                // Old deliveries: "Delivered" stage — always set delivered_on
                 $stage = $stages->firstWhere('name', 'Delivered');
                 $deliveredOn = $deliveryExpected->copy()->addDays(mt_rand(-3, 5));
             } elseif ($daysSince > 14) {
                 $stage = $stages->firstWhere('name', 'Sent');
+                // 25% of "Sent" deliveries were actually delivered (stage not yet updated)
+                if (mt_rand(1, 100) <= 25) {
+                    $deliveredOn = $deliveryExpected->copy()->addDays(mt_rand(-2, 4));
+                }
             } elseif ($daysSince > 7) {
                 $stage = $stages->firstWhere('name', 'Packed');
             }
 
-            if ($deliveredOn && $deliveredOn->gt(now())) {
-                $deliveredOn = now();
+            if ($deliveredOn && $deliveredOn->gt(now('UTC'))) {
+                $deliveredOn = now('UTC');
             }
 
             $delivery = Delivery::create([
@@ -2273,8 +2325,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'delivery_id' => $delivery->id,
                     'order_product_id' => $op->id,
                     'quantity' => $op->quantity,
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
+
+            // Add shipping address to every delivery
+            $this->createDeliveryAddress($delivery, $date);
 
             $this->backdateModel($delivery, $date);
             $deliveryCount++;
@@ -2315,11 +2372,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $orderCreatedAt = Carbon::parse($order->created_at);
             $date = $orderCreatedAt->copy()->addDays(mt_rand(1, 10));
-            if ($date->gt(now())) {
-                $date = now()->subDays(mt_rand(1, 3));
+            if ($date->gt(now('UTC'))) {
+                $date = now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 45) {
@@ -2339,6 +2396,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
             // Pick a random supplier organization
             $supplier = $this->organizations->random();
 
+            // POs from orders are almost always delivered (90%), occasionally pickup
+            $deliveryType = mt_rand(1, 100) <= 90 ? 'deliver' : 'pickup';
+
             $po = PurchaseOrder::create([
                 'reference' => 'PO-'.strtoupper(substr(md5($order->id.mt_rand()), 0, 8)),
                 'order_id' => $order->id,
@@ -2350,12 +2410,17 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'total' => $total,
                 'issue_date' => $date,
                 'delivery_date' => $date->copy()->addDays(mt_rand(14, 45)),
+                'delivery_type' => $deliveryType,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
                 'user_created_id' => $this->randomUserId(),
                 'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
+
+            if ($deliveryType === 'deliver') {
+                $this->createPurchaseOrderAddress($po, $date);
+            }
 
             // Create PO line items
             foreach ($order->orderProducts as $op) {
@@ -2371,6 +2436,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'tax_rate' => $poTaxRate,
                     'tax_amount' => round($lineAmount * $poTaxRate / 100, 2),
                     'currency' => $this->currency,
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -2393,7 +2460,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $supplier = $this->organizations->random();
             $contact = $supplier->people->first() ?? $this->people->random();
 
-            $daysSince = $date->diffInDays(now());
+            $daysSince = $date->diffInDays(now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 45) {
@@ -2410,6 +2477,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $tax = round($subtotal * $poTaxRate / 100, 2);
             $total = $subtotal + $tax;
 
+            // Standalone POs: ~75% deliver, ~25% pickup
+            $deliveryType = mt_rand(1, 100) <= 75 ? 'deliver' : 'pickup';
+
             $po = PurchaseOrder::create([
                 'reference' => 'PO-'.strtoupper(substr(md5(mt_rand().$i.time()), 0, 8)),
                 'person_id' => $contact->id,
@@ -2420,12 +2490,17 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'total' => $total,
                 'issue_date' => $date,
                 'delivery_date' => $date->copy()->addDays(mt_rand(14, 45)),
+                'delivery_type' => $deliveryType,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
                 'user_created_id' => $this->randomUserId(),
                 'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
             ]);
+
+            if ($deliveryType === 'deliver') {
+                $this->createPurchaseOrderAddress($po, $date);
+            }
 
             foreach ($lineItems as $item) {
                 $costPrice = round($item['price'] * 0.4, 2);
@@ -2440,6 +2515,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'tax_rate' => $poTaxRate,
                     'tax_amount' => round($lineAmount * $poTaxRate / 100, 2),
                     'currency' => $this->currency,
+                    'created_at' => $date,
+                    'updated_at' => $date,
                 ]);
             }
 
@@ -2529,12 +2606,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numTasks = mt_rand(3, 5);
             for ($i = 0; $i < $numTasks; $i++) {
                 $taskDate = $entity['date']->copy()->addDays(mt_rand(1, 90));
-                if ($taskDate->gt(now()->addDays(30))) {
-                    $taskDate = now()->subDays(mt_rand(1, 60));
+                if ($taskDate->gt(now('UTC')->addDays(30))) {
+                    $taskDate = now('UTC')->subDays(mt_rand(1, 60));
                 }
 
-                $isCompleted = $taskDate->lt(now()->subDays(3)) && mt_rand(1, 100) <= 80;
-                $completedAt = $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5))->min(now()) : null;
+                $isCompleted = $taskDate->lt(now('UTC')->subDays(3)) && mt_rand(1, 100) <= 80;
+                $completedAt = $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5))->min(now('UTC')) : null;
 
                 $task = Task::create([
                     'name' => $taskNames[array_rand($taskNames)],
@@ -2559,7 +2636,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Task created',
                 ]);
 
-                $createdAt = $taskDate->copy()->min(now());
+                $createdAt = $taskDate->copy()->min(now('UTC'));
                 $this->backdateModel($task, $createdAt);
                 $this->backdateModel($task->activity, $createdAt);
                 $taskCount++;
@@ -2600,8 +2677,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numNotes = mt_rand(3, 5);
             for ($i = 0; $i < $numNotes; $i++) {
                 $noteDate = $entity['date']->copy()->addDays(mt_rand(0, 90));
-                if ($noteDate->gt(now())) {
-                    $noteDate = now()->subDays(mt_rand(1, 14));
+                if ($noteDate->gt(now('UTC'))) {
+                    $noteDate = now('UTC')->subDays(mt_rand(1, 14));
                 }
 
                 $note = Note::create([
@@ -2652,8 +2729,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numCalls = mt_rand(3, 5);
             for ($i = 0; $i < $numCalls; $i++) {
                 $callDate = $entity['date']->copy()->addDays(mt_rand(1, 60));
-                if ($callDate->gt(now())) {
-                    $callDate = now()->subDays(mt_rand(1, 14));
+                if ($callDate->gt(now('UTC'))) {
+                    $callDate = now('UTC')->subDays(mt_rand(1, 14));
                 }
 
                 $duration = mt_rand(5, 60);
@@ -2717,8 +2794,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numMeetings = mt_rand(3, 5);
             for ($i = 0; $i < $numMeetings; $i++) {
                 $meetingDate = $entity['date']->copy()->addDays(mt_rand(3, 90));
-                if ($meetingDate->gt(now()->addDays(14))) {
-                    $meetingDate = now()->subDays(mt_rand(1, 30));
+                if ($meetingDate->gt(now('UTC')->addDays(14))) {
+                    $meetingDate = now('UTC')->subDays(mt_rand(1, 30));
                 }
 
                 $startHour = $this->randomBiasedInt(9, 16);
@@ -2749,7 +2826,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Meeting scheduled',
                 ]);
 
-                $createdAt = $meetingDate->copy()->min(now());
+                $createdAt = $meetingDate->copy()->min(now('UTC'));
                 $this->backdateModel($meeting, $createdAt);
                 $this->backdateModel($meeting->activity, $createdAt);
                 $meetingCount++;
@@ -2784,8 +2861,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numLunches = mt_rand(3, 5);
             for ($i = 0; $i < $numLunches; $i++) {
                 $lunchDate = $entity['date']->copy()->addDays(mt_rand(3, 90));
-                if ($lunchDate->gt(now()->addDays(14))) {
-                    $lunchDate = now()->subDays(mt_rand(1, 30));
+                if ($lunchDate->gt(now('UTC')->addDays(14))) {
+                    $lunchDate = now('UTC')->subDays(mt_rand(1, 30));
                 }
 
                 $duration = [60, 90, 120][array_rand([60, 90, 120])];
@@ -2817,7 +2894,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Lunch scheduled',
                 ]);
 
-                $createdAt = $lunchDate->copy()->min(now());
+                $createdAt = $lunchDate->copy()->min(now('UTC'));
                 $this->backdateModel($lunch, $createdAt);
                 $this->backdateModel($lunch->activity, $createdAt);
                 $lunchCount++;
@@ -3072,7 +3149,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->setFieldValue($lead, $lf->get('Lead Source Channel'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
                 $this->setFieldValue($lead, $lf->get('Competitor Mentioned'), fn () => $competitors[array_rand($competitors)]);
                 $this->setFieldValue($lead, $lf->get('Decision Maker Contacted'), fn () => mt_rand(0, 1) ? '1' : '0');
-                $this->setFieldValue($lead, $lf->get('Initial Contact Date'), fn () => now()->subDays(mt_rand(5, 400))->format('Y-m-d'));
+                $this->setFieldValue($lead, $lf->get('Initial Contact Date'), fn () => now('UTC')->subDays(mt_rand(5, 400))->format('Y-m-d'));
                 $this->setFieldValue($lead, $lf->get('Qualification Notes'), fn () => $qualNotes[array_rand($qualNotes)]);
             }
         });
@@ -3088,7 +3165,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->setFieldValue($deal, $df->get('Contract Reference'), fn () => 'CON-'.strtoupper(substr(md5(mt_rand()), 0, 6)));
                 $this->setFieldValue($deal, $df->get('Deal Priority'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
                 $this->setFieldValue($deal, $df->get('NDA Signed'), fn () => mt_rand(0, 1) ? '1' : '0');
-                $this->setFieldValue($deal, $df->get('Expected Close Date'), fn () => now()->addDays(mt_rand(10, 180))->format('Y-m-d'));
+                $this->setFieldValue($deal, $df->get('Expected Close Date'), fn () => now('UTC')->addDays(mt_rand(10, 180))->format('Y-m-d'));
                 $this->setFieldValue($deal, $df->get('Products of Interest'), function ($f) {
                     $sample = $f->fieldOptions->random(mt_rand(1, min(3, $f->fieldOptions->count())));
 
@@ -3107,7 +3184,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
                 $this->setFieldValue($quote, $qf->get('Project Code'), fn () => 'PROJ-'.mt_rand(1000, 9999));
                 $this->setFieldValue($quote, $qf->get('Delivery Region'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
-                $this->setFieldValue($quote, $qf->get('Promised Delivery Date'), fn () => now()->addDays(mt_rand(14, 90))->format('Y-m-d'));
+                $this->setFieldValue($quote, $qf->get('Promised Delivery Date'), fn () => now('UTC')->addDays(mt_rand(14, 90))->format('Y-m-d'));
                 $this->setFieldValue($quote, $qf->get('Express Shipping'), fn () => mt_rand(1, 100) <= 20 ? '1' : '0');
                 $this->setFieldValue($quote, $qf->get('Special Instructions'), fn () => mt_rand(1, 100) <= 40 ? $specialInstr[array_rand($specialInstr)] : null);
             }
@@ -3123,7 +3200,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
                 $this->setFieldValue($order, $of->get('Project Code'), fn () => 'PROJ-'.mt_rand(1000, 9999));
                 $this->setFieldValue($order, $of->get('Delivery Region'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
-                $this->setFieldValue($order, $of->get('Promised Delivery Date'), fn () => now()->addDays(mt_rand(7, 60))->format('Y-m-d'));
+                $this->setFieldValue($order, $of->get('Promised Delivery Date'), fn () => now('UTC')->addDays(mt_rand(7, 60))->format('Y-m-d'));
                 $this->setFieldValue($order, $of->get('Express Shipping'), fn () => mt_rand(1, 100) <= 20 ? '1' : '0');
                 $this->setFieldValue($order, $of->get('Special Instructions'), fn () => mt_rand(1, 100) <= 40 ? $specialInstr[array_rand($specialInstr)] : null);
             }
@@ -3163,7 +3240,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->setFieldValue($org, $orgAllFields->get('Company Registration Number'), fn () => 'REG-'.mt_rand(10000000, 99999999));
                 $this->setFieldValue($org, $orgAllFields->get('Company Size'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
                 $this->setFieldValue($org, $orgAllFields->get('Publicly Listed'), fn () => mt_rand(1, 100) <= 15 ? '1' : '0');
-                $this->setFieldValue($org, $orgAllFields->get('Relationship Since'), fn () => now()->subDays(mt_rand(180, 1800))->format('Y-m-d'));
+                $this->setFieldValue($org, $orgAllFields->get('Relationship Since'), fn () => now('UTC')->subDays(mt_rand(180, 1800))->format('Y-m-d'));
             }
         });
 
@@ -3210,6 +3287,187 @@ class LaravelCrmSampleDataSeeder extends Seeder
     // =========================================================================
     // Helpers
     // =========================================================================
+
+    /**
+     * Create a delivery address for a PurchaseOrder (delivery_type = 'deliver').
+     * PurchaseOrder uses morphOne — a single address record linked via addressable.
+     */
+    protected function createPurchaseOrderAddress($po, Carbon $date): void
+    {
+        static $cities = null;
+        static $streets = null;
+        static $firstNames = null;
+        static $lastNames = null;
+
+        if ($cities === null) {
+            $cities = [
+                ['city' => 'New York',      'state' => 'NY',  'country' => 'United States',  'code' => '10001'],
+                ['city' => 'Los Angeles',   'state' => 'CA',  'country' => 'United States',  'code' => '90001'],
+                ['city' => 'Chicago',       'state' => 'IL',  'country' => 'United States',  'code' => '60601'],
+                ['city' => 'Houston',       'state' => 'TX',  'country' => 'United States',  'code' => '77001'],
+                ['city' => 'Phoenix',       'state' => 'AZ',  'country' => 'United States',  'code' => '85001'],
+                ['city' => 'San Francisco', 'state' => 'CA',  'country' => 'United States',  'code' => '94102'],
+                ['city' => 'Seattle',       'state' => 'WA',  'country' => 'United States',  'code' => '98101'],
+                ['city' => 'Denver',        'state' => 'CO',  'country' => 'United States',  'code' => '80201'],
+                ['city' => 'Boston',        'state' => 'MA',  'country' => 'United States',  'code' => '02101'],
+                ['city' => 'Austin',        'state' => 'TX',  'country' => 'United States',  'code' => '73301'],
+                ['city' => 'Miami',         'state' => 'FL',  'country' => 'United States',  'code' => '33101'],
+                ['city' => 'Atlanta',       'state' => 'GA',  'country' => 'United States',  'code' => '30301'],
+                ['city' => 'London',        'state' => '',    'country' => 'United Kingdom',  'code' => 'EC1A 1BB'],
+                ['city' => 'Sydney',        'state' => 'NSW', 'country' => 'Australia',       'code' => '2000'],
+                ['city' => 'Toronto',       'state' => 'ON',  'country' => 'Canada',          'code' => 'M5H 2N2'],
+            ];
+            $streets    = ['Main St', 'Oak Ave', 'Elm St', 'Park Blvd', 'Commerce Dr',
+                'Industrial Way', 'Technology Pkwy', 'Innovation Dr', 'Market St', 'First Ave'];
+            $firstNames = ['James', 'Mary', 'Robert', 'Jennifer', 'Michael', 'Linda', 'David', 'Sarah'];
+            $lastNames  = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
+        }
+
+        $city = $cities[array_rand($cities)];
+
+        $po->address()->create([
+            'external_id'      => Uuid::uuid4()->toString(),
+            'contact'          => $firstNames[array_rand($firstNames)].' '.$lastNames[array_rand($lastNames)],
+            'phone'            => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
+            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city'             => $city['city'],
+            'state'            => $city['state'],
+            'code'             => $city['code'],
+            'country'          => $city['country'],
+            'addressable_type' => PurchaseOrder::class,
+            'addressable_id'   => $po->id,
+            'created_at'       => $date,
+            'updated_at'       => $date,
+        ]);
+    }
+
+    /**
+     * Create a Shipping address for a Delivery.
+     */
+    protected function createDeliveryAddress($delivery, Carbon $date): void
+    {
+        static $shippingTypeId = null;
+        static $cities = null;
+        static $streets = null;
+
+        if ($shippingTypeId === null) {
+            $shippingTypeId = AddressType::where('name', 'Shipping')->first()->id ?? 6;
+        }
+
+        if ($cities === null) {
+            $cities = [
+                ['city' => 'New York',      'state' => 'NY',  'country' => 'United States',  'code' => '10001'],
+                ['city' => 'Los Angeles',   'state' => 'CA',  'country' => 'United States',  'code' => '90001'],
+                ['city' => 'Chicago',       'state' => 'IL',  'country' => 'United States',  'code' => '60601'],
+                ['city' => 'Houston',       'state' => 'TX',  'country' => 'United States',  'code' => '77001'],
+                ['city' => 'Phoenix',       'state' => 'AZ',  'country' => 'United States',  'code' => '85001'],
+                ['city' => 'San Francisco', 'state' => 'CA',  'country' => 'United States',  'code' => '94102'],
+                ['city' => 'Seattle',       'state' => 'WA',  'country' => 'United States',  'code' => '98101'],
+                ['city' => 'Denver',        'state' => 'CO',  'country' => 'United States',  'code' => '80201'],
+                ['city' => 'Boston',        'state' => 'MA',  'country' => 'United States',  'code' => '02101'],
+                ['city' => 'Austin',        'state' => 'TX',  'country' => 'United States',  'code' => '73301'],
+                ['city' => 'Miami',         'state' => 'FL',  'country' => 'United States',  'code' => '33101'],
+                ['city' => 'Atlanta',       'state' => 'GA',  'country' => 'United States',  'code' => '30301'],
+                ['city' => 'London',        'state' => '',    'country' => 'United Kingdom',  'code' => 'EC1A 1BB'],
+                ['city' => 'Sydney',        'state' => 'NSW', 'country' => 'Australia',       'code' => '2000'],
+                ['city' => 'Toronto',       'state' => 'ON',  'country' => 'Canada',          'code' => 'M5H 2N2'],
+            ];
+
+            $streets = ['Main St', 'Oak Ave', 'Elm St', 'Park Blvd', 'Commerce Dr',
+                'Industrial Way', 'Technology Pkwy', 'Innovation Dr', 'Market St', 'First Ave'];
+        }
+
+        $city = $cities[array_rand($cities)];
+
+        Address::create([
+            'external_id'      => Uuid::uuid4()->toString(),
+            'address_type_id'  => $shippingTypeId,
+            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city'             => $city['city'],
+            'state'            => $city['state'],
+            'code'             => $city['code'],
+            'country'          => $city['country'],
+            'primary'          => true,
+            'addressable_type' => Delivery::class,
+            'addressable_id'   => $delivery->id,
+            'created_at'       => $date,
+            'updated_at'       => $date,
+        ]);
+    }
+
+    /**
+     * Create Billing and Shipping addresses for an Order.
+     */
+    protected function createOrderAddresses($order, Carbon $date): void
+    {
+        static $billingTypeId  = null;
+        static $shippingTypeId = null;
+        static $cities = null;
+        static $streets = null;
+
+        if ($billingTypeId === null) {
+            $billingTypeId  = AddressType::where('name', 'Billing')->first()->id  ?? 5;
+            $shippingTypeId = AddressType::where('name', 'Shipping')->first()->id ?? 6;
+        }
+
+        if ($cities === null) {
+            $cities = [
+                ['city' => 'New York',      'state' => 'NY',  'country' => 'United States',  'code' => '10001'],
+                ['city' => 'Los Angeles',   'state' => 'CA',  'country' => 'United States',  'code' => '90001'],
+                ['city' => 'Chicago',       'state' => 'IL',  'country' => 'United States',  'code' => '60601'],
+                ['city' => 'Houston',       'state' => 'TX',  'country' => 'United States',  'code' => '77001'],
+                ['city' => 'Phoenix',       'state' => 'AZ',  'country' => 'United States',  'code' => '85001'],
+                ['city' => 'San Francisco', 'state' => 'CA',  'country' => 'United States',  'code' => '94102'],
+                ['city' => 'Seattle',       'state' => 'WA',  'country' => 'United States',  'code' => '98101'],
+                ['city' => 'Denver',        'state' => 'CO',  'country' => 'United States',  'code' => '80201'],
+                ['city' => 'Boston',        'state' => 'MA',  'country' => 'United States',  'code' => '02101'],
+                ['city' => 'Austin',        'state' => 'TX',  'country' => 'United States',  'code' => '73301'],
+                ['city' => 'Miami',         'state' => 'FL',  'country' => 'United States',  'code' => '33101'],
+                ['city' => 'Atlanta',       'state' => 'GA',  'country' => 'United States',  'code' => '30301'],
+                ['city' => 'London',        'state' => '',    'country' => 'United Kingdom',  'code' => 'EC1A 1BB'],
+                ['city' => 'Sydney',        'state' => 'NSW', 'country' => 'Australia',       'code' => '2000'],
+                ['city' => 'Toronto',       'state' => 'ON',  'country' => 'Canada',          'code' => 'M5H 2N2'],
+            ];
+
+            $streets = ['Main St', 'Oak Ave', 'Elm St', 'Park Blvd', 'Commerce Dr',
+                'Industrial Way', 'Technology Pkwy', 'Innovation Dr', 'Market St', 'First Ave'];
+        }
+
+        $billingCity  = $cities[array_rand($cities)];
+        $shippingCity = $cities[array_rand($cities)];
+
+        // Billing address
+        Address::create([
+            'external_id'      => Uuid::uuid4()->toString(),
+            'address_type_id'  => $billingTypeId,
+            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city'             => $billingCity['city'],
+            'state'            => $billingCity['state'],
+            'code'             => $billingCity['code'],
+            'country'          => $billingCity['country'],
+            'primary'          => true,
+            'addressable_type' => Order::class,
+            'addressable_id'   => $order->id,
+            'created_at'       => $date,
+            'updated_at'       => $date,
+        ]);
+
+        // Shipping address
+        Address::create([
+            'external_id'      => Uuid::uuid4()->toString(),
+            'address_type_id'  => $shippingTypeId,
+            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city'             => $shippingCity['city'],
+            'state'            => $shippingCity['state'],
+            'code'             => $shippingCity['code'],
+            'country'          => $shippingCity['country'],
+            'primary'          => false,
+            'addressable_type' => Order::class,
+            'addressable_id'   => $order->id,
+            'created_at'       => $date,
+            'updated_at'       => $date,
+        ]);
+    }
 
     /**
      * Generate realistic line items from the product catalog.

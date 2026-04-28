@@ -23,9 +23,15 @@ class DealShow extends Component
     public function mount(Deal $deal)
     {
         $this->deal = $deal;
-        /* $this->email = $lead->getPrimaryEmail();
-         $this->phone = $lead->getPrimaryPhone();
-         $this->address = $lead->getPrimaryAddress();*/
+
+        if ($deal->person) {
+            $this->email = $deal->person->getPrimaryEmail();
+            $this->phone = $deal->person->getPrimaryPhone();
+        }
+
+        if ($deal->organization) {
+            $this->address = $deal->organization->getPrimaryAddress();
+        }
     }
 
     public function won($id)

@@ -15,6 +15,8 @@ class DeliveryShow extends Component
 
     public ?Pipeline $pipeline = null;
 
+    public $address;
+
     protected $listeners = [
         'refreshDelivery' => '$refresh',
     ];

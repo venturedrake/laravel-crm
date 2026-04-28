@@ -32,9 +32,15 @@ class InvoiceShow extends Component
     public function mount(Invoice $invoice)
     {
         $this->invoice = $invoice;
-        /* $this->email = $lead->getPrimaryEmail();
-         $this->phone = $lead->getPrimaryPhone();
-         $this->address = $lead->getPrimaryAddress();*/
+
+        if ($invoice->person) {
+            $this->email = $invoice->person->getPrimaryEmail();
+            $this->phone = $invoice->person->getPrimaryPhone();
+        }
+
+        if ($invoice->organization) {
+            $this->address = $invoice->organization->getPrimaryAddress();
+        }
 
         $this->pipeline = Pipeline::where('model', get_class(new Invoice))->first();
         $this->taxName = app('laravel-crm.settings')->get('tax_name', 'Tax');

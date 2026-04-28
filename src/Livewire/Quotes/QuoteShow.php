@@ -31,9 +31,15 @@ class QuoteShow extends Component
     public function mount(Quote $quote)
     {
         $this->quote = $quote;
-        /* $this->email = $lead->getPrimaryEmail();
-         $this->phone = $lead->getPrimaryPhone();
-         $this->address = $lead->getPrimaryAddress();*/
+
+        if ($quote->person) {
+            $this->email = $quote->person->getPrimaryEmail();
+            $this->phone = $quote->person->getPrimaryPhone();
+        }
+
+        if ($quote->organization) {
+            $this->address = $quote->organization->getPrimaryAddress();
+        }
 
         $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
         $this->taxName = app('laravel-crm.settings')->get('tax_name', 'Tax');
