@@ -391,10 +391,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // Weight distribution per age bracket (index maps to $ordered positions)
         // More weight on early stages for new deals; later stages for older deals.
         $allWeights = match (true) {
-            $daysSince <= 7  => [75, 20, 5,  0,  0],
+            $daysSince <= 7 => [75, 20, 5,  0,  0],
             $daysSince <= 14 => [40, 35, 20, 5,  0],
             $daysSince <= 30 => [15, 25, 35, 20, 5],
-            default          => [5,  10, 25, 40, 20],
+            default => [5,  10, 25, 40, 20],
         };
 
         $weights = array_slice($allWeights, 0, $count);
@@ -922,8 +922,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         // Address type IDs. Type 1 = Current (always the primary), others are
         // the "second address" pool (Billing 5, Shipping 6, Business 4).
-        $currentTypeId  = AddressType::where('name', 'Current')->first()->id  ?? 1;
-        $billingTypeId  = AddressType::where('name', 'Billing')->first()->id  ?? 5;
+        $currentTypeId = AddressType::where('name', 'Current')->first()->id ?? 1;
+        $billingTypeId = AddressType::where('name', 'Billing')->first()->id ?? 5;
         $shippingTypeId = AddressType::where('name', 'Shipping')->first()->id ?? 6;
         $businessTypeId = AddressType::where('name', 'Business')->first()->id ?? 4;
         $secondOrgTypes = [$billingTypeId, $shippingTypeId, $businessTypeId];
@@ -969,36 +969,36 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             // Primary address — always "Current" (type 1)
             Address::create([
-                'external_id'      => Uuid::uuid4()->toString(),
-                'address_type_id'  => $currentTypeId,
-                'line1'            => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
-                'line2'            => mt_rand(0, 3) === 0 ? 'Suite '.mt_rand(100, 999) : null,
-                'city'             => $city['city'],
-                'state'            => $city['state'],
-                'code'             => $city['code'],
-                'country'          => $city['country'],
-                'primary'          => true,
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => $currentTypeId,
+                'line1' => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
+                'line2' => mt_rand(0, 3) === 0 ? 'Suite '.mt_rand(100, 999) : null,
+                'city' => $city['city'],
+                'state' => $city['state'],
+                'code' => $city['code'],
+                'country' => $city['country'],
+                'primary' => true,
                 'addressable_type' => Organization::class,
-                'addressable_id'   => $org->id,
-                'created_at'       => $date,
-                'updated_at'       => $date,
+                'addressable_id' => $org->id,
+                'created_at' => $date,
+                'updated_at' => $date,
             ]);
 
             // Second address — always present, random type (Billing / Shipping / Business)
             $secondCity = $cities[array_rand($cities)];
             Address::create([
-                'external_id'      => Uuid::uuid4()->toString(),
-                'address_type_id'  => $secondOrgTypes[array_rand($secondOrgTypes)],
-                'line1'            => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
-                'city'             => $secondCity['city'],
-                'state'            => $secondCity['state'],
-                'code'             => $secondCity['code'],
-                'country'          => $secondCity['country'],
-                'primary'          => false,
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => $secondOrgTypes[array_rand($secondOrgTypes)],
+                'line1' => mt_rand(100, 9999).' '.$streetNames[array_rand($streetNames)],
+                'city' => $secondCity['city'],
+                'state' => $secondCity['state'],
+                'code' => $secondCity['code'],
+                'country' => $secondCity['country'],
+                'primary' => false,
                 'addressable_type' => Organization::class,
-                'addressable_id'   => $org->id,
-                'created_at'       => $date,
-                'updated_at'       => $date,
+                'addressable_id' => $org->id,
+                'created_at' => $date,
+                'updated_at' => $date,
             ]);
 
             $bar->advance();
@@ -1061,8 +1061,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         // Address type IDs. Type 1 = Current (always the primary).
         // Second address type is drawn from Postal, Previous, Business.
-        $currentTypeId  = AddressType::where('name', 'Current')->first()->id  ?? 1;
-        $postalTypeId   = AddressType::where('name', 'Postal')->first()->id   ?? 3;
+        $currentTypeId = AddressType::where('name', 'Current')->first()->id ?? 1;
+        $postalTypeId = AddressType::where('name', 'Postal')->first()->id ?? 3;
         $previousTypeId = AddressType::where('name', 'Previous')->first()->id ?? 2;
         $businessTypeId = AddressType::where('name', 'Business')->first()->id ?? 4;
         $secondPersonTypes = [$postalTypeId, $previousTypeId, $businessTypeId];
@@ -1134,35 +1134,35 @@ class LaravelCrmSampleDataSeeder extends Seeder
             // Primary address — always "Current" (type 1)
             $pCity = $personCities[array_rand($personCities)];
             Address::create([
-                'external_id'      => Uuid::uuid4()->toString(),
-                'address_type_id'  => $currentTypeId,
-                'line1'            => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
-                'city'             => $pCity['city'],
-                'state'            => $pCity['state'],
-                'code'             => $pCity['code'],
-                'country'          => $pCity['country'],
-                'primary'          => true,
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => $currentTypeId,
+                'line1' => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
+                'city' => $pCity['city'],
+                'state' => $pCity['state'],
+                'code' => $pCity['code'],
+                'country' => $pCity['country'],
+                'primary' => true,
                 'addressable_type' => Person::class,
-                'addressable_id'   => $person->id,
-                'created_at'       => $date,
-                'updated_at'       => $date,
+                'addressable_id' => $person->id,
+                'created_at' => $date,
+                'updated_at' => $date,
             ]);
 
             // Second address — always present, random type (Postal / Previous / Business)
             $pCity2 = $personCities[array_rand($personCities)];
             Address::create([
-                'external_id'      => Uuid::uuid4()->toString(),
-                'address_type_id'  => $secondPersonTypes[array_rand($secondPersonTypes)],
-                'line1'            => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
-                'city'             => $pCity2['city'],
-                'state'            => $pCity2['state'],
-                'code'             => $pCity2['code'],
-                'country'          => $pCity2['country'],
-                'primary'          => false,
+                'external_id' => Uuid::uuid4()->toString(),
+                'address_type_id' => $secondPersonTypes[array_rand($secondPersonTypes)],
+                'line1' => mt_rand(1, 999).' '.$personStreets[array_rand($personStreets)],
+                'city' => $pCity2['city'],
+                'state' => $pCity2['state'],
+                'code' => $pCity2['code'],
+                'country' => $pCity2['country'],
+                'primary' => false,
                 'addressable_type' => Person::class,
-                'addressable_id'   => $person->id,
-                'created_at'       => $date,
-                'updated_at'       => $date,
+                'addressable_id' => $person->id,
+                'created_at' => $date,
+                'updated_at' => $date,
             ]);
 
             $bar->advance();
@@ -3317,27 +3317,27 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 ['city' => 'Sydney',        'state' => 'NSW', 'country' => 'Australia',       'code' => '2000'],
                 ['city' => 'Toronto',       'state' => 'ON',  'country' => 'Canada',          'code' => 'M5H 2N2'],
             ];
-            $streets    = ['Main St', 'Oak Ave', 'Elm St', 'Park Blvd', 'Commerce Dr',
+            $streets = ['Main St', 'Oak Ave', 'Elm St', 'Park Blvd', 'Commerce Dr',
                 'Industrial Way', 'Technology Pkwy', 'Innovation Dr', 'Market St', 'First Ave'];
             $firstNames = ['James', 'Mary', 'Robert', 'Jennifer', 'Michael', 'Linda', 'David', 'Sarah'];
-            $lastNames  = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
+            $lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
         }
 
         $city = $cities[array_rand($cities)];
 
         $po->address()->create([
-            'external_id'      => Uuid::uuid4()->toString(),
-            'contact'          => $firstNames[array_rand($firstNames)].' '.$lastNames[array_rand($lastNames)],
-            'phone'            => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
-            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
-            'city'             => $city['city'],
-            'state'            => $city['state'],
-            'code'             => $city['code'],
-            'country'          => $city['country'],
+            'external_id' => Uuid::uuid4()->toString(),
+            'contact' => $firstNames[array_rand($firstNames)].' '.$lastNames[array_rand($lastNames)],
+            'phone' => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
+            'line1' => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city' => $city['city'],
+            'state' => $city['state'],
+            'code' => $city['code'],
+            'country' => $city['country'],
             'addressable_type' => PurchaseOrder::class,
-            'addressable_id'   => $po->id,
-            'created_at'       => $date,
-            'updated_at'       => $date,
+            'addressable_id' => $po->id,
+            'created_at' => $date,
+            'updated_at' => $date,
         ]);
     }
 
@@ -3380,18 +3380,18 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $city = $cities[array_rand($cities)];
 
         Address::create([
-            'external_id'      => Uuid::uuid4()->toString(),
-            'address_type_id'  => $shippingTypeId,
-            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
-            'city'             => $city['city'],
-            'state'            => $city['state'],
-            'code'             => $city['code'],
-            'country'          => $city['country'],
-            'primary'          => true,
+            'external_id' => Uuid::uuid4()->toString(),
+            'address_type_id' => $shippingTypeId,
+            'line1' => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city' => $city['city'],
+            'state' => $city['state'],
+            'code' => $city['code'],
+            'country' => $city['country'],
+            'primary' => true,
             'addressable_type' => Delivery::class,
-            'addressable_id'   => $delivery->id,
-            'created_at'       => $date,
-            'updated_at'       => $date,
+            'addressable_id' => $delivery->id,
+            'created_at' => $date,
+            'updated_at' => $date,
         ]);
     }
 
@@ -3400,13 +3400,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
      */
     protected function createOrderAddresses($order, Carbon $date): void
     {
-        static $billingTypeId  = null;
+        static $billingTypeId = null;
         static $shippingTypeId = null;
         static $cities = null;
         static $streets = null;
 
         if ($billingTypeId === null) {
-            $billingTypeId  = AddressType::where('name', 'Billing')->first()->id  ?? 5;
+            $billingTypeId = AddressType::where('name', 'Billing')->first()->id ?? 5;
             $shippingTypeId = AddressType::where('name', 'Shipping')->first()->id ?? 6;
         }
 
@@ -3433,39 +3433,39 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'Industrial Way', 'Technology Pkwy', 'Innovation Dr', 'Market St', 'First Ave'];
         }
 
-        $billingCity  = $cities[array_rand($cities)];
+        $billingCity = $cities[array_rand($cities)];
         $shippingCity = $cities[array_rand($cities)];
 
         // Billing address
         Address::create([
-            'external_id'      => Uuid::uuid4()->toString(),
-            'address_type_id'  => $billingTypeId,
-            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
-            'city'             => $billingCity['city'],
-            'state'            => $billingCity['state'],
-            'code'             => $billingCity['code'],
-            'country'          => $billingCity['country'],
-            'primary'          => true,
+            'external_id' => Uuid::uuid4()->toString(),
+            'address_type_id' => $billingTypeId,
+            'line1' => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city' => $billingCity['city'],
+            'state' => $billingCity['state'],
+            'code' => $billingCity['code'],
+            'country' => $billingCity['country'],
+            'primary' => true,
             'addressable_type' => Order::class,
-            'addressable_id'   => $order->id,
-            'created_at'       => $date,
-            'updated_at'       => $date,
+            'addressable_id' => $order->id,
+            'created_at' => $date,
+            'updated_at' => $date,
         ]);
 
         // Shipping address
         Address::create([
-            'external_id'      => Uuid::uuid4()->toString(),
-            'address_type_id'  => $shippingTypeId,
-            'line1'            => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
-            'city'             => $shippingCity['city'],
-            'state'            => $shippingCity['state'],
-            'code'             => $shippingCity['code'],
-            'country'          => $shippingCity['country'],
-            'primary'          => false,
+            'external_id' => Uuid::uuid4()->toString(),
+            'address_type_id' => $shippingTypeId,
+            'line1' => mt_rand(100, 9999).' '.$streets[array_rand($streets)],
+            'city' => $shippingCity['city'],
+            'state' => $shippingCity['state'],
+            'code' => $shippingCity['code'],
+            'country' => $shippingCity['country'],
+            'primary' => false,
             'addressable_type' => Order::class,
-            'addressable_id'   => $order->id,
-            'created_at'       => $date,
-            'updated_at'       => $date,
+            'addressable_id' => $order->id,
+            'created_at' => $date,
+            'updated_at' => $date,
         ]);
     }
 
