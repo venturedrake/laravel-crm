@@ -78,8 +78,8 @@ class LaravelCrmV2 extends Command
         }
 
         $this->info('Updating Laravel CRM version 1 updates..');
-        
-        // 
+
+        $this->call('laravelcrm:update');
 
         $this->info('Laravel CRM version 1 updates complete. Now performing database changes for version 2...');
 
