@@ -77,6 +77,12 @@ class LaravelCrmV2 extends Command
             return self::SUCCESS;
         }
 
+        $this->info('Updating Laravel CRM version 1 updates..');
+        
+        // 
+
+        $this->info('Laravel CRM version 1 updates complete. Now performing database changes for version 2...');
+
         $this->info('Updating Laravel CRM to version 2...');
 
         $this->prefix = config('laravel-crm.db_table_prefix', 'crm_');

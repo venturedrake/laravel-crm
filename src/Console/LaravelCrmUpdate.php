@@ -66,15 +66,15 @@ class LaravelCrmUpdate extends Command
     {
         $this->info('Updating Laravel CRM...');
 
-        if ($this->settingService->get('db_update_0180')->value == 0) {
+        if ($this->settingService->get('db_update_0180') == 0) {
             $this->info('Updating Laravel CRM quote numbers...');
 
             foreach (Quote::whereNull('number')->get() as $quote) {
                 $this->info('Updating Laravel CRM quote #'.$quote->id);
 
                 $quote->update([
-                    'quote_id' => $this->settingService->get('quote_prefix')->value.(1000 + $quote->id),
-                    'prefix' => $this->settingService->get('quote_prefix')->value,
+                    'quote_id' => $this->settingService->get('quote_prefix').(1000 + $quote->id),
+                    'prefix' => $this->settingService->get('quote_prefix'),
                     'number' => 1000 + $quote->id,
                 ]);
             }
@@ -87,8 +87,8 @@ class LaravelCrmUpdate extends Command
                 $this->info('Updating Laravel CRM order #'.$order->id);
 
                 $order->update([
-                    'order_id' => $this->settingService->get('order_prefix')->value.(1000 + $order->id),
-                    'prefix' => $this->settingService->get('order_prefix')->value,
+                    'order_id' => $this->settingService->get('order_prefix').(1000 + $order->id),
+                    'prefix' => $this->settingService->get('order_prefix'),
                     'number' => 1000 + $order->id,
                 ]);
             }
@@ -97,7 +97,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM orders numbers complete');
         }
 
-        if ($this->settingService->get('db_update_0181')->value == 0) {
+        if ($this->settingService->get('db_update_0181') == 0) {
             $this->info('Updating Laravel CRM organization linked to person...');
 
             foreach (Person::whereNotNull('organization_id')->get() as $person) {
@@ -116,7 +116,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM organization linked to person complete.');
         }
 
-        if ($this->settingService->get('db_update_0191')->value == 0) {
+        if ($this->settingService->get('db_update_0191') == 0) {
             $this->info('Updating Laravel CRM split orders, invoices & deliveries...');
 
             foreach (Order::whereNotNull('quote_id')->get() as $order) {
@@ -157,7 +157,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM split orders, invoices & deliveries complete.');
         }
 
-        if ($this->settingService->get('db_update_0193')->value == 0) {
+        if ($this->settingService->get('db_update_0193') == 0) {
             $this->info('Updating Laravel CRM split deliveries...');
 
             foreach (Delivery::whereNotNull('order_id')->get() as $delivery) {
@@ -180,15 +180,15 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM split deliveries complete.');
         }
 
-        if ($this->settingService->get('db_update_0194')->value == 0) {
+        if ($this->settingService->get('db_update_0194') == 0) {
             $this->info('Updating Laravel CRM delivery numbers...');
 
             foreach (Delivery::whereNull('number')->get() as $delivery) {
                 $this->info('Updating Laravel CRM delivery #'.$delivery->id);
 
                 $delivery->update([
-                    'delivery_id' => $this->settingService->get('delivery_prefix')->value.(1000 + $delivery->id),
-                    'prefix' => $this->settingService->get('delivery_prefix')->value,
+                    'delivery_id' => $this->settingService->get('delivery_prefix').(1000 + $delivery->id),
+                    'prefix' => $this->settingService->get('delivery_prefix'),
                     'number' => 1000 + $delivery->id,
                 ]);
             }
@@ -197,7 +197,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM delivery numbers complete');
         }
 
-        if ($this->settingService->get('db_update_0199')->value == 0) {
+        if ($this->settingService->get('db_update_0199') == 0) {
             $this->info('Updating Laravel CRM tax amounts...');
 
             foreach (QuoteProduct::whereNull('tax_amount')->get() as $quoteProduct) {
@@ -255,7 +255,7 @@ class LaravelCrmUpdate extends Command
             $this->info('Updating Laravel CRM tax amounts complete');
         }
 
-        if ($this->settingService->get('db_update_1200')->value == 0) {
+        if ($this->settingService->get('db_update_1200') == 0) {
             $this->info('Updating Laravel CRM pipeline tables');
 
             $this->callSilent('db:seed', [
@@ -267,8 +267,8 @@ class LaravelCrmUpdate extends Command
                 $this->info('Updating Laravel CRM lead #'.$lead->id);
 
                 $lead->update([
-                    'lead_id' => $this->settingService->get('lead_prefix')->value.(1000 + $lead->id),
-                    'prefix' => $this->settingService->get('lead_prefix')->value,
+                    'lead_id' => $this->settingService->get('lead_prefix').(1000 + $lead->id),
+                    'prefix' => $this->settingService->get('lead_prefix'),
                     'number' => 1000 + $lead->id,
                 ]);
             }
@@ -277,8 +277,8 @@ class LaravelCrmUpdate extends Command
                 $this->info('Updating Laravel CRM deal #'.$deal->id);
 
                 $deal->update([
-                    'deal_id' => $this->settingService->get('deal_prefix')->value.(1000 + $deal->id),
-                    'prefix' => $this->settingService->get('deal_prefix')->value,
+                    'deal_id' => $this->settingService->get('deal_prefix').(1000 + $deal->id),
+                    'prefix' => $this->settingService->get('deal_prefix'),
                     'number' => 1000 + $deal->id,
                 ]);
             }
