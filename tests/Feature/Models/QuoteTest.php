@@ -123,4 +123,3 @@ class QuoteTest extends TestCase
         $this->assertTrue($quote->organization->is($org));
     }
 }
-

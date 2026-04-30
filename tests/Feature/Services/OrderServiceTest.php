@@ -70,4 +70,3 @@ class OrderServiceTest extends TestCase
         $this->assertSame('EUR', $fresh->currency);
     }
 }
-

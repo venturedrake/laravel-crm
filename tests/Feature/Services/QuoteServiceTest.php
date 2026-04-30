@@ -71,4 +71,3 @@ class QuoteServiceTest extends TestCase
         $this->assertSame('AUD', $fresh->currency);
     }
 }
-

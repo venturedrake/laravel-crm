@@ -33,4 +33,3 @@ class TaxRateTest extends TestCase
         $this->assertSoftDeleted('crm_tax_rates', ['id' => $tax->id]);
     }
 }
-

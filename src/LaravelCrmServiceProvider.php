@@ -148,6 +148,11 @@ use VentureDrake\LaravelCrm\Livewire\Products\ProductCreate;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductEdit;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductIndex;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductShow;
+use VentureDrake\LaravelCrm\Livewire\Profile\DeleteUserForm;
+use VentureDrake\LaravelCrm\Livewire\Profile\LogoutOtherBrowserSessionsForm;
+use VentureDrake\LaravelCrm\Livewire\Profile\TwoFactorAuthenticationForm;
+use VentureDrake\LaravelCrm\Livewire\Profile\UpdatePasswordForm;
+use VentureDrake\LaravelCrm\Livewire\Profile\UpdateProfileInformationForm;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderCreate;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderEdit;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderIndex;
@@ -851,6 +856,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-related-deals', RelatedDeals::class);
 
         Livewire::component('crm-settings-edit', SettingEdit::class);
+
+        Livewire::component('crm-profile-update-information', UpdateProfileInformationForm::class);
+        Livewire::component('crm-profile-update-password', UpdatePasswordForm::class);
+        Livewire::component('crm-profile-browser-sessions', LogoutOtherBrowserSessionsForm::class);
+        Livewire::component('crm-profile-delete-user', DeleteUserForm::class);
+        Livewire::component('crm-profile-two-factor', TwoFactorAuthenticationForm::class);
 
         Livewire::component('crm-settings-role-index', RoleIndex::class);
         Livewire::component('crm-settings-role-create', RoleCreate::class);

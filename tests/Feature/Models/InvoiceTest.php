@@ -97,5 +97,3 @@ class InvoiceTest extends TestCase
         $this->assertInstanceOf(Auditable::class, new Invoice);
     }
 }
-
-

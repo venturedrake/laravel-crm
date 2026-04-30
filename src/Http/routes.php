@@ -1060,6 +1060,12 @@ Route::group(['prefix' => 'settings', 'middleware' => 'auth.laravel-crm'], funct
         ->middleware(['can:update,VentureDrake\LaravelCrm\Models\Setting']);
 });
 
+/* Profile */
+Route::group(['prefix' => 'profile', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ProfileController@show')
+        ->name('laravel-crm.profile');
+});
+
 /* Updates */
 Route::group(['prefix' => 'updates', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\UpdateController@index')

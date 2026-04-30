@@ -76,6 +76,3 @@ class ProductServiceTest extends TestCase
         $this->assertSame('Updated description', $fresh->description);
     }
 }
-
-
-

@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Organization;
@@ -54,7 +55,7 @@ class CustomerTest extends TestCase
         $customer = Customer::create(['name' => 'Encrypted Customer']);
 
         // raw stored value should be different from plain text
-        $raw = \Illuminate\Support\Facades\DB::table('crm_customers')
+        $raw = DB::table('crm_customers')
             ->where('id', $customer->id)
             ->value('name');
         $this->assertNotSame('Encrypted Customer', $raw);
@@ -70,5 +71,3 @@ class CustomerTest extends TestCase
         $this->assertSoftDeleted('crm_customers', ['id' => $customer->id]);
     }
 }
-
-

@@ -81,4 +81,3 @@ class ProductTest extends TestCase
         $this->assertInstanceOf(Auditable::class, new Product);
     }
 }
-

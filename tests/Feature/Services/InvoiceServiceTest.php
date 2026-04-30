@@ -78,4 +78,3 @@ class InvoiceServiceTest extends TestCase
         $this->assertSame('GBP', $fresh->currency);
     }
 }
-

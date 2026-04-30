@@ -37,6 +37,3 @@ class ProductCategoryTest extends TestCase
         $this->assertSoftDeleted('crm_product_categories', ['id' => $cat->id]);
     }
 }
-
-
-

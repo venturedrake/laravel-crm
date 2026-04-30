@@ -57,7 +57,9 @@
             @else    
             <x-mary-dropdown label="{{ auth()->user()->name }}" class="btn-neutral btn-sm" right>
                 @if(Route::has('profile.show'))
-                    <x-mary-menu-item href="{{ route('profile.show') }}" title="{{ __('Profile') }}" />
+                    <x-mary-menu-item href="{{ route('profile.show') }}" title="{{ __('Profile') }} ({{ __('Host') }})" />
+                @else
+                    <x-mary-menu-item href="{{ route('laravel-crm.profile') }}" title="{{ ucfirst(__('laravel-crm::lang.profile')) }}" />
                 @endif
               {{--  @if (class_exists('\Laravel\Jetstream\Jetstream') && Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-mary-menu-item href="{{ route('api-tokens.index') }}" title="{{ __('API Tokens') }}" />

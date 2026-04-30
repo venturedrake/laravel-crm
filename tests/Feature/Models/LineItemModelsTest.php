@@ -74,4 +74,3 @@ class LineItemModelsTest extends TestCase
         $this->assertInstanceOf(BelongsTo::class, $line->product());
     }
 }
-

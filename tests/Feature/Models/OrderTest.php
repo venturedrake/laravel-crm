@@ -97,4 +97,3 @@ class OrderTest extends TestCase
         $this->assertTrue($order->quote->is($quote));
     }
 }
-
