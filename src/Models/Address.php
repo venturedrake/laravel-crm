@@ -4,12 +4,12 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
-use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
+use VentureDrake\LaravelCrm\Traits\HasEncryptableFields;
 
 class Address extends Model
 {
     use BelongsToTeams;
-    use LaravelEncryptableTrait;
+    use HasEncryptableFields;
     use SoftDeletes;
 
     protected $guarded = ['id'];

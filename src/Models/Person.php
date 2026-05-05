@@ -10,7 +10,7 @@ use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
-use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
+use VentureDrake\LaravelCrm\Traits\HasEncryptableFields;
 
 class Person extends Model
 {
@@ -18,7 +18,7 @@ class Person extends Model
     use HasCrmActivities;
     use HasCrmFields;
     use HasGlobalSettings;
-    use LaravelEncryptableTrait;
+    use HasEncryptableFields;
     use SearchFilters;
     use SoftDeletes;
 

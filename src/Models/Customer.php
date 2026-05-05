@@ -8,7 +8,7 @@ use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasCrmUserRelations;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
-use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
+use VentureDrake\LaravelCrm\Traits\HasEncryptableFields;
 
 class Customer extends Model
 {
@@ -16,7 +16,7 @@ class Customer extends Model
     use HasCrmActivities;
     use HasCrmFields;
     use HasCrmUserRelations;
-    use LaravelEncryptableTrait;
+    use HasEncryptableFields;
     use SearchFilters;
     use SoftDeletes;
 
