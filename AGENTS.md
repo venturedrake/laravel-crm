@@ -54,6 +54,8 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Full-CRUD v2 entities**: `Tasks/` (`TaskCreate`, `TaskEdit`, `TaskIndex`, `TaskShow`), `Teams/` (`TeamCreate`, `TeamEdit`, `TeamIndex`, `TeamShow`), `Users/` (`UserCreate`, `UserEdit`, `UserIndex`, `UserShow`) — standalone index/show/create/edit components, all follow the `HasEntityCommon` trait pattern.
 
+**Chat** (v2, in `src/Livewire/Chat/`): `ChatIndex` (conversations list), `ChatShow` (agent reply view, uses `wire:poll` + `echo:` listener for realtime), `ChatWidgetPanel` (visitor-facing widget loaded inside an iframe at `/p/chat/{publicKey}`). Companion settings CRUD lives in `src/Livewire/Settings/ChatWidgets/`. Embed snippet generation: `ChatWidget::embedSnippet()`. Public JS loader served by `Portal/ChatWidgetEmbedController@script` at `/p/chat/{publicKey}.js`. Realtime broadcasts via `Events/ChatMessageSent` on public channel `crm-chat.{conversation_external_id}` (no broadcasting driver required — falls back to polling).
+
 **Profile components** (v2, in `src/Livewire/Profile/`): `UpdateProfileInformationForm`, `UpdatePasswordForm`, `TwoFactorAuthenticationForm`, `LogoutOtherBrowserSessionsForm`, `DeleteUserForm`.
 
 **Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`.

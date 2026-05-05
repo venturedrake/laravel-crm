@@ -83,6 +83,9 @@
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.dashboard')) }}" icon="bxs.dashboard" link="{{ url(route('laravel-crm.dashboard')) }}" />
                 <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.tasks')) }}" icon="fas.tasks" link="{{ url(route('laravel-crm.tasks.index')) }}" />
+                @haschatenabled
+                    <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.chat')) }}" icon="fas.comments" link="{{ url(route('laravel-crm.chat.index')) }}" />
+                @endhaschatenabled
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.email')) }}" icon="fas.envelope" link="#" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.sms')) }}" icon="fas.sms" link="#" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.social')) }}" icon="fas.share-alt" link="#" />
@@ -137,6 +140,11 @@
                     @can('view crm integrations')
                         <x-mary-menu-item link="{{ url(route('laravel-crm.integrations.xero')) }}" title="{{ ucwords(__('laravel-crm::lang.integrations')) }}"  />
                     @endcan
+                    @haschatenabled
+                        @can('manage crm chat widgets')
+                            <x-mary-menu-item link="{{ url(route('laravel-crm.chat-widgets.index')) }}" title="{{ ucwords(__('laravel-crm::lang.chat_widgets')) }}" />
+                        @endcan
+                    @endhaschatenabled
                 </x-mary-menu-sub>
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.updates')) }}" icon="fas.cloud-download-alt" link="{{ url(route('laravel-crm.updates.index')) }}" />
             </x-mary-menu>

@@ -378,6 +378,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm tasks', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm tasks', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'view crm chat', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'reply crm chat', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm chat', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'manage crm chat widgets', 'crm_permission' => 1]);
+
         Permission::firstOrCreate(['name' => 'create crm notes', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm notes', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm notes', 'crm_permission' => 1]);
@@ -517,14 +522,14 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm purchase orders',
                 'edit crm purchase orders',
                 'delete crm purchase orders',
-                'create crm customers',
-                'view crm customers',
-                'edit crm customers',
-                'delete crm customers',
                 'create crm pipelines',
                 'view crm pipelines',
                 'edit crm pipelines',
                 'delete crm pipelines',
+                'view crm chat',
+                'reply crm chat',
+                'delete crm chat',
+                'manage crm chat widgets',
             ]);
 
         if (config('permission.teams')) {
@@ -611,6 +616,8 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm pipelines',
                 'edit crm pipelines',
                 'delete crm pipelines',
+                'view crm chat',
+                'reply crm chat',
             ]);
-    }
+}
 }

@@ -177,6 +177,7 @@ return [
         'deliveries',
         'purchase-orders',
         'teams',
+        'chat',
     ],
 
     /*

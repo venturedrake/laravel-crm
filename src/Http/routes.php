@@ -23,6 +23,15 @@ Route::group(['prefix' => 'p'], function () {
         Route::post('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@process')
             ->name('laravel-crm.portal.invoices.process');
     });
+
+    /* Chat Widget Embed (public) */
+    Route::prefix('chat')->group(function () {
+        Route::get('{publicKey}.js', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@script')
+            ->name('laravel-crm.portal.chat.embed');
+
+        Route::get('{publicKey}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@widget')
+            ->name('laravel-crm.portal.chat.widget');
+    });
 });
 
 /* Private Routes */
@@ -514,6 +523,44 @@ Route::group(['prefix' => 'tasks', 'middleware' => 'auth.laravel-crm'], function
     Route::get('{task}/complete', 'VentureDrake\LaravelCrm\Http\Controllers\TaskController@complete')
         ->name('laravel-crm.tasks.complete')
         ->middleware(['can:update,task']);
+});
+
+/* Chat */
+
+Route::group(['prefix' => 'chat', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ChatController@index')
+        ->name('laravel-crm.chat.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\ChatConversation']);
+
+    Route::get('{chat}', 'VentureDrake\LaravelCrm\Http\Controllers\ChatController@show')
+        ->name('laravel-crm.chat.show')
+        ->middleware(['can:view,chat']);
+
+    Route::delete('{chat}', 'VentureDrake\LaravelCrm\Http\Controllers\ChatController@destroy')
+        ->name('laravel-crm.chat.destroy')
+        ->middleware(['can:delete,chat']);
+});
+
+Route::group(['prefix' => 'chat-widgets', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ChatWidgetController@index')
+        ->name('laravel-crm.chat-widgets.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\ChatWidget']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\ChatWidgetController@create')
+        ->name('laravel-crm.chat-widgets.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\ChatWidget']);
+
+    Route::get('{chatWidget}', 'VentureDrake\LaravelCrm\Http\Controllers\ChatWidgetController@show')
+        ->name('laravel-crm.chat-widgets.show')
+        ->middleware(['can:view,chatWidget']);
+
+    Route::get('{chatWidget}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\ChatWidgetController@edit')
+        ->name('laravel-crm.chat-widgets.edit')
+        ->middleware(['can:update,chatWidget']);
+
+    Route::delete('{chatWidget}', 'VentureDrake\LaravelCrm\Http\Controllers\ChatWidgetController@destroy')
+        ->name('laravel-crm.chat-widgets.destroy')
+        ->middleware(['can:delete,chatWidget']);
 });
 
 /* Notes */

@@ -33,6 +33,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmSampleData;
 use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
 use VentureDrake\LaravelCrm\Console\LaravelCrmV2;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
+use VentureDrake\LaravelCrm\Events\ChatMessageSent;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveCall;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveFile;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveLunch;
@@ -95,6 +96,9 @@ use VentureDrake\LaravelCrm\Livewire\Auth\Login;
 use VentureDrake\LaravelCrm\Livewire\Auth\ResetPassword;
 use VentureDrake\LaravelCrm\Livewire\Calls\CallItem;
 use VentureDrake\LaravelCrm\Livewire\Calls\CallRelated;
+use VentureDrake\LaravelCrm\Livewire\Chat\ChatIndex;
+use VentureDrake\LaravelCrm\Livewire\Chat\ChatShow;
+use VentureDrake\LaravelCrm\Livewire\Chat\ChatWidgetPanel;
 use VentureDrake\LaravelCrm\Livewire\Dashboard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
@@ -172,6 +176,9 @@ use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroup
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFieldGroups\CustomFieldGroupShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\ChatWidgets\ChatWidgetEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\ChatWidgets\ChatWidgetIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\ChatWidgets\ChatWidgetShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldIndex;
@@ -215,6 +222,10 @@ use VentureDrake\LaravelCrm\Livewire\Users\UserIndex;
 use VentureDrake\LaravelCrm\Livewire\Users\UserShow;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
+use VentureDrake\LaravelCrm\Models\ChatConversation;
+use VentureDrake\LaravelCrm\Models\ChatMessage;
+use VentureDrake\LaravelCrm\Models\ChatVisitor;
+use VentureDrake\LaravelCrm\Models\ChatWidget;
 use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -257,6 +268,10 @@ use VentureDrake\LaravelCrm\Models\XeroPerson;
 use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Observers\ActivityObserver;
 use VentureDrake\LaravelCrm\Observers\CallObserver;
+use VentureDrake\LaravelCrm\Observers\ChatConversationObserver;
+use VentureDrake\LaravelCrm\Observers\ChatMessageObserver;
+use VentureDrake\LaravelCrm\Observers\ChatVisitorObserver;
+use VentureDrake\LaravelCrm\Observers\ChatWidgetObserver;
 use VentureDrake\LaravelCrm\Observers\ContactObserver;
 use VentureDrake\LaravelCrm\Observers\CustomerObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
@@ -301,6 +316,8 @@ use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
 use VentureDrake\LaravelCrm\Policies\CallPolicy;
+use VentureDrake\LaravelCrm\Policies\ChatConversationPolicy;
+use VentureDrake\LaravelCrm\Policies\ChatWidgetPolicy;
 use VentureDrake\LaravelCrm\Policies\ContactPolicy;
 use VentureDrake\LaravelCrm\Policies\CustomerPolicy;
 use VentureDrake\LaravelCrm\Policies\DealPolicy;
@@ -383,6 +400,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\PurchaseOrder' => PurchaseOrderPolicy::class,
         'VentureDrake\LaravelCrm\Models\Pipeline' => PipelinePolicy::class,
         'VentureDrake\LaravelCrm\Models\PipelineStage' => PipelineStagePolicy::class,
+        'VentureDrake\LaravelCrm\Models\ChatConversation' => ChatConversationPolicy::class,
+        'VentureDrake\LaravelCrm\Models\ChatWidget' => ChatWidgetPolicy::class,
     ];
 
     /**
@@ -481,6 +500,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Pipeline::observe(PipelineObserver::class);
         PipelineStage::observe(PipelineStageObserver::class);
         PipelineStageProbability::observe(PipelineStageProbabilityObserver::class);
+
+        ChatWidget::observe(ChatWidgetObserver::class);
+        ChatVisitor::observe(ChatVisitorObserver::class);
+        ChatConversation::observe(ChatConversationObserver::class);
+        ChatMessage::observe(ChatMessageObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -657,6 +681,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/add_prefix_to_laravel_crm_deals_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_deals_table.php', 104),
                 __DIR__.'/../database/migrations/add_order_to_laravel_crm_items_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_order_to_laravel_crm_items_tables.php', 105),
                 __DIR__.'/../database/migrations/add_pipeline_order_to_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_pipeline_order_to_laravel_crm_tables.php', 106),
+                __DIR__.'/../database/migrations/create_laravel_crm_chat_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_chat_tables.php', 107),
             ], 'migrations');
 
             // Publishing the seeders
@@ -779,6 +804,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-task-edit', TaskEdit::class);
         Livewire::component('crm-task-item', TaskItem::class);
         Livewire::component('crm-task-related', TaskRelated::class);
+
+        // Chat
+        Livewire::component('crm-chat-index', ChatIndex::class);
+        Livewire::component('crm-chat-show', ChatShow::class);
+        Livewire::component('crm-chat-widget-panel', ChatWidgetPanel::class);
+        Livewire::component('crm-settings-chat-widget-index', ChatWidgetIndex::class);
+        Livewire::component('crm-settings-chat-widget-edit', ChatWidgetEdit::class);
+        Livewire::component('crm-settings-chat-widget-show', ChatWidgetShow::class);
         Livewire::component('crm-deal-index', DealIndex::class);
         Livewire::component('crm-deal-board', DealBoard::class);
         Livewire::component('crm-deal-show', DealShow::class);
@@ -991,6 +1024,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         Blade::if('hasteamsenabled', function () {
             if (is_array(config('laravel-crm.modules')) && in_array('teams', config('laravel-crm.modules'))) {
+                return true;
+            } elseif (! config('laravel-crm.modules')) {
+                return true;
+            }
+        });
+
+        Blade::if('haschatenabled', function () {
+            if (is_array(config('laravel-crm.modules')) && in_array('chat', config('laravel-crm.modules'))) {
                 return true;
             } elseif (! config('laravel-crm.modules')) {
                 return true;
