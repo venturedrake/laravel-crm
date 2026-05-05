@@ -706,6 +706,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_laravel_crm_chat_visitor_page_views_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_chat_visitor_page_views_table.php', 108),
                 __DIR__.'/../database/migrations/add_lead_id_to_laravel_crm_chat_conversations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_lead_id_to_laravel_crm_chat_conversations_table.php', 109),
                 __DIR__.'/../database/migrations/add_visitor_read_at_to_laravel_crm_chat_messages_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_visitor_read_at_to_laravel_crm_chat_messages_table.php', 110),
+                __DIR__.'/../database/migrations/add_subscribed_to_laravel_crm_emails_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_subscribed_to_laravel_crm_emails_table.php', 111),
+                __DIR__.'/../database/migrations/create_laravel_crm_email_templates_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_email_templates_table.php', 112),
+                __DIR__.'/../database/migrations/create_laravel_crm_email_campaigns_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_email_campaigns_table.php', 113),
+                __DIR__.'/../database/migrations/create_laravel_crm_email_campaign_recipients_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_email_campaign_recipients_table.php', 114),
+                __DIR__.'/../database/migrations/create_laravel_crm_email_campaign_clicks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_email_campaign_clicks_table.php', 115),
+                __DIR__.'/../database/migrations/seed_laravel_crm_email_templates.php.stub' => $this->getMigrationFileName($filesystem, 'seed_laravel_crm_email_templates.php', 116),
             ], 'migrations');
 
             // Publishing the seeders

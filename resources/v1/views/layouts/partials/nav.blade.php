@@ -84,8 +84,12 @@
             @canany(['view crm products'])
                 <li class="dropdown-divider"></li>
             @endcan
-            {{-- <li class="nav-item"><a class="nav-link" href="#">{{ ucfirst(__('laravel-crm::lang.email')) }}</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">{{ ucfirst(__('laravel-crm::lang.documents')) }}</a></li>--}}
+            @hasemailmarketingenabled
+            @can('view crm email-campaigns')
+            <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.email-campaigns') === 0 || strpos(Route::currentRouteName(), 'laravel-crm.email-templates') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.email-campaigns.index')) }}"><i class="fa fa-envelope"></i> {{ ucfirst(__('laravel-crm::lang.email')) }}</a></li>
+            @endcan
+            @endhasemailmarketingenabled
+            {{-- <li class="nav-item"><a class="nav-link" href="#">{{ ucfirst(__('laravel-crm::lang.documents')) }}</a></li>--}}
             @can('view crm products')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.products') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.products.index')) }}"><i class="fa fa-tag"></i> {{ ucfirst(__('laravel-crm::lang.products')) }}</a></li>
             @endcan
