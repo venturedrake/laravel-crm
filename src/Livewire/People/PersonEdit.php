@@ -48,6 +48,7 @@ class PersonEdit extends Component
                     'type' => $email->type,
                     'address' => $email->address,
                     'primary' => $email->primary,
+                    'subscribed' => $email->subscribed,
                 ];
             }
         }

@@ -22,6 +22,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmAddUser;
 use VentureDrake\LaravelCrm\Console\LaravelCrmArchive;
 use VentureDrake\LaravelCrm\Console\LaravelCrmContactTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmDecrypt;
+use VentureDrake\LaravelCrm\Console\LaravelCrmEmailCampaignsDispatch;
 use VentureDrake\LaravelCrm\Console\LaravelCrmEncrypt;
 use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
@@ -97,7 +98,6 @@ use VentureDrake\LaravelCrm\Livewire\Calls\CallItem;
 use VentureDrake\LaravelCrm\Livewire\Calls\CallRelated;
 use VentureDrake\LaravelCrm\Livewire\Chat\ChatIndex;
 use VentureDrake\LaravelCrm\Livewire\Chat\ChatShow;
-use VentureDrake\LaravelCrm\Livewire\Chat\ChatWidgetPanel;
 use VentureDrake\LaravelCrm\Livewire\Dashboard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealBoard;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
@@ -109,6 +109,14 @@ use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryEdit;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryIndex;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryRelatedIndex;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryShow;
+use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignCreate;
+use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignEdit;
+use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignIndex;
+use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignShow;
+use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateCreate;
+use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateEdit;
+use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateIndex;
+use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateShow;
 use VentureDrake\LaravelCrm\Livewire\Files\FileItem;
 use VentureDrake\LaravelCrm\Livewire\Files\FileRelated;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
@@ -231,6 +239,9 @@ use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\DeliveryProduct;
 use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\EmailCampaign;
+use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
+use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
@@ -276,7 +287,10 @@ use VentureDrake\LaravelCrm\Observers\CustomerObserver;
 use VentureDrake\LaravelCrm\Observers\DealObserver;
 use VentureDrake\LaravelCrm\Observers\DeliveryObserver;
 use VentureDrake\LaravelCrm\Observers\DeliveryProductObserver;
+use VentureDrake\LaravelCrm\Observers\EmailCampaignObserver;
+use VentureDrake\LaravelCrm\Observers\EmailCampaignRecipientObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
+use VentureDrake\LaravelCrm\Observers\EmailTemplateObserver;
 use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
 use VentureDrake\LaravelCrm\Observers\FieldObserver;
@@ -321,6 +335,8 @@ use VentureDrake\LaravelCrm\Policies\ContactPolicy;
 use VentureDrake\LaravelCrm\Policies\CustomerPolicy;
 use VentureDrake\LaravelCrm\Policies\DealPolicy;
 use VentureDrake\LaravelCrm\Policies\DeliveryPolicy;
+use VentureDrake\LaravelCrm\Policies\EmailCampaignPolicy;
+use VentureDrake\LaravelCrm\Policies\EmailTemplatePolicy;
 use VentureDrake\LaravelCrm\Policies\FieldGroupPolicy;
 use VentureDrake\LaravelCrm\Policies\FieldOptionPolicy;
 use VentureDrake\LaravelCrm\Policies\FieldPolicy;
@@ -401,6 +417,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\PipelineStage' => PipelineStagePolicy::class,
         'VentureDrake\LaravelCrm\Models\ChatConversation' => ChatConversationPolicy::class,
         'VentureDrake\LaravelCrm\Models\ChatWidget' => ChatWidgetPolicy::class,
+        'VentureDrake\LaravelCrm\Models\EmailCampaign' => EmailCampaignPolicy::class,
+        'VentureDrake\LaravelCrm\Models\EmailTemplate' => EmailTemplatePolicy::class,
     ];
 
     /**
@@ -504,6 +522,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         ChatVisitor::observe(ChatVisitorObserver::class);
         ChatConversation::observe(ChatConversationObserver::class);
         ChatMessage::observe(ChatMessageObserver::class);
+
+        EmailCampaign::observe(EmailCampaignObserver::class);
+        EmailTemplate::observe(EmailTemplateObserver::class);
+        EmailCampaignRecipient::observe(EmailCampaignRecipientObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -681,6 +703,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/add_order_to_laravel_crm_items_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_order_to_laravel_crm_items_tables.php', 105),
                 __DIR__.'/../database/migrations/add_pipeline_order_to_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'add_pipeline_order_to_laravel_crm_tables.php', 106),
                 __DIR__.'/../database/migrations/create_laravel_crm_chat_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_chat_tables.php', 107),
+                __DIR__.'/../database/migrations/create_laravel_crm_chat_visitor_page_views_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_chat_visitor_page_views_table.php', 108),
+                __DIR__.'/../database/migrations/add_lead_id_to_laravel_crm_chat_conversations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_lead_id_to_laravel_crm_chat_conversations_table.php', 109),
+                __DIR__.'/../database/migrations/add_visitor_read_at_to_laravel_crm_chat_messages_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_visitor_read_at_to_laravel_crm_chat_messages_table.php', 110),
             ], 'migrations');
 
             // Publishing the seeders
@@ -718,6 +743,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmDecrypt::class,
                 LaravelCrmV2::class,
                 LaravelCrmSampleData::class,
+                LaravelCrmEmailCampaignsDispatch::class,
             ]);
 
             // Register the model factories
@@ -807,10 +833,19 @@ class LaravelCrmServiceProvider extends ServiceProvider
         // Chat
         Livewire::component('crm-chat-index', ChatIndex::class);
         Livewire::component('crm-chat-show', ChatShow::class);
-        Livewire::component('crm-chat-widget-panel', ChatWidgetPanel::class);
         Livewire::component('crm-settings-chat-widget-index', ChatWidgetIndex::class);
         Livewire::component('crm-settings-chat-widget-edit', ChatWidgetEdit::class);
         Livewire::component('crm-settings-chat-widget-show', ChatWidgetShow::class);
+
+        // Email Marketing
+        Livewire::component('crm-email-campaign-index', EmailCampaignIndex::class);
+        Livewire::component('crm-email-campaign-create', EmailCampaignCreate::class);
+        Livewire::component('crm-email-campaign-edit', EmailCampaignEdit::class);
+        Livewire::component('crm-email-campaign-show', EmailCampaignShow::class);
+        Livewire::component('crm-email-template-index', EmailTemplateIndex::class);
+        Livewire::component('crm-email-template-create', EmailTemplateCreate::class);
+        Livewire::component('crm-email-template-edit', EmailTemplateEdit::class);
+        Livewire::component('crm-email-template-show', EmailTemplateShow::class);
         Livewire::component('crm-deal-index', DealIndex::class);
         Livewire::component('crm-deal-board', DealBoard::class);
         Livewire::component('crm-deal-show', DealShow::class);
@@ -942,6 +977,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->everyMinute()
                     ->withoutOverlapping();
 
+                $schedule->command('laravelcrm:email-campaigns-dispatch')
+                    ->name('laravelCrmEmailCampaignsDispatch')
+                    ->everyMinute()
+                    ->withoutOverlapping();
+
                 $schedule->command('laravelcrm:archive')
                     ->name('laravelCrmArchiving')
                     ->daily()
@@ -1036,6 +1076,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 return true;
             }
         });
+
+        Blade::if('hasemailmarketingenabled', function () {
+            if (is_array(config('laravel-crm.modules')) && in_array('email-marketing', config('laravel-crm.modules'))) {
+                return true;
+            } elseif (! config('laravel-crm.modules')) {
+                return true;
+            }
+        });
     }
 
     /**
@@ -1065,6 +1113,24 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Route::group($this->authRouteConfiguration(), function () {
             if (config('laravel-crm.user_interface')) {
                 $this->loadRoutesFrom(__DIR__.'/Http/auth-routes.php');
+            }
+        });
+
+        // Chat widget embed — registered FIRST and OUTSIDE the web middleware
+        // group so it bypasses session/CSRF (visitor uses an opaque token).
+        // Also registered without the `crm` route prefix so the embed URL
+        // is always /p/chat/{key} regardless of LARAVEL_CRM_ROUTE_PREFIX.
+        Route::group(['domain' => null, 'prefix' => null, 'middleware' => []], function () {
+            if (config('laravel-crm.user_interface')) {
+                $this->loadRoutesFrom(__DIR__.'/Http/chat-embed-routes.php');
+            }
+        });
+
+        // Email campaign tracking routes — also outside `web` middleware so
+        // open pixels and one-click unsubscribe links work without session/CSRF.
+        Route::group(['domain' => null, 'prefix' => null, 'middleware' => []], function () {
+            if (config('laravel-crm.user_interface')) {
+                $this->loadRoutesFrom(__DIR__.'/Http/email-tracking-routes.php');
             }
         });
 

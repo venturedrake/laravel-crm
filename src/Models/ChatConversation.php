@@ -59,9 +59,19 @@ class ChatConversation extends Model
         return $this->belongsTo(User::class, 'user_assigned_id');
     }
 
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class, 'lead_id');
+    }
+
     public function unreadForAgents(): int
     {
         return $this->messages()->where('sender_type', 'visitor')->whereNull('read_at')->count();
+    }
+
+    public function unreadForVisitor(): int
+    {
+        return $this->messages()->where('sender_type', 'user')->whereNull('visitor_read_at')->count();
     }
 
     /**

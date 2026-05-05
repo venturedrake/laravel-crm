@@ -1,7 +1,6 @@
 <?php
 
 use Dcblogdev\Xero\Facades\Xero;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
@@ -25,36 +24,9 @@ Route::group(['prefix' => 'p'], function () {
             ->name('laravel-crm.portal.invoices.process');
     });
 
-    /* Chat Widget Embed (public) */
-    Route::prefix('chat')->group(function () {
-        Route::get('{publicKey}.js', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@script')
-            ->name('laravel-crm.portal.chat.embed');
-
-        Route::get('{publicKey}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@widget')
-            ->name('laravel-crm.portal.chat.widget');
-
-        // JSON API — token-authenticated, CSRF-exempt so it works inside
-        // a cross-origin iframe on any third-party site.
-        $csrfExempt = [
-            VerifyCsrfToken::class,
-            'App\\Http\\Middleware\\VerifyCsrfToken',
-        ];
-
-        Route::match(['post', 'options'], '{publicKey}/init', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@init')
-            ->name('laravel-crm.portal.chat.init')
-            ->withoutMiddleware($csrfExempt);
-
-        Route::get('{publicKey}/messages', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@messages')
-            ->name('laravel-crm.portal.chat.messages');
-
-        Route::match(['post', 'options'], '{publicKey}/messages/send', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@send')
-            ->name('laravel-crm.portal.chat.send')
-            ->withoutMiddleware($csrfExempt);
-
-        Route::match(['post', 'options'], '{publicKey}/identify', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@identify')
-            ->name('laravel-crm.portal.chat.identify')
-            ->withoutMiddleware($csrfExempt);
-    });
+    /* Chat Widget Embed routes registered separately in
+       LaravelCrmServiceProvider::registerRoutes() so they bypass
+       the `web` middleware group (no session, no CSRF). */
 });
 
 /* Private Routes */
@@ -72,6 +44,46 @@ if (config('laravel-crm.route_prefix')) {
 Route::get('dashboard', 'VentureDrake\LaravelCrm\Http\Controllers\DashboardController@index')
     ->middleware('auth.laravel-crm')
     ->name('laravel-crm.dashboard');
+
+/* Email Campaigns */
+
+Route::group(['prefix' => 'email-campaigns', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\EmailCampaignController@index')
+        ->name('laravel-crm.email-campaigns.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\EmailCampaign']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\EmailCampaignController@create')
+        ->name('laravel-crm.email-campaigns.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\EmailCampaign']);
+
+    Route::get('{emailCampaign}', 'VentureDrake\LaravelCrm\Http\Controllers\EmailCampaignController@show')
+        ->name('laravel-crm.email-campaigns.show')
+        ->middleware(['can:view,emailCampaign']);
+
+    Route::get('{emailCampaign}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\EmailCampaignController@edit')
+        ->name('laravel-crm.email-campaigns.edit')
+        ->middleware(['can:update,emailCampaign']);
+});
+
+/* Email Templates */
+
+Route::group(['prefix' => 'email-templates', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\EmailTemplateController@index')
+        ->name('laravel-crm.email-templates.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\EmailTemplate']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\EmailTemplateController@create')
+        ->name('laravel-crm.email-templates.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\EmailTemplate']);
+
+    Route::get('{emailTemplate}', 'VentureDrake\LaravelCrm\Http\Controllers\EmailTemplateController@show')
+        ->name('laravel-crm.email-templates.show')
+        ->middleware(['can:view,emailTemplate']);
+
+    Route::get('{emailTemplate}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\EmailTemplateController@edit')
+        ->name('laravel-crm.email-templates.edit')
+        ->middleware(['can:update,emailTemplate']);
+});
 
 /* Leads */
 

@@ -137,6 +137,7 @@ trait HasPersonCommon
             'address' => null,
             'type' => null,
             'primary' => null,
+            'subscribed' => true,
         ];
     }
 

@@ -139,11 +139,17 @@ class OrganizationService
 
         if ($emails) {
             foreach ($emails as $emailRequest) {
+                $subscribed = array_key_exists('subscribed', $emailRequest)
+                    ? (bool) $emailRequest['subscribed']
+                    : true;
+
                 if ($emailRequest['id'] && $email = Email::find($emailRequest['id'])) {
                     $email->update([
                         'address' => $emailRequest['address'],
                         'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                        'subscribed' => $subscribed,
+                        'unsubscribed_at' => $subscribed ? null : ($email->unsubscribed_at ?? now()),
                     ]);
 
                     $emailIds[] = $email->id;
@@ -153,6 +159,7 @@ class OrganizationService
                         'address' => $emailRequest['address'],
                         'type' => $emailRequest['type'],
                         'primary' => ((isset($emailRequest['primary']) && $emailRequest['primary'] == 'on') ? 1 : 0),
+                        'subscribed' => $subscribed,
                     ]);
 
                     $emailIds[] = $email->id;

@@ -178,6 +178,7 @@ return [
         'purchase-orders',
         'teams',
         'chat',
+        'email-marketing',
     ],
 
     /*

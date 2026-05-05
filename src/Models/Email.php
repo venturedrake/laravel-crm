@@ -20,6 +20,8 @@ class Email extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'subscribed' => 'boolean',
+        'unsubscribed_at' => 'datetime',
     ];
 
     public function getTable()
@@ -33,5 +35,13 @@ class Email extends Model
     public function emailable()
     {
         return $this->morphTo();
+    }
+
+    public function markUnsubscribed(): void
+    {
+        $this->update([
+            'subscribed' => false,
+            'unsubscribed_at' => now(),
+        ]);
     }
 }

@@ -170,6 +170,7 @@ trait HasOrganizationCommon
             'address' => null,
             'type' => null,
             'primary' => null,
+            'subscribed' => true,
         ];
     }
 
