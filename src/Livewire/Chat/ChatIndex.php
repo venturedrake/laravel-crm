@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Chat;
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -47,7 +48,7 @@ class ChatIndex extends Component
             ->paginate(25)
             ->through(function (ChatConversation $c) {
                 $c->visitor_name = $c->visitor?->displayName();
-                $c->last_message_preview = \Illuminate\Support\Str::limit($c->latestMessage?->body ?? '', 60);
+                $c->last_message_preview = Str::limit($c->latestMessage?->body ?? '', 60);
 
                 return $c;
             });
@@ -69,4 +70,3 @@ class ChatIndex extends Component
         ]);
     }
 }
-

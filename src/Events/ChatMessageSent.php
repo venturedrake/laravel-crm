@@ -52,4 +52,3 @@ class ChatMessageSent implements ShouldBroadcast
         ];
     }
 }
-

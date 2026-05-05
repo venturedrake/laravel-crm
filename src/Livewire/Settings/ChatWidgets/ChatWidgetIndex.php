@@ -34,4 +34,3 @@ class ChatWidgetIndex extends Component
         ]);
     }
 }
-

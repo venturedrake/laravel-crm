@@ -62,4 +62,3 @@ class ChatWidget extends Model
 JS;
     }
 }
-

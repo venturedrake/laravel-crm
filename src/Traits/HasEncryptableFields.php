@@ -10,14 +10,13 @@ trait HasEncryptableFields
      * If the attribute is in the encryptable array
      * then decrypt it.
      *
-     * @param  $key
      *
      * @return $value
      */
     public function getAttribute($key)
     {
         $value = parent::getAttribute($key);
-        
+
         if (config('laravel-crm.encrypt_db_fields') && in_array($key, $this->encryptable) && trim($value) !== '') {
             $value = $this->decryptField($value);
         }
@@ -28,9 +27,6 @@ trait HasEncryptableFields
     /**
      * If the attribute is in the encryptable array
      * then encrypt it.
-     *
-     * @param $key
-     * @param $value
      */
     public function setAttribute($key, $value)
     {

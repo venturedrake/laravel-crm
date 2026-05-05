@@ -34,4 +34,3 @@ class ChatWidgetController extends Controller
         return redirect(route('laravel-crm.chat-widgets.index'));
     }
 }
-

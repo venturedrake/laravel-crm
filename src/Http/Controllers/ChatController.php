@@ -25,4 +25,3 @@ class ChatController extends Controller
         return redirect(route('laravel-crm.chat.index'));
     }
 }
-

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Controllers\Controller;
 use VentureDrake\LaravelCrm\Models\ChatWidget;
 
@@ -76,10 +77,9 @@ JS;
         ]);
 
         if (! $visitorToken) {
-            $response->cookie('lcrm_chat_token_'.$publicKey, \Illuminate\Support\Str::random(40), 60 * 24 * 365);
+            $response->cookie('lcrm_chat_token_'.$publicKey, Str::random(40), 60 * 24 * 365);
         }
 
         return $response;
     }
 }
-

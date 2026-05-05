@@ -11,10 +11,15 @@ class ChatWidgetEdit extends Component
     use Toast;
 
     public ?ChatWidget $widget = null;
+
     public string $name = '';
+
     public string $welcome_message = '';
+
     public string $color = '#2563eb';
+
     public string $position = 'bottom-right';
+
     public bool $is_active = true;
 
     public function mount(?ChatWidget $widget = null): void
@@ -60,4 +65,3 @@ class ChatWidgetEdit extends Component
         return view('laravel-crm::livewire.settings.chat-widgets.chat-widget-edit');
     }
 }
-

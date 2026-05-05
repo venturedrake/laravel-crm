@@ -619,5 +619,5 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm chat',
                 'reply crm chat',
             ]);
-}
+    }
 }

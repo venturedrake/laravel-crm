@@ -7,8 +7,8 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasCrmUserRelations;
-use VentureDrake\LaravelCrm\Traits\SearchFilters;
 use VentureDrake\LaravelCrm\Traits\HasEncryptableFields;
+use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Organization extends Model
 {

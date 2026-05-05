@@ -39,4 +39,3 @@ class ChatVisitor extends Model
         return $this->name ?: 'Visitor #'.$this->id;
     }
 }
-

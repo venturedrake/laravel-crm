@@ -72,4 +72,3 @@ class ChatConversation extends Model
         return 'crm-chat.'.$this->external_id;
     }
 }
-

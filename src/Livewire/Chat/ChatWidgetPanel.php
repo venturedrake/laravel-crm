@@ -16,10 +16,15 @@ use VentureDrake\LaravelCrm\Services\ChatService;
 class ChatWidgetPanel extends Component
 {
     public ChatWidget $widget;
+
     public ?ChatVisitor $visitor = null;
+
     public ?ChatConversation $conversation = null;
+
     public string $body = '';
+
     public string $visitorName = '';
+
     public string $visitorEmail = '';
 
     public function mount(string $publicKey, ?string $visitorToken = null): void
@@ -82,4 +87,3 @@ class ChatWidgetPanel extends Component
         ]);
     }
 }
-

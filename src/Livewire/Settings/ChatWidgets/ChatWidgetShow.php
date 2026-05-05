@@ -21,4 +21,3 @@ class ChatWidgetShow extends Component
         ]);
     }
 }
-

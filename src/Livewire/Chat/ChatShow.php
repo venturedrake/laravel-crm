@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Chat;
 
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\ChatConversation;
@@ -65,4 +64,3 @@ class ChatShow extends Component
         ]);
     }
 }
-

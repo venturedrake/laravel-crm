@@ -57,4 +57,3 @@ class ChatMessage extends Model
         return $this->sender_type === 'user';
     }
 }
-

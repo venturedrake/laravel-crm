@@ -16,4 +16,3 @@ class ChatRepository
         return ChatConversation::find($id);
     }
 }
-
