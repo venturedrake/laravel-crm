@@ -1,4 +1,4 @@
-<div class="crm-content">
+<div class="crm-content" wire:poll.10s>
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.chat')) }}" progress-indicator>
         <x-slot:middle class="justify-end!">
             <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.search_chat')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
@@ -15,6 +15,18 @@
 
     <x-mary-card shadow>
         <x-mary-table :headers="$headers" :rows="$conversations" :link="route('laravel-crm.chat.show', ['chat' => '[id]'])" with-pagination class="whitespace-nowrap">
+            @scope('cell_visitor_online', $c)
+                @if($c->visitor_online)
+                    <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.online')) }}" class="badge-success badge-sm text-white" />
+                @else
+                    <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.offline')) }}" class="badge-ghost badge-sm" />
+                @endif
+            @endscope
+            @scope('cell_unread_count', $c)
+                @if($c->unread_count > 0)
+                    <x-mary-badge value="{{ $c->unread_count > 99 ? '99+' : $c->unread_count }}" class="badge-error badge-sm text-white" />
+                @endif
+            @endscope
             @scope('cell_status', $c)
                 <x-mary-badge value="{{ ucfirst($c->status) }}" class="{{ $c->status === 'open' ? 'badge-success' : ($c->status === 'pending' ? 'badge-warning' : 'badge-neutral') }} text-white" />
             @endscope

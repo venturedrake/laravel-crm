@@ -9,9 +9,12 @@
         * { box-sizing: border-box; }
         html, body { margin:0; height:100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#fff; color:#1f2937; }
         .lcrm { display:flex; flex-direction:column; height:100vh; font-size:14px; }
-        .lcrm-header { background:var(--c); color:#fff; padding:12px 16px; }
+        .lcrm-header { background:var(--c); color:#fff; padding:12px 16px; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+        .lcrm-header-text { flex:1; min-width:0; }
         .lcrm-header h1 { font-size:15px; margin:0 0 2px; font-weight:600; }
         .lcrm-header p  { font-size:12px; margin:0; opacity:.9; }
+        .lcrm-close { background:none; border:0; color:#fff; opacity:.8; cursor:pointer; font-size:20px; line-height:1; padding:2px; flex-shrink:0; }
+        .lcrm-close:hover { opacity:1; }
         .lcrm-id { display:none; padding:10px 12px; border-bottom:1px solid #e5e7eb; background:#f9fafb; gap:6px; }
         .lcrm-id.show { display:grid; }
         .lcrm-id input, .lcrm-msg input { width:100%; padding:8px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:13px; outline:none; }
@@ -32,10 +35,13 @@
 <body>
 <div class="lcrm">
     <div class="lcrm-header">
-        <h1>{{ $widget->name }}</h1>
-        @if($widget->welcome_message)
-            <p>{{ $widget->welcome_message }}</p>
-        @endif
+        <div class="lcrm-header-text">
+            <h1>{{ $widget->name }}</h1>
+            @if($widget->welcome_message)
+                <p>{{ $widget->welcome_message }}</p>
+            @endif
+        </div>
+        <button id="lcrm-close-btn" class="lcrm-close" aria-label="Close chat" title="Close">&#x2715;</button>
     </div>
 
     <form id="lcrm-id-form" class="lcrm-id">
@@ -62,6 +68,8 @@
     var token = null;
     var lastId = 0;
     var pollTimer = null;
+    var widgetOpen = false;
+    var lastTrackedUrl = null;
     var bodyEl = document.getElementById('lcrm-body');
     var idForm = document.getElementById('lcrm-id-form');
     var msgForm = document.getElementById('lcrm-msg-form');
@@ -84,9 +92,10 @@
         }
         bodyEl.innerHTML = messages.map(function(m){
             var mine = m.sender_type === 'visitor';
+            var who = mine ? 'You' : m.sender_name;
             return '<div class="lcrm-bubble '+(mine?'me':'them')+'">'+
                 escapeHtml(m.body)+
-                '<small>'+escapeHtml(m.sender_name)+' · '+fmtTime(m.created_at)+'</small>'+
+                '<small>'+escapeHtml(who)+' · '+fmtTime(m.created_at)+'</small>'+
                 '</div>';
         }).join('');
         bodyEl.scrollTop = bodyEl.scrollHeight;
@@ -100,9 +109,10 @@
         if (empty) bodyEl.innerHTML = '';
         messages.forEach(function(m){
             var mine = m.sender_type === 'visitor';
+            var who = mine ? 'You' : m.sender_name;
             var div = document.createElement('div');
             div.className = 'lcrm-bubble ' + (mine ? 'me' : 'them');
-            div.innerHTML = escapeHtml(m.body) + '<small>'+escapeHtml(m.sender_name)+' · '+fmtTime(m.created_at)+'</small>';
+            div.innerHTML = escapeHtml(m.body) + '<small>'+escapeHtml(who)+' · '+fmtTime(m.created_at)+'</small>';
             bodyEl.appendChild(div);
             if (m.id > lastId) lastId = m.id;
         });
@@ -123,7 +133,8 @@
     function init(){
         postJSON(API + '/init', {
             visitor_token: token,
-            current_url: document.referrer || null
+            current_url: document.referrer || null,
+            current_title: null
         }).then(function(data){
             token = data.visitor_token;
             try { localStorage.setItem(STORAGE_KEY, token); } catch(e) {}
@@ -134,6 +145,7 @@
             }
 
             render(data.messages);
+            updateUnread(data.unread_for_visitor || 0);
             startPolling();
         }).catch(function(err){
             bodyEl.innerHTML = '<div class="lcrm-empty">Unable to connect. Please try again later.</div>';
@@ -141,12 +153,57 @@
         });
     }
 
+    function updateUnread(count){
+        // Notify the parent loader script so it can update the button badge.
+        try {
+            window.parent && window.parent.postMessage({ type: 'lcrm:unread', count: count }, '*');
+        } catch(e){}
+    }
+
+    // Listen for the parent telling us the widget was opened/closed,
+    // or for our own lcrm:close (when parent === window, i.e. standalone/preview).
+    window.addEventListener('message', function(e){
+        var d = e.data;
+        if (!d) return;
+
+        if (d.type === 'lcrm:opened') {
+            widgetOpen = true;
+            if (token) {
+                postJSON(API + '/markread', { token: token }).catch(function(){});
+                updateUnread(0);
+            }
+        }
+        if (d.type === 'lcrm:closed') {
+            widgetOpen = false;
+        }
+        if (d.type === 'lcrm:close') {
+            // Received by ourselves when parent === window (standalone / CRM preview)
+            closeWidget();
+        }
+        if (d.type === 'lcrm:url' && d.url && token) {
+            if (d.url === lastTrackedUrl) return;
+            lastTrackedUrl = d.url;
+            postJSON(API + '/track', { token: token, url: d.url, title: d.title || null })
+                .catch(function(){ /* best-effort */ });
+        }
+    });
+
     function poll(){
         if (!token) return;
         fetch(API + '/messages?token='+encodeURIComponent(token)+'&since_id='+lastId, {
             headers: {'Accept':'application/json'}
         }).then(function(r){ return r.ok ? r.json() : null; })
-        .then(function(data){ if (data && data.messages) appendMessages(data.messages); })
+        .then(function(data){
+            if (!data) return;
+            if (data.messages) appendMessages(data.messages);
+            var unread = data.unread_for_visitor || 0;
+            if (widgetOpen && unread > 0) {
+                // Auto mark read while widget is open
+                postJSON(API + '/markread', { token: token }).catch(function(){});
+                unread = 0;
+            }
+            updateUnread(unread);
+        })
         .catch(function(){ /* network blip — keep polling */ });
     }
 
@@ -154,6 +211,19 @@
         if (pollTimer) clearInterval(pollTimer);
         pollTimer = setInterval(poll, 4000);
     }
+
+    function closeWidget(){
+        // Hide body + message form so the widget collapses to just the header
+        bodyEl.style.display = 'none';
+        msgForm.style.display = 'none';
+        idForm.style.display = 'none';
+        var closeBtn = document.getElementById('lcrm-close-btn');
+        if (closeBtn) closeBtn.style.display = 'none';
+        // Also tell parent (loader on external site) to hide the iframe
+        try { window.parent.postMessage({ type: 'lcrm:close' }, '*'); } catch(e){}
+    }
+
+    document.getElementById('lcrm-close-btn').addEventListener('click', closeWidget);
 
     idForm.addEventListener('submit', function(e){
         e.preventDefault();
@@ -168,13 +238,23 @@
     msgForm.addEventListener('submit', function(e){
         e.preventDefault();
         var input = msgForm.querySelector('input[name=body]');
+        var btn = msgForm.querySelector('button');
         var body = (input.value || '').trim();
         if (!body) return;
         input.value = '';
-        // Optimistic append
-        appendMessages([{ id: lastId + 0.1, sender_type:'visitor', sender_name:'You', body: body, created_at: new Date().toISOString() }]);
+        btn.disabled = true;
+
         postJSON(API + '/messages/send', { token: token, body: body })
-            .catch(function(err){ console.error('[lcrm-chat] send failed', err); });
+            .then(function(data){
+                if (data && data.message) {
+                    appendMessages([data.message]); // bumps lastId so poll won't re-fetch
+                }
+            })
+            .catch(function(err){
+                console.error('[lcrm-chat] send failed', err);
+                input.value = body; // restore so user can retry
+            })
+            .finally(function(){ btn.disabled = false; input.focus(); });
     });
 
     init();

@@ -30,7 +30,9 @@ class ChatIndex extends Component
     {
         return [
             ['key' => 'chat_id', 'label' => '#'],
+            ['key' => 'visitor_online', 'label' => '', 'sortable' => false, 'class' => 'w-20'],
             ['key' => 'visitor_name', 'label' => ucfirst(__('laravel-crm::lang.visitor')), 'sortable' => false],
+            ['key' => 'unread_count', 'label' => '', 'sortable' => false, 'class' => 'w-12'],
             ['key' => 'last_message_preview', 'label' => ucfirst(__('laravel-crm::lang.last_message')), 'sortable' => false],
             ['key' => 'status', 'label' => ucfirst(__('laravel-crm::lang.status'))],
             ['key' => 'last_message_at', 'label' => ucfirst(__('laravel-crm::lang.updated')), 'format' => fn ($row, $field) => $field?->diffForHumans() ?? '-'],
@@ -48,6 +50,8 @@ class ChatIndex extends Component
             ->paginate(25)
             ->through(function (ChatConversation $c) {
                 $c->visitor_name = $c->visitor?->displayName();
+                $c->visitor_online = $c->visitor?->isOnline() ?? false;
+                $c->unread_count = $c->unreadForAgents();
                 $c->last_message_preview = Str::limit($c->latestMessage?->body ?? '', 60);
 
                 return $c;

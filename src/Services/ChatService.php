@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use VentureDrake\LaravelCrm\Models\ChatConversation;
 use VentureDrake\LaravelCrm\Models\ChatMessage;
 use VentureDrake\LaravelCrm\Models\ChatVisitor;
+use VentureDrake\LaravelCrm\Models\ChatVisitorPageView;
 use VentureDrake\LaravelCrm\Models\ChatWidget;
 use VentureDrake\LaravelCrm\Repositories\ChatRepository;
 
@@ -102,11 +103,65 @@ class ChatService
             ->update(['read_at' => now()]);
     }
 
+    /**
+     * Mark all agent messages in the conversation as read by the visitor.
+     */
+    public function markReadByVisitor(ChatConversation $conversation): void
+    {
+        $conversation->messages()
+            ->where('sender_type', 'user')
+            ->whereNull('visitor_read_at')
+            ->update(['visitor_read_at' => now()]);
+    }
+
+    /**
+     * Count agent messages the visitor has NOT yet read.
+     */
+    public function unreadForVisitor(ChatConversation $conversation): int
+    {
+        return $conversation->messages()
+            ->where('sender_type', 'user')
+            ->whereNull('visitor_read_at')
+            ->count();
+    }
+
     public function close(ChatConversation $conversation): void
     {
         $conversation->update([
             'status' => 'closed',
             'closed_at' => now(),
+        ]);
+    }
+
+    /**
+     * Record a page view for the visitor. De-dupes against the latest entry —
+     * we don't insert if the URL matches the most recent view.
+     */
+    public function recordPageView(ChatVisitor $visitor, ?string $url, ?string $title = null): ?ChatVisitorPageView
+    {
+        $url = trim((string) $url);
+        if ($url === '') {
+            return null;
+        }
+
+        // Cap field lengths defensively
+        $url = mb_substr($url, 0, 2048);
+        $title = $title !== null ? mb_substr(trim($title), 0, 512) : null;
+
+        $latest = $visitor->pageViews()->first();
+        if ($latest && $latest->url === $url) {
+            // Same page — just bump viewed_at so "current page" stays accurate
+            $latest->update(['viewed_at' => now()]);
+
+            return $latest;
+        }
+
+        return ChatVisitorPageView::create([
+            'chat_visitor_id' => $visitor->id,
+            'team_id' => $visitor->team_id,
+            'url' => $url,
+            'title' => $title,
+            'viewed_at' => now(),
         ]);
     }
 }

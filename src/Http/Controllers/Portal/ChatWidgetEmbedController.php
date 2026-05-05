@@ -41,6 +41,15 @@ class ChatWidgetEmbedController extends Controller
     btn.style.cssText = 'position:fixed;bottom:20px;{$position}width:60px;height:60px;border-radius:50%;background:{$color};color:#fff;border:0;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer;z-index:2147483646;font-size:28px;';
     btn.innerHTML = '\u{1F4AC}';
 
+    // Unread badge
+    var badge = document.createElement('span');
+    badge.style.cssText = 'position:absolute;top:0;right:0;min-width:18px;height:18px;border-radius:9px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;padding:0 4px;display:none;pointer-events:none;';
+    btn.style.position = 'fixed'; // ensure relative stacking
+    var btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'position:fixed;bottom:20px;{$position}z-index:2147483646;';
+    btn.style.cssText = 'width:60px;height:60px;border-radius:50%;background:{$color};color:#fff;border:0;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer;font-size:28px;position:relative;';
+    btn.appendChild(badge);
+
     var iframe = document.createElement('iframe');
     iframe.src = '{$iframeUrl}';
     iframe.style.cssText = 'position:fixed;bottom:90px;{$position}width:380px;height:560px;max-height:80vh;border:0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:2147483647;display:none;background:#fff;';
@@ -50,12 +59,60 @@ class ChatWidgetEmbedController extends Controller
     btn.addEventListener('click', function(){
         open = !open;
         iframe.style.display = open ? 'block' : 'none';
+        badge.style.display = 'none'; // hide badge when opening
+        iframe.contentWindow && iframe.contentWindow.postMessage({ type: open ? 'lcrm:opened' : 'lcrm:closed' }, '*');
     });
 
-    function inject(){ document.body.appendChild(iframe); document.body.appendChild(btn); }
+    // Listen for unread count updates from the iframe
+    window.addEventListener('message', function(e){
+        if (!e.data) return;
+        if (e.data.type === 'lcrm:unread') {
+            var count = e.data.count || 0;
+            if (count > 0 && !open) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+        if (e.data.type === 'lcrm:close') {
+            open = false;
+            iframe.style.display = 'none';
+            iframe.contentWindow && iframe.contentWindow.postMessage({ type: 'lcrm:closed' }, '*');
+        }
+    });
+
+    function inject(){
+        btnWrap.appendChild(btn);
+        document.body.appendChild(iframe);
+        document.body.appendChild(btnWrap);
+    }
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', inject);
     } else { inject(); }
+
+    // ---- Page-view tracking ----
+    // Send the current URL/title to the iframe whenever it changes.
+    // Iframe will forward to the CRM API.
+    function sendUrl(){
+        try {
+            iframe.contentWindow && iframe.contentWindow.postMessage({
+                type: 'lcrm:url',
+                url: window.location.href,
+                title: document.title
+            }, '*');
+        } catch(e) {}
+    }
+
+    // Wait for iframe to load before sending the first URL
+    iframe.addEventListener('load', sendUrl);
+
+    // Hook history API so SPA navigation is captured
+    var _ps = history.pushState, _rs = history.replaceState;
+    history.pushState = function(){ _ps.apply(this, arguments); setTimeout(sendUrl, 0); };
+    history.replaceState = function(){ _rs.apply(this, arguments); setTimeout(sendUrl, 0); };
+    window.addEventListener('popstate', sendUrl);
+    window.addEventListener('hashchange', sendUrl);
 })();
 JS;
 
@@ -100,6 +157,11 @@ JS;
 
         $conversation = $service->openConversationForVisitor($visitor);
 
+        // Record initial page view
+        if ($url = $request->input('current_url')) {
+            $service->recordPageView($visitor, $url, $request->input('current_title'));
+        }
+
         return $this->cors(response()->json([
             'visitor_token' => $visitor->visitor_token,
             'visitor' => [
@@ -117,6 +179,7 @@ JS;
                 'color' => $widget->color,
             ],
             'messages' => $this->serializeMessages($conversation->messages()->get()),
+            'unread_for_visitor' => $conversation->unreadForVisitor(),
         ]));
     }
 
@@ -136,7 +199,21 @@ JS;
         return $this->cors(response()->json([
             'messages' => $this->serializeMessages($messages),
             'status' => $conversation->status,
+            'unread_for_visitor' => $conversation->unreadForVisitor(),
         ]));
+    }
+
+    /**
+     * POST /p/chat/{publicKey}/markread   Body: { token }
+     * Visitor marks all agent messages as read (called when widget is opened).
+     */
+    public function markRead(Request $request, string $publicKey): JsonResponse
+    {
+        [, , $conversation] = $this->resolveContext($request, $publicKey);
+
+        app(ChatService::class)->markReadByVisitor($conversation);
+
+        return $this->cors(response()->json(['ok' => true]));
     }
 
     /**
@@ -177,6 +254,23 @@ JS;
                 'email' => $visitor->email,
             ],
         ]));
+    }
+
+    /**
+     * POST /p/chat/{publicKey}/track   Body: { token, url, title? }
+     * Called whenever the parent page navigates so we can build a history.
+     */
+    public function track(Request $request, string $publicKey): JsonResponse
+    {
+        [, $visitor] = $this->resolveContext($request, $publicKey);
+
+        app(ChatService::class)->recordPageView(
+            $visitor,
+            $request->input('url'),
+            $request->input('title')
+        );
+
+        return $this->cors(response()->json(['ok' => true]));
     }
 
     /** OPTIONS preflight */
