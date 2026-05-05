@@ -1,6 +1,7 @@
 <?php
 
 use Dcblogdev\Xero\Facades\Xero;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
@@ -31,6 +32,28 @@ Route::group(['prefix' => 'p'], function () {
 
         Route::get('{publicKey}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@widget')
             ->name('laravel-crm.portal.chat.widget');
+
+        // JSON API — token-authenticated, CSRF-exempt so it works inside
+        // a cross-origin iframe on any third-party site.
+        $csrfExempt = [
+            VerifyCsrfToken::class,
+            'App\\Http\\Middleware\\VerifyCsrfToken',
+        ];
+
+        Route::match(['post', 'options'], '{publicKey}/init', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@init')
+            ->name('laravel-crm.portal.chat.init')
+            ->withoutMiddleware($csrfExempt);
+
+        Route::get('{publicKey}/messages', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@messages')
+            ->name('laravel-crm.portal.chat.messages');
+
+        Route::match(['post', 'options'], '{publicKey}/messages/send', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@send')
+            ->name('laravel-crm.portal.chat.send')
+            ->withoutMiddleware($csrfExempt);
+
+        Route::match(['post', 'options'], '{publicKey}/identify', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\ChatWidgetEmbedController@identify')
+            ->name('laravel-crm.portal.chat.identify')
+            ->withoutMiddleware($csrfExempt);
     });
 });
 
