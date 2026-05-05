@@ -44,7 +44,19 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Auth components** (v2, in `src/Livewire/Auth/`): `Login`, `ForgotPassword`, `ResetPassword` — CRM-specific authentication flows.
 
-**KanbanBoard**: Reusable `src/Livewire/KanbanBoard.php` component with views in `resources/views/livewire/kanban-board/` — used by leads, deals, and quotes board views.
+**KanbanBoard**: Reusable `src/Livewire/KanbanBoard.php` component with views in `resources/views/livewire/kanban-board/` — used by leads, deals, and quotes board views. Each entity's board component (`Leads/LeadBoard`, `Deals/DealBoard`, `Quotes/QuoteBoard`) wraps `KanbanBoard` with pipeline-specific logic.
+
+**Activity sub-components** (v2, in `src/Livewire/Activities/`): `ActivityFeed`, `ActivityIndex` — used on entity show pages and the standalone activity view.
+
+**Inline activity sub-components** (v2): Each activity type has `*Item` (single record row) and `*Related` (list embedded in a show page) components in their own namespace — `Calls/`, `Files/`, `Lunches/`, `Meetings/`, `Notes/`, `Tasks/`. These are v2 replacements for the legacy `Http/Livewire/Live*` components.
+
+**Related index sub-components**: `Deliveries/DeliveryRelatedIndex`, `Invoices/InvoiceRelatedIndex`, `Orders/OrderRelatedIndex`, `PurchaseOrders/PurchaseOrderRelatedIndex` — embedded lists of related records on entity show pages.
+
+**Full-CRUD v2 entities**: `Tasks/` (`TaskCreate`, `TaskEdit`, `TaskIndex`, `TaskShow`), `Teams/` (`TeamCreate`, `TeamEdit`, `TeamIndex`, `TeamShow`), `Users/` (`UserCreate`, `UserEdit`, `UserIndex`, `UserShow`) — standalone index/show/create/edit components, all follow the `HasEntityCommon` trait pattern.
+
+**Profile components** (v2, in `src/Livewire/Profile/`): `UpdateProfileInformationForm`, `UpdatePasswordForm`, `TwoFactorAuthenticationForm`, `LogoutOtherBrowserSessionsForm`, `DeleteUserForm`.
+
+**Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`.
 
 ### Shared Livewire traits
 Traits in `src/Traits/` are shared across Livewire components and models:
@@ -54,6 +66,14 @@ Traits in `src/Traits/` are shared across Livewire components and models:
 - `ResetsPaginationWhenPropsChanges` — auto-reset pagination when filter properties change
 - `ClearsProperties` — bulk-clear component properties
 - `HasCrmFields` / `HasCustomFormFields` — attach user-defined custom fields to models / render them in Livewire forms (seeded via `laravelcrm:fields`)
+
+**User model traits** in `src/Traits/` (add to host app `App\Models\User`):
+- `HasCrmAccess` — gates CRM access; required for all host users
+- `HasCrmTeams` — team membership helpers; required when `LARAVEL_CRM_TEAMS=true`
+- `HasCrmActivities`, `HasCrmAddresses`, `HasCrmEmails`, `HasCrmPhones` — relationship helpers for person/contact models
+- `HasCrmUserRelations` — links CRM records back to the user
+- `HasEncryptableFields` — wires `LaravelEncryptableTrait` at the User level
+- `SendsCrmPasswordReset` — CRM-branded password reset emails
 
 Form-specific traits live in `src/Livewire/Traits/`:
 - `HasPersonSuggest`, `HasOrganizationSuggest` — typeahead/autocomplete suggestions used by lead/deal/quote create+edit forms
@@ -66,9 +86,13 @@ Form-specific traits live in `src/Livewire/Traits/`:
 | **Table prefix** | `getTable()` returns `config('laravel-crm.db_table_prefix').'tablename'` (default `crm_`) |
 | **External IDs** | Routes use `external_id` (UUID, set by Observer on `creating`), not integer PKs |
 | **Human IDs** | Observers auto-generate `lead_id`, `quote_id`, etc. as `{prefix}{number}` (e.g. `L1001`) |
-| **Money** | Amounts stored as integers × 100; set via `setAmountAttribute`; display with `money($amount, $currency)` helper |
+| **Money** | Amounts stored as integers × 100; set via `setAmountAttribute`; display with `money($amount, $currency)` helper (`cknow/laravel-money`) |
 | **Encryption** | Sensitive fields (person names, emails, phones) encrypted via `LaravelEncryptableTrait`; declared in `$encryptable` array |
 | **Multi-tenancy** | `BelongsToTeams` trait adds a global `BelongsToTeamsScope` — queries are automatically scoped to `auth()->user()->currentTeam` when `LARAVEL_CRM_TEAMS=true` |
+| **Pipelines** | `Pipeline` + `PipelineStage` + `PipelineStageProbability` models drive the kanban board; `Pipeline` has-many `PipelineStage`; stages are ordered and colour-coded |
+| **Products** | `Product` → `ProductVariation` → `ProductPrice` (with `ProductAttribute` for variant dimensions); all linked to `PurchaseOrderLine`, `QuoteProduct`, `OrderProduct`, etc. |
+| **Tax rates** | `TaxRate` model — applied to quote/invoice line items; managed via Settings > Tax Rates UI |
+| **Usage tracking** | `UsageRequest` model records API/feature usage; populated automatically by `LogUsage` middleware |
 
 ## UI Stack
 
@@ -201,5 +225,8 @@ php artisan laravelcrm:archive              # archive old records (scheduled dai
 - **PDF generation**: `barryvdh/laravel-dompdf` and `mpdf/mpdf` for quotes/invoices
 - **Audit log**: `owen-it/laravel-auditing` — all models auto-audited; use `saveQuietly()` (defined on base `Model`) to bypass events
 - **GeoIP**: `torann/geoip` + `geoip2/geoip2` for location-aware features
+- **Authentication log**: `rappasoft/laravel-authentication-log` — login history; requires `AuthenticationLoggable` trait on host `User` model
+- **Countries**: `rinvex/countries` — country list used in address forms and select options
+- **Money formatting**: `cknow/laravel-money` — provides the `money($amount, $currency)` global helper
 - **Laravel Boost**: `laravel/boost` (dev) is installed — AI agents can use its MCP tooling for guideline lookups and tinker introspection when available
 
