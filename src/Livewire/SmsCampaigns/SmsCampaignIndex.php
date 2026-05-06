@@ -10,6 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\SmsCampaign;
+use VentureDrake\LaravelCrm\Services\ClickSendService;
 
 class SmsCampaignIndex extends Component
 {
@@ -76,12 +77,13 @@ class SmsCampaignIndex extends Component
         }
     }
 
-    public function render()
+    public function render(ClickSendService $clickSend)
     {
         return view('laravel-crm::livewire.sms-campaigns.sms-campaign-index', [
             'headers' => $this->headers(),
             'campaigns' => $this->campaigns(),
             'statuses' => $this->statuses(),
+            'clickSendConfigured' => $clickSend->isConfigured(),
         ]);
     }
 }

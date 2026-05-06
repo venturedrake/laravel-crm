@@ -779,6 +779,7 @@ return [
     'clicksend_default_from' => 'default sender ID',
     'clicksend_connect_intro' => 'Connect ClickSend to send SMS marketing campaigns from the CRM.',
     'clicksend_connected' => 'ClickSend is connected.',
+    'clicksend_not_configured' => 'ClickSend is not set up. To send SMS campaigns, add your credentials in',
     'sign_up_for_clicksend' => "Don't have a ClickSend account? Sign up at",
     'connected' => 'connected',
     'disconnected' => 'disconnected',

@@ -96,7 +96,7 @@
                     <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.sms')) }}" icon="fas.sms" link="{{ url(route('laravel-crm.sms-campaigns.index')) }}" />
                 @endcan
                 @endhassmsmarketingenabled
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.social')) }}" icon="fas.share-alt" link="#" />
+               {{-- <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.social')) }}" icon="fas.share-alt" link="#" />--}}
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.activity')) }}" icon="fas.timeline" link="{{ url(route('laravel-crm.activities.index')) }}" />
                 <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.leads')) }}" icon="fas.crosshairs" link="{{ url(route('laravel-crm.leads.index')) }}" />
