@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
 use VentureDrake\LaravelCrm\Models\Setting;
 
@@ -30,10 +31,6 @@ class EmailCampaignMessage extends Mailable
             'full_name' => 'Recipient full name',
             'email' => 'Recipient email address',
             'company_name' => 'Your company name',
-            'logo' => 'Your company logo from settings',
-            'address' => 'Your business address from settings',
-            'unsubscribe' => 'Unsubscribe link (HTML)',
-            'unsubscribe_url' => 'Unsubscribe URL (raw)',
         ];
     }
 
@@ -51,26 +48,21 @@ class EmailCampaignMessage extends Mailable
             'full_name' => trim(($person?->first_name ?? '').' '.($person?->last_name ?? '')),
             'email' => $this->recipient->address,
             'company_name' => config('app.name'),
-            'unsubscribe_url' => $unsubscribeUrl,
-            'tracking_pixel_url' => $trackingPixelUrl,
-            'address' => $this->resolveAddressLine($campaign->team_id),
         ];
 
-        $rawData = [
-            'logo' => $this->resolveLogoHtml(),
-            'unsubscribe' => '<a href="'.e($unsubscribeUrl).'" style="color:#6b7280;text-decoration:underline;">Unsubscribe</a>',
-        ];
-
-        $rendered = preg_replace_callback('/\{(\w+)\}/', function ($m) use ($textData, $rawData) {
-            if (array_key_exists($m[1], $rawData)) {
-                return $rawData[$m[1]];
-            }
-
+        $bodyContent = preg_replace_callback('/\{(\w+)\}/', function ($m) use ($textData) {
             return array_key_exists($m[1], $textData) ? e($textData[$m[1]]) : $m[0];
         }, $campaign->body);
 
-        $rendered = $this->rewriteLinks($rendered);
-        $rendered = $this->ensureUnsubscribeFooter($rendered, $unsubscribeUrl);
+        $bodyContent = $this->rewriteLinks($bodyContent);
+
+        $rendered = $this->wrapInShell(
+            $bodyContent,
+            $this->resolveLogoHtml(),
+            $this->resolveAddressLine($campaign->team_id),
+            $unsubscribeUrl
+        );
+
         $rendered = $this->appendTrackingPixel($rendered, $trackingPixelUrl);
 
         $from = config('mail.from.address');
@@ -91,7 +83,7 @@ class EmailCampaignMessage extends Mailable
     {
         $token = $this->recipient->tracking_token;
 
-        return preg_replace_callback('/<a\s+([^>]*?)href=(["\'])(.*?)\2([^>]*)>/i', function ($matches) use ($token) {
+        return preg_replace_callback('/<a\s+([^>]*?)(?<=\s)href=(["\'])(.*?)\2([^>]*)>/i', function ($matches) use ($token) {
             $before = $matches[1];
             $quote = $matches[2];
             $url = $matches[3];
@@ -107,26 +99,48 @@ class EmailCampaignMessage extends Mailable
         }, $html);
     }
 
-    private function ensureUnsubscribeFooter(string $html, string $unsubscribeUrl): string
+    private function wrapInShell(string $body, string $logoHtml, string $addressLine, string $unsubscribeUrl): string
     {
-        if (str_contains($html, $unsubscribeUrl) || str_contains($html, 'unsubscribe_url')) {
-            return $html;
-        }
+        $addressBlock = $addressLine !== ''
+            ? '<div style="margin-bottom:8px;">'.e($addressLine).'</div>'
+            : '';
 
-        $footer = '<div style="margin-top:24px;padding-top:16px;border-top:1px solid #eee;font-size:12px;color:#888;text-align:center;">'
-            .'<a href="'.$unsubscribeUrl.'" style="color:#888;">Unsubscribe</a>'
-            .'</div>';
+        $unsubscribeLink = '<a href="'.e($unsubscribeUrl).'" style="color:#6b7280;text-decoration:underline;">Unsubscribe</a>';
 
-        if (stripos($html, '</body>') !== false) {
-            return preg_replace('/<\/body>/i', $footer.'</body>', $html, 1);
-        }
-
-        return $html.$footer;
+        return <<<HTML
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa;padding:24px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;">
+        <tr>
+          <td style="padding:24px 32px;border-bottom:1px solid #e5e7eb;text-align:center;">
+            {$logoHtml}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px;color:#374151;font-size:15px;line-height:1.6;">
+            {$body}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;line-height:1.5;text-align:center;">
+            {$addressBlock}
+            <div style="margin-bottom:12px;">{$unsubscribeLink}</div>
+            <div style="color:#9ca3af;font-size:11px;">
+              Powered by <a href="https://laravelcrm.com" style="color:#9ca3af;text-decoration:underline;">Laravel CRM</a>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+HTML;
     }
 
     private function appendTrackingPixel(string $html, string $pixelUrl): string
     {
-        $pixel = '<img src="'.$pixelUrl.'" width="1" height="1" alt="" style="display:block;border:0;" />';
+        $pixel = '<img src="'.e($pixelUrl).'" width="1" height="1" alt="" style="display:block;border:0;" />';
 
         if (stripos($html, '</body>') !== false) {
             return preg_replace('/<\/body>/i', $pixel.'</body>', $html, 1);
@@ -149,9 +163,9 @@ class EmailCampaignMessage extends Mailable
             return '<img src="'.e(asset('storage/'.$logoFile)).'" alt="'.e($companyName).'" style="max-height:60px;max-width:240px;display:inline-block;border:0;" />';
         }
 
-        return '<div style="display:inline-block;padding:18px 28px;background:#f3f4f6;border:1px dashed #d1d5db;color:#6b7280;font-size:12px;border-radius:6px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">'
-            .'Upload your logo in CRM settings'
-            .'</div>';
+        return '<span style="display:inline-block;font-size:24px;font-weight:700;color:#111827;letter-spacing:-0.5px;">'
+            .e($companyName)
+            .'</span>';
     }
 
     private function resolveAddressLine(?int $teamId): string
@@ -165,8 +179,11 @@ class EmailCampaignMessage extends Mailable
             return '';
         }
 
-        $address = $teamSetting->addresses()->where('address_type_id', 4)->first()
-            ?? $teamSetting->addresses()->where('address_type_id', 1)->first();
+        $businessId = AddressType::where('name', 'Business')->value('id');
+        $currentId = AddressType::where('name', 'Current')->value('id');
+
+        $address = ($businessId ? $teamSetting->addresses()->where('address_type_id', $businessId)->first() : null)
+            ?? ($currentId ? $teamSetting->addresses()->where('address_type_id', $currentId)->first() : null);
 
         return $address ? addressSingleLine($address) : '';
     }
