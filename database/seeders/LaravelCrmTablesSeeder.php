@@ -393,6 +393,16 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm email-templates', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm email-templates', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm sms-campaigns', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm sms-campaigns', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm sms-campaigns', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm sms-campaigns', 'crm_permission' => 1]);
+
+        Permission::firstOrCreate(['name' => 'create crm sms-templates', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm sms-templates', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm sms-templates', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm sms-templates', 'crm_permission' => 1]);
+
         Permission::firstOrCreate(['name' => 'create crm notes', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm notes', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm notes', 'crm_permission' => 1]);
@@ -548,6 +558,14 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm email-templates',
                 'edit crm email-templates',
                 'delete crm email-templates',
+                'create crm sms-campaigns',
+                'view crm sms-campaigns',
+                'edit crm sms-campaigns',
+                'delete crm sms-campaigns',
+                'create crm sms-templates',
+                'view crm sms-templates',
+                'edit crm sms-templates',
+                'delete crm sms-templates',
             ]);
 
         if (config('permission.teams')) {

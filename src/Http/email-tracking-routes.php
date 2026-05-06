@@ -27,3 +27,15 @@ Route::group(['prefix' => 'p/email'], function () {
     Route::post('u/{token}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\EmailCampaignTrackingController@unsubscribe')
         ->name('laravel-crm.email-tracking.unsubscribe.confirm');
 });
+
+Route::group(['prefix' => 'p/sms'], function () {
+
+    Route::get('c/{token}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\SmsCampaignTrackingController@click')
+        ->name('laravel-crm.sms-tracking.click');
+
+    Route::get('u/{token}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\SmsCampaignTrackingController@unsubscribeForm')
+        ->name('laravel-crm.sms-tracking.unsubscribe');
+
+    Route::post('u/{token}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\SmsCampaignTrackingController@unsubscribe')
+        ->name('laravel-crm.sms-tracking.unsubscribe.confirm');
+});

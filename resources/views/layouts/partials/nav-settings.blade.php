@@ -27,7 +27,10 @@
             <x-mary-menu-item link="{{ url(route('laravel-crm.field-groups.index')) }}" title="{{ ucwords(__('laravel-crm::lang.custom_field_groups')) }}"  />
         @endcan
         @can('view crm integrations')
-            <x-mary-menu-item link="{{ url(route('laravel-crm.integrations.xero')) }}" title="{{ ucwords(__('laravel-crm::lang.integrations')) }}"  />
+            <x-mary-menu-item link="{{ url(route('laravel-crm.integrations.xero')) }}" title="Xero"  />
+            @hassmsmarketingenabled
+                <x-mary-menu-item link="{{ url(route('laravel-crm.integrations.clicksend')) }}" title="ClickSend"  />
+            @endhassmsmarketingenabled
         @endcan
     </x-mary-menu>
 </x-mary-card>

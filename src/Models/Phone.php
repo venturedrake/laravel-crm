@@ -20,6 +20,8 @@ class Phone extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'subscribed' => 'boolean',
+        'unsubscribed_at' => 'datetime',
     ];
 
     public function getTable()
@@ -33,5 +35,13 @@ class Phone extends Model
     public function phoneable()
     {
         return $this->morphTo();
+    }
+
+    public function markUnsubscribed(): void
+    {
+        $this->update([
+            'subscribed' => false,
+            'unsubscribed_at' => now(),
+        ]);
     }
 }

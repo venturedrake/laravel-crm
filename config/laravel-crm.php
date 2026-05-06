@@ -179,6 +179,7 @@ return [
         'teams',
         'chat',
         'email-marketing',
+        'sms-marketing',
     ],
 
     /*

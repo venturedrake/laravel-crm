@@ -91,7 +91,11 @@
                     <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.email')) }}" icon="fas.envelope" link="{{ url(route('laravel-crm.email-campaigns.index')) }}" />
                 @endcan
                 @endhasemailmarketingenabled
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.sms')) }}" icon="fas.sms" link="#" />
+                @hassmsmarketingenabled
+                @can('view crm sms-campaigns')
+                    <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.sms')) }}" icon="fas.sms" link="{{ url(route('laravel-crm.sms-campaigns.index')) }}" />
+                @endcan
+                @endhassmsmarketingenabled
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.social')) }}" icon="fas.share-alt" link="#" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.activity')) }}" icon="fas.timeline" link="{{ url(route('laravel-crm.activities.index')) }}" />
                 <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">

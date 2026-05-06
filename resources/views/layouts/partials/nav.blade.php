@@ -89,6 +89,11 @@
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.email-campaigns') === 0 || strpos(Route::currentRouteName(), 'laravel-crm.email-templates') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.email-campaigns.index')) }}"><i class="fa fa-envelope"></i> {{ ucfirst(__('laravel-crm::lang.email')) }}</a></li>
             @endcan
             @endhasemailmarketingenabled
+            @hassmsmarketingenabled
+            @can('view crm sms-campaigns')
+            <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.sms-campaigns') === 0 || strpos(Route::currentRouteName(), 'laravel-crm.sms-templates') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.sms-campaigns.index')) }}"><i class="fa fa-sms"></i> {{ ucfirst(__('laravel-crm::lang.sms')) }}</a></li>
+            @endcan
+            @endhassmsmarketingenabled
             {{-- <li class="nav-item"><a class="nav-link" href="#">{{ ucfirst(__('laravel-crm::lang.documents')) }}</a></li>--}}
             @can('view crm products')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.products') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.products.index')) }}"><i class="fa fa-tag"></i> {{ ucfirst(__('laravel-crm::lang.products')) }}</a></li>

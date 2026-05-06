@@ -31,6 +31,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmOrganizationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
 use VentureDrake\LaravelCrm\Console\LaravelCrmSampleData;
+use VentureDrake\LaravelCrm\Console\LaravelCrmSmsCampaignsDispatch;
 use VentureDrake\LaravelCrm\Console\LaravelCrmUpdate;
 use VentureDrake\LaravelCrm\Console\LaravelCrmV2;
 use VentureDrake\LaravelCrm\Console\LaravelCrmXero;
@@ -190,6 +191,7 @@ use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\ClickSend\ClickSendConnect;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelIndex;
@@ -213,6 +215,14 @@ use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\TaxRates\TaxRateShow;
+use VentureDrake\LaravelCrm\Livewire\SmsCampaigns\SmsCampaignCreate;
+use VentureDrake\LaravelCrm\Livewire\SmsCampaigns\SmsCampaignEdit;
+use VentureDrake\LaravelCrm\Livewire\SmsCampaigns\SmsCampaignIndex;
+use VentureDrake\LaravelCrm\Livewire\SmsCampaigns\SmsCampaignShow;
+use VentureDrake\LaravelCrm\Livewire\SmsTemplates\SmsTemplateCreate;
+use VentureDrake\LaravelCrm\Livewire\SmsTemplates\SmsTemplateEdit;
+use VentureDrake\LaravelCrm\Livewire\SmsTemplates\SmsTemplateIndex;
+use VentureDrake\LaravelCrm\Livewire\SmsTemplates\SmsTemplateShow;
 use VentureDrake\LaravelCrm\Livewire\Tasks\TaskCreate;
 use VentureDrake\LaravelCrm\Livewire\Tasks\TaskEdit;
 use VentureDrake\LaravelCrm\Livewire\Tasks\TaskIndex;
@@ -270,6 +280,9 @@ use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\SmsCampaign;
+use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
+use VentureDrake\LaravelCrm\Models\SmsTemplate;
 use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Models\XeroContact;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
@@ -319,6 +332,9 @@ use VentureDrake\LaravelCrm\Observers\PurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteProductObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
+use VentureDrake\LaravelCrm\Observers\SmsCampaignObserver;
+use VentureDrake\LaravelCrm\Observers\SmsCampaignRecipientObserver;
+use VentureDrake\LaravelCrm\Observers\SmsTemplateObserver;
 use VentureDrake\LaravelCrm\Observers\TaskObserver;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Observers\UserObserver;
@@ -359,6 +375,8 @@ use VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy;
 use VentureDrake\LaravelCrm\Policies\QuotePolicy;
 use VentureDrake\LaravelCrm\Policies\RolePolicy;
 use VentureDrake\LaravelCrm\Policies\SettingPolicy;
+use VentureDrake\LaravelCrm\Policies\SmsCampaignPolicy;
+use VentureDrake\LaravelCrm\Policies\SmsTemplatePolicy;
 use VentureDrake\LaravelCrm\Policies\TaskPolicy;
 use VentureDrake\LaravelCrm\Policies\TaxRatePolicy;
 use VentureDrake\LaravelCrm\Policies\TeamPolicy;
@@ -419,6 +437,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\ChatWidget' => ChatWidgetPolicy::class,
         'VentureDrake\LaravelCrm\Models\EmailCampaign' => EmailCampaignPolicy::class,
         'VentureDrake\LaravelCrm\Models\EmailTemplate' => EmailTemplatePolicy::class,
+        'VentureDrake\LaravelCrm\Models\SmsCampaign' => SmsCampaignPolicy::class,
+        'VentureDrake\LaravelCrm\Models\SmsTemplate' => SmsTemplatePolicy::class,
     ];
 
     /**
@@ -526,6 +546,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         EmailCampaign::observe(EmailCampaignObserver::class);
         EmailTemplate::observe(EmailTemplateObserver::class);
         EmailCampaignRecipient::observe(EmailCampaignRecipientObserver::class);
+        SmsCampaign::observe(SmsCampaignObserver::class);
+        SmsTemplate::observe(SmsTemplateObserver::class);
+        SmsCampaignRecipient::observe(SmsCampaignRecipientObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -712,6 +735,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_laravel_crm_email_campaign_recipients_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_email_campaign_recipients_table.php', 114),
                 __DIR__.'/../database/migrations/create_laravel_crm_email_campaign_clicks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_email_campaign_clicks_table.php', 115),
                 __DIR__.'/../database/migrations/seed_laravel_crm_email_templates.php.stub' => $this->getMigrationFileName($filesystem, 'seed_laravel_crm_email_templates.php', 116),
+                __DIR__.'/../database/migrations/add_subscribed_to_laravel_crm_phones_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_subscribed_to_laravel_crm_phones_table.php', 117),
+                __DIR__.'/../database/migrations/create_laravel_crm_sms_templates_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_sms_templates_table.php', 118),
+                __DIR__.'/../database/migrations/create_laravel_crm_sms_campaigns_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_sms_campaigns_table.php', 119),
+                __DIR__.'/../database/migrations/create_laravel_crm_sms_campaign_recipients_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_sms_campaign_recipients_table.php', 120),
+                __DIR__.'/../database/migrations/create_laravel_crm_sms_campaign_clicks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_sms_campaign_clicks_table.php', 121),
+                __DIR__.'/../database/migrations/seed_laravel_crm_sms_templates.php.stub' => $this->getMigrationFileName($filesystem, 'seed_laravel_crm_sms_templates.php', 122),
             ], 'migrations');
 
             // Publishing the seeders
@@ -750,6 +779,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmV2::class,
                 LaravelCrmSampleData::class,
                 LaravelCrmEmailCampaignsDispatch::class,
+                LaravelCrmSmsCampaignsDispatch::class,
             ]);
 
             // Register the model factories
@@ -852,6 +882,15 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-email-template-create', EmailTemplateCreate::class);
         Livewire::component('crm-email-template-edit', EmailTemplateEdit::class);
         Livewire::component('crm-email-template-show', EmailTemplateShow::class);
+        Livewire::component('crm-sms-campaign-index', SmsCampaignIndex::class);
+        Livewire::component('crm-sms-campaign-create', SmsCampaignCreate::class);
+        Livewire::component('crm-sms-campaign-edit', SmsCampaignEdit::class);
+        Livewire::component('crm-sms-campaign-show', SmsCampaignShow::class);
+        Livewire::component('crm-sms-template-index', SmsTemplateIndex::class);
+        Livewire::component('crm-sms-template-create', SmsTemplateCreate::class);
+        Livewire::component('crm-sms-template-edit', SmsTemplateEdit::class);
+        Livewire::component('crm-sms-template-show', SmsTemplateShow::class);
+        Livewire::component('crm-clicksend-connect', ClickSendConnect::class);
         Livewire::component('crm-deal-index', DealIndex::class);
         Livewire::component('crm-deal-board', DealBoard::class);
         Livewire::component('crm-deal-show', DealShow::class);
@@ -988,6 +1027,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->everyMinute()
                     ->withoutOverlapping();
 
+                $schedule->command('laravelcrm:sms-campaigns-dispatch')
+                    ->name('laravelCrmSmsCampaignsDispatch')
+                    ->everyMinute()
+                    ->withoutOverlapping();
+
                 $schedule->command('laravelcrm:archive')
                     ->name('laravelCrmArchiving')
                     ->daily()
@@ -1085,6 +1129,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         Blade::if('hasemailmarketingenabled', function () {
             if (is_array(config('laravel-crm.modules')) && in_array('email-marketing', config('laravel-crm.modules'))) {
+                return true;
+            } elseif (! config('laravel-crm.modules')) {
+                return true;
+            }
+        });
+
+        Blade::if('hassmsmarketingenabled', function () {
+            if (is_array(config('laravel-crm.modules')) && in_array('sms-marketing', config('laravel-crm.modules'))) {
                 return true;
             } elseif (! config('laravel-crm.modules')) {
                 return true;

@@ -3,6 +3,7 @@
 use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\ClickSend\ClickSendConnect;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
 
 /* Portal Routes (public, no auth) */
@@ -83,6 +84,46 @@ Route::group(['prefix' => 'email-templates', 'middleware' => 'auth.laravel-crm']
     Route::get('{emailTemplate}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\EmailTemplateController@edit')
         ->name('laravel-crm.email-templates.edit')
         ->middleware(['can:update,emailTemplate']);
+});
+
+/* SMS Campaigns */
+
+Route::group(['prefix' => 'sms-campaigns', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\SmsCampaignController@index')
+        ->name('laravel-crm.sms-campaigns.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\SmsCampaign']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\SmsCampaignController@create')
+        ->name('laravel-crm.sms-campaigns.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\SmsCampaign']);
+
+    Route::get('{smsCampaign}', 'VentureDrake\LaravelCrm\Http\Controllers\SmsCampaignController@show')
+        ->name('laravel-crm.sms-campaigns.show')
+        ->middleware(['can:view,smsCampaign']);
+
+    Route::get('{smsCampaign}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\SmsCampaignController@edit')
+        ->name('laravel-crm.sms-campaigns.edit')
+        ->middleware(['can:update,smsCampaign']);
+});
+
+/* SMS Templates */
+
+Route::group(['prefix' => 'sms-templates', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\SmsTemplateController@index')
+        ->name('laravel-crm.sms-templates.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\SmsTemplate']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\SmsTemplateController@create')
+        ->name('laravel-crm.sms-templates.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\SmsTemplate']);
+
+    Route::get('{smsTemplate}', 'VentureDrake\LaravelCrm\Http\Controllers\SmsTemplateController@show')
+        ->name('laravel-crm.sms-templates.show')
+        ->middleware(['can:view,smsTemplate']);
+
+    Route::get('{smsTemplate}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\SmsTemplateController@edit')
+        ->name('laravel-crm.sms-templates.edit')
+        ->middleware(['can:update,smsTemplate']);
 });
 
 /* Leads */
@@ -1355,6 +1396,10 @@ Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], f
 
             return redirect(route('laravel-crm.integrations.xero'));
         })->name('laravel-crm.integrations.xero.disconnect');
+    });
+
+    Route::group(['prefix' => 'clicksend'], function () {
+        Route::get('', ClickSendConnect::class)->name('laravel-crm.integrations.clicksend');
     });
 });
 
