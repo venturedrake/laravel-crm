@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\SmsCampaigns;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -12,6 +13,7 @@ use VentureDrake\LaravelCrm\Sms\SmsCampaignMessage;
 
 class SmsCampaignShow extends Component
 {
+    use AuthorizesRequests;
     use Toast;
     use WithPagination;
 
@@ -29,6 +31,7 @@ class SmsCampaignShow extends Component
     public function recipients(): LengthAwarePaginator
     {
         return $this->campaign->recipients()
+            ->with('phone')
             ->orderBy('id', 'desc')
             ->paginate(25);
     }
@@ -52,6 +55,8 @@ class SmsCampaignShow extends Component
 
     public function cancel(SmsCampaignService $service): void
     {
+        $this->authorize('update', $this->campaign);
+
         $service->cancel($this->campaign);
         $this->campaign->refresh();
         $this->success(ucfirst(__('laravel-crm::lang.sms_campaign')).' '.__('laravel-crm::lang.cancelled'));

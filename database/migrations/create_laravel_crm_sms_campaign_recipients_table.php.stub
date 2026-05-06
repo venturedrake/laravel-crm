@@ -15,7 +15,6 @@ class CreateLaravelCrmSmsCampaignRecipientsTable extends Migration
             $table->unsignedBigInteger('sms_campaign_id')->index();
             $table->unsignedBigInteger('phone_id')->index();
             $table->unsignedBigInteger('person_id')->nullable()->index();
-            $table->string('number');
             $table->string('tracking_token', 64)->unique();
             $table->enum('status', ['pending', 'sent', 'delivered', 'failed', 'bounced', 'skipped'])->default('pending')->index();
             $table->timestamp('sent_at')->nullable();

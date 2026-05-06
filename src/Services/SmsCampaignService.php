@@ -3,6 +3,9 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
+use VentureDrake\LaravelCrm\Jobs\MaterialiseSmsCampaignRecipients;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\SmsCampaign;
@@ -47,6 +50,10 @@ class SmsCampaignService
 
     public function schedule(SmsCampaign $campaign, ?string $localScheduledAt): SmsCampaign
     {
+        if ($campaign->status !== 'draft') {
+            throw new \RuntimeException('SMS campaign cannot be scheduled in its current status.');
+        }
+
         $timezone = $this->resolveTimezone();
 
         if ($localScheduledAt) {
@@ -61,7 +68,10 @@ class SmsCampaignService
             'timezone' => $timezone,
         ]);
 
-        $this->materialiseRecipients($campaign);
+        // Materialisation walks every Phone in the tenant — push it onto the
+        // queue so the HTTP request returning the user to the show page does
+        // not block on what can be a multi-minute job for large tenants.
+        MaterialiseSmsCampaignRecipients::dispatch($campaign);
 
         return $campaign->fresh();
     }
@@ -79,14 +89,28 @@ class SmsCampaignService
 
     public function materialiseRecipients(SmsCampaign $campaign): int
     {
-        $count = 0;
         $seen = [];
+        $rows = [];
+        $now = Carbon::now();
+
+        $flush = function () use (&$rows) {
+            if ($rows === []) {
+                return;
+            }
+
+            // The unique index on (sms_campaign_id, phone_id) makes this
+            // idempotent under retries; insertOrIgnore skips collisions
+            // without throwing.
+            SmsCampaignRecipient::query()->insertOrIgnore($rows);
+
+            $rows = [];
+        };
 
         Phone::query()
             ->where('subscribed', true)
             ->where('phoneable_type', Person::class)
             ->whereNotNull('number')
-            ->chunkById(200, function ($phones) use ($campaign, &$count, &$seen) {
+            ->chunkById(500, function ($phones) use ($campaign, &$seen, &$rows, $flush, $now) {
                 foreach ($phones as $phone) {
                     $number = $this->normalize((string) $phone->number);
 
@@ -96,32 +120,34 @@ class SmsCampaignService
 
                     $seen[$number] = true;
 
-                    $exists = SmsCampaignRecipient::where('sms_campaign_id', $campaign->id)
-                        ->where('phone_id', $phone->id)
-                        ->exists();
-
-                    if ($exists) {
-                        continue;
-                    }
-
-                    SmsCampaignRecipient::create([
+                    $rows[] = [
+                        'external_id' => Uuid::uuid4()->toString(),
                         'sms_campaign_id' => $campaign->id,
                         'phone_id' => $phone->id,
                         'person_id' => $phone->phoneable_id,
-                        'number' => $phone->number,
                         'team_id' => $campaign->team_id,
+                        'tracking_token' => Str::random(40),
                         'status' => 'pending',
-                    ]);
+                        'clicks_count' => 0,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
 
-                    $count++;
+                    if (count($rows) >= 500) {
+                        $flush();
+                    }
                 }
             });
 
+        $flush();
+
+        $total = $campaign->recipients()->count();
+
         $campaign->update([
-            'total_recipients' => $campaign->recipients()->count(),
+            'total_recipients' => $total,
         ]);
 
-        return $count;
+        return $total;
     }
 
     private function normalize(string $number): string

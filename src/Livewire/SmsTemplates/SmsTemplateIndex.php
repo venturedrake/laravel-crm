@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\SmsTemplates;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -12,6 +13,7 @@ use VentureDrake\LaravelCrm\Models\SmsTemplate;
 
 class SmsTemplateIndex extends Component
 {
+    use AuthorizesRequests;
     use Toast;
     use WithPagination;
 
@@ -47,6 +49,8 @@ class SmsTemplateIndex extends Component
     public function delete($id)
     {
         if ($template = SmsTemplate::find($id)) {
+            $this->authorize('delete', $template);
+
             if ($template->is_system) {
                 $this->error(ucfirst(__('laravel-crm::lang.sms_template')).' '.__('laravel-crm::lang.is_system_readonly'));
 

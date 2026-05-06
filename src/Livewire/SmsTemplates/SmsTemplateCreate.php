@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\SmsTemplates;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\SmsTemplate;
@@ -10,6 +11,7 @@ use VentureDrake\LaravelCrm\Sms\SmsCampaignMessage;
 
 class SmsTemplateCreate extends Component
 {
+    use AuthorizesRequests;
     use Toast;
 
     public ?string $name = null;
@@ -45,6 +47,8 @@ class SmsTemplateCreate extends Component
 
     public function save(SmsTemplateService $service)
     {
+        $this->authorize('create', SmsTemplate::class);
+
         $this->validate();
 
         $template = $service->create([

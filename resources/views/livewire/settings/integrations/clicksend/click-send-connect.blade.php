@@ -36,8 +36,17 @@
                     <hr />
 
                     <form wire:submit="save" class="grid gap-5">
-                        <x-mary-input wire:model="username" label="{{ ucfirst(__('laravel-crm::lang.clicksend_username')) }}" />
-                        <x-mary-input wire:model="api_key" type="password" label="{{ ucfirst(__('laravel-crm::lang.clicksend_api_key')) }}" />
+                        <x-mary-input
+                            wire:model="username_input"
+                            label="{{ ucfirst(__('laravel-crm::lang.clicksend_username')) }}"
+                            placeholder="{{ $username_mask ?? '' }}"
+                        />
+                        <x-mary-input
+                            wire:model="api_key_input"
+                            type="password"
+                            label="{{ ucfirst(__('laravel-crm::lang.clicksend_api_key')) }}"
+                            placeholder="{{ $api_key_mask ?? '' }}"
+                        />
                         <x-mary-input wire:model="default_from" label="{{ ucfirst(__('laravel-crm::lang.clicksend_default_from')) }}" hint="{{ __('laravel-crm::lang.sender_id_hint') }}" />
 
                         <div class="flex gap-2">

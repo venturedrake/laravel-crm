@@ -16,7 +16,7 @@
     <div class="card">
         <h1>{{ ucfirst(__('laravel-crm::lang.unsubscribed_success')) }}</h1>
         <p>{{ __('laravel-crm::lang.sms_unsubscribed_message') }}</p>
-        <p class="number">{{ $recipient->number }}</p>
+        <p class="number">{{ $recipient->phone?->number }}</p>
     </div>
 </body>
 </html>

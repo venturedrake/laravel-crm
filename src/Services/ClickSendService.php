@@ -21,6 +21,15 @@ class ClickSendService
         return ! empty($this->username()) && ! empty($this->apiKey());
     }
 
+    /**
+     * Clear the underlying settings cache so subsequent reads pick up writes
+     * made in the current request.
+     */
+    public function refresh(): void
+    {
+        $this->settingService->forgetCache();
+    }
+
     public function username(): ?string
     {
         return $this->settingService->get('clicksend_username') ?: null;

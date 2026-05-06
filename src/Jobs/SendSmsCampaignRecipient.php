@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Throwable;
+use VentureDrake\LaravelCrm\Models\SmsCampaign;
 use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
 use VentureDrake\LaravelCrm\Services\ClickSendService;
 use VentureDrake\LaravelCrm\Sms\SmsCampaignMessage;
@@ -36,7 +37,16 @@ class SendSmsCampaignRecipient implements ShouldQueue
             return;
         }
 
-        if ($recipient->phone && ! $recipient->phone->subscribed) {
+        if (! $recipient->phone) {
+            $recipient->update([
+                'status' => 'skipped',
+                'error' => 'Phone record missing',
+            ]);
+
+            return;
+        }
+
+        if (! $recipient->phone->subscribed) {
             $recipient->update([
                 'status' => 'skipped',
                 'error' => 'Recipient unsubscribed before send',
@@ -53,7 +63,7 @@ class SendSmsCampaignRecipient implements ShouldQueue
         $body = SmsCampaignMessage::renderBody($recipient);
 
         $result = $clickSend->sendSms(
-            (string) $recipient->number,
+            (string) $recipient->phone->number,
             $body,
             $from,
             $recipient->tracking_token,
@@ -66,7 +76,7 @@ class SendSmsCampaignRecipient implements ShouldQueue
                 'clicksend_message_id' => $result['message_id'],
             ]);
 
-            $campaign->increment('sent_count');
+            $this->bumpCampaignCounter($campaign->id, 'sent_count');
         } else {
             $recipient->update([
                 'status' => 'failed',
@@ -74,19 +84,36 @@ class SendSmsCampaignRecipient implements ShouldQueue
                 'clicksend_message_id' => $result['message_id'] ?? null,
             ]);
 
-            $campaign->increment('failed_count');
+            $this->bumpCampaignCounter($campaign->id, 'failed_count');
         }
     }
 
     public function failed(Throwable $e): void
     {
-        $this->recipient->update([
+        $recipient = $this->recipient->fresh();
+
+        // handle() may have already moved this recipient to a terminal state and
+        // bumped the campaign counter. Avoid double-counting on queue retry exhaust.
+        if (! $recipient || in_array($recipient->status, ['sent', 'failed', 'skipped'], true)) {
+            return;
+        }
+
+        $recipient->update([
             'status' => 'failed',
             'error' => mb_substr($e->getMessage(), 0, 1000),
         ]);
 
-        if ($campaign = $this->recipient->campaign) {
-            $campaign->increment('failed_count');
+        if ($campaign = $recipient->campaign) {
+            $this->bumpCampaignCounter($campaign->id, 'failed_count');
         }
+    }
+
+    /**
+     * Increment a counter on the campaign atomically without firing model events
+     * — Auditing observers re-save the model and can clobber concurrent writes.
+     */
+    private function bumpCampaignCounter(int $campaignId, string $column): void
+    {
+        SmsCampaign::where('id', $campaignId)->increment($column);
     }
 }

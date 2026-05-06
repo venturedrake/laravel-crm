@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\SmsCampaigns;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\SmsCampaign;
@@ -11,6 +12,7 @@ use VentureDrake\LaravelCrm\Sms\SmsCampaignMessage;
 
 class SmsCampaignEdit extends Component
 {
+    use AuthorizesRequests;
     use Toast;
 
     public SmsCampaign $campaign;
@@ -71,6 +73,8 @@ class SmsCampaignEdit extends Component
 
     public function save(SmsCampaignService $service)
     {
+        $this->authorize('update', $this->campaign);
+
         $this->validate();
 
         $service->update([

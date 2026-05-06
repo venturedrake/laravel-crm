@@ -31,11 +31,14 @@ Route::group(['prefix' => 'p/email'], function () {
 Route::group(['prefix' => 'p/sms'], function () {
 
     Route::get('c/{token}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\SmsCampaignTrackingController@click')
+        ->middleware('throttle:60,1')
         ->name('laravel-crm.sms-tracking.click');
 
     Route::get('u/{token}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\SmsCampaignTrackingController@unsubscribeForm')
+        ->middleware('throttle:30,1')
         ->name('laravel-crm.sms-tracking.unsubscribe');
 
     Route::post('u/{token}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\SmsCampaignTrackingController@unsubscribe')
+        ->middleware('throttle:30,1')
         ->name('laravel-crm.sms-tracking.unsubscribe.confirm');
 });

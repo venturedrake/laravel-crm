@@ -18,7 +18,7 @@
     <div class="card">
         <h1>{{ ucfirst(__('laravel-crm::lang.unsubscribe_confirm')) }}</h1>
         <p>{{ __('laravel-crm::lang.sms_unsubscribe_prompt') }}</p>
-        <p class="number">{{ $recipient->number }}</p>
+        <p class="number">{{ $recipient->phone?->number }}</p>
         <form method="POST" action="{{ route('laravel-crm.sms-tracking.unsubscribe.confirm', ['token' => $token]) }}">
             @csrf
             <button type="submit">{{ ucfirst(__('laravel-crm::lang.unsubscribe')) }}</button>

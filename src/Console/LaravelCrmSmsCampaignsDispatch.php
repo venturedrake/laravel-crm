@@ -33,12 +33,16 @@ class LaravelCrmSmsCampaignsDispatch extends Command
             })
             ->chunkById(50, function ($campaigns) {
                 foreach ($campaigns as $campaign) {
+                    $campaign->refresh();
+
+                    $terminalStatus = $this->resolveTerminalStatus($campaign);
+
                     $campaign->update([
-                        'status' => 'sent',
+                        'status' => $terminalStatus,
                         'sent_at' => Carbon::now('UTC'),
                     ]);
 
-                    $this->info("SMS campaign {$campaign->campaign_id} marked as sent.");
+                    $this->info("SMS campaign {$campaign->campaign_id} marked as {$terminalStatus}.");
                 }
             });
 
@@ -58,5 +62,18 @@ class LaravelCrmSmsCampaignsDispatch extends Command
             });
 
         $this->info("Dispatched SMS campaign {$campaign->campaign_id}.");
+    }
+
+    private function resolveTerminalStatus(SmsCampaign $campaign): string
+    {
+        if ((int) $campaign->total_recipients === 0) {
+            return 'failed';
+        }
+
+        if ((int) $campaign->sent_count === 0 && (int) $campaign->failed_count > 0) {
+            return 'failed';
+        }
+
+        return 'sent';
     }
 }

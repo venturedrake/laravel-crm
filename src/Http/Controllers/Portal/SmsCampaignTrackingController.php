@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 use VentureDrake\LaravelCrm\Models\SmsCampaignClick;
 use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
 
@@ -26,7 +27,9 @@ class SmsCampaignTrackingController extends Controller
             return redirect('/');
         }
 
-        if ($recipient) {
+        $userAgent = (string) $request->userAgent();
+
+        if ($recipient && ! $this->isBot($userAgent) && ! $this->isDuplicate($recipient->id, $request->ip(), $userAgent)) {
             $isFirstClick = $recipient->first_clicked_at === null;
 
             $recipient->increment('clicks_count');
@@ -40,7 +43,7 @@ class SmsCampaignTrackingController extends Controller
                 'original_url' => $url,
                 'clicked_at' => now(),
                 'ip' => $request->ip(),
-                'user_agent' => mb_substr((string) $request->userAgent(), 0, 500),
+                'user_agent' => mb_substr($userAgent, 0, 500),
             ]);
 
             $campaign = $recipient->campaign;
@@ -55,6 +58,37 @@ class SmsCampaignTrackingController extends Controller
         }
 
         return redirect()->away($url);
+    }
+
+    private function isBot(string $userAgent): bool
+    {
+        if ($userAgent === '') {
+            return true;
+        }
+
+        $signatures = ['bot', 'crawler', 'spider', 'preview', 'fetcher', 'facebookexternalhit', 'slackbot', 'whatsapp', 'urlpreview', 'monitor', 'pingdom', 'curl', 'wget', 'headless'];
+
+        $needle = strtolower($userAgent);
+        foreach ($signatures as $signature) {
+            if (str_contains($needle, $signature)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isDuplicate(int $recipientId, ?string $ip, string $userAgent): bool
+    {
+        $key = 'sms-click:'.$recipientId.':'.sha1(($ip ?? '').'|'.$userAgent);
+
+        if (Cache::has($key)) {
+            return true;
+        }
+
+        Cache::put($key, true, now()->addMinutes(10));
+
+        return false;
     }
 
     public function unsubscribeForm(string $token)

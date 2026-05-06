@@ -52,6 +52,9 @@
 
     <x-mary-card shadow title="{{ ucfirst(__('laravel-crm::lang.recipients')) }}">
         <x-mary-table :headers="$recipientHeaders" :rows="$recipients" with-pagination>
+            @scope('cell_number', $recipient)
+                {{ $recipient->phone?->number ?? '—' }}
+            @endscope
             @scope('cell_status', $recipient)
                 <x-mary-badge :value="ucfirst($recipient->status)" class="badge-neutral text-white" />
             @endscope

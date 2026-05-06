@@ -59,10 +59,17 @@ class SmsCampaignMessage
     /**
      * Estimate how many GSM-7 segments the message takes. SMS over 160 chars
      * is split into multi-part segments of 153 chars each.
+     *
+     * Important: every link in the body is rewritten to a tracking URL on send,
+     * and an unsubscribe URL is appended. To give the user an accurate count
+     * (and avoid surprise ClickSend charges), measure the body the recipient
+     * will actually receive — not the source body.
      */
     public static function segmentCount(string $body): int
     {
-        $length = mb_strlen($body);
+        $estimated = self::estimateRenderedBody($body);
+
+        $length = mb_strlen($estimated);
 
         if ($length === 0) {
             return 0;
@@ -73,6 +80,22 @@ class SmsCampaignMessage
         }
 
         return (int) ceil($length / 153);
+    }
+
+    /**
+     * Build a representative version of the SMS body the recipient will see —
+     * with links rewritten through a stub tracking URL and the unsubscribe
+     * footer appended — so segment counting matches what is actually sent.
+     */
+    private static function estimateRenderedBody(string $body): string
+    {
+        $stubToken = str_repeat('x', 40);
+
+        $rewritten = self::rewriteLinks($body, $stubToken);
+
+        $unsubscribeUrl = route('laravel-crm.sms-tracking.unsubscribe', ['token' => $stubToken]);
+
+        return rtrim($rewritten)."\nReply STOP to opt out or visit ".$unsubscribeUrl;
     }
 
     private static function substitute(string $text, array $data): string

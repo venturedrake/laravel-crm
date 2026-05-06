@@ -2,8 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\SmsCampaigns;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\SmsCampaign;
 use VentureDrake\LaravelCrm\Models\SmsTemplate;
 use VentureDrake\LaravelCrm\Services\ClickSendService;
 use VentureDrake\LaravelCrm\Services\SmsCampaignService;
@@ -11,6 +13,7 @@ use VentureDrake\LaravelCrm\Sms\SmsCampaignMessage;
 
 class SmsCampaignCreate extends Component
 {
+    use AuthorizesRequests;
     use Toast;
 
     public ?string $name = null;
@@ -65,6 +68,8 @@ class SmsCampaignCreate extends Component
 
     public function save(SmsCampaignService $service)
     {
+        $this->authorize('create', SmsCampaign::class);
+
         $this->validate();
 
         $campaign = $service->create([
