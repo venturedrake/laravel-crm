@@ -130,6 +130,6 @@ class EmailCampaignService
     {
         $setting = $this->settingService->get('timezone');
 
-        return $setting?->value ?: 'UTC';
+        return $setting ?: 'UTC';
     }
 }
