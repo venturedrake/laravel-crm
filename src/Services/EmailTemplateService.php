@@ -11,6 +11,7 @@ class EmailTemplateService
         return EmailTemplate::create([
             'name' => $data['name'],
             'subject' => $data['subject'],
+            'preview_text' => $data['preview_text'] ?? null,
             'body' => $data['body'],
             'is_system' => false,
         ]);
@@ -25,6 +26,7 @@ class EmailTemplateService
         $template->update([
             'name' => $data['name'],
             'subject' => $data['subject'],
+            'preview_text' => $data['preview_text'] ?? null,
             'body' => $data['body'],
         ]);
 

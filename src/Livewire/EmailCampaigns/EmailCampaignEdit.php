@@ -25,6 +25,10 @@ class EmailCampaignEdit extends Component
 
     public ?string $body = null;
 
+    public bool $showPreview = false;
+
+    public string $previewHtml = '';
+
     public function mount(EmailCampaign $campaign): void
     {
         if (! $campaign->isEditable()) {
@@ -87,6 +91,16 @@ class EmailCampaignEdit extends Component
             ucfirst(__('laravel-crm::lang.campaign_stored')),
             redirectTo: route('laravel-crm.email-campaigns.show', $this->campaign)
         );
+    }
+
+    public function openPreview(): void
+    {
+        $this->previewHtml = EmailCampaignMessage::renderPreview(
+            $this->body ?? '',
+            $this->preview_text ?? '',
+            $this->campaign->team_id
+        );
+        $this->showPreview = true;
     }
 
     public function render()

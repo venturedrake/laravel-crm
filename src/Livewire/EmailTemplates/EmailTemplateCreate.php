@@ -22,6 +22,10 @@ class EmailTemplateCreate extends Component
 
     public ?int $clone_from = null;
 
+    public bool $showPreview = false;
+
+    public string $previewHtml = '';
+
     public function mount(): void
     {
         if (request()->has('clone_from')) {
@@ -62,6 +66,15 @@ class EmailTemplateCreate extends Component
             ucfirst(__('laravel-crm::lang.email_template')).' '.__('laravel-crm::lang.created'),
             redirectTo: route('laravel-crm.email-templates.show', $template)
         );
+    }
+
+    public function openPreview(): void
+    {
+        $this->previewHtml = EmailCampaignMessage::renderPreview(
+            $this->body ?? '',
+            $this->preview_text ?? ''
+        );
+        $this->showPreview = true;
     }
 
     public function render()

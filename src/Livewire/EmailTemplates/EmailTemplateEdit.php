@@ -22,6 +22,10 @@ class EmailTemplateEdit extends Component
 
     public ?string $body = null;
 
+    public bool $showPreview = false;
+
+    public string $previewHtml = '';
+
     public function mount(EmailTemplate $template): void
     {
         if ($template->is_system) {
@@ -62,6 +66,15 @@ class EmailTemplateEdit extends Component
             ucfirst(__('laravel-crm::lang.email_template')).' '.__('laravel-crm::lang.updated'),
             redirectTo: route('laravel-crm.email-templates.show', $this->template)
         );
+    }
+
+    public function openPreview(): void
+    {
+        $this->previewHtml = EmailCampaignMessage::renderPreview(
+            $this->body ?? '',
+            $this->preview_text ?? ''
+        );
+        $this->showPreview = true;
     }
 
     public function render()

@@ -50,21 +50,21 @@ class EmailCampaignMessage extends Mailable
             'company_name' => config('app.name'),
         ];
 
-        $bodyContent = preg_replace_callback('/\{(\w+)\}/', function ($m) use ($textData) {
+        $substitute = fn ($text) => preg_replace_callback('/\{(\w+)\}/', function ($m) use ($textData) {
             return array_key_exists($m[1], $textData) ? e($textData[$m[1]]) : $m[0];
-        }, $campaign->body);
+        }, $text);
 
-        $bodyContent = $this->rewriteLinks($bodyContent);
+        $bodyContent = $this->rewriteLinks($substitute($campaign->body));
 
-        $rendered = $this->wrapInShell(
+        $rendered = self::wrapInShell(
             $bodyContent,
-            $this->resolveLogoHtml(),
-            $this->resolveAddressLine($campaign->team_id),
+            self::resolveLogoHtml(),
+            self::resolveAddressLine($campaign->team_id),
             $unsubscribeUrl,
-            $campaign->preview_text ?? ''
+            $substitute($campaign->preview_text ?? '')
         );
 
-        $rendered = $this->appendTrackingPixel($rendered, $trackingPixelUrl);
+        $rendered = self::appendTrackingPixel($rendered, $trackingPixelUrl);
 
         $from = config('mail.from.address');
         $fromName = config('mail.from.name');
@@ -94,16 +94,42 @@ class EmailCampaignMessage extends Mailable
                 return $matches[0];
             }
 
-            $trackingUrl = route('laravel-crm.email-tracking.click', ['token' => $token]).'?u='.$this->base64UrlEncode($url);
+            $trackingUrl = route('laravel-crm.email-tracking.click', ['token' => $token]).'?u='.self::base64UrlEncode($url);
 
             return '<a '.$before.'href='.$quote.$trackingUrl.$quote.$after.'>';
         }, $html);
     }
 
-    private function wrapInShell(string $body, string $logoHtml, string $addressLine, string $unsubscribeUrl, string $previewText = ''): string
+    public static function renderPreview(string $body, string $previewText = '', ?int $teamId = null): string
+    {
+        $sampleData = [
+            'first_name' => 'Jane',
+            'last_name' => 'Smith',
+            'full_name' => 'Jane Smith',
+            'email' => 'jane.smith@example.com',
+            'company_name' => config('app.name'),
+        ];
+
+        $bodyContent = preg_replace_callback('/\{(\w+)\}/', function ($m) use ($sampleData) {
+            return array_key_exists($m[1], $sampleData) ? e($sampleData[$m[1]]) : $m[0];
+        }, $body);
+
+        return self::wrapInShell(
+            $bodyContent,
+            self::resolveLogoHtml(),
+            self::resolveAddressLine($teamId),
+            '#',
+            $previewText
+        );
+    }
+
+    private static function wrapInShell(string $body, string $logoHtml, string $addressLine, string $unsubscribeUrl, string $previewText = ''): string
     {
         $previewBlock = $previewText !== ''
-            ? '<span style="display:none;font-size:1px;color:#f9fafb;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">'.e($previewText).'</span>'
+            ? '<span style="display:none;font-size:1px;color:#f9fafb;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">'
+                .e($previewText)
+                .str_repeat('&nbsp;&#847;&zwnj;&nbsp;', 30)
+                .'</span>'
             : '';
 
         $addressBlock = $addressLine !== ''
@@ -144,7 +170,7 @@ class EmailCampaignMessage extends Mailable
 HTML;
     }
 
-    private function appendTrackingPixel(string $html, string $pixelUrl): string
+    private static function appendTrackingPixel(string $html, string $pixelUrl): string
     {
         $pixel = '<img src="'.e($pixelUrl).'" width="1" height="1" alt="" style="display:block;border:0;" />';
 
@@ -155,12 +181,12 @@ HTML;
         return $html.$pixel;
     }
 
-    private function base64UrlEncode(string $value): string
+    private static function base64UrlEncode(string $value): string
     {
         return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
     }
 
-    private function resolveLogoHtml(): string
+    private static function resolveLogoHtml(): string
     {
         $logoFile = app('laravel-crm.settings')->get('logo_file');
         $companyName = config('app.name');
@@ -174,7 +200,7 @@ HTML;
             .'</span>';
     }
 
-    private function resolveAddressLine(?int $teamId): string
+    private static function resolveAddressLine(?int $teamId): string
     {
         $teamSetting = Setting::withoutGlobalScopes()
             ->where('name', 'team')

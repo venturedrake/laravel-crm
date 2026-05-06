@@ -24,7 +24,10 @@
 
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" link="{{ route('laravel-crm.email-campaigns.index') }}" />
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.preview')) }}" wire:click="openPreview" spinner="openPreview" />
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.save')) }}" class="btn-primary text-white" type="submit" spinner="save" />
         </x-slot:actions>
     </x-mary-form>
+
+    @include('laravel-crm::livewire.email-campaigns._preview-drawer')
 </div>

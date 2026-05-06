@@ -22,6 +22,7 @@ class EmailCampaignService
         return EmailCampaign::create([
             'name' => $data['name'],
             'subject' => $data['subject'],
+            'preview_text' => $data['preview_text'] ?? null,
             'body' => $data['body'],
             'email_template_id' => $data['email_template_id'] ?? null,
             'status' => 'draft',
@@ -38,6 +39,7 @@ class EmailCampaignService
         $campaign->update([
             'name' => $data['name'],
             'subject' => $data['subject'],
+            'preview_text' => $data['preview_text'] ?? null,
             'body' => $data['body'],
             'email_template_id' => $data['email_template_id'] ?? null,
         ]);
