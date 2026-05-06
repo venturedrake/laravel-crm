@@ -13,7 +13,7 @@
                         <div role="alert" class="alert alert-info alert-soft">
                             <span>
                                 {{ __('laravel-crm::lang.sign_up_for_clicksend') }}
-                                <a href="https://www.clicksend.com" target="_blank" class="link">https://www.clicksend.com</a>
+                                <a href="https://clicksend.com/?u=47224" target="_blank" class="link">clicksend.com</a>
                             </span>
                         </div>
                     @else
