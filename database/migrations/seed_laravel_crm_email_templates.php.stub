@@ -15,12 +15,12 @@ class SeedLaravelCrmEmailTemplates extends Migration
         $templates = [
             [
                 'name' => 'Newsletter',
-                'subject' => 'Your monthly newsletter from {{ company_name }}',
+                'subject' => 'Your monthly newsletter from {company_name}',
                 'body' => $this->newsletter(),
             ],
             [
                 'name' => 'Announcement',
-                'subject' => 'Big news from {{ company_name }}',
+                'subject' => 'Big news from {company_name}',
                 'body' => $this->announcement(),
             ],
             [
@@ -30,12 +30,12 @@ class SeedLaravelCrmEmailTemplates extends Migration
             ],
             [
                 'name' => 'Welcome',
-                'subject' => 'Welcome to {{ company_name }}, {{ first_name }}',
+                'subject' => 'Welcome to {company_name}, {first_name}',
                 'body' => $this->welcome(),
             ],
             [
                 'name' => 'Re-engagement',
-                'subject' => 'We miss you, {{ first_name }}',
+                'subject' => 'We miss you, {first_name}',
                 'body' => $this->reengagement(),
             ],
         ];
@@ -97,7 +97,7 @@ HTML;
     private function newsletter(): string
     {
         $body = <<<HTML
-<p>Hi {{ first_name }},</p>
+<p>Hi {first_name},</p>
 <p>Here is a quick recap of what's been happening this month.</p>
 <h3 style="color:#111827;margin-top:24px;">Highlights</h3>
 <ul>
@@ -115,7 +115,7 @@ HTML;
     private function announcement(): string
     {
         $body = <<<HTML
-<p>Hi {{ first_name }},</p>
+<p>Hi {first_name},</p>
 <p>We have something exciting to share — a quick announcement we wanted you to hear first.</p>
 <p>Replace this paragraph with the details of your announcement. Keep it short, clear, and link to anywhere your readers can learn more.</p>
 <p style="margin-top:24px;"><a href="https://example.com" style="background:#111827;color:#ffffff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;">Learn more</a></p>
@@ -127,7 +127,7 @@ HTML;
     private function promotion(): string
     {
         $body = <<<HTML
-<p>Hi {{ first_name }},</p>
+<p>Hi {first_name},</p>
 <p style="font-size:18px;color:#111827;"><strong>Save 20% this week only.</strong></p>
 <p>For a limited time, enjoy a special discount as a thank-you for being part of our community.</p>
 <p style="margin-top:24px;"><a href="https://example.com" style="background:#dc2626;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;font-weight:600;">Shop the sale</a></p>
@@ -140,7 +140,7 @@ HTML;
     private function welcome(): string
     {
         $body = <<<HTML
-<p>Hi {{ first_name }},</p>
+<p>Hi {first_name},</p>
 <p>Welcome aboard — we're glad you're here.</p>
 <h3 style="color:#111827;margin-top:24px;">Getting started</h3>
 <ol>
@@ -157,7 +157,7 @@ HTML;
     private function reengagement(): string
     {
         $body = <<<HTML
-<p>Hi {{ first_name }},</p>
+<p>Hi {first_name},</p>
 <p>It has been a while — we wanted to check back in.</p>
 <p>Here's a small token of appreciation for sticking with us. Click below to come back and see what's new.</p>
 <p style="margin-top:24px;"><a href="https://example.com" style="background:#7c3aed;color:#ffffff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;">Come back</a></p>

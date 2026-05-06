@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\EmailCampaigns;
 
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Mail\EmailCampaignMessage;
 use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Services\EmailCampaignService;
 
@@ -76,6 +77,7 @@ class EmailCampaignCreate extends Component
     {
         return view('laravel-crm::livewire.email-campaigns.email-campaign-create', [
             'templates' => $this->templates(),
+            'placeholders' => EmailCampaignMessage::availablePlaceholders(),
         ]);
     }
 }

@@ -19,6 +19,18 @@ class EmailCampaignMessage extends Mailable
         $this->recipient = $recipient;
     }
 
+    public static function availablePlaceholders(): array
+    {
+        return [
+            'first_name' => 'Recipient first name',
+            'last_name' => 'Recipient last name',
+            'full_name' => 'Recipient full name',
+            'email' => 'Recipient email address',
+            'company_name' => 'Your company name',
+            'unsubscribe_url' => 'Unsubscribe link',
+        ];
+    }
+
     public function build()
     {
         $campaign = $this->recipient->campaign;
@@ -37,8 +49,8 @@ class EmailCampaignMessage extends Mailable
             'tracking_pixel_url' => $trackingPixelUrl,
         ];
 
-        $rendered = preg_replace_callback('/\{\{\s*(\w+)\s*\}\}/', function ($m) use ($data) {
-            return e($data[$m[1]] ?? '');
+        $rendered = preg_replace_callback('/\{(\w+)\}/', function ($m) use ($data) {
+            return array_key_exists($m[1], $data) ? e($data[$m[1]]) : $m[0];
         }, $campaign->body);
 
         $rendered = $this->rewriteLinks($rendered);

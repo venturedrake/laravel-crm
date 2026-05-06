@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\EmailTemplates;
 
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Mail\EmailCampaignMessage;
 use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Services\EmailTemplateService;
 
@@ -60,6 +61,8 @@ class EmailTemplateEdit extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.email-templates.email-template-edit');
+        return view('laravel-crm::livewire.email-templates.email-template-edit', [
+            'placeholders' => EmailCampaignMessage::availablePlaceholders(),
+        ]);
     }
 }

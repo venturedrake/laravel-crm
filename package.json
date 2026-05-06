@@ -21,6 +21,7 @@
     "dependencies": {
         "chart.js": "^4.5.1",
         "sortablejs": "^1.15.6",
+        "tinymce": "^7.6.0",
         "vanilla-picker": "^2.12.3"
     }
 }
