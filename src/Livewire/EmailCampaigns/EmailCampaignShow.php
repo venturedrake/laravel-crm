@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\EmailCampaigns;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -12,6 +13,7 @@ use VentureDrake\LaravelCrm\Services\EmailCampaignService;
 
 class EmailCampaignShow extends Component
 {
+    use AuthorizesRequests;
     use Toast;
     use WithPagination;
 
@@ -53,6 +55,18 @@ class EmailCampaignShow extends Component
             $this->campaign->team_id
         );
         $this->showPreview = true;
+    }
+
+    public function delete($id): void
+    {
+        if ($campaign = EmailCampaign::find($id)) {
+            $this->authorize('delete', $campaign);
+            $campaign->delete();
+            $this->success(
+                ucfirst(__('laravel-crm::lang.email_campaign')).' '.__('laravel-crm::lang.deleted'),
+                redirectTo: route('laravel-crm.email-campaigns.index')
+            );
+        }
     }
 
     public function cancel(EmailCampaignService $service): void

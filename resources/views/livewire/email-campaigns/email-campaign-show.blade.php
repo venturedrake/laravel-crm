@@ -3,7 +3,19 @@
         <x-slot:actions>
             @if($campaign->isCancellable())
                 @can('edit crm email-campaigns')
-                    <x-mary-button wire:click="cancel" wire:confirm="Cancel this campaign?" label="{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ __('laravel-crm::lang.send') }}" icon="o-x-mark" class="btn-warning text-white" />
+                    <x-mary-button onclick="modalCancelEmailCampaign.showModal()" label="{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ __('laravel-crm::lang.send') }}" icon="o-x-mark" class="btn-warning text-white" />
+                    <dialog id="modalCancelEmailCampaign" class="modal">
+                        <div class="modal-box text-left">
+                            <h3 class="text-lg font-bold">{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ ucfirst(__('laravel-crm::lang.send')) }}?</h3>
+                            <p class="py-4">You're about to cancel this campaign send. This action cannot be reversed.</p>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <button class="btn">{{ ucfirst(__('laravel-crm::lang.back')) }}</button>
+                                    <button wire:click="cancel" class="btn btn-warning text-white">{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ __('laravel-crm::lang.send') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
                 @endcan
             @endif
             @if($campaign->isEditable())
@@ -12,6 +24,10 @@
                 @endcan
             @endif
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.preview')) }}" wire:click="openPreview" spinner="openPreview" />
+            @can('delete crm email-campaigns')
+                <x-mary-button onclick="modalDeleteEmailCampaign{{ $campaign->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" />
+                <x-crm-delete-confirm model="emailCampaign" id="{{ $campaign->id }}" deleting="email campaign" />
+            @endcan
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back')) }}" link="{{ route('laravel-crm.email-campaigns.index') }}" />
         </x-slot:actions>
     </x-mary-header>
