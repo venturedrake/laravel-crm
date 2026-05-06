@@ -11,6 +11,7 @@
                     <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.edit')) }}" link="{{ route('laravel-crm.email-campaigns.edit', $campaign) }}" icon="o-pencil-square" class="btn-primary text-white" />
                 @endcan
             @endif
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.preview')) }}" wire:click="openPreview" spinner="openPreview" />
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back')) }}" link="{{ route('laravel-crm.email-campaigns.index') }}" />
         </x-slot:actions>
     </x-mary-header>
@@ -42,6 +43,8 @@
             </div>
         </div>
     </x-mary-card>
+
+    @include('laravel-crm::livewire.email-campaigns._preview-drawer')
 
     <x-mary-card shadow title="{{ ucfirst(__('laravel-crm::lang.recipients')) }}">
         <x-mary-table :headers="$recipientHeaders" :rows="$recipients" with-pagination>

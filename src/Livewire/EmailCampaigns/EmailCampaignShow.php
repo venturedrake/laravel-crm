@@ -6,6 +6,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Mail\EmailCampaignMessage;
 use VentureDrake\LaravelCrm\Models\EmailCampaign;
 use VentureDrake\LaravelCrm\Services\EmailCampaignService;
 
@@ -15,6 +16,10 @@ class EmailCampaignShow extends Component
     use WithPagination;
 
     public EmailCampaign $campaign;
+
+    public bool $showPreview = false;
+
+    public string $previewHtml = '';
 
     public function mount(EmailCampaign $campaign): void
     {
@@ -38,6 +43,16 @@ class EmailCampaignShow extends Component
             ['key' => 'clicks_count', 'label' => ucfirst(__('laravel-crm::lang.clicks'))],
             ['key' => 'unsubscribed_at', 'label' => ucfirst(__('laravel-crm::lang.unsubscribed'))],
         ];
+    }
+
+    public function openPreview(): void
+    {
+        $this->previewHtml = EmailCampaignMessage::renderPreview(
+            $this->campaign->body ?? '',
+            $this->campaign->preview_text ?? '',
+            $this->campaign->team_id
+        );
+        $this->showPreview = true;
     }
 
     public function cancel(EmailCampaignService $service): void
