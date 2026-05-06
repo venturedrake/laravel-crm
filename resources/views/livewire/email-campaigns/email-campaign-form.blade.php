@@ -13,6 +13,9 @@
     <div class="lg:col-span-2">
         <x-mary-input wire:model="subject" label="{{ ucfirst(__('laravel-crm::lang.subject')) }}" />
     </div>
+    <div class="lg:col-span-2">
+        <x-mary-input wire:model="preview_text" label="{{ ucfirst(__('laravel-crm::lang.preview_text')) }}" hint="{{ __('laravel-crm::lang.preview_text_hint') }}" />
+    </div>
     <div class="lg:col-span-2 grid lg:grid-cols-6 gap-5">
         <div class="lg:col-span-5">
             <x-mary-editor wire:model="body" gpl-license :config="['min_height' => 600, 'autoresize_bottom_margin' => 20, 'plugins' => 'autoresize']" label="{{ ucfirst(__('laravel-crm::lang.body')) }}" />

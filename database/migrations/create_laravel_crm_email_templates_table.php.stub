@@ -14,6 +14,7 @@ class CreateLaravelCrmEmailTemplatesTable extends Migration
             $table->unsignedBigInteger('team_id')->index()->nullable();
             $table->string('name');
             $table->string('subject');
+            $table->string('preview_text')->nullable();
             $table->longText('body');
             $table->boolean('is_system')->default(false);
             $table->unsignedBigInteger('user_created_id')->nullable();

@@ -16,6 +16,7 @@ class CreateLaravelCrmEmailCampaignsTable extends Migration
             $table->unsignedBigInteger('team_id')->index()->nullable();
             $table->string('name');
             $table->string('subject');
+            $table->string('preview_text')->nullable();
             $table->longText('body');
             $table->unsignedBigInteger('email_template_id')->nullable()->index();
             $table->enum('status', ['draft', 'scheduled', 'sending', 'sent', 'cancelled', 'failed'])->default('draft')->index();

@@ -18,6 +18,8 @@ class EmailCampaignCreate extends Component
 
     public ?string $subject = null;
 
+    public ?string $preview_text = null;
+
     public ?string $body = null;
 
     public string $send_mode = 'now';
@@ -29,6 +31,7 @@ class EmailCampaignCreate extends Component
         return [
             'name' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
+            'preview_text' => 'nullable|string|max:255',
             'body' => 'required|string',
             'send_mode' => 'required|in:now,schedule',
             'scheduled_at' => 'required_if:send_mode,schedule|nullable|date|after:now',
@@ -50,6 +53,7 @@ class EmailCampaignCreate extends Component
 
         if ($template) {
             $this->subject = $template->subject;
+            $this->preview_text = $template->preview_text;
             $this->body = $template->body;
         }
     }
@@ -61,6 +65,7 @@ class EmailCampaignCreate extends Component
         $campaign = $service->create([
             'name' => $this->name,
             'subject' => $this->subject,
+            'preview_text' => $this->preview_text,
             'body' => $this->body,
             'email_template_id' => $this->email_template_id,
         ]);

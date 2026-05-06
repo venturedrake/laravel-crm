@@ -60,7 +60,8 @@ class EmailCampaignMessage extends Mailable
             $bodyContent,
             $this->resolveLogoHtml(),
             $this->resolveAddressLine($campaign->team_id),
-            $unsubscribeUrl
+            $unsubscribeUrl,
+            $campaign->preview_text ?? ''
         );
 
         $rendered = $this->appendTrackingPixel($rendered, $trackingPixelUrl);
@@ -99,8 +100,12 @@ class EmailCampaignMessage extends Mailable
         }, $html);
     }
 
-    private function wrapInShell(string $body, string $logoHtml, string $addressLine, string $unsubscribeUrl): string
+    private function wrapInShell(string $body, string $logoHtml, string $addressLine, string $unsubscribeUrl, string $previewText = ''): string
     {
+        $previewBlock = $previewText !== ''
+            ? '<span style="display:none;font-size:1px;color:#f9fafb;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">'.e($previewText).'</span>'
+            : '';
+
         $addressBlock = $addressLine !== ''
             ? '<div style="margin-bottom:8px;">'.e($addressLine).'</div>'
             : '';
@@ -108,6 +113,7 @@ class EmailCampaignMessage extends Mailable
         $unsubscribeLink = '<a href="'.e($unsubscribeUrl).'" style="color:#6b7280;text-decoration:underline;">Unsubscribe</a>';
 
         return <<<HTML
+{$previewBlock}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa;padding:24px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <tr>
     <td align="center">

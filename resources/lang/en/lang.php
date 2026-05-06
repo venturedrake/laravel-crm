@@ -724,6 +724,8 @@ return [
     'email_templates' => 'email templates',
     'subscribed' => 'subscribed',
     'unsubscribed' => 'unsubscribed',
+    'preview_text' => 'preview text',
+    'preview_text_hint' => 'Appears after the subject line in the inbox.',
     'body' => 'body',
     'recipients' => 'recipients',
     'total_recipients' => 'total recipients',

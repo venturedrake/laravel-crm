@@ -16,6 +16,8 @@ class EmailTemplateCreate extends Component
 
     public ?string $subject = null;
 
+    public ?string $preview_text = null;
+
     public ?string $body = null;
 
     public ?int $clone_from = null;
@@ -28,6 +30,7 @@ class EmailTemplateCreate extends Component
             if ($source) {
                 $this->name = $source->name.' (copy)';
                 $this->subject = $source->subject;
+                $this->preview_text = $source->preview_text;
                 $this->body = $source->body;
                 $this->clone_from = $source->id;
             }
@@ -39,6 +42,7 @@ class EmailTemplateCreate extends Component
         return [
             'name' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
+            'preview_text' => 'nullable|string|max:255',
             'body' => 'required|string',
         ];
     }
@@ -50,6 +54,7 @@ class EmailTemplateCreate extends Component
         $template = $service->create([
             'name' => $this->name,
             'subject' => $this->subject,
+            'preview_text' => $this->preview_text,
             'body' => $this->body,
         ]);
 
