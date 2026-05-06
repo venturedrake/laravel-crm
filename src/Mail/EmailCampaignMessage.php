@@ -138,56 +138,60 @@ class EmailCampaignMessage extends Mailable
 
         $unsubscribeLink = '<a href="'.e($unsubscribeUrl).'" style="color:#6b7280;text-decoration:underline;">Unsubscribe</a>';
 
+        $lang = app()->getLocale();
+
         return <<<HTML
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{$lang}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title></title>
 <style>
-  body { margin:0; padding:0; background:#f5f7fa; }
-  img { max-width:100%; height:auto; border:0; display:block; }
+  img { max-width:100% !important; height:auto; }
   a { word-break:break-word; }
-  .email-wrapper { background:#f5f7fa; padding:24px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
-  .email-body { max-width:600px; width:100%; margin:0 auto; background:#ffffff; border-radius:8px; overflow:hidden; }
-  .email-header { padding:24px 32px; border-bottom:1px solid #e5e7eb; text-align:center; }
-  .email-header img { max-height:60px; max-width:240px; display:inline-block; }
-  .email-content { padding:32px; color:#374151; font-size:15px; line-height:1.6; }
-  .email-footer { padding:20px 32px; background:#f9fafb; border-top:1px solid #e5e7eb; color:#6b7280; font-size:12px; line-height:1.5; text-align:center; }
   @media only screen and (max-width:600px) {
-    .email-wrapper { padding:0 !important; }
-    .email-body { border-radius:0 !important; }
-    .email-header { padding:16px !important; }
-    .email-content { padding:20px 16px !important; font-size:14px !important; }
-    .email-footer { padding:16px !important; }
+    .email-outer { padding:0 !important; }
+    .email-card { border-radius:0 !important; width:100% !important; }
+    .email-header-td { padding:16px !important; }
+    .email-content-td { padding:20px 16px !important; font-size:14px !important; }
+    .email-footer-td { padding:16px !important; }
     h1 { font-size:22px !important; }
     h2 { font-size:18px !important; }
-    table { width:100% !important; }
-    td { display:block !important; width:100% !important; box-sizing:border-box; }
+    .col { display:block !important; width:100% !important; }
   }
 </style>
 </head>
-<body>
+<body style="margin:0;padding:0;background:#f5f7fa;">
 {$previewBlock}
-<div class="email-wrapper">
-  <div class="email-body">
-    <div class="email-header">
-      {$logoHtml}
-    </div>
-    <div class="email-content">
-      {$body}
-    </div>
-    <div class="email-footer">
-      {$addressBlock}
-      <div style="margin-bottom:12px;">{$unsubscribeLink}</div>
-      <div style="color:#9ca3af;font-size:11px;">
-        Powered by <a href="https://laravelcrm.com" style="color:#9ca3af;text-decoration:underline;">Laravel CRM</a>
-      </div>
-    </div>
-  </div>
-</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-outer" style="background:#f5f7fa;padding:24px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <tr>
+    <td align="center" valign="top">
+      <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" class="email-card" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:600px;">
+        <tr>
+          <td class="email-header-td" style="padding:24px 32px;border-bottom:1px solid #e5e7eb;text-align:center;">
+            {$logoHtml}
+          </td>
+        </tr>
+        <tr>
+          <td class="email-content-td" style="padding:32px;color:#374151;font-size:15px;line-height:1.6;">
+            {$body}
+          </td>
+        </tr>
+        <tr>
+          <td class="email-footer-td" style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;line-height:1.5;text-align:center;">
+            {$addressBlock}
+            <div style="margin-bottom:12px;">{$unsubscribeLink}</div>
+            <div style="color:#9ca3af;font-size:11px;">
+              Powered by <a href="https://laravelcrm.com" style="color:#9ca3af;text-decoration:underline;">Laravel CRM</a>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 </body>
 </html>
 HTML;
