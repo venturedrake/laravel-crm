@@ -86,7 +86,11 @@
                 @haschatenabled
                     <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.chat')) }}" icon="fas.comments" link="{{ url(route('laravel-crm.chat.index')) }}" />
                 @endhaschatenabled
-                <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.email')) }}" icon="fas.envelope" link="#" />
+                @hasemailmarketingenabled
+                @can('view crm email-campaigns')
+                    <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.email')) }}" icon="fas.envelope" link="{{ url(route('laravel-crm.email-campaigns.index')) }}" />
+                @endcan
+                @endhasemailmarketingenabled
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.sms')) }}" icon="fas.sms" link="#" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.social')) }}" icon="fas.share-alt" link="#" />
                 <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.activity')) }}" icon="fas.timeline" link="{{ url(route('laravel-crm.activities.index')) }}" />

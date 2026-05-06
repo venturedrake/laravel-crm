@@ -337,6 +337,7 @@ return [
     'chat_deleted' => 'conversation deleted',
     'chat_closed' => 'conversation closed',
     'close_chat' => 'close conversation',
+    'close_chat_confirm' => 'You\'re about to close this conversation. This action cannot be reversed.',
     'back_to_chat' => 'back to conversations',
     'search_chat' => 'search conversations',
     'convert_to_lead' => 'convert to lead',

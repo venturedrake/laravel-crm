@@ -8,7 +8,11 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\ChatConversation;
+use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\ChatService;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class ChatIndex extends Component
@@ -64,6 +68,76 @@ class ChatIndex extends Component
             $conversation->delete();
             $this->success(ucfirst(trans('laravel-crm::lang.chat_deleted')));
         }
+    }
+
+    public function close($id): void
+    {
+        if ($conversation = ChatConversation::find($id)) {
+            app(ChatService::class)->close($conversation);
+            $this->success(ucfirst(trans('laravel-crm::lang.chat_closed')));
+        }
+    }
+
+    public function convertToLead($id): void
+    {
+        $conversation = ChatConversation::find($id);
+
+        if (! $conversation) {
+            return;
+        }
+
+        if ($conversation->lead_id) {
+            $this->warning(ucfirst(trans('laravel-crm::lang.chat_already_converted')));
+
+            return;
+        }
+
+        $visitor = $conversation->visitor;
+        $person = $visitor?->person;
+
+        if (! $person && ($visitor?->name || $visitor?->email)) {
+            $nameParts = $visitor->name ? explode(' ', trim($visitor->name), 2) : [];
+
+            $person = Person::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'first_name' => $nameParts[0] ?? null,
+                'last_name' => $nameParts[1] ?? null,
+                'user_created_id' => auth()->id(),
+                'user_updated_id' => auth()->id(),
+            ]);
+
+            if ($visitor->email) {
+                $person->emails()->create([
+                    'address' => $visitor->email,
+                    'primary' => true,
+                    'user_created_id' => auth()->id(),
+                    'user_updated_id' => auth()->id(),
+                ]);
+            }
+
+            $visitor->update(['person_id' => $person->id]);
+        }
+
+        $title = $visitor?->name
+            ? ucfirst(trans('laravel-crm::lang.chat_lead_title', ['name' => $visitor->name]))
+            : ucfirst(trans('laravel-crm::lang.chat_lead_title_unknown'));
+
+        $lead = Lead::create([
+            'external_id' => Uuid::uuid4()->toString(),
+            'title' => $title,
+            'person_id' => $person?->id,
+            'lead_status_id' => 1,
+            'user_owner_id' => auth()->id(),
+            'user_created_id' => auth()->id(),
+            'user_updated_id' => auth()->id(),
+        ]);
+
+        $conversation->update(['lead_id' => $lead->id]);
+
+        $this->success(
+            ucfirst(trans('laravel-crm::lang.chat_converted_to_lead')),
+            redirectTo: route('laravel-crm.leads.show', $lead->external_id)
+        );
     }
 
     public function render()
