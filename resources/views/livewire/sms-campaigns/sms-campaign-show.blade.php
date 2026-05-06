@@ -3,7 +3,19 @@
         <x-slot:actions>
             @if($campaign->isCancellable())
                 @can('edit crm sms-campaigns')
-                    <x-mary-button wire:click="cancel" wire:confirm="Cancel this campaign?" label="{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ __('laravel-crm::lang.send') }}" icon="o-x-mark" class="btn-warning text-white" />
+                    <x-mary-button onclick="modalCancelSmsCampaign.showModal()" label="{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ __('laravel-crm::lang.send') }}" icon="o-x-mark" class="btn-warning text-white" />
+                    <dialog id="modalCancelSmsCampaign" class="modal">
+                        <div class="modal-box text-left">
+                            <h3 class="text-lg font-bold">{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ ucfirst(__('laravel-crm::lang.send')) }}?</h3>
+                            <p class="py-4">You're about to cancel this campaign send. This action cannot be reversed.</p>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <button class="btn">{{ ucfirst(__('laravel-crm::lang.back')) }}</button>
+                                    <button wire:click="cancel" class="btn btn-warning text-white">{{ ucfirst(__('laravel-crm::lang.cancel')) }} {{ __('laravel-crm::lang.send') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
                 @endcan
             @endif
             @if($campaign->isEditable())

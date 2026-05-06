@@ -33,7 +33,8 @@
                         @endif
                     @endcan
                     @can('delete crm sms-campaigns')
-                        <x-mary-button wire:click="delete({{ $campaign->id }})" wire:confirm="Delete this campaign?" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                        <x-mary-button onclick="modalDeleteSmsCampaign{{ $campaign->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
+                        <x-crm-delete-confirm model="smsCampaign" id="{{ $campaign->id }}" deleting="sms campaign" />
                     @endcan
                 </div>
             @endscope
