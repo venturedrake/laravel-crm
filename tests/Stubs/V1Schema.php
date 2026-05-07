@@ -34,6 +34,20 @@ class V1Schema
             });
         }
 
+        // ---------- CRM settings (needed by SettingService / laravelcrm:update) ----------
+        if (! Schema::hasTable($prefix.'settings')) {
+            Schema::create($prefix.'settings', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('name');
+                $table->text('value')->nullable();
+                $table->string('label')->nullable();
+                $table->boolean('global')->default(false);
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->unsignedBigInteger('team_id')->nullable();
+                $table->timestamps();
+            });
+        }
+
         // ---------- v1: organisations / organisation_types ----------
         Schema::create($prefix.'organisation_types', function (Blueprint $table) {
             $table->bigIncrements('id');

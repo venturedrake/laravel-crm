@@ -32,6 +32,8 @@ Routes (src/Http/routes.php)
 ```
 Repositories (`src/Repositories/`) are minimal thin wrappers (`all()`/`find()`) — put business logic in Services, not Repositories.
 
+Other top-level dirs under `src/`: `Events/` (e.g. `ChatMessageSent` broadcast event), `Listeners/` (e.g. `NewAuthDevice`), `Jobs/` (queued campaign dispatch), `Mail/` (mailables: `SendQuote`, `SendInvoice`, `SendPurchaseOrder`, `EmailCampaignMessage`), `Notifications/`, `Sms/` (`SmsCampaignMessage`), `Scopes/` (e.g. `BelongsToTeamsScope`), `Facades/` (`LaravelCrmFacade`), and `Console/` (all `laravelcrm:*` artisan commands).
+
 ### Two Livewire namespaces
 - **`src/Livewire/`** (`VentureDrake\LaravelCrm\Livewire\`) — current v2 components, registered with `crm-` prefix (e.g., `crm-lead-index`, `crm-deal-create`)
 - **`src/Http/Livewire/`** (`VentureDrake\LaravelCrm\Http\Livewire\`) — legacy inline/sub-components, registered with short names (e.g., `live-lead-form`, `quote-items`)
@@ -52,13 +54,17 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Related index sub-components**: `Deliveries/DeliveryRelatedIndex`, `Invoices/InvoiceRelatedIndex`, `Orders/OrderRelatedIndex`, `PurchaseOrders/PurchaseOrderRelatedIndex` — embedded lists of related records on entity show pages.
 
-**Full-CRUD v2 entities**: `Tasks/` (`TaskCreate`, `TaskEdit`, `TaskIndex`, `TaskShow`), `Teams/` (`TeamCreate`, `TeamEdit`, `TeamIndex`, `TeamShow`), `Users/` (`UserCreate`, `UserEdit`, `UserIndex`, `UserShow`) — standalone index/show/create/edit components, all follow the `HasEntityCommon` trait pattern.
+**Full-CRUD v2 entities**: `Tasks/`, `Teams/`, `Users/`, `Organizations/`, `People/`, `Products/` — each has `Create`, `Edit`, `Index`, `Show` components (e.g. `OrganizationIndex`, `PersonShow`) plus a `Traits/` subdirectory. All follow the `HasEntityCommon` trait pattern. Domain pipeline entities follow the same shape: `Leads/`, `Deals/`, `Quotes/`, `Orders/`, `Invoices/`, `Deliveries/`, `PurchaseOrders/`.
 
-**Chat** (v2, in `src/Livewire/Chat/`): `ChatIndex` (conversations list), `ChatShow` (agent reply view, uses `wire:poll` + `echo:` listener for realtime), `ChatWidgetPanel` (visitor-facing widget loaded inside an iframe at `/p/chat/{publicKey}`). Companion settings CRUD lives in `src/Livewire/Settings/ChatWidgets/`. Embed snippet generation: `ChatWidget::embedSnippet()`. Public JS loader served by `Portal/ChatWidgetEmbedController@script` at `/p/chat/{publicKey}.js`. Realtime broadcasts via `Events/ChatMessageSent` on public channel `crm-chat.{conversation_external_id}` (no broadcasting driver required — falls back to polling).
+**Marketing campaigns** (v2): `EmailCampaigns/` and `SmsCampaigns/` (`*Create`, `*Edit`, `*Index`, `*Show`) plus reusable `EmailTemplates/` and `SmsTemplates/` CRUD components — gated by the `email-marketing` / `sms-marketing` modules. Dispatch is queued via `src/Jobs/SendEmailCampaignRecipient`, `Jobs/SendSmsCampaignRecipient`, and `Jobs/MaterialiseSmsCampaignRecipients`; outbound messages live in `src/Mail/EmailCampaignMessage.php` and `src/Sms/SmsCampaignMessage.php`. Scheduled by `laravelcrm:email-campaigns-dispatch` and `laravelcrm:sms-campaigns-dispatch`.
+
+**Chat** (v2, in `src/Livewire/Chat/`): `ChatIndex` (conversations list), `ChatShow` (agent reply view, uses `wire:poll` + `echo:` listener for realtime). The visitor-facing widget is an iframe HTML page served by `Portal/ChatWidgetEmbedController@widget` at `/p/chat/{publicKey}` — there is no `ChatWidgetPanel` Livewire component. Chat embed routes live in `src/Http/chat-embed-routes.php` (registered **outside** the `web` middleware group to bypass CSRF/session). Companion settings CRUD lives in `src/Livewire/Settings/ChatWidgets/`. Embed snippet generation: `ChatWidget::embedSnippet()`. Realtime broadcasts via `Events/ChatMessageSent` on public channel `crm-chat.{conversation_external_id}` (falls back to polling).
 
 **Profile components** (v2, in `src/Livewire/Profile/`): `UpdateProfileInformationForm`, `UpdatePasswordForm`, `TwoFactorAuthenticationForm`, `LogoutOtherBrowserSessionsForm`, `DeleteUserForm`.
 
-**Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`.
+**Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductAttributes/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`, `Integrations/ClickSend/ClickSendConnect`.
+
+**Email & SMS Marketing** (v2): Full-CRUD components in `src/Livewire/EmailCampaigns/`, `src/Livewire/EmailTemplates/`, `src/Livewire/SmsCampaigns/`, `src/Livewire/SmsTemplates/`. Backed by models `EmailCampaign`, `EmailTemplate`, `SmsCampaign`, `SmsTemplate` (plus `*Click`, `*Recipient` models). Services: `EmailCampaignService`, `EmailTemplateService`, `SmsCampaignService`, `SmsTemplateService`. SMS sending uses `ClickSendService` (HTTP Basic auth to `https://rest.clicksend.com/v3`; credentials stored as CRM settings `clicksend_username` / `clicksend_api_key` / `clicksend_default_from`).
 
 ### Shared Livewire traits
 Traits in `src/Traits/` are shared across Livewire components and models:
@@ -113,9 +119,11 @@ Form-specific traits live in `src/Livewire/Traits/`:
 - Protected by `auth.laravel-crm` middleware + Laravel Policies (one policy per model in `src/Policies/`)
 - **Flash notifications**: `php-flasher/flasher-laravel` for server-side flash messages
 - Public portal routes at `/p/quotes/{external_id}` and `/p/invoices/{external_id}` — no auth required
+- Email campaign tracking routes (`/p/email/o/{token}.gif`, `/p/email/c/{token}`, `/p/email/u/{token}`) and SMS tracking routes (`/p/sms/c/{token}`, `/p/sms/u/{token}`) are defined in `src/Http/email-tracking-routes.php` — registered **outside** the `web` middleware group (no CSRF/session) so tracking pixels work from email clients
+- Chat widget embed routes (`/p/chat/{publicKey}`, `/p/chat/{publicKey}.js`, and JSON API endpoints) are in `src/Http/chat-embed-routes.php` — also outside `web` middleware so the widget works cross-origin without CSRF errors
 - Route subdomain support via `LARAVEL_CRM_ROUTE_SUBDOMAIN`
 - **Settings singleton**: `SettingService` registered as `laravel-crm.settings`; shared to all views via `SettingsComposer` (`View::composer('*')`)
-- **Module toggles**: `config('laravel-crm.modules')` array enables/disables features (leads, deals, quotes, orders, invoices, deliveries, purchase-orders, teams). Blade directives `@hasleadsenabled`, `@hasdealsenabled`, `@hasquotesenabled`, `@hasordersenabled`, `@hasinvoicesenabled`, `@hasdeliveriesenabled`, `@haspurchaseordersenabled`, `@hasteamsenabled` gate UI sections
+- **Module toggles**: `config('laravel-crm.modules')` array enables/disables features (leads, deals, quotes, orders, invoices, deliveries, purchase-orders, teams, chat, email-marketing, sms-marketing). Blade directives `@hasleadsenabled`, `@hasdealsenabled`, `@hasquotesenabled`, `@hasordersenabled`, `@hasinvoicesenabled`, `@hasdeliveriesenabled`, `@haspurchaseordersenabled`, `@hasteamsenabled`, `@haschatenabled`, `@hasemailmarketingenabled`, `@hassmsmarketingenabled` gate UI sections
 
 ## Host Apps (Development / Testing)
 
@@ -198,10 +206,14 @@ php artisan laravelcrm:xero contacts        # sync Xero contacts
 php artisan laravelcrm:xero products        # sync Xero products
 php artisan laravelcrm:reminders            # send activity reminders (scheduled every minute)
 php artisan laravelcrm:archive              # archive old records (scheduled daily)
+php artisan laravelcrm:email-campaigns-dispatch  # queue due email campaign sends (scheduled every minute)
+php artisan laravelcrm:sms-campaigns-dispatch    # queue due SMS campaign sends (scheduled every minute)
 ```
 
 ### Scheduled Tasks (auto-registered in ServiceProvider)
 - `laravelcrm:reminders` — every minute (activity reminders)
+- `laravelcrm:email-campaigns-dispatch` — every minute (email marketing dispatch)
+- `laravelcrm:sms-campaigns-dispatch` — every minute (SMS marketing dispatch)
 - `laravelcrm:archive` — daily (record archiving)
 - `xero:keep-alive` — every 5 minutes (only if Xero credentials configured)
 - `laravelcrm:xero contacts` + `laravelcrm:xero products` — every 10 minutes (Xero sync)

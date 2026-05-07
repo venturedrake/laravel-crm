@@ -29,6 +29,9 @@ class BladeDirectivesTest extends TestCase
         $this->assertSame('YESNO', $this->evaluateDirective('hasdeliveriesenabled'));
         $this->assertSame('YESNO', $this->evaluateDirective('haspurchaseordersenabled'));
         $this->assertSame('YESNO', $this->evaluateDirective('hasteamsenabled'));
+        $this->assertSame('YESNO', $this->evaluateDirective('haschatenabled'));
+        $this->assertSame('YESNO', $this->evaluateDirective('hasemailmarketingenabled'));
+        $this->assertSame('YESNO', $this->evaluateDirective('hassmsmarketingenabled'));
     }
 
     public function test_module_directives_match_modules_array(): void
@@ -39,5 +42,32 @@ class BladeDirectivesTest extends TestCase
         $this->assertSame('YESNO', $this->evaluateDirective('hasdealsenabled'));
         $this->assertSame('NO', $this->evaluateDirective('hasquotesenabled'));
         $this->assertSame('NO', $this->evaluateDirective('hasinvoicesenabled'));
+        $this->assertSame('NO', $this->evaluateDirective('haschatenabled'));
+        $this->assertSame('NO', $this->evaluateDirective('hasemailmarketingenabled'));
+        $this->assertSame('NO', $this->evaluateDirective('hassmsmarketingenabled'));
+    }
+
+    public function test_chat_directive_is_true_when_chat_module_enabled(): void
+    {
+        config()->set('laravel-crm.modules', ['chat']);
+
+        $this->assertSame('YESNO', $this->evaluateDirective('haschatenabled'));
+        $this->assertSame('NO', $this->evaluateDirective('hasleadsenabled'));
+    }
+
+    public function test_email_marketing_directive_is_true_when_module_enabled(): void
+    {
+        config()->set('laravel-crm.modules', ['email-marketing']);
+
+        $this->assertSame('YESNO', $this->evaluateDirective('hasemailmarketingenabled'));
+        $this->assertSame('NO', $this->evaluateDirective('hassmsmarketingenabled'));
+    }
+
+    public function test_sms_marketing_directive_is_true_when_module_enabled(): void
+    {
+        config()->set('laravel-crm.modules', ['sms-marketing']);
+
+        $this->assertSame('YESNO', $this->evaluateDirective('hassmsmarketingenabled'));
+        $this->assertSame('NO', $this->evaluateDirective('hasemailmarketingenabled'));
     }
 }

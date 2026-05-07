@@ -9,7 +9,7 @@ class EncryptableFieldsTest extends TestCase
 {
     public function test_encryption_disabled_stores_plain_values(): void
     {
-        config()->set('laravel-encryptable.enabled', false);
+        config()->set('laravel-crm.encrypt_db_fields', false);
 
         $person = Person::create([
             'first_name' => 'Jane',
@@ -24,7 +24,7 @@ class EncryptableFieldsTest extends TestCase
 
     public function test_encryption_enabled_stores_encrypted_values(): void
     {
-        config()->set('laravel-encryptable.enabled', true);
+        config()->set('laravel-crm.encrypt_db_fields', true);
 
         $person = Person::create([
             'first_name' => 'Jane',

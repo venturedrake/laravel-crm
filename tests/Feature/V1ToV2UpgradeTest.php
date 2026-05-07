@@ -298,6 +298,16 @@ class V1ToV2UpgradeTest extends TestCase
             ['name' => 'delete organisations', 'guard_name' => 'web', 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'view people', 'guard_name' => 'web', 'created_at' => $now, 'updated_at' => $now],
         ]);
+
+        // Pre-seed all db_update_* flags to 1 so laravelcrm:update skips every
+        // data-migration step (those steps need v2 tables that don't exist in V1Schema).
+        $updateFlags = ['db_update_0180', 'db_update_0181', 'db_update_0191',
+            'db_update_0193', 'db_update_0194', 'db_update_0199', 'db_update_1200'];
+        foreach ($updateFlags as $flag) {
+            DB::table($prefix.'settings')->insert([
+                'name' => $flag, 'value' => '1', 'created_at' => $now, 'updated_at' => $now,
+            ]);
+        }
     }
 
     /**

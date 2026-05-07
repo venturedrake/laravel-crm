@@ -629,6 +629,7 @@ class TestSchema
         });
 
         Schema::create($prefix.'invoice_lines', function (Blueprint $table) {
+            // ...existing code...
             $table->bigIncrements('id');
             $table->string('external_id')->nullable();
             $table->unsignedBigInteger('team_id')->nullable();
@@ -647,6 +648,131 @@ class TestSchema
             $table->string('currency', 3)->default('USD');
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        // -------------------------------------------------------------------
+        // Email & SMS marketing tables
+        // -------------------------------------------------------------------
+
+        Schema::create($prefix.'email_templates', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->string('subject');
+            $table->string('preview_text')->nullable();
+            $table->longText('body')->nullable();
+            $table->boolean('is_system')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'email_campaigns', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->string('campaign_id')->nullable();
+            $table->unsignedInteger('number')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->string('subject');
+            $table->string('preview_text')->nullable();
+            $table->longText('body')->nullable();
+            $table->unsignedBigInteger('email_template_id')->nullable();
+            $table->string('status')->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
+            $table->string('timezone')->nullable();
+            $table->timestamp('sent_at')->nullable();
+            $table->unsignedInteger('total_recipients')->default(0);
+            $table->unsignedInteger('opens_count')->default(0);
+            $table->unsignedInteger('unique_opens_count')->default(0);
+            $table->unsignedInteger('clicks_count')->default(0);
+            $table->unsignedInteger('unique_clicks_count')->default(0);
+            $table->unsignedInteger('unsubscribes_count')->default(0);
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'email_campaign_recipients', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('email_campaign_id');
+            $table->string('email');
+            $table->string('status')->default('pending');
+            $table->timestamp('sent_at')->nullable();
+            $table->timestamp('opened_at')->nullable();
+            $table->unsignedInteger('opens_count')->default(0);
+            $table->unsignedInteger('clicks_count')->default(0);
+            $table->boolean('unsubscribed')->default(false);
+            $table->timestamp('unsubscribed_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create($prefix.'sms_templates', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->text('body')->nullable();
+            $table->boolean('is_system')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'sms_campaigns', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->string('campaign_id')->nullable();
+            $table->unsignedInteger('number')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->text('body')->nullable();
+            $table->string('from')->nullable();
+            $table->unsignedBigInteger('sms_template_id')->nullable();
+            $table->string('status')->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
+            $table->string('timezone')->nullable();
+            $table->timestamp('sent_at')->nullable();
+            $table->unsignedInteger('total_recipients')->default(0);
+            $table->unsignedInteger('sent_count')->default(0);
+            $table->unsignedInteger('delivered_count')->default(0);
+            $table->unsignedInteger('failed_count')->default(0);
+            $table->unsignedInteger('clicks_count')->default(0);
+            $table->unsignedInteger('unique_clicks_count')->default(0);
+            $table->unsignedInteger('unsubscribes_count')->default(0);
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'sms_campaign_recipients', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('sms_campaign_id');
+            $table->string('phone');
+            $table->string('status')->default('pending');
+            $table->timestamp('sent_at')->nullable();
+            $table->string('message_id')->nullable();
+            $table->unsignedInteger('clicks_count')->default(0);
+            $table->boolean('unsubscribed')->default(false);
+            $table->timestamp('unsubscribed_at')->nullable();
+            $table->timestamps();
         });
     }
 }

@@ -15,11 +15,18 @@ use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Call;
+use VentureDrake\LaravelCrm\Models\ChatConversation;
+use VentureDrake\LaravelCrm\Models\ChatMessage;
+use VentureDrake\LaravelCrm\Models\ChatVisitor;
+use VentureDrake\LaravelCrm\Models\ChatWidget;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\DealProduct;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\DeliveryProduct;
 use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\EmailCampaign;
+use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
+use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
@@ -49,6 +56,9 @@ use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Role;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\SmsCampaign;
+use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
+use VentureDrake\LaravelCrm\Models\SmsTemplate;
 use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\Team;
@@ -253,6 +263,14 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->seedLabels();
         $this->seedCustomFieldValues();
 
+        $this->command->line('');
+        $this->command->line('  <fg=yellow>── Phase 5/5: Marketing & chat ─────────────────</>');
+        $this->command->line('');
+
+        $this->seedChats();
+        $this->seedEmailCampaigns();
+        $this->seedSmsCampaigns();
+
         // Re-enable auditing
         $this->enableAuditing();
 
@@ -288,6 +306,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
             ['Calls',           Call::count()],
             ['Meetings',        Meeting::count()],
             ['Lunches',         Lunch::count()],
+            ['Chat Widgets',        ChatWidget::count()],
+            ['Chat Conversations',  ChatConversation::count()],
+            ['Chat Messages',       ChatMessage::count()],
+            ['Email Campaigns',     EmailCampaign::count()],
+            ['SMS Campaigns',       SmsCampaign::count()],
         ];
 
         foreach ($rows as [$label, $count]) {
@@ -572,6 +595,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'people', 'organizations',
             'product_prices', 'products', 'product_categories',
             'lead_sources',
+            // Email & SMS campaigns
+            'email_campaign_recipients', 'email_campaign_clicks', 'email_campaigns',
+            'email_templates',
+            'sms_campaign_recipients', 'sms_campaign_clicks', 'sms_campaigns',
+            'sms_templates',
+            // Chat
+            'chat_messages', 'chat_conversations', 'chat_visitor_page_views', 'chat_visitors', 'chat_widgets',
             // Custom fields seeded by seedCustomFieldGroups()
             'field_values', 'field_models', 'field_options', 'fields', 'field_groups',
         ];
@@ -1106,25 +1136,41 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($person, $date);
 
-            // Email — always present
+            // Email — always present; 80% subscribed
             $orgSlug = strtolower(preg_replace('/[^a-z0-9]/i', '', $org->name));
+            $emailSubscribed = mt_rand(1, 100) <= 80;
             Email::create([
                 'external_id' => Uuid::uuid4()->toString(),
                 'address' => strtolower($firstName).'.'.strtolower($lastName).'@'.$orgSlug.'.com',
                 'type' => 'work',
                 'primary' => true,
+                'subscribed' => $emailSubscribed,
                 'emailable_type' => Person::class,
                 'emailable_id' => $person->id,
                 'created_at' => $date,
                 'updated_at' => $date,
             ]);
 
-            // Phone — always present (removed the 70% gate)
+            // Work phone — always present
+            $smsSubscribed = mt_rand(1, 100) <= 80;
             Phone::create([
                 'external_id' => Uuid::uuid4()->toString(),
                 'number' => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
                 'type' => 'work',
                 'primary' => true,
+                'phoneable_type' => Person::class,
+                'phoneable_id' => $person->id,
+                'created_at' => $date,
+                'updated_at' => $date,
+            ]);
+
+            // Mobile phone — always present; 80% subscribed to SMS
+            Phone::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'number' => '+1'.mt_rand(200, 999).mt_rand(100, 999).mt_rand(1000, 9999),
+                'type' => 'mobile',
+                'primary' => false,
+                'subscribed' => $smsSubscribed,
                 'phoneable_type' => Person::class,
                 'phoneable_id' => $person->id,
                 'created_at' => $date,
@@ -1498,7 +1544,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             ]);
 
             // Create DealProduct line items
-            $lineItems = $this->generateLineItems(mt_rand(1, 3));
+            $lineItems = $this->generateLineItems(mt_rand(1, 4));
             $dealSubtotal = 0;
             foreach ($lineItems as $item) {
                 DealProduct::create([
@@ -2226,10 +2272,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'external_id' => Uuid::uuid4()->toString(),
                     'invoice_id' => $invoice->id,
                     'product_id' => $item['product_id'],
+                    'order_product_id' => null,
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'amount' => $item['amount'],
-                    'tax_rate' => $item['tax_rate'],
+                    'tax_rate' => $item['tax_rate'] ?? 10,
                     'tax_amount' => round($item['amount'] * $item['tax_rate'] / 100, 2),
                     'currency' => $this->currency,
                     'created_at' => $date,
@@ -3285,7 +3332,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
     }
 
     // =========================================================================
-    // Helpers
+    // Helpers (shared address helpers below)
     // =========================================================================
 
     /**
@@ -3468,6 +3515,428 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'updated_at' => $date,
         ]);
     }
+
+    // =========================================================================
+    // Phase 5: Marketing & Chat
+    // =========================================================================
+
+    protected function seedChats(): void
+    {
+        $this->command->info('Seeding chat widgets, visitors & conversations...');
+
+        $widgetDefinitions = [
+            ['name' => 'Website Support',     'welcome_message' => 'Hi! How can we help you today?',              'color' => '#2563eb', 'position' => 'bottom-right'],
+            ['name' => 'Sales Enquiries',     'welcome_message' => 'Interested in our products? Chat with us!',   'color' => '#16a34a', 'position' => 'bottom-right'],
+            ['name' => 'Technical Support',   'welcome_message' => 'Having an issue? Our team is here to help.',  'color' => '#dc2626', 'position' => 'bottom-left'],
+        ];
+
+        $visitorNames = [
+            'James Bailey', 'Sophie Turner', 'Liam Carter', 'Mia Davis', 'Noah Evans',
+            'Olivia Foster', 'Ethan Gray', 'Ava Hall', 'Mason Ingram', 'Emma Johnson',
+            'Logan King', 'Charlotte Lee', 'Lucas Martin', 'Amelia Nelson', 'Jackson Owens',
+        ];
+
+        $conversationSubjects = [
+            'Pricing enquiry', 'Product demo request', 'Technical issue', 'Billing question',
+            'Feature request', 'Integration help', 'Account setup', 'General enquiry',
+            'Support request', 'Sales enquiry',
+        ];
+
+        $visitorMessages = [
+            'Hi, I have a question about your pricing.',
+            'Can you tell me more about your enterprise plan?',
+            'I\'m having trouble logging in to my account.',
+            'How do I integrate with Xero?',
+            'What payment methods do you accept?',
+            'I\'d like to request a product demo.',
+            'Can I upgrade my plan mid-month?',
+            'How long does onboarding take?',
+            'Do you offer a free trial?',
+            'I need help exporting my data.',
+        ];
+
+        $agentMessages = [
+            'Thanks for reaching out! Happy to help.',
+            'Great question — let me pull that up for you.',
+            'I can definitely help with that.',
+            'Our team will get back to you within 24 hours.',
+            'Let me transfer you to our billing department.',
+            'Here\'s the documentation link that should help.',
+            'Could you provide more details so I can assist?',
+            'I\'ve escalated this to our technical team.',
+            'Is there anything else I can help you with today?',
+            'Thanks for being a valued customer!',
+        ];
+
+        $statuses = ['open', 'open', 'open', 'pending', 'closed', 'closed'];
+
+        $bar = $this->createProgressBar(count($widgetDefinitions));
+
+        foreach ($widgetDefinitions as $i => $def) {
+            $widgetDate = $this->startDate->copy()->addDays(mt_rand(0, 30));
+
+            $widget = ChatWidget::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'public_key' => Str::random(32),
+                'name' => $def['name'],
+                'welcome_message' => $def['welcome_message'],
+                'color' => $def['color'],
+                'position' => $def['position'],
+                'is_active' => true,
+                'user_created_id' => $this->userId,
+                'user_updated_id' => $this->userId,
+                'created_at' => $widgetDate,
+                'updated_at' => $widgetDate,
+            ]);
+
+            // Create 3-6 visitors per widget
+            $visitorCount = mt_rand(3, 6);
+            for ($v = 0; $v < $visitorCount; $v++) {
+                $name = $visitorNames[array_rand($visitorNames)];
+                $emailLocal = strtolower(str_replace(' ', '.', $name));
+                $visitorDate = $widgetDate->copy()->addDays(mt_rand(1, 300));
+
+                $visitor = ChatVisitor::create([
+                    'external_id' => Uuid::uuid4()->toString(),
+                    'chat_widget_id' => $widget->id,
+                    'visitor_token' => Str::random(32),
+                    'name' => $name,
+                    'email' => $emailLocal.'@example.com',
+                    'ip_address' => mt_rand(10, 200).'.'.mt_rand(0, 255).'.'.mt_rand(0, 255).'.'.mt_rand(1, 254),
+                    'country_code' => ['US', 'GB', 'AU', 'CA', 'NZ'][array_rand(['US', 'GB', 'AU', 'CA', 'NZ'])],
+                    'last_seen_at' => $visitorDate,
+                    'created_at' => $visitorDate,
+                    'updated_at' => $visitorDate,
+                ]);
+
+                // Create 1-2 conversations per visitor
+                $convCount = mt_rand(1, 2);
+                for ($c = 0; $c < $convCount; $c++) {
+                    $convDate = $visitorDate->copy()->addMinutes(mt_rand(1, 60));
+                    $status = $statuses[array_rand($statuses)];
+                    $closedAt = $status === 'closed' ? $convDate->copy()->addMinutes(mt_rand(5, 120)) : null;
+
+                    $conversation = ChatConversation::create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'chat_id' => 'C'.mt_rand(1000, 9999),
+                        'chat_widget_id' => $widget->id,
+                        'chat_visitor_id' => $visitor->id,
+                        'subject' => $conversationSubjects[array_rand($conversationSubjects)],
+                        'status' => $status,
+                        'user_assigned_id' => $this->userId,
+                        'last_message_at' => $convDate,
+                        'closed_at' => $closedAt,
+                        'user_created_id' => $this->userId,
+                        'user_updated_id' => $this->userId,
+                        'created_at' => $convDate,
+                        'updated_at' => $convDate,
+                    ]);
+
+                    // Seed 2-6 messages alternating visitor/agent
+                    $messageCount = mt_rand(2, 6);
+                    $msgTime = $convDate->copy();
+                    for ($m = 0; $m < $messageCount; $m++) {
+                        $isVisitor = $m % 2 === 0;
+                        $msgTime = $msgTime->copy()->addMinutes(mt_rand(1, 15));
+
+                        ChatMessage::create([
+                            'external_id' => Uuid::uuid4()->toString(),
+                            'chat_conversation_id' => $conversation->id,
+                            'sender_type' => $isVisitor ? 'visitor' : 'user',
+                            'sender_id' => $isVisitor ? $visitor->id : $this->userId,
+                            'body' => $isVisitor
+                                ? $visitorMessages[array_rand($visitorMessages)]
+                                : $agentMessages[array_rand($agentMessages)],
+                            'read_at' => ! $isVisitor ? $msgTime : null,
+                            'created_at' => $msgTime,
+                            'updated_at' => $msgTime,
+                        ]);
+                    }
+                }
+            }
+
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->line('');
+        $this->command->line('    <fg=green>✓ Chat widgets, visitors & conversations seeded</>');
+        $this->command->line('');
+    }
+
+    protected function seedEmailCampaigns(): void
+    {
+        $this->command->info('Seeding email campaigns & templates...');
+
+        $templateDefinitions = [
+            [
+                'name' => 'Monthly Newsletter',
+                'subject' => 'Your Monthly Update from {{company_name}}',
+                'preview_text' => 'Catch up on the latest news and updates.',
+                'body' => '<h1>Monthly Newsletter</h1><p>Hello {{first_name}},</p><p>Here are the latest updates from our team this month. We hope you find this helpful.</p><p>Best regards,<br>The Team</p>',
+            ],
+            [
+                'name' => 'Product Launch Announcement',
+                'subject' => 'Introducing Our Newest Feature — {{product_name}}',
+                'preview_text' => 'We\'re excited to announce something big.',
+                'body' => '<h1>New Feature Alert!</h1><p>Hi {{first_name}},</p><p>We\'re thrilled to announce the launch of {{product_name}}. This feature has been designed with you in mind.</p><p>Click below to learn more.</p>',
+            ],
+            [
+                'name' => 'Promotional Offer',
+                'subject' => 'Exclusive Offer Just for You — {{discount}}% Off',
+                'preview_text' => 'A special deal we\'ve prepared just for our valued customers.',
+                'body' => '<h1>Special Offer</h1><p>Dear {{first_name}},</p><p>As a valued customer we\'d like to offer you {{discount}}% off your next purchase. Use code SAVE at checkout.</p>',
+            ],
+            [
+                'name' => 'Re-engagement Campaign',
+                'subject' => 'We Miss You, {{first_name}}!',
+                'preview_text' => 'It\'s been a while — here\'s what you\'ve been missing.',
+                'body' => '<h1>We\'d love to hear from you</h1><p>Hi {{first_name}},</p><p>We noticed it\'s been a while since your last visit. We\'ve made some great improvements and would love to show you.</p>',
+            ],
+            [
+                'name' => 'Customer Feedback Request',
+                'subject' => 'How Are We Doing? Share Your Feedback',
+                'preview_text' => 'Your opinion matters to us.',
+                'body' => '<h1>We Value Your Feedback</h1><p>Hi {{first_name}},</p><p>We\'re always looking to improve. Could you take 2 minutes to answer a short survey? Your input helps us serve you better.</p>',
+            ],
+        ];
+
+        $campaignDefinitions = [
+            ['name' => 'Q1 Newsletter',          'status' => 'sent',      'months_ago' => 12, 'recipients' => 45],
+            ['name' => 'Spring Product Launch',  'status' => 'sent',      'months_ago' => 11, 'recipients' => 38],
+            ['name' => 'Summer Promotion',       'status' => 'sent',      'months_ago' => 9,  'recipients' => 52],
+            ['name' => 'Q3 Newsletter',          'status' => 'sent',      'months_ago' => 6,  'recipients' => 41],
+            ['name' => 'Black Friday Deals',     'status' => 'sent',      'months_ago' => 5,  'recipients' => 67],
+            ['name' => 'Year in Review',         'status' => 'sent',      'months_ago' => 3,  'recipients' => 59],
+            ['name' => 'New Year Campaign',      'status' => 'sent',      'months_ago' => 2,  'recipients' => 44],
+            ['name' => 'Q1 Product Update',      'status' => 'scheduled', 'months_ago' => 0,  'recipients' => 0],
+            ['name' => 'Customer Feedback Drive', 'status' => 'draft',     'months_ago' => 0,  'recipients' => 0],
+        ];
+
+        // Seed templates first
+        $templates = collect();
+        foreach ($templateDefinitions as $def) {
+            $tmpl = EmailTemplate::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'name' => $def['name'],
+                'subject' => $def['subject'],
+                'preview_text' => $def['preview_text'] ?? null,
+                'body' => $def['body'],
+                'is_system' => false,
+                'user_created_id' => $this->userId,
+                'user_updated_id' => $this->userId,
+            ]);
+            $templates->push($tmpl);
+        }
+
+        // Collect person emails for recipients
+        $personEmails = Email::whereHas('emailable', function ($q) {
+            $q->where('emailable_type', Person::class);
+        })->with('emailable')->get();
+
+        $bar = $this->createProgressBar(count($campaignDefinitions));
+
+        $campaignNumber = 1;
+        foreach ($campaignDefinitions as $def) {
+            $template = $templates->random();
+            $sentDate = $def['months_ago'] > 0 ? now()->subMonths($def['months_ago']) : null;
+            $scheduledAt = $def['status'] === 'scheduled' ? now()->addDays(mt_rand(3, 14)) : null;
+
+            $totalRecipients = $def['recipients'];
+            $uniqueOpens = $def['status'] === 'sent' ? (int) round($totalRecipients * (mt_rand(25, 55) / 100)) : 0;
+            $uniqueClicks = $def['status'] === 'sent' ? (int) round($uniqueOpens * (mt_rand(10, 40) / 100)) : 0;
+            $unsubscribes = $def['status'] === 'sent' ? (int) round($totalRecipients * (mt_rand(1, 5) / 100)) : 0;
+
+            $campaign = EmailCampaign::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'campaign_id' => 'EC'.str_pad($campaignNumber, 4, '0', STR_PAD_LEFT),
+                'number' => $campaignNumber,
+                'name' => $def['name'],
+                'subject' => $template->subject,
+                'preview_text' => $template->preview_text,
+                'body' => $template->body,
+                'email_template_id' => $template->id,
+                'status' => $def['status'],
+                'scheduled_at' => $scheduledAt,
+                'sent_at' => $sentDate,
+                'total_recipients' => $totalRecipients,
+                'opens_count' => $uniqueOpens,
+                'unique_opens_count' => $uniqueOpens,
+                'clicks_count' => $uniqueClicks,
+                'unique_clicks_count' => $uniqueClicks,
+                'unsubscribes_count' => $unsubscribes,
+                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->userId,
+                'user_updated_id' => $this->userId,
+            ]);
+
+            // Create recipient rows for sent campaigns
+            if ($def['status'] === 'sent' && $personEmails->isNotEmpty()) {
+                $sample = $personEmails->random(min($totalRecipients, $personEmails->count()));
+                foreach ($sample as $email) {
+                    $recipientStatus = ['sent', 'sent', 'sent', 'sent', 'failed', 'bounced'][array_rand(['sent', 'sent', 'sent', 'sent', 'failed', 'bounced'])];
+                    $opened = $recipientStatus === 'sent' && mt_rand(0, 100) < ($uniqueOpens / max($totalRecipients, 1) * 100);
+                    $clicked = $opened && mt_rand(0, 100) < 30;
+                    $unsub = $recipientStatus === 'sent' && mt_rand(0, 100) < 3;
+
+                    EmailCampaignRecipient::create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'email_campaign_id' => $campaign->id,
+                        'email_id' => $email->id,
+                        'person_id' => $email->emailable_id,
+                        'address' => $email->address,
+                        'tracking_token' => Str::random(32),
+                        'status' => $recipientStatus,
+                        'sent_at' => $sentDate,
+                        'first_opened_at' => $opened ? $sentDate->copy()->addHours(mt_rand(1, 48)) : null,
+                        'last_opened_at' => $opened ? $sentDate->copy()->addHours(mt_rand(1, 72)) : null,
+                        'opens_count' => $opened ? mt_rand(1, 4) : 0,
+                        'first_clicked_at' => $clicked ? $sentDate->copy()->addHours(mt_rand(1, 72)) : null,
+                        'last_clicked_at' => $clicked ? $sentDate->copy()->addHours(mt_rand(1, 96)) : null,
+                        'clicks_count' => $clicked ? mt_rand(1, 3) : 0,
+                        'unsubscribed_at' => $unsub ? $sentDate->copy()->addHours(mt_rand(1, 24)) : null,
+                    ]);
+                }
+            }
+
+            $campaignNumber++;
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->line('');
+        $this->command->line('    <fg=green>✓ Email campaigns & templates seeded</>');
+        $this->command->line('');
+    }
+
+    protected function seedSmsCampaigns(): void
+    {
+        $this->command->info('Seeding SMS campaigns & templates...');
+
+        $templateDefinitions = [
+            [
+                'name' => 'Appointment Reminder SMS',
+                'body' => 'Hi {{first_name}}, this is a reminder about your appointment tomorrow. Reply STOP to unsubscribe.',
+            ],
+            [
+                'name' => 'Flash Sale Alert',
+                'body' => '🔥 Flash Sale! {{discount}}% off today only. Visit our site now. Reply STOP to unsubscribe.',
+            ],
+            [
+                'name' => 'Delivery Notification',
+                'body' => 'Hi {{first_name}}, your order #{{order_id}} has been dispatched and is on its way. Reply STOP to unsubscribe.',
+            ],
+            [
+                'name' => 'Re-engagement SMS',
+                'body' => 'Hi {{first_name}}, we haven\'t heard from you in a while. Come back and see what\'s new! Reply STOP to opt out.',
+            ],
+        ];
+
+        $campaignDefinitions = [
+            ['name' => 'Appointment Reminders Q2',    'status' => 'sent',      'months_ago' => 10, 'recipients' => 28],
+            ['name' => 'Easter Sale Blast',            'status' => 'sent',      'months_ago' => 8,  'recipients' => 35],
+            ['name' => 'Delivery Updates July',        'status' => 'sent',      'months_ago' => 6,  'recipients' => 41],
+            ['name' => 'Black Friday SMS',             'status' => 'sent',      'months_ago' => 5,  'recipients' => 53],
+            ['name' => 'Christmas Promotion',          'status' => 'sent',      'months_ago' => 3,  'recipients' => 47],
+            ['name' => 'Re-engagement January',        'status' => 'sent',      'months_ago' => 1,  'recipients' => 32],
+            ['name' => 'Spring Sale Reminder',         'status' => 'scheduled', 'months_ago' => 0,  'recipients' => 0],
+            ['name' => 'New Product Teaser',           'status' => 'draft',     'months_ago' => 0,  'recipients' => 0],
+        ];
+
+        // Seed templates first
+        $templates = collect();
+        foreach ($templateDefinitions as $def) {
+            $tmpl = SmsTemplate::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'name' => $def['name'],
+                'body' => $def['body'],
+                'is_system' => false,
+                'user_created_id' => $this->userId,
+                'user_updated_id' => $this->userId,
+            ]);
+            $templates->push($tmpl);
+        }
+
+        // Collect person phones for recipients
+        $personPhones = Phone::whereHas('phoneable', function ($q) {
+            $q->where('phoneable_type', Person::class);
+        })->with('phoneable')->get();
+
+        $bar = $this->createProgressBar(count($campaignDefinitions));
+
+        $campaignNumber = 1;
+        foreach ($campaignDefinitions as $def) {
+            $template = $templates->random();
+            $sentDate = $def['months_ago'] > 0 ? now()->subMonths($def['months_ago']) : null;
+            $scheduledAt = $def['status'] === 'scheduled' ? now()->addDays(mt_rand(3, 14)) : null;
+
+            $totalRecipients = $def['recipients'];
+            $delivered = $def['status'] === 'sent' ? (int) round($totalRecipients * (mt_rand(85, 97) / 100)) : 0;
+            $failed = $def['status'] === 'sent' ? $totalRecipients - $delivered : 0;
+            $uniqueClicks = $def['status'] === 'sent' ? (int) round($delivered * (mt_rand(5, 20) / 100)) : 0;
+            $unsubscribes = $def['status'] === 'sent' ? (int) round($totalRecipients * (mt_rand(1, 3) / 100)) : 0;
+
+            $campaign = SmsCampaign::create([
+                'external_id' => Uuid::uuid4()->toString(),
+                'campaign_id' => 'SC'.str_pad($campaignNumber, 4, '0', STR_PAD_LEFT),
+                'number' => $campaignNumber,
+                'name' => $def['name'],
+                'body' => $template->body,
+                'from' => 'LaravelCRM',
+                'sms_template_id' => $template->id,
+                'status' => $def['status'],
+                'scheduled_at' => $scheduledAt,
+                'sent_at' => $sentDate,
+                'total_recipients' => $totalRecipients,
+                'sent_count' => $def['status'] === 'sent' ? $totalRecipients : 0,
+                'delivered_count' => $delivered,
+                'failed_count' => $failed,
+                'clicks_count' => $uniqueClicks,
+                'unique_clicks_count' => $uniqueClicks,
+                'unsubscribes_count' => $unsubscribes,
+                'user_owner_id' => $this->userId,
+                'user_created_id' => $this->userId,
+                'user_updated_id' => $this->userId,
+            ]);
+
+            // Create recipient rows for sent campaigns
+            if ($def['status'] === 'sent' && $personPhones->isNotEmpty()) {
+                $sample = $personPhones->random(min($totalRecipients, $personPhones->count()));
+                foreach ($sample as $phone) {
+                    $recipientStatus = mt_rand(0, 10) > 1 ? 'delivered' : 'failed';
+                    $clicked = $recipientStatus === 'delivered' && mt_rand(0, 100) < 15;
+                    $unsub = $recipientStatus === 'delivered' && mt_rand(0, 100) < 2;
+
+                    SmsCampaignRecipient::create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'sms_campaign_id' => $campaign->id,
+                        'phone_id' => $phone->id,
+                        'person_id' => $phone->phoneable_id,
+                        'tracking_token' => Str::random(32),
+                        'status' => $recipientStatus,
+                        'sent_at' => $sentDate,
+                        'delivered_at' => $recipientStatus === 'delivered' ? $sentDate->copy()->addMinutes(mt_rand(1, 10)) : null,
+                        'first_clicked_at' => $clicked ? $sentDate->copy()->addMinutes(mt_rand(5, 120)) : null,
+                        'last_clicked_at' => $clicked ? $sentDate->copy()->addMinutes(mt_rand(5, 180)) : null,
+                        'clicks_count' => $clicked ? mt_rand(1, 3) : 0,
+                        'unsubscribed_at' => $unsub ? $sentDate->copy()->addHours(mt_rand(1, 24)) : null,
+                    ]);
+                }
+            }
+
+            $campaignNumber++;
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->line('');
+        $this->command->line('    <fg=green>✓ SMS campaigns & templates seeded</>');
+        $this->command->line('');
+    }
+
+    // =========================================================================
+    // Line-item generation helpers
+    // =========================================================================
 
     /**
      * Generate realistic line items from the product catalog.

@@ -41,4 +41,26 @@ class ArtisanCommandsTest extends TestCase
         $kernel = $this->app->make(Kernel::class);
         $this->assertArrayHasKey('laravelcrm:update', $kernel->all());
     }
+
+    public function test_email_campaigns_dispatch_command_is_registered(): void
+    {
+        $kernel = $this->app->make(Kernel::class);
+        $this->assertArrayHasKey('laravelcrm:email-campaigns-dispatch', $kernel->all());
+    }
+
+    public function test_sms_campaigns_dispatch_command_is_registered(): void
+    {
+        $kernel = $this->app->make(Kernel::class);
+        $this->assertArrayHasKey('laravelcrm:sms-campaigns-dispatch', $kernel->all());
+    }
+
+    public function test_email_campaigns_dispatch_runs_without_errors(): void
+    {
+        $this->artisan('laravelcrm:email-campaigns-dispatch')->assertExitCode(0);
+    }
+
+    public function test_sms_campaigns_dispatch_runs_without_errors(): void
+    {
+        $this->artisan('laravelcrm:sms-campaigns-dispatch')->assertExitCode(0);
+    }
 }

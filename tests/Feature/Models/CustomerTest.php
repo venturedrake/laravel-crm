@@ -50,7 +50,7 @@ class CustomerTest extends TestCase
 
     public function test_customer_name_is_encrypted_when_enabled(): void
     {
-        config()->set('laravel-encryptable.enabled', true);
+        config()->set('laravel-crm.encrypt_db_fields', true);
 
         $customer = Customer::create(['name' => 'Encrypted Customer']);
 
