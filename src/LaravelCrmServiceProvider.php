@@ -782,11 +782,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmSmsCampaignsDispatch::class,
             ]);
 
-            // Register the model factories
-            if (version_compare(app()->version(), '8', '<')) {
-                $this->app->make('Illuminate\Database\Eloquent\Factory')
-                    ->load(__DIR__.'/../database/factories');
-            }
         }
 
         // View components
