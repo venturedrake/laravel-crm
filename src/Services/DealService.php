@@ -36,7 +36,7 @@ class DealService
             'currency' => $request->currency,
             'expected_close' => $request->expected_close,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
@@ -69,7 +69,7 @@ class DealService
             'currency' => $request->currency,
             'expected_close' => $request->expected_close,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 

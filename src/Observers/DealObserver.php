@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class DealObserver
@@ -31,11 +32,7 @@ class DealObserver
             $deal->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastDeal = Deal::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $deal->number = $lastDeal->number + 1;
-        } else {
-            $deal->number = 1000;
-        }
+        $deal->number = NumberGeneratorService::next(Deal::class, 1000);
 
         $deal->prefix = $this->settingService->get('deal_prefix');
         $deal->deal_id = $deal->prefix.$deal->number;
@@ -105,7 +102,7 @@ class DealObserver
     public function restored(Deal $deal)
     {
         if (! app()->runningInConsole()) {
-            $deal->user_deleted_id = auth()->user()->id ?? null;
+            $deal->user_deleted_id = null;
             $deal->saveQuietly();
         }
     }

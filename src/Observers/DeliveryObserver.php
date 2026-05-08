@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Delivery;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class DeliveryObserver
@@ -31,11 +32,7 @@ class DeliveryObserver
             $delivery->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastDelivery = Delivery::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $delivery->number = $lastDelivery->number + 1;
-        } else {
-            $delivery->number = 1000;
-        }
+        $delivery->number = NumberGeneratorService::next(Delivery::class, 1000);
 
         $delivery->prefix = $this->settingService->get('delivery_prefix');
         $delivery->delivery_id = $delivery->prefix.$delivery->number;
@@ -105,7 +102,7 @@ class DeliveryObserver
     public function restored(Delivery $delivery)
     {
         if (! app()->runningInConsole()) {
-            $delivery->user_deleted_id = auth()->user()->id ?? null;
+            $delivery->user_restored_id = auth()->user()->id ?? null;
             $delivery->saveQuietly();
         }
     }

@@ -87,7 +87,7 @@ class EmailObserver
     public function restored(Email $email)
     {
         if (! app()->runningInConsole()) {
-            $email->user_restored_id = auth()->user()->id ?? null;
+            $email->user_deleted_id = null;
             $email->saveQuietly();
         }
     }

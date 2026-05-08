@@ -4,8 +4,8 @@ namespace VentureDrake\LaravelCrm\Http\Middleware;
 
 use Carbon\Carbon;
 use Closure;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LastOnlineAt
 {
@@ -21,13 +21,12 @@ class LastOnlineAt
             return $next($request);
         }
 
-        if (auth()->user()->last_online_at && Carbon::parse(auth()->user()->last_online_at)->diffInHours(now()) !== 0) {
+        $user = auth()->user();
+
+        // Throttle: only update once per hour to avoid a write on every request
+        if (! $user->last_online_at || Carbon::parse($user->last_online_at)->diffInHours(now()) >= 1) {
             DB::table('users')
-                ->where('id', auth()->user()->id)
-                ->update(['last_online_at' => now()]);
-        } else {
-            DB::table('users')
-                ->where('id', auth()->user()->id)
+                ->where('id', $user->id)
                 ->update(['last_online_at' => now()]);
         }
 

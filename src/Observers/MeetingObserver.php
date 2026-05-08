@@ -89,7 +89,7 @@ class MeetingObserver
     public function restored(Meeting $meeting)
     {
         if (! app()->runningInConsole()) {
-            $meeting->user_deleted_id = auth()->user()->id ?? null;
+            $meeting->user_restored_id = auth()->user()->id ?? null;
             $meeting->saveQuietly();
         }
     }

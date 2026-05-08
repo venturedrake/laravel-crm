@@ -88,7 +88,7 @@ class PhoneObserver
     public function restored(Phone $phone)
     {
         if (! app()->runningInConsole()) {
-            $phone->user_restored_id = auth()->user()->id ?? null;
+            $phone->user_deleted_id = null;
             $phone->saveQuietly();
         }
     }

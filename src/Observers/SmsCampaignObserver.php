@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\SmsCampaign;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 
 class SmsCampaignObserver
 {
@@ -17,11 +18,7 @@ class SmsCampaignObserver
             $campaign->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastCampaign = SmsCampaign::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $campaign->number = $lastCampaign->number + 1;
-        } else {
-            $campaign->number = 1000;
-        }
+        $campaign->number = NumberGeneratorService::next(SmsCampaign::class, 1000);
 
         $campaign->campaign_id = 'SC'.$campaign->number;
     }

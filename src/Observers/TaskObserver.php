@@ -89,7 +89,7 @@ class TaskObserver
     public function restored(Task $task)
     {
         if (! app()->runningInConsole()) {
-            $task->user_deleted_id = auth()->user()->id ?? null;
+            $task->user_restored_id = auth()->user()->id ?? null;
             $task->saveQuietly();
         }
     }

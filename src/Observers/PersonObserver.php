@@ -99,7 +99,7 @@ class PersonObserver
     public function restored(Person $person)
     {
         if (! app()->runningInConsole()) {
-            $person->user_restored_id = auth()->user()->id ?? null;
+            $person->user_deleted_id = null;
             $person->saveQuietly();
         }
     }

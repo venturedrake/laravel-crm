@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class QuoteObserver
@@ -31,11 +32,7 @@ class QuoteObserver
             $quote->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastQuote = Quote::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $quote->number = $lastQuote->number + 1;
-        } else {
-            $quote->number = 1000;
-        }
+        $quote->number = NumberGeneratorService::next(Quote::class, 1000);
 
         $quote->prefix = $this->settingService->get('quote_prefix');
         $quote->quote_id = $quote->prefix.$quote->number;
@@ -105,7 +102,7 @@ class QuoteObserver
     public function restored(Quote $quote)
     {
         if (! app()->runningInConsole()) {
-            $quote->user_deleted_id = auth()->user()->id ?? null;
+            $quote->user_restored_id = auth()->user()->id ?? null;
             $quote->saveQuietly();
         }
     }

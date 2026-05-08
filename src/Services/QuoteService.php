@@ -45,7 +45,7 @@ class QuoteService
             'adjustments' => $request->adjustment,
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
@@ -65,24 +65,14 @@ class QuoteService
                 }
 
                 if (isset($product['id']) && $product['id'] > 0 && $product['quantity'] > 0) {
-                    if ($productForTax = Product::find($product['id'])) {
-                        if ($productForTax->taxRate) {
-                            $taxRate = $productForTax->taxRate->rate;
-                        } elseif ($productForTax->tax_rate) {
-                            $taxRate = $productForTax->tax_rate;
-                        } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                            $taxRate = $taxRate->rate;
-                        } else {
-                            $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
-                        }
-                    }
+                    $taxRate = $this->resolveTaxRate($product['id']);
 
                     $quote->quoteProducts()->create([
                         'product_id' => $product['id'],
                         'quantity' => $product['quantity'],
                         'price' => $product['unit_price'],
                         'amount' => $product['amount'],
-                        'tax_rate' => $taxRate ?? 0,
+                        'tax_rate' => $taxRate,
                         'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                         'currency' => $request->currency,
                         'comments' => $product['comments'],
@@ -114,7 +104,7 @@ class QuoteService
             'adjustments' => $request->adjustment,
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
@@ -137,24 +127,14 @@ class QuoteService
                         }
 
                         if (isset($product['id']) && $product['id'] > 0 && $product['quantity'] > 0) {
-                            if ($productForTax = Product::find($product['id'])) {
-                                if ($productForTax->taxRate) {
-                                    $taxRate = $productForTax->taxRate->rate;
-                                } elseif ($productForTax->tax_rate) {
-                                    $taxRate = $productForTax->tax_rate;
-                                } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                                    $taxRate = $taxRate->rate;
-                                } else {
-                                    $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
-                                }
-                            }
+                            $taxRate = $this->resolveTaxRate($product['id']);
 
                             $quoteProduct->update([
                                 'product_id' => $product['id'],
                                 'quantity' => $product['quantity'],
                                 'price' => $product['unit_price'],
                                 'amount' => $product['amount'],
-                                'tax_rate' => $taxRate ?? 0,
+                                'tax_rate' => $taxRate,
                                 'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                                 'currency' => $request->currency,
                                 'comments' => $product['comments'],
@@ -171,24 +151,14 @@ class QuoteService
                     }
 
                     if (isset($product['id']) && $product['id'] > 0 && $product['quantity'] > 0) {
-                        if ($productForTax = Product::find($product['id'])) {
-                            if ($productForTax->taxRate) {
-                                $taxRate = $productForTax->taxRate->rate;
-                            } elseif ($productForTax->tax_rate) {
-                                $taxRate = $productForTax->tax_rate;
-                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                                $taxRate = $taxRate->rate;
-                            } else {
-                                $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
-                            }
-                        }
+                        $taxRate = $this->resolveTaxRate($product['id']);
 
                         $quoteProduct = $quote->quoteProducts()->create([
                             'product_id' => $product['id'],
                             'quantity' => $product['quantity'],
                             'price' => $product['unit_price'],
                             'amount' => $product['amount'],
-                            'tax_rate' => $taxRate ?? 0,
+                            'tax_rate' => $taxRate,
                             'tax_amount' => ($product['amount'] * 100) * ($taxRate / 100),
                             'currency' => $request->currency,
                             'comments' => $product['comments'],
@@ -208,6 +178,29 @@ class QuoteService
         }
 
         return $quote;
+    }
+
+    /**
+     * Resolve the applicable tax rate for a product, falling back through
+     * product → default tax rate → settings → 0. Always returns a numeric value.
+     */
+    protected function resolveTaxRate($productId): float
+    {
+        if ($product = Product::find($productId)) {
+            if ($product->taxRate) {
+                return (float) $product->taxRate->rate;
+            }
+
+            if ($product->tax_rate) {
+                return (float) $product->tax_rate;
+            }
+        }
+
+        if ($default = TaxRate::where('default', 1)->first()) {
+            return (float) $default->rate;
+        }
+
+        return (float) (optional(Setting::where('name', 'tax_rate')->first())->value ?? 0);
     }
 
     protected function addProduct($product, $request)

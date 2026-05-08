@@ -89,7 +89,7 @@ class CallObserver
     public function restored(Call $call)
     {
         if (! app()->runningInConsole()) {
-            $call->user_deleted_id = auth()->user()->id ?? null;
+            $call->user_restored_id = auth()->user()->id ?? null;
             $call->saveQuietly();
         }
     }

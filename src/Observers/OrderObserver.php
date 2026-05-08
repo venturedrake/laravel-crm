@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class OrderObserver
@@ -31,11 +32,7 @@ class OrderObserver
             $order->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastOrder = Order::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $order->number = $lastOrder->number + 1;
-        } else {
-            $order->number = 1000;
-        }
+        $order->number = NumberGeneratorService::next(Order::class, 1000);
 
         $order->prefix = $this->settingService->get('order_prefix');
         $order->order_id = $order->prefix.$order->number;
@@ -109,7 +106,7 @@ class OrderObserver
     public function restored(Order $order)
     {
         if (! app()->runningInConsole()) {
-            $order->user_deleted_id = auth()->user()->id ?? null;
+            $order->user_restored_id = auth()->user()->id ?? null;
             $order->saveQuietly();
         }
     }

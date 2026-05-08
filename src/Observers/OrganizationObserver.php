@@ -91,7 +91,7 @@ class OrganizationObserver
     public function restored(Organization $organization)
     {
         if (! app()->runningInConsole()) {
-            $organization->user_deleted_id = auth()->user()->id ?? null;
+            $organization->user_deleted_id = null;
             $organization->saveQuietly();
         }
     }

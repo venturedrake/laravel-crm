@@ -92,7 +92,7 @@ class NoteObserver
     public function restored(Note $note)
     {
         if (! app()->runningInConsole()) {
-            $note->user_restored_id = auth()->user()->id ?? null;
+            $note->user_deleted_id = null;
             $note->saveQuietly();
         }
     }

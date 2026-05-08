@@ -35,7 +35,7 @@ class LeadService
             'currency' => $request->currency,
             'lead_status_id' => 1,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
@@ -55,7 +55,7 @@ class LeadService
             'amount' => $request->amount,
             'currency' => $request->currency,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
+            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 

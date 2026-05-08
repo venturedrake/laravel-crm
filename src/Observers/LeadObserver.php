@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class LeadObserver
@@ -31,11 +32,7 @@ class LeadObserver
             $lead->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastLead = Lead::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $lead->number = $lastLead->number + 1;
-        } else {
-            $lead->number = 1000;
-        }
+        $lead->number = NumberGeneratorService::next(Lead::class, 1000);
 
         $lead->prefix = $this->settingService->get('lead_prefix');
         $lead->lead_id = $lead->prefix.$lead->number;
@@ -105,7 +102,7 @@ class LeadObserver
     public function restored(Lead $lead)
     {
         if (! app()->runningInConsole()) {
-            $lead->user_deleted_id = auth()->user()->id ?? null;
+            $lead->user_deleted_id = null;
             $lead->saveQuietly();
         }
     }

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class InvoiceObserver
@@ -31,11 +32,7 @@ class InvoiceObserver
             $invoice->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastInvoice = Invoice::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $invoice->number = $lastInvoice->number + 1;
-        } else {
-            $invoice->number = 1000;
-        }
+        $invoice->number = NumberGeneratorService::next(Invoice::class, 1000);
 
         $invoice->prefix = $this->settingService->get('invoice_prefix');
         $invoice->invoice_id = $invoice->prefix.$invoice->number;
@@ -105,7 +102,7 @@ class InvoiceObserver
     public function restored(Invoice $invoice)
     {
         if (! app()->runningInConsole()) {
-            $invoice->user_deleted_id = auth()->user()->id ?? null;
+            $invoice->user_restored_id = auth()->user()->id ?? null;
             $invoice->saveQuietly();
         }
     }

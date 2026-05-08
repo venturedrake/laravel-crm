@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class PurchaseOrderObserver
@@ -31,11 +32,7 @@ class PurchaseOrderObserver
             $purchaseOrder->user_created_id = auth()->user()->id ?? null;
         }
 
-        if ($lastPurchaseOrder = PurchaseOrder::withTrashed()->orderBy('number', 'DESC')->first()) {
-            $purchaseOrder->number = $lastPurchaseOrder->number + 1;
-        } else {
-            $purchaseOrder->number = 1000;
-        }
+        $purchaseOrder->number = NumberGeneratorService::next(PurchaseOrder::class, 1000);
 
         $purchaseOrder->prefix = $this->settingService->get('purchase_order_prefix');
         $purchaseOrder->purchase_order_id = $purchaseOrder->prefix.$purchaseOrder->number;
@@ -105,7 +102,7 @@ class PurchaseOrderObserver
     public function restored(PurchaseOrder $purchaseOrder)
     {
         if (! app()->runningInConsole()) {
-            $purchaseOrder->user_deleted_id = auth()->user()->id ?? null;
+            $purchaseOrder->user_restored_id = auth()->user()->id ?? null;
             $purchaseOrder->saveQuietly();
         }
     }

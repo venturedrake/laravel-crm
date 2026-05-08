@@ -58,6 +58,7 @@ class InvoiceService
                 }
 
                 if (isset($invoiceLine['id']) && $invoiceLine['id'] > 0 && $invoiceLine['quantity'] > 0) {
+                    $taxRate = 0;
                     if ($product = Product::find($invoiceLine['id'])) {
                         if ($product->taxRate) {
                             $taxRate = $product->taxRate->rate;
@@ -66,7 +67,7 @@ class InvoiceService
                         } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                             $taxRate = $taxRate->rate;
                         } else {
-                            $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                            $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
                         }
                     }
 
@@ -165,6 +166,7 @@ class InvoiceService
                         }
 
                         if (isset($line['id']) && $line['id'] > 0 && $line['quantity'] > 0) {
+                            $taxRate = 0;
                             if ($product = Product::find($invoiceLine['id'])) {
                                 if ($product->taxRate) {
                                     $taxRate = $product->taxRate->rate;
@@ -173,7 +175,7 @@ class InvoiceService
                                 } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                                     $taxRate = $taxRate->rate;
                                 } else {
-                                    $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                                    $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
                                 }
                             }
 
@@ -199,6 +201,7 @@ class InvoiceService
                     }
 
                     if (isset($line['id']) && $line['id'] > 0 && $line['quantity'] > 0) {
+                        $taxRate = 0;
                         if ($product = Product::find($line['id'])) {
                             if ($product->taxRate) {
                                 $taxRate = $product->taxRate->rate;
@@ -207,7 +210,7 @@ class InvoiceService
                             } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
                                 $taxRate = $taxRate->rate;
                             } else {
-                                $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                                $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
                             }
                         }
 
