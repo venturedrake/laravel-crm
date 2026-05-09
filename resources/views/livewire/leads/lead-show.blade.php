@@ -55,6 +55,12 @@
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
+                        <strong>{{ ucfirst(__('laravel-crm::lang.lead_source')) }}</strong>
+                        <span>
+                        {{ $lead->leadSource->name ?? '-' }}
+                        </span>
+                    </div>
+                    <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.labels')) }}</strong>
                         <span>
                         @foreach($lead->labels as $label)

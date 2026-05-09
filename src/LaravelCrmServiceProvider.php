@@ -27,6 +27,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmEncrypt;
 use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
+use VentureDrake\LaravelCrm\Console\LaravelCrmLeadSources;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganizationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
@@ -196,6 +197,10 @@ use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\LeadSources\LeadSourceCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\LeadSources\LeadSourceEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\LeadSources\LeadSourceIndex;
+use VentureDrake\LaravelCrm\Livewire\Settings\LeadSources\LeadSourceShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleIndex;
@@ -360,6 +365,7 @@ use VentureDrake\LaravelCrm\Policies\FilePolicy;
 use VentureDrake\LaravelCrm\Policies\InvoicePolicy;
 use VentureDrake\LaravelCrm\Policies\LabelPolicy;
 use VentureDrake\LaravelCrm\Policies\LeadPolicy;
+use VentureDrake\LaravelCrm\Policies\LeadSourcePolicy;
 use VentureDrake\LaravelCrm\Policies\LunchPolicy;
 use VentureDrake\LaravelCrm\Policies\MeetingPolicy;
 use VentureDrake\LaravelCrm\Policies\NotePolicy;
@@ -420,6 +426,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\ProductCategory' => ProductCategoryPolicy::class,
         'VentureDrake\LaravelCrm\Models\TaxRate' => TaxRatePolicy::class,
         'VentureDrake\LaravelCrm\Models\Label' => LabelPolicy::class,
+        'VentureDrake\LaravelCrm\Models\LeadSource' => LeadSourcePolicy::class,
         'VentureDrake\LaravelCrm\Models\Task' => TaskPolicy::class,
         'VentureDrake\LaravelCrm\Models\Note' => NotePolicy::class,
         'VentureDrake\LaravelCrm\Models\Call' => CallPolicy::class,
@@ -753,6 +760,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmUpdate::class,
                 LaravelCrmPermissions::class,
                 LaravelCrmLabels::class,
+                LaravelCrmLeadSources::class,
                 LaravelCrmAddressTypes::class,
                 LaravelCrmOrganizationTypes::class,
                 LaravelCrmXero::class,
@@ -983,6 +991,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-label-create', LabelCreate::class);
         Livewire::component('crm-settings-label-edit', LabelEdit::class);
         Livewire::component('crm-settings-label-show', LabelShow::class);
+
+        Livewire::component('crm-settings-lead-source-index', LeadSourceIndex::class);
+        Livewire::component('crm-settings-lead-source-create', LeadSourceCreate::class);
+        Livewire::component('crm-settings-lead-source-edit', LeadSourceEdit::class);
+        Livewire::component('crm-settings-lead-source-show', LeadSourceShow::class);
 
         Livewire::component('crm-settings-custom-field-index', CustomFieldIndex::class);
         Livewire::component('crm-settings-custom-field-create', CustomFieldCreate::class);

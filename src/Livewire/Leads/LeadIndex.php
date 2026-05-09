@@ -12,6 +12,7 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\LeadSource;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
@@ -31,13 +32,18 @@ class LeadIndex extends Component
     public ?array $label_id = [];
 
     #[Url]
+    public ?array $lead_source_id = [];
+
+    #[Url]
     public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
 
     public bool $showFilters = false;
 
     public function filterCount(): int
     {
-        return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
+        return (count($this->user_id) > 0 ? 1 : 0)
+            + ($this->label_id ? 1 : 0)
+            + (count($this->lead_source_id) > 0 ? 1 : 0);
     }
 
     public function users(): Collection
@@ -48,6 +54,11 @@ class LeadIndex extends Component
     public function labels(): Collection
     {
         return Label::all();
+    }
+
+    public function leadSources(): Collection
+    {
+        return LeadSource::orderBy('name')->get();
     }
 
     public function headers()
@@ -61,6 +72,7 @@ class LeadIndex extends Component
             ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
             ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],
+            ['key' => 'leadSource.name', 'label' => ucfirst(__('laravel-crm::lang.source')), 'format' => fn ($row, $field) => $field ?? '-', 'sortable' => false],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
         ];
     }
@@ -104,6 +116,7 @@ class LeadIndex extends Component
             })
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
+            ->when($this->lead_source_id, fn (Builder $q) => $q->whereIn('lead_source_id', $this->lead_source_id))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);
     }
@@ -122,6 +135,7 @@ class LeadIndex extends Component
         return view('laravel-crm::livewire.leads.lead-index', [
             'users' => $this->users(),
             'labels' => $this->labels(),
+            'leadSources' => $this->leadSources(),
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
             'leads' => $this->leads(),

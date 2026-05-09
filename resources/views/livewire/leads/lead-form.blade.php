@@ -77,6 +77,7 @@
                 <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.stage')) }}" wire:model="pipeline_stage_id" :options="$pipeline->pipelineStages()->orderBy('order')->orderBy('id')->get() ?? []" />
+            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.lead_source')) }}" wire:model="lead_source_id" :options="\VentureDrake\LaravelCrm\Models\LeadSource::orderBy('name')->get()" placeholder="{{ ucfirst(__('laravel-crm::lang.select')) }}" placeholder-value="" />
             <x-mary-choices-offline
                     wire:model="labels"
                     label="{{ ucfirst(__('laravel-crm::lang.labels')) }}"

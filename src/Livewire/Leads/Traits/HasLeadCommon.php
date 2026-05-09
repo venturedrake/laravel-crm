@@ -66,6 +66,8 @@ trait HasLeadCommon
 
     public $user_owner_id;
 
+    public $lead_source_id;
+
     protected function customFieldsModel(): string
     {
         return Lead::class;

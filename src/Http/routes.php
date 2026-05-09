@@ -1319,6 +1319,25 @@ Route::group(['prefix' => 'labels', 'middleware' => 'auth.laravel-crm'], functio
         ->middleware(['can:delete,label']);
 });
 
+/* Lead Sources */
+Route::group(['prefix' => 'lead-sources', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\LeadSourceController@index')
+        ->name('laravel-crm.lead-sources.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\LeadSource']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\LeadSourceController@create')
+        ->name('laravel-crm.lead-sources.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\LeadSource']);
+
+    Route::get('{leadSource}', 'VentureDrake\LaravelCrm\Http\Controllers\LeadSourceController@show')
+        ->name('laravel-crm.lead-sources.show')
+        ->middleware(['can:view,leadSource']);
+
+    Route::get('{leadSource}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\LeadSourceController@edit')
+        ->name('laravel-crm.lead-sources.edit')
+        ->middleware(['can:update,leadSource']);
+});
+
 /* Fields */
 Route::group(['prefix' => 'fields', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\FieldController@index')

@@ -55,6 +55,7 @@ class LeadEdit extends Component
         $this->pipeline_stage_id = $lead->pipelineStage->id ?? null;
         $this->labels = $lead->labels->pluck('id')->toArray();
         $this->user_owner_id = $lead->ownerUser->id ?? null;
+        $this->lead_source_id = $lead->lead_source_id;
 
         $this->loadCustomFields($lead);
     }

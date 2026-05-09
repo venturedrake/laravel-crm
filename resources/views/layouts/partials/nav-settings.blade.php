@@ -22,6 +22,9 @@
         @can('view crm labels')
             <x-mary-menu-item link="{{ url(route('laravel-crm.labels.index')) }}" title="{{ ucwords(__('laravel-crm::lang.labels')) }}"  />
         @endcan
+        @can('view crm lead sources')
+            <x-mary-menu-item link="{{ url(route('laravel-crm.lead-sources.index')) }}" title="{{ ucwords(__('laravel-crm::lang.lead_sources')) }}"  />
+        @endcan
         @can('view crm fields')
             <x-mary-menu-item link="{{ url(route('laravel-crm.fields.index')) }}" title="{{ ucwords(__('laravel-crm::lang.custom_fields')) }}"  />
             <x-mary-menu-item link="{{ url(route('laravel-crm.field-groups.index')) }}" title="{{ ucwords(__('laravel-crm::lang.custom_field_groups')) }}"  />

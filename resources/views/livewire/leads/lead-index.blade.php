@@ -60,6 +60,7 @@
         <div class="grid gap-5" @keydown.enter="$wire.showFilters = false">
             <x-mary-choices label="Owner" wire:model.live="user_id" :options="$users" icon="o-user" inline allow-all />
             <x-mary-choices label="Label" wire:model.live="label_id" :options="$labels" icon="o-tag" inline allow-all />
+            <x-mary-choices label="{{ ucwords(__('laravel-crm::lang.lead_source')) }}" wire:model.live="lead_source_id" :options="$leadSources" icon="o-funnel" inline allow-all />
         </div>
 
         {{-- ACTIONS --}}

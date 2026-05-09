@@ -172,6 +172,9 @@ class LaravelCrmInstall extends Command
             '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
         ]);
 
+        // Seed default lead sources (idempotent — firstOrCreate)
+        $this->callSilent('laravelcrm:lead-sources');
+
         if ($userClass::where('crm_access', 1)->count() < 1) {
             $this->info('Create your default owner user');
 
