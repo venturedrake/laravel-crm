@@ -1,73 +1,52 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Customer;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class CustomerTest extends TestCase
-{
-    public function test_customer_uses_prefixed_table_name(): void
-    {
-        $this->assertSame('crm_customers', (new Customer)->getTable());
-    }
+test('customer uses prefixed table name', function () {
+    expect((new Customer)->getTable())->toBe('crm_customers');
+});
 
-    public function test_creating_a_customer_assigns_uuid(): void
-    {
-        $customer = Customer::create(['name' => 'Acme']);
-        $this->assertTrue(Str::isUuid($customer->external_id));
-    }
+test('creating a customer assigns uuid', function () {
+    $customer = Customer::create(['name' => 'Acme']);
+    expect(Str::isUuid($customer->external_id))->toBeTrue();
+});
 
-    public function test_customer_morphs_to_a_person(): void
-    {
-        $person = Person::create(['first_name' => 'Bob']);
-        $customer = Customer::create([
-            'name' => 'Bob',
-            'customerable_type' => Person::class,
-            'customerable_id' => $person->id,
-        ]);
+test('customer morphs to a person', function () {
+    $person = Person::create(['first_name' => 'Bob']);
+    $customer = Customer::create([
+        'name' => 'Bob', 'customerable_type' => Person::class, 'customerable_id' => $person->id,
+    ]);
 
-        $this->assertInstanceOf(MorphTo::class, $customer->customerable());
-        $this->assertTrue($customer->customerable->is($person));
-    }
+    expect($customer->customerable())->toBeInstanceOf(MorphTo::class);
+    expect($customer->customerable->is($person))->toBeTrue();
+});
 
-    public function test_customer_morphs_to_an_organization(): void
-    {
-        $org = Organization::create(['name' => 'Acme']);
-        $customer = Customer::create([
-            'name' => 'Acme',
-            'customerable_type' => Organization::class,
-            'customerable_id' => $org->id,
-        ]);
+test('customer morphs to an organization', function () {
+    $org = Organization::create(['name' => 'Acme']);
+    $customer = Customer::create([
+        'name' => 'Acme', 'customerable_type' => Organization::class, 'customerable_id' => $org->id,
+    ]);
 
-        $this->assertTrue($customer->customerable->is($org));
-    }
+    expect($customer->customerable->is($org))->toBeTrue();
+});
 
-    public function test_customer_name_is_encrypted_when_enabled(): void
-    {
-        config()->set('laravel-crm.encrypt_db_fields', true);
+test('customer name is encrypted when enabled', function () {
+    config()->set('laravel-crm.encrypt_db_fields', true);
 
-        $customer = Customer::create(['name' => 'Encrypted Customer']);
+    $customer = Customer::create(['name' => 'Encrypted Customer']);
+    $raw = DB::table('crm_customers')->where('id', $customer->id)->value('name');
 
-        // raw stored value should be different from plain text
-        $raw = DB::table('crm_customers')
-            ->where('id', $customer->id)
-            ->value('name');
-        $this->assertNotSame('Encrypted Customer', $raw);
+    expect($raw)->not->toBe('Encrypted Customer');
+    expect($customer->fresh()->name)->toBe('Encrypted Customer');
+});
 
-        // accessor still returns plain text
-        $this->assertSame('Encrypted Customer', $customer->fresh()->name);
-    }
-
-    public function test_customer_uses_soft_deletes(): void
-    {
-        $customer = Customer::create(['name' => 'Bin']);
-        $customer->delete();
-        $this->assertSoftDeleted('crm_customers', ['id' => $customer->id]);
-    }
-}
+test('customer uses soft deletes', function () {
+    $customer = Customer::create(['name' => 'Bin']);
+    $customer->delete();
+    $this->assertSoftDeleted('crm_customers', ['id' => $customer->id]);
+});

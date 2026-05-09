@@ -1,33 +1,21 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Organization;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class AddressTest extends TestCase
-{
-    public function test_address_uses_prefixed_table(): void
-    {
-        $this->assertSame('crm_addresses', (new Address)->getTable());
-    }
+test('address uses prefixed table', function () {
+    expect((new Address)->getTable())->toBe('crm_addresses');
+});
 
-    public function test_organization_can_have_addresses(): void
-    {
-        $org = Organization::create(['name' => 'Acme']);
+test('organization can have addresses', function () {
+    $org = Organization::create(['name' => 'Acme']);
 
-        $address = $org->addresses()->create([
-            'line1' => '1 Main St',
-            'city' => 'Sydney',
-            'state' => 'NSW',
-            'code' => '2000',
-            'country' => 'Australia',
-            'primary' => true,
-        ]);
+    $address = $org->addresses()->create([
+        'line1' => '1 Main St', 'city' => 'Sydney', 'state' => 'NSW',
+        'code' => '2000', 'country' => 'Australia', 'primary' => true,
+    ]);
 
-        $this->assertInstanceOf(Address::class, $address);
-        $this->assertSame($org->id, $address->addressable->id);
-        $this->assertSame($address->id, $org->getPrimaryAddress()->id);
-    }
-}
+    expect($address)->toBeInstanceOf(Address::class);
+    expect($address->addressable->id)->toBe($org->id);
+    expect($org->getPrimaryAddress()->id)->toBe($address->id);
+});

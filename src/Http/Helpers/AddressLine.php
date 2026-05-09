@@ -2,6 +2,25 @@
 
 namespace VentureDrake\LaravelCrm\Http\Helpers\AddressLine;
 
+function addressLine($address): string
+{
+    if ($address === null) {
+        return '';
+    }
+
+    $parts = array_filter([
+        $address->line1 ?? null,
+        $address->line2 ?? null,
+        $address->line3 ?? null,
+        $address->city ?? null,
+        $address->state ?? null,
+        $address->code ?? null,
+        $address->country ?? null,
+    ]);
+
+    return implode(', ', $parts);
+}
+
 function addressSingleLine($address)
 {
     if ($address->line) {

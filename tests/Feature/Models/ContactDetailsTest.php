@@ -1,69 +1,49 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class ContactDetailsTest extends TestCase
-{
-    public function test_email_polymorphic_relation_to_person(): void
-    {
-        $person = Person::create(['first_name' => 'Jane']);
+test('email polymorphic relation to person', function () {
+    $person = Person::create(['first_name' => 'Jane']);
 
-        $email = $person->emails()->create([
-            'address' => 'jane@example.com',
-            'type' => 'work',
-            'primary' => true,
-        ]);
+    $email = $person->emails()->create(['address' => 'jane@example.com', 'type' => 'work', 'primary' => true]);
 
-        $this->assertSame('jane@example.com', $email->address);
-        $this->assertTrue($email->primary);
-        $this->assertSame($person->id, $email->emailable->id);
-    }
+    expect($email->address)->toBe('jane@example.com');
+    expect($email->primary)->toBeTrue();
+    expect($email->emailable->id)->toBe($person->id);
+});
 
-    public function test_phone_polymorphic_relation_to_person(): void
-    {
-        $person = Person::create(['first_name' => 'Bob']);
+test('phone polymorphic relation to person', function () {
+    $person = Person::create(['first_name' => 'Bob']);
 
-        $phone = $person->phones()->create([
-            'number' => '+61400000000',
-            'type' => 'mobile',
-            'primary' => true,
-        ]);
+    $phone = $person->phones()->create(['number' => '+61400000000', 'type' => 'mobile', 'primary' => true]);
 
-        $this->assertSame('+61400000000', $phone->number);
-        $this->assertSame('mobile', $phone->type);
-        $this->assertSame($person->id, $phone->phoneable->id);
-    }
+    expect($phone->number)->toBe('+61400000000');
+    expect($phone->type)->toBe('mobile');
+    expect($phone->phoneable->id)->toBe($person->id);
+});
 
-    public function test_get_primary_email_returns_only_primary_record(): void
-    {
-        $person = Person::create(['first_name' => 'P']);
-        $person->emails()->create(['address' => 'a@example.com', 'primary' => false]);
-        $primary = $person->emails()->create(['address' => 'b@example.com', 'primary' => true]);
+test('get primary email returns only primary record', function () {
+    $person = Person::create(['first_name' => 'P']);
+    $person->emails()->create(['address' => 'a@example.com', 'primary' => false]);
+    $primary = $person->emails()->create(['address' => 'b@example.com', 'primary' => true]);
 
-        $this->assertSame($primary->id, $person->getPrimaryEmail()->id);
-    }
+    expect($person->getPrimaryEmail()->id)->toBe($primary->id);
+});
 
-    public function test_get_primary_phone_returns_only_primary_record(): void
-    {
-        $person = Person::create(['first_name' => 'P']);
-        $person->phones()->create(['number' => '111', 'primary' => false]);
-        $primary = $person->phones()->create(['number' => '222', 'primary' => true]);
+test('get primary phone returns only primary record', function () {
+    $person = Person::create(['first_name' => 'P']);
+    $person->phones()->create(['number' => '111', 'primary' => false]);
+    $primary = $person->phones()->create(['number' => '222', 'primary' => true]);
 
-        $this->assertSame($primary->id, $person->getPrimaryPhone()->id);
-    }
+    expect($person->getPrimaryPhone()->id)->toBe($primary->id);
+});
 
-    public function test_email_uses_prefixed_table(): void
-    {
-        $this->assertSame('crm_emails', (new Email)->getTable());
-    }
+test('email uses prefixed table', function () {
+    expect((new Email)->getTable())->toBe('crm_emails');
+});
 
-    public function test_phone_uses_prefixed_table(): void
-    {
-        $this->assertSame('crm_phones', (new Phone)->getTable());
-    }
-}
+test('phone uses prefixed table', function () {
+    expect((new Phone)->getTable())->toBe('crm_phones');
+});

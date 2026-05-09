@@ -1,34 +1,20 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class PipelineTest extends TestCase
-{
-    public function test_pipeline_uses_prefixed_table(): void
-    {
-        $this->assertSame('crm_pipelines', (new Pipeline)->getTable());
-    }
+test('pipeline uses prefixed table', function () {
+    expect((new Pipeline)->getTable())->toBe('crm_pipelines');
+});
 
-    public function test_pipeline_can_be_created_with_stages(): void
-    {
-        $pipeline = Pipeline::create([
-            'name' => 'Sales',
-            'model' => Lead::class,
-        ]);
+test('pipeline can be created with stages', function () {
+    $pipeline = Pipeline::create(['name' => 'Sales', 'model' => Lead::class]);
 
-        $this->assertTrue(Str::isUuid($pipeline->external_id));
+    expect(Str::isUuid($pipeline->external_id))->toBeTrue();
 
-        $stage = PipelineStage::create([
-            'name' => 'Qualified',
-            'pipeline_id' => $pipeline->id,
-        ]);
+    $stage = PipelineStage::create(['name' => 'Qualified', 'pipeline_id' => $pipeline->id]);
 
-        $this->assertSame($pipeline->id, $stage->pipeline_id);
-    }
-}
+    expect($stage->pipeline_id)->toBe($pipeline->id);
+});

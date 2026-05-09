@@ -1,61 +1,66 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Unit;
-
-use PHPUnit\Framework\TestCase;
-use VentureDrake\LaravelCrm\Models\OrderProduct;
-use VentureDrake\LaravelCrm\Models\QuoteProduct;
-
 use function VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\lineAmount;
 
-class CheckAmountHelperTest extends TestCase
-{
-    public function test_line_amount_returns_true_when_price_times_quantity_matches_amount(): void
-    {
-        $item = new class extends \stdClass {};
-        $item->price = 10;
-        $item->quantity = 3;
-        $item->amount = 30;
+test('line amount returns true when price times quantity equals amount', function () {
+    $item = new stdClass;
+    $item->price = 10;
+    $item->quantity = 3;
+    $item->amount = 30;
 
-        // class_basename uses the class name; trick by aliasing
-        $proxy = new class
-        {
-            public $price;
+    expect(lineAmount($item))->toBeTrue();
+});
 
-            public $quantity;
+test('line amount returns false when amount does not equal price times quantity', function () {
+    $item = new stdClass;
+    $item->price = 10;
+    $item->quantity = 3;
+    $item->amount = 25;
 
-            public $amount;
-        };
-        $proxy->price = 10;
-        $proxy->quantity = 3;
-        $proxy->amount = 30;
+    expect(lineAmount($item))->toBeFalse();
+});
 
-        // The helper checks class_basename($item) for QuoteProduct/OrderProduct
-        $quoteProduct = new QuoteProduct;
-        $quoteProduct->price = 10;
-        $quoteProduct->quantity = 3;
-        $quoteProduct->amount = 30;
+test('line amount handles float values', function () {
+    $item = new stdClass;
+    $item->price = 9.99;
+    $item->quantity = 2;
+    $item->amount = 19.98;
 
-        $this->assertTrue(lineAmount($quoteProduct));
-    }
+    expect(lineAmount($item))->toBeTrue();
+});
 
-    public function test_line_amount_returns_null_when_amounts_dont_match(): void
-    {
-        $orderProduct = new OrderProduct;
-        $orderProduct->price = 10;
-        $orderProduct->quantity = 3;
-        $orderProduct->amount = 99;
+test('line amount returns true for zero quantities', function () {
+    $item = new stdClass;
+    $item->price = 100;
+    $item->quantity = 0;
+    $item->amount = 0;
 
-        $this->assertNull(lineAmount($orderProduct));
-    }
+    expect(lineAmount($item))->toBeTrue();
+});
 
-    public function test_line_amount_returns_null_for_unknown_class(): void
-    {
-        $obj = new \stdClass;
-        $obj->price = 10;
-        $obj->quantity = 3;
-        $obj->amount = 30;
+test('line amount returns false when amount is null', function () {
+    $item = new stdClass;
+    $item->price = 10;
+    $item->quantity = 2;
+    $item->amount = null;
 
-        $this->assertNull(lineAmount($obj));
-    }
-}
+    expect(lineAmount($item))->toBeFalse();
+});
+
+test('line amount returns false when price is null', function () {
+    $item = new stdClass;
+    $item->price = null;
+    $item->quantity = 2;
+    $item->amount = 0;
+
+    expect(lineAmount($item))->toBeFalse();
+});
+
+test('line amount returns false when quantity is null', function () {
+    $item = new stdClass;
+    $item->price = 10;
+    $item->quantity = null;
+    $item->amount = 0;
+
+    expect(lineAmount($item))->toBeFalse();
+});

@@ -1,39 +1,29 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductCategory;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class ProductCategoryTest extends TestCase
-{
-    public function test_category_uses_prefixed_table_name(): void
-    {
-        $this->assertSame('crm_product_categories', (new ProductCategory)->getTable());
-    }
+test('category uses prefixed table name', function () {
+    expect((new ProductCategory)->getTable())->toBe('crm_product_categories');
+});
 
-    public function test_creating_a_category_persists_a_name(): void
-    {
-        $cat = ProductCategory::create(['name' => 'Tools']);
-        $this->assertSame('Tools', $cat->fresh()->name);
-    }
+test('creating a category persists a name', function () {
+    $cat = ProductCategory::create(['name' => 'Tools']);
+    expect($cat->fresh()->name)->toBe('Tools');
+});
 
-    public function test_category_has_many_products(): void
-    {
-        $cat = ProductCategory::create(['name' => 'Tools']);
-        Product::create(['name' => 'Drill', 'product_category_id' => $cat->id]);
-        Product::create(['name' => 'Saw', 'product_category_id' => $cat->id]);
+test('category has many products', function () {
+    $cat = ProductCategory::create(['name' => 'Tools']);
+    Product::create(['name' => 'Drill', 'product_category_id' => $cat->id]);
+    Product::create(['name' => 'Saw', 'product_category_id' => $cat->id]);
 
-        $this->assertInstanceOf(HasMany::class, (new ProductCategory)->products());
-        $this->assertSame(2, $cat->products()->count());
-    }
+    expect((new ProductCategory)->products())->toBeInstanceOf(HasMany::class);
+    expect($cat->products()->count())->toBe(2);
+});
 
-    public function test_category_uses_soft_deletes(): void
-    {
-        $cat = ProductCategory::create(['name' => 'Bin']);
-        $cat->delete();
-        $this->assertSoftDeleted('crm_product_categories', ['id' => $cat->id]);
-    }
-}
+test('category uses soft deletes', function () {
+    $cat = ProductCategory::create(['name' => 'Bin']);
+    $cat->delete();
+    $this->assertSoftDeleted('crm_product_categories', ['id' => $cat->id]);
+});

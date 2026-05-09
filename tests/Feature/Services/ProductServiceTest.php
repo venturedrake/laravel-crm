@@ -1,78 +1,44 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Services;
-
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductCategory;
 use VentureDrake\LaravelCrm\Services\ProductService;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class ProductServiceTest extends TestCase
-{
-    private function service(): ProductService
-    {
-        return app(ProductService::class);
-    }
+beforeEach(function () {
+    app('laravel-crm.settings')->set('currency', 'USD');
+});
 
-    private function request(array $attributes): Request
-    {
-        return new Request($attributes);
-    }
+test('service creates a product with minimum data', function () {
+    $product = app(ProductService::class)->create(new Request([
+        'name' => 'Widget', 'code' => 'W-1', 'unit' => 'each', 'currency' => 'USD', 'unit_price' => 10,
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        // ProductService::update() calls Product::getDefaultPrice() which uses
-        // Setting::currency()->value — make sure that setting exists.
-        app('laravel-crm.settings')->set('currency', 'USD');
-    }
+    expect($product)->toBeInstanceOf(Product::class);
+    expect($product->name)->toBe('Widget');
+    expect($product->code)->toBe('W-1');
+    expect($product->productPrices()->count())->toBe(1);
+    expect((int) $product->productPrices()->first()->getRawOriginal('unit_price'))->toBe(1000);
+});
 
-    public function test_service_creates_a_product_with_minimum_data(): void
-    {
-        $product = $this->service()->create($this->request([
-            'name' => 'Widget',
-            'code' => 'W-1',
-            'unit' => 'each',
-            'currency' => 'USD',
-            'unit_price' => 10,
-        ]));
+test('service attaches category', function () {
+    $cat = ProductCategory::create(['name' => 'Cat']);
 
-        $this->assertInstanceOf(Product::class, $product);
-        $this->assertSame('Widget', $product->name);
-        $this->assertSame('W-1', $product->code);
-        $this->assertSame(1, $product->productPrices()->count());
-        // setUnitPriceAttribute multiplies by 100, so 10 → 1000 (cents).
-        $this->assertSame(1000, (int) $product->productPrices()->first()->getRawOriginal('unit_price'));
-    }
+    $product = app(ProductService::class)->create(new Request([
+        'name' => 'P', 'product_category' => $cat->id, 'currency' => 'USD', 'unit_price' => 100,
+    ]));
 
-    public function test_service_attaches_category(): void
-    {
-        $cat = ProductCategory::create(['name' => 'Cat']);
+    expect($product->product_category_id)->toBe($cat->id);
+});
 
-        $product = $this->service()->create($this->request([
-            'name' => 'P',
-            'product_category' => $cat->id,
-            'currency' => 'USD',
-            'unit_price' => 100,
-        ]));
+test('service updates a product', function () {
+    $product = Product::create(['name' => 'Original']);
 
-        $this->assertSame($cat->id, $product->product_category_id);
-    }
+    app(ProductService::class)->update($product, new Request([
+        'name' => 'Renamed', 'description' => 'Updated description', 'currency' => 'USD', 'unit_price' => 999,
+    ]));
 
-    public function test_service_updates_a_product(): void
-    {
-        $product = Product::create(['name' => 'Original']);
-
-        $this->service()->update($product, $this->request([
-            'name' => 'Renamed',
-            'description' => 'Updated description',
-            'currency' => 'USD',
-            'unit_price' => 999,
-        ]));
-
-        $fresh = $product->fresh();
-        $this->assertSame('Renamed', $fresh->name);
-        $this->assertSame('Updated description', $fresh->description);
-    }
-}
+    $fresh = $product->fresh();
+    expect($fresh->name)->toBe('Renamed');
+    expect($fresh->description)->toBe('Updated description');
+});

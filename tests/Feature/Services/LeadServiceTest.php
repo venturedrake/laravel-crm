@@ -1,89 +1,60 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Services;
-
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\LeadService;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class LeadServiceTest extends TestCase
-{
-    private function service(): LeadService
-    {
-        return app(LeadService::class);
-    }
+test('service creates a lead with minimum data', function () {
+    $lead = app(LeadService::class)->create(new Request([
+        'title' => 'New lead', 'description' => 'A short description',
+        'currency' => 'USD', 'amount' => 250.00,
+        'user_owner_id' => null, 'pipeline_stage_id' => null,
+    ]));
 
-    private function request(array $attributes): Request
-    {
-        return new Request($attributes);
-    }
+    expect($lead)->toBeInstanceOf(Lead::class);
+    expect($lead->title)->toBe('New lead');
+    expect($lead->description)->toBe('A short description');
+    expect($lead->currency)->toBe('USD');
+    expect((int) $lead->fresh()->amount)->toBe(25000);
+    expect($lead->lead_status_id)->toBe(1);
+});
 
-    public function test_service_creates_a_lead_with_minimum_data(): void
-    {
-        $lead = $this->service()->create($this->request([
-            'title' => 'New lead',
-            'description' => 'A short description',
-            'currency' => 'USD',
-            'amount' => 250.00,
-            'user_owner_id' => null,
-            'pipeline_stage_id' => null,
-        ]));
+test('service attaches person and organization', function () {
+    $person = Person::create(['first_name' => 'Jane']);
+    $org = Organization::create(['name' => 'Acme']);
 
-        $this->assertInstanceOf(Lead::class, $lead);
-        $this->assertSame('New lead', $lead->title);
-        $this->assertSame('A short description', $lead->description);
-        $this->assertSame('USD', $lead->currency);
-        $this->assertSame(25000, (int) $lead->fresh()->amount);
-        $this->assertSame(1, $lead->lead_status_id);
-    }
+    $lead = app(LeadService::class)->create(new Request([
+        'title' => 'Linked', 'currency' => 'USD',
+    ]), $person, $org);
 
-    public function test_service_attaches_person_and_organization(): void
-    {
-        $person = Person::create(['first_name' => 'Jane']);
-        $org = Organization::create(['name' => 'Acme']);
+    expect($lead->person_id)->toBe($person->id);
+    expect($lead->organization_id)->toBe($org->id);
+});
 
-        $lead = $this->service()->create($this->request([
-            'title' => 'Linked',
-            'currency' => 'USD',
-        ]), $person, $org);
+test('service syncs labels', function () {
+    $label = Label::create(['name' => 'Hot', 'hex' => 'ff0000']);
 
-        $this->assertSame($person->id, $lead->person_id);
-        $this->assertSame($org->id, $lead->organization_id);
-    }
+    $lead = app(LeadService::class)->create(new Request([
+        'title' => 'L', 'currency' => 'USD', 'labels' => [$label->id],
+    ]));
 
-    public function test_service_syncs_labels(): void
-    {
-        $label = Label::create(['name' => 'Hot', 'hex' => 'ff0000']);
+    expect($lead->fresh()->labels)->toHaveCount(1);
+});
 
-        $lead = $this->service()->create($this->request([
-            'title' => 'L',
-            'currency' => 'USD',
-            'labels' => [$label->id],
-        ]));
+test('service updates an existing lead', function () {
+    $lead = Lead::create(['title' => 'Old', 'currency' => 'USD']);
 
-        $this->assertCount(1, $lead->fresh()->labels);
-    }
+    app(LeadService::class)->update(new Request([
+        'title' => 'New', 'description' => 'updated', 'amount' => 99, 'currency' => 'AUD',
+    ]), $lead);
 
-    public function test_service_updates_an_existing_lead(): void
-    {
-        $lead = Lead::create(['title' => 'Old', 'currency' => 'USD']);
+    $fresh = $lead->fresh();
 
-        $this->service()->update($this->request([
-            'title' => 'New',
-            'description' => 'updated',
-            'amount' => 99,
-            'currency' => 'AUD',
-        ]), $lead);
-
-        $fresh = $lead->fresh();
-
-        $this->assertSame('New', $fresh->title);
-        $this->assertSame('updated', $fresh->description);
-        $this->assertSame('AUD', $fresh->currency);
-        $this->assertSame(9900, (int) $fresh->amount);
-    }
-}
+    expect($fresh->title)->toBe('New');
+    expect($fresh->description)->toBe('updated');
+    expect($fresh->currency)->toBe('AUD');
+    expect((int) $fresh->amount)->toBe(9900);
+});

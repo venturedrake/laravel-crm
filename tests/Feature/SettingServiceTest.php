@@ -1,95 +1,82 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature;
-
 use Illuminate\Support\Facades\Cache;
 use VentureDrake\LaravelCrm\Models\Setting;
-use VentureDrake\LaravelCrm\Services\SettingService;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class SettingServiceTest extends TestCase
-{
-    private function service(): SettingService
-    {
-        return app('laravel-crm.settings');
-    }
+test('set creates a new setting', function () {
+    $setting = app('laravel-crm.settings')->set('lead_prefix', 'L', 'Lead Prefix');
 
-    public function test_set_creates_a_new_setting(): void
-    {
-        $setting = $this->service()->set('lead_prefix', 'L', 'Lead Prefix');
+    expect($setting)->toBeInstanceOf(Setting::class);
+    $this->assertDatabaseHas('crm_settings', [
+        'name' => 'lead_prefix',
+        'value' => 'L',
+        'label' => 'Lead Prefix',
+    ]);
+});
 
-        $this->assertInstanceOf(Setting::class, $setting);
-        $this->assertDatabaseHas('crm_settings', [
-            'name' => 'lead_prefix',
-            'value' => 'L',
-            'label' => 'Lead Prefix',
-        ]);
-    }
+test('set updates an existing setting', function () {
+    $service = app('laravel-crm.settings');
+    $service->set('currency', 'USD');
+    $service->set('currency', 'AUD');
 
-    public function test_set_updates_an_existing_setting(): void
-    {
-        $this->service()->set('currency', 'USD');
-        $this->service()->set('currency', 'AUD');
+    expect(Setting::where('name', 'currency')->count())->toBe(1);
+    expect(Setting::where('name', 'currency')->first()->value)->toBe('AUD');
+});
 
-        $this->assertSame(1, Setting::where('name', 'currency')->count());
-        $this->assertSame('AUD', Setting::where('name', 'currency')->first()->value);
-    }
+test('get returns default when setting missing', function () {
+    $service = app('laravel-crm.settings');
 
-    public function test_get_returns_default_when_setting_missing(): void
-    {
-        $this->assertSame('fallback', $this->service()->get('does_not_exist', 'fallback'));
-        $this->assertNull($this->service()->get('does_not_exist'));
-    }
+    expect($service->get('does_not_exist', 'fallback'))->toBe('fallback');
+    expect($service->get('does_not_exist'))->toBeNull();
+});
 
-    public function test_all_returns_settings_keyed_by_name(): void
-    {
-        $this->service()->set('a', '1');
-        $this->service()->set('b', '2');
+test('all returns settings keyed by name', function () {
+    $service = app('laravel-crm.settings');
+    $service->set('a', '1');
+    $service->set('b', '2');
+    $service->forgetCache();
 
-        // forget cache from set being called before all()
-        $this->service()->forgetCache();
+    $all = $service->all();
 
-        $all = $this->service()->all();
+    expect($all['a'])->toBe('1');
+    expect($all['b'])->toBe('2');
+});
 
-        $this->assertSame('1', $all['a']);
-        $this->assertSame('2', $all['b']);
-    }
+test('all is cached', function () {
+    $service = app('laravel-crm.settings');
+    $service->set('cached', 'first');
+    $service->forgetCache();
 
-    public function test_all_is_cached(): void
-    {
-        $this->service()->set('cached', 'first');
-        $this->service()->forgetCache();
-        $this->assertSame('first', $this->service()->get('cached'));
+    expect($service->get('cached'))->toBe('first');
 
-        // Bypass the service to mutate underlying row directly
-        Setting::where('name', 'cached')->update(['value' => 'second']);
+    Setting::where('name', 'cached')->update(['value' => 'second']);
 
-        // Cached value still returned
-        $this->assertSame('first', $this->service()->get('cached'));
+    // Cached value still returned
+    expect($service->get('cached'))->toBe('first');
 
-        $this->service()->forgetCache();
-        $this->assertSame('second', $this->service()->get('cached'));
-    }
+    $service->forgetCache();
 
-    public function test_first_returns_underlying_model(): void
-    {
-        $this->service()->set('lookup', 'value');
+    expect($service->get('cached'))->toBe('second');
+});
 
-        $found = $this->service()->first('lookup');
+test('first returns underlying model', function () {
+    $service = app('laravel-crm.settings');
+    $service->set('lookup', 'value');
 
-        $this->assertInstanceOf(Setting::class, $found);
-        $this->assertSame('value', $found->value);
-    }
+    $found = $service->first('lookup');
 
-    public function test_forget_cache_removes_cached_entry(): void
-    {
-        $this->service()->set('x', 'y');
-        $this->service()->all();
+    expect($found)->toBeInstanceOf(Setting::class);
+    expect($found->value)->toBe('value');
+});
 
-        $this->assertTrue(Cache::has('app.crm-settings'));
+test('forget cache removes cached entry', function () {
+    $service = app('laravel-crm.settings');
+    $service->set('x', 'y');
+    $service->all();
 
-        $this->service()->forgetCache();
+    expect(Cache::has('app.crm-settings'))->toBeTrue();
 
-        $this->assertFalse(Cache::has('app.crm-settings'));
-    }
-}
+    $service->forgetCache();
+
+    expect(Cache::has('app.crm-settings'))->toBeFalse();
+});

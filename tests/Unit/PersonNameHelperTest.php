@@ -1,45 +1,52 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Unit;
+use function VentureDrake\LaravelCrm\Http\Helpers\PersonName\personName;
 
-use PHPUnit\Framework\TestCase;
+test('full name returns first space last', function () {
+    $person = new stdClass;
+    $person->first_name = 'Jane';
+    $person->middle_name = null;
+    $person->last_name = 'Doe';
 
-use function VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstLastFromName;
-use function VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstNameFromName;
+    expect(personName($person))->toBe('Jane Doe');
+});
 
-class PersonNameHelperTest extends TestCase
-{
-    public function test_first_last_from_name_splits_two_parts(): void
-    {
-        $result = firstLastFromName('Jane Doe');
+test('full name includes middle name when set', function () {
+    $person = new stdClass;
+    $person->first_name = 'John';
+    $person->middle_name = 'Paul';
+    $person->last_name = 'Smith';
 
-        $this->assertSame('Jane', $result['first_name']);
-        $this->assertSame('Doe', $result['last_name']);
-    }
+    expect(personName($person))->toBe('John Paul Smith');
+});
 
-    public function test_first_last_from_name_handles_multiple_first_names(): void
-    {
-        $result = firstLastFromName('Mary Jane Smith');
+test('only first name returns first name', function () {
+    $person = new stdClass;
+    $person->first_name = 'Madonna';
+    $person->middle_name = null;
+    $person->last_name = null;
 
-        $this->assertSame('Mary Jane', $result['first_name']);
-        $this->assertSame('Smith', $result['last_name']);
-    }
+    expect(personName($person))->toBe('Madonna');
+});
 
-    public function test_first_last_from_name_handles_single_token(): void
-    {
-        $result = firstLastFromName('Madonna');
+test('only last name returns last name', function () {
+    $person = new stdClass;
+    $person->first_name = null;
+    $person->middle_name = null;
+    $person->last_name = 'Cher';
 
-        $this->assertSame('', $result['first_name']);
-        $this->assertSame('Madonna', $result['last_name']);
-    }
+    expect(personName($person))->toBe('Cher');
+});
 
-    public function test_first_name_from_name_returns_first_name(): void
-    {
-        $this->assertSame('Mary Jane', firstNameFromName('Mary Jane Smith'));
-    }
+test('null object returns empty string', function () {
+    expect(personName(null))->toBe('');
+});
 
-    public function test_first_name_from_name_returns_null_for_single_word(): void
-    {
-        $this->assertNull(firstNameFromName('Madonna'));
-    }
-}
+test('all empty fields returns empty string', function () {
+    $person = new stdClass;
+    $person->first_name = null;
+    $person->middle_name = null;
+    $person->last_name = null;
+
+    expect(trim(personName($person)))->toBe('');
+});

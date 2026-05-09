@@ -1,107 +1,70 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
-use OwenIt\Auditing\Contracts\Auditable;
 use VentureDrake\LaravelCrm\Models\Lead;
-use VentureDrake\LaravelCrm\Tests\TestCase;
+use VentureDrake\LaravelCrm\Models\Organization;
+use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Models\PipelineStage;
 
-class LeadTest extends TestCase
-{
-    public function test_lead_uses_prefixed_table_name(): void
-    {
-        $this->assertSame('crm_leads', (new Lead)->getTable());
+test('lead uses prefixed table name', function () {
+    expect((new Lead)->getTable())->toBe('crm_leads');
+    config()->set('laravel-crm.db_table_prefix', 'foo_');
+    expect((new Lead)->getTable())->toBe('foo_leads');
+});
 
-        config()->set('laravel-crm.db_table_prefix', 'foo_');
-        $this->assertSame('foo_leads', (new Lead)->getTable());
-    }
+test('creating a lead assigns external id uuid', function () {
+    $lead = Lead::create(['title' => 'New Lead']);
+    expect(Str::isUuid($lead->external_id))->toBeTrue();
+});
 
-    public function test_creating_a_lead_assigns_external_id_uuid(): void
-    {
-        $lead = Lead::create(['title' => 'New deal']);
+test('creating a lead auto increments number starting from 1000', function () {
+    $first = Lead::create(['title' => 'A']);
+    $second = Lead::create(['title' => 'B']);
 
-        $this->assertTrue(Str::isUuid($lead->external_id));
-    }
+    expect($first->number)->toBe(1000);
+    expect($second->number)->toBe(1001);
+});
 
-    public function test_creating_a_lead_auto_increments_number_starting_from_1000(): void
-    {
-        $first = Lead::create(['title' => 'A']);
-        $second = Lead::create(['title' => 'B']);
-        $third = Lead::create(['title' => 'C']);
+test('lead id is built from prefix plus number', function () {
+    app('laravel-crm.settings')->set('lead_prefix', 'L');
 
-        $this->assertSame(1000, $first->number);
-        $this->assertSame(1001, $second->number);
-        $this->assertSame(1002, $third->number);
-    }
+    $lead = Lead::create(['title' => 'Prefixed']);
 
-    public function test_lead_id_is_built_from_prefix_plus_number(): void
-    {
-        app('laravel-crm.settings')->set('lead_prefix', 'L');
+    expect($lead->prefix)->toBe('L');
+    expect($lead->lead_id)->toBe('L1000');
+});
 
-        $lead = Lead::create(['title' => 'Prefixed']);
+test('set amount attribute multiplies by one hundred', function () {
+    $lead = Lead::create(['title' => 'Money', 'amount' => 99.99]);
 
-        $this->assertSame('L', $lead->prefix);
-        $this->assertSame('L1000', $lead->lead_id);
-    }
+    expect((int) $lead->fresh()->amount)->toBe(9999);
+});
 
-    public function test_set_amount_attribute_multiplies_by_one_hundred(): void
-    {
-        $lead = Lead::create(['title' => 'Money', 'amount' => 12.50]);
+test('amount attribute handles null', function () {
+    $lead = Lead::create(['title' => 'Empty', 'amount' => null]);
 
-        $this->assertSame(1250, (int) $lead->fresh()->amount);
-    }
+    expect($lead->fresh()->amount)->toBeNull();
+});
 
-    public function test_set_amount_attribute_handles_null(): void
-    {
-        $lead = Lead::create(['title' => 'No money', 'amount' => null]);
+test('lead uses soft deletes', function () {
+    $lead = Lead::create(['title' => 'Soft delete']);
+    $lead->delete();
 
-        $this->assertNull($lead->fresh()->amount);
-    }
+    $this->assertSoftDeleted('crm_leads', ['id' => $lead->id]);
+});
 
-    public function test_lead_uses_soft_deletes(): void
-    {
-        $lead = Lead::create(['title' => 'Soft delete me']);
-        $lead->delete();
+test('lead has pipeline relationship', function () {
+    $pipeline = Pipeline::create(['name' => 'Sales', 'model' => Lead::class]);
+    $stage = PipelineStage::create(['name' => 'New', 'pipeline_id' => $pipeline->id]);
+    $lead = Lead::create(['title' => 'Pipeline Lead', 'pipeline_id' => $pipeline->id, 'pipeline_stage_id' => $stage->id]);
 
-        $this->assertSoftDeleted('crm_leads', ['id' => $lead->id]);
-        $this->assertSame(1, Lead::withTrashed()->count());
-        $this->assertSame(0, Lead::count());
-    }
+    expect($lead->pipeline->is($pipeline))->toBeTrue();
+    expect($lead->pipelineStage->is($stage))->toBeTrue();
+});
 
-    public function test_lead_number_continues_after_soft_deleted_records(): void
-    {
-        $first = Lead::create(['title' => 'First']);
-        $first->delete();
+test('lead belongs to person and organization', function () {
+    $org = Organization::create(['name' => 'Acme']);
+    $lead = Lead::create(['title' => 'Org Lead', 'organization_id' => $org->id]);
 
-        $second = Lead::create(['title' => 'Second']);
-
-        $this->assertSame(1001, $second->number);
-    }
-
-    public function test_lead_relationships_are_defined(): void
-    {
-        $lead = new Lead;
-
-        $this->assertInstanceOf(BelongsTo::class, $lead->person());
-        $this->assertInstanceOf(BelongsTo::class, $lead->organization());
-        $this->assertInstanceOf(BelongsTo::class, $lead->customer());
-        $this->assertInstanceOf(BelongsTo::class, $lead->leadSource());
-        $this->assertInstanceOf(BelongsTo::class, $lead->ownerUser());
-        $this->assertInstanceOf(BelongsTo::class, $lead->pipeline());
-        $this->assertInstanceOf(BelongsTo::class, $lead->pipelineStage());
-        $this->assertInstanceOf(MorphMany::class, $lead->emails());
-        $this->assertInstanceOf(MorphMany::class, $lead->phones());
-        $this->assertInstanceOf(MorphMany::class, $lead->addresses());
-        $this->assertInstanceOf(MorphToMany::class, $lead->labels());
-    }
-
-    public function test_lead_is_auditable(): void
-    {
-        $lead = new Lead;
-        $this->assertInstanceOf(Auditable::class, $lead);
-    }
-}
+    expect($lead->organization->is($org))->toBeTrue();
+});

@@ -1,29 +1,20 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Organization;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class OrganizationTest extends TestCase
-{
-    public function test_organization_uses_prefixed_table(): void
-    {
-        $this->assertSame('crm_organizations', (new Organization)->getTable());
-    }
+test('organization uses prefixed table', function () {
+    expect((new Organization)->getTable())->toBe('crm_organizations');
+});
 
-    public function test_creating_an_organization_assigns_external_id_uuid(): void
-    {
-        $org = Organization::create(['name' => 'Acme Inc']);
-        $this->assertTrue(Str::isUuid($org->external_id));
-    }
+test('creating an organization assigns external id uuid', function () {
+    $org = Organization::create(['name' => 'Acme Inc']);
+    expect(Str::isUuid($org->external_id))->toBeTrue();
+});
 
-    public function test_organization_uses_soft_deletes(): void
-    {
-        $org = Organization::create(['name' => 'Bye Inc']);
-        $org->delete();
+test('organization uses soft deletes', function () {
+    $org = Organization::create(['name' => 'Bye Inc']);
+    $org->delete();
 
-        $this->assertSoftDeleted('crm_organizations', ['id' => $org->id]);
-    }
-}
+    $this->assertSoftDeleted('crm_organizations', ['id' => $org->id]);
+});

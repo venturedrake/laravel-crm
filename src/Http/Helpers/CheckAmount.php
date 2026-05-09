@@ -43,17 +43,13 @@ function total($model)
     }
 }
 
-function lineAmount($item)
+function lineAmount($item): bool
 {
-    switch (class_basename($item)) {
-        case 'QuoteProduct':
-        case 'OrderProduct':
-            if (($item->price * $item->quantity) == $item->amount) {
-                return true;
-            }
-
-            break;
+    if ($item->price === null || $item->quantity === null || $item->amount === null) {
+        return false;
     }
+
+    return ($item->price * $item->quantity) == $item->amount;
 }
 
 function getItems($model)

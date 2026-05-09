@@ -1,29 +1,19 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use VentureDrake\LaravelCrm\Models\Lead;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class NoteTest extends TestCase
-{
-    public function test_note_polymorphic_relation_to_lead(): void
-    {
-        $lead = Lead::create(['title' => 'Lead 1']);
+test('note polymorphic relation to lead', function () {
+    $lead = Lead::create(['title' => 'Lead 1']);
+    $note = $lead->notes()->create(['content' => 'Important note']);
 
-        $note = $lead->notes()->create(['content' => 'Important note']);
+    expect($note->content)->toBe('Important note');
+    expect($note->noteable->id)->toBe($lead->id);
+});
 
-        $this->assertSame('Important note', $note->content);
-        $this->assertSame($lead->id, $note->noteable->id);
-    }
+test('note uses soft deletes', function () {
+    $lead = Lead::create(['title' => 'L']);
+    $note = $lead->notes()->create(['content' => 'Bye']);
+    $note->delete();
 
-    public function test_note_uses_soft_deletes(): void
-    {
-        $lead = Lead::create(['title' => 'L']);
-        $note = $lead->notes()->create(['content' => 'Bye']);
-
-        $note->delete();
-
-        $this->assertSoftDeleted('crm_notes', ['id' => $note->id]);
-    }
-}
+    $this->assertSoftDeleted('crm_notes', ['id' => $note->id]);
+});

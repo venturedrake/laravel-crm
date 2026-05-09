@@ -1,44 +1,29 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature;
-
-use VentureDrake\LaravelCrm\Tests\TestCase;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
-class SettingsComposerTest extends TestCase
-{
-    public function test_default_values_are_used_when_settings_missing(): void
-    {
-        $rendered = view()->make('laravel-crm::leads.index')
-            ->with('leads', collect());
+test('default values are used when settings missing', function () {
+    SettingsComposer::$cachedParameters = null;
+    $composer = new SettingsComposer;
+    $composer->compose(view('laravel-crm::leads.index'));
 
-        // Trigger composer
-        $rendered->render = null;
+    expect(SettingsComposer::$cachedParameters['crmDateFormat'])->toBe('Y-m-d');
+    expect(SettingsComposer::$cachedParameters['crmTimeFormat'])->toBe('H:i');
+    expect(SettingsComposer::$cachedParameters['crmTimezone'])->toBe('UTC');
+    expect(SettingsComposer::$cachedParameters['crmTaxName'])->toBe('Tax');
+    expect(SettingsComposer::$cachedParameters['crmDynamicProducts'])->toBe('true');
+});
 
-        // Resolve composer parameters via the static cache it populates
-        SettingsComposer::$cachedParameters = null;
-        $composer = new SettingsComposer;
-        $composer->compose(view('laravel-crm::leads.index'));
+test('settings table values override defaults', function () {
+    app('laravel-crm.settings')->set('date_format', 'd/m/Y');
+    app('laravel-crm.settings')->set('time_format', 'g:i A');
+    app('laravel-crm.settings')->set('tax_name', 'GST');
 
-        $this->assertSame('Y-m-d', SettingsComposer::$cachedParameters['crmDateFormat']);
-        $this->assertSame('H:i', SettingsComposer::$cachedParameters['crmTimeFormat']);
-        $this->assertSame('UTC', SettingsComposer::$cachedParameters['crmTimezone']);
-        $this->assertSame('Tax', SettingsComposer::$cachedParameters['crmTaxName']);
-        $this->assertSame('true', SettingsComposer::$cachedParameters['crmDynamicProducts']);
-    }
+    SettingsComposer::$cachedParameters = null;
+    $composer = new SettingsComposer;
+    $composer->compose(view('laravel-crm::leads.index'));
 
-    public function test_settings_table_values_override_defaults(): void
-    {
-        app('laravel-crm.settings')->set('date_format', 'd/m/Y');
-        app('laravel-crm.settings')->set('time_format', 'g:i A');
-        app('laravel-crm.settings')->set('tax_name', 'GST');
-
-        SettingsComposer::$cachedParameters = null;
-        $composer = new SettingsComposer;
-        $composer->compose(view('laravel-crm::leads.index'));
-
-        $this->assertSame('d/m/Y', SettingsComposer::$cachedParameters['crmDateFormat']);
-        $this->assertSame('g:i A', SettingsComposer::$cachedParameters['crmTimeFormat']);
-        $this->assertSame('GST', SettingsComposer::$cachedParameters['crmTaxName']);
-    }
-}
+    expect(SettingsComposer::$cachedParameters['crmDateFormat'])->toBe('d/m/Y');
+    expect(SettingsComposer::$cachedParameters['crmTimeFormat'])->toBe('g:i A');
+    expect(SettingsComposer::$cachedParameters['crmTaxName'])->toBe('GST');
+});

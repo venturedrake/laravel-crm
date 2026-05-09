@@ -4,6 +4,22 @@ namespace VentureDrake\LaravelCrm\Http\Helpers\PublicProperties;
 
 use Illuminate\Http\Request;
 
+function publicProperties($object): array
+{
+    if ($object instanceof \stdClass) {
+        return (array) $object;
+    }
+
+    $reflection = new \ReflectionClass($object);
+    $properties = [];
+
+    foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+        $properties[$property->getName()] = $property->getValue($object);
+    }
+
+    return $properties;
+}
+
 function asRequest($object)
 {
     // Convert public property name to request input format

@@ -1,27 +1,13 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use VentureDrake\LaravelCrm\Models\Setting;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class SettingModelTest extends TestCase
-{
-    public function test_setting_uses_prefixed_table(): void
-    {
-        $this->assertSame('crm_settings', (new Setting)->getTable());
-    }
+test('setting uses prefixed table', function () {
+    expect((new Setting)->getTable())->toBe('crm_settings');
+});
 
-    public function test_setting_create_persists_a_record(): void
-    {
-        Setting::create([
-            'name' => 'tax_rate',
-            'value' => '10',
-        ]);
+test('setting create persists a record', function () {
+    Setting::create(['name' => 'tax_rate', 'value' => '10']);
 
-        $this->assertDatabaseHas('crm_settings', [
-            'name' => 'tax_rate',
-            'value' => '10',
-        ]);
-    }
-}
+    $this->assertDatabaseHas('crm_settings', ['name' => 'tax_rate', 'value' => '10']);
+});

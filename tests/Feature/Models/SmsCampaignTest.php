@@ -1,128 +1,96 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\SmsCampaign;
 use VentureDrake\LaravelCrm\Models\SmsTemplate;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class SmsCampaignTest extends TestCase
-{
-    public function test_sms_campaign_uses_prefixed_table_name(): void
-    {
-        $this->assertSame('crm_sms_campaigns', (new SmsCampaign)->getTable());
-    }
+test('sms campaign uses prefixed table name', function () {
+    expect((new SmsCampaign)->getTable())->toBe('crm_sms_campaigns');
+});
 
-    public function test_creating_an_sms_campaign_assigns_uuid(): void
-    {
-        $campaign = SmsCampaign::create([
-            'name' => 'Flash Sale',
-            'body' => '50% off today only!',
-        ]);
+test('creating an sms campaign assigns uuid', function () {
+    $campaign = SmsCampaign::create(['name' => 'Flash Sale', 'body' => '50% off today only!']);
+    expect(Str::isUuid($campaign->external_id))->toBeTrue();
+});
 
-        $this->assertTrue(Str::isUuid($campaign->external_id));
-    }
+test('observer auto increments number starting from 1000', function () {
+    $first = SmsCampaign::create(['name' => 'A', 'body' => 'A']);
+    $second = SmsCampaign::create(['name' => 'B', 'body' => 'B']);
 
-    public function test_observer_auto_increments_number_starting_from_1000(): void
-    {
-        $first = SmsCampaign::create(['name' => 'A', 'body' => 'A']);
-        $second = SmsCampaign::create(['name' => 'B', 'body' => 'B']);
+    expect($first->number)->toBe(1000);
+    expect($second->number)->toBe(1001);
+});
 
-        $this->assertSame(1000, $first->number);
-        $this->assertSame(1001, $second->number);
-    }
+test('observer sets campaign id from number', function () {
+    $campaign = SmsCampaign::create(['name' => 'ID Test', 'body' => 'Body']);
+    expect($campaign->campaign_id)->toBe('SC'.$campaign->number);
+});
 
-    public function test_observer_sets_campaign_id_from_number(): void
-    {
-        $campaign = SmsCampaign::create(['name' => 'ID Test', 'body' => 'Body']);
+test('sms campaign default status is draft', function () {
+    $campaign = SmsCampaign::create(['name' => 'Draft', 'body' => 'Hello']);
+    expect($campaign->fresh()->status)->toBe('draft');
+});
 
-        $this->assertSame('SC'.$campaign->number, $campaign->campaign_id);
-    }
+test('is editable only when draft', function () {
+    $campaign = SmsCampaign::create(['name' => 'C', 'body' => 'B', 'status' => 'draft']);
+    expect($campaign->isEditable())->toBeTrue();
 
-    public function test_sms_campaign_default_status_is_draft(): void
-    {
-        $campaign = SmsCampaign::create(['name' => 'Draft', 'body' => 'Hello']);
+    $campaign->update(['status' => 'scheduled']);
+    expect($campaign->fresh()->isEditable())->toBeFalse();
+});
 
-        $this->assertSame('draft', $campaign->fresh()->status);
-    }
+test('is cancellable only when scheduled', function () {
+    $campaign = SmsCampaign::create(['name' => 'C', 'body' => 'B', 'status' => 'scheduled']);
+    expect($campaign->isCancellable())->toBeTrue();
 
-    public function test_is_editable_only_when_draft(): void
-    {
-        $campaign = SmsCampaign::create(['name' => 'C', 'body' => 'B', 'status' => 'draft']);
-        $this->assertTrue($campaign->isEditable());
+    $campaign->update(['status' => 'sent']);
+    expect($campaign->fresh()->isCancellable())->toBeFalse();
+});
 
-        $campaign->update(['status' => 'scheduled']);
-        $this->assertFalse($campaign->fresh()->isEditable());
-    }
+test('click rate returns zero when no recipients', function () {
+    $campaign = new SmsCampaign(['total_recipients' => 0, 'unique_clicks_count' => 0]);
+    expect($campaign->clickRate())->toBe(0.0);
+});
 
-    public function test_is_cancellable_only_when_scheduled(): void
-    {
-        $campaign = SmsCampaign::create(['name' => 'C', 'body' => 'B', 'status' => 'scheduled']);
-        $this->assertTrue($campaign->isCancellable());
+test('click rate is calculated correctly', function () {
+    $campaign = new SmsCampaign(['total_recipients' => 200, 'unique_clicks_count' => 20]);
+    expect($campaign->clickRate())->toBe(10.0);
+});
 
-        $campaign->update(['status' => 'sent']);
-        $this->assertFalse($campaign->fresh()->isCancellable());
-    }
+test('unsubscribe rate is calculated correctly', function () {
+    $campaign = new SmsCampaign(['total_recipients' => 400, 'unsubscribes_count' => 8]);
+    expect($campaign->unsubscribeRate())->toBe(2.0);
+});
 
-    public function test_click_rate_returns_zero_when_no_recipients(): void
-    {
-        $campaign = new SmsCampaign(['total_recipients' => 0, 'unique_clicks_count' => 0]);
-        $this->assertSame(0.0, $campaign->clickRate());
-    }
+test('delivery rate is calculated correctly', function () {
+    $campaign = new SmsCampaign(['total_recipients' => 100, 'delivered_count' => 95]);
+    expect($campaign->deliveryRate())->toBe(95.0);
+});
 
-    public function test_click_rate_is_calculated_correctly(): void
-    {
-        $campaign = new SmsCampaign(['total_recipients' => 200, 'unique_clicks_count' => 20]);
-        $this->assertSame(10.0, $campaign->clickRate());
-    }
+test('delivery rate returns zero when no recipients', function () {
+    $campaign = new SmsCampaign(['total_recipients' => 0, 'delivered_count' => 0]);
+    expect($campaign->deliveryRate())->toBe(0.0);
+});
 
-    public function test_unsubscribe_rate_is_calculated_correctly(): void
-    {
-        $campaign = new SmsCampaign(['total_recipients' => 400, 'unsubscribes_count' => 8]);
-        $this->assertSame(2.0, $campaign->unsubscribeRate());
-    }
+test('sms campaign uses soft deletes', function () {
+    $campaign = SmsCampaign::create(['name' => 'Bin', 'body' => 'B']);
+    $campaign->delete();
 
-    public function test_delivery_rate_is_calculated_correctly(): void
-    {
-        $campaign = new SmsCampaign(['total_recipients' => 100, 'delivered_count' => 95]);
-        $this->assertSame(95.0, $campaign->deliveryRate());
-    }
+    $this->assertSoftDeleted('crm_sms_campaigns', ['id' => $campaign->id]);
+    expect(SmsCampaign::count())->toBe(0);
+});
 
-    public function test_delivery_rate_returns_zero_when_no_recipients(): void
-    {
-        $campaign = new SmsCampaign(['total_recipients' => 0, 'delivered_count' => 0]);
-        $this->assertSame(0.0, $campaign->deliveryRate());
-    }
+test('sms campaign belongs to sms template', function () {
+    $template = SmsTemplate::create(['name' => 'Promo', 'body' => 'Save now!']);
+    $campaign = SmsCampaign::create(['name' => 'With Template', 'body' => 'Save now!', 'sms_template_id' => $template->id]);
 
-    public function test_sms_campaign_uses_soft_deletes(): void
-    {
-        $campaign = SmsCampaign::create(['name' => 'Bin', 'body' => 'B']);
-        $campaign->delete();
+    expect($campaign->fresh()->template->is($template))->toBeTrue();
+});
 
-        $this->assertSoftDeleted('crm_sms_campaigns', ['id' => $campaign->id]);
-        $this->assertSame(0, SmsCampaign::count());
-    }
+test('number continues after soft deleted record', function () {
+    $first = SmsCampaign::create(['name' => 'First', 'body' => 'B']);
+    $first->delete();
 
-    public function test_sms_campaign_belongs_to_sms_template(): void
-    {
-        $template = SmsTemplate::create(['name' => 'Promo', 'body' => 'Save now!']);
-
-        $campaign = SmsCampaign::create([
-            'name' => 'With Template',
-            'body' => 'Save now!',
-            'sms_template_id' => $template->id,
-        ]);
-
-        $this->assertTrue($campaign->fresh()->template->is($template));
-    }
-
-    public function test_number_continues_after_soft_deleted_record(): void
-    {
-        $first = SmsCampaign::create(['name' => 'First', 'body' => 'B']);
-        $first->delete();
-
-        $second = SmsCampaign::create(['name' => 'Second', 'body' => 'B']);
-        $this->assertSame(1001, $second->number);
-    }
-}
+    $second = SmsCampaign::create(['name' => 'Second', 'body' => 'B']);
+    expect($second->number)->toBe(1001);
+});

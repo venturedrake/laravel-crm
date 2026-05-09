@@ -1,40 +1,31 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class LabelTest extends TestCase
-{
-    public function test_label_uses_prefixed_table(): void
-    {
-        $this->assertSame('crm_labels', (new Label)->getTable());
-    }
+test('label uses prefixed table', function () {
+    expect((new Label)->getTable())->toBe('crm_labels');
+});
 
-    public function test_label_can_be_attached_to_a_lead(): void
-    {
-        $lead = Lead::create(['title' => 'L']);
-        $label = Label::create(['name' => 'Hot', 'hex' => 'ff0000']);
+test('label can be attached to a lead', function () {
+    $lead = Lead::create(['title' => 'L']);
+    $label = Label::create(['name' => 'Hot', 'hex' => 'ff0000']);
 
-        $lead->labels()->attach($label->id);
+    $lead->labels()->attach($label->id);
 
-        $this->assertCount(1, $lead->fresh()->labels);
-        $this->assertSame('Hot', $lead->fresh()->labels->first()->name);
-    }
+    expect($lead->fresh()->labels)->toHaveCount(1);
+    expect($lead->fresh()->labels->first()->name)->toBe('Hot');
+});
 
-    public function test_lead_labels_can_be_synced(): void
-    {
-        $lead = Lead::create(['title' => 'L']);
-        $a = Label::create(['name' => 'A', 'hex' => '000000']);
-        $b = Label::create(['name' => 'B', 'hex' => 'ffffff']);
+test('lead labels can be synced', function () {
+    $lead = Lead::create(['title' => 'L']);
+    $a = Label::create(['name' => 'A', 'hex' => '000000']);
+    $b = Label::create(['name' => 'B', 'hex' => 'ffffff']);
 
-        $lead->labels()->sync([$a->id, $b->id]);
-        $this->assertCount(2, $lead->fresh()->labels);
+    $lead->labels()->sync([$a->id, $b->id]);
+    expect($lead->fresh()->labels)->toHaveCount(2);
 
-        $lead->labels()->sync([$b->id]);
-        $this->assertCount(1, $lead->fresh()->labels);
-        $this->assertSame('B', $lead->fresh()->labels->first()->name);
-    }
-}
+    $lead->labels()->sync([$b->id]);
+    expect($lead->fresh()->labels)->toHaveCount(1);
+    expect($lead->fresh()->labels->first()->name)->toBe('B');
+});

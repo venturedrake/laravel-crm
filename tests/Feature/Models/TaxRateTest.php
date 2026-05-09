@@ -1,35 +1,25 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use VentureDrake\LaravelCrm\Models\TaxRate;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class TaxRateTest extends TestCase
-{
-    public function test_tax_rate_uses_prefixed_table_name(): void
-    {
-        $this->assertSame('crm_tax_rates', (new TaxRate)->getTable());
-    }
+test('tax rate uses prefixed table name', function () {
+    expect((new TaxRate)->getTable())->toBe('crm_tax_rates');
+});
 
-    public function test_tax_rate_persists_default_flag_and_rate(): void
-    {
-        $tax = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => true]);
+test('tax rate persists default flag and rate', function () {
+    $tax = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => true]);
 
-        $this->assertTrue((bool) $tax->fresh()->default);
-        $this->assertEquals(10, $tax->fresh()->rate);
-    }
+    expect((bool) $tax->fresh()->default)->toBeTrue();
+    expect($tax->fresh()->rate)->toEqual(10);
+});
 
-    public function test_tax_rate_relationship_is_defined(): void
-    {
-        $this->assertInstanceOf(HasMany::class, (new TaxRate)->products());
-    }
+test('tax rate relationship is defined', function () {
+    expect((new TaxRate)->products())->toBeInstanceOf(HasMany::class);
+});
 
-    public function test_tax_rate_uses_soft_deletes(): void
-    {
-        $tax = TaxRate::create(['name' => 'Bin', 'rate' => 0]);
-        $tax->delete();
-        $this->assertSoftDeleted('crm_tax_rates', ['id' => $tax->id]);
-    }
-}
+test('tax rate uses soft deletes', function () {
+    $tax = TaxRate::create(['name' => 'Bin', 'rate' => 0]);
+    $tax->delete();
+    $this->assertSoftDeleted('crm_tax_rates', ['id' => $tax->id]);
+});

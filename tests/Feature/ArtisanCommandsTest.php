@@ -1,66 +1,43 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature;
-
 use Illuminate\Contracts\Console\Kernel;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class ArtisanCommandsTest extends TestCase
-{
-    public function test_archive_command_runs_without_errors(): void
-    {
-        $this->artisan('laravelcrm:archive')->assertExitCode(0);
-    }
+test('archive command runs without errors', function () {
+    $this->artisan('laravelcrm:archive')->assertExitCode(0);
+});
 
-    public function test_reminders_command_is_registered(): void
-    {
-        $kernel = $this->app->make(Kernel::class);
-        $this->assertArrayHasKey('laravelcrm:reminders', $kernel->all());
-    }
+test('reminders command is registered', function () {
+    expect($this->app->make(Kernel::class)->all())->toHaveKey('laravelcrm:reminders');
+});
 
-    public function test_install_command_is_callable(): void
-    {
-        $kernel = $this->app->make(Kernel::class);
-        $this->assertArrayHasKey('laravelcrm:install', $kernel->all());
-    }
+test('install command is callable', function () {
+    expect($this->app->make(Kernel::class)->all())->toHaveKey('laravelcrm:install');
+});
 
-    public function test_xero_command_is_registered(): void
-    {
-        $kernel = $this->app->make(Kernel::class);
-        $this->assertArrayHasKey('laravelcrm:xero', $kernel->all());
-    }
+test('xero command is registered', function () {
+    expect($this->app->make(Kernel::class)->all())->toHaveKey('laravelcrm:xero');
+});
 
-    public function test_v2_migration_command_is_registered(): void
-    {
-        $kernel = $this->app->make(Kernel::class);
-        $this->assertArrayHasKey('laravelcrm:v2', $kernel->all());
-    }
+test('v2 migration command is registered', function () {
+    expect($this->app->make(Kernel::class)->all())->toHaveKey('laravelcrm:v2');
+});
 
-    public function test_update_command_is_registered(): void
-    {
-        $kernel = $this->app->make(Kernel::class);
-        $this->assertArrayHasKey('laravelcrm:update', $kernel->all());
-    }
+test('update command is registered', function () {
+    expect($this->app->make(Kernel::class)->all())->toHaveKey('laravelcrm:update');
+});
 
-    public function test_email_campaigns_dispatch_command_is_registered(): void
-    {
-        $kernel = $this->app->make(Kernel::class);
-        $this->assertArrayHasKey('laravelcrm:email-campaigns-dispatch', $kernel->all());
-    }
+test('email campaigns dispatch command is registered', function () {
+    expect($this->app->make(Kernel::class)->all())->toHaveKey('laravelcrm:email-campaigns-dispatch');
+});
 
-    public function test_sms_campaigns_dispatch_command_is_registered(): void
-    {
-        $kernel = $this->app->make(Kernel::class);
-        $this->assertArrayHasKey('laravelcrm:sms-campaigns-dispatch', $kernel->all());
-    }
+test('sms campaigns dispatch command is registered', function () {
+    expect($this->app->make(Kernel::class)->all())->toHaveKey('laravelcrm:sms-campaigns-dispatch');
+});
 
-    public function test_email_campaigns_dispatch_runs_without_errors(): void
-    {
-        $this->artisan('laravelcrm:email-campaigns-dispatch')->assertExitCode(0);
-    }
+test('email campaigns dispatch runs without errors', function () {
+    $this->artisan('laravelcrm:email-campaigns-dispatch')->assertExitCode(0);
+});
 
-    public function test_sms_campaigns_dispatch_runs_without_errors(): void
-    {
-        $this->artisan('laravelcrm:sms-campaigns-dispatch')->assertExitCode(0);
-    }
-}
+test('sms campaigns dispatch runs without errors', function () {
+    $this->artisan('laravelcrm:sms-campaigns-dispatch')->assertExitCode(0);
+});

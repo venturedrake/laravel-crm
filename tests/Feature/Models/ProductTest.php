@@ -1,7 +1,5 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
@@ -9,75 +7,60 @@ use OwenIt\Auditing\Contracts\Auditable;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductCategory;
 use VentureDrake\LaravelCrm\Models\TaxRate;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class ProductTest extends TestCase
-{
-    public function test_product_uses_prefixed_table_name(): void
-    {
-        $this->assertSame('crm_products', (new Product)->getTable());
-    }
+test('product uses prefixed table name', function () {
+    expect((new Product)->getTable())->toBe('crm_products');
+});
 
-    public function test_creating_a_product_assigns_uuid(): void
-    {
-        $product = Product::create(['name' => 'Widget']);
-        $this->assertTrue(Str::isUuid($product->external_id));
-    }
+test('creating a product assigns uuid', function () {
+    $product = Product::create(['name' => 'Widget']);
+    expect(Str::isUuid($product->external_id))->toBeTrue();
+});
 
-    public function test_product_observer_assigns_default_tax_rate(): void
-    {
-        $tax = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => true]);
+test('product observer assigns default tax rate', function () {
+    $tax = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => true]);
+    $product = Product::create(['name' => 'Taxable']);
 
-        $product = Product::create(['name' => 'Taxable']);
+    expect($product->tax_rate_id)->toBe($tax->id);
+    expect($product->tax_rate)->toEqual(10);
+});
 
-        $this->assertSame($tax->id, (int) $product->tax_rate_id);
-        $this->assertEquals(10, $product->tax_rate);
-    }
+test('product observer falls back to setting tax rate', function () {
+    app('laravel-crm.settings')->set('tax_rate', '7.5');
+    $product = Product::create(['name' => 'No-default']);
 
-    public function test_product_observer_falls_back_to_setting_tax_rate(): void
-    {
-        app('laravel-crm.settings')->set('tax_rate', '7.5');
+    expect($product->tax_rate)->toEqual(7.5);
+});
 
-        $product = Product::create(['name' => 'No-default']);
+test('product belongs to category', function () {
+    $cat = ProductCategory::create(['name' => 'Hardware']);
+    $product = Product::create(['name' => 'Hammer', 'product_category_id' => $cat->id]);
 
-        $this->assertEquals(7.5, $product->tax_rate);
-    }
+    expect($product->productCategory->is($cat))->toBeTrue();
+});
 
-    public function test_product_belongs_to_category(): void
-    {
-        $cat = ProductCategory::create(['name' => 'Hardware']);
-        $product = Product::create(['name' => 'Hammer', 'product_category_id' => $cat->id]);
+test('product relationships are defined', function () {
+    $product = new Product;
 
-        $this->assertTrue($product->productCategory->is($cat));
-    }
+    expect($product->productPrices())->toBeInstanceOf(HasMany::class);
+    expect($product->productVariations())->toBeInstanceOf(HasMany::class);
+    expect($product->productCategory())->toBeInstanceOf(BelongsTo::class);
+    expect($product->taxRate())->toBeInstanceOf(BelongsTo::class);
+});
 
-    public function test_product_relationships_are_defined(): void
-    {
-        $product = new Product;
+test('active scope filters inactive products', function () {
+    Product::create(['name' => 'On', 'active' => true]);
+    Product::create(['name' => 'Off', 'active' => false]);
 
-        $this->assertInstanceOf(HasMany::class, $product->productPrices());
-        $this->assertInstanceOf(HasMany::class, $product->productVariations());
-        $this->assertInstanceOf(BelongsTo::class, $product->productCategory());
-        $this->assertInstanceOf(BelongsTo::class, $product->taxRate());
-    }
+    expect(Product::active()->count())->toBe(1);
+});
 
-    public function test_active_scope_filters_inactive_products(): void
-    {
-        Product::create(['name' => 'On', 'active' => true]);
-        Product::create(['name' => 'Off', 'active' => false]);
+test('product uses soft deletes', function () {
+    $product = Product::create(['name' => 'Bin']);
+    $product->delete();
+    $this->assertSoftDeleted('crm_products', ['id' => $product->id]);
+});
 
-        $this->assertSame(1, Product::active()->count());
-    }
-
-    public function test_product_uses_soft_deletes(): void
-    {
-        $product = Product::create(['name' => 'Bin']);
-        $product->delete();
-        $this->assertSoftDeleted('crm_products', ['id' => $product->id]);
-    }
-
-    public function test_product_is_auditable(): void
-    {
-        $this->assertInstanceOf(Auditable::class, new Product);
-    }
-}
+test('product is auditable', function () {
+    expect(new Product)->toBeInstanceOf(Auditable::class);
+});

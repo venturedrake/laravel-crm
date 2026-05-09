@@ -1,72 +1,45 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Services;
-
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrderService;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class OrderServiceTest extends TestCase
-{
-    private function service(): OrderService
-    {
-        return app(OrderService::class);
-    }
+test('service creates an order with minimum data', function () {
+    $order = app(OrderService::class)->create(new Request([
+        'description' => 'd', 'currency' => 'USD', 'sub_total' => 200, 'total' => 200,
+    ]));
 
-    private function request(array $attributes): Request
-    {
-        return new Request($attributes);
-    }
+    expect($order)->toBeInstanceOf(Order::class);
+    expect($order->currency)->toBe('USD');
+    expect((int) $order->fresh()->getRawOriginal('subtotal'))->toBe(20000);
+});
 
-    public function test_service_creates_an_order_with_minimum_data(): void
-    {
-        $order = $this->service()->create($this->request([
-            'description' => 'd',
-            'currency' => 'USD',
-            'sub_total' => 200,
-            'total' => 200,
-        ]));
+test('service attaches person org and quote', function () {
+    $person = Person::create(['first_name' => 'Bob']);
+    $org = Organization::create(['name' => 'Acme']);
+    $quote = Quote::create(['title' => 'Source quote']);
 
-        $this->assertInstanceOf(Order::class, $order);
-        $this->assertSame('USD', $order->currency);
-        $this->assertSame(20000, (int) $order->fresh()->getRawOriginal('subtotal'));
-    }
+    $order = app(OrderService::class)->create(new Request([
+        'currency' => 'USD', 'quote_id' => $quote->id,
+    ]), $person, $org);
 
-    public function test_service_attaches_person_org_and_quote(): void
-    {
-        $person = Person::create(['first_name' => 'Bob']);
-        $org = Organization::create(['name' => 'Acme']);
-        $quote = Quote::create(['title' => 'Source quote']);
+    expect($order->person_id)->toBe($person->id);
+    expect($order->organization_id)->toBe($org->id);
+    expect($order->quote_id)->toBe($quote->id);
+});
 
-        $order = $this->service()->create($this->request([
-            'currency' => 'USD',
-            'quote_id' => $quote->id,
-        ]), $person, $org);
+test('service updates an order', function () {
+    $order = Order::create(['description' => 'Old', 'currency' => 'USD']);
 
-        $this->assertSame($person->id, $order->person_id);
-        $this->assertSame($org->id, $order->organization_id);
-        $this->assertSame($quote->id, $order->quote_id);
-    }
+    app(OrderService::class)->update(new Request([
+        'description' => 'New', 'reference' => 'R-1', 'currency' => 'EUR', 'sub_total' => 5, 'total' => 5,
+    ]), $order);
 
-    public function test_service_updates_an_order(): void
-    {
-        $order = Order::create(['description' => 'Old', 'currency' => 'USD']);
-
-        $this->service()->update($this->request([
-            'description' => 'New',
-            'reference' => 'R-1',
-            'currency' => 'EUR',
-            'sub_total' => 5,
-            'total' => 5,
-        ]), $order);
-
-        $fresh = $order->fresh();
-        $this->assertSame('New', $fresh->description);
-        $this->assertSame('R-1', $fresh->reference);
-        $this->assertSame('EUR', $fresh->currency);
-    }
-}
+    $fresh = $order->fresh();
+    expect($fresh->description)->toBe('New');
+    expect($fresh->reference)->toBe('R-1');
+    expect($fresh->currency)->toBe('EUR');
+});

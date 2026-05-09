@@ -1,55 +1,40 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class PersonTest extends TestCase
-{
-    public function test_person_uses_prefixed_people_table(): void
-    {
-        $this->assertSame('crm_people', (new Person)->getTable());
-    }
+test('person uses prefixed people table', function () {
+    expect((new Person)->getTable())->toBe('crm_people');
+});
 
-    public function test_creating_a_person_assigns_external_id_uuid(): void
-    {
-        $person = Person::create(['first_name' => 'Jane', 'last_name' => 'Doe']);
+test('creating a person assigns external id uuid', function () {
+    $person = Person::create(['first_name' => 'Jane', 'last_name' => 'Doe']);
+    expect(Str::isUuid($person->external_id))->toBeTrue();
+});
 
-        $this->assertTrue(Str::isUuid($person->external_id));
-    }
+test('name attribute concatenates first and last', function () {
+    $person = Person::create(['first_name' => 'Jane', 'last_name' => 'Doe']);
+    expect($person->name)->toBe('Jane Doe');
+});
 
-    public function test_name_attribute_concatenates_first_and_last(): void
-    {
-        $person = Person::create(['first_name' => 'Jane', 'last_name' => 'Doe']);
+test('name attribute trims when only first name', function () {
+    $person = Person::create(['first_name' => 'Madonna']);
+    expect($person->name)->toBe('Madonna');
+});
 
-        $this->assertSame('Jane Doe', $person->name);
-    }
+test('person uses soft deletes', function () {
+    $person = Person::create(['first_name' => 'Bye']);
+    $person->delete();
 
-    public function test_name_attribute_trims_when_only_first_name(): void
-    {
-        $person = Person::create(['first_name' => 'Madonna']);
+    $this->assertSoftDeleted('crm_people', ['id' => $person->id]);
+});
 
-        $this->assertSame('Madonna', $person->name);
-    }
+test('morph relationships defined', function () {
+    $person = new Person;
 
-    public function test_person_uses_soft_deletes(): void
-    {
-        $person = Person::create(['first_name' => 'Bye']);
-        $person->delete();
-
-        $this->assertSoftDeleted('crm_people', ['id' => $person->id]);
-    }
-
-    public function test_morph_relationships_defined(): void
-    {
-        $person = new Person;
-
-        $this->assertInstanceOf(MorphMany::class, $person->emails());
-        $this->assertInstanceOf(MorphMany::class, $person->phones());
-        $this->assertInstanceOf(MorphMany::class, $person->addresses());
-        $this->assertInstanceOf(MorphMany::class, $person->contacts());
-    }
-}
+    expect($person->emails())->toBeInstanceOf(MorphMany::class);
+    expect($person->phones())->toBeInstanceOf(MorphMany::class);
+    expect($person->addresses())->toBeInstanceOf(MorphMany::class);
+    expect($person->contacts())->toBeInstanceOf(MorphMany::class);
+});

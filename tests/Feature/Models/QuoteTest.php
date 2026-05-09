@@ -1,7 +1,5 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature\Models;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -10,116 +8,84 @@ use OwenIt\Auditing\Contracts\Auditable;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
-use VentureDrake\LaravelCrm\Tests\TestCase;
 
-class QuoteTest extends TestCase
-{
-    public function test_quote_uses_prefixed_table_name(): void
-    {
-        $this->assertSame('crm_quotes', (new Quote)->getTable());
+test('quote uses prefixed table name', function () {
+    expect((new Quote)->getTable())->toBe('crm_quotes');
 
-        config()->set('laravel-crm.db_table_prefix', 'foo_');
-        $this->assertSame('foo_quotes', (new Quote)->getTable());
-    }
+    config()->set('laravel-crm.db_table_prefix', 'foo_');
+    expect((new Quote)->getTable())->toBe('foo_quotes');
+});
 
-    public function test_creating_a_quote_assigns_external_id_uuid(): void
-    {
-        $quote = Quote::create(['title' => 'Q']);
+test('creating a quote assigns external id uuid', function () {
+    $quote = Quote::create(['title' => 'Q']);
+    expect(Str::isUuid($quote->external_id))->toBeTrue();
+});
 
-        $this->assertTrue(Str::isUuid($quote->external_id));
-    }
+test('creating a quote auto increments number starting from 1000', function () {
+    $first = Quote::create(['title' => 'A']);
+    $second = Quote::create(['title' => 'B']);
 
-    public function test_creating_a_quote_auto_increments_number_starting_from_1000(): void
-    {
-        $first = Quote::create(['title' => 'A']);
-        $second = Quote::create(['title' => 'B']);
+    expect($first->number)->toBe(1000);
+    expect($second->number)->toBe(1001);
+});
 
-        $this->assertSame(1000, $first->number);
-        $this->assertSame(1001, $second->number);
-    }
+test('quote id is built from prefix plus number', function () {
+    app('laravel-crm.settings')->set('quote_prefix', 'Q');
 
-    public function test_quote_id_is_built_from_prefix_plus_number(): void
-    {
-        app('laravel-crm.settings')->set('quote_prefix', 'Q');
+    $quote = Quote::create(['title' => 'Prefixed']);
 
-        $quote = Quote::create(['title' => 'Prefixed']);
+    expect($quote->prefix)->toBe('Q');
+    expect($quote->quote_id)->toBe('Q1000');
+});
 
-        $this->assertSame('Q', $quote->prefix);
-        $this->assertSame('Q1000', $quote->quote_id);
-    }
+test('set money attributes multiply by one hundred', function () {
+    $quote = Quote::create(['title' => 'Money', 'subtotal' => 100, 'discount' => 10, 'tax' => 9, 'adjustments' => 1, 'total' => 100]);
 
-    public function test_set_money_attributes_multiply_by_one_hundred(): void
-    {
-        $quote = Quote::create([
-            'title' => 'Money',
-            'subtotal' => 100,
-            'discount' => 10,
-            'tax' => 9,
-            'adjustments' => 1,
-            'total' => 100,
-        ]);
+    $fresh = $quote->fresh();
+    expect((int) $fresh->getRawOriginal('subtotal'))->toBe(10000);
+    expect((int) $fresh->getRawOriginal('discount'))->toBe(1000);
+    expect((int) $fresh->getRawOriginal('tax'))->toBe(900);
+    expect((int) $fresh->getRawOriginal('adjustments'))->toBe(100);
+    expect((int) $fresh->getRawOriginal('total'))->toBe(10000);
+});
 
-        $fresh = $quote->fresh();
+test('money attributes handle null', function () {
+    $quote = Quote::create(['title' => 'Empty', 'subtotal' => null, 'total' => null]);
 
-        $this->assertSame(10000, (int) $fresh->getRawOriginal('subtotal'));
-        $this->assertSame(1000, (int) $fresh->getRawOriginal('discount'));
-        $this->assertSame(900, (int) $fresh->getRawOriginal('tax'));
-        $this->assertSame(100, (int) $fresh->getRawOriginal('adjustments'));
-        $this->assertSame(10000, (int) $fresh->getRawOriginal('total'));
-    }
+    expect($quote->fresh()->getRawOriginal('subtotal'))->toBeNull();
+    expect($quote->fresh()->getRawOriginal('total'))->toBeNull();
+});
 
-    public function test_money_attributes_handle_null(): void
-    {
-        $quote = Quote::create([
-            'title' => 'Empty',
-            'subtotal' => null,
-            'total' => null,
-        ]);
+test('quote uses soft deletes', function () {
+    $quote = Quote::create(['title' => 'Soft delete']);
+    $quote->delete();
+    $this->assertSoftDeleted('crm_quotes', ['id' => $quote->id]);
+});
 
-        $this->assertNull($quote->fresh()->getRawOriginal('subtotal'));
-        $this->assertNull($quote->fresh()->getRawOriginal('total'));
-    }
+test('quote relationships are defined', function () {
+    $quote = new Quote;
 
-    public function test_quote_uses_soft_deletes(): void
-    {
-        $quote = Quote::create(['title' => 'Soft delete']);
-        $quote->delete();
+    expect($quote->person())->toBeInstanceOf(BelongsTo::class);
+    expect($quote->organization())->toBeInstanceOf(BelongsTo::class);
+    expect($quote->deal())->toBeInstanceOf(BelongsTo::class);
+    expect($quote->ownerUser())->toBeInstanceOf(BelongsTo::class);
+    expect($quote->pipeline())->toBeInstanceOf(BelongsTo::class);
+    expect($quote->pipelineStage())->toBeInstanceOf(BelongsTo::class);
+    expect($quote->quoteProducts())->toBeInstanceOf(HasMany::class);
+    expect($quote->orders())->toBeInstanceOf(HasMany::class);
+    expect($quote->labels())->toBeInstanceOf(MorphToMany::class);
+});
 
-        $this->assertSoftDeleted('crm_quotes', ['id' => $quote->id]);
-    }
+test('quote is auditable', function () {
+    expect(new Quote)->toBeInstanceOf(Auditable::class);
+});
 
-    public function test_quote_relationships_are_defined(): void
-    {
-        $quote = new Quote;
+test('quote belongs to person and organization', function () {
+    $person = Person::create(['first_name' => 'Alice']);
+    $org = Organization::create(['name' => 'Acme']);
 
-        $this->assertInstanceOf(BelongsTo::class, $quote->person());
-        $this->assertInstanceOf(BelongsTo::class, $quote->organization());
-        $this->assertInstanceOf(BelongsTo::class, $quote->deal());
-        $this->assertInstanceOf(BelongsTo::class, $quote->ownerUser());
-        $this->assertInstanceOf(BelongsTo::class, $quote->pipeline());
-        $this->assertInstanceOf(BelongsTo::class, $quote->pipelineStage());
-        $this->assertInstanceOf(HasMany::class, $quote->quoteProducts());
-        $this->assertInstanceOf(HasMany::class, $quote->orders());
-        $this->assertInstanceOf(MorphToMany::class, $quote->labels());
-    }
+    $quote = Quote::create(['title' => 'With links', 'person_id' => $person->id, 'organization_id' => $org->id]);
 
-    public function test_quote_is_auditable(): void
-    {
-        $this->assertInstanceOf(Auditable::class, new Quote);
-    }
-
-    public function test_quote_belongs_to_person_and_organization(): void
-    {
-        $person = Person::create(['first_name' => 'Alice']);
-        $org = Organization::create(['name' => 'Acme']);
-
-        $quote = Quote::create([
-            'title' => 'With links',
-            'person_id' => $person->id,
-            'organization_id' => $org->id,
-        ]);
-
-        $this->assertTrue($quote->person->is($person));
-        $this->assertTrue($quote->organization->is($org));
-    }
-}
+    expect($quote->person->is($person))->toBeTrue();
+    expect($quote->organization->is($org))->toBeTrue();
+});

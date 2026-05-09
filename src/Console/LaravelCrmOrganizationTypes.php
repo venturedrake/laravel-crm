@@ -3,10 +3,10 @@
 namespace VentureDrake\LaravelCrm\Console;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class LaravelCrmOrganizationTypes extends Command
 {

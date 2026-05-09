@@ -1,53 +1,39 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Feature;
+test('default db table prefix is crm', function () {
+    expect(config('laravel-crm.db_table_prefix'))->toBe('crm_');
+});
 
-use VentureDrake\LaravelCrm\Tests\TestCase;
+test('default route prefix is crm', function () {
+    expect(config('laravel-crm.route_prefix'))->toBe('crm');
+});
 
-class ConfigTest extends TestCase
-{
-    public function test_default_db_table_prefix_is_crm(): void
-    {
-        $this->assertSame('crm_', config('laravel-crm.db_table_prefix'));
-    }
+test('default modules array includes all features', function () {
+    $modules = config('laravel-crm.modules');
 
-    public function test_default_route_prefix_is_crm(): void
-    {
-        $this->assertSame('crm', config('laravel-crm.route_prefix'));
-    }
+    expect($modules)->toBeArray()
+        ->toContain('leads')
+        ->toContain('deals')
+        ->toContain('quotes')
+        ->toContain('orders')
+        ->toContain('invoices')
+        ->toContain('deliveries')
+        ->toContain('purchase-orders')
+        ->toContain('teams');
+});
 
-    public function test_default_modules_array_includes_all_features(): void
-    {
-        $modules = config('laravel-crm.modules');
+test('model with global includes settings', function () {
+    expect(config('laravel-crm.model_with_global'))->toContain('settings');
+});
 
-        $this->assertIsArray($modules);
-        $this->assertContains('leads', $modules);
-        $this->assertContains('deals', $modules);
-        $this->assertContains('quotes', $modules);
-        $this->assertContains('orders', $modules);
-        $this->assertContains('invoices', $modules);
-        $this->assertContains('deliveries', $modules);
-        $this->assertContains('purchase-orders', $modules);
-        $this->assertContains('teams', $modules);
-    }
+test('user interface defaults to true', function () {
+    expect((bool) config('laravel-crm.user_interface'))->toBeTrue();
+});
 
-    public function test_model_with_global_includes_settings(): void
-    {
-        $this->assertContains('settings', config('laravel-crm.model_with_global'));
-    }
+test('encrypt db fields defaults to false', function () {
+    expect((bool) config('laravel-crm.encrypt_db_fields'))->toBeFalse();
+});
 
-    public function test_user_interface_defaults_to_true(): void
-    {
-        $this->assertTrue((bool) config('laravel-crm.user_interface'));
-    }
-
-    public function test_encrypt_db_fields_defaults_to_false(): void
-    {
-        $this->assertFalse((bool) config('laravel-crm.encrypt_db_fields'));
-    }
-
-    public function test_teams_defaults_to_false(): void
-    {
-        $this->assertFalse((bool) config('laravel-crm.teams'));
-    }
-}
+test('teams defaults to false', function () {
+    expect((bool) config('laravel-crm.teams'))->toBeFalse();
+});

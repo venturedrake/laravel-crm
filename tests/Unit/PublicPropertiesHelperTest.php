@@ -1,44 +1,44 @@
 <?php
 
-namespace VentureDrake\LaravelCrm\Tests\Unit;
+use function VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\publicProperties;
 
-use PHPUnit\Framework\TestCase;
-
-use function VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asArray;
-use function VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest;
-
-class PublicPropertiesHelperTest extends TestCase
+class PublicPropertiesStub
 {
-    public function test_as_array_extracts_public_properties_only(): void
-    {
-        $object = new class
-        {
-            public string $name = 'Jane';
+    public string $name = 'Alice';
 
-            public int $age = 30;
+    public int $age = 30;
 
-            protected string $secret = 'hidden';
+    protected string $secret = 'shh';
 
-            private string $token = 'token';
-        };
-
-        $array = asArray($object);
-
-        $this->assertSame(['name' => 'Jane', 'age' => 30], $array);
-    }
-
-    public function test_as_request_returns_a_request_with_public_properties(): void
-    {
-        $object = new class
-        {
-            public string $title = 'Big Lead';
-
-            public ?string $description = null;
-        };
-
-        $request = asRequest($object);
-
-        $this->assertSame('Big Lead', $request->input('title'));
-        $this->assertNull($request->input('description'));
-    }
+    private string $hidden = 'nope';
 }
+
+test('returns only public properties as key value pairs', function () {
+    $obj = new PublicPropertiesStub;
+    $props = publicProperties($obj);
+
+    expect($props)->toHaveKey('name', 'Alice')
+        ->toHaveKey('age', 30)
+        ->not->toHaveKey('secret')
+        ->not->toHaveKey('hidden');
+});
+
+test('returns empty array for object with no public properties', function () {
+    $obj = new class
+    {
+        protected string $x = 'x';
+    };
+
+    expect(publicProperties($obj))->toBe([]);
+});
+
+test('returns all public properties from stdClass', function () {
+    $obj = new stdClass;
+    $obj->foo = 'bar';
+    $obj->baz = 42;
+
+    $props = publicProperties($obj);
+
+    expect($props)->toHaveKey('foo', 'bar')
+        ->toHaveKey('baz', 42);
+});
