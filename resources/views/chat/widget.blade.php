@@ -130,12 +130,17 @@
         });
     }
 
+    var initAttempt = 0;
+    var maxInitAttempts = 4;
+
     function init(){
+        initAttempt++;
         postJSON(API + '/init', {
             visitor_token: token,
             current_url: document.referrer || null,
             current_title: null
         }).then(function(data){
+            initAttempt = 0;
             token = data.visitor_token;
             try { localStorage.setItem(STORAGE_KEY, token); } catch(e) {}
 
@@ -148,8 +153,13 @@
             updateUnread(data.unread_for_visitor || 0);
             startPolling();
         }).catch(function(err){
-            bodyEl.innerHTML = '<div class="lcrm-empty">Unable to connect. Please try again later.</div>';
-            console.error('[lcrm-chat] init failed', err);
+            console.error('[lcrm-chat] init failed (attempt '+initAttempt+')', err);
+            if (initAttempt < maxInitAttempts) {
+                // Exponential back-off: 2s, 4s, 8s
+                setTimeout(init, 1000 * Math.pow(2, initAttempt));
+            } else {
+                bodyEl.innerHTML = '<div class="lcrm-empty">Unable to connect. Please try again later.</div>';
+            }
         });
     }
 

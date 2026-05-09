@@ -46,11 +46,13 @@ class ChatWidgetEmbedController extends Controller
     badge.style.cssText = 'position:absolute;top:0;right:0;min-width:18px;height:18px;border-radius:9px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;padding:0 4px;display:none;pointer-events:none;';
     btn.style.position = 'fixed'; // ensure relative stacking
     var btnWrap = document.createElement('div');
+    btnWrap.id = 'lcrm-btn-wrap';
     btnWrap.style.cssText = 'position:fixed;bottom:20px;{$position}z-index:2147483646;';
     btn.style.cssText = 'width:60px;height:60px;border-radius:50%;background:{$color};color:#fff;border:0;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer;font-size:28px;position:relative;';
     btn.appendChild(badge);
 
     var iframe = document.createElement('iframe');
+    iframe.id = 'lcrm-iframe';
     iframe.src = '{$iframeUrl}';
     iframe.style.cssText = 'position:fixed;bottom:90px;{$position}width:380px;height:560px;max-height:80vh;border:0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:2147483647;display:none;background:#fff;';
     iframe.setAttribute('title','Chat with us');
@@ -83,13 +85,29 @@ class ChatWidgetEmbedController extends Controller
     });
 
     function inject(){
-        btnWrap.appendChild(btn);
-        document.body.appendChild(iframe);
-        document.body.appendChild(btnWrap);
+        if (!btnWrap.contains(btn)) btnWrap.appendChild(btn);
+        if (!document.body.contains(iframe)) document.body.appendChild(iframe);
+        if (!document.body.contains(btnWrap)) document.body.appendChild(btnWrap);
     }
+
+    // Re-attach elements after SPA navigation (Livewire wire:navigate morphs the
+    // body and removes dynamically-injected elements).
+    function reattach(){
+        if (document.body && (!document.body.contains(iframe) || !document.body.contains(btnWrap))) {
+            inject();
+        }
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', inject);
     } else { inject(); }
+
+    // Livewire wire:navigate
+    document.addEventListener('livewire:navigated', reattach);
+    // Turbo/Hotwire
+    document.addEventListener('turbo:render', reattach);
+    // Browser back/forward (bfcache restore)
+    window.addEventListener('pageshow', function(e){ if (e.persisted) reattach(); });
 
     // ---- Page-view tracking ----
     // Send the current URL/title to the iframe whenever it changes.
@@ -118,7 +136,7 @@ JS;
 
         return response($js, 200, [
             'Content-Type' => 'application/javascript; charset=UTF-8',
-            'Cache-Control' => 'public, max-age=300',
+            'Cache-Control' => 'public, max-age=60',
             'Access-Control-Allow-Origin' => '*',
         ]);
     }
@@ -137,6 +155,8 @@ JS;
         ])->withHeaders([
             // Allow this page to be iframed from any origin
             'Content-Security-Policy' => 'frame-ancestors *',
+            // Remove X-Frame-Options that host app middleware may add
+            'X-Frame-Options' => '',
         ]);
     }
 
