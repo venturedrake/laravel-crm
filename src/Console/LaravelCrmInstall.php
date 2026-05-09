@@ -522,11 +522,15 @@ class LaravelCrmInstall extends Command
         $teamFk = config('permission.column_names.team_foreign_key', 'team_id');
         $teamsEnabled = (bool) config('permission.teams', false);
 
-        $role = DB::table($roleTable)
+        $roleQuery = DB::table($roleTable)
             ->where('name', 'Owner')
-            ->where('crm_role', 1)
-            ->whereNull('team_id')
-            ->first();
+            ->where('crm_role', 1);
+
+        if (Schema::hasColumn($roleTable, 'team_id')) {
+            $roleQuery->whereNull('team_id');
+        }
+
+        $role = $roleQuery->first();
 
         if (! $role) {
             $this->error('Owner role not found. The seeder may not have run correctly.');

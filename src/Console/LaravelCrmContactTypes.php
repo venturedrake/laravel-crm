@@ -3,7 +3,8 @@
 namespace VentureDrake\LaravelCrm\Console;
 
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 
@@ -49,6 +50,12 @@ class LaravelCrmContactTypes extends Command
     public function handle()
     {
         $this->info('Updating LaravelCRM Contact Types...');
+
+        if (! Schema::hasColumn('contact_types', 'team_id')) {
+            $this->info('Team ID column not present — skipping team contact type duplication.');
+
+            return;
+        }
 
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('contact_types')

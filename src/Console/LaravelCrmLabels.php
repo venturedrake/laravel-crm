@@ -3,7 +3,8 @@
 namespace VentureDrake\LaravelCrm\Console;
 
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use Ramsey\Uuid\Uuid;
@@ -50,6 +51,12 @@ class LaravelCrmLabels extends Command
     public function handle()
     {
         $this->info('Updating LaravelCRM Labels...');
+
+        if (! Schema::hasColumn('labels', 'team_id')) {
+            $this->info('Team ID column not present — skipping team label duplication.');
+
+            return;
+        }
 
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('labels')

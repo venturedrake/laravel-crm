@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\PermissionRegistrar;
 
 class LaravelCrmPermissions extends Command
@@ -61,10 +62,14 @@ class LaravelCrmPermissions extends Command
             $tableNames = config('permission.table_names');
 
             foreach (DB::table('teams')->get() as $team) {
-                foreach (DB::table($tableNames['roles'])
-                    ->where('crm_role', 1)
-                    ->whereNull('team_id')
-                    ->get() as $role) {
+                $rolesQuery = DB::table($tableNames['roles'])
+                    ->where('crm_role', 1);
+
+                if (Schema::hasColumn($tableNames['roles'], 'team_id')) {
+                    $rolesQuery->whereNull('team_id');
+                }
+
+                foreach ($rolesQuery->get() as $role) {
                     $this->info('Inserting role '.$role->name.' for team '.$team->name);
 
                     DB::table($tableNames['roles'])->updateOrInsert([

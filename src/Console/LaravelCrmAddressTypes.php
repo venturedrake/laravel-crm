@@ -3,7 +3,8 @@
 namespace VentureDrake\LaravelCrm\Console;
 
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 
@@ -49,6 +50,12 @@ class LaravelCrmAddressTypes extends Command
     public function handle()
     {
         $this->info('Updating LaravelCRM Address Types...');
+
+        if (! Schema::hasColumn('address_types', 'team_id')) {
+            $this->info('Team ID column not present — skipping team address type duplication.');
+
+            return;
+        }
 
         foreach (DB::table('teams')->get() as $team) {
             foreach (DB::table('address_types')
