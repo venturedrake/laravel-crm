@@ -592,15 +592,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../config/laravel-crm.php' => config_path('laravel-crm.php'),
                 __DIR__.'/../config/permission.php' => config_path('permission.php'),
                 __DIR__.$auditConfig => config_path('audit.php'),
-                __DIR__.'/../vendor/rappasoft/laravel-authentication-log/config/authentication-log.php' => config_path('authentication-log.php'),
-                __DIR__.'/../vendor/torann/geoip/config/geoip.php' => config_path('geoip.php'),
                 __DIR__.'/../config/mary.php' => config_path('mary.php'),
             ], 'config');
 
             // Publishing the views.
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-crm'),
-                __DIR__.'/../vendor/rappasoft/resources/views' => resource_path('views/vendor/rappasoft'),
             ], 'views');
 
             // Publishing assets.
@@ -614,8 +611,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../resources/lang' => resource_path('lang/vendor/laravel-crm'),
             ], 'lang');
 
-            // Publishing laravel-authentication-log
-            // TBC
 
             // Publishing the migrations.
             $this->publishes([
