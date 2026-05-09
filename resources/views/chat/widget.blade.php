@@ -278,6 +278,11 @@
         input.value = '';
         btn.disabled = true;
 
+        // Pause polling while the send request is in-flight to prevent the poll
+        // from fetching the same new messages before lastId is updated, which
+        // would cause each message to appear twice.
+        if (pollTimer) clearInterval(pollTimer);
+
         postJSON(API + '/messages/send', { token: token, body: body })
             .then(function(data){
                 if (data && data.messages) {
@@ -291,7 +296,7 @@
                 console.error('[lcrm-chat] send failed', err);
                 input.value = body; // restore so user can retry
             })
-            .finally(function(){ btn.disabled = false; input.focus(); });
+            .finally(function(){ btn.disabled = false; input.focus(); startPolling(); });
     });
 
     init();
