@@ -2,6 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use VentureDrake\LaravelCrm\Mail\MissedChatNotification;
 use VentureDrake\LaravelCrm\Models\ChatConversation;
 use VentureDrake\LaravelCrm\Models\ChatMessage;
 use VentureDrake\LaravelCrm\Models\ChatVisitor;
@@ -131,6 +135,89 @@ class ChatService
             'status' => 'closed',
             'closed_at' => now(),
         ]);
+    }
+
+    /**
+     * Count CRM agents who were active in the last 15 minutes.
+     * Uses the `last_online_at` column updated by LastOnlineAt middleware.
+     */
+    public function agentsOnlineCount(): int
+    {
+        try {
+            return DB::table('users')
+                ->where('crm_access', 1)
+                ->where('last_online_at', '>=', now()->subMinutes(15))
+                ->count();
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Append an automated offline system message to the conversation.
+     * Only creates one per conversation to avoid spamming the visitor.
+     */
+    public function sendOfflineAutoReply(ChatConversation $conversation): ?ChatMessage
+    {
+        $alreadySent = $conversation->messages()
+            ->where('sender_type', 'system')
+            ->exists();
+
+        if ($alreadySent) {
+            return null;
+        }
+
+        return ChatMessage::create([
+            'chat_conversation_id' => $conversation->id,
+            'team_id' => $conversation->team_id,
+            'sender_type' => 'system',
+            'sender_id' => null,
+            'body' => trans('laravel-crm::lang.chat_offline_auto_reply'),
+        ]);
+    }
+
+    /**
+     * Email all Owner-role CRM users about a missed chat message.
+     * Fires once per conversation (guarded by sendOfflineAutoReply check).
+     */
+    public function notifyOwnersMissedChat(ChatConversation $conversation, ChatMessage $message): void
+    {
+        try {
+            $roleTable = config('permission.table_names.roles', 'roles');
+            $modelHasRoles = config('permission.table_names.model_has_roles', 'model_has_roles');
+            $morphKey = config('permission.column_names.model_morph_key', 'model_id');
+
+            $ownerRoleId = DB::table($roleTable)
+                ->where('name', 'Owner')
+                ->where('crm_role', 1)
+                ->value('id');
+
+            if (! $ownerRoleId) {
+                return;
+            }
+
+            $userIds = DB::table($modelHasRoles)
+                ->where('role_id', $ownerRoleId)
+                ->pluck($morphKey);
+
+            if ($userIds->isEmpty()) {
+                return;
+            }
+
+            $userModel = config('auth.providers.users.model', \App\Models\User::class);
+            $owners = $userModel::whereIn('id', $userIds)
+                ->where('crm_access', 1)
+                ->whereNotNull('email')
+                ->get();
+
+            foreach ($owners as $owner) {
+                Mail::to($owner)->send(
+                    new MissedChatNotification($conversation, $conversation->visitor, $message)
+                );
+            }
+        } catch (\Exception $e) {
+            Log::warning('[laravel-crm] Missed chat notification failed: '.$e->getMessage());
+        }
     }
 
     /**

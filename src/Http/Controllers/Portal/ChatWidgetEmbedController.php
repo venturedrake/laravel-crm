@@ -182,6 +182,8 @@ JS;
             $service->recordPageView($visitor, $url, $request->input('current_title'));
         }
 
+        $agentsOnline = $service->agentsOnlineCount();
+
         return $this->cors(response()->json([
             'visitor_token' => $visitor->visitor_token,
             'visitor' => [
@@ -200,6 +202,7 @@ JS;
             ],
             'messages' => $this->serializeMessages($conversation->messages()->get()),
             'unread_for_visitor' => $conversation->unreadForVisitor(),
+            'agents_online' => $agentsOnline,
         ]));
     }
 
@@ -220,6 +223,7 @@ JS;
             'messages' => $this->serializeMessages($messages),
             'status' => $conversation->status,
             'unread_for_visitor' => $conversation->unreadForVisitor(),
+            'agents_online' => app(ChatService::class)->agentsOnlineCount(),
         ]));
     }
 
@@ -249,10 +253,28 @@ JS;
         }
         $body = mb_substr($body, 0, 5000);
 
-        $message = app(ChatService::class)->sendVisitorMessage($conversation, $body);
+        $service = app(ChatService::class);
+        $message = $service->sendVisitorMessage($conversation, $body);
+
+        $agentsOnline = $service->agentsOnlineCount();
+        $autoReply = null;
+
+        if ($agentsOnline === 0) {
+            $autoReply = $service->sendOfflineAutoReply($conversation);
+            if ($autoReply) {
+                // First time going offline in this conversation — notify owners by email
+                $service->notifyOwnersMissedChat($conversation, $message);
+            }
+        }
+
+        $messages = [$this->serializeMessages(collect([$message]))[0]];
+        if ($autoReply) {
+            $messages[] = $this->serializeMessages(collect([$autoReply]))[0];
+        }
 
         return $this->cors(response()->json([
-            'message' => $this->serializeMessages(collect([$message]))[0],
+            'messages' => $messages,
+            'agents_online' => $agentsOnline,
         ]));
     }
 
@@ -350,6 +372,7 @@ JS;
             'sender_name' => $m->senderName(),
             'body' => $m->body,
             'created_at' => $m->created_at?->toIso8601String(),
+            'is_system' => $m->sender_type === 'system',
         ])->values()->all();
     }
 

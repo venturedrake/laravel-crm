@@ -30,6 +30,9 @@
         .lcrm-msg { display:flex; gap:6px; padding:10px; border-top:1px solid #e5e7eb; }
         .lcrm-msg input { flex:1; }
         .lcrm-status { padding:8px; text-align:center; font-size:12px; opacity:.6; border-top:1px solid #e5e7eb; }
+        .lcrm-online-bar { display:none; padding:4px 16px 5px; font-size:11px; color:#16a34a; background:#f0fdf4; border-bottom:1px solid #dcfce7; }
+        .lcrm-online-bar span { display:inline-block; width:7px; height:7px; border-radius:50%; background:#16a34a; margin-right:4px; vertical-align:middle; }
+        .lcrm-bubble.system { align-self:center; max-width:90%; background:#fef9c3; color:#713f12; border-radius:8px; font-size:12px; text-align:center; padding:6px 10px; }
         .lcrm-powered { text-align:center; padding:4px 8px 6px; font-size:10px; color:#9ca3af; }
         .lcrm-powered a { color:#9ca3af; text-decoration:none; }
         .lcrm-powered a:hover { color:#6b7280; text-decoration:underline; }
@@ -45,6 +48,10 @@
             @endif
         </div>
         <button id="lcrm-close-btn" class="lcrm-close" aria-label="Close chat" title="Close">&#x2715;</button>
+    </div>
+
+    <div id="lcrm-online-bar" class="lcrm-online-bar">
+        <span></span><span id="lcrm-online-text"></span>
     </div>
 
     <form id="lcrm-id-form" class="lcrm-id">
@@ -80,6 +87,8 @@
     var bodyEl = document.getElementById('lcrm-body');
     var idForm = document.getElementById('lcrm-id-form');
     var msgForm = document.getElementById('lcrm-msg-form');
+    var onlineBar = document.getElementById('lcrm-online-bar');
+    var onlineText = document.getElementById('lcrm-online-text');
 
     try { token = localStorage.getItem(STORAGE_KEY); } catch(e) {}
 
@@ -92,19 +101,33 @@
         try { return new Date(iso).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); } catch(e){ return ''; }
     }
 
+    function bubbleHtml(m){
+        if (m.is_system || m.sender_type === 'system') {
+            return '<div class="lcrm-bubble system">'+escapeHtml(m.body)+'</div>';
+        }
+        var mine = m.sender_type === 'visitor';
+        var who = mine ? 'You' : m.sender_name;
+        return '<div class="lcrm-bubble '+(mine?'me':'them')+'">'+
+            escapeHtml(m.body)+
+            '<small>'+escapeHtml(who)+' · '+fmtTime(m.created_at)+'</small>'+
+            '</div>';
+    }
+
+    function updateOnlineBar(count){
+        if (count > 0) {
+            onlineText.textContent = count === 1 ? '1 agent online' : count + ' agents online';
+            onlineBar.style.display = 'block';
+        } else {
+            onlineBar.style.display = 'none';
+        }
+    }
+
     function render(messages){
         if (!messages || !messages.length) {
             bodyEl.innerHTML = '<div class="lcrm-empty">{{ $widget->welcome_message ?: 'How can we help?' }}</div>';
             return;
         }
-        bodyEl.innerHTML = messages.map(function(m){
-            var mine = m.sender_type === 'visitor';
-            var who = mine ? 'You' : m.sender_name;
-            return '<div class="lcrm-bubble '+(mine?'me':'them')+'">'+
-                escapeHtml(m.body)+
-                '<small>'+escapeHtml(who)+' · '+fmtTime(m.created_at)+'</small>'+
-                '</div>';
-        }).join('');
+        bodyEl.innerHTML = messages.map(bubbleHtml).join('');
         bodyEl.scrollTop = bodyEl.scrollHeight;
         var max = messages[messages.length-1].id;
         if (max > lastId) lastId = max;
@@ -115,12 +138,9 @@
         var empty = bodyEl.querySelector('.lcrm-empty');
         if (empty) bodyEl.innerHTML = '';
         messages.forEach(function(m){
-            var mine = m.sender_type === 'visitor';
-            var who = mine ? 'You' : m.sender_name;
             var div = document.createElement('div');
-            div.className = 'lcrm-bubble ' + (mine ? 'me' : 'them');
-            div.innerHTML = escapeHtml(m.body) + '<small>'+escapeHtml(who)+' · '+fmtTime(m.created_at)+'</small>';
-            bodyEl.appendChild(div);
+            div.innerHTML = bubbleHtml(m);
+            bodyEl.appendChild(div.firstChild);
             if (m.id > lastId) lastId = m.id;
         });
         bodyEl.scrollTop = bodyEl.scrollHeight;
@@ -157,6 +177,7 @@
             }
 
             render(data.messages);
+            updateOnlineBar(data.agents_online || 0);
             updateUnread(data.unread_for_visitor || 0);
             startPolling();
         }).catch(function(err){
@@ -213,6 +234,7 @@
         .then(function(data){
             if (!data) return;
             if (data.messages) appendMessages(data.messages);
+            updateOnlineBar(data.agents_online || 0);
             var unread = data.unread_for_visitor || 0;
             if (widgetOpen && unread > 0) {
                 // Auto mark read while widget is open
@@ -263,8 +285,11 @@
 
         postJSON(API + '/messages/send', { token: token, body: body })
             .then(function(data){
-                if (data && data.message) {
-                    appendMessages([data.message]); // bumps lastId so poll won't re-fetch
+                if (data && data.messages) {
+                    appendMessages(data.messages);
+                }
+                if (data && typeof data.agents_online !== 'undefined') {
+                    updateOnlineBar(data.agents_online);
                 }
             })
             .catch(function(err){

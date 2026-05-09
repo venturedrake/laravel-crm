@@ -71,12 +71,20 @@
         <x-mary-card shadow class="md:col-span-2">
             <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto p-3">
                 @forelse($messages as $m)
-                    <div class="flex {{ $m->isFromAgent() ? 'justify-end' : 'justify-start' }}">
-                        <div class="max-w-[70%] rounded-2xl px-4 py-2 {{ $m->isFromAgent() ? 'bg-primary text-white' : 'bg-base-200' }}">
-                            <div class="text-xs opacity-70 mb-1">{{ $m->senderName() }} • {{ $m->created_at->diffForHumans() }}</div>
-                            <div class="whitespace-pre-wrap break-words">{{ $m->body }}</div>
+                    @if($m->sender_type === 'system')
+                        <div class="flex justify-center">
+                            <div class="text-xs opacity-60 bg-base-200 rounded-full px-3 py-1 italic">
+                                {{ $m->body }}
+                            </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="flex {{ $m->isFromAgent() ? 'justify-end' : 'justify-start' }}">
+                            <div class="max-w-[70%] rounded-2xl px-4 py-2 {{ $m->isFromAgent() ? 'bg-primary text-white' : 'bg-base-200' }}">
+                                <div class="text-xs opacity-70 mb-1">{{ $m->senderName() }} • {{ $m->created_at->diffForHumans() }}</div>
+                                <div class="whitespace-pre-wrap break-words">{{ $m->body }}</div>
+                            </div>
+                        </div>
+                    @endif
                 @empty
                     <div class="text-center text-sm opacity-60 py-10">{{ ucfirst(__('laravel-crm::lang.no_messages_yet')) }}</div>
                 @endforelse

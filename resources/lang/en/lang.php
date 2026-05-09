@@ -357,6 +357,8 @@ return [
     'chat_already_converted' => 'this conversation has already been converted to a lead',
     'chat_lead_title' => 'Chat with :name',
     'chat_lead_title_unknown' => 'Chat visitor lead',
+    'chat_offline_auto_reply' => 'Sorry, we are currently offline. We will respond to your request via email shortly.',
+    'missed_chat_email_subject' => 'Missed chat message',
     'view_lead' => 'view lead',
     'visitor' => 'visitor',
     'last_message' => 'last message',

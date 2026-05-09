@@ -23,8 +23,9 @@ class LastOnlineAt
 
         $user = auth()->user();
 
-        // Throttle: only update once per hour to avoid a write on every request
-        if (! $user->last_online_at || Carbon::parse($user->last_online_at)->diffInHours(now()) >= 1) {
+        // Throttle: only update once every 5 minutes to avoid a write on every request
+        // (5-minute resolution also enables accurate "online" presence for chat widgets)
+        if (! $user->last_online_at || Carbon::parse($user->last_online_at)->diffInMinutes(now()) >= 5) {
             DB::table('users')
                 ->where('id', $user->id)
                 ->update(['last_online_at' => now()]);
