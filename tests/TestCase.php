@@ -5,7 +5,6 @@ namespace VentureDrake\LaravelCrm\Tests;
 use Illuminate\Support\Facades\Cache;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use OwenIt\Auditing\AuditingServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 use VentureDrake\LaravelCrm\Facades\LaravelCrmFacade;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
@@ -41,7 +40,6 @@ abstract class TestCase extends OrchestraTestCase
     {
         return [
             PermissionServiceProvider::class,
-            AuditingServiceProvider::class,
             LivewireServiceProvider::class,
             LaravelCrmServiceProvider::class,
         ];
@@ -74,8 +72,6 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('laravel-crm.encrypt_db_fields', false);
         $app['config']->set('laravel-crm.route_prefix', 'crm');
         $app['config']->set('laravel-crm.user_interface', true);
-
-        $app['config']->set('audit.console', true);
     }
 
     protected function defineDatabaseMigrations()

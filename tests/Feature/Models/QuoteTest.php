@@ -4,7 +4,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
-use OwenIt\Auditing\Contracts\Auditable;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
@@ -74,10 +73,6 @@ test('quote relationships are defined', function () {
     expect($quote->quoteProducts())->toBeInstanceOf(HasMany::class);
     expect($quote->orders())->toBeInstanceOf(HasMany::class);
     expect($quote->labels())->toBeInstanceOf(MorphToMany::class);
-});
-
-test('quote is auditable', function () {
-    expect(new Quote)->toBeInstanceOf(Auditable::class);
 });
 
 test('quote belongs to person and organization', function () {

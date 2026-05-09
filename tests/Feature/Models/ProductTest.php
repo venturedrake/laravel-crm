@@ -3,7 +3,6 @@
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-use OwenIt\Auditing\Contracts\Auditable;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductCategory;
 use VentureDrake\LaravelCrm\Models\TaxRate;
@@ -59,8 +58,4 @@ test('product uses soft deletes', function () {
     $product = Product::create(['name' => 'Bin']);
     $product->delete();
     $this->assertSoftDeleted('crm_products', ['id' => $product->id]);
-});
-
-test('product is auditable', function () {
-    expect(new Product)->toBeInstanceOf(Auditable::class);
 });

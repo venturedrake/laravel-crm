@@ -218,9 +218,6 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $this->truncateSampleData();
         }
 
-        // Disable auditing to avoid thousands of audit records
-        $this->disableAuditing();
-
         // Disable query log to prevent memory issues with large dataset
         DB::disableQueryLog();
 
@@ -270,9 +267,6 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->seedChats();
         $this->seedEmailCampaigns();
         $this->seedSmsCampaigns();
-
-        // Re-enable auditing
-        $this->enableAuditing();
 
         $elapsed = round(microtime(true) - $startTime, 1);
         $this->printSummary($elapsed);
@@ -532,17 +526,6 @@ class LaravelCrmSampleDataSeeder extends Seeder
     protected function randomAmount(float $min, float $max): float
     {
         return round($min + (mt_rand() / mt_getrandmax()) * ($max - $min), 2);
-    }
-
-    protected function disableAuditing(): void
-    {
-        // Disable audit globally if the config allows
-        config(['audit.enabled' => false]);
-    }
-
-    protected function enableAuditing(): void
-    {
-        config(['audit.enabled' => true]);
     }
 
     /**

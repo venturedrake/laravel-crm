@@ -93,12 +93,6 @@ function seedV1Data(): void
     }
     DB::table($prefix.'contacts')->insert($contactRows);
 
-    DB::table('audits')->insert([
-        ['id' => 1, 'user_type' => V1_ORG_CLASS, 'user_id' => 1, 'event' => 'created', 'auditable_type' => V1_ORG_CLASS, 'auditable_id' => 1, 'created_at' => $now, 'updated_at' => $now],
-        ['id' => 2, 'user_type' => V1_CLIENT_CLASS, 'user_id' => 1, 'event' => 'updated', 'auditable_type' => V1_CLIENT_CLASS, 'auditable_id' => 1, 'created_at' => $now, 'updated_at' => $now],
-        ['id' => 3, 'user_type' => V1_PERSON_CLASS, 'user_id' => 2, 'event' => 'created', 'auditable_type' => V1_PERSON_CLASS, 'auditable_id' => 2, 'created_at' => $now, 'updated_at' => $now],
-    ]);
-
     DB::table('permissions')->insert([
         ['name' => 'view organisations', 'guard_name' => 'web', 'created_at' => $now, 'updated_at' => $now],
         ['name' => 'create organisations', 'guard_name' => 'web', 'created_at' => $now, 'updated_at' => $now],
@@ -124,7 +118,7 @@ function snapshotV1RowCounts(): array
         $prefix.'people', $prefix.'leads', $prefix.'deals', $prefix.'quotes', $prefix.'orders',
         $prefix.'invoices', $prefix.'purchase_orders', $prefix.'xero_contacts',
         $prefix.'emails', $prefix.'phones', $prefix.'addresses', $prefix.'field_values',
-        $prefix.'notes', $prefix.'contacts', $prefix.'files', 'audits', 'permissions',
+        $prefix.'notes', $prefix.'contacts', $prefix.'files', 'permissions',
     ];
     $renames = [
         $prefix.'organisations' => $prefix.'organizations',
@@ -147,7 +141,7 @@ function snapshotV2RowCounts(): array
         $prefix.'people', $prefix.'leads', $prefix.'deals', $prefix.'quotes', $prefix.'orders',
         $prefix.'invoices', $prefix.'purchase_orders', $prefix.'xero_contacts',
         $prefix.'emails', $prefix.'phones', $prefix.'addresses', $prefix.'field_values',
-        $prefix.'notes', $prefix.'contacts', $prefix.'files', 'audits', 'permissions',
+        $prefix.'notes', $prefix.'contacts', $prefix.'files', 'permissions',
     ];
     $out = [];
     foreach ($tables as $t) {
@@ -220,8 +214,6 @@ test('v2 upgrade renames tables columns permissions and polymorphic types', func
     assertPolymorphTypeRewritten($prefix.'contacts', 'entityable_type');
     assertPolymorphTypeRewritten($prefix.'files', 'fileable_type');
     assertPolymorphTypeRewritten($prefix.'customers', 'customerable_type');
-    assertPolymorphTypeRewritten('audits', 'auditable_type');
-    assertPolymorphTypeRewritten('audits', 'user_type');
 
     expect(DB::table($prefix.'customers')->where('customerable_type', V1_PERSON_CLASS)->count())
         ->toBe(1, 'Person customerable_type rows should not be rewritten.');

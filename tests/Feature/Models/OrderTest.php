@@ -4,7 +4,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
-use OwenIt\Auditing\Contracts\Auditable;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Quote;
 
@@ -63,10 +62,6 @@ test('order uses soft deletes', function () {
     $order = Order::create(['title' => 'Bin me']);
     $order->delete();
     $this->assertSoftDeleted('crm_orders', ['id' => $order->id]);
-});
-
-test('order is auditable', function () {
-    expect(new Order)->toBeInstanceOf(Auditable::class);
 });
 
 test('order belongs to quote', function () {

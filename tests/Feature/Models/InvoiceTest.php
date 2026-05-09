@@ -4,7 +4,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
-use OwenIt\Auditing\Contracts\Auditable;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
 
@@ -68,8 +67,4 @@ test('invoice uses soft deletes', function () {
     $invoice = Invoice::create([]);
     $invoice->delete();
     $this->assertSoftDeleted('crm_invoices', ['id' => $invoice->id]);
-});
-
-test('invoice is auditable', function () {
-    expect(new Invoice)->toBeInstanceOf(Auditable::class);
 });

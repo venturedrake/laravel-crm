@@ -1,7 +1,6 @@
 <?php
 
 use VentureDrake\LaravelCrm\Models\Lead;
-use VentureDrake\LaravelCrm\Models\Person;
 
 test('soft delete leaves record in database', function () {
     $lead = Lead::create(['title' => 'Bye']);
@@ -37,24 +36,4 @@ test('save quietly does not trigger observers', function () {
     $lead->saveQuietly();
 
     expect($lead->fresh()->title)->toBe('Quietly changed');
-});
-
-test('models are audited when created', function () {
-    $lead = Lead::create(['title' => 'Audit me']);
-
-    expect(DB::table('audits')
-        ->where('auditable_type', Lead::class)
-        ->where('auditable_id', $lead->id)
-        ->where('event', 'created')
-        ->count())->toBe(1);
-});
-
-test('person is audited when created', function () {
-    $person = Person::create(['first_name' => 'Audit']);
-
-    expect(DB::table('audits')
-        ->where('auditable_type', Person::class)
-        ->where('auditable_id', $person->id)
-        ->where('event', 'created')
-        ->count())->toBe(1);
 });

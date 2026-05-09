@@ -110,7 +110,7 @@ class SendSmsCampaignRecipient implements ShouldQueue
 
     /**
      * Increment a counter on the campaign atomically without firing model events
-     * — Auditing observers re-save the model and can clobber concurrent writes.
+     * to avoid race conditions with concurrent writes.
      */
     private function bumpCampaignCounter(int $campaignId, string $column): void
     {

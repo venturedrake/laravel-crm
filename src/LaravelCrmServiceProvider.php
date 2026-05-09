@@ -582,16 +582,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            if (version_compare(app()->version(), '8.6', '>=')) {
-                $auditConfig = '/../config/audit-sanctum.php';
-            } else {
-                $auditConfig = '/../config/audit.php';
-            }
-
             $this->publishes([
                 __DIR__.'/../config/laravel-crm.php' => config_path('laravel-crm.php'),
                 __DIR__.'/../config/permission.php' => config_path('permission.php'),
-                __DIR__.$auditConfig => config_path('audit.php'),
                 __DIR__.'/../config/mary.php' => config_path('mary.php'),
             ], 'config');
 
@@ -634,9 +627,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_laravel_crm_contacts_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contacts_table.php', 19),
                 __DIR__.'/../database/migrations/create_laravel_crm_contact_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contact_types_table.php', 20),
                 __DIR__.'/../database/migrations/create_laravel_crm_contact_contact_type_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_contact_contact_type_table.php', 21),
-                __DIR__.'/../database/migrations/create_audits_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_audits_table.php', 22), // Laravel auditing
-                __DIR__.'/../database/migrations/create_devices_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_devices_table.php', 23), // Laravel Auth Checker
-                __DIR__.'/../database/migrations/create_logins_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_logins_table.php', 24), // Laravel Auth Checker
+                __DIR__.'/../database/migrations/create_devices_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_devices_table.php', 22), // Laravel Auth Checker
+                __DIR__.'/../database/migrations/create_logins_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_logins_table.php', 23), // Laravel Auth Checker
                 __DIR__.'/../database/migrations/update_logins_and_devices_table_user_relation.php.stub' => $this->getMigrationFileName($filesystem, 'update_logins_and_devices_table_user_relation.php', 25), // Laravel Auth Checker
                 __DIR__.'/../database/migrations/create_laravel_crm_organization_types_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_organization_types_table.php', 26),
                 __DIR__.'/../database/migrations/change_morph_col_names_on_laravel_crm_notes_table.php.stub' => $this->getMigrationFileName($filesystem, 'change_morph_col_names_on_laravel_crm_notes_table.php', 27),

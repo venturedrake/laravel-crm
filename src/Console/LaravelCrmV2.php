@@ -209,8 +209,6 @@ class LaravelCrmV2 extends Command
             [$this->prefix.'contacts', 'entityable_type'],
             [$this->prefix.'files', 'fileable_type'],
             [$this->prefix.'customers', 'customerable_type'],
-            ['audits', 'auditable_type'],
-            ['audits', 'user_type'],
         ];
 
         foreach ($targets as [$table, $column]) {
