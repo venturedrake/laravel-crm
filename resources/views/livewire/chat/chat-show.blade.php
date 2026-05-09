@@ -22,7 +22,7 @@
             @if($conversation->lead_id)
                 <x-mary-button
                     label="{{ ucfirst(__('laravel-crm::lang.view_lead')) }}"
-                    link="{{ url(route('laravel-crm.leads.show', $conversation->lead->external_id)) }}"
+                    link="{{ url(route('laravel-crm.leads.show', $conversation->lead)) }}"
                     icon="fas.user-tag"
                     class="btn-sm btn-success text-white"
                 />
@@ -113,7 +113,7 @@
                     @if($conversation->lead_id)
                         <dt class="opacity-60">{{ ucfirst(__('laravel-crm::lang.lead')) }}</dt>
                         <dd class="col-span-2">
-                            <a href="{{ url(route('laravel-crm.leads.show', $conversation->lead->external_id)) }}" class="link link-primary text-xs font-medium">
+                            <a href="{{ url(route('laravel-crm.leads.show', $conversation->lead)) }}" class="link link-primary text-xs font-medium">
                                 {{ $conversation->lead->lead_id ?? $conversation->lead->title }}
                             </a>
                         </dd>

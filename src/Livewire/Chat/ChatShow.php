@@ -113,7 +113,7 @@ class ChatShow extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.chat_converted_to_lead')),
-            redirectTo: route('laravel-crm.leads.show', $lead->external_id)
+            redirectTo: route('laravel-crm.leads.show', $lead)
         );
     }
 
