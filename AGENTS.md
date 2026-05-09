@@ -32,7 +32,7 @@ Routes (src/Http/routes.php)
 ```
 Repositories (`src/Repositories/`) are minimal thin wrappers (`all()`/`find()`) — put business logic in Services, not Repositories.
 
-Other top-level dirs under `src/`: `Events/` (e.g. `ChatMessageSent` broadcast event), `Listeners/` (e.g. `NewAuthDevice`), `Jobs/` (queued campaign dispatch), `Mail/` (mailables: `SendQuote`, `SendInvoice`, `SendPurchaseOrder`, `EmailCampaignMessage`), `Notifications/`, `Sms/` (`SmsCampaignMessage`), `Scopes/` (e.g. `BelongsToTeamsScope`), `Facades/` (`LaravelCrmFacade`), and `Console/` (all `laravelcrm:*` artisan commands).
+Other top-level dirs under `src/`: `Events/` (e.g. `ChatMessageSent` broadcast event), `Listeners/` (e.g. `NewAuthDevice`), `Jobs/` (queued campaign dispatch), `Mail/` (mailables: `SendQuote`, `SendInvoice`, `SendPurchaseOrder`, `EmailCampaignMessage`), `Notifications/`, `Sms/` (`SmsCampaignMessage`), `Scopes/` (e.g. `BelongsToTeamsScope`), `Facades/` (`LaravelCrmFacade`), `Console/` (all `laravelcrm:*` artisan commands), and `Http/Middleware/` (custom middleware stack — see Routing section).
 
 ### Two Livewire namespaces
 - **`src/Livewire/`** (`VentureDrake\LaravelCrm\Livewire\`) — current v2 components, registered with `crm-` prefix (e.g., `crm-lead-index`, `crm-deal-create`)
@@ -54,7 +54,7 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Related index sub-components**: `Deliveries/DeliveryRelatedIndex`, `Invoices/InvoiceRelatedIndex`, `Orders/OrderRelatedIndex`, `PurchaseOrders/PurchaseOrderRelatedIndex` — embedded lists of related records on entity show pages.
 
-**Full-CRUD v2 entities**: `Tasks/`, `Teams/`, `Users/`, `Organizations/`, `People/`, `Products/` — each has `Create`, `Edit`, `Index`, `Show` components (e.g. `OrganizationIndex`, `PersonShow`) plus a `Traits/` subdirectory. All follow the `HasEntityCommon` trait pattern. Domain pipeline entities follow the same shape: `Leads/`, `Deals/`, `Quotes/`, `Orders/`, `Invoices/`, `Deliveries/`, `PurchaseOrders/`.
+**Full-CRUD v2 entities**: `Tasks/`, `Teams/`, `Users/`, `Organizations/`, `People/`, `Products/` — each has `Create`, `Edit`, `Index`, `Show` components (e.g. `OrganizationIndex`, `PersonShow`) plus a `Traits/` subdirectory. All follow the `HasEntityCommon` trait pattern. Domain pipeline entities follow the same shape: `Leads/`, `Deals/`, `Quotes/`, `Orders/`, `Invoices/`, `Deliveries/`, `PurchaseOrders/`. Pipeline send/pay entities also have dedicated action components: `QuoteSend` (`crm-quote-send`), `InvoiceSend` (`crm-invoice-send`), `InvoicePay` (`crm-invoice-pay`), `PurchaseOrderSend` (`crm-purchase-order-send`).
 
 **Marketing campaigns** (v2): `EmailCampaigns/` and `SmsCampaigns/` (`*Create`, `*Edit`, `*Index`, `*Show`) plus reusable `EmailTemplates/` and `SmsTemplates/` CRUD components — gated by the `email-marketing` / `sms-marketing` modules. Dispatch is queued via `src/Jobs/SendEmailCampaignRecipient`, `Jobs/SendSmsCampaignRecipient`, and `Jobs/MaterialiseSmsCampaignRecipients`; outbound messages live in `src/Mail/EmailCampaignMessage.php` and `src/Sms/SmsCampaignMessage.php`. Scheduled by `laravelcrm:email-campaigns-dispatch` and `laravelcrm:sms-campaigns-dispatch`.
 
@@ -65,6 +65,8 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 **Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductAttributes/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`, `Integrations/ClickSend/ClickSendConnect`.
 
 **Email & SMS Marketing** (v2): Full-CRUD components in `src/Livewire/EmailCampaigns/`, `src/Livewire/EmailTemplates/`, `src/Livewire/SmsCampaigns/`, `src/Livewire/SmsTemplates/`. Backed by models `EmailCampaign`, `EmailTemplate`, `SmsCampaign`, `SmsTemplate` (plus `*Click`, `*Recipient` models). Services: `EmailCampaignService`, `EmailTemplateService`, `SmsCampaignService`, `SmsTemplateService`. SMS sending uses `ClickSendService` (HTTP Basic auth to `https://rest.clicksend.com/v3`; credentials stored as CRM settings `clicksend_username` / `clicksend_api_key` / `clicksend_default_from`).
+
+**Additional services** in `src/Services/`: `ChatService` (handles chat message creation, AI handoff, and visitor session logic), `NumberGeneratorService` (generates human-readable IDs like `L1001`, `D1001` — called by Observers on `creating`).
 
 ### Shared Livewire traits
 Traits in `src/Traits/` are shared across Livewire components and models:
@@ -106,6 +108,7 @@ Form-specific traits live in `src/Livewire/Traits/`:
 
 - **Tailwind CSS v4** + **DaisyUI v5** for styling — uses `@plugin "daisyui"` syntax in `resources/css/app.css` with custom light/dark themes
 - **MaryUI** (`robsontenorio/mary`) for Livewire UI components — use `<x-mary-*>` components
+- **Livewire 3/4** (`^3.0|^4.0` per `composer.json`) — uses `#[Url]` attributes for query-string binding
 - **Toast notifications** via `Mary\Traits\Toast` (already in `HasLeadCommon` and similar traits)
 - **Icons**: ForkAwesome (`<x-forkawesome-*>`), Boxicons (`<x-bx-*>`), FontAwesome (`<x-far-*>` / `<x-fas-*>`)
 - **JS globals**: `sortablejs` (kanban drag-and-drop) and `vanilla-picker` (color picker) exposed on `window` via `resources/js/app.js`
@@ -117,6 +120,8 @@ Form-specific traits live in `src/Livewire/Traits/`:
 
 - Routes prefixed by `LARAVEL_CRM_ROUTE_PREFIX` (default `crm`), named `laravel-crm.*`
 - Protected by `auth.laravel-crm` middleware + Laravel Policies (one policy per model in `src/Policies/`)
+- **Self-contained CRM auth**: `src/Http/auth-routes.php` registers `laravel-crm.login`, `laravel-crm.password.request`, `laravel-crm.password.reset`, and `laravel-crm.logout` — no Fortify/Breeze required on the host app. These routes use the v2 Livewire auth components.
+- **Middleware stack** (registered as aliases in service provider): `auth.laravel-crm` wraps `Authenticate` + `HasCrmAccess` + `SystemCheck` + `Settings` + `LogUsage`. Additional middleware: `TeamsPermission` (enforces team membership), `RouteSubdomain` (subdomain routing), `LastOnlineAt` (updates user last-seen timestamp), `FormComponentsConfig` (configures MaryUI form components), `XeroTenant` (sets active Xero tenant).
 - **Flash notifications**: `php-flasher/flasher-laravel` for server-side flash messages
 - Public portal routes at `/p/quotes/{external_id}` and `/p/invoices/{external_id}` — no auth required
 - Email campaign tracking routes (`/p/email/o/{token}.gif`, `/p/email/c/{token}`, `/p/email/u/{token}`) and SMS tracking routes (`/p/sms/c/{token}`, `/p/sms/u/{token}`) are defined in `src/Http/email-tracking-routes.php` — registered **outside** the `web` middleware group (no CSRF/session) so tracking pixels work from email clients
@@ -186,7 +191,9 @@ composer format      # alias for pint -v
 composer format-test # dry-run formatting check
 
 # Tests
-composer test        # PHPUnit (uses testbench, SQLite in-memory)
+composer test        # Pest (uses testbench, SQLite in-memory) — runs vendor/bin/pest
+vendor/bin/phpunit --testsuite Unit     # PHPUnit unit tests only
+vendor/bin/phpunit --testsuite Feature  # PHPUnit feature tests only
 
 # Key artisan commands (run from a host app)
 php artisan laravelcrm:install              # initial setup
