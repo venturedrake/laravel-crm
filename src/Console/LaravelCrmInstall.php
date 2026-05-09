@@ -21,7 +21,8 @@ class LaravelCrmInstall extends Command
                            {--owner-name= : Owner full name e.g. "Jane Smith" (skips prompt)}
                            {--owner-password= : Owner password (skips prompt)}
                            {--enable-teams : Enable multi-tenancy without prompting}
-                           {--enable-encryption : Enable sensitive field encryption without prompting}';
+                           {--enable-encryption : Enable sensitive field encryption without prompting}
+                           {--production : Skip dev-only steps (publishing, migrations, model patching) — only runs seeders, lead-sources, and user setup}';
 
     /**
      * The console command description.
@@ -71,6 +72,10 @@ class LaravelCrmInstall extends Command
         $this->warn('*    To find out more contact me at andrew@laravelcrm.com                *');
         $this->warn('**************************************************************************');
 
+        if ($this->isProduction()) {
+            $this->info('Running in production mode — publishing, migrations, and model patching will be skipped.');
+        }
+
         $confirmed = $this->isInteractive()
             ? $this->confirm('I understand, lets proceed 🚀')
             : true;
@@ -101,11 +106,13 @@ class LaravelCrmInstall extends Command
 
         $this->info("Checking user authentication passed. (Using {$userClass})");
 
-        // Patch the User model to add required CRM traits
-        $this->patchUserModel($userClass);
+        if (! $this->isProduction()) {
+            // Patch the User model to add required CRM traits
+            $this->patchUserModel($userClass);
 
-        // Configure environment flags (teams, encryption) before migrations run
-        $this->configureEnv();
+            // Configure environment flags (teams, encryption) before migrations run
+            $this->configureEnv();
+        }
 
         // TBC: Check if audits table exists already
         // TBC: Check if spatie permissions tables exists already
@@ -114,60 +121,64 @@ class LaravelCrmInstall extends Command
 
         $this->info('Installing Laravel CRM...');
 
-        $this->info('Publishing configuration...');
+        if (! $this->isProduction()) {
+            $this->info('Publishing configuration...');
 
-        if (! $this->configExists('laravel-crm')) {
-            $this->publishConfiguration();
-        } else {
-            if ($this->shouldOverwriteConfig()) {
-                $this->info('Overwriting configuration file...');
-                $this->publishConfiguration($force = true);
+            if (! $this->configExists('laravel-crm')) {
+                $this->publishConfiguration();
             } else {
-                $this->info('Existing configuration was not overwritten');
+                if ($this->shouldOverwriteConfig()) {
+                    $this->info('Overwriting configuration file...');
+                    $this->publishConfiguration($force = true);
+                } else {
+                    $this->info('Existing configuration was not overwritten');
+                }
             }
-        }
 
-        $this->info('Publishing migrations...');
+            $this->info('Publishing migrations...');
 
-        $this->callSilent('vendor:publish', [
-            '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
-            '--tag' => 'migrations',
-        ]);
+            $this->callSilent('vendor:publish', [
+                '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
+                '--tag' => 'migrations',
+            ]);
 
-        $this->info('Publishing assets...');
+            $this->info('Publishing assets...');
 
-        $this->call('vendor:publish', [
-            '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
-            '--tag' => 'assets',
-            '--force' => true,
-        ]);
+            $this->call('vendor:publish', [
+                '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
+                '--tag' => 'assets',
+                '--force' => true,
+            ]);
 
-        $this->info('Publishing Flasher assets...');
+            $this->info('Publishing Flasher assets...');
 
-        try {
-            $this->call('flasher:install');
-        } catch (\Throwable $e) {
-            $this->warn('Could not publish Flasher assets: '.$e->getMessage());
-            $this->warn('Run "php artisan flasher:install" manually if flash notifications are not working.');
-        }
-
-        $this->info('Composer dump autoload');
-        $this->composer->dumpAutoloads();
-
-        $this->info('Linking storage directory...');
-        if (File::exists(public_path('storage'))) {
-            $this->info('Storage symlink already exists. Skipping.');
-        } else {
             try {
-                $this->call('storage:link');
+                $this->call('flasher:install');
             } catch (\Throwable $e) {
-                $this->warn('Could not create storage symlink: '.$e->getMessage());
-                $this->warn('Run "php artisan storage:link" manually to enable file uploads.');
+                $this->warn('Could not publish Flasher assets: '.$e->getMessage());
+                $this->warn('Run "php artisan flasher:install" manually if flash notifications are not working.');
             }
+
+            $this->info('Composer dump autoload');
+            $this->composer->dumpAutoloads();
+
+            $this->info('Linking storage directory...');
+            if (File::exists(public_path('storage'))) {
+                $this->info('Storage symlink already exists. Skipping.');
+            } else {
+                try {
+                    $this->call('storage:link');
+                } catch (\Throwable $e) {
+                    $this->warn('Could not create storage symlink: '.$e->getMessage());
+                    $this->warn('Run "php artisan storage:link" manually to enable file uploads.');
+                }
+            }
+
+            $this->info('Setting up database...');
+            $this->call('migrate');
         }
 
-        $this->info('Setting up database...');
-        $this->call('migrate');
+        $this->info('Seeding database...');
         $this->callSilent('db:seed', [
             '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
         ]);
@@ -242,7 +253,7 @@ class LaravelCrmInstall extends Command
         $this->callSilent('view:clear');
         $this->callSilent('cache:clear');
 
-        if ($this->isInteractive() && $this->confirm('Would you like to show some love by starring the repo?')) {
+        if (! $this->isProduction() && $this->isInteractive() && $this->confirm('Would you like to show some love by starring the repo?')) {
             $url = 'https://github.com/venturedrake/laravel-crm';
             $exec = PHP_OS_FAMILY === 'Windows' ? 'start' : (PHP_OS_FAMILY === 'Darwin' ? 'open' : 'xdg-open');
 
@@ -258,6 +269,15 @@ class LaravelCrmInstall extends Command
                 $this->line("Thanks! Visit {$url} to give us a ⭐");
             }
         }
+    }
+
+    /**
+     * Whether the command is running in production mode.
+     * Triggered by --production flag or when APP_ENV=production.
+     */
+    private function isProduction(): bool
+    {
+        return $this->option('production') || app()->environment('production');
     }
 
     /**
