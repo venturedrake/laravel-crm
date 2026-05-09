@@ -30,6 +30,9 @@
         .lcrm-msg { display:flex; gap:6px; padding:10px; border-top:1px solid #e5e7eb; }
         .lcrm-msg input { flex:1; }
         .lcrm-status { padding:8px; text-align:center; font-size:12px; opacity:.6; border-top:1px solid #e5e7eb; }
+        .lcrm-powered { text-align:center; padding:4px 8px 6px; font-size:10px; color:#9ca3af; }
+        .lcrm-powered a { color:#9ca3af; text-decoration:none; }
+        .lcrm-powered a:hover { color:#6b7280; text-decoration:underline; }
     </style>
 </head>
 <body>
@@ -58,6 +61,10 @@
         <input type="text" name="body" placeholder="Type a message…" autocomplete="off" required>
         <button type="submit">Send</button>
     </form>
+
+    <div class="lcrm-powered">
+        <a href="https://laravelcrm.com" target="_blank" rel="noopener noreferrer">⚡ Powered by Laravel CRM</a>
+    </div>
 </div>
 
 <script>
