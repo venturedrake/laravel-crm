@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Chat;
 
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
@@ -10,6 +11,7 @@ use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\ChatConversation;
+use VentureDrake\LaravelCrm\Models\ChatVisitor;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\ChatService;
@@ -28,7 +30,7 @@ class ChatIndex extends Component
     public ?string $status = 'open';
 
     #[Url]
-    public array $sortBy = ['column' => 'last_message_at', 'direction' => 'desc'];
+    public array $sortBy = ['column' => 'visitor_last_seen_at', 'direction' => 'desc'];
 
     public function headers(): array
     {
@@ -39,18 +41,26 @@ class ChatIndex extends Component
             ['key' => 'unread_count', 'label' => '', 'sortable' => false, 'class' => 'w-12'],
             ['key' => 'last_message_preview', 'label' => ucfirst(__('laravel-crm::lang.last_message')), 'sortable' => false],
             ['key' => 'status', 'label' => ucfirst(__('laravel-crm::lang.status'))],
-            ['key' => 'last_message_at', 'label' => ucfirst(__('laravel-crm::lang.updated')), 'format' => fn ($row, $field) => $field?->diffForHumans() ?? '-'],
+            ['key' => 'last_message_at', 'label' => ucfirst(__('laravel-crm::lang.updated')), 'format' => fn ($row, $field) => $field ? (Carbon::parse($field))->diffForHumans() : '-'],
+            ['key' => 'visitor_last_seen_at', 'label' => ucfirst(__('laravel-crm::lang.last_active')), 'format' => fn ($row, $field) => $field ? (Carbon::parse($field))->diffForHumans() : '-'],
         ];
     }
 
     public function conversations(): LengthAwarePaginator
     {
+        $conversationTable = (new ChatConversation)->getTable();
+        $visitorTable = (new ChatVisitor)->getTable();
+
         return ChatConversation::query()
+            ->select("{$conversationTable}.*", "{$visitorTable}.last_seen_at as visitor_last_seen_at")
+            ->leftJoin($visitorTable, "{$conversationTable}.chat_visitor_id", '=', "{$visitorTable}.id")
             ->with(['visitor', 'latestMessage'])
-            ->when($this->search, fn ($q) => $q->where('chat_id', 'like', "%$this->search%")
-                ->orWhere('subject', 'like', "%$this->search%"))
-            ->when($this->status, fn ($q) => $q->where('status', $this->status))
-            ->orderBy(...array_values($this->sortBy))
+            ->when($this->search, fn ($q) => $q->where("{$conversationTable}.chat_id", 'like', "%$this->search%")
+                ->orWhere("{$conversationTable}.subject", 'like', "%$this->search%"))
+            ->when($this->status, fn ($q) => $q->where("{$conversationTable}.status", $this->status))
+            ->orderBy($this->sortBy['column'] === 'visitor_last_seen_at'
+                ? "{$visitorTable}.last_seen_at"
+                : $this->sortBy['column'], $this->sortBy['direction'])
             ->paginate(25)
             ->through(function (ChatConversation $c) {
                 $c->visitor_name = $c->visitor?->displayName();

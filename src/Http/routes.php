@@ -1426,7 +1426,6 @@ Route::get('integrations', function () {
     return redirect(route('laravel-crm.integrations.xero'));
 })->name('laravel-crm.integrations');
 
-
 /* Jetstream */
 Route::put('/current-team', 'VentureDrake\LaravelCrm\Http\Controllers\Jetstream\CurrentTeamController@update')
     ->name('current-team.update')
