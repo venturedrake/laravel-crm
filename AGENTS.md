@@ -62,7 +62,7 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Profile components** (v2, in `src/Livewire/Profile/`): `UpdateProfileInformationForm`, `UpdatePasswordForm`, `TwoFactorAuthenticationForm`, `LogoutOtherBrowserSessionsForm`, `DeleteUserForm`.
 
-**Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductAttributes/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`, `Integrations/ClickSend/ClickSendConnect`.
+**Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `LeadSources/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductAttributes/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`, `Integrations/ClickSend/ClickSendConnect`.
 
 **Email & SMS Marketing** (v2): Full-CRUD components in `src/Livewire/EmailCampaigns/`, `src/Livewire/EmailTemplates/`, `src/Livewire/SmsCampaigns/`, `src/Livewire/SmsTemplates/`. Backed by models `EmailCampaign`, `EmailTemplate`, `SmsCampaign`, `SmsTemplate` (plus `*Click`, `*Recipient` models). Services: `EmailCampaignService`, `EmailTemplateService`, `SmsCampaignService`, `SmsTemplateService`. SMS sending uses `ClickSendService` (HTTP Basic auth to `https://rest.clicksend.com/v3`; credentials stored as CRM settings `clicksend_username` / `clicksend_api_key` / `clicksend_default_from`).
 
@@ -87,12 +87,13 @@ Traits in `src/Traits/` are shared across Livewire components and models:
 
 Form-specific traits live in `src/Livewire/Traits/`:
 - `HasPersonSuggest`, `HasOrganizationSuggest` — typeahead/autocomplete suggestions used by lead/deal/quote create+edit forms
+- `SearchesEncryptableContacts` — enables free-text search over encrypted name/email/phone fields in index components
 
 ## Key Model Conventions
 
 | Convention | Detail |
 |---|---|
-| **Base model** | All models extend `src/Models/Model.php`, which implements `OwenIt\Auditing\Auditable` — every model is auto-audited |
+| **Base model** | All models extend `src/Models/Model.php` — a thin Eloquent base that adds a `saveQuietly()` helper (wraps `withoutEvents`) to bypass observers when needed. Audit logging has been removed from the package |
 | **Table prefix** | `getTable()` returns `config('laravel-crm.db_table_prefix').'tablename'` (default `crm_`) |
 | **External IDs** | Routes use `external_id` (UUID, set by Observer on `creating`), not integer PKs |
 | **Human IDs** | Observers auto-generate `lead_id`, `quote_id`, etc. as `{prefix}{number}` (e.g. `L1001`) |
@@ -111,7 +112,7 @@ Form-specific traits live in `src/Livewire/Traits/`:
 - **Livewire 3/4** (`^3.0|^4.0` per `composer.json`) — uses `#[Url]` attributes for query-string binding
 - **Toast notifications** via `Mary\Traits\Toast` (already in `HasLeadCommon` and similar traits)
 - **Icons**: ForkAwesome (`<x-forkawesome-*>`), Boxicons (`<x-bx-*>`), FontAwesome (`<x-far-*>` / `<x-fas-*>`)
-- **JS globals**: `sortablejs` (kanban drag-and-drop) and `vanilla-picker` (color picker) exposed on `window` via `resources/js/app.js`
+- **JS globals**: `sortablejs` (kanban drag-and-drop), `vanilla-picker` (color picker), `chart.js` v4 (dashboard charts), and `tinymce` v7 (rich-text editor for email campaigns/templates) exposed on `window` via `resources/js/app.js`
 - All translatable strings use `__('laravel-crm::lang.key')` with `ucfirst()` — add keys to `resources/lang/`
 - **Blade components** registered with `crm-` prefix: `crm-header`, `crm-delete-confirm`, `crm-index-toggle`, `crm-phones`, `crm-emails`, `crm-addresses`, `crm-note`, `crm-app-layout`, `crm-timeline-item`, `crm-custom-fields`, `crm-custom-field-values` — view components in `src/View/Components/`
 - **Global helpers** autoloaded via `composer.json` `files` array in `src/Http/Helpers/`: `SelectOptions`, `PersonName`, `AddressLine`, `AutoComplete`, `CheckAmount`, `Validate`, `PublicProperties`
@@ -168,7 +169,7 @@ Form-specific traits live in `src/Livewire/Traits/`:
 | **Teams** | Jetstream teams feature is **commented out** — `LARAVEL_CRM_TEAMS` not set (single-tenant mode) |
 | **DB** | MySQL, database `laravel_crm_v2_dev`, no table prefix (`LARAVEL_CRM_DB_TABLE_PREFIX=` empty) |
 | **URL** | `http://laravel-crm-premium.test` (Herd), CRM at `/crm` |
-| **User model** | `App\Models\User` uses `HasCrmAccess`, `HasCrmTeams`, `HasRoles` (Spatie), `AuthenticationLoggable`, `SendsCrmPasswordReset`, `HasApiTokens`, `TwoFactorAuthenticatable`, `HasProfilePhoto` |
+| **User model** | `App\Models\User` uses `HasCrmAccess`, `HasCrmTeams`, `HasRoles` (Spatie), `SendsCrmPasswordReset`, `HasApiTokens`, `TwoFactorAuthenticatable`, `HasProfilePhoto` |
 | **Frontend** | Host has its own Tailwind v3 + DaisyUI v4 build; package builds independently via its own `vite.config.js` |
 | **Providers** | `AppServiceProvider`, `FortifyServiceProvider`, `JetstreamServiceProvider` |
 | **Dev command** | `composer dev` (runs server + queue + logs + Vite concurrently) |
@@ -201,6 +202,7 @@ php artisan laravelcrm:permissions          # seed roles & permissions
 php artisan laravelcrm:sample-data          # generate dev sample data
 php artisan laravelcrm:add-user             # add a user with CRM access
 php artisan laravelcrm:labels               # seed default labels
+php artisan laravelcrm:lead-sources          # seed default lead sources
 php artisan laravelcrm:fields               # seed default custom fields / field groups
 php artisan laravelcrm:addresstypes         # seed address types
 php artisan laravelcrm:organizationtypes    # seed organization types
@@ -244,9 +246,6 @@ php artisan laravelcrm:sms-campaigns-dispatch    # queue due SMS campaign sends 
 - **Xero**: `dcblogdev/laravel-xero` — mirror models in `src/Models/Xero*.php`; sync via observers (`XeroContactObserver`, etc.)
 - **Spatie Permissions**: roles/permissions seeded by `laravelcrm:permissions`; `LARAVEL_CRM_TEAMS=true` requires Spatie teams mode
 - **PDF generation**: `barryvdh/laravel-dompdf` and `mpdf/mpdf` for quotes/invoices
-- **Audit log**: `owen-it/laravel-auditing` — all models auto-audited; use `saveQuietly()` (defined on base `Model`) to bypass events
-- **GeoIP**: `torann/geoip` + `geoip2/geoip2` for location-aware features
-- **Authentication log**: `rappasoft/laravel-authentication-log` — login history; requires `AuthenticationLoggable` trait on host `User` model
 - **Countries**: `rinvex/countries` — country list used in address forms and select options
 - **Money formatting**: `cknow/laravel-money` — provides the `money($amount, $currency)` global helper
 - **Laravel Boost**: `laravel/boost` (dev) is installed — AI agents can use its MCP tooling for guideline lookups and tinker introspection when available
