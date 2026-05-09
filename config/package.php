@@ -13,6 +13,6 @@ return [
     |
     */
 
-    'version' => '1.4.1',
+    'version' => '2.0',
 
 ];
