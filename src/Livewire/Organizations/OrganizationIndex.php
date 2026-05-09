@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
@@ -16,7 +17,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class OrganizationIndex extends Component
 {
-    use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use ClearsProperties, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -68,7 +69,12 @@ class OrganizationIndex extends Component
     public function organizations(): LengthAwarePaginator
     {
         return Organization::when($this->search, function (Builder $q) {
-            $q->where('name', 'like', "%$this->search%");
+            if ($this->encryptionEnabled()) {
+                $ids = $this->matchingOrganizationIds($this->search);
+                $q->whereIn('id', $ids->isEmpty() ? [0] : $ids);
+            } else {
+                $q->where('name', 'like', "%$this->search%");
+            }
         })->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))

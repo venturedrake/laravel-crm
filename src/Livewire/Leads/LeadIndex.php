@@ -6,20 +6,18 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
-use VentureDrake\LaravelCrm\Models\Organization;
-use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class LeadIndex extends Component
 {
-    use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use ClearsProperties, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -86,31 +84,14 @@ class LeadIndex extends Component
                     // Title is never encrypted, so a SQL LIKE always works.
                     $q->orWhere($prefix.'leads.title', 'like', "%$term%");
 
-                    if (config('laravel-crm.encrypt_db_fields')) {
+                    if ($this->encryptionEnabled()) {
                         // Person/Organization names are stored encrypted; SQL LIKE
-                        // cannot match ciphertext. Resolve matching IDs in PHP via
-                        // the HasEncryptableFields accessor, then constrain by ID.
-                        $personIds = Person::query()
-                            ->select(['id', 'first_name', 'last_name'])
-                            ->get()
-                            ->filter(function ($person) use ($term) {
-                                return Str::contains(strtolower((string) $person->first_name), strtolower($term))
-                                    || Str::contains(strtolower((string) $person->last_name), strtolower($term))
-                                    || Str::contains(strtolower(trim($person->first_name.' '.$person->last_name)), strtolower($term));
-                            })
-                            ->pluck('id');
-
-                        $organizationIds = Organization::query()
-                            ->select(['id', 'name'])
-                            ->get()
-                            ->filter(fn ($org) => Str::contains(strtolower((string) $org->name), strtolower($term)))
-                            ->pluck('id');
-
-                        if ($personIds->isNotEmpty()) {
+                        // cannot match ciphertext. Resolve matching IDs in PHP.
+                        if (($personIds = $this->matchingPersonIds($term))->isNotEmpty()) {
                             $q->orWhereIn($prefix.'leads.person_id', $personIds);
                         }
 
-                        if ($organizationIds->isNotEmpty()) {
+                        if (($organizationIds = $this->matchingOrganizationIds($term))->isNotEmpty()) {
                             $q->orWhereIn($prefix.'leads.organization_id', $organizationIds);
                         }
                     } else {

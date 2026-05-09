@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -17,7 +18,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class OrderIndex extends Component
 {
-    use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use ClearsProperties, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -99,11 +100,23 @@ class OrderIndex extends Component
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'orders.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->when($this->search, function (Builder $q) {
-                $q->where(function ($q) {
-                    $q->orWhere(config('laravel-crm.db_table_prefix').'organizations.name', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'people.first_name', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'people.last_name', 'like', "%$this->search%")
-                        ->orWhereRaw('CONCAT('.config('laravel-crm.db_table_prefix')."people.first_name, ' ', ".config('laravel-crm.db_table_prefix').'people.last_name) like ?', ["%$this->search%"]);
+                $prefix = config('laravel-crm.db_table_prefix');
+                $term = $this->search;
+
+                $q->where(function ($q) use ($prefix, $term) {
+                    if ($this->encryptionEnabled()) {
+                        $personIds = $this->matchingPersonIds($term);
+                        $organizationIds = $this->matchingOrganizationIds($term);
+
+                        // Force an empty result when neither matches.
+                        $q->whereIn($prefix.'orders.person_id', $personIds->isEmpty() ? [0] : $personIds)
+                            ->orWhereIn($prefix.'orders.organization_id', $organizationIds->isEmpty() ? [0] : $organizationIds);
+                    } else {
+                        $q->orWhere($prefix.'organizations.name', 'like', "%$term%")
+                            ->orWhere($prefix.'people.first_name', 'like', "%$term%")
+                            ->orWhere($prefix.'people.last_name', 'like', "%$term%")
+                            ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
+                    }
                 });
             })->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))

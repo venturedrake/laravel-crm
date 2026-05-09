@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -18,7 +19,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class DealIndex extends Component
 {
-    use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use ClearsProperties, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -94,12 +95,25 @@ class DealIndex extends Component
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'deals.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'deals.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->when($this->search, function (Builder $q) {
-                $q->where(function ($q) {
-                    $q->orWhere(config('laravel-crm.db_table_prefix').'deals.title', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'organizations.name', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'people.first_name', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'people.last_name', 'like', "%$this->search%")
-                        ->orWhereRaw('CONCAT('.config('laravel-crm.db_table_prefix')."people.first_name, ' ', ".config('laravel-crm.db_table_prefix').'people.last_name) like ?', ["%$this->search%"]);
+                $prefix = config('laravel-crm.db_table_prefix');
+                $term = $this->search;
+
+                $q->where(function ($q) use ($prefix, $term) {
+                    $q->orWhere($prefix.'deals.title', 'like', "%$term%");
+
+                    if ($this->encryptionEnabled()) {
+                        if (($personIds = $this->matchingPersonIds($term))->isNotEmpty()) {
+                            $q->orWhereIn($prefix.'deals.person_id', $personIds);
+                        }
+                        if (($organizationIds = $this->matchingOrganizationIds($term))->isNotEmpty()) {
+                            $q->orWhereIn($prefix.'deals.organization_id', $organizationIds);
+                        }
+                    } else {
+                        $q->orWhere($prefix.'organizations.name', 'like', "%$term%")
+                            ->orWhere($prefix.'people.first_name', 'like', "%$term%")
+                            ->orWhere($prefix.'people.last_name', 'like', "%$term%")
+                            ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
+                    }
                 });
             })
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
