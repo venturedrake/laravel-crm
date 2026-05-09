@@ -1426,26 +1426,6 @@ Route::get('integrations', function () {
     return redirect(route('laravel-crm.integrations.xero'));
 })->name('laravel-crm.integrations');
 
-/* CRM (AJAX) */
-Route::group(['prefix' => 'crm', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {
-        Route::get('{person}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@autocomplete')
-            ->name('laravel-crm.people.autocomplete')
-            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Person']);
-    });
-
-    Route::group(['prefix' => 'organizations', 'middleware' => 'auth.laravel-crm'], function () {
-        Route::get('{organization}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@autocomplete')
-            ->name('laravel-crm.organizations.autocomplete')
-            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Organization']);
-    });
-
-    Route::group(['prefix' => 'products', 'middleware' => 'auth.laravel-crm'], function () {
-        Route::get('{product}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\ProductController@autocomplete')
-            ->name('laravel-crm.products.autocomplete')
-            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Product']);
-    });
-});
 
 /* Jetstream */
 Route::put('/current-team', 'VentureDrake\LaravelCrm\Http\Controllers\Jetstream\CurrentTeamController@update')
