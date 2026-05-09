@@ -136,11 +136,20 @@ class LaravelCrmInstall extends Command
 
         $this->info('Publishing assets...');
 
-        $this->callSilent('vendor:publish', [
+        $this->call('vendor:publish', [
             '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
             '--tag' => 'assets',
             '--force' => true,
         ]);
+
+        $this->info('Publishing Flasher assets...');
+
+        try {
+            $this->call('flasher:install', ['--force' => true]);
+        } catch (\Throwable $e) {
+            $this->warn('Could not publish Flasher assets: '.$e->getMessage());
+            $this->warn('Run "php artisan flasher:install" manually if flash notifications are not working.');
+        }
 
         $this->info('Composer dump autoload');
         $this->composer->dumpAutoloads();

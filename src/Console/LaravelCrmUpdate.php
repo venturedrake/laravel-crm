@@ -66,6 +66,22 @@ class LaravelCrmUpdate extends Command
     {
         $this->info('Updating Laravel CRM...');
 
+        $this->info('Publishing assets...');
+
+        $this->call('vendor:publish', [
+            '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
+            '--tag' => 'assets',
+            '--force' => true,
+        ]);
+
+        $this->info('Publishing Flasher assets...');
+
+        try {
+            $this->call('flasher:install', ['--force' => true]);
+        } catch (\Throwable $e) {
+            $this->warn('Could not publish Flasher assets: '.$e->getMessage());
+        }
+
         if ($this->settingService->get('db_update_0180') == 0) {
             $this->info('Updating Laravel CRM quote numbers...');
 
@@ -208,7 +224,7 @@ class LaravelCrmUpdate extends Command
                 } elseif ($quoteProduct->product && $quoteProduct->product->tax_rate) {
                     $taxRate = $quoteProduct->product->tax_rate;
                 } else {
-                    $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                    $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
                 }
 
                 $quoteProduct->update([
@@ -225,7 +241,7 @@ class LaravelCrmUpdate extends Command
                 } elseif ($orderProduct->product && $orderProduct->product->tax_rate) {
                     $taxRate = $orderProduct->product->tax_rate;
                 } else {
-                    $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                    $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
                 }
 
                 $orderProduct->update([
@@ -242,7 +258,7 @@ class LaravelCrmUpdate extends Command
                 } elseif ($invoiceLine->product && $invoiceLine->product->tax_rate) {
                     $taxRate = $invoiceLine->product->tax_rate;
                 } else {
-                    $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
+                    $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
                 }
 
                 $invoiceLine->update([
