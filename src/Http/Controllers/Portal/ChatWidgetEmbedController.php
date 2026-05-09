@@ -259,12 +259,19 @@ JS;
         $agentsOnline = $service->agentsOnlineCount();
         $autoReply = null;
 
+        // Send "chat request initiated" email on the visitor's first message when
+        // they have provided their name or email (so owners can respond promptly).
+        $visitor = $conversation->visitor;
+        $isFirstVisitorMessage = $conversation->messages()
+            ->where('sender_type', 'visitor')
+            ->count() === 1;
+
+        if ($isFirstVisitorMessage && ($visitor?->name || $visitor?->email)) {
+            $service->notifyOwnersChatRequest($conversation, $message);
+        }
+
         if ($agentsOnline === 0) {
             $autoReply = $service->sendOfflineAutoReply($conversation);
-            if ($autoReply) {
-                // First time going offline in this conversation — notify owners by email
-                $service->notifyOwnersMissedChat($conversation, $message);
-            }
         }
 
         $messages = [$this->serializeMessages(collect([$message]))[0]];

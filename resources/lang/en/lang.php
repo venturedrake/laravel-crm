@@ -359,6 +359,7 @@ return [
     'chat_lead_title_unknown' => 'Chat visitor lead',
     'chat_offline_auto_reply' => 'Sorry, we are currently offline. We will respond to your request via email shortly.',
     'missed_chat_email_subject' => 'Missed chat message',
+    'chat_request_initiated_subject' => 'New chat request',
     'view_lead' => 'view lead',
     'visitor' => 'visitor',
     'last_message' => 'last message',

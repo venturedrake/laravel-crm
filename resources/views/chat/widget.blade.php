@@ -114,12 +114,7 @@
     }
 
     function updateOnlineBar(count){
-        if (count > 0) {
-            onlineText.textContent = count === 1 ? '1 agent online' : count + ' agents online';
-            onlineBar.style.display = 'block';
-        } else {
-            onlineBar.style.display = 'none';
-        }
+        // Online indicator hidden for now
     }
 
     function render(messages){

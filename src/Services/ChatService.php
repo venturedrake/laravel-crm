@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use VentureDrake\LaravelCrm\Mail\ChatRequestInitiated;
 use VentureDrake\LaravelCrm\Mail\MissedChatNotification;
 use VentureDrake\LaravelCrm\Models\ChatConversation;
 use VentureDrake\LaravelCrm\Models\ChatMessage;
@@ -174,6 +175,51 @@ class ChatService
             'sender_id' => null,
             'body' => trans('laravel-crm::lang.chat_offline_auto_reply'),
         ]);
+    }
+
+    /**
+     * Email all Owner-role CRM users when a visitor (who has provided their
+     * name/email) sends their first message in a conversation.
+     * Only fires once per conversation.
+     */
+    public function notifyOwnersChatRequest(ChatConversation $conversation, ChatMessage $message): void
+    {
+        try {
+            $roleTable = config('permission.table_names.roles', 'roles');
+            $modelHasRoles = config('permission.table_names.model_has_roles', 'model_has_roles');
+            $morphKey = config('permission.column_names.model_morph_key', 'model_id');
+
+            $ownerRoleId = DB::table($roleTable)
+                ->where('name', 'Owner')
+                ->where('crm_role', 1)
+                ->value('id');
+
+            if (! $ownerRoleId) {
+                return;
+            }
+
+            $userIds = DB::table($modelHasRoles)
+                ->where('role_id', $ownerRoleId)
+                ->pluck($morphKey);
+
+            if ($userIds->isEmpty()) {
+                return;
+            }
+
+            $userModel = config('auth.providers.users.model', \App\Models\User::class);
+            $owners = $userModel::whereIn('id', $userIds)
+                ->where('crm_access', 1)
+                ->whereNotNull('email')
+                ->get();
+
+            foreach ($owners as $owner) {
+                Mail::to($owner)->send(
+                    new ChatRequestInitiated($conversation, $conversation->visitor, $message)
+                );
+            }
+        } catch (\Exception $e) {
+            Log::warning('[laravel-crm] Chat request initiated notification failed: '.$e->getMessage());
+        }
     }
 
     /**
