@@ -181,6 +181,7 @@ class LaravelCrmInstall extends Command
         $this->info('Seeding database...');
         $this->callSilent('db:seed', [
             '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
+            '--force' => true,
         ]);
 
         // Seed default lead sources (idempotent — firstOrCreate)
