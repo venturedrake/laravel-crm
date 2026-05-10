@@ -12,11 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SMS
 - Payments
 
-<!--- ## 1.0.0 - 2024-XX-XX
+## 2.0.0 - 2026-05-10
 ### Added
+- Support for Laravel 12 & 13
+- Web / In-app Chat
+- Email Marketing
+- SMS Marketing
 ### Changed
-### Fixed
-### Removed --->
+- Complete rewrite of the application using the TALL stack
+- TALL stack = Tailwind, Alpine, Laravel & Livewire
 
 ## 1.4.1- 2025-08-05
 ### Fixed
