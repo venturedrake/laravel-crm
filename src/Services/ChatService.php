@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -206,7 +207,7 @@ class ChatService
                 return;
             }
 
-            $userModel = config('auth.providers.users.model', \App\Models\User::class);
+            $userModel = config('auth.providers.users.model', User::class);
             $owners = $userModel::whereIn('id', $userIds)
                 ->where('crm_access', 1)
                 ->whereNotNull('email')
@@ -250,7 +251,7 @@ class ChatService
                 return;
             }
 
-            $userModel = config('auth.providers.users.model', \App\Models\User::class);
+            $userModel = config('auth.providers.users.model', User::class);
             $owners = $userModel::whereIn('id', $userIds)
                 ->where('crm_access', 1)
                 ->whereNotNull('email')

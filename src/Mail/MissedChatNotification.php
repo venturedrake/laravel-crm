@@ -34,4 +34,3 @@ class MissedChatNotification extends Mailable
             ->markdown('laravel-crm::mail.missed-chat');
     }
 }
-

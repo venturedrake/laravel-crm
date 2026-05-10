@@ -34,4 +34,3 @@ class ChatRequestInitiated extends Mailable
             ->markdown('laravel-crm::mail.chat-request-initiated');
     }
 }
-
