@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SMS
 - Payments
 
-## 2.0.0 - 2026-05-10
+## 2.0.0 - 2026-05-13
 ### Added
 - Support for Laravel 12 & 13
 - Web / In-app Chat
