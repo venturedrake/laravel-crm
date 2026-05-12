@@ -82,7 +82,7 @@ php artisan laravelcrm:install
 
 #### Step 5. Access the CRN
 
-Navigate to http://<yoursite>/crm (or whatever you set LARAVEL_CRM_ROUTE_PREFIX to). Log in with the owner credentials you created during installation.
+Navigate to http://yoursite.com/crm (or whatever you set LARAVEL_CRM_ROUTE_PREFIX to). Log in with the owner credentials you created during installation.
 
 ## Testing
 
