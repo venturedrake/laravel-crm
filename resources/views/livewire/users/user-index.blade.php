@@ -18,6 +18,7 @@
            {{-- <x-crm-index-toggle :layout="$layout" model="users"/>--}}
 
             @can('create crm users')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.import_users')) }}" link="{{ url(route('laravel-crm.users.import')) }}" icon="o-arrow-up-tray" class="btn-outline" responsive />
                 <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_user')) }}" link="{{ url(route('laravel-crm.users.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
             @endcan
         </x-slot:actions>

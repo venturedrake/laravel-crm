@@ -4,10 +4,12 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use App\User;
 use DB;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
@@ -190,6 +192,119 @@ class UserController extends Controller
         flash(ucfirst(trans('laravel-crm::lang.user_updated')))->success()->important();
 
         return redirect(route('laravel-crm.users.show', $user));
+    }
+
+    /**
+     * Parse an uploaded CSV and store the result in the session, then redirect
+     * back to the import page. File never passes through Livewire.
+     *
+     * @return RedirectResponse
+     */
+    public function parseImport(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:10240',
+        ]);
+
+        $path = $request->file('csv_file')->getRealPath();
+        $handle = fopen($path, 'r');
+
+        if ($handle === false) {
+            return back()->withErrors(['csv_file' => ucfirst(__('laravel-crm::lang.import_file_error'))]);
+        }
+
+        $header = fgetcsv($handle);
+        $header = array_map(fn ($h) => strtolower(trim($h)), $header);
+
+        $required = ['name', 'email'];
+        $missing = array_diff($required, $header);
+
+        if (! empty($missing)) {
+            fclose($handle);
+
+            return back()->withErrors([
+                'csv_file' => ucfirst(__('laravel-crm::lang.import_missing_columns')).': '.implode(', ', $missing),
+            ]);
+        }
+
+        $rows = [];
+        $rowNumber = 1;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $rowNumber++;
+
+            if (count($row) < count($header)) {
+                $row = array_pad($row, count($header), null);
+            }
+
+            $data = array_combine($header, $row);
+            $rowErrors = [];
+
+            if (empty(trim($data['name'] ?? ''))) {
+                $rowErrors[] = __('laravel-crm::lang.import_name_required');
+            }
+
+            if (empty(trim($data['email'] ?? ''))) {
+                $rowErrors[] = __('laravel-crm::lang.import_email_required');
+            } elseif (! filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                $rowErrors[] = __('laravel-crm::lang.import_email_invalid');
+            }
+
+            $rows[] = [
+                'row' => $rowNumber,
+                'name' => trim($data['name'] ?? ''),
+                'email' => trim($data['email'] ?? ''),
+                'crm_access' => in_array(strtolower(trim($data['crm_access'] ?? '1')), ['1', 'yes', 'true']) ? 1 : 0,
+                'role' => trim($data['role'] ?? ''),
+                'errors' => $rowErrors,
+            ];
+        }
+
+        fclose($handle);
+
+        session()->put('crm_user_import_preview', $rows);
+
+        return redirect()->route('laravel-crm.users.import');
+    }
+
+    /**
+     * Show the bulk import form.
+     *
+     * @return Response
+     */
+    public function import()
+    {
+        return view('laravel-crm::users.import');
+    }
+
+    /**
+     * Stream a sample CSV file for users import.
+     *
+     * @return StreamedResponse
+     */
+    public function sampleCsv()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="users-import-sample.csv"',
+        ];
+
+        $rows = [
+            ['name', 'email', 'crm_access', 'role'],
+            ['Jane Smith', 'jane@example.com', '1', 'Admin'],
+            ['John Doe', 'john@example.com', '1', ''],
+            ['Alice Brown', 'alice@example.com', '0', ''],
+        ];
+
+        $callback = function () use ($rows) {
+            $handle = fopen('php://output', 'w');
+            foreach ($rows as $row) {
+                fputcsv($handle, $row);
+            }
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**

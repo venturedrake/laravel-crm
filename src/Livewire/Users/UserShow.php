@@ -13,6 +13,17 @@ class UserShow extends Component
 
     public User $user;
 
+    public string $dateFormat = 'Y-m-d';
+
+    public string $timeFormat = 'H:i';
+
+    public function mount(): void
+    {
+        $settings = app('laravel-crm.settings');
+        $this->dateFormat = $settings->get('date_format', config('laravel-crm.date_format', 'Y-m-d'));
+        $this->timeFormat = $settings->get('time_format', config('laravel-crm.time_format', 'H:i'));
+    }
+
     public function delete($id)
     {
         /* if ($product = Product::find($id)) {

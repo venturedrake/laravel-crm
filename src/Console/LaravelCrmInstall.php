@@ -451,7 +451,8 @@ class LaravelCrmInstall extends Command
         $envContents = File::get($envPath);
 
         // Multi-tenancy / teams
-        if (! $this->envValueIsTruthy($envContents, 'LARAVEL_CRM_TEAMS')) {
+        // Temp disabled
+        /*if (! $this->envValueIsTruthy($envContents, 'LARAVEL_CRM_TEAMS')) {
             $enableTeams = $this->option('enable-teams') || (
                 $this->isInteractive() && $this->confirm(
                     'Enable multi-tenancy (teams)? Each user will belong to one or more teams and data will be scoped per team.',
@@ -466,7 +467,7 @@ class LaravelCrmInstall extends Command
             }
         } else {
             $this->info('  LARAVEL_CRM_TEAMS already enabled.');
-        }
+        }*/
 
         // Encrypt sensitive DB fields
         if (! $this->envValueIsTruthy($envContents, 'LARAVEL_CRM_ENCRYPT_DB_FIELDS')) {

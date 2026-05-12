@@ -978,6 +978,18 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.laravel-crm'], function
         ->name('laravel-crm.users.sendinvite')
         ->middleware(['can:create,App\User']);
 
+    Route::get('import', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@import')
+        ->name('laravel-crm.users.import')
+        ->middleware(['can:create,App\User']);
+
+    Route::post('import', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@parseImport')
+        ->name('laravel-crm.users.import.parse')
+        ->middleware(['can:create,App\User']);
+
+    Route::get('import/sample', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@sampleCsv')
+        ->name('laravel-crm.users.import.sample')
+        ->middleware(['can:create,App\User']);
+
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\UserController@create')
         ->name('laravel-crm.users.create')
         ->middleware(['can:create,App\User']);
