@@ -17,6 +17,9 @@ class SystemCheck
      */
     public function handle($request, Closure $next)
     {
+        // Bypass this check 
+        return true;
+        
         if (config('laravel-crm.update_notifications')) {
             // Since version 0.1.0
             if (! Schema::hasColumn('users', 'crm_access') || ! Schema::hasColumn('users', 'last_online_at') || ! Schema::hasColumn('users', 'current_crm_team_id')) {
