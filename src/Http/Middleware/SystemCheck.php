@@ -37,7 +37,10 @@ class SystemCheck
 
             // Since version 0.2.0
             if (! auth()->guest() && Schema::hasTable(config('laravel-crm.db_table_prefix').'settings') && auth()->user()->hasPermissionTo('view crm updates')) {
-                if (Setting::where('name', 'version')->first()->value < Setting::where('name', 'version_latest')->first()->value) {
+                $currentVersion = Setting::where('name', 'version')->first()?->value;
+                $latestVersion = Setting::where('name', 'version_latest')->first()?->value;
+
+                if ($currentVersion && $latestVersion && $currentVersion < $latestVersion) {
                     // TODO: Refactor to use new flasher
                     // flash('There is a new version of Laravel CRM software available. <a href="https://github.com/venturedrake/laravel-crm" target="_blank">View version '.\VentureDrake\LaravelCrm\Models\Setting::where('name', 'version_latest')->first()->value.' details</a> or <a href="https://github.com/venturedrake/laravel-crm" target="_blank">update now</a>.')->warning()->important();
                 }
