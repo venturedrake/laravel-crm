@@ -115,6 +115,14 @@ class ChatService
      */
     public function markReadByVisitor(ChatConversation $conversation): void
     {
+        static $hasColumn = null;
+        if ($hasColumn === null) {
+            $hasColumn = Schema::hasColumn(config('laravel-crm.db_table_prefix').'chat_messages', 'visitor_read_at');
+        }
+        if (! $hasColumn) {
+            return;
+        }
+
         $conversation->messages()
             ->where('sender_type', 'user')
             ->whereNull('visitor_read_at')
@@ -126,6 +134,14 @@ class ChatService
      */
     public function unreadForVisitor(ChatConversation $conversation): int
     {
+        static $hasColumn = null;
+        if ($hasColumn === null) {
+            $hasColumn = Schema::hasColumn(config('laravel-crm.db_table_prefix').'chat_messages', 'visitor_read_at');
+        }
+        if (! $hasColumn) {
+            return 0;
+        }
+
         return $conversation->messages()
             ->where('sender_type', 'user')
             ->whereNull('visitor_read_at')

@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use App\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
@@ -71,6 +72,14 @@ class ChatConversation extends Model
 
     public function unreadForVisitor(): int
     {
+        static $hasColumn = null;
+        if ($hasColumn === null) {
+            $hasColumn = Schema::hasColumn(config('laravel-crm.db_table_prefix').'chat_messages', 'visitor_read_at');
+        }
+        if (! $hasColumn) {
+            return 0;
+        }
+
         return $this->messages()->where('sender_type', 'user')->whereNull('visitor_read_at')->count();
     }
 
