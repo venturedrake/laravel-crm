@@ -38,7 +38,11 @@
                 </x-slot:trigger>
                 <x-slot:content>
                     Version {{ config('laravel-crm.version') }} <br>
-                    @if(\VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()->value < \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()->value)
+                    @php
+                        $currentVersion = \VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()?->value;
+                        $latestVersion = \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()?->value;
+                    @endphp
+                    @if($currentVersion && $latestVersion && $currentVersion < $latestVersion)
                         <x-mary-badge value="Upgrade Available" class="badge-success" />
                     @else
                         <x-mary-badge value="Latest Version" class="badge-primary" />
