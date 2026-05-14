@@ -28,7 +28,7 @@ class ChatWidgetEmbedController extends Controller
     {
         $widget = $this->resolveWidget($publicKey);
 
-        $iframeUrl = url(route('laravel-crm.portal.chat.widget', ['publicKey' => $publicKey]));
+        $iframeUrl = secure_url(route('laravel-crm.portal.chat.widget', ['publicKey' => $publicKey], false));
         $color = e($widget->color ?: '#2563eb');
         $position = $widget->position === 'bottom-left' ? 'left:20px;' : 'right:20px;';
 
@@ -151,7 +151,7 @@ JS;
 
         return response()->view('laravel-crm::chat.widget', [
             'widget' => $widget,
-            'apiBase' => url('p/chat/'.$publicKey),
+            'apiBase' => secure_url('p/chat/'.$publicKey),
         ])->withHeaders([
             // Allow this page to be iframed from any origin
             'Content-Security-Policy' => 'frame-ancestors *',

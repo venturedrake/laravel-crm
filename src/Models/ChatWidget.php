@@ -51,10 +51,12 @@ class ChatWidget extends Model
 
     /**
      * The JS embed snippet to copy onto an external website.
+     * Always generates an HTTPS URL so the snippet is safe to embed on secure pages.
      */
     public function embedSnippet(): string
     {
-        $url = url(route('laravel-crm.portal.chat.embed', ['publicKey' => $this->public_key]));
+        $path = route('laravel-crm.portal.chat.embed', ['publicKey' => $this->public_key], false);
+        $url = secure_url($path);
 
         return <<<JS
 <!-- Laravel CRM Chat Widget -->
