@@ -79,9 +79,6 @@
         }
     },
     "scripts": {
-        "post-package-update": [
-            "@php artisan flasher:install --ansi --force"
-        ],
         "testbench" : "vendor/bin/testbench",
         "test": "vendor/bin/pest --colors=always",
         "test-coverage": "vendor/bin/pest --coverage-html coverage",

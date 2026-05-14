@@ -17,6 +17,9 @@
 
            {{-- <x-crm-index-toggle :layout="$layout" model="organizations"/>--}}
 
+            @can('create crm organizations')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.import_organizations')) }}" link="{{ url(route('laravel-crm.organizations.import')) }}" icon="o-arrow-up-tray" class="btn-outline" responsive />
+            @endcan
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_organization')) }}" link="{{ url(route('laravel-crm.organizations.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
         </x-slot:actions>
     </x-mary-header>

@@ -17,6 +17,7 @@
 
            {{-- <x-crm-index-toggle :layout="$layout" model="people"/>--}}
             @can('create crm people')
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.import_people')) }}" link="{{ url(route('laravel-crm.people.import')) }}" icon="o-arrow-up-tray" class="btn-outline" responsive />
                 <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.create_person')) }}" link="{{ url(route('laravel-crm.people.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
             @endcan
         </x-slot:actions>

@@ -42,6 +42,8 @@ class TestSchema
             $table->string('external_id')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('vat_number')->nullable();
+            $table->string('website_url')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->unsignedBigInteger('user_updated_id')->nullable();
             $table->unsignedBigInteger('user_deleted_id')->nullable();

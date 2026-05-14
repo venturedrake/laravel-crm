@@ -41,6 +41,12 @@ abstract class TestCase extends OrchestraTestCase
         return [
             PermissionServiceProvider::class,
             LivewireServiceProvider::class,
+            \BladeUI\Icons\BladeIconsServiceProvider::class,
+            \BladeUI\Heroicons\BladeHeroiconsServiceProvider::class,
+            \MallardDuck\BladeBoxicons\BladeBoxiconsServiceProvider::class,
+            \OwenVoke\BladeFontAwesome\BladeFontAwesomeServiceProvider::class,
+            \Codeat3\BladeForkAwesome\BladeForkAwesomeServiceProvider::class,
+            \Mary\MaryServiceProvider::class,
             LaravelCrmServiceProvider::class,
         ];
     }

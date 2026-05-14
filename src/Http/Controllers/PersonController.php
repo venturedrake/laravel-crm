@@ -2,10 +2,12 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use VentureDrake\LaravelCrm\Http\Requests\StorePersonRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePersonRequest;
 use VentureDrake\LaravelCrm\Models\Contact;
@@ -249,5 +251,113 @@ class PersonController extends Controller
             'phone' => $phone->number ?? null,
             'phone_type' => $phone->type ?? null,
         ]);
+    }
+
+    /**
+     * Show the bulk import form.
+     */
+    public function import()
+    {
+        return view('laravel-crm::people.import');
+    }
+
+    /**
+     * Parse an uploaded CSV and store the result in the session.
+     */
+    public function parseImport(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:10240',
+        ]);
+
+        $path = $request->file('csv_file')->getRealPath();
+        $handle = fopen($path, 'r');
+
+        if ($handle === false) {
+            return back()->withErrors(['csv_file' => ucfirst(__('laravel-crm::lang.import_file_error'))]);
+        }
+
+        $header = fgetcsv($handle);
+        $header = array_map(fn ($h) => strtolower(trim($h)), $header);
+
+        $required = ['first_name'];
+        $missing = array_diff($required, $header);
+
+        if (! empty($missing)) {
+            fclose($handle);
+
+            return back()->withErrors([
+                'csv_file' => ucfirst(__('laravel-crm::lang.import_missing_columns')).': '.implode(', ', $missing),
+            ]);
+        }
+
+        $rows = [];
+        $rowNumber = 1;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $rowNumber++;
+
+            if (count($row) < count($header)) {
+                $row = array_pad($row, count($header), null);
+            }
+
+            $data = array_combine($header, $row);
+            $rowErrors = [];
+
+            if (empty(trim($data['first_name'] ?? ''))) {
+                $rowErrors[] = __('laravel-crm::lang.import_first_name_required');
+            }
+
+            $email = trim($data['email'] ?? '');
+            if ($email !== '' && ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $rowErrors[] = __('laravel-crm::lang.import_email_invalid');
+            }
+
+            $rows[] = [
+                'row' => $rowNumber,
+                'first_name' => trim($data['first_name'] ?? ''),
+                'last_name' => trim($data['last_name'] ?? ''),
+                'title' => trim($data['title'] ?? ''),
+                'email' => $email,
+                'phone' => trim($data['phone'] ?? ''),
+                'organization_name' => trim($data['organization_name'] ?? ''),
+                'description' => trim($data['description'] ?? ''),
+                'errors' => $rowErrors,
+            ];
+        }
+
+        fclose($handle);
+
+        session()->put('crm_person_import_preview', $rows);
+
+        return redirect()->route('laravel-crm.people.import');
+    }
+
+    /**
+     * Stream a sample CSV file for people import.
+     */
+    public function sampleCsv(): StreamedResponse
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="people-import-sample.csv"',
+        ];
+
+        $rows = [
+            ['first_name', 'last_name', 'title', 'email', 'phone', 'organization_name', 'description'],
+            ['Jane', 'Smith', 'Mr', 'jane@example.com', '+1 555 0100', 'Acme Inc', 'Key contact'],
+            ['John', 'Doe', '', 'john@example.com', '+1 555 0101', 'Acme Inc', ''],
+            ['Alice', 'Brown', '', '', '+1 555 0102', '', ''],
+        ];
+
+        $callback = function () use ($rows) {
+            $handle = fopen('php://output', 'w');
+            foreach ($rows as $row) {
+                fputcsv($handle, $row);
+            }
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

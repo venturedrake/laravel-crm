@@ -898,6 +898,18 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.people.store')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Person']);
 
+    Route::get('import', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@import')
+        ->name('laravel-crm.people.import')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Person']);
+
+    Route::post('import', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@parseImport')
+        ->name('laravel-crm.people.import.parse')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Person']);
+
+    Route::get('import/sample', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@sampleCsv')
+        ->name('laravel-crm.people.import.sample')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Person']);
+
     Route::get('{person}', 'VentureDrake\LaravelCrm\Http\Controllers\PersonController@show')
         ->name('laravel-crm.people.show')
         ->middleware(['can:view,person']);
@@ -940,6 +952,18 @@ Route::group(['prefix' => 'organizations', 'middleware' => 'auth.laravel-crm'], 
 
     Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@store')
         ->name('laravel-crm.organizations.store')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organization']);
+
+    Route::get('import', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@import')
+        ->name('laravel-crm.organizations.import')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organization']);
+
+    Route::post('import', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@parseImport')
+        ->name('laravel-crm.organizations.import.parse')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organization']);
+
+    Route::get('import/sample', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@sampleCsv')
+        ->name('laravel-crm.organizations.import.sample')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Organization']);
 
     Route::get('{organization}', 'VentureDrake\LaravelCrm\Http\Controllers\OrganizationController@show')
