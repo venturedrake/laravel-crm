@@ -66,6 +66,19 @@ class LaravelCrmUpdate extends Command
     {
         $this->info('Updating Laravel CRM...');
 
+        // Clear cached config/routes up-front so any stale `config:cache` from
+        // the host doesn't poison reads of freshly-published config or env.
+        $this->info('Clearing cached config/routes...');
+        $this->callSilent('config:clear');
+        $this->callSilent('route:clear');
+
+        $this->info('Publishing migrations...');
+
+        $this->call('vendor:publish', [
+            '--provider' => 'VentureDrake\LaravelCrm\LaravelCrmServiceProvider',
+            '--tag' => 'migrations',
+        ]);
+
         $this->info('Publishing assets...');
 
         $this->call('vendor:publish', [
@@ -81,6 +94,15 @@ class LaravelCrmUpdate extends Command
         } catch (\Throwable $e) {
             $this->warn('Could not publish Flasher assets: '.$e->getMessage());
         }
+
+        $this->info('Running migrations...');
+        $this->call('migrate', ['--force' => true]);
+
+        $this->info('Reseeding base tables...');
+        $this->callSilent('db:seed', [
+            '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
+            '--force' => true,
+        ]);
 
         if ($this->settingService->get('db_update_0180') == 0) {
             $this->info('Updating Laravel CRM quote numbers...');
