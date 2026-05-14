@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Mail\ChatRequestInitiated;
 use VentureDrake\LaravelCrm\Mail\MissedChatNotification;
 use VentureDrake\LaravelCrm\Models\ChatConversation;
@@ -281,6 +282,11 @@ class ChatService
         // Cap field lengths defensively
         $url = mb_substr($url, 0, 2048);
         $title = $title !== null ? mb_substr(trim($title), 0, 512) : null;
+
+        // Skip silently if the page-views table hasn't been migrated yet on the host.
+        if (! Schema::hasTable(config('laravel-crm.db_table_prefix').'chat_visitor_page_views')) {
+            return null;
+        }
 
         $latest = $visitor->pageViews()->first();
         if ($latest && $latest->url === $url) {

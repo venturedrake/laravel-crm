@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Chat;
 
+use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use Ramsey\Uuid\Uuid;
@@ -138,7 +139,11 @@ class ChatShow extends Component
 
         $visitor = $this->conversation->visitor?->fresh();
 
-        $pageViewsQuery = $visitor?->pageViews();
+        // Page views table is added in a later migration; guard against hosts
+        // that have not yet published/run the migration.
+        $pageViewsTableExists = Schema::hasTable(config('laravel-crm.db_table_prefix').'chat_visitor_page_views');
+
+        $pageViewsQuery = ($visitor && $pageViewsTableExists) ? $visitor->pageViews() : null;
         $totalPageViews = $pageViewsQuery ? $pageViewsQuery->count() : 0;
         $totalPages = (int) ceil($totalPageViews / self::PAGE_VIEW_PER_PAGE) ?: 1;
 
