@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SMS
 - Payments
 
+## 2.1.0- 2026-06-14
+### Added
+- People & Organizations CSV import
+### Fixed
+- Missing migrations for chat conversation
+- System check
+
 ## 2.0.0 - 2026-05-13
 ### Added
 - Support for Laravel 12 & 13
