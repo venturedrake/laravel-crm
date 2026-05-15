@@ -97,12 +97,24 @@ class UserImport extends Component
             }
 
             try {
+                $now = now();
                 $user = User::forceCreate([
-                    'name' => $row['name'],
-                    'email' => $row['email'],
-                    'password' => Hash::make(Str::password(length: 16, letters: true, numbers: true, symbols: true, spaces: false)),
-                    'crm_access' => $row['crm_access'],
+                    'name'             => $row['name'],
+                    'email'            => $row['email'],
+                    'password'         => Hash::make(Str::password(length: 16, letters: true, numbers: true, symbols: true, spaces: false)),
+                    'crm_access'       => $row['crm_access'],
+                    'mailing_list'     => $row['mailing_list'] ?? 1,
+                    'email_verified_at'=> ! empty($row['email_verified_at']) ? $row['email_verified_at'] : $now,
+                    'created_at'       => ! empty($row['created_at']) ? $row['created_at'] : $now,
+                    'updated_at'       => ! empty($row['updated_at']) ? $row['updated_at'] : $now,
                 ]);
+
+                // Backdate last_online_at directly — Eloquent guards this column
+                if (! empty($row['last_online_at'])) {
+                    \Illuminate\Support\Facades\DB::table('users')
+                        ->where('id', $user->id)
+                        ->update(['last_online_at' => $row['last_online_at']]);
+                }
             } catch (UniqueConstraintViolationException) {
                 $this->skippedCount++;
 

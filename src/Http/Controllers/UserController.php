@@ -256,6 +256,11 @@ class UserController extends Controller
                 'email' => trim($data['email'] ?? ''),
                 'crm_access' => in_array(strtolower(trim($data['crm_access'] ?? '1')), ['1', 'yes', 'true']) ? 1 : 0,
                 'role' => trim($data['role'] ?? ''),
+                'email_verified_at' => trim($data['email_verified_at'] ?? ''),
+                'created_at' => trim($data['created_at'] ?? ''),
+                'updated_at' => trim($data['updated_at'] ?? ''),
+                'last_online_at' => trim($data['last_online_at'] ?? ''),
+                'mailing_list' => in_array(strtolower(trim($data['mailing_list'] ?? '1')), ['1', 'yes', 'true']) ? 1 : 0,
                 'errors' => $rowErrors,
             ];
         }
@@ -290,10 +295,10 @@ class UserController extends Controller
         ];
 
         $rows = [
-            ['name', 'email', 'crm_access', 'role'],
-            ['Jane Smith', 'jane@example.com', '1', 'Admin'],
-            ['John Doe', 'john@example.com', '1', ''],
-            ['Alice Brown', 'alice@example.com', '0', ''],
+            ['name', 'email', 'crm_access', 'role', 'email_verified_at', 'created_at', 'updated_at', 'last_online_at', 'mailing_list'],
+            ['Jane Smith', 'jane@example.com', '1', 'Admin', '2024-01-15 09:00:00', '2024-01-15 09:00:00', '2024-01-15 09:00:00', '2024-01-15 09:00:00', '1'],
+            ['John Doe', 'john@example.com', '1', '', '2024-03-10 14:30:00', '2024-03-10 14:30:00', '2024-03-10 14:30:00', '', '1'],
+            ['Alice Brown', 'alice@example.com', '0', '', '', '', '', '', '0'],
         ];
 
         $callback = function () use ($rows) {

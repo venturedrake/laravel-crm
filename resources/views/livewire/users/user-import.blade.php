@@ -77,6 +77,11 @@
                             <th>{{ ucfirst(__('laravel-crm::lang.email')) }}</th>
                             <th>{{ ucfirst(__('laravel-crm::lang.CRM_access')) }}</th>
                             <th>{{ ucfirst(__('laravel-crm::lang.role')) }}</th>
+                            <th>Email Verified</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
+                            <th>Last Online</th>
+                            <th>Mailing List</th>
                             <th>{{ ucfirst(__('laravel-crm::lang.status')) }}</th>
                         </tr>
                     </thead>
@@ -94,6 +99,17 @@
                                     @endif
                                 </td>
                                 <td>{{ $row['role'] ?: '—' }}</td>
+                                <td class="text-xs text-base-content/70">{{ $row['email_verified_at'] ?: '—' }}</td>
+                                <td class="text-xs text-base-content/70">{{ $row['created_at'] ?: '—' }}</td>
+                                <td class="text-xs text-base-content/70">{{ $row['updated_at'] ?: '—' }}</td>
+                                <td class="text-xs text-base-content/70">{{ $row['last_online_at'] ?: '—' }}</td>
+                                <td>
+                                    @if($row['mailing_list'] ?? 1)
+                                        <span class="badge badge-success badge-sm">{{ ucfirst(__('laravel-crm::lang.yes')) }}</span>
+                                    @else
+                                        <span class="badge badge-ghost badge-sm">{{ ucfirst(__('laravel-crm::lang.no')) }}</span>
+                                    @endif
+                                </td>
                                 <td>
                                     @if(! empty($row['errors']))
                                         <div class="text-error text-xs space-y-0.5">
@@ -192,6 +208,11 @@
                         <ul class="list-disc list-inside space-y-0.5">
                             <li><code>crm_access</code> — {{ __('laravel-crm::lang.import_col_crm_access') }} (1 / 0)</li>
                             <li><code>role</code> — {{ __('laravel-crm::lang.import_col_role') }}</li>
+                            <li><code>email_verified_at</code> — datetime the email was verified (e.g. <code>2024-01-15 09:00:00</code>); defaults to now if blank</li>
+                            <li><code>created_at</code> — backdated account creation timestamp; defaults to now if blank</li>
+                            <li><code>updated_at</code> — backdated update timestamp; defaults to now if blank</li>
+                            <li><code>last_online_at</code> — last time the user was online; left null if blank</li>
+                            <li><code>mailing_list</code> — subscribed to mailing list (1 / 0); defaults to 1</li>
                         </ul>
                         <p class="mt-2 text-xs opacity-70">{{ __('laravel-crm::lang.import_password_note') }}</p>
                         <p class="mt-2">
