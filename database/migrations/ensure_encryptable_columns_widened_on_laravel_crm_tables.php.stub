@@ -1,0 +1,65 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class EnsureEncryptableColumnsWidenedOnLaravelCrmTables extends Migration
+{
+    /**
+     * Widen all encryptable contact columns regardless of the
+     * `laravel-crm.encrypt_db_fields` setting. Encryption can be
+     * toggled on at any time post-install, and the seeder also
+     * writes ciphertext-length values, both of which overflow the
+     * default varchar(255) columns.
+     */
+    public function up()
+    {
+        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'people')) {
+            Schema::table(config('laravel-crm.db_table_prefix').'people', function (Blueprint $table) {
+                $table->string('title', 500)->nullable()->change();
+                $table->string('first_name', 500)->change();
+                $table->string('middle_name', 500)->nullable()->change();
+                $table->string('last_name', 500)->nullable()->change();
+                $table->string('maiden_name', 500)->nullable()->change();
+            });
+        }
+
+        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'organizations')) {
+            Schema::table(config('laravel-crm.db_table_prefix').'organizations', function (Blueprint $table) {
+                $table->string('name', 1000)->nullable()->change();
+            });
+        }
+
+        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'addresses')) {
+            Schema::table(config('laravel-crm.db_table_prefix').'addresses', function (Blueprint $table) {
+                $table->string('address', 1000)->nullable()->change();
+                $table->string('line1', 1000)->change();
+                $table->string('line2', 1000)->nullable()->change();
+                $table->string('line3', 1000)->nullable()->change();
+                $table->string('code', 500)->nullable()->change();
+                $table->string('city', 500)->nullable()->change();
+                $table->string('state', 500)->nullable()->change();
+                $table->string('country', 500)->nullable()->change();
+            });
+        }
+
+        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'emails')) {
+            Schema::table(config('laravel-crm.db_table_prefix').'emails', function (Blueprint $table) {
+                $table->string('address', 500)->nullable()->change();
+            });
+        }
+
+        if (Schema::hasTable(config('laravel-crm.db_table_prefix').'phones')) {
+            Schema::table(config('laravel-crm.db_table_prefix').'phones', function (Blueprint $table) {
+                $table->string('number', 500)->nullable()->change();
+            });
+        }
+    }
+
+    public function down()
+    {
+        // Intentionally a no-op — narrowing columns may truncate existing data.
+    }
+}
+
