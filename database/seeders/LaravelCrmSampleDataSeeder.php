@@ -3578,12 +3578,21 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'updated_at' => $widgetDate,
             ]);
 
-            // Create 3-6 visitors per widget
+            // Create 3-6 visitors per widget — recent activity (last 30 days)
+            // so the conversations feel "live" in the demo, not historical.
             $visitorCount = mt_rand(3, 6);
             for ($v = 0; $v < $visitorCount; $v++) {
                 $name = $visitorNames[array_rand($visitorNames)];
                 $emailLocal = strtolower(str_replace(' ', '.', $name));
-                $visitorDate = $widgetDate->copy()->addDays(mt_rand(1, 300));
+                // Visitor first seen between 30 days ago and a few hours ago.
+                $visitorDate = Carbon::now('UTC')
+                    ->subMinutes(mt_rand(60, 60 * 24 * 30));
+
+                // last_seen_at jitter: between visitor creation and now, so some
+                // visitors look like they were here minutes ago.
+                $visitorLastSeen = $visitorDate->copy()->addMinutes(
+                    mt_rand(0, max(1, Carbon::now('UTC')->diffInMinutes($visitorDate)))
+                );
 
                 $visitor = ChatVisitor::create([
                     'external_id' => Uuid::uuid4()->toString(),
@@ -3593,9 +3602,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'email' => $emailLocal.'@example.com',
                     'ip_address' => mt_rand(10, 200).'.'.mt_rand(0, 255).'.'.mt_rand(0, 255).'.'.mt_rand(1, 254),
                     'country_code' => ['US', 'GB', 'AU', 'CA', 'NZ'][array_rand(['US', 'GB', 'AU', 'CA', 'NZ'])],
-                    'last_seen_at' => $visitorDate,
+                    'last_seen_at' => $visitorLastSeen,
                     'created_at' => $visitorDate,
-                    'updated_at' => $visitorDate,
+                    'updated_at' => $visitorLastSeen,
                 ]);
 
                 // Create 1-2 conversations per visitor
