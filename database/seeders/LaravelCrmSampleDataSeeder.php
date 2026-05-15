@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Database\Seeders;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -180,8 +181,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         // Use Carbon::now() instead of now() helper to avoid CarbonImmutable
         // when the host app has configured Date::use(CarbonImmutable::class).
-        $this->startDate = Carbon::now('UTC')->subYears(3)->startOfDay();
-        $this->endDate = Carbon::now('UTC');
+        $this->startDate = Carbon::Carbon::now('UTC')->subYears(3)->startOfDay();
+        $this->endDate = Carbon::Carbon::now('UTC');
 
         $this->command->line('');
         $this->command->line('  <fg=cyan;options=bold>╔══════════════════════════════════════════════╗</>');
@@ -461,10 +462,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
      * Later dates are more likely (simulating business growth).
      * Adds seasonal fluctuation (Q1/Q3 busier, Dec/Jan slower).
      */
-    protected function weightedRandomDate(?Carbon $after = null, ?Carbon $before = null): Carbon
+    protected function weightedRandomDate(?CarbonInterface $after = null, ?CarbonInterface $before = null): Carbon
     {
-        $start = $after ? $after->copy() : $this->startDate->copy();
-        $end = $before ? $before->copy() : $this->endDate->copy();
+        // Carbon::instance() converts CarbonImmutable → mutable Carbon safely
+        $start = $after ? Carbon::instance($after) : $this->startDate->copy();
+        $end = $before ? Carbon::instance($before) : $this->endDate->copy();
 
         // Ensure valid range
         if ($start->gte($end)) {
@@ -659,7 +661,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'name' => $data['name'],
                     'password' => Hash::make(Str::random(30)),
                     'crm_access' => true,
-                    'email_verified_at' => now('UTC'),
+                    'email_verified_at' => Carbon::now('UTC'),
                 ]
             );
 
@@ -1252,7 +1254,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $amount = $this->randomAmount(500, 75000);
 
             // Determine stage based on age and randomness
-            $daysSinceCreation = $date->diffInDays(now('UTC'));
+            $daysSinceCreation = $date->diffInDays(Carbon::now('UTC'));
             $isConverted = false;
             $stage = $stages->first(); // Default: New
 
@@ -1297,7 +1299,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'lead_source_id' => $leadSources->isNotEmpty() ? $leadSources->random()->id : null,
                 'pipeline_id' => $pipelineId,
                 'pipeline_stage_id' => $stage->id ?? null,
-                'converted_at' => $isConverted ? $date->copy()->addDays(mt_rand(7, 60))->min(now('UTC')) : null,
+                'converted_at' => $isConverted ? $date->copy()->addDays(mt_rand(7, 60))->min(Carbon::now('UTC')) : null,
                 'user_created_id' => $this->randomUserId(),
                 'user_owner_id' => $this->randomUserId(),
                 'user_assigned_id' => $this->userId,
@@ -1340,10 +1342,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $bar = $this->createProgressBar($convertedLeads->count());
 
         foreach ($convertedLeads as $lead) {
-            $date = $lead->converted_at ?? Carbon::parse($lead->created_at)->addDays(mt_rand(7, 30));
+            $date = $lead->converted_at
+                ? Carbon::instance($lead->converted_at)
+                : Carbon::parse($lead->created_at)->addDays(mt_rand(7, 30));
             $amount = ($lead->amount ?? mt_rand(50000, 7500000)) / 100; // Convert from stored cents back to dollars
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $closedStatus = null;
             $closedAt = null;
 
@@ -1392,8 +1396,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($closedAt && $closedAt->gt(now('UTC'))) {
-                $closedAt = now('UTC');
+            if ($closedAt && $closedAt->gt(Carbon::now('UTC'))) {
+                $closedAt = Carbon::now('UTC');
             }
 
             $deal = Deal::create([
@@ -1457,7 +1461,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $org = $person->organization;
             $amount = $this->randomAmount(1000, 100000);
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $closedStatus = null;
             $closedAt = null;
             $stage = $stages->first();
@@ -1507,8 +1511,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($closedAt && $closedAt->gt(now('UTC'))) {
-                $closedAt = now('UTC');
+            if ($closedAt && $closedAt->gt(Carbon::now('UTC'))) {
+                $closedAt = Carbon::now('UTC');
             }
 
             $deal = Deal::create([
@@ -1596,11 +1600,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $dealCreatedAt = Carbon::parse($deal->created_at);
             $date = $dealCreatedAt->copy()->addDays(mt_rand(3, 21));
-            if ($date->gt(now('UTC'))) {
-                $date = now('UTC')->subDays(mt_rand(1, 7));
+            if ($date->gt(Carbon::now('UTC'))) {
+                $date = Carbon::now('UTC')->subDays(mt_rand(1, 7));
             }
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
 
             // Determine stage
             $acceptedAt = null;
@@ -1625,11 +1629,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $stage = $stages->firstWhere('name', 'Sent');
             }
 
-            if ($acceptedAt && $acceptedAt->gt(now('UTC'))) {
-                $acceptedAt = now('UTC');
+            if ($acceptedAt && $acceptedAt->gt(Carbon::now('UTC'))) {
+                $acceptedAt = Carbon::now('UTC');
             }
-            if ($rejectedAt && $rejectedAt->gt(now('UTC'))) {
-                $rejectedAt = now('UTC');
+            if ($rejectedAt && $rejectedAt->gt(Carbon::now('UTC'))) {
+                $rejectedAt = Carbon::now('UTC');
             }
 
             // Build line items
@@ -1696,8 +1700,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         foreach ($pendingDeals as $deal) {
             $dealCreatedAt = Carbon::parse($deal->created_at);
             $date = $dealCreatedAt->copy()->addDays(mt_rand(1, 14));
-            if ($date->gt(now('UTC'))) {
-                $date = now('UTC')->subDays(mt_rand(1, 3));
+            if ($date->gt(Carbon::now('UTC'))) {
+                $date = Carbon::now('UTC')->subDays(mt_rand(1, 3));
             }
 
             $stage = $stages->whereIn('name', ['Draft', 'Sent'])->random();
@@ -1780,7 +1784,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $titleTemplate = $standaloneQuoteTitles[array_rand($standaloneQuoteTitles)];
             $title = sprintf($titleTemplate, $orgName);
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
 
             // Determine stage based on age
             $acceptedAt = null;
@@ -1816,11 +1820,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $stage = $stages->whereIn('name', ['Draft', 'Sent'])->random();
             }
 
-            if ($acceptedAt && $acceptedAt->gt(now('UTC'))) {
-                $acceptedAt = now('UTC');
+            if ($acceptedAt && $acceptedAt->gt(Carbon::now('UTC'))) {
+                $acceptedAt = Carbon::now('UTC');
             }
-            if ($rejectedAt && $rejectedAt->gt(now('UTC'))) {
-                $rejectedAt = now('UTC');
+            if ($rejectedAt && $rejectedAt->gt(Carbon::now('UTC'))) {
+                $rejectedAt = Carbon::now('UTC');
             }
 
             $lineItems = $this->generateLineItems(mt_rand(1, 5));
@@ -1913,13 +1917,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 continue;
             }
 
-            $quoteAcceptedAt = $quote->accepted_at;
+            $quoteAcceptedAt = Carbon::instance($quote->accepted_at);
             $date = $quoteAcceptedAt->copy()->addDays(mt_rand(1, 14));
-            if ($date->gt(now('UTC'))) {
-                $date = now('UTC')->subDays(mt_rand(1, 3));
+            if ($date->gt(Carbon::now('UTC'))) {
+                $date = Carbon::now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 60) {
@@ -2006,7 +2010,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $person = $this->people->random();
             $org = $person->organization;
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 60) {
@@ -2093,11 +2097,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
         foreach ($this->orders as $order) {
             $orderCreatedAt = Carbon::parse($order->created_at);
             $date = $orderCreatedAt->copy()->addDays(mt_rand(1, 14));
-            if ($date->gt(now('UTC'))) {
-                $date = now('UTC')->subDays(mt_rand(1, 3));
+            if ($date->gt(Carbon::now('UTC'))) {
+                $date = Carbon::now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $fullyPaidAt = null;
             $amountPaid = 0;
             $amountDue = $order->total / 100; // Convert from stored cents
@@ -2128,8 +2132,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($fullyPaidAt && $fullyPaidAt->gt(now('UTC'))) {
-                $fullyPaidAt = now('UTC');
+            if ($fullyPaidAt && $fullyPaidAt->gt(Carbon::now('UTC'))) {
+                $fullyPaidAt = Carbon::now('UTC');
             }
 
             $invoice = Invoice::create([
@@ -2191,7 +2195,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $person = $this->people->random();
             $org = $person->organization;
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $fullyPaidAt = null;
             $stage = $stages->first(); // Draft
 
@@ -2227,8 +2231,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
             }
 
-            if ($fullyPaidAt && $fullyPaidAt->gt(now('UTC'))) {
-                $fullyPaidAt = now('UTC');
+            if ($fullyPaidAt && $fullyPaidAt->gt(Carbon::now('UTC'))) {
+                $fullyPaidAt = Carbon::now('UTC');
             }
 
             $invoice = Invoice::create([
@@ -2311,11 +2315,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $orderCreatedAt = Carbon::parse($order->created_at);
             $date = $orderCreatedAt->copy()->addDays(mt_rand(3, 21));
-            if ($date->gt(now('UTC'))) {
-                $date = now('UTC')->subDays(mt_rand(1, 3));
+            if ($date->gt(Carbon::now('UTC'))) {
+                $date = Carbon::now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $deliveredOn = null;
             $deliveryExpected = $date->copy()->addDays(mt_rand(5, 21));
             $stage = $stages->first(); // Draft
@@ -2334,8 +2338,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $stage = $stages->firstWhere('name', 'Packed');
             }
 
-            if ($deliveredOn && $deliveredOn->gt(now('UTC'))) {
-                $deliveredOn = now('UTC');
+            if ($deliveredOn && $deliveredOn->gt(Carbon::now('UTC'))) {
+                $deliveredOn = Carbon::now('UTC');
             }
 
             $delivery = Delivery::create([
@@ -2404,11 +2408,11 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $orderCreatedAt = Carbon::parse($order->created_at);
             $date = $orderCreatedAt->copy()->addDays(mt_rand(1, 10));
-            if ($date->gt(now('UTC'))) {
-                $date = now('UTC')->subDays(mt_rand(1, 3));
+            if ($date->gt(Carbon::now('UTC'))) {
+                $date = Carbon::now('UTC')->subDays(mt_rand(1, 3));
             }
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 45) {
@@ -2492,7 +2496,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $supplier = $this->organizations->random();
             $contact = $supplier->people->first() ?? $this->people->random();
 
-            $daysSince = $date->diffInDays(now('UTC'));
+            $daysSince = $date->diffInDays(Carbon::now('UTC'));
             $stage = $stages->first(); // Draft
 
             if ($daysSince > 45) {
@@ -2638,12 +2642,12 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numTasks = mt_rand(3, 5);
             for ($i = 0; $i < $numTasks; $i++) {
                 $taskDate = $entity['date']->copy()->addDays(mt_rand(1, 90));
-                if ($taskDate->gt(now('UTC')->addDays(30))) {
-                    $taskDate = now('UTC')->subDays(mt_rand(1, 60));
+                if ($taskDate->gt(Carbon::now('UTC')->addDays(30))) {
+                    $taskDate = Carbon::now('UTC')->subDays(mt_rand(1, 60));
                 }
 
-                $isCompleted = $taskDate->lt(now('UTC')->subDays(3)) && mt_rand(1, 100) <= 80;
-                $completedAt = $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5))->min(now('UTC')) : null;
+                $isCompleted = $taskDate->lt(Carbon::now('UTC')->subDays(3)) && mt_rand(1, 100) <= 80;
+                $completedAt = $isCompleted ? $taskDate->copy()->addDays(mt_rand(0, 5))->min(Carbon::now('UTC')) : null;
 
                 $task = Task::create([
                     'name' => $taskNames[array_rand($taskNames)],
@@ -2668,7 +2672,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Task created',
                 ]);
 
-                $createdAt = $taskDate->copy()->min(now('UTC'));
+                $createdAt = $taskDate->copy()->min(Carbon::now('UTC'));
                 $this->backdateModel($task, $createdAt);
                 $this->backdateModel($task->activity, $createdAt);
                 $taskCount++;
@@ -2709,8 +2713,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numNotes = mt_rand(3, 5);
             for ($i = 0; $i < $numNotes; $i++) {
                 $noteDate = $entity['date']->copy()->addDays(mt_rand(0, 90));
-                if ($noteDate->gt(now('UTC'))) {
-                    $noteDate = now('UTC')->subDays(mt_rand(1, 14));
+                if ($noteDate->gt(Carbon::now('UTC'))) {
+                    $noteDate = Carbon::now('UTC')->subDays(mt_rand(1, 14));
                 }
 
                 $note = Note::create([
@@ -2761,8 +2765,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numCalls = mt_rand(3, 5);
             for ($i = 0; $i < $numCalls; $i++) {
                 $callDate = $entity['date']->copy()->addDays(mt_rand(1, 60));
-                if ($callDate->gt(now('UTC'))) {
-                    $callDate = now('UTC')->subDays(mt_rand(1, 14));
+                if ($callDate->gt(Carbon::now('UTC'))) {
+                    $callDate = Carbon::now('UTC')->subDays(mt_rand(1, 14));
                 }
 
                 $duration = mt_rand(5, 60);
@@ -2826,8 +2830,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numMeetings = mt_rand(3, 5);
             for ($i = 0; $i < $numMeetings; $i++) {
                 $meetingDate = $entity['date']->copy()->addDays(mt_rand(3, 90));
-                if ($meetingDate->gt(now('UTC')->addDays(14))) {
-                    $meetingDate = now('UTC')->subDays(mt_rand(1, 30));
+                if ($meetingDate->gt(Carbon::now('UTC')->addDays(14))) {
+                    $meetingDate = Carbon::now('UTC')->subDays(mt_rand(1, 30));
                 }
 
                 $startHour = $this->randomBiasedInt(9, 16);
@@ -2858,7 +2862,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Meeting scheduled',
                 ]);
 
-                $createdAt = $meetingDate->copy()->min(now('UTC'));
+                $createdAt = $meetingDate->copy()->min(Carbon::now('UTC'));
                 $this->backdateModel($meeting, $createdAt);
                 $this->backdateModel($meeting->activity, $createdAt);
                 $meetingCount++;
@@ -2893,8 +2897,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             $numLunches = mt_rand(3, 5);
             for ($i = 0; $i < $numLunches; $i++) {
                 $lunchDate = $entity['date']->copy()->addDays(mt_rand(3, 90));
-                if ($lunchDate->gt(now('UTC')->addDays(14))) {
-                    $lunchDate = now('UTC')->subDays(mt_rand(1, 30));
+                if ($lunchDate->gt(Carbon::now('UTC')->addDays(14))) {
+                    $lunchDate = Carbon::now('UTC')->subDays(mt_rand(1, 30));
                 }
 
                 $duration = [60, 90, 120][array_rand([60, 90, 120])];
@@ -2926,7 +2930,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                     'description' => 'Lunch scheduled',
                 ]);
 
-                $createdAt = $lunchDate->copy()->min(now('UTC'));
+                $createdAt = $lunchDate->copy()->min(Carbon::now('UTC'));
                 $this->backdateModel($lunch, $createdAt);
                 $this->backdateModel($lunch->activity, $createdAt);
                 $lunchCount++;
@@ -3181,7 +3185,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->setFieldValue($lead, $lf->get('Lead Source Channel'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
                 $this->setFieldValue($lead, $lf->get('Competitor Mentioned'), fn () => $competitors[array_rand($competitors)]);
                 $this->setFieldValue($lead, $lf->get('Decision Maker Contacted'), fn () => mt_rand(0, 1) ? '1' : '0');
-                $this->setFieldValue($lead, $lf->get('Initial Contact Date'), fn () => now('UTC')->subDays(mt_rand(5, 400))->format('Y-m-d'));
+                $this->setFieldValue($lead, $lf->get('Initial Contact Date'), fn () => Carbon::now('UTC')->subDays(mt_rand(5, 400))->format('Y-m-d'));
                 $this->setFieldValue($lead, $lf->get('Qualification Notes'), fn () => $qualNotes[array_rand($qualNotes)]);
             }
         });
@@ -3197,7 +3201,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->setFieldValue($deal, $df->get('Contract Reference'), fn () => 'CON-'.strtoupper(substr(md5(mt_rand()), 0, 6)));
                 $this->setFieldValue($deal, $df->get('Deal Priority'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
                 $this->setFieldValue($deal, $df->get('NDA Signed'), fn () => mt_rand(0, 1) ? '1' : '0');
-                $this->setFieldValue($deal, $df->get('Expected Close Date'), fn () => now('UTC')->addDays(mt_rand(10, 180))->format('Y-m-d'));
+                $this->setFieldValue($deal, $df->get('Expected Close Date'), fn () => Carbon::now('UTC')->addDays(mt_rand(10, 180))->format('Y-m-d'));
                 $this->setFieldValue($deal, $df->get('Products of Interest'), function ($f) {
                     $sample = $f->fieldOptions->random(mt_rand(1, min(3, $f->fieldOptions->count())));
 
@@ -3216,7 +3220,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
                 $this->setFieldValue($quote, $qf->get('Project Code'), fn () => 'PROJ-'.mt_rand(1000, 9999));
                 $this->setFieldValue($quote, $qf->get('Delivery Region'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
-                $this->setFieldValue($quote, $qf->get('Promised Delivery Date'), fn () => now('UTC')->addDays(mt_rand(14, 90))->format('Y-m-d'));
+                $this->setFieldValue($quote, $qf->get('Promised Delivery Date'), fn () => Carbon::now('UTC')->addDays(mt_rand(14, 90))->format('Y-m-d'));
                 $this->setFieldValue($quote, $qf->get('Express Shipping'), fn () => mt_rand(1, 100) <= 20 ? '1' : '0');
                 $this->setFieldValue($quote, $qf->get('Special Instructions'), fn () => mt_rand(1, 100) <= 40 ? $specialInstr[array_rand($specialInstr)] : null);
             }
@@ -3232,7 +3236,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 }
                 $this->setFieldValue($order, $of->get('Project Code'), fn () => 'PROJ-'.mt_rand(1000, 9999));
                 $this->setFieldValue($order, $of->get('Delivery Region'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
-                $this->setFieldValue($order, $of->get('Promised Delivery Date'), fn () => now('UTC')->addDays(mt_rand(7, 60))->format('Y-m-d'));
+                $this->setFieldValue($order, $of->get('Promised Delivery Date'), fn () => Carbon::now('UTC')->addDays(mt_rand(7, 60))->format('Y-m-d'));
                 $this->setFieldValue($order, $of->get('Express Shipping'), fn () => mt_rand(1, 100) <= 20 ? '1' : '0');
                 $this->setFieldValue($order, $of->get('Special Instructions'), fn () => mt_rand(1, 100) <= 40 ? $specialInstr[array_rand($specialInstr)] : null);
             }
@@ -3272,7 +3276,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 $this->setFieldValue($org, $orgAllFields->get('Company Registration Number'), fn () => 'REG-'.mt_rand(10000000, 99999999));
                 $this->setFieldValue($org, $orgAllFields->get('Company Size'), fn ($f) => $f->fieldOptions->isNotEmpty() ? $f->fieldOptions->random()->value : null);
                 $this->setFieldValue($org, $orgAllFields->get('Publicly Listed'), fn () => mt_rand(1, 100) <= 15 ? '1' : '0');
-                $this->setFieldValue($org, $orgAllFields->get('Relationship Since'), fn () => now('UTC')->subDays(mt_rand(180, 1800))->format('Y-m-d'));
+                $this->setFieldValue($org, $orgAllFields->get('Relationship Since'), fn () => Carbon::now('UTC')->subDays(mt_rand(180, 1800))->format('Y-m-d'));
             }
         });
 
@@ -3724,7 +3728,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $campaignNumber = 1;
         foreach ($campaignDefinitions as $def) {
             $template = $templates->random();
-            $sentDate = $def['months_ago'] > 0 ? now()->subMonths($def['months_ago']) : null;
+            $sentDate = $def['months_ago'] > 0 ? Carbon::now()->subMonths($def['months_ago']) : null;
             $scheduledAt = $def['status'] === 'scheduled' ? now()->addDays(mt_rand(3, 14)) : null;
 
             $totalRecipients = $def['recipients'];
@@ -3852,7 +3856,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $campaignNumber = 1;
         foreach ($campaignDefinitions as $def) {
             $template = $templates->random();
-            $sentDate = $def['months_ago'] > 0 ? now()->subMonths($def['months_ago']) : null;
+            $sentDate = $def['months_ago'] > 0 ? Carbon::now()->subMonths($def['months_ago']) : null;
             $scheduledAt = $def['status'] === 'scheduled' ? now()->addDays(mt_rand(3, 14)) : null;
 
             $totalRecipients = $def['recipients'];
