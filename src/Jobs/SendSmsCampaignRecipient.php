@@ -22,7 +22,7 @@ class SendSmsCampaignRecipient implements ShouldQueue
 
     public int $tries = 3;
 
-    public string $queue = 'sms';
+    public $queue = 'sms';
 
     public SmsCampaignRecipient $recipient;
 
