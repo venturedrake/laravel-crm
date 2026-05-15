@@ -21,6 +21,8 @@ class SendEmailCampaignRecipient implements ShouldQueue
 
     public int $tries = 3;
 
+    public string $queue = 'email';
+
     public EmailCampaignRecipient $recipient;
 
     public function __construct(EmailCampaignRecipient $recipient)
