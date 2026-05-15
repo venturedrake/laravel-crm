@@ -104,16 +104,17 @@ class UserImport extends Component
                     'password'         => Hash::make(Str::password(length: 16, letters: true, numbers: true, symbols: true, spaces: false)),
                     'crm_access'       => $row['crm_access'],
                     'mailing_list'     => $row['mailing_list'] ?? 1,
-                    'email_verified_at'=> ! empty($row['email_verified_at']) ? $row['email_verified_at'] : $now,
-                    'created_at'       => ! empty($row['created_at']) ? $row['created_at'] : $now,
-                    'updated_at'       => ! empty($row['updated_at']) ? $row['updated_at'] : $now,
+                    'email_verified_at'=> $this->safeDateValue($row['email_verified_at'] ?? '') ?? $now,
+                    'created_at'       => $this->safeDateValue($row['created_at'] ?? '') ?? $now,
+                    'updated_at'       => $this->safeDateValue($row['updated_at'] ?? '') ?? $now,
                 ]);
 
                 // Backdate last_online_at directly — Eloquent guards this column
-                if (! empty($row['last_online_at'])) {
+                $lastOnline = $this->safeDateValue($row['last_online_at'] ?? '');
+                if ($lastOnline !== null) {
                     \Illuminate\Support\Facades\DB::table('users')
                         ->where('id', $user->id)
-                        ->update(['last_online_at' => $row['last_online_at']]);
+                        ->update(['last_online_at' => $lastOnline]);
                 }
             } catch (UniqueConstraintViolationException) {
                 $this->skippedCount++;
@@ -175,6 +176,28 @@ class UserImport extends Component
             $this->importedCount.' '.__('laravel-crm::lang.imported').', '.
             $this->skippedCount.' '.__('laravel-crm::lang.skipped')
         );
+    }
+
+    /**
+     * Return a sanitised date string, or null if the value is blank / a
+     * sentinel string like "NULL", "N/A", "none", "0000-00-00", etc.
+     */
+    private function safeDateValue(string $value): ?string
+    {
+        $nullSentinels = ['', 'null', 'NULL', 'n/a', 'N/A', 'none', 'NONE', '0', '0000-00-00', '0000-00-00 00:00:00'];
+
+        if (in_array(trim($value), $nullSentinels, true)) {
+            return null;
+        }
+
+        // Attempt a basic parse to catch other garbage values before they hit Eloquent.
+        try {
+            \Carbon\Carbon::parse($value);
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return trim($value);
     }
 
     public function resetForm(): void

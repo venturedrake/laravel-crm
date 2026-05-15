@@ -256,10 +256,10 @@ class UserController extends Controller
                 'email' => trim($data['email'] ?? ''),
                 'crm_access' => in_array(strtolower(trim($data['crm_access'] ?? '1')), ['1', 'yes', 'true']) ? 1 : 0,
                 'role' => trim($data['role'] ?? ''),
-                'email_verified_at' => trim($data['email_verified_at'] ?? ''),
-                'created_at' => trim($data['created_at'] ?? ''),
-                'updated_at' => trim($data['updated_at'] ?? ''),
-                'last_online_at' => trim($data['last_online_at'] ?? ''),
+                'email_verified_at' => $this->sanitiseDateField($data['email_verified_at'] ?? ''),
+                'created_at' => $this->sanitiseDateField($data['created_at'] ?? ''),
+                'updated_at' => $this->sanitiseDateField($data['updated_at'] ?? ''),
+                'last_online_at' => $this->sanitiseDateField($data['last_online_at'] ?? ''),
                 'mailing_list' => in_array(strtolower(trim($data['mailing_list'] ?? '1')), ['1', 'yes', 'true']) ? 1 : 0,
                 'errors' => $rowErrors,
             ];
@@ -270,6 +270,27 @@ class UserController extends Controller
         session()->put('crm_user_import_preview', $rows);
 
         return redirect()->route('laravel-crm.users.import');
+    }
+
+    /**
+     * Sanitise an optional date field from the CSV.
+     * Returns an empty string for blank / NULL-sentinel / unparseable values.
+     */
+    private function sanitiseDateField(string $value): string
+    {
+        $nullSentinels = ['', 'null', 'NULL', 'n/a', 'N/A', 'none', 'NONE', '0', '0000-00-00', '0000-00-00 00:00:00'];
+
+        if (in_array(trim($value), $nullSentinels, true)) {
+            return '';
+        }
+
+        try {
+            \Carbon\Carbon::parse(trim($value));
+        } catch (\Throwable) {
+            return '';
+        }
+
+        return trim($value);
     }
 
     /**
