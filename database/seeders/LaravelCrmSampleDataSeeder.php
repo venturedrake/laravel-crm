@@ -178,8 +178,10 @@ class LaravelCrmSampleDataSeeder extends Seeder
     {
         $startTime = microtime(true);
 
-        $this->startDate = now('UTC')->subYears(3)->startOfDay();
-        $this->endDate = now('UTC');
+        // Use Carbon::now() instead of now() helper to avoid CarbonImmutable
+        // when the host app has configured Date::use(CarbonImmutable::class).
+        $this->startDate = Carbon::now('UTC')->subYears(3)->startOfDay();
+        $this->endDate = Carbon::now('UTC');
 
         $this->command->line('');
         $this->command->line('  <fg=cyan;options=bold>╔══════════════════════════════════════════════╗</>');
