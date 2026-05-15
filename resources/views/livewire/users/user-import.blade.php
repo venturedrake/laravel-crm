@@ -208,7 +208,7 @@
                         <ul class="list-disc list-inside space-y-0.5">
                             <li><code>crm_access</code> — {{ __('laravel-crm::lang.import_col_crm_access') }} (1 / 0)</li>
                             <li><code>role</code> — {{ __('laravel-crm::lang.import_col_role') }}</li>
-                            <li><code>email_verified_at</code> — datetime the email was verified (e.g. <code>2024-01-15 09:00:00</code>); defaults to now if blank</li>
+                            <li><code>email_verified_at</code> — datetime the email was verified (e.g. <code>2024-01-15 09:00:00</code>); defaults to <strong>null</strong> (unverified) if blank</li>
                             <li><code>created_at</code> — backdated account creation timestamp; defaults to now if blank</li>
                             <li><code>updated_at</code> — backdated update timestamp; defaults to now if blank</li>
                             <li><code>last_online_at</code> — last time the user was online; left null if blank</li>

@@ -318,7 +318,7 @@ class UserController extends Controller
         $rows = [
             ['name', 'email', 'crm_access', 'role', 'email_verified_at', 'created_at', 'updated_at', 'last_online_at', 'mailing_list'],
             ['Jane Smith', 'jane@example.com', '1', 'Admin', '2024-01-15 09:00:00', '2024-01-15 09:00:00', '2024-01-15 09:00:00', '2024-01-15 09:00:00', '1'],
-            ['John Doe', 'john@example.com', '1', '', '2024-03-10 14:30:00', '2024-03-10 14:30:00', '2024-03-10 14:30:00', '', '1'],
+            ['John Doe', 'john@example.com', '1', '', '', '2024-03-10 14:30:00', '2024-03-10 14:30:00', '', '1'],
             ['Alice Brown', 'alice@example.com', '0', '', '', '', '', '', '0'],
         ];
 

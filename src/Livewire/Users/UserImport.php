@@ -104,7 +104,7 @@ class UserImport extends Component
                     'password'         => Hash::make(Str::password(length: 16, letters: true, numbers: true, symbols: true, spaces: false)),
                     'crm_access'       => $row['crm_access'],
                     'mailing_list'     => $row['mailing_list'] ?? 1,
-                    'email_verified_at'=> $this->safeDateValue($row['email_verified_at'] ?? '') ?? $now,
+                    'email_verified_at'=> $this->safeDateValue($row['email_verified_at'] ?? ''),
                     'created_at'       => $this->safeDateValue($row['created_at'] ?? '') ?? $now,
                     'updated_at'       => $this->safeDateValue($row['updated_at'] ?? '') ?? $now,
                 ]);
