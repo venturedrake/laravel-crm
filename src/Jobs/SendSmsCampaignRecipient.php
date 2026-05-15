@@ -22,6 +22,8 @@ class SendSmsCampaignRecipient implements ShouldQueue
 
     public int $tries = 3;
 
+    public string $queue = 'sms';
+
     public SmsCampaignRecipient $recipient;
 
     public function __construct(SmsCampaignRecipient $recipient)

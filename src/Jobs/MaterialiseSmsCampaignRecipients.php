@@ -19,6 +19,8 @@ class MaterialiseSmsCampaignRecipients implements ShouldQueue
 
     public int $timeout = 600;
 
+    public string $queue = 'sms';
+
     public SmsCampaign $campaign;
 
     public function __construct(SmsCampaign $campaign)
