@@ -12,6 +12,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SMS
 - Payments
 
+## 2.1.1 - 2026-05-17
+### Added
+- Optional CSV import fields for users: `email_verified_at`, `created_at`, `updated_at`, `last_online_at`, `mailing_list`
+- Dark mode support for autocomplete dropdown backgrounds
+### Changed
+- Dispatch email campaign jobs to dedicated `email` queue
+- Dispatch SMS campaign jobs to dedicated `sms` queue
+- Make sample chat conversations recent (last 30 days) for a live demo feel
+- Removed v1 docs from repo
+- Updated AGENTS docs
+### Fixed
+- `taxName` undefined variable in invoice/purchase-order PDFs
+- Refactored PDF render calls to use `app('laravel-crm.settings')->get(...)` pattern
+- Missing `dateFormat` variable in PDF templates
+- Added missing PDF blade templates (invoices, orders, purchase-orders, deliveries)
+- Campaign job trait composition error (`$queue` property conflict with `Queueable`)
+- `laravelcrm:update` command failing in test environments when tables pre-exist
+- Address line 1 missing in some forms
+- Sorting quotes by labels
+- Null crash on updates page when version settings not seeded
+- Default `email_verified_at` to null in user CSV import
+- Sanitise NULL/blank date values in user CSV import to prevent Carbon parse exceptions
+- Attribute type cast
+- Double-namespaced `Carbon::Carbon::` introduced by bulk sed replace
+- `CarbonImmutable` compatibility in sample data seeder
+- Widened encryptable columns migration to fit encrypted payloads
+- Sample data seeding date
+
 ## 2.1.0- 2026-06-14
 ### Added
 - People & Organizations CSV import
