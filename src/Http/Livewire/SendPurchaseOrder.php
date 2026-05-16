@@ -78,6 +78,7 @@ class SendPurchaseOrder extends Component
             ->loadView('laravel-crm::purchase-orders.pdf', [
                 'purchaseOrder' => $this->purchaseOrder,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
                 'contactDetails' => app('laravel-crm.settings')->get('purchase_order_contact_details', null),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,

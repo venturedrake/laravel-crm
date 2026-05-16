@@ -78,6 +78,7 @@ class SendInvoice extends Component
             ->loadView('laravel-crm::invoices.pdf', [
                 'invoice' => $this->invoice,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
                 'contactDetails' => app('laravel-crm.settings')->get('invoice_contact_details', null),
                 'paymentInstructions' => app('laravel-crm.settings')->get('invoice_payment_instructions', null),
                 'email' => $email ?? null,
