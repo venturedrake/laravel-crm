@@ -21,13 +21,12 @@ class SendEmailCampaignRecipient implements ShouldQueue
 
     public int $tries = 3;
 
-    public $queue = 'email';
-
     public EmailCampaignRecipient $recipient;
 
     public function __construct(EmailCampaignRecipient $recipient)
     {
         $this->recipient = $recipient;
+        $this->onQueue('email');
     }
 
     public function handle(): void

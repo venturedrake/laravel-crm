@@ -22,13 +22,12 @@ class SendSmsCampaignRecipient implements ShouldQueue
 
     public int $tries = 3;
 
-    public $queue = 'sms';
-
     public SmsCampaignRecipient $recipient;
 
     public function __construct(SmsCampaignRecipient $recipient)
     {
         $this->recipient = $recipient;
+        $this->onQueue('sms');
     }
 
     public function handle(ClickSendService $clickSend): void
