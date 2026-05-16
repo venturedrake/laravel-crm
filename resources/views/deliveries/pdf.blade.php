@@ -1,0 +1,139 @@
+@extends('laravel-crm::layouts.document')
+
+@section('content')
+
+    <table class="table table-sm table-items">
+        <tbody>
+            <tr>
+                <td width="50%"> 
+                    <h1>{{ strtoupper(__('laravel-crm::lang.delivery')) }}</h1>
+                    @if($order->reference || $delivery->delivery_expected)
+                    <p>
+                    @endif    
+                        @if($order->reference)
+                            <strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $order->reference }}
+                        @endif
+                        @if($delivery->delivery_expected)
+                            @if($order->reference)
+                                <br />
+                            @endif    
+                            <strong>{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $delivery->delivery_expected }}
+                        @endif
+                    @if($order->reference || $delivery->delivery_expected)
+                    </p>
+                   @endif
+                </td>
+                <td width="50%" style="text-align: right">
+                    @if($logo)
+                        <img src="{{ asset('storage/'.$logo) }}" height="140" />
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong><br />
+                    {{ $order->organization->name ?? $order->organization->person->name ?? null }}<br />
+                    @isset($order->person)
+                        {{ $order->person->name }}<br />
+                    @endisset
+                    @if($address && $address->contact)
+                        <strong>{{ ucwords(__('laravel-crm::lang.contact')) }}: {{ $address->contact }}</strong><br >
+                    @endif
+                    @if($address && $address->phone)
+                        <strong>{{ ucwords(__('laravel-crm::lang.phone')) }}: {{ $address->phone }}</strong><br >
+                    @endif
+                    @if($address)
+                        {{ $address->line1 }}<br />
+                        @if($address->line2)
+                            {{ $address->line2 }}<br />
+                        @endif
+                        @if($address->line3)
+                            {{ $address->line3 }}<br />
+                        @endif
+                        {{ $address->city }}<br />
+                        {{ $address->country }}
+                    @elseif(isset($organization_address))
+                        @if($organization_address->line2)
+                            {{ $organization_address->line1 }}<br />
+                        @endif
+                        @if($organization_address->line2)
+                            {{ $organization_address->line2 }}<br />
+                        @endif
+                        @if($organization_address->line3)
+                            {{ $organization_address->line3 }}<br />
+                        @endif
+                        @if($organization_address->city || $organization_address->state || $organization_address->postcode)
+                            {{ $organization_address->city }} {{ $organization_address->state }} {{ $organization_address->postcode }}<br />
+                        @endif
+                        {{ $organization_address->country }}
+                    @endif
+                </td>
+                
+                <td>
+                    <strong>{{ ucfirst(__('laravel-crm::lang.from')) }}</strong><br />
+                    {{ $fromName }}<br />
+                    {{-- 19-21 South Steyne<br />
+                     MANLY NSW 2095<br />
+                     Australia--}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    @if($order->description)
+        <table class="table table-bordered table-sm table-items">
+          <tbody>
+            <tr>
+                <td><h4>{{ ucfirst(__('laravel-crm::lang.description')) }}</h4>
+                    {!! nl2br($order->description) !!}</td>
+            </tr>
+          </tbody>  
+        </table>
+    @endif
+    <table class="table table-bordered table-sm table-items">
+        <thead>
+        <tr>
+            <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
+            <th scope="col">{{ ucfirst(__('laravel-crm::lang.qty')) }}</th>
+            <th scope="col">{{ ucfirst(__('laravel-crm::lang.comments')) }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($delivery->deliveryProducts()->where('quantity', '>', 0)->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $deliveryProduct)
+            <tr>
+                <td>{{ $deliveryProduct->orderProduct->product->name }}</td>
+                <td>{{ $deliveryProduct->quantity }}</td>
+                <td>{{ $deliveryProduct->orderProduct->comments }}</td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+    @if($order->terms)
+        <table class="table table-bordered table-sm table-items">
+            <tbody>
+            <tr>
+                <td>
+                    <h4>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h4>
+                    {!! nl2br($order->terms) !!}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    @endif
+
+    <table class="table table-bordered table-sm table-delivery">
+        <tbody>
+        <tr>
+            <th width="150">{{ ucfirst(__('laravel-crm::lang.received_by')) }} </th>
+            <td></td>
+        </tr>
+        <tr>
+            <th>{{ ucfirst(__('laravel-crm::lang.received_date')) }} </th>
+            <td></td>
+        </tr>
+        <tr>
+            <th>{{ ucfirst(__('laravel-crm::lang.signature')) }} </th>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+@endsection
