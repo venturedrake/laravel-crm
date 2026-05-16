@@ -257,15 +257,15 @@ class InvoiceController extends Controller
         ])
             ->loadView('laravel-crm::invoices.pdf', [
                 'invoice' => $invoice,
-                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
-                'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
-                'paymentInstructions' => $this->settingService->get('invoice_payment_instructions')->value ?? null,
+                'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                'contactDetails' => app('laravel-crm.settings')->get('invoice_contact_details', null),
+                'paymentInstructions' => app('laravel-crm.settings')->get('invoice_payment_instructions', null),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
                 'organization_address' => $organization_address ?? null,
-                'fromName' => $this->settingService->get('organization_name')->value ?? null,
-                'logo' => $this->settingService->get('logo_file')->value ?? null,
+                'fromName' => app('laravel-crm.settings')->get('organization_name', null),
+                'logo' => app('laravel-crm.settings')->get('logo_file', null),
             ])->download('invoice-'.strtolower($invoice->xeroInvoice->number ?? $invoice->invoice_id).'.pdf');
     }
 }

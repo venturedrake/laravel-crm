@@ -60,8 +60,8 @@ class QuoteController extends Controller
             'phone' => $phone ?? null,
             'address' => $address ?? null,
             'organization_address' => $organization_address ?? null,
-            'fromName' => $this->settingService->get('organization_name')->value ?? null,
-            'logo' => $this->settingService->get('logo_file')->value ?? null,
+            'fromName' => app('laravel-crm.settings')->get('organization_name', null),
+            'logo' => app('laravel-crm.settings')->get('logo_file', null),
         ]);
     }
 
@@ -112,13 +112,13 @@ class QuoteController extends Controller
                 ])
                     ->loadView('laravel-crm::quotes.pdf', [
                         'quote' => $quote,
-                        'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
+                        'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                         'email' => $email ?? null,
                         'phone' => $phone ?? null,
                         'address' => $address ?? null,
                         'organization_address' => $organization_address ?? null,
-                        'fromName' => $this->settingService->get('organization_name')->value ?? null,
-                        'logo' => $this->settingService->get('logo_file')->value ?? null,
+                        'fromName' => app('laravel-crm.settings')->get('organization_name', null),
+                        'logo' => app('laravel-crm.settings')->get('logo_file', null),
                     ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
 
                 break;

@@ -418,8 +418,8 @@ class OrderController extends Controller
             'phone' => $phone ?? null,
             'address' => $address ?? null,
             'organization_address' => $organization_address ?? null,
-            'fromName' => $this->settingService->get('organization_name')->value ?? null,
-            'logo' => $this->settingService->get('logo_file')->value ?? null,
+            'fromName' => app('laravel-crm.settings')->get('organization_name', null),
+            'logo' => app('laravel-crm.settings')->get('logo_file', null),
         ]);*/
 
         return Pdf::setOption([
@@ -427,13 +427,13 @@ class OrderController extends Controller
         ])
             ->loadView('laravel-crm::orders.pdf', [
                 'order' => $order,
-                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
+                'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
                 'organization_address' => $organization_address ?? null,
-                'fromName' => $this->settingService->get('organization_name')->value ?? null,
-                'logo' => $this->settingService->get('logo_file')->value ?? null,
+                'fromName' => app('laravel-crm.settings')->get('organization_name', null),
+                'logo' => app('laravel-crm.settings')->get('logo_file', null),
             ])->download('order-'.strtolower($order->order_id).'.pdf');
     }
 }

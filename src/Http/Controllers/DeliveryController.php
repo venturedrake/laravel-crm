@@ -273,13 +273,13 @@ class DeliveryController extends Controller
             ->loadView('laravel-crm::deliveries.pdf', [
                 'delivery' => $delivery,
                 'order' => $delivery->order,
-                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
+                'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $delivery->getShippingAddress() ?? null,
                 'organization_address' => $delivery->order->getShippingAddress() ?? $organization_address ?? null,
-                'fromName' => $this->settingService->get('organization_name')->value ?? null,
-                'logo' => $this->settingService->get('logo_file')->value ?? null,
+                'fromName' => app('laravel-crm.settings')->get('organization_name', null),
+                'logo' => app('laravel-crm.settings')->get('logo_file', null),
             ])->download('delivery-'.strtolower($delivery->delivery_id).'.pdf');
     }
 }
