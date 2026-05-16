@@ -96,13 +96,23 @@ class LaravelCrmUpdate extends Command
         }
 
         $this->info('Running migrations...');
-        $this->call('migrate', ['--force' => true]);
+
+        try {
+            $this->call('migrate', ['--force' => true]);
+        } catch (\Throwable $e) {
+            $this->warn('Migration warning: '.$e->getMessage());
+        }
 
         $this->info('Reseeding base tables...');
-        $this->callSilent('db:seed', [
-            '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
-            '--force' => true,
-        ]);
+
+        try {
+            $this->callSilent('db:seed', [
+                '--class' => 'VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmTablesSeeder',
+                '--force' => true,
+            ]);
+        } catch (\Throwable $e) {
+            $this->warn('Seeder warning: '.$e->getMessage());
+        }
 
         if ($this->settingService->get('db_update_0180') == 0) {
             $this->info('Updating Laravel CRM quote numbers...');
