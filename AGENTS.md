@@ -4,20 +4,17 @@ A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into
 
 ## Workspace Overview
 
-This package is developed across a **four-project workspace**:
+This package is developed across a **three-project workspace**:
 
 | Project | Path | Purpose |
 |---|---|---|
 | **Package** (this repo) | `/Users/andrewdrake/Packages/laravel-crm` | CRM package source — all CRM code lives here |
-| **Laravel 12 Host** (primary) | `/Users/andrewdrake/Sites/laravel-12-crm-v2` | Clean Laravel 12 host that **consumes** the package via Composer path repo — primary dev/test host |
-| **Laravel 13 Host** | `/Users/andrewdrake/Sites/laravelcrm-v2` | Laravel 13 + Fortify + Flux UI Livewire starter kit — standalone, does **not** consume CRM package |
+| **Laravel 13 Host** (primary) | `/Users/andrewdrake/Sites/laravel-13-crm-v2` | Laravel 13 host that **consumes** the package via Composer path repo — primary dev/test host |
 | **Docs** | `/Users/andrewdrake/Sites/laravel-crm-docs` | Markdown docs site (per-feature `.md` files: leads, deals, quotes, etc.) — update when adding/changing user-facing features |
 
-The Laravel 12 host requires this package via a Composer **path repository** with the symlink `vendor/venturedrake/laravel-crm -> ../../../../Packages/laravel-crm/`, so changes to package source are reflected immediately without `composer update`.
+The Laravel 13 host requires this package via a Composer **path repository** with the symlink `vendor/venturedrake/laravel-crm -> ../../../../Packages/laravel-crm/`, so changes to package source are reflected immediately without `composer update`.
 
-> A separate **Premium Host** (`/Users/andrewdrake/Sites/laravel-crm-premium`, Laravel 11 + Jetstream + Xero) exists on disk but is **not** part of the current workspace; only use it when explicitly testing Xero/Jetstream-specific behavior.
-
-**Key workflow**: Edit package code here in `/Users/andrewdrake/Packages/laravel-crm/`, test immediately in the Laravel 12 host via browser or `php artisan` from `/Users/andrewdrake/Sites/laravel-12-crm-v2`. No publish step needed for code — only run `php artisan vendor:publish` when updating config, views, or assets.
+**Key workflow**: Edit package code here in `/Users/andrewdrake/Packages/laravel-crm/`, test immediately in the Laravel 13 host via browser or `php artisan` from `/Users/andrewdrake/Sites/laravel-13-crm-v2`. No publish step needed for code — only run `php artisan vendor:publish` when updating config, views, or assets.
 
 ## Architecture
 
@@ -133,47 +130,19 @@ Form-specific traits live in `src/Livewire/Traits/`:
 
 ## Host Apps (Development / Testing)
 
-### Host 1: Laravel 12 — primary (`laravel-12-crm-v2`)
+### Laravel 13 — primary (`laravel-13-crm-v2`)
 
 | Aspect | Detail |
 |---|---|
-| **Path** | `/Users/andrewdrake/Sites/laravel-12-crm-v2` |
-| **Laravel version** | 12.x — clean scaffold (no Jetstream / Fortify / Sanctum) |
+| **Path** | `/Users/andrewdrake/Sites/laravel-13-crm-v2` |
+| **Laravel version** | 13.x — PHP 8.4, Livewire 4, Pest 4 |
 | **Role** | Primary host that consumes this package via Composer path repo (symlinked `vendor/venturedrake/laravel-crm`) |
-| **DB** | MySQL, database `laravel_12_crm_v2_dev`, table prefix `crm_` (default) |
-| **URL** | `http://localhost` (via `php artisan serve` or `composer dev`), CRM at `/crm` |
+| **URL** | Served by Laravel Herd at `http://laravel-13-crm-v2.test`, CRM at `/crm` |
 | **Teams** | `LARAVEL_CRM_TEAMS` not set — single-tenant mode |
 | **Encryption** | `LARAVEL_CRM_ENCRYPT_DB_FIELDS=false` |
 | **User model** | `App\Models\User` uses `HasFactory`, `Notifiable`, `HasRoles` (Spatie), `HasCrmAccess`, `HasCrmTeams` |
-| **Frontend** | Host: Tailwind v4 + Vite 6; package builds independently via its own `vite.config.js` |
-| **Dev command** | `composer dev` (server + queue + `pail` logs + Vite concurrently) |
-
-### Host 2: Laravel 13 standalone (`laravelcrm-v2`)
-
-| Aspect | Detail |
-|---|---|
-| **Path** | `/Users/andrewdrake/Sites/laravelcrm-v2` |
-| **Laravel version** | 13.x — Livewire starter kit with Fortify + Flux UI |
-| **Role** | Separate Laravel project in workspace; does **not** consume the CRM package — used for reference/experiments only |
-| **DB** | SQLite (`database/database.sqlite`) |
-| **URL** | `http://laravelcrm-v2.test` (Herd) |
-| **Frontend** | Tailwind v4 + Flux UI v2 + Vite |
-| **Testing** | Pest v4 |
-
-### Host 3: Premium (`laravel-crm-premium`) — on-disk only, not in workspace
-
-| Aspect | Detail |
-|---|---|
-| **Path** | `/Users/andrewdrake/Sites/laravel-crm-premium` |
-| **Laravel version** | 11.x with Jetstream (Livewire stack), Sanctum, Fortify |
-| **Teams** | Jetstream teams feature is **commented out** — `LARAVEL_CRM_TEAMS` not set (single-tenant mode) |
-| **DB** | MySQL, database `laravel_crm_v2_dev`, no table prefix (`LARAVEL_CRM_DB_TABLE_PREFIX=` empty) |
-| **URL** | `http://laravel-crm-premium.test` (Herd), CRM at `/crm` |
-| **User model** | `App\Models\User` uses `HasCrmAccess`, `HasCrmTeams`, `HasRoles` (Spatie), `SendsCrmPasswordReset`, `HasApiTokens`, `TwoFactorAuthenticatable`, `HasProfilePhoto` |
-| **Frontend** | Host has its own Tailwind v3 + DaisyUI v4 build; package builds independently via its own `vite.config.js` |
-| **Providers** | `AppServiceProvider`, `FortifyServiceProvider`, `JetstreamServiceProvider` |
-| **Dev command** | `composer dev` (runs server + queue + logs + Vite concurrently) |
-| **Use when** | Testing Xero integration, Jetstream-specific flows, or empty-table-prefix configurations |
+| **Frontend** | Host: Tailwind v4 + Vite; package builds independently via its own `vite.config.js` |
+| **Dev tooling** | Laravel Boost (MCP), Pail logs, Pest 4 (incl. browser testing) |
 
 ## Developer Workflows
 
