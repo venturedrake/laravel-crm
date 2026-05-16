@@ -66,7 +66,7 @@ class QuoteIndex extends Component
             ['key' => 'quote_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'reference', 'label' => ucfirst(__('laravel-crm::lang.reference'))],
             ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
+            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'sortable' => false, 'format' => fn ($row, $field) => $field],
             ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
             ['key' => 'total', 'label' => ucfirst(__('laravel-crm::lang.total')), 'format' => fn ($row, $field) => money($field, $row->currency)],
@@ -77,13 +77,17 @@ class QuoteIndex extends Component
             ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],*/
             /* ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact'))],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization'))],*/
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))],
-            ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated'))],
+            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],
+            ['key' => 'ownerUser.name', 'label' => 'Owner', 'sortable' => false, 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated'))],
         ];
     }
 
     public function quotes(): LengthAwarePaginator
     {
+        $allowedSortColumns = ['created_at', 'quote_id', 'reference', 'title', 'total', 'issue_at', 'expire_at'];
+        $sortColumn = in_array($this->sortBy['column'], $allowedSortColumns) ? $this->sortBy['column'] : 'created_at';
+        $sortDirection = $this->sortBy['direction'] ?? 'desc';
+
         return Quote::select(
             config('laravel-crm.db_table_prefix').'quotes.*',
             config('laravel-crm.db_table_prefix').'people.first_name',
@@ -116,7 +120,7 @@ class QuoteIndex extends Component
             })
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
     }
 
