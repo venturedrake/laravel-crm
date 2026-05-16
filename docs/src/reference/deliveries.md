@@ -1,3 +1,0 @@
-# Deliveries
-
-[[toc]]

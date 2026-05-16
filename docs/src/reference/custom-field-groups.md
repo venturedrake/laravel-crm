@@ -1,3 +1,0 @@
-# Custom Field Groups
-
-[[toc]]
