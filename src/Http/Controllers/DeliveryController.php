@@ -273,6 +273,7 @@ class DeliveryController extends Controller
             ->loadView('laravel-crm::deliveries.pdf', [
                 'delivery' => $delivery,
                 'order' => $delivery->order,
+                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $delivery->getShippingAddress() ?? null,

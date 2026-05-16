@@ -93,6 +93,7 @@ class QuoteSend extends Component
         ])
             ->loadView('laravel-crm::quotes.pdf', [
                 'quote' => $this->quote,
+                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

@@ -427,6 +427,7 @@ class OrderController extends Controller
         ])
             ->loadView('laravel-crm::orders.pdf', [
                 'order' => $order,
+                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

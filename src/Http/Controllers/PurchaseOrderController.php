@@ -318,6 +318,7 @@ class PurchaseOrderController extends Controller
         ])
             ->loadView('laravel-crm::purchase-orders.pdf', [
                 'purchaseOrder' => $purchaseOrder,
+                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
                 'contactDetails' => $this->settingService->get('purchase_order_contact_details')->value ?? null,
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,

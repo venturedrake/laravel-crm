@@ -83,6 +83,7 @@ class InvoiceSend extends Component
         ])
             ->loadView('laravel-crm::invoices.pdf', [
                 'invoice' => $this->invoice,
+                'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

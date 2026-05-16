@@ -95,6 +95,7 @@ class InvoiceController extends Controller
                 ])
                     ->loadView('laravel-crm::invoices.pdf', [
                         'invoice' => $invoice,
+                        'dateFormat' => $this->settingService->get('date_format')->value ?? config('laravel-crm.date_format'),
                         'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
                         'paymentInstructions' => $this->settingService->get('invoice_payment_instructions')->value ?? null,
                         'email' => $email ?? null,
