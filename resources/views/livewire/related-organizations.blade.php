@@ -16,7 +16,7 @@
                 <div class="autocomplete-input z-50">
                     <x-mary-input wire:model.live="organization_name" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" label="{{ ucfirst(__('laravel-crm::lang.name')) }}" icon="fas.building" />
                     @if($showOrganizations)
-                        <div class="border border-solid border-primary absolute bg-white z-50 w-96">
+                        <div class="border border-solid border-primary absolute bg-base-100 dark:bg-base-200 z-50 w-96">
                             @if(!empty($organizations))
                                 @foreach($organizations as $organization)
                                     <x-mary-list-item wire:click="linkOrganization({{ $organization->id }})" :item="$organization">
