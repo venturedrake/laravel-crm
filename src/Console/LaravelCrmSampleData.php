@@ -13,14 +13,15 @@ class LaravelCrmSampleData extends Command
      * @var string
      */
     protected $signature = 'laravelcrm:sample-data
-                            {--fresh : Truncate all CRM sample data before seeding}';
+                            {--fresh : Truncate all CRM sample data before seeding}
+                            {--full : Seed the full data set (default seeds ~10% for a faster, lighter dataset)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Seed the CRM with realistic sample data spanning 3 years';
+    protected $description = 'Seed the CRM with realistic sample data spanning 3 years (~10% by default, use --full for the complete data set)';
 
     /**
      * Execute the console command.
@@ -42,7 +43,7 @@ class LaravelCrmSampleData extends Command
 
         $seeder = new LaravelCrmSampleDataSeeder;
         $seeder->setCommand($this);
-        $seeder->run($this->option('fresh'));
+        $seeder->run($this->option('fresh'), $this->option('full'));
 
         $this->newLine();
         $this->info('✅ CRM sample data seeded successfully!');

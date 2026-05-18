@@ -173,10 +173,31 @@ class LaravelCrmSampleDataSeeder extends Seeder
     protected $sampleTeams;
 
     /**
+     * Volume scale factor applied to large data sets.
+     * Defaults to 0.1 (~10% of the full dataset); set to 1.0 when --full is passed.
+     */
+    protected float $scale = 0.1;
+
+    /**
+     * Scale a target count by the current $scale factor.
+     * Guarantees at least 1 when the requested value is > 0.
+     */
+    protected function scaled(int $value): int
+    {
+        if ($value <= 0) {
+            return 0;
+        }
+
+        return max(1, (int) round($value * $this->scale));
+    }
+
+    /**
      * Run the database seeds.
      */
-    public function run(bool $fresh = false): void
+    public function run(bool $fresh = false, bool $full = false): void
     {
+        $this->scale = $full ? 1.0 : 0.1;
+
         $startTime = microtime(true);
 
         // Use Carbon::now() instead of now() helper to avoid CarbonImmutable
@@ -190,6 +211,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->command->line('  <fg=cyan;options=bold>╚══════════════════════════════════════════════╝</>');
         $this->command->line('');
         $this->command->line("  Date range: <comment>{$this->startDate->toDateString()}</comment> → <comment>{$this->endDate->toDateString()}</comment> (3 years)");
+        $datasetLabel = $this->scale >= 1.0 ? 'full (100%)' : 'reduced (~'.(int) round($this->scale * 100).'%) — use --full for the complete data set';
+        $this->command->line("  Dataset:    <comment>{$datasetLabel}</comment>");
         $this->command->line('');
 
         // Get the first user with CRM access, or the first user
@@ -935,6 +958,9 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'com', 'co', 'io', 'tech', 'biz', 'net', 'org',
         ];
 
+        // Reduce the list when running a scaled (non --full) seed.
+        $orgNames = array_slice($orgNames, 0, $this->scaled(count($orgNames)));
+
         $bar = $this->createProgressBar(count($orgNames));
 
         // Address type IDs. Type 1 = Current (always the primary), others are
@@ -1073,7 +1099,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'Operations Manager', 'Technical Lead',
         ];
 
-        $count = 800;
+        $count = $this->scaled(800);
         $bar = $this->createProgressBar($count);
 
         // Address type IDs. Type 1 = Current (always the primary).
@@ -1236,7 +1262,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         // 1=New, 2=Appointment Scheduled, 3=Qualified To Buy, 4=Presentation Scheduled,
         // 5=Decision Maker Bought-In, 6=Contract Sent, 7=Closed Won, 8=Closed Lost
 
-        $count = 4000;
+        $count = $this->scaled(4000);
         $converted = [];
         $bar = $this->createProgressBar($count);
 
@@ -1451,7 +1477,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->command->newLine();
 
         // Create some standalone deals (not from leads)
-        $standaloneDealCount = 600;
+        $standaloneDealCount = $this->scaled(600);
         $this->command->line("    <fg=gray>Creating {$standaloneDealCount} standalone deals…</>");
         $bar = $this->createProgressBar($standaloneDealCount);
 
@@ -1693,7 +1719,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->command->newLine();
 
         // Add quotes from open/pending deals
-        $pendingDeals = Deal::whereNull('closed_status')->take(200)->get();
+        $pendingDeals = Deal::whereNull('closed_status')->take($this->scaled(200))->get();
         $this->command->line("    <fg=gray>Quoting {$pendingDeals->count()} open/pending deals…</>");
         $bar = $this->createProgressBar($pendingDeals->count());
 
@@ -1766,7 +1792,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         ];
 
         $currentQuoteCount = Quote::count();
-        $targetTotal = 2000; // ~55/month over 36 months
+        $targetTotal = $this->scaled(2000); // ~55/month over 36 months at full scale
         $standaloneNeeded = max(0, $targetTotal - $currentQuoteCount);
         $standaloneCreated = 0;
 
@@ -1993,7 +2019,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         // ── Standalone orders (created directly, no quote) ──────────────────────
         $currentOrderCount = Order::count();
-        $targetOrderTotal = max($currentOrderCount + 300, (int) ($currentOrderCount * 1.25));
+        $targetOrderTotal = max($currentOrderCount + $this->scaled(300), (int) ($currentOrderCount * 1.25));
         $standaloneNeeded = $targetOrderTotal - $currentOrderCount;
 
         $this->command->line("    <fg=gray>Creating {$standaloneNeeded} standalone orders (no quote)…</>");
@@ -2185,7 +2211,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         // ── Standalone invoices (created directly, no order) ─────────────────
         $currentInvoiceCount = Invoice::count();
-        $standaloneInvoicesNeeded = max(150, (int) ($currentInvoiceCount * 0.2));
+        $standaloneInvoicesNeeded = max($this->scaled(150), (int) ($currentInvoiceCount * 0.2));
         $this->command->line("    <fg=gray>Creating {$standaloneInvoicesNeeded} standalone invoices (no order)…</>");
         $bar = $this->createProgressBar(max(1, $standaloneInvoicesNeeded));
         $standaloneInvoiceCount = 0;
@@ -2486,7 +2512,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->command->newLine();
 
         // ── Standalone purchase orders (created directly, no order) ──────────
-        $standalonePONeeded = max(100, (int) ($poCount * 0.3));
+        $standalonePONeeded = max($this->scaled(100), (int) ($poCount * 0.3));
         $this->command->line("    <fg=gray>Creating {$standalonePONeeded} standalone purchase orders (no order)…</>");
         $bar = $this->createProgressBar(max(1, $standalonePONeeded));
         $poTaxRate = $this->defaultTaxRate->rate ?? 10;
