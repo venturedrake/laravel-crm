@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use VentureDrake\LaravelCrm\Console\Commands\IssueApiToken;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddUser;
 use VentureDrake\LaravelCrm\Console\LaravelCrmArchive;
@@ -792,6 +793,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmSampleData::class,
                 LaravelCrmEmailCampaignsDispatch::class,
                 LaravelCrmSmsCampaignsDispatch::class,
+                IssueApiToken::class,
             ]);
 
         }
