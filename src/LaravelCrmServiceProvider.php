@@ -5,14 +5,17 @@ namespace VentureDrake\LaravelCrm;
 use App\Team;
 use App\User;
 use Dcblogdev\Xero\Models\XeroToken;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -80,11 +83,13 @@ use VentureDrake\LaravelCrm\Http\Livewire\SendInvoice;
 use VentureDrake\LaravelCrm\Http\Livewire\SendPurchaseOrder;
 use VentureDrake\LaravelCrm\Http\Livewire\SendQuote;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
+use VentureDrake\LaravelCrm\Http\Middleware\ForceJsonResponse;
 use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Http\Middleware\LogUsage;
 use VentureDrake\LaravelCrm\Http\Middleware\RouteSubdomain;
+use VentureDrake\LaravelCrm\Http\Middleware\SetApiTeamContext;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
 use VentureDrake\LaravelCrm\Http\Middleware\SystemCheck;
 use VentureDrake\LaravelCrm\Http\Middleware\TeamsPermission;
@@ -478,6 +483,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // Middleware
         $router->aliasMiddleware('auth.laravel-crm', Authenticate::class);
+        $router->aliasMiddleware('laravel-crm.api.json', ForceJsonResponse::class);
+        $router->aliasMiddleware('laravel-crm.api.team', SetApiTeamContext::class);
+
+        RateLimiter::for('laravel-crm-api', function (Request $request) {
+            return $request->user()
+                ? Limit::perMinute(60)->by($request->user()->getAuthIdentifier())
+                : Limit::perMinute(30)->by($request->ip());
+        });
 
         if (config('laravel-crm.teams')) {
             $router->pushMiddlewareToGroup('web', TeamsPermission::class);
@@ -1199,6 +1212,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
             if (config('laravel-crm.user_interface')) {
                 $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
             }
+        });
+
+        // API routes (v2) — JSON-only with named rate limiter
+        Route::group([
+            'prefix' => 'api/crm/v2',
+            'middleware' => ['api', 'laravel-crm.api.json', 'throttle:laravel-crm-api'],
+        ], function () {
+            $this->loadRoutesFrom(__DIR__.'/Http/api-routes.php');
         });
     }
 
