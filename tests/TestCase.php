@@ -2,7 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Tests;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
+use Laravel\Sanctum\SanctumServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Spatie\Permission\PermissionServiceProvider;
@@ -47,6 +50,7 @@ abstract class TestCase extends OrchestraTestCase
             \OwenVoke\BladeFontAwesome\BladeFontAwesomeServiceProvider::class,
             \Codeat3\BladeForkAwesome\BladeForkAwesomeServiceProvider::class,
             \Mary\MaryServiceProvider::class,
+            SanctumServiceProvider::class,
             LaravelCrmServiceProvider::class,
         ];
     }
@@ -83,6 +87,19 @@ abstract class TestCase extends OrchestraTestCase
     protected function defineDatabaseMigrations()
     {
         TestSchema::up();
+
+        if (! Schema::hasTable('personal_access_tokens')) {
+            Schema::create('personal_access_tokens', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->morphs('tokenable');
+                $table->string('name');
+                $table->string('token', 64)->unique();
+                $table->text('abilities')->nullable();
+                $table->timestamp('last_used_at')->nullable();
+                $table->timestamp('expires_at')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     protected function actingAsUser(array $attributes = []): User

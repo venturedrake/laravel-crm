@@ -42,6 +42,7 @@
         "doctrine/dbal": "^3.9|^4.0",
         "guzzlehttp/guzzle": "^6.0|^7.0",
         "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+        "laravel/sanctum": "^4.0",
         "livewire/livewire": "^3.0|^4.0",
         "mallardduck/blade-boxicons": "^2.4",
         "mpdf/mpdf": "^8.0",
