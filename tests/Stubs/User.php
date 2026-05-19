@@ -22,6 +22,21 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function hasPermissionTo($permission, $guardName = null): bool
+    {
+        $raw = $this->attributes['crm_permissions'] ?? null;
+
+        if ($raw === null) {
+            return true;
+        }
+
+        $list = is_array($raw) ? $raw : (json_decode($raw, true) ?: []);
+
+        $name = is_object($permission) ? ($permission->name ?? '') : (string) $permission;
+
+        return in_array($name, $list, true);
+    }
+
     public function currentTeam()
     {
         return null;

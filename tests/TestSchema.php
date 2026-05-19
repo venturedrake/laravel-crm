@@ -19,6 +19,7 @@ class TestSchema
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password')->nullable();
                 $table->boolean('crm_access')->default(true);
+                $table->text('crm_permissions')->nullable();
                 $table->timestamp('last_online_at')->nullable();
                 $table->unsignedBigInteger('current_crm_team_id')->nullable();
                 $table->rememberToken();

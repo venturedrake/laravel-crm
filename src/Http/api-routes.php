@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\AuthController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\LeadController;
 
 /*
  * Laravel CRM API routes (v2).
@@ -21,4 +22,8 @@ Route::middleware(['auth:sanctum', 'crm-api', 'laravel-crm.api.team'])->group(fu
 
     Route::delete('auth/token', [AuthController::class, 'revokeToken'])
         ->name('laravel-crm.api.v2.auth.token.revoke');
+
+    Route::apiResource('leads', LeadController::class)
+        ->names('laravel-crm.api.v2.leads')
+        ->scoped(['lead' => 'external_id']);
 });
