@@ -249,6 +249,49 @@ test('PUT /people/{person} can link to an organization by UUID', function () {
     expect($person->fresh()->organization_id)->toBe($organization->id);
 });
 
+test('PUT /people/{person} preserves seeded phones, emails, and addresses when omitted', function () {
+    $user = personApiUser();
+    $person = Person::create(['first_name' => 'Original']);
+
+    $phone = $person->phones()->create([
+        'external_id' => (string) Str::uuid(),
+        'number' => '+1-555-0100',
+        'type' => 'work',
+        'primary' => 1,
+    ]);
+
+    $email = $person->emails()->create([
+        'external_id' => (string) Str::uuid(),
+        'address' => 'kept@example.com',
+        'type' => 'work',
+        'primary' => 1,
+    ]);
+
+    $address = $person->addresses()->create([
+        'external_id' => (string) Str::uuid(),
+        'line1' => '1 Main St',
+        'city' => 'Townsville',
+        'country' => 'AU',
+        'primary' => 1,
+    ]);
+
+    $response = $this->withHeaders(personApiHeaders($user))
+        ->putJson('/api/crm/v2/people/'.$person->external_id, [
+            'first_name' => 'Renamed',
+        ]);
+
+    $response->assertOk();
+
+    $fresh = $person->fresh();
+    expect($fresh->first_name)->toBe('Renamed');
+    expect($fresh->phones()->count())->toBe(1);
+    expect($fresh->phones()->first()->id)->toBe($phone->id);
+    expect($fresh->emails()->count())->toBe(1);
+    expect($fresh->emails()->first()->id)->toBe($email->id);
+    expect($fresh->addresses()->count())->toBe(1);
+    expect($fresh->addresses()->first()->id)->toBe($address->id);
+});
+
 test('DELETE /people/{person} soft-deletes the person', function () {
     $user = personApiUser();
     $person = Person::create(['first_name' => 'Toast']);

@@ -99,6 +99,10 @@ class PersonService
 
     protected function updatePersonPhones($person, $phones)
     {
+        if ($phones === null) {
+            return;
+        }
+
         $phoneIds = [];
         if ($phones) {
             foreach ($phones as $phoneRequest) {
@@ -130,6 +134,10 @@ class PersonService
 
     protected function updatePersonEmails($person, $emails)
     {
+        if ($emails === null) {
+            return;
+        }
+
         $emailIds = [];
 
         if ($emails) {
@@ -171,6 +179,10 @@ class PersonService
 
     protected function updatePersonAddresses($person, $addresses)
     {
+        if ($addresses === null) {
+            return;
+        }
+
         $addressIds = [];
 
         if ($addresses) {
