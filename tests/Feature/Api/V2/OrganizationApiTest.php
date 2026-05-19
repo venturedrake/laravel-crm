@@ -234,6 +234,49 @@ test('PUT /organizations/{organization} updates an organization', function () {
     expect((int) $fresh->getRawOriginal('annual_revenue'))->toBe(25075);
 });
 
+test('PUT /organizations/{organization} preserves seeded phones, emails, and addresses when omitted', function () {
+    $user = organizationApiUser();
+    $organization = Organization::create(['name' => 'Original']);
+
+    $phone = $organization->phones()->create([
+        'external_id' => (string) Str::uuid(),
+        'number' => '+1-555-0200',
+        'type' => 'work',
+        'primary' => 1,
+    ]);
+
+    $email = $organization->emails()->create([
+        'external_id' => (string) Str::uuid(),
+        'address' => 'kept@example.com',
+        'type' => 'work',
+        'primary' => 1,
+    ]);
+
+    $address = $organization->addresses()->create([
+        'external_id' => (string) Str::uuid(),
+        'line1' => '1 Main St',
+        'city' => 'Townsville',
+        'country' => 'AU',
+        'primary' => 1,
+    ]);
+
+    $response = $this->withHeaders(organizationApiHeaders($user))
+        ->putJson('/api/crm/v2/organizations/'.$organization->external_id, [
+            'name' => 'Renamed',
+        ]);
+
+    $response->assertOk();
+
+    $fresh = $organization->fresh();
+    expect($fresh->name)->toBe('Renamed');
+    expect($fresh->phones()->count())->toBe(1);
+    expect($fresh->phones()->first()->id)->toBe($phone->id);
+    expect($fresh->emails()->count())->toBe(1);
+    expect($fresh->emails()->first()->id)->toBe($email->id);
+    expect($fresh->addresses()->count())->toBe(1);
+    expect($fresh->addresses()->first()->id)->toBe($address->id);
+});
+
 test('DELETE /organizations/{organization} soft-deletes the organization', function () {
     $user = organizationApiUser();
     $organization = Organization::create(['name' => 'Toast']);
