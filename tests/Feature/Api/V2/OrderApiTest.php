@@ -163,6 +163,29 @@ test('PUT /orders/{order} replaces line items', function () {
     expect(OrderProduct::query()->where('order_id', Order::where('external_id', $created['id'])->value('id'))->count())->toBe(1);
 });
 
+test('PUT /orders/{order} preserves seeded addresses when omitted', function () {
+    $user = orderApiUser();
+    $order = Order::create(['description' => 'Has addresses']);
+
+    $address = $order->addresses()->create([
+        'external_id' => (string) Str::uuid(),
+        'line1' => '123 Main St',
+        'city' => 'Springfield',
+        'country' => 'US',
+        'primary' => 1,
+    ]);
+
+    $this->withHeaders(orderApiHeaders($user))
+        ->putJson('/api/crm/v2/orders/'.$order->external_id, [
+            'reference' => 'O-REF-UPDATED',
+        ])
+        ->assertOk();
+
+    expect($order->fresh()->reference)->toBe('O-REF-UPDATED');
+    expect($order->fresh()->addresses)->toHaveCount(1);
+    expect($order->fresh()->addresses->first()->id)->toBe($address->id);
+});
+
 test('DELETE /orders/{order} soft-deletes the order', function () {
     $user = orderApiUser();
     $order = Order::create(['description' => 'Toast']);
