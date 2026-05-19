@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\AuthController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\DealController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\LeadController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrganizationController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\PersonController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\ProductController;
 
 /*
@@ -36,4 +38,13 @@ Route::middleware(['auth:sanctum', 'crm-api', 'laravel-crm.api.team'])->group(fu
     Route::apiResource('organizations', OrganizationController::class)
         ->names('laravel-crm.api.v2.organizations')
         ->scoped(['organization' => 'external_id']);
+
+    Route::apiResource('people', PersonController::class)
+        ->parameters(['people' => 'person'])
+        ->names('laravel-crm.api.v2.people')
+        ->scoped(['person' => 'external_id']);
+
+    Route::apiResource('deals', DealController::class)
+        ->names('laravel-crm.api.v2.deals')
+        ->scoped(['deal' => 'external_id']);
 });
