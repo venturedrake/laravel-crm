@@ -37,13 +37,27 @@ class User extends Authenticatable
         return in_array($name, $list, true);
     }
 
-    public function currentTeam()
+    public function getCurrentTeamAttribute()
     {
-        return null;
+        if (array_key_exists('currentTeam', $this->relations)) {
+            return $this->relations['currentTeam'];
+        }
+
+        $id = $this->attributes['current_team_id'] ?? null;
+
+        return $id ? (object) ['id' => (int) $id, 'name' => 'Team '.(int) $id, 'user_id' => 0] : null;
     }
 
     public function allTeams()
     {
-        return collect();
+        $raw = $this->attributes['team_ids'] ?? null;
+
+        if (! $raw) {
+            return collect();
+        }
+
+        $ids = is_array($raw) ? $raw : (json_decode($raw, true) ?: []);
+
+        return collect($ids)->map(fn ($id) => (object) ['id' => (int) $id, 'name' => 'Team '.(int) $id, 'user_id' => 0]);
     }
 }

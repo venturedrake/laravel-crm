@@ -22,6 +22,8 @@ class TestSchema
                 $table->text('crm_permissions')->nullable();
                 $table->timestamp('last_online_at')->nullable();
                 $table->unsignedBigInteger('current_crm_team_id')->nullable();
+                $table->unsignedBigInteger('current_team_id')->nullable();
+                $table->text('team_ids')->nullable();
                 $table->rememberToken();
                 $table->timestamps();
             });
