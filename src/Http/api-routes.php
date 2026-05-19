@@ -3,10 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\AuthController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\DealController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\InvoiceController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\LeadController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrderController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrganizationController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\PersonController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\ProductController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\QuoteController;
 
 /*
  * Laravel CRM API routes (v2).
@@ -47,4 +50,16 @@ Route::middleware(['auth:sanctum', 'crm-api', 'laravel-crm.api.team'])->group(fu
     Route::apiResource('deals', DealController::class)
         ->names('laravel-crm.api.v2.deals')
         ->scoped(['deal' => 'external_id']);
+
+    Route::apiResource('quotes', QuoteController::class)
+        ->names('laravel-crm.api.v2.quotes')
+        ->scoped(['quote' => 'external_id']);
+
+    Route::apiResource('orders', OrderController::class)
+        ->names('laravel-crm.api.v2.orders')
+        ->scoped(['order' => 'external_id']);
+
+    Route::apiResource('invoices', InvoiceController::class)
+        ->names('laravel-crm.api.v2.invoices')
+        ->scoped(['invoice' => 'external_id']);
 });
