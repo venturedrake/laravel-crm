@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\AuthController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\LeadController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrganizationController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\ProductController;
 
 /*
  * Laravel CRM API routes (v2).
@@ -26,4 +28,12 @@ Route::middleware(['auth:sanctum', 'crm-api', 'laravel-crm.api.team'])->group(fu
     Route::apiResource('leads', LeadController::class)
         ->names('laravel-crm.api.v2.leads')
         ->scoped(['lead' => 'external_id']);
+
+    Route::apiResource('products', ProductController::class)
+        ->names('laravel-crm.api.v2.products')
+        ->scoped(['product' => 'external_id']);
+
+    Route::apiResource('organizations', OrganizationController::class)
+        ->names('laravel-crm.api.v2.organizations')
+        ->scoped(['organization' => 'external_id']);
 });

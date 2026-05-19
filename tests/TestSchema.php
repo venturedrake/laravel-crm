@@ -45,6 +45,12 @@ class TestSchema
             $table->text('description')->nullable();
             $table->string('vat_number')->nullable();
             $table->string('website_url')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->integer('number_of_employees')->nullable();
+            $table->bigInteger('annual_revenue')->nullable();
+            $table->bigInteger('total_money_raised')->nullable();
+            $table->unsignedBigInteger('organization_type_id')->nullable();
+            $table->unsignedBigInteger('timezone_id')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->unsignedBigInteger('user_updated_id')->nullable();
             $table->unsignedBigInteger('user_deleted_id')->nullable();
