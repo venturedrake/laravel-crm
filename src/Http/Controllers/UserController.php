@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use App\User;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -285,7 +286,7 @@ class UserController extends Controller
         }
 
         try {
-            \Carbon\Carbon::parse(trim($value));
+            Carbon::parse(trim($value));
         } catch (\Throwable) {
             return '';
         }

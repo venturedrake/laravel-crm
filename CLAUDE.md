@@ -156,3 +156,18 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 - **PDF**: `barryvdh/laravel-dompdf` and `mpdf/mpdf` for quotes/invoices
 - **Audit log**: `owen-it/laravel-auditing` — all models auto-audited
 - **Flash notifications**: `php-flasher/flasher-laravel` for non-Livewire flash messages
+
+## REST API
+
+The package ships a Sanctum-authenticated JSON REST API mounted at `/api/crm/v2`. It exposes 8
+resourceful entities (`leads`, `products`, `organizations`, `people`, `deals`, `quotes`, `orders`,
+`invoices`) with full CRUD plus 3 auth routes (`POST auth/token`, `GET auth/me`,
+`DELETE auth/token`).
+
+Tokens can be issued via `POST /api/crm/v2/auth/token` or via the ops command
+`php artisan laravel-crm:api-token <email> --name="..."`. The named rate limiter
+`laravel-crm-api` enforces 60 req/min/user (authenticated) and 30 req/min/IP (unauthenticated).
+Multi-tenancy uses the optional `X-Team-ID` header.
+
+See **[docs/api.md](docs/api.md)** for the full reference: install steps, auth flow, required
+headers, endpoint matrix, error format, rate limits, and worked examples.

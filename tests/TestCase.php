@@ -2,12 +2,18 @@
 
 namespace VentureDrake\LaravelCrm\Tests;
 
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
+use Codeat3\BladeForkAwesome\BladeForkAwesomeServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Sanctum\SanctumServiceProvider;
 use Livewire\LivewireServiceProvider;
+use MallardDuck\BladeBoxicons\BladeBoxiconsServiceProvider;
+use Mary\MaryServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use OwenVoke\BladeFontAwesome\BladeFontAwesomeServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 use VentureDrake\LaravelCrm\Facades\LaravelCrmFacade;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
@@ -44,12 +50,12 @@ abstract class TestCase extends OrchestraTestCase
         return [
             PermissionServiceProvider::class,
             LivewireServiceProvider::class,
-            \BladeUI\Icons\BladeIconsServiceProvider::class,
-            \BladeUI\Heroicons\BladeHeroiconsServiceProvider::class,
-            \MallardDuck\BladeBoxicons\BladeBoxiconsServiceProvider::class,
-            \OwenVoke\BladeFontAwesome\BladeFontAwesomeServiceProvider::class,
-            \Codeat3\BladeForkAwesome\BladeForkAwesomeServiceProvider::class,
-            \Mary\MaryServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            BladeHeroiconsServiceProvider::class,
+            BladeBoxiconsServiceProvider::class,
+            BladeFontAwesomeServiceProvider::class,
+            BladeForkAwesomeServiceProvider::class,
+            MaryServiceProvider::class,
             SanctumServiceProvider::class,
             LaravelCrmServiceProvider::class,
         ];
