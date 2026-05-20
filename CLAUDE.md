@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into any Laravel application. All source lives under `src/` with namespace `VentureDrake\LaravelCrm\`. Supports Laravel 10–13, PHP 8.1+, Livewire 3–4.
+A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into any Laravel application. All source lives under `src/` with namespace `VentureDrake\LaravelCrm\`. Supports Laravel 11–13, PHP 8.2+, Livewire 3–4.
 
 This package is developed in a **multi-project workspace**. Changes here take effect immediately in host apps (via Composer path repository) — no publish step needed for code:
 

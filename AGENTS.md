@@ -1,6 +1,6 @@
 # AGENTS.md — Laravel CRM
 
-A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into any Laravel application. All source lives under `src/` with namespace `VentureDrake\LaravelCrm\`. Supports Laravel 10–13 (`illuminate/support ^10.0|^11.0|^12.0|^13.0`).
+A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into any Laravel application. All source lives under `src/` with namespace `VentureDrake\LaravelCrm\`. Supports Laravel 11–13 (`illuminate/support ^11.0|^12.0|^13.0`), PHP 8.2+.
 
 ## Workspace Overview
 

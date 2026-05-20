@@ -19,16 +19,13 @@ class AuthController extends ApiController
 
         $user = $userModel::where('email', $credentials['email'])->first();
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+        if (! $user
+            || ! Hash::check($credentials['password'], $user->password)
+            || ! (bool) ($user->crm_access ?? false)
+        ) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
-        }
-
-        if (! (bool) ($user->crm_access ?? false)) {
-            return response()->json([
-                'message' => 'This user does not have CRM access.',
-            ], 403);
         }
 
         $deviceName = $credentials['device_name'] ?? ($request->userAgent() ?: 'api-token');

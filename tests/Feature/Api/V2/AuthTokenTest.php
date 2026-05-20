@@ -65,7 +65,7 @@ test('POST /auth/token returns 422 when fields are missing', function () {
     $response->assertJsonValidationErrors(['email', 'password']);
 });
 
-test('POST /auth/token returns 403 when the user lacks crm_access', function () {
+test('POST /auth/token returns 422 when the user lacks crm_access', function () {
     $user = authTokenUser(['crm_access' => false]);
 
     $response = $this->postJson('/api/crm/v2/auth/token', [
@@ -73,7 +73,8 @@ test('POST /auth/token returns 403 when the user lacks crm_access', function () 
         'password' => 'secret-password',
     ]);
 
-    $response->assertStatus(403);
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('email');
     expect(PersonalAccessToken::count())->toBe(0);
 });
 

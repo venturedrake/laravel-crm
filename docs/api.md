@@ -83,8 +83,9 @@ Content-Type: application/json
 }
 ```
 
-- Returns `422` on bad credentials.
-- Returns `403` if the user lacks `crm_access`.
+- Returns `422` on bad credentials, an unknown email, or when the user lacks `crm_access`. The
+  response is intentionally indistinguishable across these cases to avoid leaking which emails
+  belong to real users.
 - `device_name` is optional; defaults to the request's `User-Agent` or `api-token`.
 
 ### Option B — Issue via artisan (ops use)

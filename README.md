@@ -53,7 +53,7 @@ For more information on how to use the package, please refer to the official doc
 
 Version   | Laravel         | Status                  | PHP Version
 :----------|:----------------|:------------------------|:------------
-2.x       | 10.x.x - 13.x.x | Active support :rocket: | > = 8.1
+2.x       | 11.x.x - 13.x.x | Active support :rocket: | > = 8.2
 1.x      | 6.x.x - 11.x.x  | End of life             | > = 7.3
 
 ## Installation
