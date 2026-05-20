@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into any Laravel application. All source lives under `src/` with namespace `VentureDrake\LaravelCrm\`. Supports Laravel 10–13, PHP 8.1+, Livewire 3–4.
+A Laravel **package** (`venturedrake/laravel-crm`) that installs a full CRM into any Laravel application. All source lives under `src/` with namespace `VentureDrake\LaravelCrm\`. Supports Laravel 11–13, PHP 8.2+, Livewire 3–4.
 
 This package is developed in a **multi-project workspace**. Changes here take effect immediately in host apps (via Composer path repository) — no publish step needed for code:
 
@@ -156,3 +156,18 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 - **PDF**: `barryvdh/laravel-dompdf` and `mpdf/mpdf` for quotes/invoices
 - **Audit log**: `owen-it/laravel-auditing` — all models auto-audited
 - **Flash notifications**: `php-flasher/flasher-laravel` for non-Livewire flash messages
+
+## REST API
+
+The package ships a Sanctum-authenticated JSON REST API mounted at `/api/crm/v2`. It exposes 8
+resourceful entities (`leads`, `products`, `organizations`, `people`, `deals`, `quotes`, `orders`,
+`invoices`) with full CRUD plus 3 auth routes (`POST auth/token`, `GET auth/me`,
+`DELETE auth/token`).
+
+Tokens can be issued via `POST /api/crm/v2/auth/token` or via the ops command
+`php artisan laravel-crm:api-token <email> --name="..."`. The named rate limiter
+`laravel-crm-api` enforces 60 req/min/user (authenticated) and 30 req/min/IP (unauthenticated).
+Multi-tenancy uses the optional `X-Team-ID` header.
+
+See **[docs/api.md](docs/api.md)** for the full reference: install steps, auth flow, required
+headers, endpoint matrix, error format, rate limits, and worked examples.

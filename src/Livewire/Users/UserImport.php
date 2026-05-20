@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Users;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -99,20 +100,20 @@ class UserImport extends Component
             try {
                 $now = now();
                 $user = User::forceCreate([
-                    'name'             => $row['name'],
-                    'email'            => $row['email'],
-                    'password'         => Hash::make(Str::password(length: 16, letters: true, numbers: true, symbols: true, spaces: false)),
-                    'crm_access'       => $row['crm_access'],
-                    'mailing_list'     => $row['mailing_list'] ?? 1,
-                    'email_verified_at'=> $this->safeDateValue($row['email_verified_at'] ?? ''),
-                    'created_at'       => $this->safeDateValue($row['created_at'] ?? '') ?? $now,
-                    'updated_at'       => $this->safeDateValue($row['updated_at'] ?? '') ?? $now,
+                    'name' => $row['name'],
+                    'email' => $row['email'],
+                    'password' => Hash::make(Str::password(length: 16, letters: true, numbers: true, symbols: true, spaces: false)),
+                    'crm_access' => $row['crm_access'],
+                    'mailing_list' => $row['mailing_list'] ?? 1,
+                    'email_verified_at' => $this->safeDateValue($row['email_verified_at'] ?? ''),
+                    'created_at' => $this->safeDateValue($row['created_at'] ?? '') ?? $now,
+                    'updated_at' => $this->safeDateValue($row['updated_at'] ?? '') ?? $now,
                 ]);
 
                 // Backdate last_online_at directly — Eloquent guards this column
                 $lastOnline = $this->safeDateValue($row['last_online_at'] ?? '');
                 if ($lastOnline !== null) {
-                    \Illuminate\Support\Facades\DB::table('users')
+                    DB::table('users')
                         ->where('id', $user->id)
                         ->update(['last_online_at' => $lastOnline]);
                 }
@@ -192,7 +193,7 @@ class UserImport extends Component
 
         // Attempt a basic parse to catch other garbage values before they hit Eloquent.
         try {
-            \Carbon\Carbon::parse($value);
+            Carbon::parse($value);
         } catch (\Throwable) {
             return null;
         }

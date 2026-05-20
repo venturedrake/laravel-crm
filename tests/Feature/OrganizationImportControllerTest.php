@@ -78,4 +78,3 @@ test('parseImport rejects a CSV missing the required name column', function () {
     expect(session()->has('crm_organization_import_preview'))->toBeFalse();
     expect($response->getSession()->get('errors'))->not->toBeNull();
 });
-

@@ -11,3 +11,4 @@ package-lock.json
 /docs/node_modules
 .air
 .ai
+.context

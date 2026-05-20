@@ -104,6 +104,10 @@ class OrganizationService
 
     protected function updateOrganizationPhones($organization, $phones)
     {
+        if ($phones === null) {
+            return;
+        }
+
         $phoneIds = [];
         if ($phones) {
             foreach ($phones as $phoneRequest) {
@@ -135,6 +139,10 @@ class OrganizationService
 
     protected function updateOrganizationEmails($organization, $emails)
     {
+        if ($emails === null) {
+            return;
+        }
+
         $emailIds = [];
 
         if ($emails) {
@@ -176,6 +184,10 @@ class OrganizationService
 
     protected function updateOrganizationAddresses($organization, $addresses)
     {
+        if ($addresses === null) {
+            return;
+        }
+
         $addressIds = [];
 
         if ($addresses) {

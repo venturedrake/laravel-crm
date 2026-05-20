@@ -230,6 +230,10 @@ class OrderService
 
     protected function updateOrderAddresses($order, $addresses)
     {
+        if ($addresses === null) {
+            return;
+        }
+
         $addressIds = [];
 
         if ($addresses) {

@@ -60,6 +60,11 @@ class Deal extends Model
         }
     }
 
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
+
     public function person()
     {
         return $this->belongsTo(Person::class);

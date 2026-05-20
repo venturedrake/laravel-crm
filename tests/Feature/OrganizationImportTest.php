@@ -135,4 +135,3 @@ test('pagination next and prev clamp to valid bounds', function () {
         ->call('prevPage')->assertSet('page', 1)
         ->call('prevPage')->assertSet('page', 1);
 });
-
