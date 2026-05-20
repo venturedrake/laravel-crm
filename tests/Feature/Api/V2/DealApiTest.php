@@ -273,6 +273,64 @@ test('PUT /deals/{deal} updates a deal', function () {
     expect((int) $fresh->amount)->toBe(99999);
 });
 
+test('PUT /deals/{deal} preserves the attached person when person_id is omitted', function () {
+    $user = dealApiUser();
+    $person = Person::create(['first_name' => 'Keep', 'last_name' => 'Me']);
+    $deal = Deal::create(['title' => 'Original', 'person_id' => $person->id]);
+
+    $response = $this->withHeaders(dealApiHeaders($user))
+        ->putJson('/api/crm/v2/deals/'.$deal->external_id, [
+            'title' => 'Only title changes',
+        ]);
+
+    $response->assertOk();
+    expect($response->json('data.title'))->toBe('Only title changes');
+
+    $fresh = $deal->fresh();
+    expect($fresh->title)->toBe('Only title changes');
+    expect($fresh->person_id)->toBe($person->id);
+});
+
+test('PUT /deals/{deal} preserves the attached organization when organization_id is omitted', function () {
+    $user = dealApiUser();
+    $organization = Organization::create(['name' => 'Keep Me Co']);
+    $deal = Deal::create(['title' => 'Original', 'organization_id' => $organization->id]);
+
+    $response = $this->withHeaders(dealApiHeaders($user))
+        ->putJson('/api/crm/v2/deals/'.$deal->external_id, [
+            'title' => 'Only title changes',
+        ]);
+
+    $response->assertOk();
+
+    $fresh = $deal->fresh();
+    expect($fresh->title)->toBe('Only title changes');
+    expect($fresh->organization_id)->toBe($organization->id);
+});
+
+test('PUT /deals/{deal} clears person/organization when explicitly set to null', function () {
+    $user = dealApiUser();
+    $person = Person::create(['first_name' => 'Drop', 'last_name' => 'Me']);
+    $organization = Organization::create(['name' => 'Drop Me Co']);
+    $deal = Deal::create([
+        'title' => 'Original',
+        'person_id' => $person->id,
+        'organization_id' => $organization->id,
+    ]);
+
+    $response = $this->withHeaders(dealApiHeaders($user))
+        ->putJson('/api/crm/v2/deals/'.$deal->external_id, [
+            'person_id' => null,
+            'organization_id' => null,
+        ]);
+
+    $response->assertOk();
+
+    $fresh = $deal->fresh();
+    expect($fresh->person_id)->toBeNull();
+    expect($fresh->organization_id)->toBeNull();
+});
+
 test('DELETE /deals/{deal} soft-deletes the deal', function () {
     $user = dealApiUser();
     $deal = Deal::create(['title' => 'Toast']);

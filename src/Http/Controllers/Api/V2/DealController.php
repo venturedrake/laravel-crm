@@ -87,13 +87,21 @@ class DealController extends ApiController
 
     private function buildPayload(FormRequest $request, ?Deal $existing = null): array
     {
-        $person = $request->filled('person_id')
-            ? Person::where('external_id', $request->input('person_id'))->first()
-            : null;
+        if ($request->filled('person_id')) {
+            $person = Person::where('external_id', $request->input('person_id'))->first();
+        } elseif ($request->has('person_id')) {
+            $person = null;
+        } else {
+            $person = $existing?->person;
+        }
 
-        $organization = $request->filled('organization_id')
-            ? Organization::where('external_id', $request->input('organization_id'))->first()
-            : null;
+        if ($request->filled('organization_id')) {
+            $organization = Organization::where('external_id', $request->input('organization_id'))->first();
+        } elseif ($request->has('organization_id')) {
+            $organization = null;
+        } else {
+            $organization = $existing?->organization;
+        }
 
         $lead = $request->filled('lead_id')
             ? Lead::where('external_id', $request->input('lead_id'))->first()
