@@ -296,6 +296,64 @@ test('PUT /leads/{lead} updates a lead', function () {
     expect((int) $fresh->amount)->toBe(25075);
 });
 
+test('PUT /leads/{lead} preserves the attached person when person_id is omitted', function () {
+    $user = leadApiUser();
+    $person = Person::create(['first_name' => 'Keep', 'last_name' => 'Me']);
+    $lead = Lead::create(['title' => 'Original', 'person_id' => $person->id]);
+
+    $response = $this->withHeaders(leadApiHeaders($user))
+        ->putJson('/api/crm/v2/leads/'.$lead->external_id, [
+            'title' => 'Only title changes',
+        ]);
+
+    $response->assertOk();
+    expect($response->json('data.title'))->toBe('Only title changes');
+
+    $fresh = $lead->fresh();
+    expect($fresh->title)->toBe('Only title changes');
+    expect($fresh->person_id)->toBe($person->id);
+});
+
+test('PUT /leads/{lead} preserves the attached organization when organization_id is omitted', function () {
+    $user = leadApiUser();
+    $organization = Organization::create(['name' => 'Keep Me Co']);
+    $lead = Lead::create(['title' => 'Original', 'organization_id' => $organization->id]);
+
+    $response = $this->withHeaders(leadApiHeaders($user))
+        ->putJson('/api/crm/v2/leads/'.$lead->external_id, [
+            'title' => 'Only title changes',
+        ]);
+
+    $response->assertOk();
+
+    $fresh = $lead->fresh();
+    expect($fresh->title)->toBe('Only title changes');
+    expect($fresh->organization_id)->toBe($organization->id);
+});
+
+test('PUT /leads/{lead} clears person/organization when explicitly set to null', function () {
+    $user = leadApiUser();
+    $person = Person::create(['first_name' => 'Drop', 'last_name' => 'Me']);
+    $organization = Organization::create(['name' => 'Drop Me Co']);
+    $lead = Lead::create([
+        'title' => 'Original',
+        'person_id' => $person->id,
+        'organization_id' => $organization->id,
+    ]);
+
+    $response = $this->withHeaders(leadApiHeaders($user))
+        ->putJson('/api/crm/v2/leads/'.$lead->external_id, [
+            'person_id' => null,
+            'organization_id' => null,
+        ]);
+
+    $response->assertOk();
+
+    $fresh = $lead->fresh();
+    expect($fresh->person_id)->toBeNull();
+    expect($fresh->organization_id)->toBeNull();
+});
+
 test('DELETE /leads/{lead} soft-deletes the lead', function () {
     $user = leadApiUser();
     $lead = Lead::create(['title' => 'Toast']);
