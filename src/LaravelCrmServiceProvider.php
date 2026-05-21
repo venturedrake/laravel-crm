@@ -125,6 +125,11 @@ use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateCreate;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateEdit;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateIndex;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateShow;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureBoard;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureCreate;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureEdit;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureIndex;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureShow;
 use VentureDrake\LaravelCrm\Livewire\Files\FileItem;
 use VentureDrake\LaravelCrm\Livewire\Files\FileRelated;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
@@ -200,6 +205,9 @@ use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\Features\FeatureStatusCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\Features\FeatureStatusEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\Features\FeatureStatusIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\ClickSend\ClickSendConnect;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
@@ -883,6 +891,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-lead-show', LeadShow::class);
         Livewire::component('crm-lead-create', LeadCreate::class);
         Livewire::component('crm-lead-edit', LeadEdit::class);
+        Livewire::component('crm-feature-index', FeatureIndex::class);
+        Livewire::component('crm-feature-board', FeatureBoard::class);
+        Livewire::component('crm-feature-show', FeatureShow::class);
+        Livewire::component('crm-feature-create', FeatureCreate::class);
+        Livewire::component('crm-feature-edit', FeatureEdit::class);
         Livewire::component('crm-task-index', TaskIndex::class);
         Livewire::component('crm-task-show', TaskShow::class);
         Livewire::component('crm-task-create', TaskCreate::class);
@@ -1034,6 +1047,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-lead-source-create', LeadSourceCreate::class);
         Livewire::component('crm-settings-lead-source-edit', LeadSourceEdit::class);
         Livewire::component('crm-settings-lead-source-show', LeadSourceShow::class);
+
+        Livewire::component('crm-settings-feature-status-index', FeatureStatusIndex::class);
+        Livewire::component('crm-settings-feature-status-create', FeatureStatusCreate::class);
+        Livewire::component('crm-settings-feature-status-edit', FeatureStatusEdit::class);
 
         Livewire::component('crm-settings-custom-field-index', CustomFieldIndex::class);
         Livewire::component('crm-settings-custom-field-create', CustomFieldCreate::class);

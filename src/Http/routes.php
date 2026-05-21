@@ -174,6 +174,46 @@ Route::group(['prefix' => 'leads', 'middleware' => 'auth.laravel-crm'], function
         ->middleware(['can:delete,lead']);
 });
 
+/* Features */
+
+Route::group(['prefix' => 'features', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureController@index')
+        ->name('laravel-crm.features.index')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Feature']);
+
+    Route::get('board', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureController@board')
+        ->name('laravel-crm.features.board')
+        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Feature']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureController@create')
+        ->name('laravel-crm.features.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Feature']);
+
+    Route::get('{feature}', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureController@show')
+        ->name('laravel-crm.features.show')
+        ->middleware(['can:view,feature']);
+
+    Route::get('{feature}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureController@edit')
+        ->name('laravel-crm.features.edit')
+        ->middleware(['can:update,feature']);
+});
+
+/* Feature Statuses */
+
+Route::group(['prefix' => 'settings/feature-statuses', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureStatusController@index')
+        ->name('laravel-crm.feature-statuses.index')
+        ->middleware(['can:manageStatuses,VentureDrake\LaravelCrm\Models\Feature']);
+
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureStatusController@create')
+        ->name('laravel-crm.feature-statuses.create')
+        ->middleware(['can:manageStatuses,VentureDrake\LaravelCrm\Models\Feature']);
+
+    Route::get('{featureStatus}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\FeatureStatusController@edit')
+        ->name('laravel-crm.feature-statuses.edit')
+        ->middleware(['can:manageStatuses,VentureDrake\LaravelCrm\Models\Feature']);
+});
+
 /* Deals */
 
 Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function () {
