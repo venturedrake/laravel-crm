@@ -1,12 +1,12 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.features') ?? 'Features') }}" progress-indicator>
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.features')) }}" progress-indicator>
         <x-slot:middle class="justify-end!">
-            <x-mary-input placeholder="Features..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
+            <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.features')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" clearable />
         </x-slot:middle>
 
         <x-slot:actions>
-            <x-mary-button label="Filters"
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.filters')) }}"
                            icon="o-funnel"
                            :badge="$filterCount ?? 0"
                            badge-classes="font-mono badge-primary badge-soft"
@@ -16,7 +16,7 @@
             <x-mary-button label="Board" link="{{ url(route('laravel-crm.features.board')) }}" icon="o-view-columns" class="btn" responsive />
 
             @can('create crm features')
-                <x-mary-button label="Create Feature" link="{{ url(route('laravel-crm.features.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.submit_feature')) }}" link="{{ url(route('laravel-crm.features.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
             @endcan
         </x-slot:actions>
     </x-mary-header>
@@ -47,9 +47,9 @@
     </x-mary-card>
 
     {{-- FILTERS --}}
-    <x-mary-drawer wire:model="showFilters" title="Filters" class="lg:w-1/3" right separator with-close-button>
+    <x-mary-drawer wire:model="showFilters" title="{{ ucfirst(__('laravel-crm::lang.filters')) }}" class="lg:w-1/3" right separator with-close-button>
         <div class="grid gap-5" @keydown.enter="$wire.showFilters = false">
-            <x-mary-choices label="Status" wire:model.live="feature_status_id" :options="$statuses" icon="o-flag" inline allow-all />
+            <x-mary-choices label="{{ ucfirst(__('laravel-crm::lang.status')) }}" wire:model.live="feature_status_id" :options="$statuses" icon="o-flag" inline allow-all />
             <x-mary-select label="Visibility" wire:model.live="is_public" :options="[
                 ['id' => 1, 'name' => 'Public'],
                 ['id' => 0, 'name' => 'Private'],
@@ -57,7 +57,7 @@
         </div>
 
         <x-slot:actions>
-            <x-mary-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.clear')) }}" icon="o-x-mark" wire:click="clear" spinner />
             <x-mary-button label="Done" icon="o-check" class="btn-primary" @click="$wire.showFilters = false" />
         </x-slot:actions>
     </x-mary-drawer>

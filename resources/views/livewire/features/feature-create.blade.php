@@ -1,7 +1,7 @@
 <div class="crm-content">
-    <x-mary-header title="Create Feature" class="mb-5" progress-indicator>
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.submit_feature')) }}" class="mb-5" progress-indicator>
         <x-slot:actions>
-            <x-mary-button label="Back to Features" link="{{ url(route('laravel-crm.features.index')) }}" icon="fas.angle-double-left" class="btn-sm" responsive />
+            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back')) }} {{ __('laravel-crm::lang.to') }} {{ __('laravel-crm::lang.features') }}" link="{{ url(route('laravel-crm.features.index')) }}" icon="fas.angle-double-left" class="btn-sm" responsive />
         </x-slot:actions>
     </x-mary-header>
     <x-mary-form wire:submit="save">

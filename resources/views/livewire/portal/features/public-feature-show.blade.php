@@ -1,5 +1,5 @@
 <div>
-    <a href="{{ route('laravel-crm.portal.features.index') }}" class="link link-hover text-sm">&larr; Back to features</a>
+    <a href="{{ route('laravel-crm.portal.features.index') }}" class="link link-hover text-sm">&larr; {{ ucfirst(__('laravel-crm::lang.back')) }} {{ __('laravel-crm::lang.to') }} {{ __('laravel-crm::lang.features') }}</a>
 
     <div class="card bg-base-100 shadow mt-4">
         <div class="card-body">
@@ -10,7 +10,7 @@
                             <form method="POST" action="{{ route('laravel-crm.portal.features.unvote', $feature->external_id) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-primary btn-sm flex flex-col h-auto py-1 px-3" title="Remove vote">
+                                <button type="submit" class="btn btn-primary btn-sm flex flex-col h-auto py-1 px-3" title="{{ ucfirst(__('laravel-crm::lang.unvote')) }}">
                                     <span class="text-base">▲</span>
                                     <span class="font-semibold">{{ $feature->votes_count }}</span>
                                 </button>
@@ -18,7 +18,7 @@
                         @else
                             <form method="POST" action="{{ route('laravel-crm.portal.features.vote', $feature->external_id) }}">
                                 @csrf
-                                <button type="submit" class="btn btn-outline btn-sm flex flex-col h-auto py-1 px-3" title="Vote">
+                                <button type="submit" class="btn btn-outline btn-sm flex flex-col h-auto py-1 px-3" title="{{ ucfirst(__('laravel-crm::lang.vote')) }}">
                                     <span class="text-base">▲</span>
                                     <span class="font-semibold">{{ $feature->votes_count }}</span>
                                 </button>
@@ -26,7 +26,7 @@
                         @endif
                     @else
                         <a href="{{ route('laravel-crm.portal.login', ['intended' => route('laravel-crm.portal.features.show', $feature->external_id)]) }}"
-                           class="btn btn-outline btn-sm flex flex-col h-auto py-1 px-3" title="Login to vote">
+                           class="btn btn-outline btn-sm flex flex-col h-auto py-1 px-3" title="{{ ucfirst(__('laravel-crm::lang.login')) }}">
                             <span class="text-base">▲</span>
                             <span class="font-semibold">{{ $feature->votes_count }}</span>
                         </a>
@@ -47,7 +47,7 @@
                         <p class="text-sm text-base-content/80 mt-2 whitespace-pre-line">{{ $feature->description }}</p>
                     @endif
                     <div class="text-xs text-base-content/60 mt-2">
-                        Submitted by {{ $feature->submittedBy?->name ?? 'Anonymous' }}
+                        {{ ucfirst(__('laravel-crm::lang.created_by')) }} {{ $feature->submittedBy?->name ?? '-' }}
                         · {{ $feature->created_at?->diffForHumans() }}
                     </div>
                 </div>
@@ -57,7 +57,7 @@
 
     <div class="mt-8">
         <h2 class="text-lg font-semibold mb-3">
-            Comments ({{ $feature->comments_count }})
+            {{ ucfirst(__('laravel-crm::lang.comments')) }} ({{ $feature->comments_count }})
         </h2>
 
         @if ($errors->any())
@@ -91,17 +91,17 @@
             <form method="POST" action="{{ route('laravel-crm.portal.features.comments.store', $feature->external_id) }}" class="space-y-2">
                 @csrf
                 <label class="label" for="comment-body">
-                    <span class="label-text">Add a comment</span>
+                    <span class="label-text">{{ ucfirst(__('laravel-crm::lang.comment')) }}</span>
                 </label>
                 <textarea id="comment-body" name="body" required rows="3"
                           class="textarea textarea-bordered w-full">{{ old('body') }}</textarea>
-                <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
+                <button type="submit" class="btn btn-primary btn-sm">{{ ucfirst(__('laravel-crm::lang.send')) }}</button>
             </form>
         @else
             <div class="alert">
                 <a href="{{ route('laravel-crm.portal.login', ['intended' => route('laravel-crm.portal.features.show', $feature->external_id)]) }}"
-                   class="link link-primary">Log in</a>
-                <span>to leave a comment.</span>
+                   class="link link-primary">{{ ucfirst(__('laravel-crm::lang.login')) }}</a>
+                <span>{{ __('laravel-crm::lang.to') }} {{ __('laravel-crm::lang.comment') }}.</span>
             </div>
         @endauth
     </div>

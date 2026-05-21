@@ -33,7 +33,7 @@ class FeatureEdit extends Component
         ]);
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.updated')),
+            ucfirst(trans('laravel-crm::lang.feature_updated')),
             redirectTo: route('laravel-crm.features.index')
         );
     }

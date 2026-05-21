@@ -1,12 +1,12 @@
 <div class="crm-content">
-    <x-mary-header title="Features" class="mb-5" progress-indicator>
+    <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.features')) }}" class="mb-5" progress-indicator>
         <x-slot:middle class="justify-end!">
-            <x-mary-input placeholder="Features..." wire:model.live.debounce="search" icon="o-magnifying-glass" class="input-neutral" clearable />
+            <x-mary-input placeholder="{{ ucfirst(__('laravel-crm::lang.features')) }}..." wire:model.live.debounce="search" icon="o-magnifying-glass" class="input-neutral" clearable />
         </x-slot:middle>
         <x-slot:actions>
             <x-mary-button label="List" link="{{ url(route('laravel-crm.features.index')) }}" icon="o-list-bullet" class="btn" responsive />
             @can('create crm features')
-                <x-mary-button label="Create Feature" link="{{ url(route('laravel-crm.features.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.submit_feature')) }}" link="{{ url(route('laravel-crm.features.create')) }}" icon="o-plus" class="btn-primary text-white" responsive />
             @endcan
         </x-slot:actions>
     </x-mary-header>
@@ -48,8 +48,8 @@
                                     </div>
                                 </div>
                                 <div class="flex justify-between mt-2 text-xs">
-                                    <div><x-mary-icon name="o-hand-thumb-up" class="w-4 h-4 inline" /> {{ $record['votes_count'] }}</div>
-                                    <div><x-mary-icon name="o-chat-bubble-left" class="w-4 h-4 inline" /> {{ $record['comments_count'] }}</div>
+                                    <div title="{{ ucfirst(__('laravel-crm::lang.votes')) }}"><x-mary-icon name="o-hand-thumb-up" class="w-4 h-4 inline" /> {{ $record['votes_count'] }}</div>
+                                    <div title="{{ ucfirst(__('laravel-crm::lang.comments')) }}"><x-mary-icon name="o-chat-bubble-left" class="w-4 h-4 inline" /> {{ $record['comments_count'] }}</div>
                                 </div>
                             </div>
                         @endforeach

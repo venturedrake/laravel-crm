@@ -59,6 +59,7 @@
                 </form>
 
                 <p class="text-sm text-center mt-4">
+                    <span class="text-base-content/70">{{ ucfirst(__('laravel-crm::lang.already_have_account')) }}</span>
                     <a href="{{ route('laravel-crm.portal.login') }}" class="link link-primary">
                         {{ ucfirst(__('laravel-crm::lang.login')) }}
                     </a>

@@ -21,7 +21,7 @@ class FeatureCreate extends Component
         ], auth()->user());
 
         $this->success(
-            ucfirst(trans('laravel-crm::lang.created')),
+            ucfirst(trans('laravel-crm::lang.feature_stored')),
             redirectTo: route('laravel-crm.features.index')
         );
     }

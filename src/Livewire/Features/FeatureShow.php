@@ -23,7 +23,7 @@ class FeatureShow extends Component
             $feature->delete();
 
             $this->success(
-                ucfirst(trans('laravel-crm::lang.deleted')),
+                ucfirst(trans('laravel-crm::lang.feature_deleted')),
                 redirectTo: route('laravel-crm.features.index')
             );
         }

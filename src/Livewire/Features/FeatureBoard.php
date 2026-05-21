@@ -61,7 +61,7 @@ class FeatureBoard extends KanbanBoard
         if ($feature = Feature::find($id)) {
             $feature->delete();
 
-            $this->success(ucfirst(trans('laravel-crm::lang.deleted')));
+            $this->success(ucfirst(trans('laravel-crm::lang.feature_deleted')));
         }
     }
 

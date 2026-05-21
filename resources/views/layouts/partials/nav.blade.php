@@ -10,7 +10,7 @@
             @endhasleadsenabled
             @hasfeaturesenabled
                 @can('view crm features')
-                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.features') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.features.index')) }}"><i class="fa fa-lightbulb-o"></i> Features</a></li>
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.features') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.features.index')) }}"><i class="fa fa-lightbulb-o"></i> {{ ucfirst(__('laravel-crm::lang.features')) }}</a></li>
                 @endcan
             @endhasfeaturesenabled
             @hasdealsenabled
