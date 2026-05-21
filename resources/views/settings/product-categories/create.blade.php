@@ -1,3 +1,3 @@
-<x-crm::app-layout>
+<x-crm::app-layout title="{{ ucfirst(__('laravel-crm::lang.product_categories')) }}">
     <livewire:crm-settings-product-category-create />
 </x-crm::app-layout>
