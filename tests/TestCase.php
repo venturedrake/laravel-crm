@@ -88,6 +88,10 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('laravel-crm.encrypt_db_fields', false);
         $app['config']->set('laravel-crm.route_prefix', 'crm');
         $app['config']->set('laravel-crm.user_interface', true);
+
+        // Mary components ship under the `mary-` prefix in host apps; mirror that here so
+        // Livewire component tests can render views that reference <x-mary-form>/<x-mary-badge>.
+        $app['config']->set('mary.prefix', 'mary-');
     }
 
     protected function defineDatabaseMigrations()
