@@ -203,7 +203,7 @@ class ModelProducts extends Component
 
                 $this->products[$updating[0]]['tax_rate'] = $taxRate;
 
-                $tax = (($price / 100) * $quantity) * ((int) $taxRate / 100);
+                $tax = (($price / 100) * $quantity) * ((float) $taxRate / 100);
                 $this->products[$updating[0]]['tax_amount'] = round($tax, 2);
                 $this->products[$updating[0]]['amount'] = ($price / 100) * $quantity;
             }
@@ -223,15 +223,16 @@ class ModelProducts extends Component
 
                 $this->products[$updating[0]]['tax_rate'] = $taxRate;
 
-                $tax = (($this->products[$updating[0]]['unit_price']) * $quantity) * ((int) $taxRate / 100);
+                $unitPrice = (float) ($this->products[$updating[0]]['unit_price'] ?? 0);
+                $tax = ($unitPrice * $quantity) * ((float) $taxRate / 100);
                 $this->products[$updating[0]]['tax_amount'] = round($tax, 2);
-                $this->products[$updating[0]]['amount'] = $this->products[$updating[0]]['unit_price'] * $quantity;
+                $this->products[$updating[0]]['amount'] = $unitPrice * $quantity;
             }
         }
 
         foreach ($this->products as $key => $value) {
-            $this->sub_total += $value['amount'];
-            $this->tax += $value['tax_amount'];
+            $this->sub_total += (float) ($value['amount'] ?? 0);
+            $this->tax += (float) ($value['tax_amount'] ?? 0);
         }
 
         $this->total = round($this->sub_total + $this->tax, 2);
