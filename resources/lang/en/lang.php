@@ -768,6 +768,9 @@ return [
     'password_reset_link_sent' => 'we have emailed your password reset link.',
     'password_reset_success' => 'your password has been reset.',
     'back_to_login' => 'back to login',
+    'register' => 'register',
+    'confirm_password' => 'confirm password',
+    'hello' => 'hello',
 
     // Dashboard
     'today' => 'today',
