@@ -1,4 +1,4 @@
-<x-crm::app-layout>
+<x-crm::app-layout title="{{ ucfirst(__('laravel-crm::lang.profile')) }}">
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.profile')) }}" subtitle="{{ __('laravel-crm::lang.profile_subtitle') }}" class="mb-5" />
 
     <div class="grid gap-8">
