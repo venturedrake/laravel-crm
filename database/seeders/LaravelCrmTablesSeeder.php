@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\ContactType;
+use VentureDrake\LaravelCrm\Models\FeatureStatus;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\LeadStatus;
@@ -254,6 +255,101 @@ class LaravelCrmTablesSeeder extends Seeder
             ]);
         }
 
+        // Feature statuses
+        if (! Setting::where('name', 'db_seeded_feature_statuses')->first()) {
+            $items = [
+                [
+                    [
+                        'id' => 1,
+                    ],
+                    [
+                        'name' => 'New',
+                        'color' => '6c757d',
+                        'order' => 1,
+                        'is_default' => true,
+                        'is_closed' => false,
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
+                ],
+                [
+                    [
+                        'id' => 2,
+                    ],
+                    [
+                        'name' => 'Considering',
+                        'color' => 'ffc107',
+                        'order' => 2,
+                        'is_default' => false,
+                        'is_closed' => false,
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
+                ],
+                [
+                    [
+                        'id' => 3,
+                    ],
+                    [
+                        'name' => 'Planned',
+                        'color' => '007bff',
+                        'order' => 3,
+                        'is_default' => false,
+                        'is_closed' => false,
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
+                ],
+                [
+                    [
+                        'id' => 4,
+                    ],
+                    [
+                        'name' => 'In Progress',
+                        'color' => '17a2b8',
+                        'order' => 4,
+                        'is_default' => false,
+                        'is_closed' => false,
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
+                ],
+                [
+                    [
+                        'id' => 5,
+                    ],
+                    [
+                        'name' => 'Completed',
+                        'color' => '28a745',
+                        'order' => 5,
+                        'is_default' => false,
+                        'is_closed' => true,
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
+                ],
+                [
+                    [
+                        'id' => 6,
+                    ],
+                    [
+                        'name' => 'Declined',
+                        'color' => 'dc3545',
+                        'order' => 6,
+                        'is_default' => false,
+                        'is_closed' => true,
+                        'external_id' => Uuid::uuid4()->toString(),
+                    ],
+                ],
+            ];
+
+            foreach ($items as $item) {
+                FeatureStatus::firstOrCreate($item[0], $item[1]);
+            }
+
+            Setting::updateOrCreate([
+                'global' => 1,
+                'name' => 'db_seeded_feature_statuses',
+            ], [
+                'value' => 1,
+            ]);
+        }
+
         // Pipelines
         $this->callSilent(LaravelCrmPipelineTablesSeeder::class);
 
@@ -407,6 +503,12 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view crm sms-templates', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm sms-templates', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm sms-templates', 'crm_permission' => 1]);
+
+        Permission::firstOrCreate(['name' => 'create crm features', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm features', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm features', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm features', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'manage crm feature statuses', 'crm_permission' => 1]);
 
         Permission::firstOrCreate(['name' => 'create crm notes', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm notes', 'crm_permission' => 1]);
@@ -571,6 +673,11 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm sms-templates',
                 'edit crm sms-templates',
                 'delete crm sms-templates',
+                'create crm features',
+                'view crm features',
+                'edit crm features',
+                'delete crm features',
+                'manage crm feature statuses',
             ]);
 
         if (config('permission.teams')) {
@@ -659,6 +766,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'delete crm pipelines',
                 'view crm chat',
                 'reply crm chat',
+                'create crm features',
+                'view crm features',
+                'edit crm features',
+                'delete crm features',
             ]);
     }
 }

@@ -373,6 +373,7 @@ use VentureDrake\LaravelCrm\Policies\DealPolicy;
 use VentureDrake\LaravelCrm\Policies\DeliveryPolicy;
 use VentureDrake\LaravelCrm\Policies\EmailCampaignPolicy;
 use VentureDrake\LaravelCrm\Policies\EmailTemplatePolicy;
+use VentureDrake\LaravelCrm\Policies\FeaturePolicy;
 use VentureDrake\LaravelCrm\Policies\FieldGroupPolicy;
 use VentureDrake\LaravelCrm\Policies\FieldOptionPolicy;
 use VentureDrake\LaravelCrm\Policies\FieldPolicy;
@@ -448,6 +449,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Meeting' => MeetingPolicy::class,
         'VentureDrake\LaravelCrm\Models\Lunch' => LunchPolicy::class,
         'VentureDrake\LaravelCrm\Models\File' => FilePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Feature' => FeaturePolicy::class,
         'VentureDrake\LaravelCrm\Models\Field' => FieldPolicy::class,
         'VentureDrake\LaravelCrm\Models\FieldGroup' => FieldGroupPolicy::class,
         'VentureDrake\LaravelCrm\Models\FieldOption' => FieldOptionPolicy::class,
