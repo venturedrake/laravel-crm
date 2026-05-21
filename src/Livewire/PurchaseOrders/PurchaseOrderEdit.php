@@ -18,6 +18,8 @@ class PurchaseOrderEdit extends Component
 
     public PurchaseOrder $purchaseOrder;
 
+    public $fromModel = null;
+
     protected $listeners = [
         'model-products-updated' => 'updateProducts',
     ];
