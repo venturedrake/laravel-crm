@@ -41,6 +41,26 @@ Route::prefix('p')
         Route::post('logout', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@logout')
             ->name('laravel-crm.portal.logout');
 
+        /* Public Feature Board */
+        Route::prefix('features')->group(function () {
+            Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@index')
+                ->name('laravel-crm.portal.features.index');
+
+            Route::get('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@create')
+                ->name('laravel-crm.portal.features.create');
+            Route::post('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@store')
+                ->name('laravel-crm.portal.features.store');
+            Route::post('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@vote')
+                ->name('laravel-crm.portal.features.vote');
+            Route::delete('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@unvote')
+                ->name('laravel-crm.portal.features.unvote');
+            Route::post('{feature:external_id}/comments', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@comment')
+                ->name('laravel-crm.portal.features.comments.store');
+
+            Route::get('{feature:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@show')
+                ->name('laravel-crm.portal.features.show');
+        });
+
         /* Chat Widget Embed routes registered separately in
            LaravelCrmServiceProvider::registerRoutes() so they bypass
            the `web` middleware group (no session, no CSRF). */

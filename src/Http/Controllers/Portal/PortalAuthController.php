@@ -9,10 +9,14 @@ use Illuminate\Support\Facades\Hash;
 
 class PortalAuthController extends Controller
 {
-    public function showLogin()
+    public function showLogin(Request $request)
     {
         if (Auth::check()) {
             return redirect()->intended(url('/'));
+        }
+
+        if ($intended = $request->query('intended')) {
+            $request->session()->put('url.intended', $intended);
         }
 
         return view('laravel-crm::portal.auth.login');
@@ -36,10 +40,14 @@ class PortalAuthController extends Controller
         return redirect()->intended(url('/'));
     }
 
-    public function showRegister()
+    public function showRegister(Request $request)
     {
         if (Auth::check()) {
             return redirect()->intended(url('/'));
+        }
+
+        if ($intended = $request->query('intended')) {
+            $request->session()->put('url.intended', $intended);
         }
 
         return view('laravel-crm::portal.auth.register');
