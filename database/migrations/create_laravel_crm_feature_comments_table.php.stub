@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('feature_id')->index();
             $table->unsignedBigInteger('parent_id')->nullable()->index();
             $table->text('body');
+            $table->boolean('is_admin_reply')->default(false);
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_updated_id')->nullable();

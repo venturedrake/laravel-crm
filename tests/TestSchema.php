@@ -770,5 +770,71 @@ class TestSchema
             $table->timestamp('unsubscribed_at')->nullable();
             $table->timestamps();
         });
+
+        Schema::create($prefix.'feature_statuses', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('color')->nullable();
+            $table->tinyInteger('order')->default(0);
+            $table->boolean('is_default')->default(false);
+            $table->boolean('is_closed')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'features', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedInteger('number')->nullable();
+            $table->string('feature_id')->nullable();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->boolean('is_public')->default(true);
+            $table->unsignedInteger('votes_count')->default(0);
+            $table->unsignedInteger('comments_count')->default(0);
+            $table->unsignedBigInteger('feature_status_id')->nullable();
+            $table->unsignedBigInteger('submitted_by_user_id')->nullable();
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_assigned_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'feature_comments', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->text('body');
+            $table->boolean('is_admin_reply')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'feature_votes', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedBigInteger('user_id');
+            $table->timestamps();
+            $table->unique(['feature_id', 'user_id']);
+        });
     }
 }

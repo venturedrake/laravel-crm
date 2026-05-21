@@ -26,6 +26,20 @@ test('module directives are true when modules config is empty', function () {
     expect(evaluateDirective('haschatenabled'))->toBe('YESNO');
     expect(evaluateDirective('hasemailmarketingenabled'))->toBe('YESNO');
     expect(evaluateDirective('hassmsmarketingenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasfeaturesenabled'))->toBe('YESNO');
+});
+
+test('features directive is true when features module enabled', function () {
+    config()->set('laravel-crm.modules', ['features']);
+
+    expect(evaluateDirective('hasfeaturesenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasleadsenabled'))->toBe('NO');
+});
+
+test('features directive is false when module not in list', function () {
+    config()->set('laravel-crm.modules', ['leads']);
+
+    expect(evaluateDirective('hasfeaturesenabled'))->toBe('NO');
 });
 
 test('module directives match modules array', function () {

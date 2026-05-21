@@ -19,7 +19,7 @@ class FeatureCommentObserver
             $comment->external_id = Uuid::uuid4()->toString();
         }
 
-        if (! app()->runningInConsole()) {
+        if (! $comment->user_created_id && ! app()->runningInConsole()) {
             $comment->user_created_id = auth()->user()->id ?? null;
         }
     }

@@ -13,6 +13,10 @@ class FeatureComment extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'is_admin_reply' => 'boolean',
+    ];
+
     public function getTable()
     {
         return config('laravel-crm.db_table_prefix').'feature_comments';
