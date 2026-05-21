@@ -183,6 +183,10 @@ class ModelProducts extends Component
 
         $taxTotal = 0;
 
+        if (count($updating) < 2) {
+            return;
+        }
+
         if ($updating[1] == 'id') {
             $product = Product::find($value);
 
