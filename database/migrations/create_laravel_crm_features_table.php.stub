@@ -17,6 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('external_id');
             $table->unsignedBigInteger('team_id')->index()->nullable();
+            $table->unsignedInteger('number')->nullable();
             $table->string('feature_id')->nullable();
             $table->string('title');
             $table->text('description')->nullable();

@@ -266,6 +266,9 @@ use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\EmailCampaign;
 use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
 use VentureDrake\LaravelCrm\Models\EmailTemplate;
+use VentureDrake\LaravelCrm\Models\Feature;
+use VentureDrake\LaravelCrm\Models\FeatureComment;
+use VentureDrake\LaravelCrm\Models\FeatureVote;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
@@ -318,6 +321,9 @@ use VentureDrake\LaravelCrm\Observers\EmailCampaignObserver;
 use VentureDrake\LaravelCrm\Observers\EmailCampaignRecipientObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\EmailTemplateObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureCommentObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureVoteObserver;
 use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
 use VentureDrake\LaravelCrm\Observers\FieldObserver;
@@ -573,6 +579,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         SmsCampaign::observe(SmsCampaignObserver::class);
         SmsTemplate::observe(SmsTemplateObserver::class);
         SmsCampaignRecipient::observe(SmsCampaignRecipientObserver::class);
+        Feature::observe(FeatureObserver::class);
+        FeatureComment::observe(FeatureCommentObserver::class);
+        FeatureVote::observe(FeatureVoteObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);

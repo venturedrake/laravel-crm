@@ -74,7 +74,7 @@ class Feature extends Model
             config('laravel-crm.db_table_prefix').'feature_votes',
             'feature_id',
             'user_id'
-        )->withPivot('team_id')->withTimestamps();
+        )->using(FeatureVote::class)->withPivot('team_id')->withTimestamps();
     }
 
     public function createdByUser()
