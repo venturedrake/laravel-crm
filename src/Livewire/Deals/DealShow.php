@@ -37,10 +37,11 @@ class DealShow extends Component
     public function won($id)
     {
         if ($deal = Deal::find($id)) {
+            $pipeline = $deal->pipeline;
             $deal->update([
                 'closed_status' => 'won',
                 'closed_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Closed Won')->first()->id ?? null,
+                'pipeline_stage_id' => $pipeline?->pipelineStages()->where('name', 'Closed Won')->first()->id ?? null,
             ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.deal_won')));
@@ -51,10 +52,11 @@ class DealShow extends Component
     public function lost($id)
     {
         if ($deal = Deal::find($id)) {
+            $pipeline = $deal->pipeline;
             $deal->update([
                 'closed_status' => 'lost',
                 'closed_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Closed Lost')->first()->id ?? null,
+                'pipeline_stage_id' => $pipeline?->pipelineStages()->where('name', 'Closed Lost')->first()->id ?? null,
             ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.deal_lost')));
@@ -65,10 +67,11 @@ class DealShow extends Component
     public function reopen($id)
     {
         if ($deal = Deal::find($id)) {
+            $pipeline = $deal->pipeline;
             $deal->update([
                 'closed_status' => null,
                 'closed_at' => null,
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Pending')->first()->id ?? null,
+                'pipeline_stage_id' => $pipeline?->pipelineStages()->where('name', 'Pending')->first()->id ?? null,
             ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.deal_reopened')));
