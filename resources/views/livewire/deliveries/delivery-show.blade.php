@@ -11,7 +11,7 @@
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_deliveries')) }}" link="{{ url(route('laravel-crm.deliveries.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive /> |
             @can('view crm deliveries')
-                <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.deliveries.download', $delivery)) }}" class="btn-sm btn-square btn-outline" />
+                <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.deliveries.download', $delivery)) }}" no-wire-navigate class="btn-sm btn-square btn-outline" />
             @endcan
             | <livewire:crm-activity-menu /> |
             @can('edit crm deliveries')
