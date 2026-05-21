@@ -753,6 +753,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/seed_laravel_crm_sms_templates.php.stub' => $this->getMigrationFileName($filesystem, 'seed_laravel_crm_sms_templates.php', 122),
                 __DIR__.'/../database/migrations/ensure_encryptable_columns_widened_on_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'ensure_encryptable_columns_widened_on_laravel_crm_tables.php', 123),
                 __DIR__.'/../database/migrations/add_mailing_list_to_users_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_mailing_list_to_users_table.php', 124),
+                __DIR__.'/../database/migrations/fix_line1_nullable_on_laravel_crm_addresses_table.php.stub' => $this->getMigrationFileName($filesystem, 'fix_line1_nullable_on_laravel_crm_addresses_table.php', 125),
             ], 'migrations');
 
             // Publishing the seeders
