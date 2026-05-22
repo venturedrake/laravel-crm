@@ -12,6 +12,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SMS
 - Payments
 
+## 2.2.0 - 2026-05-22
+### Added
+- **REST API (v2)** — Sanctum-authenticated JSON API mounted at `/crm/api/v2`
+  - Full CRUD for 8 entities: leads, products, organizations, people, deals, quotes, orders, invoices (with nested line items on quotes/orders/invoices)
+  - Auth endpoints: `POST auth/token`, `GET auth/me`, `DELETE auth/token`
+  - `laravel-crm-api` rate limiter (60 req/min/user authenticated, 30 req/min/IP unauthenticated)
+  - Multi-tenancy support via optional `X-Team-ID` header
+  - Ops artisan command `laravel-crm:api-token` for issuing tokens from the CLI
+- **Page titles** across the entire UI — every CRM page now sets a descriptive `<title>` (dashboard, core CRM pipeline entities, sales, marketing, communication, operational, user/team/profile/updates, settings, chat-widgets)
+- Filament plugin planning doc (`plan-filamentPlugin.prompt.md`)
+### Changed
+- **PHP minimum is now 8.2** (was 8.1)
+- **Laravel minimum is now 11** (was 10)
+- Hardened `auth/token` endpoint to return 422 on validation failures
+- Improved PDF document styling
+- Chat conversations are now only created when a visitor initiates the conversation (not on widget load)
+- Updated sample data seeder
+### Fixed
+- Undefined `$title` variable when Livewire components call `->layout('laravel-crm::layouts.app')` directly (Xero/ClickSend integration pages)
+- Deal pipeline bug
+- Purchase order edit bug
+- Settings address missing bug
+- Product update bug when removing a price
+- Download PDF buttons not working
+- API: preserve Lead person/organization relations on partial PUT updates
+- API: preserve Deal person/organization relations on partial PUT updates
+- API: null-safe contact-update helpers in `PersonService` and `OrganizationService`
+- API: null-safe `OrderService::updateOrderAddresses`
+
 ## 2.1.1 - 2026-05-17
 ### Added
 - Optional CSV import fields for users: `email_verified_at`, `created_at`, `updated_at`, `last_online_at`, `mailing_list`
