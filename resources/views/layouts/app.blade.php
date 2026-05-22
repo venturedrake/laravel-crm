@@ -7,7 +7,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         @include('laravel-crm::layouts.partials.meta')
 
-        <title>{{ config('app.name') }}{{ $title ? ' - ' . $title : '' }}</title>
+        <title>{{ config('app.name') }}{{ ! empty($title ?? null) ? ' - ' . $title : '' }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
