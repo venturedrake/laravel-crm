@@ -5,7 +5,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\ForceJsonResponse;
 
 test('it forces the Accept header to application/json', function () {
     $middleware = new ForceJsonResponse;
-    $request = Request::create('/api/crm/v2/whatever');
+    $request = Request::create('/crm/api/v2/whatever');
     $request->headers->set('Accept', 'text/html');
 
     $middleware->handle($request, function ($passed) use (&$captured) {
@@ -19,7 +19,7 @@ test('it forces the Accept header to application/json', function () {
 
 test('it sets Accept header when not previously set', function () {
     $middleware = new ForceJsonResponse;
-    $request = Request::create('/api/crm/v2/whatever');
+    $request = Request::create('/crm/api/v2/whatever');
 
     $middleware->handle($request, function ($passed) use (&$captured) {
         $captured = $passed;

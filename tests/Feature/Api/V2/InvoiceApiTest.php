@@ -33,7 +33,7 @@ function createInvoiceApiProduct(string $name = 'Widget'): Product
 }
 
 test('GET /invoices returns 401 when unauthenticated', function () {
-    $this->getJson('/api/crm/v2/invoices')->assertStatus(401);
+    $this->getJson('/crm/api/v2/invoices')->assertStatus(401);
 });
 
 test('POST /invoices creates an invoice with nested line items', function () {
@@ -42,7 +42,7 @@ test('POST /invoices creates an invoice with nested line items', function () {
     $product = createInvoiceApiProduct();
 
     $response = $this->withHeaders(invoiceApiHeaders($user))
-        ->postJson('/api/crm/v2/invoices', [
+        ->postJson('/crm/api/v2/invoices', [
             'reference' => 'INV-REF-1',
             'currency' => 'USD',
             'subtotal' => 300.00,
@@ -86,7 +86,7 @@ test('POST /invoices returns 422 when issue_date is not ISO-8601', function () {
     $user = invoiceApiUser();
 
     $this->withHeaders(invoiceApiHeaders($user))
-        ->postJson('/api/crm/v2/invoices', [
+        ->postJson('/crm/api/v2/invoices', [
             'issue_date' => '05/19/2026',
         ])
         ->assertStatus(422)
@@ -97,7 +97,7 @@ test('POST /invoices returns 422 when line item product UUID is unknown', functi
     $user = invoiceApiUser();
 
     $this->withHeaders(invoiceApiHeaders($user))
-        ->postJson('/api/crm/v2/invoices', [
+        ->postJson('/crm/api/v2/invoices', [
             'line_items' => [[
                 'product_id' => (string) Str::uuid(),
                 'quantity' => 1,
@@ -113,7 +113,7 @@ test('POST /invoices returns 403 when policy denies create', function () {
     $user = invoiceApiUser(['crm_permissions' => json_encode([])]);
 
     $this->withHeaders(invoiceApiHeaders($user))
-        ->postJson('/api/crm/v2/invoices', [])
+        ->postJson('/crm/api/v2/invoices', [])
         ->assertStatus(403);
 });
 
@@ -125,7 +125,7 @@ test('GET /invoices returns a paginated collection', function () {
     }
 
     $response = $this->withHeaders(invoiceApiHeaders($user))
-        ->getJson('/api/crm/v2/invoices?per_page=2');
+        ->getJson('/crm/api/v2/invoices?per_page=2');
 
     $response->assertOk();
     expect($response->json('data'))->toHaveCount(2);
@@ -137,7 +137,7 @@ test('PUT /invoices/{invoice} updates an existing invoice line in place', functi
     $product = createInvoiceApiProduct();
 
     $created = $this->withHeaders(invoiceApiHeaders($user))
-        ->postJson('/api/crm/v2/invoices', [
+        ->postJson('/crm/api/v2/invoices', [
             'reference' => 'INV-A',
             'line_items' => [[
                 'product_id' => $product->external_id,
@@ -150,7 +150,7 @@ test('PUT /invoices/{invoice} updates an existing invoice line in place', functi
     $lineId = $created['line_items'][0]['id'];
 
     $response = $this->withHeaders(invoiceApiHeaders($user))
-        ->putJson('/api/crm/v2/invoices/'.$created['id'], [
+        ->putJson('/crm/api/v2/invoices/'.$created['id'], [
             'reference' => 'INV-A-updated',
             'line_items' => [[
                 'id' => $lineId,
@@ -177,7 +177,7 @@ test('DELETE /invoices/{invoice} soft-deletes the invoice', function () {
     $invoice = Invoice::create(['reference' => 'Toast']);
 
     $this->withHeaders(invoiceApiHeaders($user))
-        ->deleteJson('/api/crm/v2/invoices/'.$invoice->external_id)
+        ->deleteJson('/crm/api/v2/invoices/'.$invoice->external_id)
         ->assertStatus(204);
 
     expect(Invoice::query()->where('external_id', $invoice->external_id)->exists())->toBeFalse();

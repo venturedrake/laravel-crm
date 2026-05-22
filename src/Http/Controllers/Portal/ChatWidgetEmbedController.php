@@ -163,6 +163,11 @@ JS;
     /**
      * POST /p/chat/{publicKey}/init
      * Body: { visitor_token?, current_url? }
+     *
+     * Bootstraps (or re-establishes) the visitor session. A conversation
+     * record is NOT created here — only returned if the visitor has
+     * previously started a chat. The visitor must submit the identity
+     * ("Start chat") form to actually open a conversation.
      */
     public function init(Request $request, string $publicKey): JsonResponse
     {
@@ -175,7 +180,7 @@ JS;
             'current_url' => $request->input('current_url'),
         ]);
 
-        $conversation = $service->openConversationForVisitor($visitor);
+        $conversation = $service->findOpenConversationForVisitor($visitor);
 
         // Record initial page view
         if ($url = $request->input('current_url')) {
@@ -190,18 +195,20 @@ JS;
                 'name' => $visitor->name,
                 'email' => $visitor->email,
             ],
-            'conversation' => [
+            'conversation' => $conversation ? [
                 'external_id' => $conversation->external_id,
                 'channel' => $conversation->channelName(),
                 'status' => $conversation->status,
-            ],
+            ] : null,
             'widget' => [
                 'name' => $widget->name,
                 'welcome_message' => $widget->welcome_message,
                 'color' => $widget->color,
             ],
-            'messages' => $this->serializeMessages($conversation->messages()->get()),
-            'unread_for_visitor' => $conversation->unreadForVisitor(),
+            'messages' => $conversation
+                ? $this->serializeMessages($conversation->messages()->get())
+                : [],
+            'unread_for_visitor' => $conversation?->unreadForVisitor() ?? 0,
             'agents_online' => $agentsOnline,
         ]));
     }
@@ -212,6 +219,15 @@ JS;
     public function messages(Request $request, string $publicKey): JsonResponse
     {
         [, , $conversation] = $this->resolveContext($request, $publicKey);
+
+        if (! $conversation) {
+            return $this->cors(response()->json([
+                'messages' => [],
+                'status' => null,
+                'unread_for_visitor' => 0,
+                'agents_online' => app(ChatService::class)->agentsOnlineCount(),
+            ]));
+        }
 
         $sinceId = (int) $request->query('since_id', 0);
 
@@ -235,7 +251,9 @@ JS;
     {
         [, , $conversation] = $this->resolveContext($request, $publicKey);
 
-        app(ChatService::class)->markReadByVisitor($conversation);
+        if ($conversation) {
+            app(ChatService::class)->markReadByVisitor($conversation);
+        }
 
         return $this->cors(response()->json(['ok' => true]));
     }
@@ -246,6 +264,12 @@ JS;
     public function send(Request $request, string $publicKey): JsonResponse
     {
         [, , $conversation] = $this->resolveContext($request, $publicKey);
+
+        if (! $conversation) {
+            return $this->cors(response()->json([
+                'error' => 'Chat not started. Please submit your details first.',
+            ], 422));
+        }
 
         $body = trim((string) $request->input('body', ''));
         if ($body === '') {
@@ -287,21 +311,37 @@ JS;
 
     /**
      * POST /p/chat/{publicKey}/identify   Body: { token, name?, email? }
+     *
+     * Visitor submits the "Start chat" form. This is the trigger that
+     * actually opens (creates) a conversation if one doesn't already exist.
      */
     public function identify(Request $request, string $publicKey): JsonResponse
     {
         [, $visitor] = $this->resolveContext($request, $publicKey);
 
+        $name = trim((string) $request->input('name'));
+        $email = trim((string) $request->input('email'));
+
         $visitor->update([
-            'name' => trim((string) $request->input('name')) ?: $visitor->name,
-            'email' => trim((string) $request->input('email')) ?: $visitor->email,
+            'name' => $name ?: $visitor->name,
+            'email' => $email ?: $visitor->email,
         ]);
+
+        $service = app(ChatService::class);
+        $conversation = $service->openConversationForVisitor($visitor);
 
         return $this->cors(response()->json([
             'visitor' => [
                 'name' => $visitor->name,
                 'email' => $visitor->email,
             ],
+            'conversation' => [
+                'external_id' => $conversation->external_id,
+                'channel' => $conversation->channelName(),
+                'status' => $conversation->status,
+            ],
+            'messages' => $this->serializeMessages($conversation->messages()->get()),
+            'agents_online' => $service->agentsOnlineCount(),
         ]));
     }
 
@@ -338,7 +378,7 @@ JS;
     }
 
     /**
-     * @return array{0: ChatWidget, 1: ChatVisitor, 2: ChatConversation}
+     * @return array{0: ChatWidget, 1: ChatVisitor, 2: ?ChatConversation}
      */
     protected function resolveContext(Request $request, string $publicKey): array
     {
@@ -366,7 +406,9 @@ JS;
 
         $visitor->forceFill(['last_seen_at' => now()])->save();
 
-        $conversation = app(ChatService::class)->openConversationForVisitor($visitor);
+        // Do NOT auto-create a conversation here — the visitor must explicitly
+        // initiate one by submitting the "Start chat" identity form.
+        $conversation = app(ChatService::class)->findOpenConversationForVisitor($visitor);
 
         return [$widget, $visitor, $conversation];
     }

@@ -46,13 +46,13 @@ beforeEach(function () {
 });
 
 test('GET /leads returns 401 when unauthenticated', function () {
-    $response = $this->getJson('/api/crm/v2/leads');
+    $response = $this->getJson('/crm/api/v2/leads');
 
     $response->assertStatus(401);
 });
 
 test('POST /leads returns 401 when unauthenticated', function () {
-    $response = $this->postJson('/api/crm/v2/leads', ['title' => 'Hello']);
+    $response = $this->postJson('/crm/api/v2/leads', ['title' => 'Hello']);
 
     $response->assertStatus(401);
 });
@@ -68,7 +68,7 @@ test('GET /leads returns paginated collection with UUID ids and ISO timestamps',
     }
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->getJson('/api/crm/v2/leads');
+        ->getJson('/crm/api/v2/leads');
 
     $response->assertOk();
     $response->assertJsonStructure([
@@ -94,7 +94,7 @@ test('GET /leads honors per_page pagination', function () {
     }
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->getJson('/api/crm/v2/leads?per_page=2');
+        ->getJson('/crm/api/v2/leads?per_page=2');
 
     $response->assertOk();
     $payload = $response->json();
@@ -113,7 +113,7 @@ test('GET /leads filters by user_owner_id', function () {
     Lead::create(['title' => 'Theirs', 'user_owner_id' => $otherOwner->id]);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->getJson('/api/crm/v2/leads?user_owner_id='.$user->id);
+        ->getJson('/crm/api/v2/leads?user_owner_id='.$user->id);
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(2);
@@ -123,7 +123,7 @@ test('POST /leads creates a lead and returns 201 with UUID id and divided amount
     $user = leadApiUser();
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', [
+        ->postJson('/crm/api/v2/leads', [
             'title' => 'Acme deal',
             'description' => 'A solid opportunity',
             'amount' => 1500.50,
@@ -155,7 +155,7 @@ test('POST /leads resolves UUIDs for related entities', function () {
     ]);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', [
+        ->postJson('/crm/api/v2/leads', [
             'title' => 'Linked deal',
             'person_id' => $person->external_id,
             'organization_id' => $organization->external_id,
@@ -177,7 +177,7 @@ test('POST /leads returns 422 when required fields are missing', function () {
     $user = leadApiUser();
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', []);
+        ->postJson('/crm/api/v2/leads', []);
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['title']);
@@ -187,7 +187,7 @@ test('POST /leads returns 422 when person_id is not a UUID', function () {
     $user = leadApiUser();
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', [
+        ->postJson('/crm/api/v2/leads', [
             'title' => 'Bad data',
             'person_id' => 'not-a-uuid',
         ]);
@@ -200,7 +200,7 @@ test('POST /leads returns 422 when person UUID does not exist', function () {
     $user = leadApiUser();
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', [
+        ->postJson('/crm/api/v2/leads', [
             'title' => 'Missing person',
             'person_id' => (string) Str::uuid(),
         ]);
@@ -213,7 +213,7 @@ test('POST /leads returns 422 when expected_close is not ISO-8601', function () 
     $user = leadApiUser();
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', [
+        ->postJson('/crm/api/v2/leads', [
             'title' => 'Bad date',
             'expected_close' => '07/15/2026 10:00',
         ]);
@@ -226,7 +226,7 @@ test('POST /leads accepts a valid ISO-8601 expected_close', function () {
     $user = leadApiUser();
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', [
+        ->postJson('/crm/api/v2/leads', [
             'title' => 'With date',
             'expected_close' => '2026-07-15T10:00:00Z',
         ]);
@@ -239,7 +239,7 @@ test('POST /leads returns 403 when policy denies create', function () {
     $user = leadApiUser(['crm_permissions' => json_encode([])]);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->postJson('/api/crm/v2/leads', [
+        ->postJson('/crm/api/v2/leads', [
             'title' => 'Forbidden',
         ]);
 
@@ -251,7 +251,7 @@ test('GET /leads/{lead} returns 403 when policy denies view', function () {
     $lead = Lead::create(['title' => 'Hidden']);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->getJson('/api/crm/v2/leads/'.$lead->external_id);
+        ->getJson('/crm/api/v2/leads/'.$lead->external_id);
 
     $response->assertStatus(403);
 });
@@ -261,7 +261,7 @@ test('GET /leads/{lead} returns the lead by UUID', function () {
     $lead = Lead::create(['title' => 'Findable']);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->getJson('/api/crm/v2/leads/'.$lead->external_id);
+        ->getJson('/crm/api/v2/leads/'.$lead->external_id);
 
     $response->assertOk();
     expect($response->json('data.id'))->toBe($lead->external_id);
@@ -272,7 +272,7 @@ test('GET /leads/{lead} returns 404 for unknown UUID', function () {
     $user = leadApiUser();
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->getJson('/api/crm/v2/leads/'.((string) Str::uuid()));
+        ->getJson('/crm/api/v2/leads/'.((string) Str::uuid()));
 
     $response->assertStatus(404);
 });
@@ -282,7 +282,7 @@ test('PUT /leads/{lead} updates a lead', function () {
     $lead = Lead::create(['title' => 'Original', 'amount' => 100]);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->putJson('/api/crm/v2/leads/'.$lead->external_id, [
+        ->putJson('/crm/api/v2/leads/'.$lead->external_id, [
             'title' => 'Updated',
             'amount' => 250.75,
         ]);
@@ -302,7 +302,7 @@ test('PUT /leads/{lead} preserves the attached person when person_id is omitted'
     $lead = Lead::create(['title' => 'Original', 'person_id' => $person->id]);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->putJson('/api/crm/v2/leads/'.$lead->external_id, [
+        ->putJson('/crm/api/v2/leads/'.$lead->external_id, [
             'title' => 'Only title changes',
         ]);
 
@@ -320,7 +320,7 @@ test('PUT /leads/{lead} preserves the attached organization when organization_id
     $lead = Lead::create(['title' => 'Original', 'organization_id' => $organization->id]);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->putJson('/api/crm/v2/leads/'.$lead->external_id, [
+        ->putJson('/crm/api/v2/leads/'.$lead->external_id, [
             'title' => 'Only title changes',
         ]);
 
@@ -342,7 +342,7 @@ test('PUT /leads/{lead} clears person/organization when explicitly set to null',
     ]);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->putJson('/api/crm/v2/leads/'.$lead->external_id, [
+        ->putJson('/crm/api/v2/leads/'.$lead->external_id, [
             'person_id' => null,
             'organization_id' => null,
         ]);
@@ -359,7 +359,7 @@ test('DELETE /leads/{lead} soft-deletes the lead', function () {
     $lead = Lead::create(['title' => 'Toast']);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->deleteJson('/api/crm/v2/leads/'.$lead->external_id);
+        ->deleteJson('/crm/api/v2/leads/'.$lead->external_id);
 
     $response->assertStatus(204);
 
@@ -368,7 +368,7 @@ test('DELETE /leads/{lead} soft-deletes the lead', function () {
 
     // The same UUID is now unreachable through the API (soft-deleted records are excluded).
     $followUp = $this->withHeaders(leadApiHeaders($user))
-        ->getJson('/api/crm/v2/leads/'.$lead->external_id);
+        ->getJson('/crm/api/v2/leads/'.$lead->external_id);
     $followUp->assertStatus(404);
 });
 
@@ -377,7 +377,7 @@ test('DELETE /leads/{lead} returns 403 when policy denies delete', function () {
     $lead = Lead::create(['title' => 'Untouchable']);
 
     $response = $this->withHeaders(leadApiHeaders($user))
-        ->deleteJson('/api/crm/v2/leads/'.$lead->external_id);
+        ->deleteJson('/crm/api/v2/leads/'.$lead->external_id);
 
     $response->assertStatus(403);
     expect(Lead::query()->where('external_id', $lead->external_id)->exists())->toBeTrue();

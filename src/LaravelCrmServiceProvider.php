@@ -1218,8 +1218,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         });
 
         // API routes (v2) — JSON-only with named rate limiter
+        // Mounted under the CRM route prefix (defaults to `crm/api/v2`).
         Route::group([
-            'prefix' => 'api/crm/v2',
+            'prefix' => trim(config('laravel-crm.route_prefix', 'crm'), '/').'/api/v2',
             'middleware' => ['api', 'laravel-crm.api.json', 'throttle:laravel-crm-api'],
         ], function () {
             $this->loadRoutesFrom(__DIR__.'/Http/api-routes.php');

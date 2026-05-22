@@ -16,7 +16,7 @@ function authTokenUser(array $attributes = []): User
 test('POST /auth/token returns 201 with token and user for valid credentials', function () {
     $user = authTokenUser();
 
-    $response = $this->postJson('/api/crm/v2/auth/token', [
+    $response = $this->postJson('/crm/api/v2/auth/token', [
         'email' => $user->email,
         'password' => 'secret-password',
         'device_name' => 'pest-test',
@@ -37,7 +37,7 @@ test('POST /auth/token returns 201 with token and user for valid credentials', f
 test('POST /auth/token returns 422 for invalid credentials', function () {
     $user = authTokenUser();
 
-    $response = $this->postJson('/api/crm/v2/auth/token', [
+    $response = $this->postJson('/crm/api/v2/auth/token', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
@@ -49,7 +49,7 @@ test('POST /auth/token returns 422 for invalid credentials', function () {
 });
 
 test('POST /auth/token returns 422 when an unknown email is supplied', function () {
-    $response = $this->postJson('/api/crm/v2/auth/token', [
+    $response = $this->postJson('/crm/api/v2/auth/token', [
         'email' => 'does-not-exist@example.com',
         'password' => 'secret-password',
     ]);
@@ -59,7 +59,7 @@ test('POST /auth/token returns 422 when an unknown email is supplied', function 
 });
 
 test('POST /auth/token returns 422 when fields are missing', function () {
-    $response = $this->postJson('/api/crm/v2/auth/token', []);
+    $response = $this->postJson('/crm/api/v2/auth/token', []);
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['email', 'password']);
@@ -68,7 +68,7 @@ test('POST /auth/token returns 422 when fields are missing', function () {
 test('POST /auth/token returns 422 when the user lacks crm_access', function () {
     $user = authTokenUser(['crm_access' => false]);
 
-    $response = $this->postJson('/api/crm/v2/auth/token', [
+    $response = $this->postJson('/crm/api/v2/auth/token', [
         'email' => $user->email,
         'password' => 'secret-password',
     ]);
@@ -85,7 +85,7 @@ test('GET /auth/me returns the authenticated user', function () {
     $response = $this->withHeaders([
         'Authorization' => 'Bearer '.$plainToken,
         'Accept' => 'application/json',
-    ])->getJson('/api/crm/v2/auth/me');
+    ])->getJson('/crm/api/v2/auth/me');
 
     $response->assertOk();
     $response->assertJson([
@@ -97,7 +97,7 @@ test('GET /auth/me returns the authenticated user', function () {
 });
 
 test('GET /auth/me returns 401 when no token is supplied', function () {
-    $response = $this->getJson('/api/crm/v2/auth/me');
+    $response = $this->getJson('/crm/api/v2/auth/me');
 
     $response->assertStatus(401);
 });
@@ -111,7 +111,7 @@ test('DELETE /auth/token revokes the current bearer token and returns 204', func
     $response = $this->withHeaders([
         'Authorization' => 'Bearer '.$plainToken,
         'Accept' => 'application/json',
-    ])->deleteJson('/api/crm/v2/auth/token');
+    ])->deleteJson('/crm/api/v2/auth/token');
 
     $response->assertStatus(204);
 
@@ -120,7 +120,7 @@ test('DELETE /auth/token revokes the current bearer token and returns 204', func
 });
 
 test('DELETE /auth/token returns 401 when unauthenticated', function () {
-    $response = $this->deleteJson('/api/crm/v2/auth/token');
+    $response = $this->deleteJson('/crm/api/v2/auth/token');
 
     $response->assertStatus(401);
 });

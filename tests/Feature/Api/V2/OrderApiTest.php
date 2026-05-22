@@ -33,7 +33,7 @@ function createOrderApiProduct(string $name = 'Widget'): Product
 }
 
 test('GET /orders returns 401 when unauthenticated', function () {
-    $this->getJson('/api/crm/v2/orders')->assertStatus(401);
+    $this->getJson('/crm/api/v2/orders')->assertStatus(401);
 });
 
 test('POST /orders creates an order with nested line items', function () {
@@ -42,7 +42,7 @@ test('POST /orders creates an order with nested line items', function () {
     $product = createOrderApiProduct();
 
     $response = $this->withHeaders(orderApiHeaders($user))
-        ->postJson('/api/crm/v2/orders', [
+        ->postJson('/crm/api/v2/orders', [
             'reference' => 'O-REF-1',
             'description' => 'First order',
             'currency' => 'USD',
@@ -85,7 +85,7 @@ test('POST /orders returns 422 when a line item is missing required fields', fun
     $product = createOrderApiProduct();
 
     $this->withHeaders(orderApiHeaders($user))
-        ->postJson('/api/crm/v2/orders', [
+        ->postJson('/crm/api/v2/orders', [
             'line_items' => [[
                 'product_id' => $product->external_id,
                 // missing quantity, unit_price, amount
@@ -103,7 +103,7 @@ test('POST /orders returns 403 when policy denies create', function () {
     $user = orderApiUser(['crm_permissions' => json_encode([])]);
 
     $this->withHeaders(orderApiHeaders($user))
-        ->postJson('/api/crm/v2/orders', [])
+        ->postJson('/crm/api/v2/orders', [])
         ->assertStatus(403);
 });
 
@@ -115,7 +115,7 @@ test('GET /orders honors per_page pagination', function () {
     }
 
     $response = $this->withHeaders(orderApiHeaders($user))
-        ->getJson('/api/crm/v2/orders?per_page=2');
+        ->getJson('/crm/api/v2/orders?per_page=2');
 
     $response->assertOk();
     expect($response->json('data'))->toHaveCount(2);
@@ -126,7 +126,7 @@ test('GET /orders/{order} returns 404 for unknown UUID', function () {
     $user = orderApiUser();
 
     $this->withHeaders(orderApiHeaders($user))
-        ->getJson('/api/crm/v2/orders/'.((string) Str::uuid()))
+        ->getJson('/crm/api/v2/orders/'.((string) Str::uuid()))
         ->assertStatus(404);
 });
 
@@ -136,7 +136,7 @@ test('PUT /orders/{order} replaces line items', function () {
     $productB = createOrderApiProduct('B');
 
     $created = $this->withHeaders(orderApiHeaders($user))
-        ->postJson('/api/crm/v2/orders', [
+        ->postJson('/crm/api/v2/orders', [
             'line_items' => [[
                 'product_id' => $productA->external_id,
                 'quantity' => 1,
@@ -147,7 +147,7 @@ test('PUT /orders/{order} replaces line items', function () {
 
     // Replace with a new line; original line should be removed since no id is provided.
     $response = $this->withHeaders(orderApiHeaders($user))
-        ->putJson('/api/crm/v2/orders/'.$created['id'], [
+        ->putJson('/crm/api/v2/orders/'.$created['id'], [
             'line_items' => [[
                 'product_id' => $productB->external_id,
                 'quantity' => 2,
@@ -176,7 +176,7 @@ test('PUT /orders/{order} preserves seeded addresses when omitted', function () 
     ]);
 
     $this->withHeaders(orderApiHeaders($user))
-        ->putJson('/api/crm/v2/orders/'.$order->external_id, [
+        ->putJson('/crm/api/v2/orders/'.$order->external_id, [
             'reference' => 'O-REF-UPDATED',
         ])
         ->assertOk();
@@ -191,7 +191,7 @@ test('DELETE /orders/{order} soft-deletes the order', function () {
     $order = Order::create(['description' => 'Toast']);
 
     $this->withHeaders(orderApiHeaders($user))
-        ->deleteJson('/api/crm/v2/orders/'.$order->external_id)
+        ->deleteJson('/crm/api/v2/orders/'.$order->external_id)
         ->assertStatus(204);
 
     expect(Order::query()->where('external_id', $order->external_id)->exists())->toBeFalse();
