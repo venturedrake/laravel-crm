@@ -181,13 +181,10 @@
                 @endhasteamsenabled
 
                 @hasmonitoringenabled
-
-                <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
-
-                @can('view crm monitors')
-                    <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.monitors')) }}" icon="fas.heartbeat" link="{{ url(route('laravel-crm.monitors.index')) }}" />
-                @endcan
-
+                    <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
+                    @can('view crm monitors')
+                        <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.monitors')) }}" icon="fas.heartbeat" link="{{ url(route('laravel-crm.monitors.index')) }}" />
+                    @endcan
                 @endhasmonitoringenabled
 
                 <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
