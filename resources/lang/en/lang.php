@@ -882,6 +882,7 @@ return [
     'downtime_before_alert_hint' => 'The amount of time your site needs to be down for before we alert you.',
     'threshold' => 'threshold',
     'monitor_performance_threshold' => 'monitor performance threshold',
+    'average_response_time' => 'average response time',
     'ms' => 'ms',
     'threshold_hint' => 'We’ll send out alerts once this site is consistently slower than this threshold.',
     'method' => 'method',
