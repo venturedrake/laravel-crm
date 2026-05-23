@@ -865,6 +865,10 @@ return [
     'connection_failed' => 'connection failed',
     'balance' => 'balance',
 
+    // Monitoring module
+    'monitors' => 'monitors',
+    'monitor' => 'monitor',
+
     // Monitor notifications
     'monitor_down_subject' => 'Monitor down',
     'monitor_recovered_subject' => 'Monitor recovered',
