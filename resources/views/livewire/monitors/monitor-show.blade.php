@@ -52,12 +52,16 @@
                 <div>{{ $monitor->method }}</div>
             </div>
             <div>
-                <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.interval')) }}</div>
-                <div>{{ $monitor->interval }} min</div>
+                <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.run_check_every')) }}</div>
+                <div>{{ $monitor->interval }} {{ __('laravel-crm::lang.minutes') }}</div>
             </div>
             <div>
-                <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.timeout')) }}</div>
-                <div>{{ $monitor->timeout }} s</div>
+                <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.minutes_downtime_before_notification')) }}</div>
+                <div>{{ $monitor->downtime_minutes_before_alert ?? '—' }} {{ __('laravel-crm::lang.minutes') }}</div>
+            </div>
+            <div>
+                <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.monitor_performance_threshold')) }}</div>
+                <div>{{ $monitor->perf_threshold_ms ?? '—' }} {{ __('laravel-crm::lang.ms') }}</div>
             </div>
             <div>
                 <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.owner')) }}</div>
