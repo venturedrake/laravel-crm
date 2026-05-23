@@ -163,7 +163,7 @@ class InvoiceController extends Controller
 
         $invoice = $this->invoiceService->update($request, $invoice, $person ?? null, $organization ?? null);
 
-        flash(ucfirst(trans('laravel-crm::lang.invoice_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.invoice_updated')));
 
         return redirect(route('laravel-crm.invoices.show', $invoice));
     }
@@ -178,7 +178,7 @@ class InvoiceController extends Controller
     {
         $invoice->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.invoice_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.invoice_deleted')));
 
         return redirect(route('laravel-crm.invoices.index'));
     }

@@ -91,7 +91,7 @@ class NoteController extends Controller
     {
         $note->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.note_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.note_deleted')));
 
         return redirect(route('laravel-crm.notes.index'));
     }

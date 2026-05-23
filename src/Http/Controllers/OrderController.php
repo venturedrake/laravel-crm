@@ -153,7 +153,7 @@ class OrderController extends Controller
 
         $this->orderService->create($request, $person ?? null, $organization ?? null, $client ?? null);
 
-        flash(ucfirst(trans('laravel-crm::lang.order_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.order_stored')));
 
         return redirect(route('laravel-crm.orders.index'));
     }
@@ -261,7 +261,7 @@ class OrderController extends Controller
 
         $order = $this->orderService->update($request, $order, $person ?? null, $organization ?? null, $client ?? null);
 
-        flash(ucfirst(trans('laravel-crm::lang.order_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.order_updated')));
 
         return redirect(route('laravel-crm.orders.show', $order));
     }
@@ -276,7 +276,7 @@ class OrderController extends Controller
     {
         $order->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.order_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.order_deleted')));
 
         return redirect(route('laravel-crm.orders.index'));
     }
@@ -389,7 +389,7 @@ class OrderController extends Controller
             ]);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.delivery_created_from_order')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.delivery_created_from_order')));
 
         return back();
     }

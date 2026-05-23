@@ -1210,6 +1210,21 @@ class LaravelCrmServiceProvider extends ServiceProvider
             }
         });
 
+        // Public portal routes (signed-URL quote/invoice views) — registered
+        // OUTSIDE the CRM auth/crm-api middleware so recipients can open the
+        // link without logging in, but still inside the `web` group so signed
+        // URL validation, sessions, and CSRF on POST work. Mounted at `/p`
+        // regardless of LARAVEL_CRM_ROUTE_PREFIX.
+        Route::group([
+            'domain' => null,
+            'prefix' => 'p',
+            'middleware' => ['web'],
+        ], function () {
+            if (config('laravel-crm.user_interface')) {
+                $this->loadRoutesFrom(__DIR__.'/Http/portal-routes.php');
+            }
+        });
+
         // Main CRM routes — full middleware stack
         Route::group($this->routeConfiguration(), function () {
             if (config('laravel-crm.user_interface')) {

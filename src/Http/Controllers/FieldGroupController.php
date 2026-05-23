@@ -42,7 +42,7 @@ class FieldGroupController extends Controller
             'name' => $request->name,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.field_group_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.field_group_stored')));
 
         return redirect(route('laravel-crm.field-groups.index'));
     }
@@ -86,7 +86,7 @@ class FieldGroupController extends Controller
             'name' => $request->name,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.field_group_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.field_group_updated')));
 
         return redirect(route('laravel-crm.field-groups.show', $fieldGroup));
     }
@@ -101,7 +101,7 @@ class FieldGroupController extends Controller
     {
         $fieldGroup->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.field_group_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.field_group_deleted')));
 
         return redirect(route('laravel-crm.field-groups.index'));
     }

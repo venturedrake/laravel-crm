@@ -20,7 +20,7 @@ class ChatController extends Controller
     {
         $chat->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.chat_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.chat_deleted')));
 
         return redirect(route('laravel-crm.chat.index'));
     }

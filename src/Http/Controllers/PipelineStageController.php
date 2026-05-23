@@ -46,7 +46,7 @@ class PipelineStageController extends Controller
             'pipeline_id' => $request->pipeline_id,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.pipeline_stage_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.pipeline_stage_stored')));
 
         return redirect(route('laravel-crm.pipeline-stages.index'));
     }
@@ -92,7 +92,7 @@ class PipelineStageController extends Controller
             'pipeline_id' => $request->pipeline_id,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.pipeline_stage_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.pipeline_stage_updated')));
 
         return redirect(route('laravel-crm.pipeline-stages.show', $pipelineStage));
     }
@@ -107,7 +107,7 @@ class PipelineStageController extends Controller
     {
         $pipelineStage->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.pipeline_stage_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.pipeline_stage_deleted')));
 
         return redirect(route('laravel-crm.pipeline-stages.index'));
     }

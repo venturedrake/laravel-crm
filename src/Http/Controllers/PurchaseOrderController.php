@@ -111,7 +111,7 @@ class PurchaseOrderController extends Controller
 
         $this->purchaseOrderService->create($request, $person ?? null, $organization ?? null);
 
-        flash(ucfirst(trans('laravel-crm::lang.purchase_order_created')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.purchase_order_created')));
 
         if ($request->action == 'create_and_add_another') {
             return redirect(route('laravel-crm.purchase-orders.create', ['model' => 'order', 'id' => $request->order]));
@@ -154,7 +154,7 @@ class PurchaseOrderController extends Controller
             sleep(1);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.purchase_orders_created')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.purchase_orders_created')));
 
         return redirect(route('laravel-crm.purchase-orders.index'));
     }
@@ -224,7 +224,7 @@ class PurchaseOrderController extends Controller
 
         $purchaseOrder = $this->purchaseOrderService->update($request, $purchaseOrder, $person ?? null, $organization ?? null);
 
-        flash(ucfirst(trans('laravel-crm::lang.purchase_order_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.purchase_order_updated')));
 
         return redirect(route('laravel-crm.purchase-orders.show', $purchaseOrder));
     }
@@ -239,7 +239,7 @@ class PurchaseOrderController extends Controller
     {
         $purchaseOrder->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.purchase_order_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.purchase_order_deleted')));
 
         return redirect(route('laravel-crm.purchase-orders.index'));
     }

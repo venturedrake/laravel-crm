@@ -47,7 +47,7 @@ class LabelController extends Controller
             'hex' => $request->hex ?? '6c757d',
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.label_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.label_stored')));
 
         return redirect(route('laravel-crm.labels.index'));
     }
@@ -93,7 +93,7 @@ class LabelController extends Controller
             'hex' => $request->hex ?? '6c757d',
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.label_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.label_updated')));
 
         return redirect(route('laravel-crm.labels.show', $label));
     }
@@ -108,7 +108,7 @@ class LabelController extends Controller
     {
         $label->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.label_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.label_deleted')));
 
         return redirect(route('laravel-crm.labels.index'));
     }
