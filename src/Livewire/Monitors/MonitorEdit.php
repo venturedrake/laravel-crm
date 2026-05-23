@@ -17,12 +17,11 @@ class MonitorEdit extends Component
         $this->monitor = $monitor;
         $this->name = $monitor->name;
         $this->description = $monitor->description;
-        $this->type = $monitor->type ?? 'http';
+        $this->type = $monitor->type ?? 'https';
         $this->url = $monitor->url;
         $this->method = $monitor->method ?? 'GET';
-        $this->expected_status_code = $monitor->expected_status_code;
-        $this->expected_response_keyword = $monitor->expected_response_keyword;
-        $this->interval = $monitor->interval ?? 300;
+        $this->expected_status_code = $monitor->expected_status_code ?? 200;
+        $this->interval = $monitor->interval ?? 5;
         $this->timeout = $monitor->timeout ?? 30;
         $this->is_active = (bool) $monitor->is_active;
         $this->user_owner_id = $monitor->user_owner_id;

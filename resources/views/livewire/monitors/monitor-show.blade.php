@@ -53,7 +53,7 @@
             </div>
             <div>
                 <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.interval')) }}</div>
-                <div>{{ $monitor->interval }} s</div>
+                <div>{{ $monitor->interval }} min</div>
             </div>
             <div>
                 <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.timeout')) }}</div>

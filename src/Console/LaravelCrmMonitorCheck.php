@@ -17,7 +17,7 @@ class LaravelCrmMonitorCheck extends Command
     {
         $now = Carbon::now();
         $dispatched = 0;
-        $defaultIntervalSeconds = (int) config('laravel-crm.monitoring.default_frequency_minutes', 5) * 60;
+        $defaultIntervalMinutes = (int) config('laravel-crm.monitoring.default_frequency_minutes', 5);
 
         Monitor::query()
             ->where('is_active', true)
@@ -25,12 +25,12 @@ class LaravelCrmMonitorCheck extends Command
                 $query->where('uptime_enabled', true)
                     ->orWhere('ssl_enabled', true);
             })
-            ->chunkById(100, function ($monitors) use ($now, $defaultIntervalSeconds, &$dispatched) {
+            ->chunkById(100, function ($monitors) use ($now, $defaultIntervalMinutes, &$dispatched) {
                 foreach ($monitors as $monitor) {
-                    $intervalSeconds = (int) ($monitor->interval ?: $defaultIntervalSeconds);
+                    $intervalMinutes = (int) ($monitor->interval ?: $defaultIntervalMinutes);
 
                     if ($monitor->last_checked_at === null
-                        || $monitor->last_checked_at->lte($now->copy()->subSeconds($intervalSeconds))
+                        || $monitor->last_checked_at->lte($now->copy()->subMinutes($intervalMinutes))
                     ) {
                         RunMonitorCheck::dispatch($monitor->id);
                         $dispatched++;
