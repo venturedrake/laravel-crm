@@ -2,26 +2,27 @@
 
 namespace VentureDrake\LaravelCrm\Notifications;
 
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use VentureDrake\LaravelCrm\Models\Monitor;
 
-class MonitorSslNotification extends Notification
+class MonitorSslInvalidNotification extends Notification
 {
     use Queueable;
 
     protected Monitor $monitor;
 
-    protected string $reason;
+    protected User $owner;
 
-    protected ?string $detail;
+    protected array $result;
 
-    public function __construct(Monitor $monitor, string $reason, ?string $detail = null)
+    public function __construct(Monitor $monitor, User $owner, array $result = [])
     {
         $this->monitor = $monitor;
-        $this->reason = $reason;
-        $this->detail = $detail;
+        $this->owner = $owner;
+        $this->result = $result;
     }
 
     public function via($notifiable)
@@ -33,15 +34,12 @@ class MonitorSslNotification extends Notification
     {
         $mail = (new MailMessage)
             ->error()
-            ->subject('Monitor SSL alert: '.$this->monitor->name)
-            ->line($this->monitor->name.' ('.$this->monitor->url.') has an SSL issue: '.$this->reason);
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_ssl_invalid_subject')).': '.$this->monitor->name)
+            ->greeting('Hi '.$this->owner->name.',')
+            ->line('The SSL certificate for '.$this->monitor->name.' ('.$this->monitor->url.') is invalid.');
 
-        if ($this->detail) {
-            $mail->line($this->detail);
-        }
-
-        if ($this->monitor->ssl_expires_at) {
-            $mail->line('Certificate expires at: '.$this->monitor->ssl_expires_at->toDateTimeString().' UTC');
+        if (! empty($this->result['error'])) {
+            $mail->line('Reason: '.$this->result['error']);
         }
 
         return $mail;
@@ -53,8 +51,7 @@ class MonitorSslNotification extends Notification
             'monitor_id' => $this->monitor->id,
             'monitor_name' => $this->monitor->name,
             'url' => $this->monitor->url,
-            'reason' => $this->reason,
-            'detail' => $this->detail,
+            'result' => $this->result,
         ];
     }
 }

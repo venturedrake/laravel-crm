@@ -16,7 +16,8 @@ use VentureDrake\LaravelCrm\Models\MonitorCheck;
 use VentureDrake\LaravelCrm\Notifications\MonitorDownNotification;
 use VentureDrake\LaravelCrm\Notifications\MonitorPerformanceNotification;
 use VentureDrake\LaravelCrm\Notifications\MonitorRecoveredNotification;
-use VentureDrake\LaravelCrm\Notifications\MonitorSslNotification;
+use VentureDrake\LaravelCrm\Notifications\MonitorSslExpiringNotification;
+use VentureDrake\LaravelCrm\Notifications\MonitorSslInvalidNotification;
 use VentureDrake\LaravelCrm\Services\MonitorCheckService;
 
 class RunMonitorCheck implements ShouldQueue
@@ -142,7 +143,7 @@ class RunMonitorCheck implements ShouldQueue
             $debounceMinutes = (int) config('laravel-crm.monitoring.down_debounce_minutes', 2);
 
             if ($monitor->notified_at === null && $monitor->down_since_at->lte($now->copy()->subMinutes($debounceMinutes))) {
-                $this->notifyRecipients($monitor, new MonitorDownNotification($monitor, $result['error']));
+                $this->notifyRecipients($monitor, fn ($owner) => new MonitorDownNotification($monitor, $owner, $result));
                 $monitor->notified_at = $now;
             }
 
@@ -153,7 +154,7 @@ class RunMonitorCheck implements ShouldQueue
             $rateLimitMinutes = (int) config('laravel-crm.monitoring.perf_alert_rate_limit_minutes', 60);
 
             if ($monitor->notified_at === null || $monitor->notified_at->lte($now->copy()->subMinutes($rateLimitMinutes))) {
-                $this->notifyRecipients($monitor, new MonitorPerformanceNotification($monitor, $result['response_time_ms']));
+                $this->notifyRecipients($monitor, fn ($owner) => new MonitorPerformanceNotification($monitor, $owner, $result));
                 $monitor->notified_at = $now;
             }
 
@@ -162,7 +163,7 @@ class RunMonitorCheck implements ShouldQueue
 
         if ($monitor->down_since_at !== null || $monitor->notified_at !== null) {
             if ($previousStatus === 'down' || $previousStatus === 'slow') {
-                $this->notifyRecipients($monitor, new MonitorRecoveredNotification($monitor));
+                $this->notifyRecipients($monitor, fn ($owner) => new MonitorRecoveredNotification($monitor, $owner, $result));
             }
 
             $monitor->down_since_at = null;
@@ -193,17 +194,16 @@ class RunMonitorCheck implements ShouldQueue
             return;
         }
 
-        $reason = ! $result['valid'] ? 'invalid' : 'expiring';
-        $detail = $result['error']
-            ?? ($isExpiringSoon && $result['expires_at']
-                ? 'Expires at '.$result['expires_at']->toIso8601String()
-                : null);
+        if (! $result['valid']) {
+            $this->notifyRecipients($monitor, fn ($owner) => new MonitorSslInvalidNotification($monitor, $owner, $result));
+        } else {
+            $this->notifyRecipients($monitor, fn ($owner) => new MonitorSslExpiringNotification($monitor, $owner, $result));
+        }
 
-        $this->notifyRecipients($monitor, new MonitorSslNotification($monitor, $reason, $detail));
         $monitor->ssl_notified_at = $now;
     }
 
-    private function notifyRecipients(Monitor $monitor, $notification): void
+    private function notifyRecipients(Monitor $monitor, callable $factory): void
     {
         $userId = $monitor->user_assigned_id ?: $monitor->user_owner_id;
 
@@ -217,6 +217,6 @@ class RunMonitorCheck implements ShouldQueue
             return;
         }
 
-        Notification::send($user, $notification);
+        Notification::send($user, $factory($user));
     }
 }

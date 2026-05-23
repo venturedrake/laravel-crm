@@ -3,12 +3,13 @@
 namespace VentureDrake\LaravelCrm\Notifications;
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use VentureDrake\LaravelCrm\Models\Monitor;
 
-class MonitorRecoveredNotification extends Notification
+class MonitorSslExpiringNotification extends Notification
 {
     use Queueable;
 
@@ -33,13 +34,20 @@ class MonitorRecoveredNotification extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-            ->subject(ucfirst(__('laravel-crm::lang.monitor_recovered_subject')).': '.$this->monitor->name)
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_ssl_expiring_subject')).': '.$this->monitor->name)
             ->greeting('Hi '.$this->owner->name.',')
-            ->line($this->monitor->name.' ('.$this->monitor->url.') is back up.')
-            ->line('Status: '.($this->monitor->last_status ?? 'up'));
+            ->line('The SSL certificate for '.$this->monitor->name.' ('.$this->monitor->url.') is expiring soon.');
 
-        if (! empty($this->result['response_time_ms'])) {
-            $mail->line('Response time: '.$this->result['response_time_ms'].' ms');
+        $expiresAt = $this->result['expires_at'] ?? $this->monitor->ssl_expires_at;
+
+        if ($expiresAt instanceof Carbon) {
+            $mail->line('Expires at: '.$expiresAt->toDateTimeString().' UTC');
+        }
+
+        if (! empty($this->result['issuer'])) {
+            $mail->line('Issuer: '.$this->result['issuer']);
+        } elseif ($this->monitor->ssl_issuer) {
+            $mail->line('Issuer: '.$this->monitor->ssl_issuer);
         }
 
         return $mail;

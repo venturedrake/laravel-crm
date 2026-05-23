@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Notifications;
 
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -13,12 +14,15 @@ class MonitorPerformanceNotification extends Notification
 
     protected Monitor $monitor;
 
-    protected ?int $responseTimeMs;
+    protected User $owner;
 
-    public function __construct(Monitor $monitor, ?int $responseTimeMs = null)
+    protected array $result;
+
+    public function __construct(Monitor $monitor, User $owner, array $result = [])
     {
         $this->monitor = $monitor;
-        $this->responseTimeMs = $responseTimeMs;
+        $this->owner = $owner;
+        $this->result = $result;
     }
 
     public function via($notifiable)
@@ -29,11 +33,12 @@ class MonitorPerformanceNotification extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-            ->subject('Monitor slow: '.$this->monitor->name)
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_perf_subject')).': '.$this->monitor->name)
+            ->greeting('Hi '.$this->owner->name.',')
             ->line($this->monitor->name.' ('.$this->monitor->url.') is responding slowly.');
 
-        if ($this->responseTimeMs !== null) {
-            $mail->line('Response time: '.$this->responseTimeMs.' ms');
+        if (isset($this->result['response_time_ms']) && $this->result['response_time_ms'] !== null) {
+            $mail->line('Response time: '.$this->result['response_time_ms'].' ms');
         }
 
         if ($this->monitor->perf_threshold_ms) {
@@ -49,7 +54,7 @@ class MonitorPerformanceNotification extends Notification
             'monitor_id' => $this->monitor->id,
             'monitor_name' => $this->monitor->name,
             'url' => $this->monitor->url,
-            'response_time_ms' => $this->responseTimeMs,
+            'result' => $this->result,
         ];
     }
 }

@@ -864,4 +864,11 @@ return [
     'disconnect' => 'disconnect',
     'connection_failed' => 'connection failed',
     'balance' => 'balance',
+
+    // Monitor notifications
+    'monitor_down_subject' => 'Monitor down',
+    'monitor_recovered_subject' => 'Monitor recovered',
+    'monitor_perf_subject' => 'Monitor performance alert',
+    'monitor_ssl_expiring_subject' => 'Monitor SSL certificate expiring soon',
+    'monitor_ssl_invalid_subject' => 'Monitor SSL certificate invalid',
 ];
