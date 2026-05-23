@@ -22,6 +22,7 @@ class CreateLaravelCrmMonitorsTable extends Migration
             $table->text('description')->nullable();
             $table->string('type')->default('http');
             $table->string('url', 1024);
+            $table->string('host')->nullable();
             $table->string('method', 16)->default('GET');
             $table->json('headers')->nullable();
             $table->text('body')->nullable();
@@ -35,6 +36,9 @@ class CreateLaravelCrmMonitorsTable extends Migration
             $table->unsignedInteger('last_status_code')->nullable();
             $table->timestamp('last_checked_at')->nullable();
             $table->timestamp('last_status_changed_at')->nullable();
+            $table->timestamp('down_since_at')->nullable();
+            $table->timestamp('notified_at')->nullable();
+            $table->timestamp('ssl_notified_at')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->unsignedBigInteger('user_updated_id')->nullable();

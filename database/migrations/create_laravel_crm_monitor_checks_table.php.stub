@@ -28,6 +28,7 @@ class CreateLaravelCrmMonitorChecksTable extends Migration
             $table->unsignedInteger('status_code')->nullable();
             $table->text('error_message')->nullable();
             $table->longText('response_body')->nullable();
+            $table->timestamp('ssl_expires_at')->nullable();
             $table->timestamp('checked_at');
             $table->timestamps();
 
