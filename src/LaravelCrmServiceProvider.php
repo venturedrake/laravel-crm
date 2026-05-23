@@ -32,6 +32,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLeadSources;
+use VentureDrake\LaravelCrm\Console\LaravelCrmMonitorCheck;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganizationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
@@ -806,6 +807,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmSampleData::class,
                 LaravelCrmEmailCampaignsDispatch::class,
                 LaravelCrmSmsCampaignsDispatch::class,
+                LaravelCrmMonitorCheck::class,
                 IssueApiToken::class,
             ]);
 
