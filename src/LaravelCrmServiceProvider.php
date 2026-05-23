@@ -1079,6 +1079,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->daily()
                     ->withoutOverlapping();
 
+                $schedule->command('laravelcrm:monitor-check')
+                    ->name('laravelCrmMonitorCheck')
+                    ->everyMinute()
+                    ->withoutOverlapping();
+
                 if (config('xero.clientId') && config('xero.clientSecret')) {
                     $schedule->command('xero:keep-alive')
                         ->name('laravelCrmXeroKeepAlive')
@@ -1184,6 +1189,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 return true;
             }
         });
+
+        Blade::if('hasmonitoringenabled', fn () => in_array('monitoring', config('laravel-crm.modules', [])));
     }
 
     /**
