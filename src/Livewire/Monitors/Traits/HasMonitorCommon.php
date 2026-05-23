@@ -25,7 +25,9 @@ trait HasMonitorCommon
 
     public int $interval = 5;
 
-    public int $timeout = 30;
+    public int $downtime_minutes_before_alert = 5;
+
+    public int $perf_threshold_ms = 3500;
 
     public bool $is_active = true;
 
@@ -46,7 +48,8 @@ trait HasMonitorCommon
             'method' => 'required|string|in:GET,POST,PUT,PATCH',
             'expected_status_code' => 'nullable|integer|min:100|max:599',
             'interval' => 'required|integer|min:1',
-            'timeout' => 'required|integer|min:1|max:300',
+            'downtime_minutes_before_alert' => 'required|integer|min:1',
+            'perf_threshold_ms' => 'required|integer|min:1',
             'is_active' => 'boolean',
             'user_owner_id' => 'nullable|integer',
         ];
