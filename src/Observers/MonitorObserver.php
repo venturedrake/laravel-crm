@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Monitor;
+use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 
 class MonitorObserver
 {
@@ -17,6 +18,11 @@ class MonitorObserver
 
         if (! app()->runningInConsole()) {
             $monitor->user_created_id = auth()->user()->id ?? null;
+        }
+
+        if (empty($monitor->number)) {
+            $monitor->number = NumberGeneratorService::next(Monitor::class, 1000);
+            $monitor->monitor_id = 'M'.$monitor->number;
         }
     }
 

@@ -174,7 +174,7 @@ class RunMonitorCheck implements ShouldQueue
 
     private function evaluateSslAlerts(Monitor $monitor, array $result, Carbon $now): void
     {
-        $warningDays = (int) config('laravel-crm.monitoring.ssl_expiry_warning_days', 14);
+        $warningDays = (int) config('laravel-crm.monitoring.default_ssl_days_before_expiry_alert', 14);
         $rateLimitHours = (int) config('laravel-crm.monitoring.ssl_alert_rate_limit_hours', 24);
 
         $isExpiringSoon = $result['expires_at'] instanceof Carbon

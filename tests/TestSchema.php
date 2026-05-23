@@ -775,6 +775,7 @@ class TestSchema
             $table->bigIncrements('id');
             $table->string('external_id');
             $table->string('monitor_id')->nullable();
+            $table->unsignedInteger('number')->nullable();
             $table->unsignedBigInteger('team_id')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
@@ -791,7 +792,6 @@ class TestSchema
             $table->boolean('is_active')->default(true);
             $table->boolean('uptime_enabled')->default(true);
             $table->boolean('ssl_enabled')->default(false);
-            $table->unsignedInteger('frequency_minutes')->nullable();
             $table->unsignedInteger('perf_threshold_ms')->nullable();
             $table->unsignedInteger('downtime_minutes_before_alert')->nullable();
             $table->string('last_status')->nullable();
