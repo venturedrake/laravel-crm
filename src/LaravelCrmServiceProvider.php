@@ -149,6 +149,10 @@ use VentureDrake\LaravelCrm\Livewire\ModelAddresses;
 use VentureDrake\LaravelCrm\Livewire\ModelEmails;
 use VentureDrake\LaravelCrm\Livewire\ModelPhones;
 use VentureDrake\LaravelCrm\Livewire\ModelProducts;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorCreate;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorEdit;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorIndex;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorShow;
 use VentureDrake\LaravelCrm\Livewire\Notes\NoteItem;
 use VentureDrake\LaravelCrm\Livewire\Notes\NoteRelated;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
@@ -902,6 +906,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-email-campaign-create', EmailCampaignCreate::class);
         Livewire::component('crm-email-campaign-edit', EmailCampaignEdit::class);
         Livewire::component('crm-email-campaign-show', EmailCampaignShow::class);
+
+        // Monitors
+        Livewire::component('crm-monitor-index', MonitorIndex::class);
+        Livewire::component('crm-monitor-create', MonitorCreate::class);
+        Livewire::component('crm-monitor-edit', MonitorEdit::class);
+        Livewire::component('crm-monitor-show', MonitorShow::class);
         Livewire::component('crm-email-template-index', EmailTemplateIndex::class);
         Livewire::component('crm-email-template-create', EmailTemplateCreate::class);
         Livewire::component('crm-email-template-edit', EmailTemplateEdit::class);
