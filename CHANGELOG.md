@@ -8,9 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documents
 - Calendar
-- CSV Import / Export
-- SMS
 - Payments
+
+## 2.2.1 - 2026-05-23
+### Fixed
+- PDF save directory not created before writing invoice/quote/purchase-order PDF attachments (`file_put_contents: failed to open stream: No such file or directory`)
+- Portal routes (quotes, invoices) returning 401 — moved out of authenticated CRM middleware group into own `web`-only route group so signed links are publicly accessible
+- Missing portal route for purchase orders (`laravel-crm.portal.purchase-orders.show` not defined) — added `PurchaseOrderController`, portal view, and routes under `/p/purchase-orders`
+- PHPFlasher v2 API compatibility — replaced `flash($msg)->success()->important()` chained calls with `flash()->success($msg)` across all controllers (v2 no longer supports chaining type/importance methods on the returned `Envelope`)
+- Flash notifications appearing behind the fixed-top navbar on portal pages — bumped `.fl-wrapper` z-index above Bootstrap's navbar in the portal layout
+- Missing `invoice_sent` and `purchase_order_sent` lang keys
 
 ## 2.2.0 - 2026-05-22
 ### Added

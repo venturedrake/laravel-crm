@@ -35,4 +35,3 @@ Route::prefix('purchase-orders')->group(function () {
     Route::post('{purchaseOrder:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PurchaseOrderController@process')
         ->name('laravel-crm.portal.purchase-orders.process');
 });
-
