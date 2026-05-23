@@ -10,7 +10,7 @@
     <x-mary-input wire:model="expected_status_code" type="number" label="{{ ucfirst(__('laravel-crm::lang.expected_status_code')) }}" />
     <x-mary-input wire:model="interval" type="number" min="1" label="{{ ucfirst(__('laravel-crm::lang.run_check_every')) }}" suffix="{{ __('laravel-crm::lang.minutes') }}" />
     <x-mary-input wire:model="downtime_minutes_before_alert" type="number" min="1" label="{{ ucfirst(__('laravel-crm::lang.minutes_downtime_before_notification')) }}" suffix="{{ __('laravel-crm::lang.minutes') }}" hint="{{ __('laravel-crm::lang.downtime_before_alert_hint') }}" />
-    <x-mary-input wire:model="perf_threshold_ms" type="number" min="1" label="{{ ucfirst(__('laravel-crm::lang.threshold')) }}" suffix="{{ __('laravel-crm::lang.ms') }}" hint="{{ __('laravel-crm::lang.threshold_hint') }}" />
+    <x-mary-input wire:model="perf_threshold_ms" type="number" min="1" label="{{ ucfirst(__('laravel-crm::lang.monitor_performance_threshold')) }}" suffix="{{ __('laravel-crm::lang.ms') }}" hint="{{ __('laravel-crm::lang.threshold_hint') }}" />
     <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.owner')) }}" wire:model="user_owner_id" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false)" />
     <x-mary-toggle wire:model="is_active" label="{{ ucfirst(__('laravel-crm::lang.active')) }}" />
 </div>
