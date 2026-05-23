@@ -17,7 +17,7 @@ class MonitorShow extends Component
 
     public Monitor $monitor;
 
-    public string $chartPeriod = 'this_month';
+    public string $chartPeriod = 'last_7_days';
 
     public array $responseTimeChart = [];
 
@@ -116,18 +116,36 @@ class MonitorShow extends Component
             $data[] = $b['values'] === [] ? 0 : (int) round(array_sum($b['values']) / count($b['values']));
         }
 
+        $datasets = [
+            [
+                'label' => ucfirst(__('laravel-crm::lang.average_response_time')).' (ms)',
+                'data' => $data,
+                'backgroundColor' => '#05b3a9',
+                'borderColor' => '#05b3a9',
+            ],
+        ];
+
+        $threshold = (int) ($this->monitor->perf_threshold_ms ?? 0);
+
+        if ($threshold > 0 && $labels !== []) {
+            $datasets[] = [
+                'type' => 'line',
+                'label' => ucfirst(__('laravel-crm::lang.monitor_performance_threshold')).' (ms)',
+                'data' => array_fill(0, count($labels), $threshold),
+                'borderColor' => '#B34105',
+                'backgroundColor' => 'transparent',
+                'borderDash' => [6, 4],
+                'borderWidth' => 2,
+                'pointRadius' => 0,
+                'fill' => false,
+            ];
+        }
+
         return [
             'type' => 'bar',
             'data' => [
                 'labels' => $labels,
-                'datasets' => [
-                    [
-                        'label' => ucfirst(__('laravel-crm::lang.average_response_time')).' (ms)',
-                        'data' => $data,
-                        'backgroundColor' => '#05b3a9',
-                        'borderColor' => '#05b3a9',
-                    ],
-                ],
+                'datasets' => $datasets,
             ],
             'options' => [
                 'responsive' => true,
