@@ -2,13 +2,14 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Features;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Features\Traits\HasFeatureCommon;
 use VentureDrake\LaravelCrm\Models\Feature;
 
 class FeatureEdit extends Component
 {
-    use HasFeatureCommon;
+    use AuthorizesRequests, HasFeatureCommon;
 
     public ?Feature $feature = null;
 
@@ -23,6 +24,8 @@ class FeatureEdit extends Component
 
     public function save()
     {
+        $this->authorize('update', $this->feature);
+
         $this->validate();
 
         $this->featureService->update($this->feature, [

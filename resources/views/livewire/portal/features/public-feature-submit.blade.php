@@ -5,7 +5,7 @@
         <div class="card-body">
             <h1 class="card-title text-xl mb-2">{{ ucfirst(__('laravel-crm::lang.submit_feature')) }}</h1>
             <p class="text-sm text-base-content/70 mb-4">
-                Share what you'd like to see. Others can {{ __('laravel-crm::lang.vote') }} and {{ __('laravel-crm::lang.comment') }} on your idea.
+                {{ __('laravel-crm::lang.submit_feature_intro') }}
             </p>
 
             @if ($errors->any())

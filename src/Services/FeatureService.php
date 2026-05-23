@@ -73,7 +73,24 @@ class FeatureService
         return $feature->comments()->create([
             'body' => $body,
             'user_created_id' => $user->id,
-            'is_admin_reply' => (bool) ($user->crm_access ?? false),
+            'is_admin_reply' => $this->isAdminCommenter($user),
         ]);
+    }
+
+    private function isAdminCommenter(User $user): bool
+    {
+        if (! ($user->crm_access ?? false)) {
+            return false;
+        }
+
+        if (! method_exists($user, 'hasPermissionTo')) {
+            return false;
+        }
+
+        try {
+            return (bool) $user->hasPermissionTo('edit crm features');
+        } catch (\Throwable) {
+            return false;
+        }
     }
 }

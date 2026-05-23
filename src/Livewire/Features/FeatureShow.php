@@ -2,13 +2,14 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Features;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Feature;
 
 class FeatureShow extends Component
 {
-    use Toast;
+    use AuthorizesRequests, Toast;
 
     public Feature $feature;
 
@@ -20,6 +21,8 @@ class FeatureShow extends Component
     public function delete($id)
     {
         if ($feature = Feature::find($id)) {
+            $this->authorize('delete', $feature);
+
             $feature->delete();
 
             $this->success(

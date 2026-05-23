@@ -2,13 +2,15 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Settings\Features;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Settings\Features\Traits\HasFeatureStatusCommon;
+use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
 
 class FeatureStatusEdit extends Component
 {
-    use HasFeatureStatusCommon;
+    use AuthorizesRequests, HasFeatureStatusCommon;
 
     public ?FeatureStatus $featureStatus = null;
 
@@ -25,6 +27,8 @@ class FeatureStatusEdit extends Component
 
     public function save()
     {
+        $this->authorize('manageStatuses', Feature::class);
+
         $this->validate();
 
         if ($this->is_default) {

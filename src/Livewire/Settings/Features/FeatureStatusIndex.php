@@ -2,17 +2,19 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Settings\Features;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class FeatureStatusIndex extends Component
 {
-    use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -25,9 +27,9 @@ class FeatureStatusIndex extends Component
             ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order'))],
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
             ['key' => 'color', 'label' => ucfirst(__('laravel-crm::lang.color')), 'sortable' => false],
-            ['key' => 'is_default', 'label' => 'Default', 'format' => fn ($row, $field) => $field ? 'Yes' : 'No'],
-            ['key' => 'is_closed', 'label' => 'Closed', 'format' => fn ($row, $field) => $field ? 'Yes' : 'No'],
-            ['key' => 'features_count', 'label' => 'Features', 'sortable' => false],
+            ['key' => 'is_default', 'label' => ucfirst(__('laravel-crm::lang.default')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
+            ['key' => 'is_closed', 'label' => ucfirst(__('laravel-crm::lang.closed')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
+            ['key' => 'features_count', 'label' => ucfirst(__('laravel-crm::lang.features')), 'sortable' => false],
         ];
     }
 
@@ -40,6 +42,8 @@ class FeatureStatusIndex extends Component
 
     public function delete($id)
     {
+        $this->authorize('manageStatuses', Feature::class);
+
         if ($featureStatus = FeatureStatus::find($id)) {
             $featureStatus->delete();
 
@@ -49,6 +53,8 @@ class FeatureStatusIndex extends Component
 
     public function reorder(array $orderedIds): void
     {
+        $this->authorize('manageStatuses', Feature::class);
+
         foreach ($orderedIds as $index => $id) {
             FeatureStatus::whereKey($id)->update(['order' => $index + 1]);
         }

@@ -1,10 +1,9 @@
 <?php
 
-use App\User;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
-use VentureDrake\LaravelCrm\Repositories\FeatureRepository;
 use VentureDrake\LaravelCrm\Services\FeatureService;
+use VentureDrake\LaravelCrm\Tests\Stubs\User;
 
 beforeEach(function () {
     config()->set('laravel-crm.modules', ['features']);
@@ -78,9 +77,14 @@ test('unvote removes a vote and decrements the count', function () {
     expect($service->unvote($feature, $user))->toBeFalse();
 });
 
-test('comment flags is_admin_reply true for crm admin', function () {
+test('comment flags is_admin_reply true for crm admin with edit permission', function () {
     $feature = Feature::create(['title' => 'Discuss']);
-    $admin = User::create(['name' => 'Admin', 'email' => 'admin@example.com', 'crm_access' => true]);
+    $admin = User::create([
+        'name' => 'Admin',
+        'email' => 'admin@example.com',
+        'crm_access' => true,
+        'crm_permissions' => json_encode(['edit crm features']),
+    ]);
 
     $comment = app(FeatureService::class)->comment($feature, $admin, 'Internal note');
 
@@ -99,6 +103,16 @@ test('comment flags is_admin_reply false for non-crm user', function () {
     expect($comment->is_admin_reply)->toBeFalse();
 });
 
-test('feature repository resolves through the container', function () {
-    expect(app(FeatureRepository::class))->toBeInstanceOf(FeatureRepository::class);
+test('comment flags is_admin_reply false for crm user lacking feature edit permission', function () {
+    $feature = Feature::create(['title' => 'Discuss']);
+    $user = User::create([
+        'name' => 'Viewer',
+        'email' => 'viewer@example.com',
+        'crm_access' => true,
+        'crm_permissions' => json_encode(['view crm features']),
+    ]);
+
+    $comment = app(FeatureService::class)->comment($feature, $user, 'I can only view');
+
+    expect($comment->is_admin_reply)->toBeFalse();
 });

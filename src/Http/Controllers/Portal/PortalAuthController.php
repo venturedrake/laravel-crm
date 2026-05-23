@@ -5,17 +5,19 @@ namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use VentureDrake\LaravelCrm\Services\PortalAuthService;
 
 class PortalAuthController extends Controller
 {
+    public function __construct(private PortalAuthService $portalAuth) {}
+
     public function showLogin(Request $request)
     {
         if (Auth::check()) {
-            return redirect()->intended(url('/'));
+            return redirect()->intended($this->fallbackUrl());
         }
 
-        if ($intended = $request->query('intended')) {
+        if ($intended = $this->portalAuth->sanitizeIntended($request->query('intended'))) {
             $request->session()->put('url.intended', $intended);
         }
 
@@ -29,7 +31,7 @@ class PortalAuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (! Auth::attempt($credentials, (bool) $request->boolean('remember'))) {
+        if (! $this->portalAuth->attemptLogin($credentials, $request->boolean('remember'))) {
             return back()
                 ->withInput($request->only('email'))
                 ->withErrors(['email' => trans('auth.failed')]);
@@ -37,16 +39,16 @@ class PortalAuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(url('/'));
+        return redirect()->intended($this->fallbackUrl());
     }
 
     public function showRegister(Request $request)
     {
         if (Auth::check()) {
-            return redirect()->intended(url('/'));
+            return redirect()->intended($this->fallbackUrl());
         }
 
-        if ($intended = $request->query('intended')) {
+        if ($intended = $this->portalAuth->sanitizeIntended($request->query('intended'))) {
             $request->session()->put('url.intended', $intended);
         }
 
@@ -61,29 +63,22 @@ class PortalAuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $userModel = config('auth.providers.users.model');
-
-        $user = $userModel::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'crm_access' => 0,
-        ]);
-
-        Auth::login($user);
+        $this->portalAuth->register($data);
 
         $request->session()->regenerate();
 
-        return redirect()->intended(url('/'));
+        return redirect()->intended($this->fallbackUrl());
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $this->portalAuth->logout($request);
 
         return redirect()->route('laravel-crm.portal.login');
+    }
+
+    private function fallbackUrl(): string
+    {
+        return route('laravel-crm.portal.features.index');
     }
 }

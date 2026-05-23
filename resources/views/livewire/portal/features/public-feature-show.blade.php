@@ -75,9 +75,9 @@
                 <li class="card {{ $comment->is_admin_reply ? 'bg-primary/10 border border-primary/30' : 'bg-base-100' }} shadow-sm">
                     <div class="card-body py-3">
                         <div class="flex items-center gap-2 text-xs">
-                            <strong>{{ $comment->createdByUser?->name ?? 'User' }}</strong>
+                            <strong>{{ $comment->createdByUser?->name ?? ucfirst(__('laravel-crm::lang.user')) }}</strong>
                             @if ($comment->is_admin_reply)
-                                <span class="badge badge-primary badge-xs">Admin</span>
+                                <span class="badge badge-primary badge-xs">{{ ucfirst(__('laravel-crm::lang.admin')) }}</span>
                             @endif
                             <span class="text-base-content/60">· {{ $comment->created_at?->diffForHumans() }}</span>
                         </div>

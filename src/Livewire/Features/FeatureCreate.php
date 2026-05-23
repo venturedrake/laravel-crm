@@ -2,15 +2,19 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Features;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Features\Traits\HasFeatureCommon;
+use VentureDrake\LaravelCrm\Models\Feature;
 
 class FeatureCreate extends Component
 {
-    use HasFeatureCommon;
+    use AuthorizesRequests, HasFeatureCommon;
 
     public function save()
     {
+        $this->authorize('create', Feature::class);
+
         $this->validate();
 
         $this->featureService->create([

@@ -889,4 +889,8 @@ return [
     'status_in_progress' => 'in progress',
     'status_completed' => 'completed',
     'status_declined' => 'declined',
+    'admin' => 'admin',
+    'public' => 'public',
+    'user' => 'user',
+    'submit_feature_intro' => "Share what you'd like to see. Others can vote and comment on your idea.",
 ];

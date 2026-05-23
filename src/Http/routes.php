@@ -31,11 +31,13 @@ Route::prefix('p')
         Route::get('login', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@showLogin')
             ->name('laravel-crm.portal.login');
         Route::post('login', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@login')
+            ->middleware('throttle:6,1')
             ->name('laravel-crm.portal.login.attempt');
 
         Route::get('register', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@showRegister')
             ->name('laravel-crm.portal.register');
         Route::post('register', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@register')
+            ->middleware('throttle:6,1')
             ->name('laravel-crm.portal.register.store');
 
         Route::post('logout', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@logout')

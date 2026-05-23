@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Features;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -15,7 +16,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class FeatureIndex extends Component
 {
-    use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -51,9 +52,9 @@ class FeatureIndex extends Component
             ['key' => 'feature_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
             ['key' => 'status.name', 'label' => ucfirst(__('laravel-crm::lang.status')), 'sortable' => false],
-            ['key' => 'votes_count', 'label' => 'Votes'],
-            ['key' => 'comments_count', 'label' => 'Comments'],
-            ['key' => 'is_public', 'label' => 'Public', 'format' => fn ($row, $field) => $field ? 'Yes' : 'No'],
+            ['key' => 'votes_count', 'label' => ucfirst(__('laravel-crm::lang.votes'))],
+            ['key' => 'comments_count', 'label' => ucfirst(__('laravel-crm::lang.comments'))],
+            ['key' => 'is_public', 'label' => ucfirst(__('laravel-crm::lang.public')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
         ];
     }
 
@@ -70,6 +71,8 @@ class FeatureIndex extends Component
     public function delete($id)
     {
         if ($feature = Feature::find($id)) {
+            $this->authorize('delete', $feature);
+
             $feature->delete();
 
             $this->success(ucfirst(trans('laravel-crm::lang.feature_deleted')));

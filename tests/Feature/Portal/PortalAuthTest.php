@@ -122,7 +122,7 @@ test('user with crm_access = 0 is forbidden from the main CRM area', function ()
 test('portal layout header shows guest links when unauthenticated', function () {
     $response = $this->get('/crm/p/login');
 
-    $response->assertSee('login', false);
+    $response->assertSee(route('laravel-crm.portal.login'), false);
     $response->assertSee(route('laravel-crm.portal.register'), false);
 });
 

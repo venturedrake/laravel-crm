@@ -773,7 +773,7 @@ class TestSchema
 
         Schema::create($prefix.'feature_statuses', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('external_id')->nullable();
+            $table->string('external_id');
             $table->unsignedBigInteger('team_id')->nullable();
             $table->string('name');
             $table->text('description')->nullable();

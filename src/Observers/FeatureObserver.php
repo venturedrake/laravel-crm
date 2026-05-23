@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
+use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
 use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 
 class FeatureObserver
@@ -28,7 +29,13 @@ class FeatureObserver
         $feature->feature_id = 'F'.$feature->number;
 
         if (! $feature->feature_status_id) {
-            $default = FeatureStatus::where('is_default', true)->first();
+            $default = FeatureStatus::withoutGlobalScope(BelongsToTeamsScope::class)
+                ->where('is_default', true)
+                ->when($feature->team_id, fn ($q) => $q->where(function ($q) use ($feature) {
+                    $q->whereNull('team_id')->orWhere('team_id', $feature->team_id);
+                }))
+                ->orderByRaw('team_id IS NULL')
+                ->first();
 
             if ($default) {
                 $feature->feature_status_id = $default->id;

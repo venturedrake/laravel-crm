@@ -66,6 +66,12 @@ class FeatureCommentObserver
      */
     public function deleted(FeatureComment $comment)
     {
+        // Avoid double-decrement: a force-delete on an already-soft-deleted
+        // record fires `deleted` again after we already decremented on the soft-delete.
+        if ($comment->isForceDeleting() && $comment->getOriginal('deleted_at') !== null) {
+            return;
+        }
+
         Feature::whereKey($comment->feature_id)->decrement('comments_count');
     }
 

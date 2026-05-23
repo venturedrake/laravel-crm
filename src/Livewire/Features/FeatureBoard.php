@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Features;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
@@ -10,7 +11,7 @@ use VentureDrake\LaravelCrm\Models\FeatureStatus;
 
 class FeatureBoard extends KanbanBoard
 {
-    use Toast;
+    use AuthorizesRequests, Toast;
 
     public $layout = 'board';
 
@@ -46,9 +47,15 @@ class FeatureBoard extends KanbanBoard
 
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
-        Feature::whereKey($recordId)->update([
-            'feature_status_id' => $stageId,
-        ]);
+        $feature = Feature::find($recordId);
+
+        if (! $feature) {
+            return;
+        }
+
+        $this->authorize('update', $feature);
+
+        $feature->update(['feature_status_id' => $stageId]);
     }
 
     public function updatedSearch()
@@ -59,6 +66,8 @@ class FeatureBoard extends KanbanBoard
     public function delete($id)
     {
         if ($feature = Feature::find($id)) {
+            $this->authorize('delete', $feature);
+
             $feature->delete();
 
             $this->success(ucfirst(trans('laravel-crm::lang.feature_deleted')));

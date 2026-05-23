@@ -102,6 +102,7 @@ class PublicFeatureController extends Controller
             return null;
         }
 
+        // `intended` is always built from a server-side route() above; no need to re-sanitize.
         session()->put('url.intended', $intended);
 
         return redirect()->route('laravel-crm.portal.login', ['intended' => $intended]);
