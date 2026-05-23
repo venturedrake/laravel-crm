@@ -38,7 +38,7 @@
                 @endcan
              @can('view crm orders')
                 @if(! $subTotalError && ! $taxError && ! $totalError)
-                    <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.orders.download', $order)) }}" class="btn-sm btn-square btn-outline" />
+                    <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.orders.download', $order)) }}" no-wire-navigate class="btn-sm btn-square btn-outline" />
                 @endif
             @endcan
             | <livewire:crm-activity-menu /> |

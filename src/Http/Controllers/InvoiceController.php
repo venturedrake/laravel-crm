@@ -163,7 +163,7 @@ class InvoiceController extends Controller
 
         $invoice = $this->invoiceService->update($request, $invoice, $person ?? null, $organization ?? null);
 
-        flash(ucfirst(trans('laravel-crm::lang.invoice_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.invoice_updated')));
 
         return redirect(route('laravel-crm.invoices.show', $invoice));
     }
@@ -178,7 +178,7 @@ class InvoiceController extends Controller
     {
         $invoice->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.invoice_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.invoice_deleted')));
 
         return redirect(route('laravel-crm.invoices.index'));
     }
@@ -252,7 +252,7 @@ class InvoiceController extends Controller
             $organization_address = $invoice->organization->getPrimaryAddress();
         }
 
-        return Pdf::setOption([
+        $pdf = Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
         ])
             ->loadView('laravel-crm::invoices.pdf', [
@@ -267,6 +267,13 @@ class InvoiceController extends Controller
                 'organization_address' => $organization_address ?? null,
                 'fromName' => app('laravel-crm.settings')->get('organization_name', null),
                 'logo' => app('laravel-crm.settings')->get('logo_file', null),
-            ])->download('invoice-'.strtolower($invoice->xeroInvoice->number ?? $invoice->invoice_id).'.pdf');
+            ]);
+
+        $filename = 'invoice-'.strtolower($invoice->xeroInvoice->number ?? $invoice->invoice_id).'.pdf';
+
+        return new Response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+        ]);
     }
 }

@@ -7,7 +7,12 @@
     <title>{{ (config('app.name')) ? config('app.name').' - ' : null }} CRM - Document</title>
     
     <!-- Styles -->
-    <link href="{{ asset('vendor/laravel-crm/css/document.css') }}?c=57898086907890" rel="stylesheet">
+    @php($crmDocumentCss = public_path('vendor/laravel-crm/css/document.css'))
+    @if(file_exists($crmDocumentCss))
+        <style>{!! file_get_contents($crmDocumentCss) !!}</style>
+    @else
+        <link href="{{ asset('vendor/laravel-crm/css/document.css') }}" rel="stylesheet">
+    @endif
 
     <style>
         @font-face {

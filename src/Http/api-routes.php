@@ -15,7 +15,7 @@ use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\QuoteController;
  * Laravel CRM API routes (v2).
  *
  * This file is loaded by LaravelCrmServiceProvider::registerRoutes() under
- * the `api/crm/v2` prefix with the `api`, `laravel-crm.api.json`, and
+ * the `crm/api/v2` prefix with the `api`, `laravel-crm.api.json`, and
  * `throttle:laravel-crm-api` middleware applied. Authenticated routes layer
  * `auth:sanctum`, `crm-api`, and `laravel-crm.api.team` on top.
  */

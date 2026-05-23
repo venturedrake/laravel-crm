@@ -68,7 +68,7 @@ class TeamController extends Controller
             $team->users()->sync([]);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.team_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.team_stored')));
 
         return redirect(route('laravel-crm.teams.index'));
     }
@@ -127,7 +127,7 @@ class TeamController extends Controller
             $team->users()->sync([]);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.team_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.team_updated')));
 
         return redirect(route('laravel-crm.teams.show', $team));
     }
@@ -142,7 +142,7 @@ class TeamController extends Controller
     {
         $team->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.team_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.team_deleted')));
 
         return redirect(route('laravel-crm.teams.index'));
     }

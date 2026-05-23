@@ -120,7 +120,7 @@ class CreateOrEdit extends Component
                 }
             }
 
-            flash(ucfirst(trans('laravel-crm::lang.field_updated')))->success()->important();
+            flash()->success(ucfirst(trans('laravel-crm::lang.field_updated')));
         } else {
             $this->field = Field::create([
                 'type' => $this->fieldType,
@@ -140,7 +140,7 @@ class CreateOrEdit extends Component
                 }
             }
 
-            flash(ucfirst(trans('laravel-crm::lang.field_stored')))->success()->important();
+            flash()->success(ucfirst(trans('laravel-crm::lang.field_stored')));
         }
 
         $this->syncFieldModels();

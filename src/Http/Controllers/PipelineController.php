@@ -52,7 +52,7 @@ class PipelineController extends Controller
             'name' => $request->name,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.pipeline_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.pipeline_stored')));
 
         return redirect(route('laravel-crm.pipelines.index'));
     }
@@ -96,7 +96,7 @@ class PipelineController extends Controller
             'name' => $request->name,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.pipeline_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.pipeline_updated')));
 
         return redirect(route('laravel-crm.pipelines.show', $pipeline));
     }
@@ -111,7 +111,7 @@ class PipelineController extends Controller
     {
         $pipeline->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.pipeline_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.pipeline_deleted')));
 
         return redirect(route('laravel-crm.pipelines.index'));
     }

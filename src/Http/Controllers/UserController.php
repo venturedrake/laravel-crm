@@ -50,7 +50,7 @@ class UserController extends Controller
      */
     public function sendInvite(InviteUserRequest $request)
     {
-        flash(ucfirst(trans('laravel-crm::lang.user_invitation_sent')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.user_invitation_sent')));
 
         return redirect(route('laravel-crm.users.index'));
     }
@@ -118,7 +118,7 @@ class UserController extends Controller
             $user->crmTeams()->sync([]);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.user_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.user_stored')));
 
         return redirect(route('laravel-crm.users.index'));
     }
@@ -190,7 +190,7 @@ class UserController extends Controller
             $user->crmTeams()->sync([]);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.user_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.user_updated')));
 
         return redirect(route('laravel-crm.users.show', $user));
     }
@@ -344,7 +344,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.user_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.user_deleted')));
 
         return redirect(route('laravel-crm.users.index'));
     }

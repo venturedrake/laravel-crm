@@ -721,6 +721,8 @@ return [
     'quote_updated_successfully' => 'quote updated successfully',
     'send_me_a_copy' => 'send me a copy',
     'quote_sent_successfully' => 'quote sent successfully',
+    'invoice_sent' => 'invoice sent',
+    'purchase_order_sent' => 'purchase order sent',
     'create' => 'create',
     'product_created' => 'product created',
     'select_product' => 'select product',

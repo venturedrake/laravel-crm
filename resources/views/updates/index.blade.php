@@ -1,4 +1,4 @@
-<x-crm::app-layout>
+<x-crm::app-layout title="{{ ucfirst(__('laravel-crm::lang.updates')) }}">
     <div class="crm-content">
         <x-mary-header title="Laravel CRM {{ ucfirst(__('laravel-crm::lang.updates')) }}" progress-indicator></x-mary-header>
         <x-mary-card shadow>

@@ -29,7 +29,7 @@ class ChatWidgetController extends Controller
     public function destroy(ChatWidget $chatWidget)
     {
         $chatWidget->delete();
-        flash(ucfirst(trans('laravel-crm::lang.chat_widget_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.chat_widget_deleted')));
 
         return redirect(route('laravel-crm.chat-widgets.index'));
     }

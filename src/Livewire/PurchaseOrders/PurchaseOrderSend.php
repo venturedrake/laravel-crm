@@ -5,7 +5,6 @@ namespace VentureDrake\LaravelCrm\Livewire\PurchaseOrders;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -72,9 +71,7 @@ class PurchaseOrderSend extends Component
 
         $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->purchaseOrder)).'/'.$this->purchaseOrder->id.'/';
 
-        if (! File::exists($pdfLocation)) {
-            Storage::makeDirectory($pdfLocation);
-        }
+        File::ensureDirectoryExists(storage_path('app/'.$pdfLocation));
 
         $this->pdf = 'app/'.$pdfLocation.'purchase-order-'.strtolower($this->purchaseOrder->purchase_order_id).'.pdf';
 

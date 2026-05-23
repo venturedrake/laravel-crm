@@ -26,13 +26,13 @@ function productApiHeaders(User $user): array
 }
 
 test('GET /products returns 401 when unauthenticated', function () {
-    $response = $this->getJson('/api/crm/v2/products');
+    $response = $this->getJson('/crm/api/v2/products');
 
     $response->assertStatus(401);
 });
 
 test('POST /products returns 401 when unauthenticated', function () {
-    $response = $this->postJson('/api/crm/v2/products', ['name' => 'Hello']);
+    $response = $this->postJson('/crm/api/v2/products', ['name' => 'Hello']);
 
     $response->assertStatus(401);
 });
@@ -45,7 +45,7 @@ test('GET /products returns paginated collection with UUID ids and ISO timestamp
     }
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->getJson('/api/crm/v2/products');
+        ->getJson('/crm/api/v2/products');
 
     $response->assertOk();
     $response->assertJsonStructure([
@@ -70,7 +70,7 @@ test('GET /products honors per_page pagination', function () {
     }
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->getJson('/api/crm/v2/products?per_page=2');
+        ->getJson('/crm/api/v2/products?per_page=2');
 
     $response->assertOk();
     $payload = $response->json();
@@ -89,7 +89,7 @@ test('GET /products filters by user_owner_id', function () {
     Product::create(['name' => 'Theirs', 'user_owner_id' => $otherOwner->id]);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->getJson('/api/crm/v2/products?user_owner_id='.$user->id);
+        ->getJson('/crm/api/v2/products?user_owner_id='.$user->id);
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(2);
@@ -99,7 +99,7 @@ test('POST /products creates a product and returns 201 with UUID id and divided 
     $user = productApiUser();
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->postJson('/api/crm/v2/products', [
+        ->postJson('/crm/api/v2/products', [
             'name' => 'Premium Widget',
             'code' => 'WDG-1',
             'description' => 'A premium widget',
@@ -131,7 +131,7 @@ test('POST /products resolves UUID for product_category_id', function () {
     ]);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->postJson('/api/crm/v2/products', [
+        ->postJson('/crm/api/v2/products', [
             'name' => 'Categorised Widget',
             'product_category_id' => $category->external_id,
             'unit_price' => 5,
@@ -148,7 +148,7 @@ test('POST /products returns 422 when name is missing', function () {
     $user = productApiUser();
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->postJson('/api/crm/v2/products', []);
+        ->postJson('/crm/api/v2/products', []);
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['name']);
@@ -158,7 +158,7 @@ test('POST /products returns 422 when product_category_id is not a UUID', functi
     $user = productApiUser();
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->postJson('/api/crm/v2/products', [
+        ->postJson('/crm/api/v2/products', [
             'name' => 'Bad data',
             'product_category_id' => 'not-a-uuid',
         ]);
@@ -171,7 +171,7 @@ test('POST /products returns 422 when product_category UUID does not exist', fun
     $user = productApiUser();
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->postJson('/api/crm/v2/products', [
+        ->postJson('/crm/api/v2/products', [
             'name' => 'Missing category',
             'product_category_id' => (string) Str::uuid(),
         ]);
@@ -184,7 +184,7 @@ test('POST /products returns 422 when unit_price is not numeric', function () {
     $user = productApiUser();
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->postJson('/api/crm/v2/products', [
+        ->postJson('/crm/api/v2/products', [
             'name' => 'Bad price',
             'unit_price' => 'twenty bucks',
         ]);
@@ -197,7 +197,7 @@ test('POST /products returns 403 when policy denies create', function () {
     $user = productApiUser(['crm_permissions' => json_encode([])]);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->postJson('/api/crm/v2/products', [
+        ->postJson('/crm/api/v2/products', [
             'name' => 'Forbidden',
         ]);
 
@@ -209,7 +209,7 @@ test('GET /products/{product} returns 403 when policy denies view', function () 
     $product = Product::create(['name' => 'Hidden']);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->getJson('/api/crm/v2/products/'.$product->external_id);
+        ->getJson('/crm/api/v2/products/'.$product->external_id);
 
     $response->assertStatus(403);
 });
@@ -219,7 +219,7 @@ test('GET /products/{product} returns the product by UUID', function () {
     $product = Product::create(['name' => 'Findable']);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->getJson('/api/crm/v2/products/'.$product->external_id);
+        ->getJson('/crm/api/v2/products/'.$product->external_id);
 
     $response->assertOk();
     expect($response->json('data.id'))->toBe($product->external_id);
@@ -230,7 +230,7 @@ test('GET /products/{product} returns 404 for unknown UUID', function () {
     $user = productApiUser();
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->getJson('/api/crm/v2/products/'.((string) Str::uuid()));
+        ->getJson('/crm/api/v2/products/'.((string) Str::uuid()));
 
     $response->assertStatus(404);
 });
@@ -241,7 +241,7 @@ test('PUT /products/{product} updates a product', function () {
     $product->productPrices()->create(['unit_price' => 1000, 'currency' => 'USD']);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->putJson('/api/crm/v2/products/'.$product->external_id, [
+        ->putJson('/crm/api/v2/products/'.$product->external_id, [
             'name' => 'Updated',
             'unit_price' => 25.75,
         ]);
@@ -259,7 +259,7 @@ test('DELETE /products/{product} soft-deletes the product', function () {
     $product = Product::create(['name' => 'Toast']);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->deleteJson('/api/crm/v2/products/'.$product->external_id);
+        ->deleteJson('/crm/api/v2/products/'.$product->external_id);
 
     $response->assertStatus(204);
 
@@ -267,7 +267,7 @@ test('DELETE /products/{product} soft-deletes the product', function () {
     expect(Product::withTrashed()->where('external_id', $product->external_id)->exists())->toBeTrue();
 
     $followUp = $this->withHeaders(productApiHeaders($user))
-        ->getJson('/api/crm/v2/products/'.$product->external_id);
+        ->getJson('/crm/api/v2/products/'.$product->external_id);
     $followUp->assertStatus(404);
 });
 
@@ -276,7 +276,7 @@ test('DELETE /products/{product} returns 403 when policy denies delete', functio
     $product = Product::create(['name' => 'Untouchable']);
 
     $response = $this->withHeaders(productApiHeaders($user))
-        ->deleteJson('/api/crm/v2/products/'.$product->external_id);
+        ->deleteJson('/crm/api/v2/products/'.$product->external_id);
 
     $response->assertStatus(403);
     expect(Product::query()->where('external_id', $product->external_id)->exists())->toBeTrue();

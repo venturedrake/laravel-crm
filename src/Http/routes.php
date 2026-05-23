@@ -6,29 +6,9 @@ use Illuminate\Support\Facades\View;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\ClickSend\ClickSendConnect;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
 
-/* Portal Routes (public, no auth) */
-
-Route::group(['prefix' => 'p'], function () {
-    Route::prefix('quotes')->group(function () {
-        Route::get('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@show')
-            ->name('laravel-crm.portal.quotes.show');
-
-        Route::post('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@process')
-            ->name('laravel-crm.portal.quotes.process');
-    });
-
-    Route::prefix('invoices')->group(function () {
-        Route::get('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@show')
-            ->name('laravel-crm.portal.invoices.show');
-
-        Route::post('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@process')
-            ->name('laravel-crm.portal.invoices.process');
-    });
-
-    /* Chat Widget Embed routes registered separately in
-       LaravelCrmServiceProvider::registerRoutes() so they bypass
-       the `web` middleware group (no session, no CSRF). */
-});
+/* Portal routes (public, signed-URL) are registered separately in
+   LaravelCrmServiceProvider::registerRoutes() so they bypass the CRM auth
+   middleware stack. See src/Http/portal-routes.php. */
 
 /* Private Routes */
 

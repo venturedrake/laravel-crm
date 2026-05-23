@@ -66,7 +66,7 @@
                     @endcan
                     @can('view crm quotes')
                         @if(! $quoteError)
-                            <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.quotes.download', $quote)) }}" class="btn-sm btn-square btn-outline" />
+                            <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.quotes.download', $quote)) }}" no-wire-navigate class="btn-sm btn-square btn-outline" />
                         @endif    
                         <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.quotes.show', $quote)) }}" class="btn-sm btn-square btn-outline" />
                     @endcan

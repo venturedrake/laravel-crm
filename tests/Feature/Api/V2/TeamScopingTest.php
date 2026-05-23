@@ -67,7 +67,7 @@ test('GET /leads filters list to the active team only (no cross-team leakage)', 
     Lead::create(['title' => 'Team B Lead', 'team_id' => 2]);
 
     $response = $this->withHeaders(teamScopingHeaders($userA))
-        ->getJson('/api/crm/v2/leads');
+        ->getJson('/crm/api/v2/leads');
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(2);
@@ -84,7 +84,7 @@ test('GET /leads/{lead} returns 404 for an entity owned by another team', functi
     $teamBLead = Lead::create(['title' => 'Hidden', 'team_id' => 2]);
 
     $response = $this->withHeaders(teamScopingHeaders($userA))
-        ->getJson('/api/crm/v2/leads/'.$teamBLead->external_id);
+        ->getJson('/crm/api/v2/leads/'.$teamBLead->external_id);
 
     $response->assertStatus(404);
 });
@@ -99,13 +99,13 @@ test('cross-team isolation holds for organizations and people endpoints', functi
     Person::create(['first_name' => 'Bob', 'team_id' => 2]);
 
     $orgResponse = $this->withHeaders(teamScopingHeaders($userA))
-        ->getJson('/api/crm/v2/organizations');
+        ->getJson('/crm/api/v2/organizations');
     $orgResponse->assertOk();
     expect($orgResponse->json('meta.total'))->toBe(1);
     expect($orgResponse->json('data.0.name'))->toBe('Team A Org');
 
     $peopleResponse = $this->withHeaders(teamScopingHeaders($userA))
-        ->getJson('/api/crm/v2/people');
+        ->getJson('/crm/api/v2/people');
     $peopleResponse->assertOk();
     expect($peopleResponse->json('meta.total'))->toBe(1);
     expect($peopleResponse->json('data.0.first_name'))->toBe('Alice');
@@ -120,7 +120,7 @@ test('X-Team-ID for a non-member team returns 403 with a JSON error', function (
     Lead::create(['title' => 'Team B Lead', 'team_id' => 2]);
 
     $response = $this->withHeaders(teamScopingHeaders($userA, teamId: 2))
-        ->getJson('/api/crm/v2/leads');
+        ->getJson('/crm/api/v2/leads');
 
     $response->assertStatus(403);
     $response->assertJsonStructure(['message']);
@@ -138,7 +138,7 @@ test('X-Team-ID for a member team scopes the list to that team', function () {
     Lead::create(['title' => 'Team B Lead 2', 'team_id' => 2]);
 
     $response = $this->withHeaders(teamScopingHeaders($userA, teamId: 2))
-        ->getJson('/api/crm/v2/leads');
+        ->getJson('/crm/api/v2/leads');
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(2);
@@ -160,7 +160,7 @@ test('Without X-Team-ID the request falls back to current_team_id', function () 
     Lead::create(['title' => 'Team 2 Lead B', 'team_id' => 2]);
 
     $response = $this->withHeaders(teamScopingHeaders($userA))
-        ->getJson('/api/crm/v2/leads');
+        ->getJson('/crm/api/v2/leads');
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(2);
