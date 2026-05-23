@@ -22,7 +22,8 @@ class MonitorEdit extends Component
         $this->method = $monitor->method ?? 'GET';
         $this->expected_status_code = $monitor->expected_status_code ?? 200;
         $this->interval = $monitor->interval ?? 5;
-        $this->timeout = $monitor->timeout ?? 30;
+        $this->downtime_minutes_before_alert = $monitor->downtime_minutes_before_alert ?? 5;
+        $this->perf_threshold_ms = $monitor->perf_threshold_ms ?? 3500;
         $this->is_active = (bool) $monitor->is_active;
         $this->user_owner_id = $monitor->user_owner_id;
     }
