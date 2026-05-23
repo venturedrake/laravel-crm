@@ -52,6 +52,10 @@
                 <div>{{ $monitor->method }}</div>
             </div>
             <div>
+                <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.expected_status_code')) }}</div>
+                <div>{{ $monitor->expected_status_code ?? '—' }}</div>
+            </div>
+            <div>
                 <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.run_check_every')) }}</div>
                 <div>{{ $monitor->interval }} {{ __('laravel-crm::lang.minutes') }}</div>
             </div>
