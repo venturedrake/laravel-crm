@@ -18,10 +18,14 @@ class Monitor extends Model
     protected $casts = [
         'headers' => 'array',
         'is_active' => 'boolean',
+        'uptime_enabled' => 'boolean',
+        'ssl_enabled' => 'boolean',
         'last_checked_at' => 'datetime',
         'last_status_changed_at' => 'datetime',
         'down_since_at' => 'datetime',
         'notified_at' => 'datetime',
+        'ssl_last_checked_at' => 'datetime',
+        'ssl_expires_at' => 'datetime',
         'ssl_notified_at' => 'datetime',
     ];
 

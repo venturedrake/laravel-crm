@@ -31,6 +31,11 @@ class CreateLaravelCrmMonitorsTable extends Migration
             $table->unsignedInteger('interval')->default(300);
             $table->unsignedInteger('timeout')->default(30);
             $table->boolean('is_active')->default(true);
+            $table->boolean('uptime_enabled')->default(true);
+            $table->boolean('ssl_enabled')->default(false);
+            $table->unsignedInteger('frequency_minutes')->nullable();
+            $table->unsignedInteger('perf_threshold_ms')->nullable();
+            $table->unsignedInteger('downtime_minutes_before_alert')->nullable();
             $table->string('last_status')->nullable();
             $table->unsignedInteger('last_response_time')->nullable();
             $table->unsignedInteger('last_status_code')->nullable();
@@ -38,6 +43,10 @@ class CreateLaravelCrmMonitorsTable extends Migration
             $table->timestamp('last_status_changed_at')->nullable();
             $table->timestamp('down_since_at')->nullable();
             $table->timestamp('notified_at')->nullable();
+            $table->timestamp('ssl_last_checked_at')->nullable();
+            $table->string('ssl_status')->nullable();
+            $table->string('ssl_issuer')->nullable();
+            $table->timestamp('ssl_expires_at')->nullable();
             $table->timestamp('ssl_notified_at')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->foreign('user_created_id')->references('id')->on('users');

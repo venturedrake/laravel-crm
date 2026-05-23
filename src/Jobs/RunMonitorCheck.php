@@ -140,7 +140,8 @@ class RunMonitorCheck implements ShouldQueue
                 $monitor->down_since_at = $now;
             }
 
-            $debounceMinutes = (int) config('laravel-crm.monitoring.down_debounce_minutes', 2);
+            $debounceMinutes = (int) ($monitor->downtime_minutes_before_alert
+                ?? config('laravel-crm.monitoring.down_debounce_minutes', 2));
 
             if ($monitor->notified_at === null && $monitor->down_since_at->lte($now->copy()->subMinutes($debounceMinutes))) {
                 $this->notifyRecipients($monitor, fn ($owner) => new MonitorDownNotification($monitor, $owner, $result));

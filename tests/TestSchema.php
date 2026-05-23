@@ -770,5 +770,66 @@ class TestSchema
             $table->timestamp('unsubscribed_at')->nullable();
             $table->timestamps();
         });
+
+        Schema::create($prefix.'monitors', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id');
+            $table->string('monitor_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('type')->default('http');
+            $table->string('url', 1024);
+            $table->string('host')->nullable();
+            $table->string('method', 16)->default('GET');
+            $table->json('headers')->nullable();
+            $table->text('body')->nullable();
+            $table->unsignedInteger('expected_status_code')->nullable();
+            $table->string('expected_response_keyword')->nullable();
+            $table->unsignedInteger('interval')->default(300);
+            $table->unsignedInteger('timeout')->default(30);
+            $table->boolean('is_active')->default(true);
+            $table->boolean('uptime_enabled')->default(true);
+            $table->boolean('ssl_enabled')->default(false);
+            $table->unsignedInteger('frequency_minutes')->nullable();
+            $table->unsignedInteger('perf_threshold_ms')->nullable();
+            $table->unsignedInteger('downtime_minutes_before_alert')->nullable();
+            $table->string('last_status')->nullable();
+            $table->unsignedInteger('last_response_time')->nullable();
+            $table->unsignedInteger('last_status_code')->nullable();
+            $table->timestamp('last_checked_at')->nullable();
+            $table->timestamp('last_status_changed_at')->nullable();
+            $table->timestamp('down_since_at')->nullable();
+            $table->timestamp('notified_at')->nullable();
+            $table->timestamp('ssl_last_checked_at')->nullable();
+            $table->string('ssl_status')->nullable();
+            $table->string('ssl_issuer')->nullable();
+            $table->timestamp('ssl_expires_at')->nullable();
+            $table->timestamp('ssl_notified_at')->nullable();
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_assigned_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'monitor_checks', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id');
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('monitor_id');
+            $table->string('type')->default('http');
+            $table->string('status');
+            $table->unsignedInteger('response_time')->nullable();
+            $table->unsignedInteger('status_code')->nullable();
+            $table->text('error_message')->nullable();
+            $table->longText('response_body')->nullable();
+            $table->timestamp('ssl_expires_at')->nullable();
+            $table->timestamp('checked_at');
+            $table->timestamps();
+        });
     }
 }
