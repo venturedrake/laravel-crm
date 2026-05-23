@@ -5,7 +5,6 @@ namespace VentureDrake\LaravelCrm\Livewire\Invoices;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -72,9 +71,7 @@ class InvoiceSend extends Component
 
         $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->invoice)).'/'.$this->invoice->id.'/';
 
-        if (! File::exists($pdfLocation)) {
-            Storage::makeDirectory($pdfLocation);
-        }
+        File::ensureDirectoryExists(storage_path('app/'.$pdfLocation));
 
         $this->pdf = 'app/'.$pdfLocation.'invoice-'.strtolower($this->invoice->invoice_id).'.pdf';
 
@@ -85,6 +82,8 @@ class InvoiceSend extends Component
                 'invoice' => $this->invoice,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                 'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
+                'contactDetails' => app('laravel-crm.settings')->get('invoice_contact_details', null),
+                'paymentInstructions' => app('laravel-crm.settings')->get('invoice_payment_instructions', null),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

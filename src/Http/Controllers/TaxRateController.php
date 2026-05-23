@@ -58,7 +58,7 @@ class TaxRateController extends Controller
             TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.tax_rate_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.tax_rate_stored')));
 
         return redirect(route('laravel-crm.tax-rates.index'));
     }
@@ -110,7 +110,7 @@ class TaxRateController extends Controller
             TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
         }
 
-        flash(ucfirst(trans('laravel-crm::lang.tax_rate_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.tax_rate_updated')));
 
         return redirect(route('laravel-crm.tax-rates.show', $taxRate));
     }
@@ -125,7 +125,7 @@ class TaxRateController extends Controller
     {
         $taxRate->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.tax_rate_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.tax_rate_deleted')));
 
         return redirect(route('laravel-crm.tax-rates.index'));
     }

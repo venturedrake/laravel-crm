@@ -94,7 +94,7 @@
                                 @endcan
                                 @can('view crm quotes')
                                     @if(! $quoteError)
-                                        <x-mary-menu-item link="{{ route('laravel-crm.quotes.download', ['quote' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.download')) }}" />
+                                        <x-mary-menu-item link="{{ route('laravel-crm.quotes.download', ['quote' => $record['id']]) }}" no-wire-navigate title="{{ ucfirst(__('laravel-crm::lang.download')) }}" />
                                     @endif
                                     <x-mary-menu-item link="{{ route('laravel-crm.quotes.show', ['quote' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
                                 @endcan

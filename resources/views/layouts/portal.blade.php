@@ -10,7 +10,7 @@
 
     @include('laravel-crm::layouts.partials.meta')
 
-    <title>{{ (config('app.name')) ? config('app.name').' - ' : null }} CRM - Client Portal</title>
+    <title>{{ (config('app.name')) ? config('app.name').' - ' : null }} - Client Portal</title>
 
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
@@ -19,6 +19,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('vendor/laravel-crm/css/app.css') }}?v=345324356435657" rel="stylesheet">
+
+    <style>
+        /* PHPFlasher's `.fl-wrapper .fl-container` defaults to z-index 1000,
+           which sits behind Bootstrap's `.fixed-top` navbar (z-index 1030).
+           Bump it above the navbar so toasts are always visible. */
+        .fl-wrapper, .fl-wrapper .fl-container { z-index: 1050 !important; }
+    </style>
 
     @livewireStyles
 
@@ -67,8 +74,6 @@
         </footer>
     </div>
     <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=342534624562365"></script>
-    <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     @livewireScripts
     @stack('livewire-js')
 </body>

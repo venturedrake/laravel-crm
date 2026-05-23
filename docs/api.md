@@ -3,7 +3,7 @@
 A JSON REST API for partner developers integrating with `venturedrake/laravel-crm`. All requests
 are authenticated with Laravel Sanctum personal access tokens.
 
-- **Base URL:** `<your-app>/api/crm/v2`
+- **Base URL:** `<your-app>/crm/api/v2`
 - **Content type:** `application/json`
 - **Auth:** Sanctum bearer tokens
 
@@ -35,7 +35,7 @@ The API ships with the package; you only need to wire Sanctum into the host appl
 3. **Confirm the API routes load.** After installing the package and running migrations, run:
 
    ```bash
-   php artisan route:list --path=api/crm
+   php artisan route:list --path=crm/api
    ```
 
    You should see 8 resourceful entities (`leads`, `products`, `organizations`, `people`, `deals`,
@@ -60,7 +60,7 @@ The API uses Sanctum personal access tokens. There are two ways to obtain one:
 ### Option A — Issue via the API
 
 ```http
-POST /api/crm/v2/auth/token
+POST /crm/api/v2/auth/token
 Content-Type: application/json
 
 {
@@ -99,7 +99,7 @@ php artisan laravel-crm:api-token user@example.com --name="Mobile App"
 Pass the token in the `Authorization` header:
 
 ```http
-GET /api/crm/v2/leads HTTP/1.1
+GET /crm/api/v2/leads HTTP/1.1
 Authorization: Bearer 1|abcdef1234...
 Accept: application/json
 ```
@@ -107,8 +107,8 @@ Accept: application/json
 ### Inspecting and revoking the current token
 
 ```http
-GET    /api/crm/v2/auth/me      → 200 { id, name, email }
-DELETE /api/crm/v2/auth/token   → 204
+GET    /crm/api/v2/auth/me      → 200 { id, name, email }
+DELETE /crm/api/v2/auth/token   → 204
 ```
 
 ---
@@ -152,22 +152,22 @@ The `{uuid}` in URIs is the entity's `external_id` (UUID), exposed as `id` in JS
 
 | Method | Path | Notes |
 |---|---|---|
-| `POST` | `/api/crm/v2/auth/token` | Issue a token. Public (no auth required). |
-| `GET` | `/api/crm/v2/auth/me` | Return the authenticated user. |
-| `DELETE` | `/api/crm/v2/auth/token` | Revoke the current token. |
+| `POST` | `/crm/api/v2/auth/token` | Issue a token. Public (no auth required). |
+| `GET` | `/crm/api/v2/auth/me` | Return the authenticated user. |
+| `DELETE` | `/crm/api/v2/auth/token` | Revoke the current token. |
 
 ### Entities
 
 | Resource | Path | Notable fields |
 |---|---|---|
-| Lead | `/api/crm/v2/leads` | `title`, `description`, `amount`, `currency`, `expected_close`, `person_id`, `organization_id`, `lead_source_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
-| Product | `/api/crm/v2/products` | `name`, `code`, `description`, `unit_price`, `currency`, `tax_rate`, `tax_rate_id`, `product_category_id`, `active`, `user_owner_id` |
-| Organization | `/api/crm/v2/organizations` | `name`, `website`, `email`, `phone`, `annual_revenue`, `total_money_raised`, `number_of_employees`, `industry_id`, `organization_type_id`, `timezone_id`, `labels[]`, `user_owner_id` |
-| Person | `/api/crm/v2/people` | `first_name`, `last_name`, `gender`, `birthday`, `description`, `organization_id`, `labels[]`, `user_owner_id` |
-| Deal | `/api/crm/v2/deals` | `title`, `description`, `amount`, `currency`, `expected_close`, `lead_id`, `person_id`, `organization_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
-| Quote | `/api/crm/v2/quotes` | `title`, `description`, `issue_at`, `expire_at`, `currency`, `sub_total`, `discount`, `tax`, `adjustment`, `total`, `person_id`, `organization_id`, `labels[]`, `line_items[]` |
-| Order | `/api/crm/v2/orders` | `description`, `currency`, `sub_total`, `discount`, `tax`, `adjustment`, `total`, `person_id`, `organization_id`, `labels[]`, `line_items[]` |
-| Invoice | `/api/crm/v2/invoices` | `reference`, `issue_date`, `due_date`, `currency`, `sub_total`, `discount`, `tax`, `adjustment`, `total`, `amount_due`, `amount_paid`, `person_id`, `organization_id`, `labels[]`, `line_items[]` |
+| Lead | `/crm/api/v2/leads` | `title`, `description`, `amount`, `currency`, `expected_close`, `person_id`, `organization_id`, `lead_source_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
+| Product | `/crm/api/v2/products` | `name`, `code`, `description`, `unit_price`, `currency`, `tax_rate`, `tax_rate_id`, `product_category_id`, `active`, `user_owner_id` |
+| Organization | `/crm/api/v2/organizations` | `name`, `website`, `email`, `phone`, `annual_revenue`, `total_money_raised`, `number_of_employees`, `industry_id`, `organization_type_id`, `timezone_id`, `labels[]`, `user_owner_id` |
+| Person | `/crm/api/v2/people` | `first_name`, `last_name`, `gender`, `birthday`, `description`, `organization_id`, `labels[]`, `user_owner_id` |
+| Deal | `/crm/api/v2/deals` | `title`, `description`, `amount`, `currency`, `expected_close`, `lead_id`, `person_id`, `organization_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
+| Quote | `/crm/api/v2/quotes` | `title`, `description`, `issue_at`, `expire_at`, `currency`, `sub_total`, `discount`, `tax`, `adjustment`, `total`, `person_id`, `organization_id`, `labels[]`, `line_items[]` |
+| Order | `/crm/api/v2/orders` | `description`, `currency`, `sub_total`, `discount`, `tax`, `adjustment`, `total`, `person_id`, `organization_id`, `labels[]`, `line_items[]` |
+| Invoice | `/crm/api/v2/invoices` | `reference`, `issue_date`, `due_date`, `currency`, `sub_total`, `discount`, `tax`, `adjustment`, `total`, `amount_due`, `amount_paid`, `person_id`, `organization_id`, `labels[]`, `line_items[]` |
 
 ### Conventions across all entity endpoints
 
@@ -277,20 +277,20 @@ Issue a token, list leads, create a lead, then revoke the token.
 
 ```bash
 # 1. Issue a token
-curl -s -X POST https://example.test/api/crm/v2/auth/token \
+curl -s -X POST https://example.test/crm/api/v2/auth/token \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"secret","device_name":"curl"}' \
   | jq .
 
 # 2. List leads
 TOKEN="1|abcdef..."
-curl -s https://example.test/api/crm/v2/leads \
+curl -s https://example.test/crm/api/v2/leads \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json" \
   | jq .
 
 # 3. Create a lead
-curl -s -X POST https://example.test/api/crm/v2/leads \
+curl -s -X POST https://example.test/crm/api/v2/leads \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -302,7 +302,7 @@ curl -s -X POST https://example.test/api/crm/v2/leads \
   | jq .
 
 # 4. Revoke the token
-curl -s -X DELETE https://example.test/api/crm/v2/auth/token \
+curl -s -X DELETE https://example.test/crm/api/v2/auth/token \
   -H "Authorization: Bearer $TOKEN" \
   -i
 ```

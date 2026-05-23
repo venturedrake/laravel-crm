@@ -3,70 +3,12 @@
 use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
-use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\ClickSend\ClickSendConnect;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
 
-/* Portal Routes (public, no auth.laravel-crm — web guard only) */
-
-Route::prefix('p')
-    ->withoutMiddleware([HasCrmAccess::class])
-    ->group(function () {
-        Route::prefix('quotes')->group(function () {
-            Route::get('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@show')
-                ->name('laravel-crm.portal.quotes.show');
-
-            Route::post('{quote:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\QuoteController@process')
-                ->name('laravel-crm.portal.quotes.process');
-        });
-
-        Route::prefix('invoices')->group(function () {
-            Route::get('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@show')
-                ->name('laravel-crm.portal.invoices.show');
-
-            Route::post('{invoice:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\InvoiceController@process')
-                ->name('laravel-crm.portal.invoices.process');
-        });
-
-        Route::get('login', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@showLogin')
-            ->name('laravel-crm.portal.login');
-        Route::post('login', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@login')
-            ->middleware('throttle:6,1')
-            ->name('laravel-crm.portal.login.attempt');
-
-        Route::get('register', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@showRegister')
-            ->name('laravel-crm.portal.register');
-        Route::post('register', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@register')
-            ->middleware('throttle:6,1')
-            ->name('laravel-crm.portal.register.store');
-
-        Route::post('logout', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@logout')
-            ->name('laravel-crm.portal.logout');
-
-        /* Public Feature Board */
-        Route::prefix('features')->group(function () {
-            Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@index')
-                ->name('laravel-crm.portal.features.index');
-
-            Route::get('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@create')
-                ->name('laravel-crm.portal.features.create');
-            Route::post('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@store')
-                ->name('laravel-crm.portal.features.store');
-            Route::post('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@vote')
-                ->name('laravel-crm.portal.features.vote');
-            Route::delete('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@unvote')
-                ->name('laravel-crm.portal.features.unvote');
-            Route::post('{feature:external_id}/comments', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@comment')
-                ->name('laravel-crm.portal.features.comments.store');
-
-            Route::get('{feature:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@show')
-                ->name('laravel-crm.portal.features.show');
-        });
-
-        /* Chat Widget Embed routes registered separately in
-           LaravelCrmServiceProvider::registerRoutes() so they bypass
-           the `web` middleware group (no session, no CSRF). */
-    });
+/* Portal routes (public, signed-URL + portal auth + public feature board)
+   are registered separately in LaravelCrmServiceProvider::registerRoutes()
+   so they bypass the CRM auth middleware stack. See src/Http/portal-routes.php. */
 
 /* Private Routes */
 

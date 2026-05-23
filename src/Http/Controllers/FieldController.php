@@ -49,7 +49,7 @@ class FieldController extends Controller
 
         $this->syncFieldModels($request, $field);
 
-        flash(ucfirst(trans('laravel-crm::lang.field_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.field_stored')));
 
         return redirect(route('laravel-crm.fields.index'));
     }
@@ -99,7 +99,7 @@ class FieldController extends Controller
 
         $this->syncFieldModels($request, $field);
 
-        flash(ucfirst(trans('laravel-crm::lang.field_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.field_updated')));
 
         return redirect(route('laravel-crm.fields.show', $field));
     }
@@ -118,7 +118,7 @@ class FieldController extends Controller
 
         $field->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.field_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.field_deleted')));
 
         return redirect(route('laravel-crm.fields.index'));
     }

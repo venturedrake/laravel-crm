@@ -64,7 +64,7 @@
         <div class="lcrm-empty">Loading…</div>
     </div>
 
-    <form id="lcrm-msg-form" class="lcrm-msg">
+    <form id="lcrm-msg-form" class="lcrm-msg" style="display:none;">
         <input type="text" name="body" placeholder="Type a message…" autocomplete="off" required>
         <button type="submit">Send</button>
     </form>
@@ -84,6 +84,7 @@
     var pollTimer = null;
     var widgetOpen = false;
     var lastTrackedUrl = null;
+    var hasConversation = false;
     var bodyEl = document.getElementById('lcrm-body');
     var idForm = document.getElementById('lcrm-id-form');
     var msgForm = document.getElementById('lcrm-msg-form');
@@ -166,15 +167,25 @@
             token = data.visitor_token;
             try { localStorage.setItem(STORAGE_KEY, token); } catch(e) {}
 
-            // Show identity capture if visitor hasn't given name/email
-            if (!data.visitor.name && !data.visitor.email) {
+            hasConversation = !!data.conversation;
+
+            if (hasConversation) {
+                // Returning visitor with an active chat — show messages + send box.
+                idForm.classList.remove('show');
+                msgForm.style.display = '';
+                render(data.messages);
+                updateUnread(data.unread_for_visitor || 0);
+                startPolling();
+            } else {
+                // First-time / not-yet-started — show the identity form and
+                // hide the message composer until "Start chat" is submitted.
                 idForm.classList.add('show');
+                msgForm.style.display = 'none';
+                bodyEl.innerHTML = '<div class="lcrm-empty">{{ $widget->welcome_message ?: 'How can we help?' }}</div>';
+                updateUnread(0);
             }
 
-            render(data.messages);
             updateOnlineBar(data.agents_online || 0);
-            updateUnread(data.unread_for_visitor || 0);
-            startPolling();
         }).catch(function(err){
             console.error('[lcrm-chat] init failed (attempt '+initAttempt+')', err);
             if (initAttempt < maxInitAttempts) {
@@ -222,7 +233,7 @@
     });
 
     function poll(){
-        if (!token) return;
+        if (!token || !hasConversation) return;
         fetch(API + '/messages?token='+encodeURIComponent(token)+'&since_id='+lastId, {
             headers: {'Accept':'application/json'}
         }).then(function(r){ return r.ok ? r.json() : null; })
@@ -262,15 +273,40 @@
     idForm.addEventListener('submit', function(e){
         e.preventDefault();
         var fd = new FormData(idForm);
+        var name = (fd.get('name') || '').trim();
+        var email = (fd.get('email') || '').trim();
+        if (!name && !email) return; // require at least one identifier
+
+        var btn = idForm.querySelector('button');
+        btn.disabled = true;
+
         postJSON(API + '/identify', {
             token: token,
-            name: fd.get('name'),
-            email: fd.get('email')
-        }).then(function(){ idForm.classList.remove('show'); });
+            name: name,
+            email: email
+        }).then(function(data){
+            idForm.classList.remove('show');
+            // Conversation is now open server-side — reveal the message composer
+            // and start polling.
+            if (data && data.conversation) {
+                hasConversation = true;
+                msgForm.style.display = '';
+                render(data.messages || []);
+                if (data && typeof data.agents_online !== 'undefined') {
+                    updateOnlineBar(data.agents_online);
+                }
+                startPolling();
+                var input = msgForm.querySelector('input[name=body]');
+                if (input) input.focus();
+            }
+        }).catch(function(err){
+            console.error('[lcrm-chat] identify failed', err);
+        }).finally(function(){ btn.disabled = false; });
     });
 
     msgForm.addEventListener('submit', function(e){
         e.preventDefault();
+        if (!hasConversation) return;
         var input = msgForm.querySelector('input[name=body]');
         var btn = msgForm.querySelector('button');
         var body = (input.value || '').trim();

@@ -15,7 +15,7 @@ beforeEach(function () {
 test('public feature board is accessible to guests', function () {
     Feature::create(['title' => 'Public idea', 'is_public' => true]);
 
-    $response = $this->get('/crm/p/features');
+    $response = $this->get('/p/features');
 
     $response->assertStatus(200);
     $response->assertSee('Public idea');
@@ -24,7 +24,7 @@ test('public feature board is accessible to guests', function () {
 test('public feature board hides non-public features', function () {
     Feature::create(['title' => 'Private idea', 'is_public' => false]);
 
-    $response = $this->get('/crm/p/features');
+    $response = $this->get('/p/features');
 
     $response->assertStatus(200);
     $response->assertDontSee('Private idea');
@@ -33,7 +33,7 @@ test('public feature board hides non-public features', function () {
 test('public feature show is accessible to guests', function () {
     $feature = Feature::create(['title' => 'Show me', 'is_public' => true]);
 
-    $response = $this->get('/crm/p/features/'.$feature->external_id);
+    $response = $this->get('/p/features/'.$feature->external_id);
 
     $response->assertStatus(200);
     $response->assertSee('Show me');
@@ -42,7 +42,7 @@ test('public feature show is accessible to guests', function () {
 test('public feature show 404s for non-public feature', function () {
     $feature = Feature::create(['title' => 'Hidden', 'is_public' => false]);
 
-    $response = $this->get('/crm/p/features/'.$feature->external_id);
+    $response = $this->get('/p/features/'.$feature->external_id);
 
     $response->assertStatus(404);
 });
@@ -50,27 +50,27 @@ test('public feature show 404s for non-public feature', function () {
 test('guest clicking vote is redirected to portal login with intended URL', function () {
     $feature = Feature::create(['title' => 'Vote me', 'is_public' => true]);
 
-    $response = $this->post('/crm/p/features/'.$feature->external_id.'/vote');
+    $response = $this->post('/p/features/'.$feature->external_id.'/vote');
 
     $response->assertRedirect();
-    expect($response->headers->get('Location'))->toContain('/crm/p/login');
+    expect($response->headers->get('Location'))->toContain('/p/login');
     expect($response->headers->get('Location'))->toContain('intended=');
 });
 
 test('guest clicking submit is redirected to portal login', function () {
-    $response = $this->get('/crm/p/features/submit');
+    $response = $this->get('/p/features/submit');
 
     $response->assertRedirect();
-    expect($response->headers->get('Location'))->toContain('/crm/p/login');
+    expect($response->headers->get('Location'))->toContain('/p/login');
 });
 
 test('authenticated user can vote', function () {
     $user = User::create(['name' => 'Voter', 'email' => 'v@example.com', 'password' => bcrypt('x'), 'crm_access' => 0]);
     $feature = Feature::create(['title' => 'Cool', 'is_public' => true]);
 
-    $response = $this->actingAs($user)->post('/crm/p/features/'.$feature->external_id.'/vote');
+    $response = $this->actingAs($user)->post('/p/features/'.$feature->external_id.'/vote');
 
-    $response->assertRedirect('/crm/p/features/'.$feature->external_id);
+    $response->assertRedirect('/p/features/'.$feature->external_id);
     expect((int) $feature->fresh()->votes_count)->toBe(1);
 });
 
@@ -78,8 +78,8 @@ test('voting again is idempotent', function () {
     $user = User::create(['name' => 'Voter', 'email' => 'v2@example.com', 'password' => bcrypt('x'), 'crm_access' => 0]);
     $feature = Feature::create(['title' => 'Cool', 'is_public' => true]);
 
-    $this->actingAs($user)->post('/crm/p/features/'.$feature->external_id.'/vote');
-    $this->actingAs($user)->post('/crm/p/features/'.$feature->external_id.'/vote');
+    $this->actingAs($user)->post('/p/features/'.$feature->external_id.'/vote');
+    $this->actingAs($user)->post('/p/features/'.$feature->external_id.'/vote');
 
     expect((int) $feature->fresh()->votes_count)->toBe(1);
 });
@@ -88,10 +88,10 @@ test('authenticated user can unvote via DELETE', function () {
     $user = User::create(['name' => 'Voter', 'email' => 'v3@example.com', 'password' => bcrypt('x'), 'crm_access' => 0]);
     $feature = Feature::create(['title' => 'Cool', 'is_public' => true]);
 
-    $this->actingAs($user)->post('/crm/p/features/'.$feature->external_id.'/vote');
+    $this->actingAs($user)->post('/p/features/'.$feature->external_id.'/vote');
     expect((int) $feature->fresh()->votes_count)->toBe(1);
 
-    $this->actingAs($user)->delete('/crm/p/features/'.$feature->external_id.'/vote');
+    $this->actingAs($user)->delete('/p/features/'.$feature->external_id.'/vote');
     expect((int) $feature->fresh()->votes_count)->toBe(0);
 });
 
@@ -108,7 +108,7 @@ test('feature votes have unique (feature_id, user_id) constraint', function () {
 test('authenticated user can submit a feature', function () {
     $user = User::create(['name' => 'Submitter', 'email' => 's@example.com', 'password' => bcrypt('x'), 'crm_access' => 0]);
 
-    $response = $this->actingAs($user)->post('/crm/p/features/submit', [
+    $response = $this->actingAs($user)->post('/p/features/submit', [
         'title' => 'My idea',
         'description' => 'Detailed description',
     ]);
@@ -126,11 +126,11 @@ test('authenticated user can post a comment', function () {
     $user = User::create(['name' => 'Commenter', 'email' => 'c@example.com', 'password' => bcrypt('x'), 'crm_access' => 0]);
     $feature = Feature::create(['title' => 'Discuss', 'is_public' => true]);
 
-    $response = $this->actingAs($user)->post('/crm/p/features/'.$feature->external_id.'/comments', [
+    $response = $this->actingAs($user)->post('/p/features/'.$feature->external_id.'/comments', [
         'body' => 'I support this',
     ]);
 
-    $response->assertRedirect('/crm/p/features/'.$feature->external_id);
+    $response->assertRedirect('/p/features/'.$feature->external_id);
 
     $comment = FeatureComment::where('feature_id', $feature->id)->first();
     expect($comment)->not->toBeNull();
@@ -143,14 +143,14 @@ test('admin reply renders with is_admin_reply true', function () {
     $admin = User::create(['name' => 'Admin', 'email' => 'a@example.com', 'password' => bcrypt('x'), 'crm_access' => 1]);
     $feature = Feature::create(['title' => 'Discuss', 'is_public' => true]);
 
-    $this->actingAs($admin)->post('/crm/p/features/'.$feature->external_id.'/comments', [
+    $this->actingAs($admin)->post('/p/features/'.$feature->external_id.'/comments', [
         'body' => 'Official response',
     ]);
 
     $comment = FeatureComment::where('feature_id', $feature->id)->first();
     expect($comment->is_admin_reply)->toBeTrue();
 
-    $response = $this->get('/crm/p/features/'.$feature->external_id);
+    $response = $this->get('/p/features/'.$feature->external_id);
     $response->assertSee('Official response');
     $response->assertSee('Admin');
 });
@@ -162,7 +162,7 @@ test('status filter via query string works', function () {
     Feature::create(['title' => 'Idea A', 'is_public' => true, 'feature_status_id' => $statusA->id]);
     Feature::create(['title' => 'Idea B', 'is_public' => true, 'feature_status_id' => $statusB->id]);
 
-    $response = $this->get('/crm/p/features?status='.$statusA->id);
+    $response = $this->get('/p/features?status='.$statusA->id);
 
     $response->assertStatus(200);
     $response->assertSee('Idea A');

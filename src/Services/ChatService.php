@@ -53,14 +53,28 @@ class ChatService
     }
 
     /**
-     * Get or open a conversation for the visitor.
+     * Find the visitor's latest non-closed conversation, if any.
+     *
+     * Read-only — does NOT create a new conversation. Used by endpoints
+     * that should only act on an already-started conversation (e.g. init/poll).
      */
-    public function openConversationForVisitor(ChatVisitor $visitor): ChatConversation
+    public function findOpenConversationForVisitor(ChatVisitor $visitor): ?ChatConversation
     {
-        $conversation = $visitor->conversations()
+        return $visitor->conversations()
             ->where('status', '!=', 'closed')
             ->latest()
             ->first();
+    }
+
+    /**
+     * Get or open a conversation for the visitor. Creates one if none exists.
+     *
+     * Should only be called once the visitor has explicitly initiated a chat
+     * (e.g. submitted the "Start chat" identity form).
+     */
+    public function openConversationForVisitor(ChatVisitor $visitor): ChatConversation
+    {
+        $conversation = $this->findOpenConversationForVisitor($visitor);
 
         if (! $conversation) {
             $conversation = ChatConversation::create([

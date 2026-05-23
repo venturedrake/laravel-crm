@@ -21,10 +21,10 @@ test('the laravel-crm-api rate limiter is registered', function () {
 
     expect($resolver)->not->toBeNull();
 
-    $unauthRequest = Request::create('/api/crm/v2/leads');
+    $unauthRequest = Request::create('/crm/api/v2/leads');
     $unauthRequest->setUserResolver(fn () => null);
 
-    $authRequest = Request::create('/api/crm/v2/leads');
+    $authRequest = Request::create('/crm/api/v2/leads');
     $authRequest->setUserResolver(fn () => new class
     {
         public function getAuthIdentifier()
@@ -42,21 +42,21 @@ test('the laravel-crm-api rate limiter is registered', function () {
     expect($auth->maxAttempts)->toBe(60);
 });
 
-test('the api/crm/v2 route group is registered and reachable', function () {
+test('the crm/api/v2 route group is registered and reachable', function () {
     Route::middleware(['api', 'laravel-crm.api.json', 'throttle:laravel-crm-api'])
-        ->prefix('api/crm/v2')
+        ->prefix('crm/api/v2')
         ->get('__group-probe', fn (Request $request) => response()->json([
             'accept' => $request->headers->get('Accept'),
         ]));
 
-    $response = $this->get('/api/crm/v2/__group-probe');
+    $response = $this->get('/crm/api/v2/__group-probe');
 
     $response->assertOk();
     $response->assertJson(['accept' => 'application/json']);
 });
 
-test('an empty group still resolves under the api/crm/v2 prefix without routes', function () {
-    $response = $this->get('/api/crm/v2/does-not-exist');
+test('an empty group still resolves under the crm/api/v2 prefix without routes', function () {
+    $response = $this->get('/crm/api/v2/does-not-exist');
 
     $response->assertStatus(404);
 });

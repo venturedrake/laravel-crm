@@ -6,7 +6,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\SetApiTeamContext;
 
 function setApiTeamContextRequest(?string $teamHeader = null): Request
 {
-    $request = Request::create('/api/crm/v2/leads');
+    $request = Request::create('/crm/api/v2/leads');
 
     if ($teamHeader !== null) {
         $request->headers->set('X-Team-ID', $teamHeader);

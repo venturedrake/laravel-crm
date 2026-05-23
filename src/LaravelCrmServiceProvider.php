@@ -778,10 +778,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/seed_laravel_crm_sms_templates.php.stub' => $this->getMigrationFileName($filesystem, 'seed_laravel_crm_sms_templates.php', 122),
                 __DIR__.'/../database/migrations/ensure_encryptable_columns_widened_on_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'ensure_encryptable_columns_widened_on_laravel_crm_tables.php', 123),
                 __DIR__.'/../database/migrations/add_mailing_list_to_users_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_mailing_list_to_users_table.php', 124),
-                __DIR__.'/../database/migrations/create_laravel_crm_feature_statuses_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_statuses_table.php', 125),
-                __DIR__.'/../database/migrations/create_laravel_crm_features_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_features_table.php', 126),
-                __DIR__.'/../database/migrations/create_laravel_crm_feature_comments_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_comments_table.php', 127),
-                __DIR__.'/../database/migrations/create_laravel_crm_feature_votes_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_votes_table.php', 128),
+                __DIR__.'/../database/migrations/fix_line1_nullable_on_laravel_crm_addresses_table.php.stub' => $this->getMigrationFileName($filesystem, 'fix_line1_nullable_on_laravel_crm_addresses_table.php', 125),
+                __DIR__.'/../database/migrations/create_laravel_crm_feature_statuses_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_statuses_table.php', 126),
+                __DIR__.'/../database/migrations/create_laravel_crm_features_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_features_table.php', 127),
+                __DIR__.'/../database/migrations/create_laravel_crm_feature_comments_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_comments_table.php', 128),
+                __DIR__.'/../database/migrations/create_laravel_crm_feature_votes_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_votes_table.php', 129),
             ], 'migrations');
 
             // Publishing the seeders
@@ -1258,6 +1259,21 @@ class LaravelCrmServiceProvider extends ServiceProvider
             }
         });
 
+        // Public portal routes (signed-URL quote/invoice views) — registered
+        // OUTSIDE the CRM auth/crm-api middleware so recipients can open the
+        // link without logging in, but still inside the `web` group so signed
+        // URL validation, sessions, and CSRF on POST work. Mounted at `/p`
+        // regardless of LARAVEL_CRM_ROUTE_PREFIX.
+        Route::group([
+            'domain' => null,
+            'prefix' => 'p',
+            'middleware' => ['web'],
+        ], function () {
+            if (config('laravel-crm.user_interface')) {
+                $this->loadRoutesFrom(__DIR__.'/Http/portal-routes.php');
+            }
+        });
+
         // Main CRM routes — full middleware stack
         Route::group($this->routeConfiguration(), function () {
             if (config('laravel-crm.user_interface')) {
@@ -1266,8 +1282,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
         });
 
         // API routes (v2) — JSON-only with named rate limiter
+        // Mounted under the CRM route prefix (defaults to `crm/api/v2`).
         Route::group([
-            'prefix' => 'api/crm/v2',
+            'prefix' => trim(config('laravel-crm.route_prefix', 'crm'), '/').'/api/v2',
             'middleware' => ['api', 'laravel-crm.api.json', 'throttle:laravel-crm-api'],
         ], function () {
             $this->loadRoutesFrom(__DIR__.'/Http/api-routes.php');

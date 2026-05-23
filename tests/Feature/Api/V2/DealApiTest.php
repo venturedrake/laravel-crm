@@ -29,13 +29,13 @@ function dealApiHeaders(User $user): array
 }
 
 test('GET /deals returns 401 when unauthenticated', function () {
-    $response = $this->getJson('/api/crm/v2/deals');
+    $response = $this->getJson('/crm/api/v2/deals');
 
     $response->assertStatus(401);
 });
 
 test('POST /deals returns 401 when unauthenticated', function () {
-    $response = $this->postJson('/api/crm/v2/deals', ['title' => 'Hello']);
+    $response = $this->postJson('/crm/api/v2/deals', ['title' => 'Hello']);
 
     $response->assertStatus(401);
 });
@@ -48,7 +48,7 @@ test('GET /deals returns paginated collection with UUID ids', function () {
     }
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->getJson('/api/crm/v2/deals');
+        ->getJson('/crm/api/v2/deals');
 
     $response->assertOk();
     $response->assertJsonStructure([
@@ -72,7 +72,7 @@ test('GET /deals honors per_page', function () {
     }
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->getJson('/api/crm/v2/deals?per_page=2');
+        ->getJson('/crm/api/v2/deals?per_page=2');
 
     $response->assertOk();
     expect($response->json('meta.per_page'))->toBe(2);
@@ -88,7 +88,7 @@ test('GET /deals filters by user_owner_id', function () {
     Deal::create(['title' => 'Theirs', 'user_owner_id' => $other->id]);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->getJson('/api/crm/v2/deals?user_owner_id='.$user->id);
+        ->getJson('/crm/api/v2/deals?user_owner_id='.$user->id);
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(2);
@@ -98,7 +98,7 @@ test('POST /deals creates a deal and returns 201 with UUID id and divided amount
     $user = dealApiUser();
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', [
+        ->postJson('/crm/api/v2/deals', [
             'title' => 'Big Deal',
             'description' => 'Solid opportunity',
             'amount' => 2500.75,
@@ -130,7 +130,7 @@ test('POST /deals resolves UUIDs for related entities', function () {
     ]);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', [
+        ->postJson('/crm/api/v2/deals', [
             'title' => 'Linked Deal',
             'person_id' => $person->external_id,
             'organization_id' => $organization->external_id,
@@ -154,7 +154,7 @@ test('POST /deals returns 422 when required fields are missing', function () {
     $user = dealApiUser();
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', []);
+        ->postJson('/crm/api/v2/deals', []);
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['title']);
@@ -164,7 +164,7 @@ test('POST /deals returns 422 when person_id is not a UUID', function () {
     $user = dealApiUser();
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', [
+        ->postJson('/crm/api/v2/deals', [
             'title' => 'Bad data',
             'person_id' => 'not-a-uuid',
         ]);
@@ -177,7 +177,7 @@ test('POST /deals returns 422 when lead UUID does not exist', function () {
     $user = dealApiUser();
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', [
+        ->postJson('/crm/api/v2/deals', [
             'title' => 'Bad lead',
             'lead_id' => (string) Str::uuid(),
         ]);
@@ -190,7 +190,7 @@ test('POST /deals returns 422 when expected_close is not ISO-8601', function () 
     $user = dealApiUser();
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', [
+        ->postJson('/crm/api/v2/deals', [
             'title' => 'Bad date',
             'expected_close' => '07/15/2026 10:00',
         ]);
@@ -203,7 +203,7 @@ test('POST /deals accepts a valid ISO-8601 expected_close', function () {
     $user = dealApiUser();
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', [
+        ->postJson('/crm/api/v2/deals', [
             'title' => 'With date',
             'expected_close' => '2026-07-15T10:00:00Z',
         ]);
@@ -216,7 +216,7 @@ test('POST /deals returns 403 when policy denies create', function () {
     $user = dealApiUser(['crm_permissions' => json_encode([])]);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->postJson('/api/crm/v2/deals', [
+        ->postJson('/crm/api/v2/deals', [
             'title' => 'Forbidden',
         ]);
 
@@ -228,7 +228,7 @@ test('GET /deals/{deal} returns 403 when policy denies view', function () {
     $deal = Deal::create(['title' => 'Hidden']);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->getJson('/api/crm/v2/deals/'.$deal->external_id);
+        ->getJson('/crm/api/v2/deals/'.$deal->external_id);
 
     $response->assertStatus(403);
 });
@@ -238,7 +238,7 @@ test('GET /deals/{deal} returns the deal by UUID', function () {
     $deal = Deal::create(['title' => 'Findable']);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->getJson('/api/crm/v2/deals/'.$deal->external_id);
+        ->getJson('/crm/api/v2/deals/'.$deal->external_id);
 
     $response->assertOk();
     expect($response->json('data.id'))->toBe($deal->external_id);
@@ -249,7 +249,7 @@ test('GET /deals/{deal} returns 404 for unknown UUID', function () {
     $user = dealApiUser();
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->getJson('/api/crm/v2/deals/'.((string) Str::uuid()));
+        ->getJson('/crm/api/v2/deals/'.((string) Str::uuid()));
 
     $response->assertStatus(404);
 });
@@ -259,7 +259,7 @@ test('PUT /deals/{deal} updates a deal', function () {
     $deal = Deal::create(['title' => 'Original', 'amount' => 100]);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->putJson('/api/crm/v2/deals/'.$deal->external_id, [
+        ->putJson('/crm/api/v2/deals/'.$deal->external_id, [
             'title' => 'Updated',
             'amount' => 999.99,
         ]);
@@ -279,7 +279,7 @@ test('PUT /deals/{deal} preserves the attached person when person_id is omitted'
     $deal = Deal::create(['title' => 'Original', 'person_id' => $person->id]);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->putJson('/api/crm/v2/deals/'.$deal->external_id, [
+        ->putJson('/crm/api/v2/deals/'.$deal->external_id, [
             'title' => 'Only title changes',
         ]);
 
@@ -297,7 +297,7 @@ test('PUT /deals/{deal} preserves the attached organization when organization_id
     $deal = Deal::create(['title' => 'Original', 'organization_id' => $organization->id]);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->putJson('/api/crm/v2/deals/'.$deal->external_id, [
+        ->putJson('/crm/api/v2/deals/'.$deal->external_id, [
             'title' => 'Only title changes',
         ]);
 
@@ -319,7 +319,7 @@ test('PUT /deals/{deal} clears person/organization when explicitly set to null',
     ]);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->putJson('/api/crm/v2/deals/'.$deal->external_id, [
+        ->putJson('/crm/api/v2/deals/'.$deal->external_id, [
             'person_id' => null,
             'organization_id' => null,
         ]);
@@ -336,7 +336,7 @@ test('DELETE /deals/{deal} soft-deletes the deal', function () {
     $deal = Deal::create(['title' => 'Toast']);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->deleteJson('/api/crm/v2/deals/'.$deal->external_id);
+        ->deleteJson('/crm/api/v2/deals/'.$deal->external_id);
 
     $response->assertStatus(204);
 
@@ -344,7 +344,7 @@ test('DELETE /deals/{deal} soft-deletes the deal', function () {
     expect(Deal::withTrashed()->where('external_id', $deal->external_id)->exists())->toBeTrue();
 
     $followUp = $this->withHeaders(dealApiHeaders($user))
-        ->getJson('/api/crm/v2/deals/'.$deal->external_id);
+        ->getJson('/crm/api/v2/deals/'.$deal->external_id);
     $followUp->assertStatus(404);
 });
 
@@ -353,7 +353,7 @@ test('DELETE /deals/{deal} returns 403 when policy denies delete', function () {
     $deal = Deal::create(['title' => 'Untouchable']);
 
     $response = $this->withHeaders(dealApiHeaders($user))
-        ->deleteJson('/api/crm/v2/deals/'.$deal->external_id);
+        ->deleteJson('/crm/api/v2/deals/'.$deal->external_id);
 
     $response->assertStatus(403);
     expect(Deal::query()->where('external_id', $deal->external_id)->exists())->toBeTrue();

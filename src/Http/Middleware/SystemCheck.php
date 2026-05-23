@@ -24,7 +24,7 @@ class SystemCheck
                 // crm_access, last_online_at, current_crm_team_id
                 // Delete views/vendor/laravel-crm folder or re-publish views
                 // TODO: Refactor to use new flasher
-                // flash('<strong>Important:</strong> your Laravel CRM version requires some updates to function correctly. Please see the <a href="https://github.com/venturedrake/laravel-crm" target="_blank">upgrade section</a> in the documentation.')->warning()->important();
+                // flash()->warning('<strong>Important:</strong> your Laravel CRM version requires some updates to function correctly. Please see the <a href="https://github.com/venturedrake/laravel-crm" target="_blank">upgrade section</a> in the documentation.');
             }
 
             // Since version 0.1.2
@@ -32,7 +32,7 @@ class SystemCheck
                 // settings table missing, need to publish migrations and run migrate
                 // Delete views/vendor/laravel-crm folder or re-publish views
                 // TODO: Refactor to use new flasher
-                // flash('<strong>Important:</strong> your Laravel CRM version requires some updates to function correctly. Please see the <a href="https://github.com/venturedrake/laravel-crm" target="_blank">upgrade section</a> in the documentation.')->warning()->important();
+                // flash()->warning('<strong>Important:</strong> your Laravel CRM version requires some updates to function correctly. Please see the <a href="https://github.com/venturedrake/laravel-crm" target="_blank">upgrade section</a> in the documentation.');
             }
 
             // Since version 0.2.0
@@ -42,7 +42,7 @@ class SystemCheck
 
                 if ($currentVersion && $latestVersion && $currentVersion < $latestVersion) {
                     // TODO: Refactor to use new flasher
-                    // flash('There is a new version of Laravel CRM software available. <a href="https://github.com/venturedrake/laravel-crm" target="_blank">View version '.\VentureDrake\LaravelCrm\Models\Setting::where('name', 'version_latest')->first()->value.' details</a> or <a href="https://github.com/venturedrake/laravel-crm" target="_blank">update now</a>.')->warning()->important();
+                    // flash()->warning('There is a new version of Laravel CRM software available. <a href="https://github.com/venturedrake/laravel-crm" target="_blank">View version '.\VentureDrake\LaravelCrm\Models\Setting::where('name', 'version_latest')->first()->value.' details</a> or <a href="https://github.com/venturedrake/laravel-crm" target="_blank">update now</a>.');
                 }
 
                 // Check if DB database required
@@ -92,7 +92,7 @@ class SystemCheck
 
                 if ($dbUpdateRequired) {
                     // TODO: Refactor to use new flasher
-                    // flash('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="https://github.com/venturedrake/laravel-crm#upgrading-from--02" target="_blank">update database</a>')->info()->important();
+                    // flash()->info('Your Laravel CRM software version requires some database updates to function correctly. Please <a href="https://github.com/venturedrake/laravel-crm#upgrading-from--02" target="_blank">update database</a>');
                 }
             }
         }

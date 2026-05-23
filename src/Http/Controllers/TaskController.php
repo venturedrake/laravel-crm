@@ -58,7 +58,7 @@ class TaskController extends Controller
     {
         $task->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.task_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.task_deleted')));
 
         return redirect(route('laravel-crm.tasks.index'));
     }
@@ -69,7 +69,7 @@ class TaskController extends Controller
             'completed_at' => Carbon::now(),
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.task_completed')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.task_completed')));
 
         return redirect(route('laravel-crm.tasks.index'));
     }

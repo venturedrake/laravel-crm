@@ -84,7 +84,7 @@ class CustomerController extends Controller
 
         $client->labels()->sync($request->labels ?? []);
 
-        flash(ucfirst(trans('laravel-crm::lang.client_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.client_stored')));
 
         return redirect(route('laravel-crm.clients.index'));
     }
@@ -131,7 +131,7 @@ class CustomerController extends Controller
 
         $client->labels()->sync($request->labels ?? []);
 
-        flash(ucfirst(trans('laravel-crm::lang.client_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.client_updated')));
 
         return redirect(route('laravel-crm.clients.show', $client));
     }
@@ -146,7 +146,7 @@ class CustomerController extends Controller
     {
         $client->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.client_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.client_deleted')));
 
         return redirect(route('laravel-crm.clients.index'));
     }

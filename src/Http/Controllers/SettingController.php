@@ -144,7 +144,7 @@ class SettingController extends Controller
         $this->updateRelatedEmails($related, $request->emails);
         $this->updateRelatedAddresses($related, $request->addresses);
 
-        flash(ucfirst(trans('laravel-crm::lang.settings_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.settings_updated')));
 
         return back();
     }

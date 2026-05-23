@@ -5,7 +5,6 @@ namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -82,9 +81,7 @@ class QuoteSend extends Component
 
         $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->quote)).'/'.$this->quote->id.'/';
 
-        if (! File::exists($pdfLocation)) {
-            Storage::makeDirectory($pdfLocation);
-        }
+        File::ensureDirectoryExists(storage_path('app/'.$pdfLocation));
 
         $this->pdf = 'app/'.$pdfLocation.'quote-'.strtolower($this->quote->quote_id).'.pdf';
 

@@ -4,19 +4,19 @@ use Illuminate\Support\Facades\Hash;
 use VentureDrake\LaravelCrm\Tests\Stubs\User;
 
 test('portal login page is accessible to guests', function () {
-    $response = $this->get('/crm/p/login');
+    $response = $this->get('/p/login');
 
     $response->assertStatus(200);
 });
 
 test('portal register page is accessible to guests', function () {
-    $response = $this->get('/crm/p/register');
+    $response = $this->get('/p/register');
 
     $response->assertStatus(200);
 });
 
 test('registering creates a user with crm_access = 0 and logs them in', function () {
-    $response = $this->post('/crm/p/register', [
+    $response = $this->post('/p/register', [
         'name' => 'Voter Vince',
         'email' => 'voter+'.uniqid().'@example.com',
         'password' => 'secret-pw',
@@ -41,14 +41,14 @@ test('register validates required fields, unique email, and confirmed password',
         'crm_access' => 0,
     ]);
 
-    $response = $this->from('/crm/p/register')->post('/crm/p/register', [
+    $response = $this->from('/p/register')->post('/p/register', [
         'name' => '',
         'email' => 'taken@example.com',
         'password' => 'short',
         'password_confirmation' => 'mismatch',
     ]);
 
-    $response->assertRedirect('/crm/p/register');
+    $response->assertRedirect('/p/register');
     $response->assertSessionHasErrors(['name', 'email', 'password']);
 });
 
@@ -63,7 +63,7 @@ test('login authenticates valid credentials and supports intended redirects', fu
     // Prime the intended URL by hitting a protected page first.
     $this->get('/crm/dashboard');
 
-    $response = $this->post('/crm/p/login', [
+    $response = $this->post('/p/login', [
         'email' => 'returner@example.com',
         'password' => 'secret-pw',
     ]);
@@ -80,12 +80,12 @@ test('login rejects invalid credentials', function () {
         'crm_access' => 0,
     ]);
 
-    $response = $this->from('/crm/p/login')->post('/crm/p/login', [
+    $response = $this->from('/p/login')->post('/p/login', [
         'email' => 'bad@example.com',
         'password' => 'wrong-pw',
     ]);
 
-    $response->assertRedirect('/crm/p/login');
+    $response->assertRedirect('/p/login');
     $response->assertSessionHasErrors(['email']);
     $this->assertGuest();
 });
@@ -100,9 +100,9 @@ test('logout signs the user out and redirects to portal login', function () {
 
     $this->actingAs($user);
 
-    $response = $this->post('/crm/p/logout');
+    $response = $this->post('/p/logout');
 
-    $response->assertRedirect('/crm/p/login');
+    $response->assertRedirect('/p/login');
     $this->assertGuest();
 });
 
@@ -120,7 +120,7 @@ test('user with crm_access = 0 is forbidden from the main CRM area', function ()
 });
 
 test('portal layout header shows guest links when unauthenticated', function () {
-    $response = $this->get('/crm/p/login');
+    $response = $this->get('/p/login');
 
     $response->assertSee(route('laravel-crm.portal.login'), false);
     $response->assertSee(route('laravel-crm.portal.register'), false);
@@ -134,6 +134,6 @@ test('authenticated visits to login and register redirect away', function () {
         'crm_access' => 0,
     ]);
 
-    $this->actingAs($user)->get('/crm/p/login')->assertRedirect();
-    $this->actingAs($user)->get('/crm/p/register')->assertRedirect();
+    $this->actingAs($user)->get('/p/login')->assertRedirect();
+    $this->actingAs($user)->get('/p/register')->assertRedirect();
 });

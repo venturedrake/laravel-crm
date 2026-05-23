@@ -88,7 +88,7 @@ class OrganizationController extends Controller
 
         $organization->labels()->sync($request->labels ?? []);
 
-        flash(ucfirst(trans('laravel-crm::lang.organization_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.organization_stored')));
 
         return redirect(route('laravel-crm.organizations.index'));
     }
@@ -138,7 +138,7 @@ class OrganizationController extends Controller
 
         $organization->labels()->sync($request->labels ?? []);
 
-        flash(ucfirst(trans('laravel-crm::lang.organization_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.organization_updated')));
 
         return redirect(route('laravel-crm.organizations.show', $organization));
     }
@@ -160,7 +160,7 @@ class OrganizationController extends Controller
 
         $organization->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.organization_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.organization_deleted')));
 
         return redirect(route('laravel-crm.organizations.index'));
     }

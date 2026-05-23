@@ -62,6 +62,9 @@ class QuoteController extends Controller
             'organization_address' => $organization_address ?? null,
             'fromName' => app('laravel-crm.settings')->get('organization_name', null),
             'logo' => app('laravel-crm.settings')->get('logo_file', null),
+            'timezone' => $this->settingService->get('timezone', config('laravel-crm.timezone')),
+            'dateFormat' => $this->settingService->get('date_format', config('laravel-crm.date_format')),
+            'taxName' => $this->settingService->get('tax_name', 'Tax'),
         ]);
     }
 
@@ -83,7 +86,7 @@ class QuoteController extends Controller
                     'accepted_at' => Carbon::now(),
                 ]);
 
-                flash(ucfirst(trans('laravel-crm::lang.quote_accepted')))->success()->important();
+                flash()->success(ucfirst(trans('laravel-crm::lang.quote_accepted')));
 
                 break;
 
@@ -92,7 +95,7 @@ class QuoteController extends Controller
                     'rejected_at' => Carbon::now(),
                 ]);
 
-                flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
+                flash()->success(ucfirst(trans('laravel-crm::lang.quote_rejected')));
 
                 break;
 

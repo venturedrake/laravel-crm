@@ -37,11 +37,11 @@ function createApiProduct(string $name = 'Widget'): Product
 }
 
 test('GET /quotes returns 401 when unauthenticated', function () {
-    $this->getJson('/api/crm/v2/quotes')->assertStatus(401);
+    $this->getJson('/crm/api/v2/quotes')->assertStatus(401);
 });
 
 test('POST /quotes returns 401 when unauthenticated', function () {
-    $this->postJson('/api/crm/v2/quotes', ['title' => 'Hello'])->assertStatus(401);
+    $this->postJson('/crm/api/v2/quotes', ['title' => 'Hello'])->assertStatus(401);
 });
 
 test('POST /quotes creates a quote with nested line items', function () {
@@ -51,7 +51,7 @@ test('POST /quotes creates a quote with nested line items', function () {
     $productB = createApiProduct('Widget B');
 
     $response = $this->withHeaders(quoteApiHeaders($user))
-        ->postJson('/api/crm/v2/quotes', [
+        ->postJson('/crm/api/v2/quotes', [
             'title' => 'Initial proposal',
             'reference' => 'Q-REF-1',
             'currency' => 'USD',
@@ -106,7 +106,7 @@ test('POST /quotes returns 422 when required fields are missing', function () {
     $user = quoteApiUser();
 
     $this->withHeaders(quoteApiHeaders($user))
-        ->postJson('/api/crm/v2/quotes', [])
+        ->postJson('/crm/api/v2/quotes', [])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['title']);
 });
@@ -115,7 +115,7 @@ test('POST /quotes returns 422 when a line item product_id is unknown', function
     $user = quoteApiUser();
 
     $this->withHeaders(quoteApiHeaders($user))
-        ->postJson('/api/crm/v2/quotes', [
+        ->postJson('/crm/api/v2/quotes', [
             'title' => 'Bad product',
             'line_items' => [
                 [
@@ -134,7 +134,7 @@ test('POST /quotes returns 403 when policy denies create', function () {
     $user = quoteApiUser(['crm_permissions' => json_encode([])]);
 
     $this->withHeaders(quoteApiHeaders($user))
-        ->postJson('/api/crm/v2/quotes', ['title' => 'Forbidden'])
+        ->postJson('/crm/api/v2/quotes', ['title' => 'Forbidden'])
         ->assertStatus(403);
 });
 
@@ -146,7 +146,7 @@ test('GET /quotes returns a paginated collection', function () {
     }
 
     $response = $this->withHeaders(quoteApiHeaders($user))
-        ->getJson('/api/crm/v2/quotes?per_page=2');
+        ->getJson('/crm/api/v2/quotes?per_page=2');
 
     $response->assertOk();
     expect($response->json('data'))->toHaveCount(2);
@@ -158,7 +158,7 @@ test('GET /quotes/{quote} returns the quote with line items', function () {
     $product = createApiProduct();
 
     $created = $this->withHeaders(quoteApiHeaders($user))
-        ->postJson('/api/crm/v2/quotes', [
+        ->postJson('/crm/api/v2/quotes', [
             'title' => 'Find me',
             'line_items' => [[
                 'product_id' => $product->external_id,
@@ -169,7 +169,7 @@ test('GET /quotes/{quote} returns the quote with line items', function () {
         ])->json('data');
 
     $response = $this->withHeaders(quoteApiHeaders($user))
-        ->getJson('/api/crm/v2/quotes/'.$created['id']);
+        ->getJson('/crm/api/v2/quotes/'.$created['id']);
 
     $response->assertOk();
     expect($response->json('data.id'))->toBe($created['id']);
@@ -180,7 +180,7 @@ test('GET /quotes/{quote} returns 404 for unknown UUID', function () {
     $user = quoteApiUser();
 
     $this->withHeaders(quoteApiHeaders($user))
-        ->getJson('/api/crm/v2/quotes/'.((string) Str::uuid()))
+        ->getJson('/crm/api/v2/quotes/'.((string) Str::uuid()))
         ->assertStatus(404);
 });
 
@@ -189,7 +189,7 @@ test('PUT /quotes/{quote} updates line items in place', function () {
     $product = createApiProduct();
 
     $created = $this->withHeaders(quoteApiHeaders($user))
-        ->postJson('/api/crm/v2/quotes', [
+        ->postJson('/crm/api/v2/quotes', [
             'title' => 'Original',
             'line_items' => [[
                 'product_id' => $product->external_id,
@@ -202,7 +202,7 @@ test('PUT /quotes/{quote} updates line items in place', function () {
     $lineItemId = $created['line_items'][0]['id'];
 
     $response = $this->withHeaders(quoteApiHeaders($user))
-        ->putJson('/api/crm/v2/quotes/'.$created['id'], [
+        ->putJson('/crm/api/v2/quotes/'.$created['id'], [
             'title' => 'Updated',
             'line_items' => [[
                 'id' => $lineItemId,
@@ -230,7 +230,7 @@ test('DELETE /quotes/{quote} soft-deletes the quote', function () {
     $quote = Quote::create(['title' => 'Toast']);
 
     $this->withHeaders(quoteApiHeaders($user))
-        ->deleteJson('/api/crm/v2/quotes/'.$quote->external_id)
+        ->deleteJson('/crm/api/v2/quotes/'.$quote->external_id)
         ->assertStatus(204);
 
     expect(Quote::query()->where('external_id', $quote->external_id)->exists())->toBeFalse();
@@ -242,6 +242,6 @@ test('DELETE /quotes/{quote} returns 403 when policy denies delete', function ()
     $quote = Quote::create(['title' => 'Untouchable']);
 
     $this->withHeaders(quoteApiHeaders($user))
-        ->deleteJson('/api/crm/v2/quotes/'.$quote->external_id)
+        ->deleteJson('/crm/api/v2/quotes/'.$quote->external_id)
         ->assertStatus(403);
 });

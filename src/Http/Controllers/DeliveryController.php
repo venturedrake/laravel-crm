@@ -110,7 +110,7 @@ class DeliveryController extends Controller
     {
         $this->deliveryService->create($request);
 
-        flash(ucfirst(trans('laravel-crm::lang.delivery_created')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.delivery_created')));
 
         return redirect(route('laravel-crm.deliveries.index'));
     }
@@ -178,7 +178,7 @@ class DeliveryController extends Controller
     {
         $delivery = $this->deliveryService->update($request, $delivery);
 
-        flash(ucfirst(trans('laravel-crm::lang.delivery_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.delivery_updated')));
 
         return redirect(route('laravel-crm.deliveries.show', $delivery));
     }
@@ -193,7 +193,7 @@ class DeliveryController extends Controller
     {
         $delivery->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.delivery_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.delivery_deleted')));
 
         return redirect(route('laravel-crm.deliveries.index'));
     }

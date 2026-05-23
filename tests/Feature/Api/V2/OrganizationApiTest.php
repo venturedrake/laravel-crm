@@ -25,13 +25,13 @@ function organizationApiHeaders(User $user): array
 }
 
 test('GET /organizations returns 401 when unauthenticated', function () {
-    $response = $this->getJson('/api/crm/v2/organizations');
+    $response = $this->getJson('/crm/api/v2/organizations');
 
     $response->assertStatus(401);
 });
 
 test('POST /organizations returns 401 when unauthenticated', function () {
-    $response = $this->postJson('/api/crm/v2/organizations', ['name' => 'Hello']);
+    $response = $this->postJson('/crm/api/v2/organizations', ['name' => 'Hello']);
 
     $response->assertStatus(401);
 });
@@ -44,7 +44,7 @@ test('GET /organizations returns paginated collection with UUID ids and ISO time
     }
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->getJson('/api/crm/v2/organizations');
+        ->getJson('/crm/api/v2/organizations');
 
     $response->assertOk();
     $response->assertJsonStructure([
@@ -69,7 +69,7 @@ test('GET /organizations honors per_page pagination', function () {
     }
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->getJson('/api/crm/v2/organizations?per_page=2');
+        ->getJson('/crm/api/v2/organizations?per_page=2');
 
     $response->assertOk();
     $payload = $response->json();
@@ -88,7 +88,7 @@ test('GET /organizations filters by user_owner_id', function () {
     Organization::create(['name' => 'Theirs', 'user_owner_id' => $otherOwner->id]);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->getJson('/api/crm/v2/organizations?user_owner_id='.$user->id);
+        ->getJson('/crm/api/v2/organizations?user_owner_id='.$user->id);
 
     $response->assertOk();
     expect($response->json('meta.total'))->toBe(2);
@@ -98,7 +98,7 @@ test('POST /organizations creates an organization and returns 201 with UUID id a
     $user = organizationApiUser();
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->postJson('/api/crm/v2/organizations', [
+        ->postJson('/crm/api/v2/organizations', [
             'name' => 'Acme Co',
             'description' => 'A solid customer',
             'vat_number' => 'VAT-12345',
@@ -128,7 +128,7 @@ test('POST /organizations returns 422 when name is missing', function () {
     $user = organizationApiUser();
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->postJson('/api/crm/v2/organizations', []);
+        ->postJson('/crm/api/v2/organizations', []);
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['name']);
@@ -138,7 +138,7 @@ test('POST /organizations returns 422 when number_of_employees is not integer', 
     $user = organizationApiUser();
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->postJson('/api/crm/v2/organizations', [
+        ->postJson('/crm/api/v2/organizations', [
             'name' => 'Bad data',
             'number_of_employees' => 'lots',
         ]);
@@ -151,7 +151,7 @@ test('POST /organizations returns 422 when annual_revenue is negative', function
     $user = organizationApiUser();
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->postJson('/api/crm/v2/organizations', [
+        ->postJson('/crm/api/v2/organizations', [
             'name' => 'Negative',
             'annual_revenue' => -100,
         ]);
@@ -164,7 +164,7 @@ test('POST /organizations returns 422 when user_owner_id does not exist', functi
     $user = organizationApiUser();
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->postJson('/api/crm/v2/organizations', [
+        ->postJson('/crm/api/v2/organizations', [
             'name' => 'Phantom owner',
             'user_owner_id' => 9999999,
         ]);
@@ -177,7 +177,7 @@ test('POST /organizations returns 403 when policy denies create', function () {
     $user = organizationApiUser(['crm_permissions' => json_encode([])]);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->postJson('/api/crm/v2/organizations', [
+        ->postJson('/crm/api/v2/organizations', [
             'name' => 'Forbidden',
         ]);
 
@@ -189,7 +189,7 @@ test('GET /organizations/{organization} returns 403 when policy denies view', fu
     $organization = Organization::create(['name' => 'Hidden']);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->getJson('/api/crm/v2/organizations/'.$organization->external_id);
+        ->getJson('/crm/api/v2/organizations/'.$organization->external_id);
 
     $response->assertStatus(403);
 });
@@ -199,7 +199,7 @@ test('GET /organizations/{organization} returns the organization by UUID', funct
     $organization = Organization::create(['name' => 'Findable']);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->getJson('/api/crm/v2/organizations/'.$organization->external_id);
+        ->getJson('/crm/api/v2/organizations/'.$organization->external_id);
 
     $response->assertOk();
     expect($response->json('data.id'))->toBe($organization->external_id);
@@ -210,7 +210,7 @@ test('GET /organizations/{organization} returns 404 for unknown UUID', function 
     $user = organizationApiUser();
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->getJson('/api/crm/v2/organizations/'.((string) Str::uuid()));
+        ->getJson('/crm/api/v2/organizations/'.((string) Str::uuid()));
 
     $response->assertStatus(404);
 });
@@ -220,7 +220,7 @@ test('PUT /organizations/{organization} updates an organization', function () {
     $organization = Organization::create(['name' => 'Original']);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->putJson('/api/crm/v2/organizations/'.$organization->external_id, [
+        ->putJson('/crm/api/v2/organizations/'.$organization->external_id, [
             'name' => 'Updated',
             'annual_revenue' => 250.75,
         ]);
@@ -261,7 +261,7 @@ test('PUT /organizations/{organization} preserves seeded phones, emails, and add
     ]);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->putJson('/api/crm/v2/organizations/'.$organization->external_id, [
+        ->putJson('/crm/api/v2/organizations/'.$organization->external_id, [
             'name' => 'Renamed',
         ]);
 
@@ -282,7 +282,7 @@ test('DELETE /organizations/{organization} soft-deletes the organization', funct
     $organization = Organization::create(['name' => 'Toast']);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->deleteJson('/api/crm/v2/organizations/'.$organization->external_id);
+        ->deleteJson('/crm/api/v2/organizations/'.$organization->external_id);
 
     $response->assertStatus(204);
 
@@ -290,7 +290,7 @@ test('DELETE /organizations/{organization} soft-deletes the organization', funct
     expect(Organization::withTrashed()->where('external_id', $organization->external_id)->exists())->toBeTrue();
 
     $followUp = $this->withHeaders(organizationApiHeaders($user))
-        ->getJson('/api/crm/v2/organizations/'.$organization->external_id);
+        ->getJson('/crm/api/v2/organizations/'.$organization->external_id);
     $followUp->assertStatus(404);
 });
 
@@ -299,7 +299,7 @@ test('DELETE /organizations/{organization} returns 403 when policy denies delete
     $organization = Organization::create(['name' => 'Untouchable']);
 
     $response = $this->withHeaders(organizationApiHeaders($user))
-        ->deleteJson('/api/crm/v2/organizations/'.$organization->external_id);
+        ->deleteJson('/crm/api/v2/organizations/'.$organization->external_id);
 
     $response->assertStatus(403);
     expect(Organization::query()->where('external_id', $organization->external_id)->exists())->toBeTrue();

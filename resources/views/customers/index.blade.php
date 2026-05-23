@@ -1,4 +1,4 @@
-<x-crm::app-layout>
+<x-crm::app-layout title="{{ ucfirst(__('laravel-crm::lang.customers')) }}">
     <x-slot name="header">
         <div class="mb-10">
             <div class="flex flex-wrap gap-5 justify-between items-center">

@@ -53,7 +53,7 @@ class ProductAttributeController extends Controller
             'description' => $request->description,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.product_attribute_stored')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.product_attribute_stored')));
 
         return redirect(route('laravel-crm.product-attributes.index'));
     }
@@ -98,7 +98,7 @@ class ProductAttributeController extends Controller
             'description' => $request->description,
         ]);
 
-        flash(ucfirst(trans('laravel-crm::lang.product_attribute_updated')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.product_attribute_updated')));
 
         return redirect(route('laravel-crm.product-attributes.show', $productAttribute));
     }
@@ -113,7 +113,7 @@ class ProductAttributeController extends Controller
     {
         $productAttribute->delete();
 
-        flash(ucfirst(trans('laravel-crm::lang.product_attribute_deleted')))->success()->important();
+        flash()->success(ucfirst(trans('laravel-crm::lang.product_attribute_deleted')));
 
         return redirect(route('laravel-crm.product-attributes.index'));
     }
