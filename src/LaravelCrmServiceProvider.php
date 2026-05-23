@@ -381,6 +381,8 @@ use VentureDrake\LaravelCrm\Policies\LeadPolicy;
 use VentureDrake\LaravelCrm\Policies\LeadSourcePolicy;
 use VentureDrake\LaravelCrm\Policies\LunchPolicy;
 use VentureDrake\LaravelCrm\Policies\MeetingPolicy;
+use VentureDrake\LaravelCrm\Policies\MonitorCheckPolicy;
+use VentureDrake\LaravelCrm\Policies\MonitorPolicy;
 use VentureDrake\LaravelCrm\Policies\NotePolicy;
 use VentureDrake\LaravelCrm\Policies\OrderPolicy;
 use VentureDrake\LaravelCrm\Policies\OrganizationPolicy;
@@ -459,6 +461,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\EmailTemplate' => EmailTemplatePolicy::class,
         'VentureDrake\LaravelCrm\Models\SmsCampaign' => SmsCampaignPolicy::class,
         'VentureDrake\LaravelCrm\Models\SmsTemplate' => SmsTemplatePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Monitor' => MonitorPolicy::class,
+        'VentureDrake\LaravelCrm\Models\MonitorCheck' => MonitorCheckPolicy::class,
     ];
 
     /**
