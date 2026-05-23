@@ -41,6 +41,19 @@
         </x-mary-card>
     </div>
 
+    <x-mary-card shadow class="mb-5" title="{{ ucfirst(__('laravel-crm::lang.average_response_time')) }}">
+        <x-slot:menu>
+            <select wire:model.live="chartPeriod" class="select select-primary select-sm font-normal">
+                @foreach($this->chartPeriodOptions() as $option)
+                    <option value="{{ $option['id'] }}">{{ $option['name'] }}</option>
+                @endforeach
+            </select>
+        </x-slot:menu>
+        <div class="h-72">
+            <x-mary-chart wire:model="responseTimeChart" class="!h-full" />
+        </div>
+    </x-mary-card>
+
     <x-mary-card shadow class="mb-5" title="{{ ucfirst(__('laravel-crm::lang.details')) }}">
         <div class="grid lg:grid-cols-2 gap-5">
             <div>
