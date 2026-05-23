@@ -15,17 +15,15 @@ trait HasMonitorCommon
 
     public ?string $description = null;
 
-    public string $type = 'http';
+    public string $type = 'https';
 
     public ?string $url = null;
 
     public string $method = 'GET';
 
-    public ?int $expected_status_code = null;
+    public ?int $expected_status_code = 200;
 
-    public ?string $expected_response_keyword = null;
-
-    public int $interval = 300;
+    public int $interval = 5;
 
     public int $timeout = 30;
 
@@ -45,10 +43,9 @@ trait HasMonitorCommon
             'description' => 'nullable|string',
             'type' => 'required|string|in:http,https,tcp',
             'url' => 'required|string|max:1024',
-            'method' => 'required|string|in:GET,POST,PUT,PATCH,DELETE,HEAD',
+            'method' => 'required|string|in:GET,POST,PUT,PATCH',
             'expected_status_code' => 'nullable|integer|min:100|max:599',
-            'expected_response_keyword' => 'nullable|string|max:255',
-            'interval' => 'required|integer|min:30',
+            'interval' => 'required|integer|min:1',
             'timeout' => 'required|integer|min:1|max:300',
             'is_active' => 'boolean',
             'user_owner_id' => 'nullable|integer',
@@ -71,8 +68,6 @@ trait HasMonitorCommon
             ['id' => 'POST', 'name' => 'POST'],
             ['id' => 'PUT', 'name' => 'PUT'],
             ['id' => 'PATCH', 'name' => 'PATCH'],
-            ['id' => 'DELETE', 'name' => 'DELETE'],
-            ['id' => 'HEAD', 'name' => 'HEAD'],
         ];
     }
 }

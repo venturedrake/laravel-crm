@@ -21,15 +21,14 @@ class CreateLaravelCrmMonitorsTable extends Migration
             $table->unsignedBigInteger('team_id')->index()->nullable();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('type')->default('http');
+            $table->string('type')->default('https');
             $table->string('url', 1024);
             $table->string('host')->nullable();
             $table->string('method', 16)->default('GET');
             $table->json('headers')->nullable();
             $table->text('body')->nullable();
-            $table->unsignedInteger('expected_status_code')->nullable();
-            $table->string('expected_response_keyword')->nullable();
-            $table->unsignedInteger('interval')->default(300);
+            $table->unsignedInteger('expected_status_code')->default(200);
+            $table->unsignedInteger('interval')->default(5);
             $table->unsignedInteger('timeout')->default(30);
             $table->boolean('is_active')->default(true);
             $table->boolean('uptime_enabled')->default(true);
