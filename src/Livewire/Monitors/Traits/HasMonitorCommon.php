@@ -41,17 +41,17 @@ trait HasMonitorCommon
     protected function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|string|in:http,https,tcp',
             'url' => 'required|string|max:1024',
             'method' => 'required|string|in:GET,POST,PUT,PATCH',
-            'expected_status_code' => 'nullable|integer|min:100|max:599',
+            'expected_status_code' => 'required|integer|min:100|max:599',
             'interval' => 'required|integer|min:1',
             'downtime_minutes_before_alert' => 'required|integer|min:1',
             'perf_threshold_ms' => 'required|integer|min:1',
-            'is_active' => 'boolean',
-            'user_owner_id' => 'nullable|integer',
+            'is_active' => 'required|boolean',
+            'user_owner_id' => 'required|integer',
         ];
     }
 
