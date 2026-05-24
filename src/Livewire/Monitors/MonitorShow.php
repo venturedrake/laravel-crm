@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Monitors;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -72,7 +73,7 @@ class MonitorShow extends Component
         };
     }
 
-    private function allTimeStart(Carbon $now): Carbon
+    private function allTimeStart(CarbonInterface $now): CarbonInterface
     {
         $earliest = MonitorCheck::where('monitor_id', $this->monitor->id)
             ->where('type', 'uptime')
@@ -160,7 +161,7 @@ class MonitorShow extends Component
         ];
     }
 
-    private function advanceCursor(Carbon $cursor, string $bucket): Carbon
+    private function advanceCursor(CarbonInterface $cursor, string $bucket): CarbonInterface
     {
         return match ($bucket) {
             'hour' => $cursor->copy()->addHour(),
@@ -171,7 +172,7 @@ class MonitorShow extends Component
         };
     }
 
-    private function bucketKey(Carbon $when, Carbon $start, string $bucket): ?int
+    private function bucketKey(CarbonInterface $when, CarbonInterface $start, string $bucket): ?int
     {
         if ($when->lt($start)) {
             return null;
