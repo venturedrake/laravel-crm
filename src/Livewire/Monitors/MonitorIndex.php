@@ -42,7 +42,6 @@ class MonitorIndex extends Component
         return [
             ['key' => 'monitor_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'url', 'label' => ucfirst(__('laravel-crm::lang.url'))],
             ['key' => 'last_status', 'label' => ucfirst(__('laravel-crm::lang.status'))],
             ['key' => 'last_response_time', 'label' => ucfirst(__('laravel-crm::lang.response_time'))],
             ['key' => 'last_checked_at', 'label' => ucfirst(__('laravel-crm::lang.last_checked'))],
