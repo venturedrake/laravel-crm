@@ -60,6 +60,7 @@ use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\SmsCampaign;
 use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
 use VentureDrake\LaravelCrm\Models\SmsTemplate;
+use VentureDrake\LaravelCrm\Models\Monitor;
 use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\Team;
@@ -293,6 +294,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->seedChats();
         $this->seedEmailCampaigns();
         $this->seedSmsCampaigns();
+        $this->seedMonitors();
 
         $elapsed = round(microtime(true) - $startTime, 1);
         $this->printSummary($elapsed);
@@ -612,6 +614,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'sms_templates',
             // Chat
             'chat_messages', 'chat_conversations', 'chat_visitor_page_views', 'chat_visitors', 'chat_widgets',
+            // Monitors
+            'monitor_checks', 'monitors',
             // Custom fields seeded by seedCustomFieldGroups()
             'field_values', 'field_models', 'field_options', 'fields', 'field_groups',
         ];
@@ -3955,6 +3959,52 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $bar->finish();
         $this->command->line('');
         $this->command->line('    <fg=green>✓ SMS campaigns & templates seeded</>');
+        $this->command->line('');
+    }
+
+    // =========================================================================
+    // Monitors
+    // =========================================================================
+
+    protected function seedMonitors(): void
+    {
+        if (! Schema::hasTable(config('laravel-crm.db_table_prefix').'monitors')) {
+            return;
+        }
+
+        $monitors = [
+            [
+                'name' => 'Laravel CRM',
+                'url' => 'https://laravelcrm.com',
+                'type' => 'https',
+                'ssl_enabled' => true,
+            ],
+            [
+                'name' => 'VentureDrake',
+                'url' => 'https://venturedrake.com',
+                'type' => 'https',
+                'ssl_enabled' => true,
+            ],
+        ];
+
+        foreach ($monitors as $data) {
+            Monitor::create([
+                'name' => $data['name'],
+                'url' => $data['url'],
+                'type' => $data['type'],
+                'method' => 'GET',
+                'expected_status_code' => 200,
+                'interval' => 5,
+                'timeout' => 30,
+                'is_active' => true,
+                'uptime_enabled' => true,
+                'ssl_enabled' => $data['ssl_enabled'],
+                'user_created_id' => $this->userId,
+                'user_updated_id' => $this->userId,
+            ]);
+        }
+
+        $this->command->line('    <fg=green>✓ Monitors seeded (2)</>');
         $this->command->line('');
     }
 

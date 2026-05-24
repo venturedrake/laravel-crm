@@ -18,6 +18,8 @@ class MonitorCreate extends Component
     {
         $validated = $this->validate();
 
+        $monitor = $this->monitorService->create($validated);
+
         try {
             $monitor = $this->monitorService->create($validated);
         } catch (\Throwable $e) {
