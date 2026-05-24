@@ -883,6 +883,7 @@ return [
     'threshold' => 'threshold',
     'monitor_performance_threshold' => 'monitor performance threshold',
     'average_response_time' => 'average response time',
+    'performance' => 'performance',
     'ms' => 'ms',
     'threshold_hint' => 'We’ll send out alerts once this site is consistently slower than this threshold.',
     'method' => 'method',
