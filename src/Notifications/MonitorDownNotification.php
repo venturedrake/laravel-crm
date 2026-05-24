@@ -34,9 +34,9 @@ class MonitorDownNotification extends Notification
     {
         $mail = (new MailMessage)
             ->error()
-            ->subject(ucfirst(__('laravel-crm::lang.monitor_down_subject')).': '.$this->monitor->name)
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_down_subject')).': '.$this->monitor->displayName())
             ->greeting('Hi '.$this->owner->name.',')
-            ->line($this->monitor->name.' ('.$this->monitor->url.') is reporting DOWN.');
+            ->line($this->monitor->displayName().' ('.$this->monitor->url.') is reporting DOWN.');
 
         if (! empty($this->result['error'])) {
             $mail->line('Error: '.$this->result['error']);

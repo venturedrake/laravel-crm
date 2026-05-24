@@ -14,7 +14,7 @@
     <x-mary-card shadow>
         <x-mary-table :headers="$headers" :rows="$monitors" with-pagination :sort-by="$sortBy" class="whitespace-nowrap">
             @scope('cell_name', $monitor)
-                {{ $monitor->name ?: ($monitor->host ?: $monitor->url) }}
+                {{ $monitor->displayName() }}
             @endscope
             @scope('cell_last_status', $monitor)
                 @php

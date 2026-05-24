@@ -33,9 +33,9 @@ class MonitorPerformanceNotification extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-            ->subject(ucfirst(__('laravel-crm::lang.monitor_perf_subject')).': '.$this->monitor->name)
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_perf_subject')).': '.$this->monitor->displayName())
             ->greeting('Hi '.$this->owner->name.',')
-            ->line($this->monitor->name.' ('.$this->monitor->url.') is responding slowly.');
+            ->line($this->monitor->displayName().' ('.$this->monitor->url.') is responding slowly.');
 
         if (isset($this->result['response_time_ms']) && $this->result['response_time_ms'] !== null) {
             $mail->line('Response time: '.$this->result['response_time_ms'].' ms');

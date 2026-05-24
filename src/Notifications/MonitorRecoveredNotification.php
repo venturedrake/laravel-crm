@@ -33,9 +33,9 @@ class MonitorRecoveredNotification extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-            ->subject(ucfirst(__('laravel-crm::lang.monitor_recovered_subject')).': '.$this->monitor->name)
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_recovered_subject')).': '.$this->monitor->displayName())
             ->greeting('Hi '.$this->owner->name.',')
-            ->line($this->monitor->name.' ('.$this->monitor->url.') is back up.')
+            ->line($this->monitor->displayName().' ('.$this->monitor->url.') is back up.')
             ->line('Status: '.($this->monitor->last_status ?? 'up'));
 
         if (! empty($this->result['response_time_ms'])) {
