@@ -35,7 +35,8 @@ class MonitorEdit extends Component
         try {
             $this->monitorService->update($this->monitor, $validated);
         } catch (\Throwable $e) {
-            $this->error(ucfirst(__('laravel-crm::lang.monitor')).' '.__('laravel-crm::lang.could_not_be_saved'));
+            report($e);
+            $this->error(ucfirst(__('laravel-crm::lang.monitor')).' '.__('laravel-crm::lang.could_not_be_saved').': '.$e->getMessage());
 
             return;
         }

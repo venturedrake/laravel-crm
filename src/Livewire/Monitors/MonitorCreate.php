@@ -21,7 +21,8 @@ class MonitorCreate extends Component
         try {
             $monitor = $this->monitorService->create($validated);
         } catch (\Throwable $e) {
-            $this->error(ucfirst(__('laravel-crm::lang.monitor')).' '.__('laravel-crm::lang.could_not_be_saved'));
+            report($e);
+            $this->error(ucfirst(__('laravel-crm::lang.monitor')).' '.__('laravel-crm::lang.could_not_be_saved').': '.$e->getMessage());
 
             return;
         }
