@@ -16,6 +16,26 @@
             @scope('cell_name', $monitor)
                 {{ $monitor->displayName() }}
             @endscope
+            @scope('cell_performance', $monitor)
+                @php
+                    $bars = $performance[$monitor->id] ?? array_fill(0, 7, 0);
+                    $max = max($bars) ?: 1;
+                    $width = 100;
+                    $height = 28;
+                    $gap = 2;
+                    $barWidth = ($width - ($gap * 6)) / 7;
+                @endphp
+                <svg viewBox="0 0 {{ $width }} {{ $height }}" width="{{ $width }}" height="{{ $height }}" preserveAspectRatio="none" aria-hidden="true">
+                    @foreach($bars as $i => $value)
+                        @php
+                            $h = $value > 0 ? max(2, ($value / $max) * $height) : 1;
+                            $x = $i * ($barWidth + $gap);
+                            $y = $height - $h;
+                        @endphp
+                        <rect x="{{ $x }}" y="{{ $y }}" width="{{ $barWidth }}" height="{{ $h }}" rx="1" fill="#05b3a9" />
+                    @endforeach
+                </svg>
+            @endscope
             @scope('cell_last_status', $monitor)
                 @php
                     $statusClass = match($monitor->last_status) {
