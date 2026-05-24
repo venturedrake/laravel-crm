@@ -19,7 +19,7 @@ class CreateLaravelCrmMonitorsTable extends Migration
             $table->string('monitor_id')->nullable();
             $table->unsignedInteger('number')->nullable();
             $table->unsignedBigInteger('team_id')->index()->nullable();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->string('type')->default('https');
             $table->string('url', 1024);

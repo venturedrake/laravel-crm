@@ -771,6 +771,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/fix_line1_nullable_on_laravel_crm_addresses_table.php.stub' => $this->getMigrationFileName($filesystem, 'fix_line1_nullable_on_laravel_crm_addresses_table.php', 125),
                 __DIR__.'/../database/migrations/create_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitors_table.php', 126),
                 __DIR__.'/../database/migrations/create_laravel_crm_monitor_checks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitor_checks_table.php', 127),
+                __DIR__.'/../database/migrations/make_name_nullable_on_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'make_name_nullable_on_laravel_crm_monitors_table.php', 128),
             ], 'migrations');
 
             // Publishing the seeders
