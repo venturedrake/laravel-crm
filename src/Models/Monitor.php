@@ -34,6 +34,11 @@ class Monitor extends Model
         return config('laravel-crm.db_table_prefix').'monitors';
     }
 
+    public function displayName(): string
+    {
+        return $this->name ?: ($this->host ?: ($this->url ?: ''));
+    }
+
     public function checks()
     {
         return $this->hasMany(MonitorCheck::class)->orderBy('checked_at', 'desc');

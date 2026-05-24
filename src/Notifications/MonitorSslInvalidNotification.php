@@ -34,9 +34,9 @@ class MonitorSslInvalidNotification extends Notification
     {
         $mail = (new MailMessage)
             ->error()
-            ->subject(ucfirst(__('laravel-crm::lang.monitor_ssl_invalid_subject')).': '.$this->monitor->name)
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_ssl_invalid_subject')).': '.$this->monitor->displayName())
             ->greeting('Hi '.$this->owner->name.',')
-            ->line('The SSL certificate for '.$this->monitor->name.' ('.$this->monitor->url.') is invalid.');
+            ->line('The SSL certificate for '.$this->monitor->displayName().' ('.$this->monitor->url.') is invalid.');
 
         if (! empty($this->result['error'])) {
             $mail->line('Reason: '.$this->result['error']);

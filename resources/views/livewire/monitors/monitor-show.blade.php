@@ -8,7 +8,7 @@
         };
     @endphp
 
-    <x-mary-header title="{{ $monitor->name ?: ($monitor->host ?: $monitor->url) }}" subtitle="{{ $monitor->monitor_id }} — {{ $monitor->url }}">
+    <x-mary-header title="{{ $monitor->displayName() }}" subtitle="{{ $monitor->monitor_id }} — {{ $monitor->url }}">
         <x-slot:actions>
             @can('edit crm monitors')
                 <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.run_check_now')) }}" wire:click="runCheck" spinner="runCheck" icon="o-arrow-path" class="btn-primary text-white" />

@@ -34,9 +34,9 @@ class MonitorSslExpiringNotification extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-            ->subject(ucfirst(__('laravel-crm::lang.monitor_ssl_expiring_subject')).': '.$this->monitor->name)
+            ->subject(ucfirst(__('laravel-crm::lang.monitor_ssl_expiring_subject')).': '.$this->monitor->displayName())
             ->greeting('Hi '.$this->owner->name.',')
-            ->line('The SSL certificate for '.$this->monitor->name.' ('.$this->monitor->url.') is expiring soon.');
+            ->line('The SSL certificate for '.$this->monitor->displayName().' ('.$this->monitor->url.') is expiring soon.');
 
         $expiresAt = $this->result['expires_at'] ?? $this->monitor->ssl_expires_at;
 
