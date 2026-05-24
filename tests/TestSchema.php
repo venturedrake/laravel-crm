@@ -777,7 +777,7 @@ class TestSchema
             $table->string('monitor_id')->nullable();
             $table->unsignedInteger('number')->nullable();
             $table->unsignedBigInteger('team_id')->nullable();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->string('type')->default('https');
             $table->string('url', 1024);
