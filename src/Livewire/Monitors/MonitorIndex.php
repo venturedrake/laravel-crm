@@ -45,8 +45,8 @@ class MonitorIndex extends Component
         return [
             ['key' => 'monitor_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'performance', 'label' => ucfirst(__('laravel-crm::lang.performance')), 'sortable' => false],
             ['key' => 'last_status', 'label' => ucfirst(__('laravel-crm::lang.status'))],
+            ['key' => 'performance', 'label' => ucfirst(__('laravel-crm::lang.performance')), 'sortable' => false],
             ['key' => 'last_response_time', 'label' => ucfirst(__('laravel-crm::lang.response_time'))],
             ['key' => 'last_checked_at', 'label' => ucfirst(__('laravel-crm::lang.last_checked'))],
         ];
@@ -130,12 +130,16 @@ class MonitorIndex extends Component
     public function render()
     {
         $monitors = $this->monitors();
+        $performance = $this->performanceData($monitors->getCollection());
+
+        foreach ($monitors->getCollection() as $monitor) {
+            $monitor->setAttribute('performance_bars', $performance[$monitor->id] ?? array_fill(0, 7, 0));
+        }
 
         return view('laravel-crm::livewire.monitors.monitor-index', [
             'headers' => $this->headers(),
             'monitors' => $monitors,
             'statuses' => $this->statuses(),
-            'performance' => $this->performanceData($monitors->getCollection()),
         ]);
     }
 }

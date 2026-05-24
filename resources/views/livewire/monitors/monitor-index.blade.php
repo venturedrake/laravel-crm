@@ -18,14 +18,14 @@
             @endscope
             @scope('cell_performance', $monitor)
                 @php
-                    $bars = $performance[$monitor->id] ?? array_fill(0, 7, 0);
+                    $bars = (array) ($monitor->performance_bars ?? array_fill(0, 7, 0));
                     $max = max($bars) ?: 1;
                     $width = 100;
                     $height = 28;
                     $gap = 2;
                     $barWidth = ($width - ($gap * 6)) / 7;
                 @endphp
-                <svg viewBox="0 0 {{ $width }} {{ $height }}" width="{{ $width }}" height="{{ $height }}" preserveAspectRatio="none" aria-hidden="true">
+                <svg viewBox="0 0 {{ $width }} {{ $height }}" width="{{ $width }}" height="{{ $height }}" aria-hidden="true" style="display:inline-block;vertical-align:middle">
                     @foreach($bars as $i => $value)
                         @php
                             $h = $value > 0 ? max(2, ($value / $max) * $height) : 1;
