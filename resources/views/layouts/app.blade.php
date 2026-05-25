@@ -179,9 +179,16 @@
                         <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.teams')) }}" icon="fas.users" link="{{ url(route('laravel-crm.teams.index')) }}" />
                     @endcan
                 @endhasteamsenabled
+                
+                <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
+                @hasfeaturesenabled
+                    @can('view crm features')
+                    <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.features')) }}" icon="fas.lightbulb" link="{{ url(route('laravel-crm.features.index')) }}" />
+                    @endcan
+                @endhasfeaturesenabled
 
                 @hasmonitoringenabled
-                    <hr class="my-2 border-t-[length:var(--border)] border-base-content/10">
+                    
                     @can('view crm monitors')
                         <x-mary-menu-item title="{{ ucfirst(__('laravel-crm::lang.monitors')) }}" icon="fas.heartbeat" link="{{ url(route('laravel-crm.monitors.index')) }}" />
                     @endcan
