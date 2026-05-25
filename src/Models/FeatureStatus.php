@@ -17,6 +17,15 @@ class FeatureStatus extends Model
         return config('laravel-crm.db_table_prefix').'feature_statuses';
     }
 
+    public function getColorAttribute($value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return str_starts_with($value, '#') ? $value : '#'.ltrim($value, '#');
+    }
+
     public function features()
     {
         return $this->hasMany(Feature::class, 'feature_status_id');
