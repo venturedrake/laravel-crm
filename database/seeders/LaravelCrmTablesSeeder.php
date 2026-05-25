@@ -555,6 +555,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm pipelines', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm pipelines', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm monitors', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm monitors', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm monitors', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm monitors', 'crm_permission' => 1]);
+
         if (config('permission.teams')) {
             $roleArray = ['name' => 'Owner', 'crm_role' => 1, 'team_id' => null];
         } else {

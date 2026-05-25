@@ -181,6 +181,26 @@ return [
         'email-marketing',
         'sms-marketing',
         'features',
+        'monitoring',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Monitoring
+    |--------------------------------------------------------------------------
+    |
+    | Defaults for the uptime / SSL monitoring module. These values are used
+    | by the MonitorService when creating monitors without explicit values and
+    | by the MonitorCheckService / RunMonitorCheck job when scheduling and
+    | evaluating checks.
+    |
+    */
+
+    'monitoring' => [
+        'default_frequency_minutes' => env('LARAVEL_CRM_MONITORING_DEFAULT_FREQUENCY_MINUTES', 5),
+        'default_ssl_days_before_expiry_alert' => env('LARAVEL_CRM_MONITORING_DEFAULT_SSL_DAYS_BEFORE_EXPIRY_ALERT', 14),
+        'request_timeout_seconds' => env('LARAVEL_CRM_MONITORING_REQUEST_TIMEOUT_SECONDS', 15),
+        'ssl_recheck_hours' => env('LARAVEL_CRM_MONITORING_SSL_RECHECK_HOURS', 12),
     ],
 
     /*

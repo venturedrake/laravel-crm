@@ -1482,6 +1482,28 @@ Route::get('integrations', function () {
     return redirect(route('laravel-crm.integrations.xero'));
 })->name('laravel-crm.integrations');
 
+/* Monitors */
+
+if (in_array('monitoring', (array) config('laravel-crm.modules', []))) {
+    Route::group(['prefix' => 'monitors', 'middleware' => 'auth.laravel-crm'], function () {
+        Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\MonitorController@index')
+            ->name('laravel-crm.monitors.index')
+            ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Monitor']);
+
+        Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\MonitorController@create')
+            ->name('laravel-crm.monitors.create')
+            ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Monitor']);
+
+        Route::get('{monitor}', 'VentureDrake\LaravelCrm\Http\Controllers\MonitorController@show')
+            ->name('laravel-crm.monitors.show')
+            ->middleware(['can:view,monitor']);
+
+        Route::get('{monitor}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\MonitorController@edit')
+            ->name('laravel-crm.monitors.edit')
+            ->middleware(['can:update,monitor']);
+    });
+}
+
 /* Jetstream */
 Route::put('/current-team', 'VentureDrake\LaravelCrm\Http\Controllers\Jetstream\CurrentTeamController@update')
     ->name('current-team.update')

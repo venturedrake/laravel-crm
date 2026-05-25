@@ -32,6 +32,7 @@ use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLeadSources;
+use VentureDrake\LaravelCrm\Console\LaravelCrmMonitorCheck;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganizationTypes;
 use VentureDrake\LaravelCrm\Console\LaravelCrmPermissions;
 use VentureDrake\LaravelCrm\Console\LaravelCrmReminders;
@@ -153,6 +154,10 @@ use VentureDrake\LaravelCrm\Livewire\ModelAddresses;
 use VentureDrake\LaravelCrm\Livewire\ModelEmails;
 use VentureDrake\LaravelCrm\Livewire\ModelPhones;
 use VentureDrake\LaravelCrm\Livewire\ModelProducts;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorCreate;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorEdit;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorIndex;
+use VentureDrake\LaravelCrm\Livewire\Monitors\MonitorShow;
 use VentureDrake\LaravelCrm\Livewire\Notes\NoteItem;
 use VentureDrake\LaravelCrm\Livewire\Notes\NoteRelated;
 use VentureDrake\LaravelCrm\Livewire\Orders\OrderCreate;
@@ -293,6 +298,8 @@ use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\LeadSource;
 use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Meeting;
+use VentureDrake\LaravelCrm\Models\Monitor;
+use VentureDrake\LaravelCrm\Models\MonitorCheck;
 use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
@@ -349,6 +356,8 @@ use VentureDrake\LaravelCrm\Observers\LeadObserver;
 use VentureDrake\LaravelCrm\Observers\LeadSourceObserver;
 use VentureDrake\LaravelCrm\Observers\LunchObserver;
 use VentureDrake\LaravelCrm\Observers\MeetingObserver;
+use VentureDrake\LaravelCrm\Observers\MonitorCheckObserver;
+use VentureDrake\LaravelCrm\Observers\MonitorObserver;
 use VentureDrake\LaravelCrm\Observers\NoteObserver;
 use VentureDrake\LaravelCrm\Observers\OrderObserver;
 use VentureDrake\LaravelCrm\Observers\OrderProductObserver;
@@ -397,6 +406,8 @@ use VentureDrake\LaravelCrm\Policies\LeadPolicy;
 use VentureDrake\LaravelCrm\Policies\LeadSourcePolicy;
 use VentureDrake\LaravelCrm\Policies\LunchPolicy;
 use VentureDrake\LaravelCrm\Policies\MeetingPolicy;
+use VentureDrake\LaravelCrm\Policies\MonitorCheckPolicy;
+use VentureDrake\LaravelCrm\Policies\MonitorPolicy;
 use VentureDrake\LaravelCrm\Policies\NotePolicy;
 use VentureDrake\LaravelCrm\Policies\OrderPolicy;
 use VentureDrake\LaravelCrm\Policies\OrganizationPolicy;
@@ -476,6 +487,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\EmailTemplate' => EmailTemplatePolicy::class,
         'VentureDrake\LaravelCrm\Models\SmsCampaign' => SmsCampaignPolicy::class,
         'VentureDrake\LaravelCrm\Models\SmsTemplate' => SmsTemplatePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Monitor' => MonitorPolicy::class,
+        'VentureDrake\LaravelCrm\Models\MonitorCheck' => MonitorCheckPolicy::class,
     ];
 
     /**
@@ -568,6 +581,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         XeroToken::observe(XeroTokenObserver::class);
         Call::observe(CallObserver::class);
         Meeting::observe(MeetingObserver::class);
+        Monitor::observe(MonitorObserver::class);
+        MonitorCheck::observe(MonitorCheckObserver::class);
         Lunch::observe(LunchObserver::class);
         Field::observe(FieldObserver::class);
         FieldGroup::observe(FieldGroupObserver::class);
@@ -783,6 +798,9 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_laravel_crm_features_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_features_table.php', 127),
                 __DIR__.'/../database/migrations/create_laravel_crm_feature_comments_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_comments_table.php', 128),
                 __DIR__.'/../database/migrations/create_laravel_crm_feature_votes_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_votes_table.php', 129),
+                __DIR__.'/../database/migrations/create_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitors_table.php', 130),
+                __DIR__.'/../database/migrations/create_laravel_crm_monitor_checks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitor_checks_table.php', 131),
+                __DIR__.'/../database/migrations/make_name_nullable_on_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'make_name_nullable_on_laravel_crm_monitors_table.php', 132),
             ], 'migrations');
 
             // Publishing the seeders
@@ -823,6 +841,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmSampleData::class,
                 LaravelCrmEmailCampaignsDispatch::class,
                 LaravelCrmSmsCampaignsDispatch::class,
+                LaravelCrmMonitorCheck::class,
                 IssueApiToken::class,
             ]);
 
@@ -925,6 +944,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-email-campaign-create', EmailCampaignCreate::class);
         Livewire::component('crm-email-campaign-edit', EmailCampaignEdit::class);
         Livewire::component('crm-email-campaign-show', EmailCampaignShow::class);
+
+        // Monitors
+        Livewire::component('crm-monitor-index', MonitorIndex::class);
+        Livewire::component('crm-monitor-create', MonitorCreate::class);
+        Livewire::component('crm-monitor-edit', MonitorEdit::class);
+        Livewire::component('crm-monitor-show', MonitorShow::class);
         Livewire::component('crm-email-template-index', EmailTemplateIndex::class);
         Livewire::component('crm-email-template-create', EmailTemplateCreate::class);
         Livewire::component('crm-email-template-edit', EmailTemplateEdit::class);
@@ -1096,6 +1121,11 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->daily()
                     ->withoutOverlapping();
 
+                $schedule->command('laravelcrm:monitor-check')
+                    ->name('laravelCrmMonitorCheck')
+                    ->everyMinute()
+                    ->withoutOverlapping();
+
                 if (config('xero.clientId') && config('xero.clientSecret')) {
                     $schedule->command('xero:keep-alive')
                         ->name('laravelCrmXeroKeepAlive')
@@ -1209,6 +1239,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 return true;
             }
         });
+
+        Blade::if('hasmonitoringenabled', fn () => in_array('monitoring', config('laravel-crm.modules', [])));
     }
 
     /**

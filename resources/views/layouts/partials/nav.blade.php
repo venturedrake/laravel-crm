@@ -103,6 +103,11 @@
             @can('view crm products')
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.products') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.products.index')) }}"><i class="fa fa-tag"></i> {{ ucfirst(__('laravel-crm::lang.products')) }}</a></li>
             @endcan
+            @hasmonitoringenabled
+                @can('view crm monitors')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.monitors') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.monitors.index')) }}"><i class="fa fa-heartbeat"></i> {{ ucfirst(__('laravel-crm::lang.monitors')) }}</a></li>
+                @endcan
+            @endhasmonitoringenabled
             {{--<li class="nav-item"><a class="nav-link" href="#">{{ ucfirst(__('laravel-crm::lang.subscriptions')) }}</a></li>
             <li class="nav-item"><a class="nav-link" href="#">{{ ucfirst(__('laravel-crm::lang.invoices')) }}</a></li>
             <li class="nav-item"><a class="nav-link" href="#">{{ ucfirst(__('laravel-crm::lang.payments')) }}</a></li>
