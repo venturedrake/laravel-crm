@@ -264,7 +264,7 @@ class LaravelCrmTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'New',
-                        'color' => '6c757d',
+                        'color' => '#6c757d',
                         'order' => 1,
                         'is_default' => true,
                         'is_closed' => false,
@@ -277,7 +277,7 @@ class LaravelCrmTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Considering',
-                        'color' => 'ffc107',
+                        'color' => '#ffc107',
                         'order' => 2,
                         'is_default' => false,
                         'is_closed' => false,
@@ -290,7 +290,7 @@ class LaravelCrmTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Planned',
-                        'color' => '007bff',
+                        'color' => '#007bff',
                         'order' => 3,
                         'is_default' => false,
                         'is_closed' => false,
@@ -303,7 +303,7 @@ class LaravelCrmTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'In Progress',
-                        'color' => '17a2b8',
+                        'color' => '#17a2b8',
                         'order' => 4,
                         'is_default' => false,
                         'is_closed' => false,
@@ -316,7 +316,7 @@ class LaravelCrmTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Completed',
-                        'color' => '28a745',
+                        'color' => '#28a745',
                         'order' => 5,
                         'is_default' => false,
                         'is_closed' => true,
@@ -329,7 +329,7 @@ class LaravelCrmTablesSeeder extends Seeder
                     ],
                     [
                         'name' => 'Declined',
-                        'color' => 'dc3545',
+                        'color' => '#dc3545',
                         'order' => 6,
                         'is_default' => false,
                         'is_closed' => true,
