@@ -1,251 +1,158 @@
 @extends('laravel-crm::layouts.portal')
 
+@php
+    $signedAction = url()->current().'?signature='.request()->input('signature').'&expires='.request()->input('expires');
+    $isPaid = (bool) $invoice->fully_paid_at;
+    $now = \Carbon\Carbon::now()->timezone($timezone);
+    $isExpired = ! $isPaid && $invoice->due_date && $invoice->due_date < $now;
+
+    if ($isPaid) {
+        $statusLabel = ucfirst(__('laravel-crm::lang.paid'));
+        $statusClass = 'badge-success';
+    } elseif ($isExpired) {
+        $statusLabel = ucfirst(__('laravel-crm::lang.overdue'));
+        $statusClass = 'badge-error';
+    } else {
+        $statusLabel = ucfirst(__('laravel-crm::lang.unpaid'));
+        $statusClass = 'badge-neutral';
+    }
+@endphp
+
 @section('content')
 
-    <header>
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
-            <div class="container-fluid">
-                <h1 class="navbar-brand mb-0" href="#">
-                    {{ money($invoice->total, $invoice->currency) }} <small>{{ $invoice->currency }}</small>
-                    @if($invoice->fully_paid_at)
-                        <small><span class="badge badge-success">{{ ucfirst(__('laravel-crm::lang.paid')) }}</span></small>
-                    @elseif(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() > 0  && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
-                        <small><span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans(false, true) }} </span></small>
-                    @elseif(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() <= 0  && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
-                        <small><span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.due_tomorrow')) }}</span></small>
-                    @elseif(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() > 0  && $invoice->due_date < \Carbon\Carbon::now()->timezone($timezone))
-                        <small><span class="badge badge-danger">{{ $invoice->due_date->diffForHumans(false, true) }} {{ ucfirst(__('laravel-crm::lang.overdue')) }} </span></small>
+    <x-mary-header
+        :title="money($invoice->total, $invoice->currency).' '.$invoice->currency"
+        :subtitle="ucfirst(__('laravel-crm::lang.invoice')).($invoice->reference ? ' · '.$invoice->reference : '')"
+    >
+        <x-slot:actions>
+            <x-mary-badge :value="$statusLabel" class="{{ $statusClass }}" />
+
+            <form action="{{ $signedAction }}" method="POST" class="inline">
+                @csrf
+                <input type="hidden" name="action" value="download" />
+                <x-mary-button type="submit" icon="o-arrow-down-tray" class="btn-neutral btn-sm" :label="ucfirst(__('laravel-crm::lang.download'))" />
+            </form>
+        </x-slot:actions>
+    </x-mary-header>
+
+    <x-mary-card shadow>
+        <div class="grid md:grid-cols-2 gap-x-8 gap-y-2">
+            <div>
+                <div class="text-sm font-semibold uppercase text-base-content/60 mb-1">
+                    {{ ucfirst(__('laravel-crm::lang.to')) }}
+                </div>
+                <div class="text-sm leading-relaxed">
+                    @if($invoice->organization)
+                        {{ $invoice->organization->name }}<br />
+                        {{ $invoice->person->name ?? null }}<br />
+                    @else
+                        {{ $invoice->person->name ?? null }}<br />
                     @endif
-                </h1>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto">
-                       {{--@if($invoice->fully_paid_at)
-                            <div class="alert alert-success m-0" role="alert">
-                                {{ ucfirst(__('laravel-crm::lang.you_have_paid_this_invoice')) }}.
-                            </div>
-                        @else
-                            <li class="nav-item mr-2">
-                                <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}" method="POST" class="form-check-inline mr-0">
-                                    {{ csrf_field() }}
-                                    <x-form-input name="action" value="pay" type="hidden" />
-                                    <button class="btn btn-outline-success" type="submit">{{ ucfirst(__('laravel-crm::lang.pay_now')) }}</button>
-                                </form>
-                            </li>
-                        @endif--}}
-                        <li class="nav-item">
-                            <form action="{{ url()->current() }}?signature={{ request()->input('signature') }}&expires={{ request()->input('expires') }}" method="POST" class="form-check-inline mr-0">
-                                {{ csrf_field() }}
-                                <input type="hidden" name="action" value="download" />
-                                <button class="btn btn-outline-secondary" type="submit"><span class="fa fa-download" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.download')) }}</button>
-                            </form>
-                        </li>
-                    </ul>
+                    @if(isset($organization_address))
+                        @if($organization_address->line1)
+                            {{ $organization_address->line1 }}<br />
+                        @endif
+                        @if($organization_address->line2)
+                            {{ $organization_address->line2 }}<br />
+                        @endif
+                        @if($organization_address->line3)
+                            {{ $organization_address->line3 }}<br />
+                        @endif
+                        @if($organization_address->city || $organization_address->state || $organization_address->postcode)
+                            {{ $organization_address->city }} {{ $organization_address->state }} {{ $organization_address->postcode }}<br />
+                        @endif
+                        {{ $organization_address->country }}
+                    @elseif($address)
+                        {{ $address->line1 }}<br />
+                        @if($address->line2)
+                            {{ $address->line2 }}<br />
+                        @endif
+                        @if($address->line3)
+                            {{ $address->line3 }}<br />
+                        @endif
+                        {{ $address->city }}<br />
+                        {{ $address->country }}
+                    @endif
                 </div>
             </div>
-        </nav>
-    </header>
 
-    <main role="main" class="flex-shrink-0">
-        <div class="container">
-            <div class="row card shadow-sm mb-4">
-                <div class="card-body p-0">
-                    <div class="row">
-                        <div class="col px-5 py-4">
-                            <h1 class="card-title pricing-card-title py-4 m-0">{{ ucfirst(__('laravel-crm::lang.invoice')) }}</h1>
-                        </div>
-                        <div class="col px-5 py-4 text-right">
-                            @if($logo)
-                                <img src="{{ asset('storage/'.$logo) }}" height="80" />
-                            @endif    
-                        </div>
+            <div>
+                <div class="text-sm font-semibold uppercase text-base-content/60 mb-1">
+                    {{ ucfirst(__('laravel-crm::lang.from')) }}
+                </div>
+                <div class="text-sm leading-relaxed flex items-start justify-between gap-4">
+                    <div>
+                        @if($contactDetails)
+                            {!! nl2br(e($contactDetails)) !!}
+                        @else
+                            {{ $fromName }}
+                        @endif
                     </div>
-                    <hr class="m-0" />
-                    <div class="row">
-                        <div class="col px-5 py-4">
-                            <div class="row py-1">
-                                <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.to')) }}</strong>
-                                </div>
-                                <div class="col">
-                                    @if($invoice->organization)
-                                        {{ $invoice->organization->name }}<br />
-                                        {{ $invoice->person->name ?? null }}<br />
-                                    @else
-                                        {{ $invoice->person->name ?? null }}<br />
-                                    @endif
-                                    @if(isset($organization_address))
-                                        @if($organization_address->line2)
-                                        {{ $organization_address->line1 }}<br />
-                                        @endif
-                                        @if($organization_address->line2)
-                                            {{ $organization_address->line2 }}<br />
-                                        @endif
-                                        @if($organization_address->line3)
-                                            {{ $organization_address->line3 }}<br />
-                                        @endif
-                                        @if($organization_address->city || $organization_address->state || $organization_address->postcode)
-                                        {{ $organization_address->city }} {{ $organization_address->state }} {{ $organization_address->postcode }}<br />
-                                        @endif
-                                        {{ $organization_address->country }}
-                                    @elseif($address)
-                                        {{ $address->line1 }}<br />
-                                        @if($address->line2)
-                                            {{ $address->line2 }}<br />
-                                        @endif
-                                        @if($address->line3)
-                                            {{ $address->line3 }}<br />
-                                        @endif
-                                        {{ $address->city }}<br />
-                                        {{ $address->country }}
-                                    @endif
-                                </div>
-                            </div>
-                            @if($invoice->reference)
-                            <div class="row py-1">
-                                <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.invoice_number')) }}</strong>
-                                </div>
-                                <div class="col">
-                                    {{ $invoice->invoice_id }}
-                                </div>
-                            </div>
-                            @endif
-                            @if($invoice->issue_date)
-                            <div class="row py-1">
-                                <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.issued')) }}</strong>
-                                </div>
-                                <div class="col">
-                                    {{ $invoice->issue_date->format($dateFormat) }}
-                                </div>
-                            </div>
-                            @endif
-                            @if($invoice->due_date)
-                            <div class="row py-1">
-                                <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.due')) }}</strong>
-                                </div>
-                                <div class="col">
-                                    {{ $invoice->due_date->format($dateFormat) }}
-                                    @if(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() > 0 && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
-                                        <small class="text-secondary"> ({{ ucfirst(__('laravel-crm::lang.due_in')) }} {{ $invoice->due_date->diffForHumans(false, true) }})</small>
-                                    @elseif(! $invoice->fully_paid_at && $invoice->due_date->diffinDays() <= 0  && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
-                                        <small class="text-secondary"> ({{ ucfirst(__('laravel-crm::lang.due_tomorrow')) }}</small>
-                                    @elseif(! $invoice->fully_paid_at && $invoice->due_date < \Carbon\Carbon::now()->timezone($timezone))
-                                        <small class="text-danger"> ({{ $invoice->due_date->diffForHumans(false, true) }} {{ __('laravel-crm::lang.overdue') }})</small>
-                                    @endif
-                                </div>
-                            </div>
-                            @endif    
-                        </div>
-                        <div class="col px-5 py-4">
-                            <div class="row py-1">
-                                <div class="col-3">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.from')) }}</strong>
-                                </div>
-                                <div class="col">
-                                    @if($contactDetails)
-                                        {!! nl2br($contactDetails) !!}
-                                    @else
-                                        {{ $fromName }}
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="mb-5" />
-                    <div class="row py-1">
-                        <div class="col px-5 py-1">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                <tr>
-                                    <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
-                                    <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
-                                    <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
-                                    <th scope="col">{{ $taxName }}</th>
-                                    <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
-                                    <th scope="col">{{ ucfirst(__('laravel-crm::lang.comments')) }}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($invoice->invoiceLines()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $invoiceLine)
-                                    <tr>
-                                        <td>{{ $invoiceLine->product->name ?? null }}</td>
-                                        <td>{{ money($invoiceLine->price ?? null, $invoiceLine->currency) }}</td>
-                                        <td>{{ $invoiceLine->quantity }}</td>
-                                        <td>{{ money($invoiceLine->tax_amount ?? null, $invoiceLine->currency) }}</td>
-                                        <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>
-                                        <td>{{ $invoiceLine->comments }}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
-                                    <td>{{ money($invoice->subtotal, $invoice->currency) }}</td>
-                                    <td></td>
-                                </tr>
-                                @if($invoice->discount > 0)
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
-                                    <td>{{ money($invoice->discount, $invoice->currency) }}</td>
-                                    <td></td>
-                                </tr>
-                                @endif
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><strong>{{ $taxName }}</strong></td>
-                                    <td>{{ money($invoice->tax, $invoice->currency) }}</td>
-                                    <td></td>
-                                </tr>
-                                {{--<tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
-                                    <td>{{ money($invoice->adjustments, $invoice->currency) }}</td>
-                                     <td></td>
-                                </tr>--}}
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
-                                    <td>{{ money($invoice->total, $invoice->currency) }}</td>
-                                    <td></td>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                    <hr class="m-0" />
-                    @if($paymentInstructions)
-                        <div class="row py-1">
-                            <div class="col px-5 py-4">
-                                <h5>{{ ucfirst(__('laravel-crm::lang.payment')) }}</h5>
-                                {!! nl2br($paymentInstructions) !!}
-                            </div>
+                    @if($logo)
+                        <img src="{{ asset('storage/'.$logo) }}" class="max-h-24" alt="" />
+                    @endif
+                </div>
+            </div>
+
+            <div class="md:col-span-2">
+                <dl class="grid md:grid-cols-2 gap-x-8 gap-y-1 text-sm pt-2 border-t border-base-content/10">
+                    @if($invoice->reference)
+                        <div class="flex gap-2">
+                            <dt class="font-semibold">{{ ucfirst(__('laravel-crm::lang.invoice_number')) }}</dt>
+                            <dd>{{ $invoice->invoice_id }}</dd>
                         </div>
                     @endif
-                    @if($invoice->terms)
-                        <div class="row py-1">
-                            <div class="col px-5 py-4">
-                                <h5>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
-                                {!! nl2br($invoice->terms) !!}
-                            </div>
+                    @if($invoice->issue_date)
+                        <div class="flex gap-2">
+                            <dt class="font-semibold">{{ ucfirst(__('laravel-crm::lang.issued')) }}</dt>
+                            <dd>{{ $invoice->issue_date->format($dateFormat) }}</dd>
                         </div>
                     @endif
-                </div>  
+                    @if($invoice->due_date)
+                        <div class="flex gap-2">
+                            <dt class="font-semibold">{{ ucfirst(__('laravel-crm::lang.due')) }}</dt>
+                            <dd>{{ $invoice->due_date->format($dateFormat) }}</dd>
+                        </div>
+                    @endif
+                </dl>
             </div>
         </div>
-    </main>
+
+        <div class="pt-4 mt-4 border-t border-base-content/10">
+            @livewire('crm-portal-invoice-line-items', ['invoice' => $invoice, 'taxName' => $taxName])
+        </div>
+
+        <div class="pt-4 mt-2 flex justify-end">
+            <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm min-w-[16rem]">
+                <dt class="font-semibold text-right">{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</dt>
+                <dd class="text-right">{{ money($invoice->subtotal, $invoice->currency) }}</dd>
+
+                @if($invoice->discount > 0)
+                    <dt class="font-semibold text-right">{{ ucfirst(__('laravel-crm::lang.discount')) }}</dt>
+                    <dd class="text-right">{{ money($invoice->discount, $invoice->currency) }}</dd>
+                @endif
+
+                <dt class="font-semibold text-right">{{ $taxName }}</dt>
+                <dd class="text-right">{{ money($invoice->tax, $invoice->currency) }}</dd>
+
+                <dt class="font-semibold text-right border-t border-base-content/20 pt-1">{{ ucfirst(__('laravel-crm::lang.total')) }}</dt>
+                <dd class="text-right border-t border-base-content/20 pt-1">{{ money($invoice->total, $invoice->currency) }}</dd>
+            </dl>
+        </div>
+
+        @if($paymentInstructions)
+            <div class="pt-4 mt-4 border-t border-base-content/10">
+                <h5 class="font-semibold mb-1">{{ ucfirst(__('laravel-crm::lang.payment')) }}</h5>
+                <div class="text-sm">{!! nl2br(e($paymentInstructions)) !!}</div>
+            </div>
+        @endif
+
+        @if($invoice->terms)
+            <div class="pt-4 mt-4 border-t border-base-content/10">
+                <h5 class="font-semibold mb-1">{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
+                <div class="text-sm">{!! nl2br(e($invoice->terms)) !!}</div>
+            </div>
+        @endif
+    </x-mary-card>
 
 @endsection

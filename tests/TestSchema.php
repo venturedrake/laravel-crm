@@ -646,6 +646,81 @@ class TestSchema
             $table->softDeletes();
         });
 
+        Schema::create($prefix.'purchase_orders', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('order_id')->nullable();
+            $table->unsignedBigInteger('person_id')->nullable();
+            $table->unsignedBigInteger('organization_id')->nullable();
+            $table->string('reference')->nullable();
+            $table->string('purchase_order_id')->nullable();
+            $table->string('prefix')->nullable();
+            $table->unsignedBigInteger('number')->nullable();
+            $table->date('issue_date')->nullable();
+            $table->date('delivery_date')->nullable();
+            $table->string('currency', 3)->default('USD');
+            $table->integer('subtotal')->nullable();
+            $table->integer('discount')->nullable();
+            $table->integer('tax')->nullable();
+            $table->integer('adjustments')->nullable();
+            $table->integer('total')->nullable();
+            $table->string('delivery_type')->default('deliver');
+            $table->text('delivery_instructions')->nullable();
+            $table->text('terms')->nullable();
+            $table->boolean('sent')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_assigned_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'purchase_order_lines', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('purchase_order_id');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('product_variation_id')->nullable();
+            $table->text('description')->nullable();
+            $table->text('comments')->nullable();
+            $table->integer('order')->nullable();
+            $table->integer('price')->nullable();
+            $table->integer('quantity')->nullable();
+            $table->decimal('tax_rate')->nullable();
+            $table->integer('tax_amount')->nullable();
+            $table->integer('amount')->nullable();
+            $table->string('currency', 3)->default('USD');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'xero_purchase_orders', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('purchase_order_id')->nullable();
+            $table->string('xero_type')->nullable();
+            $table->string('xero_id')->nullable();
+            $table->string('number')->nullable();
+            $table->string('reference')->nullable();
+            $table->integer('subtotal')->nullable();
+            $table->integer('total_tax')->nullable();
+            $table->integer('total')->nullable();
+            $table->string('status')->nullable();
+            $table->date('issue_date')->nullable();
+            $table->date('delivery_date')->nullable();
+            $table->string('line_amount_types')->nullable();
+            $table->string('currency_code', 3)->nullable();
+            $table->datetime('xero_updated_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         // -------------------------------------------------------------------
         // Email & SMS marketing tables
         // -------------------------------------------------------------------
