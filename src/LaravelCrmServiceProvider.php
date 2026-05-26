@@ -179,6 +179,7 @@ use VentureDrake\LaravelCrm\Livewire\Portal\Features\PublicFeatureBoard;
 use VentureDrake\LaravelCrm\Livewire\Portal\Features\PublicFeatureShow;
 use VentureDrake\LaravelCrm\Livewire\Portal\Features\PublicFeatureSubmit;
 use VentureDrake\LaravelCrm\Livewire\Portal\Invoices\PortalInvoiceLineItems;
+use VentureDrake\LaravelCrm\Livewire\Portal\PurchaseOrders\PortalPurchaseOrderLineItems;
 use VentureDrake\LaravelCrm\Livewire\Portal\Quotes\PortalQuoteLineItems;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductCreate;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductEdit;
@@ -929,6 +930,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-portal-feature-submit', PublicFeatureSubmit::class);
         Livewire::component('crm-portal-quote-line-items', PortalQuoteLineItems::class);
         Livewire::component('crm-portal-invoice-line-items', PortalInvoiceLineItems::class);
+        Livewire::component('crm-portal-purchase-order-line-items', PortalPurchaseOrderLineItems::class);
         Livewire::component('crm-task-index', TaskIndex::class);
         Livewire::component('crm-task-show', TaskShow::class);
         Livewire::component('crm-task-create', TaskCreate::class);
