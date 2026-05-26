@@ -23,35 +23,29 @@
     </head>
     <body class="font-sans antialiased bg-base-200">
         <div id="app" class="min-h-screen flex flex-col">
-            <header class="navbar bg-base-100 border-b border-base-300 px-4 py-2">
-                <div class="flex-1">
-                    <a href="{{ url('/') }}" class="text-base font-semibold text-base-content no-underline">
-                        {{ config('app.name', 'CRM') }}
+            <x-mary-nav sticky full-width>
+                <x-slot:brand>
+                    <a href="{{ url('/') }}" class="navbar-brand">
+                        <img src="{{ asset('vendor/laravel-crm/img/laravel-crm-logo.png') }}" width="215" class="block dark:hidden" />
+                        <img src="{{ asset('vendor/laravel-crm/img/laravel-crm-dark-logo.png') }}" width="215" class="hidden dark:inline" />
                     </a>
-                </div>
-                <div class="flex-none flex items-center gap-3 text-sm">
+                </x-slot:brand>
+
+                <x-slot:actions>
+                    <x-mary-theme-toggle class="btn btn-ghost" />
                     @auth
-                        <span class="text-base-content/70">
-                            {{ ucfirst(__('laravel-crm::lang.hello')) }} {{ auth()->user()->name }}
-                        </span>
-                        <span class="text-base-content/40">·</span>
-                        <form method="POST" action="{{ route('laravel-crm.portal.logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="link link-hover text-base-content/80">
-                                {{ ucfirst(__('laravel-crm::lang.logout')) }}
-                            </button>
-                        </form>
+                        <x-mary-dropdown :label="auth()->user()->name" class="btn-neutral btn-sm" right>
+                            <form method="POST" action="{{ route('laravel-crm.portal.logout') }}" x-data>
+                                @csrf
+                                <x-mary-menu-item href="{{ route('laravel-crm.portal.logout') }}" @click.prevent="$root.submit();" title="{{ ucfirst(__('laravel-crm::lang.logout')) }}" />
+                            </form>
+                        </x-mary-dropdown>
                     @else
-                        <a href="{{ route('laravel-crm.portal.login') }}" class="link link-hover text-base-content/80">
-                            {{ ucfirst(__('laravel-crm::lang.login')) }}
-                        </a>
-                        <span class="text-base-content/40">·</span>
-                        <a href="{{ route('laravel-crm.portal.register') }}" class="link link-hover text-base-content/80">
-                            {{ ucfirst(__('laravel-crm::lang.register')) }}
-                        </a>
+                        <x-mary-button :label="ucfirst(__('laravel-crm::lang.login'))" :link="route('laravel-crm.portal.login')" class="btn-ghost btn-sm" />
+                        <x-mary-button :label="ucfirst(__('laravel-crm::lang.register'))" :link="route('laravel-crm.portal.register')" class="btn-primary btn-sm text-white" />
                     @endauth
-                </div>
-            </header>
+                </x-slot:actions>
+            </x-mary-nav>
 
             <main class="flex-1">
                 @yield('content', $slot ?? null)
