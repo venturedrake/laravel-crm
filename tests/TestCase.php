@@ -92,6 +92,11 @@ abstract class TestCase extends OrchestraTestCase
         // Mary components ship under the `mary-` prefix in host apps; mirror that here so
         // Livewire component tests can render views that reference <x-mary-form>/<x-mary-badge>.
         $app['config']->set('mary.prefix', 'mary-');
+
+        // cknow/laravel-money is not auto-discovered under testbench, so views that call
+        // `money($amount, $currency)` can't locate the moneyphp ISO currency table. Point
+        // the config at the vendor file directly so currency-formatting renders in tests.
+        $app['config']->set('money.isoCurrenciesPath', __DIR__.'/../vendor/moneyphp/money/resources/currency.php');
     }
 
     protected function defineDatabaseMigrations()
