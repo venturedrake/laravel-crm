@@ -47,14 +47,20 @@
                 </x-slot:actions>
             </x-mary-nav>
 
-            <main class="flex-1">
-                @yield('content', $slot ?? null)
-            </main>
+            <x-mary-main with-nav full-width>
+                <x-slot:content>
+                    <div class="mx-auto max-w-6xl px-4 py-8">
+                        @yield('content', $slot ?? null)
+                    </div>
 
-            <footer class="footer mt-auto py-3 px-4">
-                <span class="text-base-content/60">Copyright © {{ \Carbon\Carbon::now()->year }} | Powered by <a href="https://laravelcrm.com" target="_blank" rel="noopener noreferrer" class="link link-hover">Laravel CRM</a></span>
-            </footer>
+                    <footer class="footer footer-center bg-base-100 text-base-content/60 py-4 mt-10">
+                        <span>© {{ \Carbon\Carbon::now()->year }} · Powered by <a href="https://laravelcrm.com" target="_blank" rel="noopener noreferrer" class="link link-hover">Laravel CRM</a></span>
+                    </footer>
+                </x-slot:content>
+            </x-mary-main>
         </div>
+
+        <x-mary-toast />
 
         @stack('modals')
         @livewireScripts
