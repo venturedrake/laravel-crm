@@ -31,6 +31,13 @@
             @endscope
             @scope('actions', $feature)
                 <div class="flex gap-1 justify-end">
+                    @if($feature->is_public)
+                        <x-mary-button icon="o-arrow-top-right-on-square"
+                                       link="{{ url(route('laravel-crm.portal.features.show', $feature)) }}"
+                                       external
+                                       title="{{ ucfirst(__('laravel-crm::lang.public')).' '.__('laravel-crm::lang.view') }}"
+                                       class="btn-sm btn-square btn-outline" />
+                    @endif
                     @can('edit crm features')
                         <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.features.edit', $feature)) }}" class="btn-sm btn-square btn-outline" />
                     @endcan
