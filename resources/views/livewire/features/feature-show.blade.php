@@ -1,5 +1,5 @@
 <div class="crm-content">
-    <x-crm-header title="{{ $feature->title }}" progress-indicator>
+    <x-crm-header :title="$feature->title" progress-indicator>
         <x-slot:badges>
             @if($feature->status)
                 <x-mary-badge :value="$feature->status->name" class="text-white" :style="'background-color: '.($feature->status->color ?? '#6c757d')" />
