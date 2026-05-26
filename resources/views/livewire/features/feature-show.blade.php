@@ -10,6 +10,14 @@
         </x-slot:badges>
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back')) }} {{ __('laravel-crm::lang.to') }} {{ __('laravel-crm::lang.features') }}" link="{{ url(route('laravel-crm.features.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive /> |
+            @if($feature->is_public)
+                <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.public')).' '.__('laravel-crm::lang.view') }}"
+                               link="{{ url(route('laravel-crm.portal.features.show', $feature)) }}"
+                               external
+                               icon="o-arrow-top-right-on-square"
+                               class="btn-sm btn-outline"
+                               responsive />
+            @endif
             @can('edit crm features')
                 <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.features.edit', $feature)) }}" class="btn-sm btn-square btn-outline" />
             @endcan
