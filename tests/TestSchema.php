@@ -646,6 +646,81 @@ class TestSchema
             $table->softDeletes();
         });
 
+        Schema::create($prefix.'purchase_orders', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('order_id')->nullable();
+            $table->unsignedBigInteger('person_id')->nullable();
+            $table->unsignedBigInteger('organization_id')->nullable();
+            $table->string('reference')->nullable();
+            $table->string('purchase_order_id')->nullable();
+            $table->string('prefix')->nullable();
+            $table->unsignedBigInteger('number')->nullable();
+            $table->date('issue_date')->nullable();
+            $table->date('delivery_date')->nullable();
+            $table->string('currency', 3)->default('USD');
+            $table->integer('subtotal')->nullable();
+            $table->integer('discount')->nullable();
+            $table->integer('tax')->nullable();
+            $table->integer('adjustments')->nullable();
+            $table->integer('total')->nullable();
+            $table->string('delivery_type')->default('deliver');
+            $table->text('delivery_instructions')->nullable();
+            $table->text('terms')->nullable();
+            $table->boolean('sent')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_assigned_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'purchase_order_lines', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('purchase_order_id');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('product_variation_id')->nullable();
+            $table->text('description')->nullable();
+            $table->text('comments')->nullable();
+            $table->integer('order')->nullable();
+            $table->integer('price')->nullable();
+            $table->integer('quantity')->nullable();
+            $table->decimal('tax_rate')->nullable();
+            $table->integer('tax_amount')->nullable();
+            $table->integer('amount')->nullable();
+            $table->string('currency', 3)->default('USD');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'xero_purchase_orders', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('purchase_order_id')->nullable();
+            $table->string('xero_type')->nullable();
+            $table->string('xero_id')->nullable();
+            $table->string('number')->nullable();
+            $table->string('reference')->nullable();
+            $table->integer('subtotal')->nullable();
+            $table->integer('total_tax')->nullable();
+            $table->integer('total')->nullable();
+            $table->string('status')->nullable();
+            $table->date('issue_date')->nullable();
+            $table->date('delivery_date')->nullable();
+            $table->string('line_amount_types')->nullable();
+            $table->string('currency_code', 3)->nullable();
+            $table->datetime('xero_updated_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         // -------------------------------------------------------------------
         // Email & SMS marketing tables
         // -------------------------------------------------------------------
@@ -769,6 +844,72 @@ class TestSchema
             $table->boolean('unsubscribed')->default(false);
             $table->timestamp('unsubscribed_at')->nullable();
             $table->timestamps();
+        });
+
+        Schema::create($prefix.'feature_statuses', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id');
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('color')->nullable();
+            $table->tinyInteger('order')->default(0);
+            $table->boolean('is_default')->default(false);
+            $table->boolean('is_closed')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'features', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedInteger('number')->nullable();
+            $table->string('feature_id')->nullable();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->boolean('is_public')->default(true);
+            $table->unsignedInteger('votes_count')->default(0);
+            $table->unsignedInteger('comments_count')->default(0);
+            $table->unsignedBigInteger('feature_status_id')->nullable();
+            $table->unsignedBigInteger('submitted_by_user_id')->nullable();
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_assigned_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'feature_comments', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->text('body');
+            $table->boolean('is_admin_reply')->default(false);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'feature_votes', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedBigInteger('user_id');
+            $table->timestamps();
+            $table->unique(['feature_id', 'user_id']);
         });
 
         Schema::create($prefix.'monitors', function (Blueprint $table) {

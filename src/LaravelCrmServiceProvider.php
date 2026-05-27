@@ -126,6 +126,11 @@ use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateCreate;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateEdit;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateIndex;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateShow;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureBoard;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureCreate;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureEdit;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureIndex;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureShow;
 use VentureDrake\LaravelCrm\Livewire\Files\FileItem;
 use VentureDrake\LaravelCrm\Livewire\Files\FileRelated;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
@@ -170,6 +175,12 @@ use VentureDrake\LaravelCrm\Livewire\People\PersonEdit;
 use VentureDrake\LaravelCrm\Livewire\People\PersonImport;
 use VentureDrake\LaravelCrm\Livewire\People\PersonIndex;
 use VentureDrake\LaravelCrm\Livewire\People\PersonShow;
+use VentureDrake\LaravelCrm\Livewire\Portal\Features\PublicFeatureBoard;
+use VentureDrake\LaravelCrm\Livewire\Portal\Features\PublicFeatureShow;
+use VentureDrake\LaravelCrm\Livewire\Portal\Features\PublicFeatureSubmit;
+use VentureDrake\LaravelCrm\Livewire\Portal\Invoices\PortalInvoiceLineItems;
+use VentureDrake\LaravelCrm\Livewire\Portal\PurchaseOrders\PortalPurchaseOrderLineItems;
+use VentureDrake\LaravelCrm\Livewire\Portal\Quotes\PortalQuoteLineItems;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductCreate;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductEdit;
 use VentureDrake\LaravelCrm\Livewire\Products\ProductIndex;
@@ -205,6 +216,9 @@ use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\CustomFields\CustomFieldShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\Features\FeatureStatusCreate;
+use VentureDrake\LaravelCrm\Livewire\Settings\Features\FeatureStatusEdit;
+use VentureDrake\LaravelCrm\Livewire\Settings\Features\FeatureStatusIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\ClickSend\ClickSendConnect;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\Labels\LabelEdit;
@@ -271,6 +285,10 @@ use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\EmailCampaign;
 use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
 use VentureDrake\LaravelCrm\Models\EmailTemplate;
+use VentureDrake\LaravelCrm\Models\Feature;
+use VentureDrake\LaravelCrm\Models\FeatureComment;
+use VentureDrake\LaravelCrm\Models\FeatureStatus;
+use VentureDrake\LaravelCrm\Models\FeatureVote;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
@@ -325,6 +343,10 @@ use VentureDrake\LaravelCrm\Observers\EmailCampaignObserver;
 use VentureDrake\LaravelCrm\Observers\EmailCampaignRecipientObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\EmailTemplateObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureCommentObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureStatusObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureVoteObserver;
 use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
 use VentureDrake\LaravelCrm\Observers\FieldObserver;
@@ -376,6 +398,7 @@ use VentureDrake\LaravelCrm\Policies\DealPolicy;
 use VentureDrake\LaravelCrm\Policies\DeliveryPolicy;
 use VentureDrake\LaravelCrm\Policies\EmailCampaignPolicy;
 use VentureDrake\LaravelCrm\Policies\EmailTemplatePolicy;
+use VentureDrake\LaravelCrm\Policies\FeaturePolicy;
 use VentureDrake\LaravelCrm\Policies\FieldGroupPolicy;
 use VentureDrake\LaravelCrm\Policies\FieldOptionPolicy;
 use VentureDrake\LaravelCrm\Policies\FieldPolicy;
@@ -453,6 +476,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Meeting' => MeetingPolicy::class,
         'VentureDrake\LaravelCrm\Models\Lunch' => LunchPolicy::class,
         'VentureDrake\LaravelCrm\Models\File' => FilePolicy::class,
+        'VentureDrake\LaravelCrm\Models\Feature' => FeaturePolicy::class,
         'VentureDrake\LaravelCrm\Models\Field' => FieldPolicy::class,
         'VentureDrake\LaravelCrm\Models\FieldGroup' => FieldGroupPolicy::class,
         'VentureDrake\LaravelCrm\Models\FieldOption' => FieldOptionPolicy::class,
@@ -588,6 +612,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         SmsCampaign::observe(SmsCampaignObserver::class);
         SmsTemplate::observe(SmsTemplateObserver::class);
         SmsCampaignRecipient::observe(SmsCampaignRecipientObserver::class);
+        Feature::observe(FeatureObserver::class);
+        FeatureStatus::observe(FeatureStatusObserver::class);
+        FeatureComment::observe(FeatureCommentObserver::class);
+        FeatureVote::observe(FeatureVoteObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -769,9 +797,13 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/ensure_encryptable_columns_widened_on_laravel_crm_tables.php.stub' => $this->getMigrationFileName($filesystem, 'ensure_encryptable_columns_widened_on_laravel_crm_tables.php', 123),
                 __DIR__.'/../database/migrations/add_mailing_list_to_users_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_mailing_list_to_users_table.php', 124),
                 __DIR__.'/../database/migrations/fix_line1_nullable_on_laravel_crm_addresses_table.php.stub' => $this->getMigrationFileName($filesystem, 'fix_line1_nullable_on_laravel_crm_addresses_table.php', 125),
-                __DIR__.'/../database/migrations/create_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitors_table.php', 126),
-                __DIR__.'/../database/migrations/create_laravel_crm_monitor_checks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitor_checks_table.php', 127),
-                __DIR__.'/../database/migrations/make_name_nullable_on_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'make_name_nullable_on_laravel_crm_monitors_table.php', 128),
+                __DIR__.'/../database/migrations/create_laravel_crm_feature_statuses_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_statuses_table.php', 126),
+                __DIR__.'/../database/migrations/create_laravel_crm_features_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_features_table.php', 127),
+                __DIR__.'/../database/migrations/create_laravel_crm_feature_comments_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_comments_table.php', 128),
+                __DIR__.'/../database/migrations/create_laravel_crm_feature_votes_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_votes_table.php', 129),
+                __DIR__.'/../database/migrations/create_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitors_table.php', 130),
+                __DIR__.'/../database/migrations/create_laravel_crm_monitor_checks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitor_checks_table.php', 131),
+                __DIR__.'/../database/migrations/make_name_nullable_on_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'make_name_nullable_on_laravel_crm_monitors_table.php', 132),
             ], 'migrations');
 
             // Publishing the seeders
@@ -888,6 +920,17 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-lead-show', LeadShow::class);
         Livewire::component('crm-lead-create', LeadCreate::class);
         Livewire::component('crm-lead-edit', LeadEdit::class);
+        Livewire::component('crm-feature-index', FeatureIndex::class);
+        Livewire::component('crm-feature-board', FeatureBoard::class);
+        Livewire::component('crm-feature-show', FeatureShow::class);
+        Livewire::component('crm-feature-create', FeatureCreate::class);
+        Livewire::component('crm-feature-edit', FeatureEdit::class);
+        Livewire::component('crm-portal-feature-board', PublicFeatureBoard::class);
+        Livewire::component('crm-portal-feature-show', PublicFeatureShow::class);
+        Livewire::component('crm-portal-feature-submit', PublicFeatureSubmit::class);
+        Livewire::component('crm-portal-quote-line-items', PortalQuoteLineItems::class);
+        Livewire::component('crm-portal-invoice-line-items', PortalInvoiceLineItems::class);
+        Livewire::component('crm-portal-purchase-order-line-items', PortalPurchaseOrderLineItems::class);
         Livewire::component('crm-task-index', TaskIndex::class);
         Livewire::component('crm-task-show', TaskShow::class);
         Livewire::component('crm-task-create', TaskCreate::class);
@@ -1046,6 +1089,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-lead-source-edit', LeadSourceEdit::class);
         Livewire::component('crm-settings-lead-source-show', LeadSourceShow::class);
 
+        Livewire::component('crm-settings-feature-status-index', FeatureStatusIndex::class);
+        Livewire::component('crm-settings-feature-status-create', FeatureStatusCreate::class);
+        Livewire::component('crm-settings-feature-status-edit', FeatureStatusEdit::class);
+
         Livewire::component('crm-settings-custom-field-index', CustomFieldIndex::class);
         Livewire::component('crm-settings-custom-field-create', CustomFieldCreate::class);
         Livewire::component('crm-settings-custom-field-edit', CustomFieldEdit::class);
@@ -1105,6 +1152,14 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         Blade::if('hasleadsenabled', function () {
             if (is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {
+                return true;
+            } elseif (! config('laravel-crm.modules')) {
+                return true;
+            }
+        });
+
+        Blade::if('hasfeaturesenabled', function () {
+            if (is_array(config('laravel-crm.modules')) && in_array('features', config('laravel-crm.modules'))) {
                 return true;
             } elseif (! config('laravel-crm.modules')) {
                 return true;

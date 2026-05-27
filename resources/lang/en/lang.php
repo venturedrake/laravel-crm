@@ -770,6 +770,9 @@ return [
     'password_reset_link_sent' => 'we have emailed your password reset link.',
     'password_reset_success' => 'your password has been reset.',
     'back_to_login' => 'back to login',
+    'register' => 'register',
+    'confirm_password' => 'confirm password',
+    'hello' => 'hello',
 
     // Dashboard
     'today' => 'today',
@@ -864,6 +867,34 @@ return [
     'disconnect' => 'disconnect',
     'connection_failed' => 'connection failed',
     'balance' => 'balance',
+
+    // Portal auth
+    'already_have_account' => 'already have an account?',
+    'dont_have_account' => "don't have an account?",
+
+    // Features
+    'feature' => 'feature',
+    'features' => 'features',
+    'feature_request' => 'feature request',
+    'submit_feature' => 'submit feature',
+    'vote' => 'vote',
+    'votes' => 'votes',
+    'voted' => 'voted',
+    'unvote' => 'unvote',
+    'comment' => 'comment',
+    'feature_stored' => 'feature stored',
+    'feature_updated' => 'feature updated',
+    'feature_deleted' => 'feature deleted',
+    'status_new' => 'new',
+    'status_considering' => 'considering',
+    'status_planned' => 'planned',
+    'status_in_progress' => 'in progress',
+    'status_completed' => 'completed',
+    'status_declined' => 'declined',
+    'admin' => 'admin',
+    'public' => 'public',
+    'user' => 'user',
+    'submit_feature_intro' => "Share what you'd like to see. Others can vote and comment on your idea.",
 
     // Monitoring module
     'monitors' => 'monitors',

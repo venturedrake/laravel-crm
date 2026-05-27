@@ -35,3 +35,39 @@ Route::prefix('purchase-orders')->group(function () {
     Route::post('{purchaseOrder:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PurchaseOrderController@process')
         ->name('laravel-crm.portal.purchase-orders.process');
 });
+
+/* Portal Auth (self-service login/register for the public feature board) */
+Route::get('login', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@showLogin')
+    ->name('laravel-crm.portal.login');
+Route::post('login', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@login')
+    ->middleware('throttle:6,1')
+    ->name('laravel-crm.portal.login.attempt');
+
+Route::get('register', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@showRegister')
+    ->name('laravel-crm.portal.register');
+Route::post('register', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@register')
+    ->middleware('throttle:6,1')
+    ->name('laravel-crm.portal.register.store');
+
+Route::post('logout', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PortalAuthController@logout')
+    ->name('laravel-crm.portal.logout');
+
+/* Public Feature Board */
+Route::prefix('features')->group(function () {
+    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@index')
+        ->name('laravel-crm.portal.features.index');
+
+    Route::get('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@create')
+        ->name('laravel-crm.portal.features.create');
+    Route::post('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@store')
+        ->name('laravel-crm.portal.features.store');
+    Route::post('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@vote')
+        ->name('laravel-crm.portal.features.vote');
+    Route::delete('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@unvote')
+        ->name('laravel-crm.portal.features.unvote');
+    Route::post('{feature:external_id}/comments', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@comment')
+        ->name('laravel-crm.portal.features.comments.store');
+
+    Route::get('{feature:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@show')
+        ->name('laravel-crm.portal.features.show');
+});

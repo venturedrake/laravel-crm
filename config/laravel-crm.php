@@ -180,6 +180,7 @@ return [
         'chat',
         'email-marketing',
         'sms-marketing',
+        'features',
         'monitoring',
     ],
 

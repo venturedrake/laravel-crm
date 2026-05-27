@@ -8,6 +8,11 @@
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.leads') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.leads.index')) }}"><i class="fa fa-crosshairs"></i> {{ ucfirst(__('laravel-crm::lang.leads')) }}</a></li>
                 @endcan
             @endhasleadsenabled
+            @hasfeaturesenabled
+                @can('view crm features')
+                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.features') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.features.index')) }}"><i class="fa fa-lightbulb-o"></i> {{ ucfirst(__('laravel-crm::lang.features')) }}</a></li>
+                @endcan
+            @endhasfeaturesenabled
             @hasdealsenabled
                 @can('view crm deals')
                 <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deals') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deals.index')) }}"><i class="fa fa-dollar"></i> {{ ucfirst(__('laravel-crm::lang.deals')) }}</a></li>
