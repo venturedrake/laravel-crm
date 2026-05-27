@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use App\User;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureComment;
+use VentureDrake\LaravelCrm\Models\FeatureView;
 use VentureDrake\LaravelCrm\Models\FeatureVote;
 use VentureDrake\LaravelCrm\Repositories\FeatureRepository;
 
@@ -35,14 +36,16 @@ class FeatureService
 
     public function update(Feature $feature, array $data): Feature
     {
-        $feature->update(array_filter([
-            'title' => $data['title'] ?? null,
-            'description' => $data['description'] ?? null,
-            'is_public' => $data['is_public'] ?? null,
-            'feature_status_id' => $data['feature_status_id'] ?? null,
-            'user_owner_id' => $data['user_owner_id'] ?? null,
-            'user_assigned_id' => $data['user_assigned_id'] ?? null,
-        ], fn ($value) => $value !== null));
+        $updatable = [
+            'title',
+            'description',
+            'is_public',
+            'feature_status_id',
+            'user_owner_id',
+            'user_assigned_id',
+        ];
+
+        $feature->update(array_intersect_key($data, array_flip($updatable)));
 
         return $feature;
     }
@@ -66,6 +69,32 @@ class FeatureService
         }
 
         return (bool) $vote->delete();
+    }
+
+    public function recordView(Feature $feature, ?User $user = null, ?string $ip = null): ?FeatureView
+    {
+        $ipHash = $ip ? hash('sha256', $ip) : null;
+
+        $dedupMinutes = (int) config('laravel-crm.features.view_dedup_minutes', 60);
+
+        if ($dedupMinutes > 0 && ($user || $ipHash)) {
+            $existing = FeatureView::where('feature_id', $feature->id)
+                ->where('viewed_at', '>=', now()->subMinutes($dedupMinutes))
+                ->when($user, fn ($q) => $q->where('user_id', $user->id))
+                ->when(! $user && $ipHash, fn ($q) => $q->whereNull('user_id')->where('ip_hash', $ipHash))
+                ->first();
+
+            if ($existing) {
+                return $existing;
+            }
+        }
+
+        return FeatureView::create([
+            'feature_id' => $feature->id,
+            'user_id' => $user?->id,
+            'ip_hash' => $ipHash,
+            'viewed_at' => now(),
+        ]);
     }
 
     public function comment(Feature $feature, User $user, string $body): FeatureComment

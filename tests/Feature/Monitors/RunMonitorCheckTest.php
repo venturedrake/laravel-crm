@@ -136,6 +136,30 @@ test('recovery from down state dispatches MonitorRecoveredNotification', functio
     Notification::assertSentTo($owner, MonitorRecoveredNotification::class);
 });
 
+test('recovery does not notify when no down notification was sent', function () {
+    Notification::fake();
+    Http::fake([
+        '*' => Http::response('OK', 200),
+    ]);
+
+    $owner = makeMonitorOwner();
+    $monitor = makeMonitor([
+        'owner' => $owner,
+        'last_status' => 'down',
+        'down_since_at' => Carbon::now()->subSeconds(30),
+        'notified_at' => null,
+    ]);
+
+    (new RunMonitorCheck($monitor->id))->handle(app(MonitorCheckService::class));
+
+    $monitor->refresh();
+
+    expect($monitor->last_status)->toBe('up');
+    expect($monitor->down_since_at)->toBeNull();
+
+    Notification::assertNothingSent();
+});
+
 test('perf alert fires when response_time_ms exceeds perf_threshold_ms', function () {
     Notification::fake();
 

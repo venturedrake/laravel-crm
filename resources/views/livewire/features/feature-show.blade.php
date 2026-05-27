@@ -60,7 +60,34 @@
                     <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong>
                     <span>{{ $feature->comments_count }}</span>
                 </div>
+                <div class="flex flex-row gap-5">
+                    <strong>{{ ucfirst(__('laravel-crm::lang.views')) }}</strong>
+                    <span>{{ $feature->views_count }}</span>
+                </div>
             </div>
         </x-mary-card>
     </div>
+
+    <x-mary-card shadow class="mt-5" title="{{ ucfirst(__('laravel-crm::lang.votes_over_time')) }}">
+        <x-slot:menu>
+            <select wire:model.live="chartPeriod" class="select select-primary select-sm font-normal">
+                @foreach($this->chartPeriodOptions() as $option)
+                    <option value="{{ $option['id'] }}">{{ $option['name'] }}</option>
+                @endforeach
+            </select>
+        </x-slot:menu>
+        <div class="h-72">
+            <x-mary-chart wire:model="votesChart" class="!h-full" />
+        </div>
+    </x-mary-card>
+
+    <x-mary-card shadow class="mt-5" title="{{ ucfirst(__('laravel-crm::lang.views_over_time')) }}">
+        <div class="h-72">
+            <x-mary-chart wire:model="viewsChart" class="!h-full" />
+        </div>
+    </x-mary-card>
+
+    <x-mary-card shadow class="mt-5" title="{{ ucfirst(__('laravel-crm::lang.voters')) }}">
+        <livewire:crm-feature-voters :feature="$feature" />
+    </x-mary-card>
 </div>

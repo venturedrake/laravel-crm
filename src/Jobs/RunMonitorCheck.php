@@ -31,6 +31,8 @@ class RunMonitorCheck implements ShouldQueue
 
     public int $monitorId;
 
+    public ?string $currentCheckType = null;
+
     public function __construct(int $monitorId)
     {
         $this->monitorId = $monitorId;
@@ -45,19 +47,23 @@ class RunMonitorCheck implements ShouldQueue
         }
 
         if ($monitor->uptime_enabled) {
+            $this->currentCheckType = 'uptime';
             $this->runUptime($monitor, $service);
         }
 
         if ($monitor->ssl_enabled && $this->sslIsDue($monitor)) {
+            $this->currentCheckType = 'ssl';
             $this->runSsl($monitor, $service);
         }
+
+        $this->currentCheckType = null;
     }
 
     public function failed(Throwable $e): void
     {
         MonitorCheck::create([
             'monitor_id' => $this->monitorId,
-            'type' => 'uptime',
+            'type' => $this->currentCheckType ?? 'uptime',
             'status' => 'error',
             'error_message' => mb_substr($e->getMessage(), 0, 1000),
             'checked_at' => Carbon::now(),
@@ -163,7 +169,9 @@ class RunMonitorCheck implements ShouldQueue
         }
 
         if ($monitor->down_since_at !== null || $monitor->notified_at !== null) {
-            if ($previousStatus === 'down' || $previousStatus === 'slow') {
+            $wasNotified = $monitor->notified_at !== null;
+
+            if ($wasNotified && ($previousStatus === 'down' || $previousStatus === 'slow')) {
                 $this->notifyRecipients($monitor, fn ($owner) => new MonitorRecoveredNotification($monitor, $owner, $result));
             }
 

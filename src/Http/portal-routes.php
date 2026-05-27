@@ -60,12 +60,16 @@ Route::prefix('features')->group(function () {
     Route::get('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@create')
         ->name('laravel-crm.portal.features.create');
     Route::post('submit', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@store')
+        ->middleware('throttle:10,1')
         ->name('laravel-crm.portal.features.store');
     Route::post('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@vote')
+        ->middleware('throttle:30,1')
         ->name('laravel-crm.portal.features.vote');
     Route::delete('{feature:external_id}/vote', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@unvote')
+        ->middleware('throttle:30,1')
         ->name('laravel-crm.portal.features.unvote');
     Route::post('{feature:external_id}/comments', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@comment')
+        ->middleware('throttle:15,1')
         ->name('laravel-crm.portal.features.comments.store');
 
     Route::get('{feature:external_id}', 'VentureDrake\LaravelCrm\Http\Controllers\Portal\PublicFeatureController@show')

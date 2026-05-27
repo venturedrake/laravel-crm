@@ -875,6 +875,7 @@ class TestSchema
             $table->boolean('is_public')->default(true);
             $table->unsignedInteger('votes_count')->default(0);
             $table->unsignedInteger('comments_count')->default(0);
+            $table->unsignedInteger('views_count')->default(0);
             $table->unsignedBigInteger('feature_status_id')->nullable();
             $table->unsignedBigInteger('submitted_by_user_id')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
@@ -910,6 +911,15 @@ class TestSchema
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->unique(['feature_id', 'user_id']);
+        });
+
+        Schema::create($prefix.'feature_views', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('ip_hash', 64)->nullable();
+            $table->timestamp('viewed_at');
         });
 
         Schema::create($prefix.'monitors', function (Blueprint $table) {

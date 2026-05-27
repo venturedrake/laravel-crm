@@ -1484,7 +1484,7 @@ Route::get('integrations', function () {
 
 /* Monitors */
 
-if (in_array('monitoring', (array) config('laravel-crm.modules', []))) {
+if (! is_array(config('laravel-crm.modules')) || in_array('monitoring', config('laravel-crm.modules'))) {
     Route::group(['prefix' => 'monitors', 'middleware' => 'auth.laravel-crm'], function () {
         Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\MonitorController@index')
             ->name('laravel-crm.monitors.index')

@@ -45,12 +45,14 @@
                 </button>
             </form>
 
-            <p class="text-sm text-center mt-4">
-                <span class="text-base-content/70">{{ ucfirst(__('laravel-crm::lang.dont_have_account')) }}</span>
-                <a href="{{ route('laravel-crm.portal.register') }}" class="link link-primary">
-                    {{ ucfirst(__('laravel-crm::lang.register')) }}
-                </a>
-            </p>
+            @if(config('laravel-crm.portal.allow_registration', false))
+                <p class="text-sm text-center mt-4">
+                    <span class="text-base-content/70">{{ ucfirst(__('laravel-crm::lang.dont_have_account')) }}</span>
+                    <a href="{{ route('laravel-crm.portal.register') }}" class="link link-primary">
+                        {{ ucfirst(__('laravel-crm::lang.register')) }}
+                    </a>
+                </p>
+            @endif
         </x-mary-card>
     </div>
 @endsection

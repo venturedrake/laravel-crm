@@ -131,6 +131,7 @@ use VentureDrake\LaravelCrm\Livewire\Features\FeatureCreate;
 use VentureDrake\LaravelCrm\Livewire\Features\FeatureEdit;
 use VentureDrake\LaravelCrm\Livewire\Features\FeatureIndex;
 use VentureDrake\LaravelCrm\Livewire\Features\FeatureShow;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureVoters;
 use VentureDrake\LaravelCrm\Livewire\Files\FileItem;
 use VentureDrake\LaravelCrm\Livewire\Files\FileRelated;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
@@ -288,6 +289,7 @@ use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureComment;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
+use VentureDrake\LaravelCrm\Models\FeatureView;
 use VentureDrake\LaravelCrm\Models\FeatureVote;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
@@ -346,6 +348,7 @@ use VentureDrake\LaravelCrm\Observers\EmailTemplateObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureCommentObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureStatusObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureViewObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureVoteObserver;
 use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
@@ -616,6 +619,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         FeatureStatus::observe(FeatureStatusObserver::class);
         FeatureComment::observe(FeatureCommentObserver::class);
         FeatureVote::observe(FeatureVoteObserver::class);
+        FeatureView::observe(FeatureViewObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -804,6 +808,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations/create_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitors_table.php', 130),
                 __DIR__.'/../database/migrations/create_laravel_crm_monitor_checks_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_monitor_checks_table.php', 131),
                 __DIR__.'/../database/migrations/make_name_nullable_on_laravel_crm_monitors_table.php.stub' => $this->getMigrationFileName($filesystem, 'make_name_nullable_on_laravel_crm_monitors_table.php', 132),
+                __DIR__.'/../database/migrations/add_views_count_to_laravel_crm_features_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_views_count_to_laravel_crm_features_table.php', 133),
+                __DIR__.'/../database/migrations/create_laravel_crm_feature_views_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_feature_views_table.php', 134),
             ], 'migrations');
 
             // Publishing the seeders
@@ -925,6 +931,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-feature-show', FeatureShow::class);
         Livewire::component('crm-feature-create', FeatureCreate::class);
         Livewire::component('crm-feature-edit', FeatureEdit::class);
+        Livewire::component('crm-feature-voters', FeatureVoters::class);
         Livewire::component('crm-portal-feature-board', PublicFeatureBoard::class);
         Livewire::component('crm-portal-feature-show', PublicFeatureShow::class);
         Livewire::component('crm-portal-feature-submit', PublicFeatureSubmit::class);
@@ -1127,10 +1134,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
                     ->daily()
                     ->withoutOverlapping();
 
-                $schedule->command('laravelcrm:monitor-check')
-                    ->name('laravelCrmMonitorCheck')
-                    ->everyMinute()
-                    ->withoutOverlapping();
+                if (! is_array(config('laravel-crm.modules')) || in_array('monitoring', config('laravel-crm.modules'))) {
+                    $schedule->command('laravelcrm:monitor-check')
+                        ->name('laravelCrmMonitorCheck')
+                        ->everyMinute()
+                        ->withoutOverlapping();
+                }
 
                 if (config('xero.clientId') && config('xero.clientSecret')) {
                     $schedule->command('xero:keep-alive')
@@ -1246,7 +1255,13 @@ class LaravelCrmServiceProvider extends ServiceProvider
             }
         });
 
-        Blade::if('hasmonitoringenabled', fn () => in_array('monitoring', config('laravel-crm.modules', [])));
+        Blade::if('hasmonitoringenabled', function () {
+            if (is_array(config('laravel-crm.modules')) && in_array('monitoring', config('laravel-crm.modules'))) {
+                return true;
+            } elseif (! config('laravel-crm.modules')) {
+                return true;
+            }
+        });
     }
 
     /**
