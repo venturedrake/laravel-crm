@@ -131,6 +131,7 @@ use VentureDrake\LaravelCrm\Livewire\Features\FeatureCreate;
 use VentureDrake\LaravelCrm\Livewire\Features\FeatureEdit;
 use VentureDrake\LaravelCrm\Livewire\Features\FeatureIndex;
 use VentureDrake\LaravelCrm\Livewire\Features\FeatureShow;
+use VentureDrake\LaravelCrm\Livewire\Features\FeatureVoters;
 use VentureDrake\LaravelCrm\Livewire\Files\FileItem;
 use VentureDrake\LaravelCrm\Livewire\Files\FileRelated;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
@@ -930,6 +931,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-feature-show', FeatureShow::class);
         Livewire::component('crm-feature-create', FeatureCreate::class);
         Livewire::component('crm-feature-edit', FeatureEdit::class);
+        Livewire::component('crm-feature-voters', FeatureVoters::class);
         Livewire::component('crm-portal-feature-board', PublicFeatureBoard::class);
         Livewire::component('crm-portal-feature-show', PublicFeatureShow::class);
         Livewire::component('crm-portal-feature-submit', PublicFeatureSubmit::class);
