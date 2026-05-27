@@ -44,7 +44,7 @@ trait HasMonitorCommon
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|string|in:http,https,tcp',
-            'url' => 'required|string|max:1024',
+            'url' => ['required', 'string', 'max:1024', new \VentureDrake\LaravelCrm\Rules\PublicHttpUrl],
             'method' => 'required|string|in:GET,POST,PUT,PATCH',
             'expected_status_code' => 'required|integer|min:100|max:599',
             'interval' => 'required|integer|min:1',

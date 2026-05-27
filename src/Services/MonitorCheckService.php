@@ -18,6 +18,12 @@ class MonitorCheckService
             'error' => null,
         ];
 
+        if (! $this->urlIsAllowed($monitor->url)) {
+            $result['error'] = 'Monitor URL rejected: must be a publicly reachable http(s) address.';
+
+            return $result;
+        }
+
         $timeout = (int) config('laravel-crm.monitoring.request_timeout_seconds', 15);
 
         $start = microtime(true);
@@ -61,6 +67,12 @@ class MonitorCheckService
 
         if (! $host) {
             $result['error'] = 'No host available for SSL check';
+
+            return $result;
+        }
+
+        if (! $this->urlIsAllowed($monitor->url ?: 'https://'.$host)) {
+            $result['error'] = 'Monitor host rejected: must be a publicly reachable address.';
 
             return $result;
         }
@@ -144,5 +156,42 @@ class MonitorCheckService
         }
 
         return $result;
+    }
+
+    private function urlIsAllowed(?string $url): bool
+    {
+        if (! $url) {
+            return false;
+        }
+
+        $parts = parse_url($url);
+
+        if (! is_array($parts) || empty($parts['host']) || empty($parts['scheme'])) {
+            return false;
+        }
+
+        $scheme = strtolower($parts['scheme']);
+
+        if (! in_array($scheme, ['http', 'https'], true)) {
+            return false;
+        }
+
+        $host = strtolower($parts['host']);
+
+        if (in_array($host, ['localhost', 'ip6-localhost', 'ip6-loopback'], true)) {
+            return false;
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_IP)
+            && ! filter_var(
+                $host,
+                FILTER_VALIDATE_IP,
+                FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+            )
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

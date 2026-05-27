@@ -3,16 +3,32 @@
 use Illuminate\Support\Facades\Hash;
 use VentureDrake\LaravelCrm\Tests\Stubs\User;
 
+beforeEach(function () {
+    config()->set('laravel-crm.portal.allow_registration', true);
+});
+
 test('portal login page is accessible to guests', function () {
     $response = $this->get('/p/login');
 
     $response->assertStatus(200);
 });
 
-test('portal register page is accessible to guests', function () {
+test('portal register page is accessible to guests when registration is enabled', function () {
     $response = $this->get('/p/register');
 
     $response->assertStatus(200);
+});
+
+test('portal register page 404s when registration is disabled', function () {
+    config()->set('laravel-crm.portal.allow_registration', false);
+
+    $this->get('/p/register')->assertStatus(404);
+    $this->post('/p/register', [
+        'name' => 'Blocked',
+        'email' => 'blocked'.uniqid().'@example.com',
+        'password' => 'secret-pw',
+        'password_confirmation' => 'secret-pw',
+    ])->assertStatus(404);
 });
 
 test('registering creates a user with crm_access = 0 and logs them in', function () {

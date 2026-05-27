@@ -205,6 +205,40 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Portal
+    |--------------------------------------------------------------------------
+    |
+    | Settings for the public-facing portal (feature board, signed quote /
+    | invoice / purchase-order links). `allow_registration` opts the host
+    | application into letting anonymous visitors create user accounts via
+    | /p/register. Off by default: enabling it writes rows to the host app's
+    | users table and dispatches Laravel's Registered event for each signup.
+    |
+    */
+
+    'portal' => [
+        'allow_registration' => env('LARAVEL_CRM_PORTAL_ALLOW_REGISTRATION', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Features
+    |--------------------------------------------------------------------------
+    |
+    | Settings for the public feature board. `view_dedup_minutes` controls how
+    | long a single visitor (matched by authenticated user, or hashed IP for
+    | anonymous viewers) is treated as the same view before another GET to the
+    | public feature page records an additional FeatureView row. Set to 0 to
+    | record every request.
+    |
+    */
+
+    'features' => [
+        'view_dedup_minutes' => env('LARAVEL_CRM_FEATURES_VIEW_DEDUP_MINUTES', 60),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Update Notifications
     |--------------------------------------------------------------------------
     |

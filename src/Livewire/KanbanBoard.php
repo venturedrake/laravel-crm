@@ -48,7 +48,13 @@ class KanbanBoard extends Component
 
     public function firstStageId()
     {
-        return $this->stages()->first()['id'];
+        $first = $this->stages()->first();
+
+        if (! $first) {
+            return null;
+        }
+
+        return is_array($first) ? ($first['id'] ?? null) : ($first->id ?? null);
     }
 
     public function render()

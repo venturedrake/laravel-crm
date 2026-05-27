@@ -42,7 +42,9 @@
                         </x-mary-dropdown>
                     @else
                         <x-mary-button :label="ucfirst(__('laravel-crm::lang.login'))" :link="route('laravel-crm.portal.login')" class="btn-ghost btn-sm" />
-                        <x-mary-button :label="ucfirst(__('laravel-crm::lang.register'))" :link="route('laravel-crm.portal.register')" class="btn-primary btn-sm text-white" />
+                        @if(config('laravel-crm.portal.allow_registration', false))
+                            <x-mary-button :label="ucfirst(__('laravel-crm::lang.register'))" :link="route('laravel-crm.portal.register')" class="btn-primary btn-sm text-white" />
+                        @endif
                     @endauth
                 </x-slot:actions>
             </x-mary-nav>

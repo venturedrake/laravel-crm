@@ -39,10 +39,31 @@ test('visiting the public show page increments views_count', function () {
     $feature = Feature::create(['title' => 'Visit me', 'is_public' => true]);
 
     $this->get('/p/features/'.$feature->external_id)->assertStatus(200);
+
+    expect((int) $feature->fresh()->views_count)->toBe(1);
+    expect(FeatureView::where('feature_id', $feature->id)->count())->toBe(1);
+});
+
+test('repeat visits from the same client are deduped within the window', function () {
+    config()->set('laravel-crm.features.view_dedup_minutes', 60);
+    $feature = Feature::create(['title' => 'Repeat me', 'is_public' => true]);
+
+    $this->get('/p/features/'.$feature->external_id)->assertStatus(200);
+    $this->get('/p/features/'.$feature->external_id)->assertStatus(200);
+    $this->get('/p/features/'.$feature->external_id)->assertStatus(200);
+
+    expect((int) $feature->fresh()->views_count)->toBe(1);
+    expect(FeatureView::where('feature_id', $feature->id)->count())->toBe(1);
+});
+
+test('dedup window of zero disables deduplication', function () {
+    config()->set('laravel-crm.features.view_dedup_minutes', 0);
+    $feature = Feature::create(['title' => 'No dedup', 'is_public' => true]);
+
+    $this->get('/p/features/'.$feature->external_id)->assertStatus(200);
     $this->get('/p/features/'.$feature->external_id)->assertStatus(200);
 
     expect((int) $feature->fresh()->views_count)->toBe(2);
-    expect(FeatureView::where('feature_id', $feature->id)->count())->toBe(2);
 });
 
 test('a non-public feature 404s and records no view', function () {

@@ -44,6 +44,8 @@ class PortalAuthController extends Controller
 
     public function showRegister(Request $request)
     {
+        abort_unless(config('laravel-crm.portal.allow_registration', false), 404);
+
         if (Auth::check()) {
             return redirect()->intended($this->fallbackUrl());
         }
@@ -57,6 +59,8 @@ class PortalAuthController extends Controller
 
     public function register(Request $request)
     {
+        abort_unless(config('laravel-crm.portal.allow_registration', false), 404);
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
