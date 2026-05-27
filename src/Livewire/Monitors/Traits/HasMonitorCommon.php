@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Monitors\Traits;
 
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Services\MonitorService;
+use VentureDrake\LaravelCrm\Services\MonitorUrlGuard;
 
 trait HasMonitorCommon
 {
@@ -44,7 +45,16 @@ trait HasMonitorCommon
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|string|in:http,https,tcp',
-            'url' => 'required|string|max:1024',
+            'url' => [
+                'required',
+                'string',
+                'max:1024',
+                function ($attribute, $value, $fail) {
+                    if ($reason = MonitorUrlGuard::reasonForRejection($value)) {
+                        $fail($reason);
+                    }
+                },
+            ],
             'method' => 'required|string|in:GET,POST,PUT,PATCH',
             'expected_status_code' => 'required|integer|min:100|max:599',
             'interval' => 'required|integer|min:1',

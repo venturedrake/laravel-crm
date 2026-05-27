@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 
 class StoreProductRequest extends FormRequest
 {
@@ -29,7 +30,7 @@ class StoreProductRequest extends FormRequest
             'purchase_account' => ['nullable', 'string', 'max:255'],
             'sales_account' => ['nullable', 'string', 'max:255'],
             'active' => ['nullable', 'boolean'],
-            'user_owner_id' => ['nullable', 'integer', 'exists:users,id'],
+            'user_owner_id' => ['nullable', 'integer', 'exists:users,id', new OwnerInCurrentTeam],
         ];
     }
 }

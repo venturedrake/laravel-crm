@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 
 class UpdateOrganizationRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class UpdateOrganizationRequest extends FormRequest
             'organization_type_id' => ['nullable', 'integer'],
             'industry_id' => ['nullable', 'integer'],
             'timezone_id' => ['nullable', 'integer'],
-            'user_owner_id' => ['nullable', 'integer', 'exists:users,id'],
+            'user_owner_id' => ['nullable', 'integer', 'exists:users,id', new OwnerInCurrentTeam],
         ];
     }
 }

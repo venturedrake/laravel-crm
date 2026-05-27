@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -30,7 +31,7 @@ class StoreOrderRequest extends FormRequest
             'lead_id' => ['nullable', 'string', 'uuid', "exists:{$prefix}leads,external_id"],
             'deal_id' => ['nullable', 'string', 'uuid', "exists:{$prefix}deals,external_id"],
             'quote_id' => ['nullable', 'string', 'uuid', "exists:{$prefix}quotes,external_id"],
-            'user_owner_id' => ['nullable', 'integer', 'exists:users,id'],
+            'user_owner_id' => ['nullable', 'integer', 'exists:users,id', new OwnerInCurrentTeam],
             'labels' => ['nullable', 'array'],
             'labels.*' => ['string', 'uuid', "exists:{$prefix}labels,external_id"],
             'line_items' => ['nullable', 'array'],

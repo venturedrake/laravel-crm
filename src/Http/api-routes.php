@@ -21,6 +21,7 @@ use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\QuoteController;
  */
 
 Route::post('auth/token', [AuthController::class, 'issueToken'])
+    ->middleware('throttle:6,1')
     ->name('laravel-crm.api.v2.auth.token.issue');
 
 Route::middleware(['auth:sanctum', 'crm-api', 'laravel-crm.api.team'])->group(function () {

@@ -22,6 +22,12 @@ class MonitorCheckService
 
         $start = microtime(true);
 
+        if ($reason = MonitorUrlGuard::reasonForRejection($monitor->url)) {
+            $result['error'] = $reason;
+
+            return $result;
+        }
+
         try {
             $response = Http::timeout($timeout)->get($monitor->url);
 
@@ -61,6 +67,12 @@ class MonitorCheckService
 
         if (! $host) {
             $result['error'] = 'No host available for SSL check';
+
+            return $result;
+        }
+
+        if ($reason = MonitorUrlGuard::reasonForRejection('https://'.$host)) {
+            $result['error'] = $reason;
 
             return $result;
         }

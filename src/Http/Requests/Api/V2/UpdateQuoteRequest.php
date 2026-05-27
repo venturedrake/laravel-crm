@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 
 class UpdateQuoteRequest extends FormRequest
 {
@@ -32,7 +33,7 @@ class UpdateQuoteRequest extends FormRequest
             'person_id' => ['nullable', 'string', 'uuid', "exists:{$prefix}people,external_id"],
             'organization_id' => ['nullable', 'string', 'uuid', "exists:{$prefix}organizations,external_id"],
             'pipeline_stage_id' => ['nullable', 'string', 'uuid', "exists:{$prefix}pipeline_stages,external_id"],
-            'user_owner_id' => ['nullable', 'integer', 'exists:users,id'],
+            'user_owner_id' => ['nullable', 'integer', 'exists:users,id', new OwnerInCurrentTeam],
             'labels' => ['nullable', 'array'],
             'labels.*' => ['string', 'uuid', "exists:{$prefix}labels,external_id"],
             'line_items' => ['nullable', 'array'],

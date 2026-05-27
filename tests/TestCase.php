@@ -89,6 +89,10 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('laravel-crm.route_prefix', 'crm');
         $app['config']->set('laravel-crm.user_interface', true);
 
+        // Monitor tests target stub hostnames via Http::fake(); relax the
+        // SSRF guard so DNS resolution of test-only URLs doesn't reject them.
+        $app['config']->set('laravel-crm.monitoring.allow_private_targets', true);
+
         // Mary components ship under the `mary-` prefix in host apps; mirror that here so
         // Livewire component tests can render views that reference <x-mary-form>/<x-mary-badge>.
         $app['config']->set('mary.prefix', 'mary-');

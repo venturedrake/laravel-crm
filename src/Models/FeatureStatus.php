@@ -23,7 +23,16 @@ class FeatureStatus extends Model
             return null;
         }
 
-        return str_starts_with($value, '#') ? $value : '#'.ltrim($value, '#');
+        $normalized = '#'.ltrim((string) $value, '#');
+
+        // Reject anything that isn't a strict hex literal so the value can be
+        // safely interpolated into a `style="background-color: …"` attribute
+        // without enabling CSS injection.
+        if (! preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $normalized)) {
+            return null;
+        }
+
+        return $normalized;
     }
 
     public function features()

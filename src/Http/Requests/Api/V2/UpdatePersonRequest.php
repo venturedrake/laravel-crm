@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 
 class UpdatePersonRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class UpdatePersonRequest extends FormRequest
             'birthday' => ['nullable', 'date'],
             'description' => ['nullable', 'string'],
             'organization_id' => ['nullable', 'string', 'uuid', "exists:{$prefix}organizations,external_id"],
-            'user_owner_id' => ['nullable', 'integer', 'exists:users,id'],
+            'user_owner_id' => ['nullable', 'integer', 'exists:users,id', new OwnerInCurrentTeam],
             'labels' => ['nullable', 'array'],
             'labels.*' => ['string', 'uuid', "exists:{$prefix}labels,external_id"],
         ];

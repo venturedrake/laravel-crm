@@ -25,7 +25,7 @@ trait HasFeatureStatusCommon
         return [
             'name' => 'required|max:255',
             'description' => 'nullable|max:1000',
-            'color' => 'nullable|max:32',
+            'color' => ['nullable', 'string', 'regex:/^#?(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/'],
             'order' => 'nullable|integer',
             'is_default' => 'boolean',
             'is_closed' => 'boolean',
