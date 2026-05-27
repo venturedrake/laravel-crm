@@ -23,6 +23,7 @@ class Feature extends Model
         'is_public' => 'boolean',
         'votes_count' => 'integer',
         'comments_count' => 'integer',
+        'views_count' => 'integer',
     ];
 
     protected $searchable = [
@@ -65,6 +66,11 @@ class Feature extends Model
     public function comments()
     {
         return $this->hasMany(FeatureComment::class, 'feature_id');
+    }
+
+    public function views()
+    {
+        return $this->hasMany(FeatureView::class, 'feature_id');
     }
 
     public function voters()

@@ -288,6 +288,7 @@ use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureComment;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
+use VentureDrake\LaravelCrm\Models\FeatureView;
 use VentureDrake\LaravelCrm\Models\FeatureVote;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
@@ -346,6 +347,7 @@ use VentureDrake\LaravelCrm\Observers\EmailTemplateObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureCommentObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureStatusObserver;
+use VentureDrake\LaravelCrm\Observers\FeatureViewObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureVoteObserver;
 use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
@@ -616,6 +618,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         FeatureStatus::observe(FeatureStatusObserver::class);
         FeatureComment::observe(FeatureCommentObserver::class);
         FeatureVote::observe(FeatureVoteObserver::class);
+        FeatureView::observe(FeatureViewObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
