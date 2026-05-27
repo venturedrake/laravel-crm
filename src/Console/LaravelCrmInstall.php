@@ -153,7 +153,7 @@ class LaravelCrmInstall extends Command
             $this->info('Publishing Flasher assets...');
 
             try {
-                $this->call('flasher:install');
+                $this->callSilent('flasher:install');
             } catch (\Throwable $e) {
                 $this->warn('Could not publish Flasher assets: '.$e->getMessage());
                 $this->warn('Run "php artisan flasher:install" manually if flash notifications are not working.');
