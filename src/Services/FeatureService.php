@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use App\User;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureComment;
+use VentureDrake\LaravelCrm\Models\FeatureView;
 use VentureDrake\LaravelCrm\Models\FeatureVote;
 use VentureDrake\LaravelCrm\Repositories\FeatureRepository;
 
@@ -66,6 +67,16 @@ class FeatureService
         }
 
         return (bool) $vote->delete();
+    }
+
+    public function recordView(Feature $feature, ?User $user = null, ?string $ip = null): FeatureView
+    {
+        return FeatureView::create([
+            'feature_id' => $feature->id,
+            'user_id' => $user?->id,
+            'ip_hash' => $ip ? hash('sha256', $ip) : null,
+            'viewed_at' => now(),
+        ]);
     }
 
     public function comment(Feature $feature, User $user, string $body): FeatureComment

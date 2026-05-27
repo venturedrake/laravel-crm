@@ -15,9 +15,11 @@ class PublicFeatureController extends Controller
         return view('laravel-crm::portal.features.index');
     }
 
-    public function show(Feature $feature)
+    public function show(Request $request, Feature $feature, FeatureService $featureService)
     {
         abort_unless($feature->is_public, 404);
+
+        $featureService->recordView($feature, Auth::user(), $request->ip());
 
         return view('laravel-crm::portal.features.show', compact('feature'));
     }
