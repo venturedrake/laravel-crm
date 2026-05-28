@@ -5,11 +5,16 @@ namespace VentureDrake\LaravelCrm\Observers;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
+use VentureDrake\LaravelCrm\Notifications\Concerns\ResolvesFeatureRecipients;
+use VentureDrake\LaravelCrm\Notifications\FeatureStatusChangedNotification;
+use VentureDrake\LaravelCrm\Notifications\FeatureSubmittedNotification;
 use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
 use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 
 class FeatureObserver
 {
+    use ResolvesFeatureRecipients;
+
     /**
      * Handle the feature "creating" event.
      *
@@ -44,6 +49,30 @@ class FeatureObserver
     }
 
     /**
+     * Handle the feature "created" event.
+     *
+     * @return void
+     */
+    public function created(Feature $feature)
+    {
+        $owners = $this->ownerRoleUsers($feature->team_id);
+
+        if ($owners->isEmpty()) {
+            return;
+        }
+
+        $notification = new FeatureSubmittedNotification($feature);
+
+        $targets = $owners->map(fn ($user) => [
+            'user' => $user,
+            'role' => 'Owner',
+            'notification' => $notification,
+        ]);
+
+        $this->dispatchNotifications($targets, $feature->user_created_id);
+    }
+
+    /**
      * Handle the feature "updating" event.
      *
      * @return void
@@ -53,6 +82,45 @@ class FeatureObserver
         if (! app()->runningInConsole()) {
             $feature->user_updated_id = auth()->user()->id ?? null;
         }
+    }
+
+    /**
+     * Handle the feature "updated" event.
+     *
+     * @return void
+     */
+    public function updated(Feature $feature)
+    {
+        if (! $feature->wasChanged('feature_status_id')) {
+            return;
+        }
+
+        $oldStatus = FeatureStatus::find($feature->getOriginal('feature_status_id'));
+        $newStatus = $feature->status;
+
+        $targets = collect();
+
+        if ($submitter = $feature->submittedBy) {
+            $targets->push([
+                'user' => $submitter,
+                'role' => 'submitter',
+                'notification' => new FeatureStatusChangedNotification($feature, $oldStatus, $newStatus, 'submitter'),
+            ]);
+        }
+
+        foreach ($feature->voters as $voter) {
+            $targets->push([
+                'user' => $voter,
+                'role' => 'voter',
+                'notification' => new FeatureStatusChangedNotification($feature, $oldStatus, $newStatus, 'voter'),
+            ]);
+        }
+
+        if ($targets->isEmpty()) {
+            return;
+        }
+
+        $this->dispatchNotifications($targets, auth()->id());
     }
 
     /**

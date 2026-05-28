@@ -5,9 +5,13 @@ namespace VentureDrake\LaravelCrm\Observers;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureComment;
+use VentureDrake\LaravelCrm\Notifications\Concerns\ResolvesFeatureRecipients;
+use VentureDrake\LaravelCrm\Notifications\FeatureCommentPostedNotification;
 
 class FeatureCommentObserver
 {
+    use ResolvesFeatureRecipients;
+
     /**
      * Handle the feature comment "creating" event.
      *
@@ -32,6 +36,36 @@ class FeatureCommentObserver
     public function created(FeatureComment $comment)
     {
         Feature::whereKey($comment->feature_id)->increment('comments_count');
+
+        $feature = Feature::find($comment->feature_id);
+
+        if (! $feature) {
+            return;
+        }
+
+        $targets = collect();
+
+        if ($owner = $feature->ownerUser) {
+            $targets->push([
+                'user' => $owner,
+                'role' => 'owner',
+                'notification' => new FeatureCommentPostedNotification($comment, 'owner'),
+            ]);
+        }
+
+        foreach ($this->ownerRoleUsers($feature->team_id) as $admin) {
+            $targets->push([
+                'user' => $admin,
+                'role' => 'admin',
+                'notification' => new FeatureCommentPostedNotification($comment, 'admin'),
+            ]);
+        }
+
+        if ($targets->isEmpty()) {
+            return;
+        }
+
+        $this->dispatchNotifications($targets, $comment->user_created_id);
     }
 
     /**
