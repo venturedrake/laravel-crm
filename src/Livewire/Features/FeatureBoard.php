@@ -47,11 +47,7 @@ class FeatureBoard extends KanbanBoard
 
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
     {
-        $feature = Feature::find($recordId);
-
-        if (! $feature) {
-            return;
-        }
+        $feature = Feature::findOrFail($recordId);
 
         $this->authorize('update', $feature);
 
