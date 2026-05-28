@@ -5,11 +5,15 @@ namespace VentureDrake\LaravelCrm\Observers;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
+use VentureDrake\LaravelCrm\Notifications\Concerns\ResolvesFeatureRecipients;
+use VentureDrake\LaravelCrm\Notifications\FeatureSubmittedNotification;
 use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
 use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 
 class FeatureObserver
 {
+    use ResolvesFeatureRecipients;
+
     /**
      * Handle the feature "creating" event.
      *
@@ -41,6 +45,30 @@ class FeatureObserver
                 $feature->feature_status_id = $default->id;
             }
         }
+    }
+
+    /**
+     * Handle the feature "created" event.
+     *
+     * @return void
+     */
+    public function created(Feature $feature)
+    {
+        $owners = $this->ownerRoleUsers($feature->team_id);
+
+        if ($owners->isEmpty()) {
+            return;
+        }
+
+        $notification = new FeatureSubmittedNotification($feature);
+
+        $targets = $owners->map(fn ($user) => [
+            'user' => $user,
+            'role' => 'Owner',
+            'notification' => $notification,
+        ]);
+
+        $this->dispatchNotifications($targets, $feature->user_created_id);
     }
 
     /**

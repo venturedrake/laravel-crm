@@ -6,6 +6,8 @@ use App\User;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 trait ResolvesFeatureRecipients
 {
@@ -13,25 +15,33 @@ trait ResolvesFeatureRecipients
     {
         $userModel = config('auth.providers.users.model', User::class);
 
-        if (config('laravel-crm.teams')) {
-            $roleTable = config('permission.table_names.roles', 'roles');
-            $modelHasRoles = config('permission.table_names.model_has_roles', 'model_has_roles');
-            $morphKey = config('permission.column_names.model_morph_key', 'model_id');
+        $roleTable = config('permission.table_names.roles', 'roles');
+        $modelHasRoles = config('permission.table_names.model_has_roles', 'model_has_roles');
+        $morphKey = config('permission.column_names.model_morph_key', 'model_id');
 
-            $userIds = DB::table($modelHasRoles)
-                ->join($roleTable, $modelHasRoles.'.role_id', '=', $roleTable.'.id')
-                ->where($roleTable.'.name', 'Owner')
-                ->when($teamId, fn ($q) => $q->where($modelHasRoles.'.team_id', $teamId))
-                ->pluck($modelHasRoles.'.'.$morphKey);
-
-            if ($userIds->isEmpty()) {
+        try {
+            if (! Schema::hasTable($modelHasRoles) || ! Schema::hasTable($roleTable)) {
                 return collect();
             }
-
-            $users = $userModel::whereIn('id', $userIds)->get();
-        } else {
-            $users = $userModel::role('Owner')->get();
+        } catch (Throwable $e) {
+            return collect();
         }
+
+        $query = DB::table($modelHasRoles)
+            ->join($roleTable, $modelHasRoles.'.role_id', '=', $roleTable.'.id')
+            ->where($roleTable.'.name', 'Owner');
+
+        if (config('laravel-crm.teams') && $teamId) {
+            $query->where($modelHasRoles.'.team_id', $teamId);
+        }
+
+        $userIds = $query->pluck($modelHasRoles.'.'.$morphKey);
+
+        if ($userIds->isEmpty()) {
+            return collect();
+        }
+
+        $users = $userModel::whereIn('id', $userIds)->get();
 
         return $users->reject(fn ($user) => empty($user->email))->values();
     }
