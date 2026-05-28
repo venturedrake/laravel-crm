@@ -81,7 +81,7 @@ class ProductIndex extends Component
         return Product::when($this->search, function (Builder $q) {
             $q->where('name', 'like', "%$this->search%");
         })->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
-            ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $this->label_id)))
+            ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);
     }
