@@ -946,4 +946,16 @@ return [
     'monitor_perf_subject' => 'Monitor performance alert',
     'monitor_ssl_expiring_subject' => 'Monitor SSL certificate expiring soon',
     'monitor_ssl_invalid_subject' => 'Monitor SSL certificate invalid',
+
+    // Feature notifications
+    'feature_submitted_subject' => 'New feature submitted',
+    'feature_submitted_intro' => 'A new feature has been submitted.',
+    'feature_status_changed_subject' => 'Feature status changed',
+    'feature_status_changed_intro_submitter' => 'The status of your submitted feature has changed.',
+    'feature_status_changed_intro_voter' => 'The status of a feature you voted for has changed.',
+    'feature_status_changed_from_to' => 'from :old to :new',
+    'feature_comment_posted_subject' => 'New comment on feature',
+    'feature_comment_posted_intro_owner' => 'A new comment has been posted on your feature.',
+    'feature_comment_posted_intro_admin' => 'A new comment has been posted on a feature.',
+    'view_feature' => 'view feature',
 ];
