@@ -193,6 +193,39 @@ test('perf alert fires when response_time_ms exceeds perf_threshold_ms', functio
     Notification::assertSentTo($owner, MonitorPerformanceNotification::class);
 });
 
+test('uptime check rejected by SSRF guard records null response_time and issues no HTTP request', function () {
+    Notification::fake();
+    Http::fake();
+
+    config()->set('laravel-crm.monitoring.allow_private_targets', false);
+
+    $monitor = makeMonitor([
+        'url' => 'http://127.0.0.1/',
+    ]);
+
+    $service = app(MonitorCheckService::class);
+
+    $result = $service->checkUptime($monitor);
+
+    expect($result['response_time_ms'])->toBeNull();
+    expect($result['status'])->toBe('down');
+    expect($result['error'])->toBeString()->not->toBeEmpty();
+    expect($result['error'])->toBe('URL host resolves to a non-routable address.');
+
+    Http::assertNothingSent();
+
+    (new RunMonitorCheck($monitor->id))->handle($service);
+
+    $row = MonitorCheck::where('monitor_id', $monitor->id)->where('type', 'uptime')->first();
+
+    expect($row)->not->toBeNull();
+    expect($row->response_time)->toBeNull();
+    expect($row->status)->toBe('down');
+    expect($row->error_message)->toBe('URL host resolves to a non-routable address.');
+
+    Http::assertNothingSent();
+});
+
 test('SSL check is skipped when ssl_last_checked_at is within ssl_recheck_hours', function () {
     Notification::fake();
     Http::fake([
