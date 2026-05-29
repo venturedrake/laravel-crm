@@ -18,15 +18,15 @@ class MonitorCheckService
             'error' => null,
         ];
 
-        $timeout = (int) config('laravel-crm.monitoring.request_timeout_seconds', 15);
-
-        $start = microtime(true);
-
         if ($reason = MonitorUrlGuard::reasonForRejection($monitor->url)) {
             $result['error'] = $reason;
 
             return $result;
         }
+
+        $timeout = (int) config('laravel-crm.monitoring.request_timeout_seconds', 15);
+
+        $start = microtime(true);
 
         try {
             $response = Http::timeout($timeout)->get($monitor->url);
