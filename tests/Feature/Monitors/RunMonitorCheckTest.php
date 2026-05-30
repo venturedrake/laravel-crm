@@ -1,6 +1,8 @@
 <?php
 
 use Carbon\Carbon;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Psr7\Response as Psr7Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use VentureDrake\LaravelCrm\Jobs\RunMonitorCheck;
@@ -191,6 +193,94 @@ test('perf alert fires when response_time_ms exceeds perf_threshold_ms', functio
     expect($monitor->notified_at)->not->toBeNull();
 
     Notification::assertSentTo($owner, MonitorPerformanceNotification::class);
+});
+
+test('uptime check rejected by SSRF guard records null response_time and issues no HTTP request', function () {
+    Notification::fake();
+    Http::fake();
+
+    config()->set('laravel-crm.monitoring.allow_private_targets', false);
+
+    $monitor = makeMonitor([
+        'url' => 'http://127.0.0.1/',
+    ]);
+
+    $service = app(MonitorCheckService::class);
+
+    $result = $service->checkUptime($monitor);
+
+    expect($result['response_time_ms'])->toBeNull();
+    expect($result['status'])->toBe('down');
+    expect($result['error'])->toBeString()->not->toBeEmpty();
+    expect($result['error'])->toBe('URL host resolves to a non-routable address.');
+
+    Http::assertNothingSent();
+
+    (new RunMonitorCheck($monitor->id))->handle($service);
+
+    $row = MonitorCheck::where('monitor_id', $monitor->id)->where('type', 'uptime')->first();
+
+    expect($row)->not->toBeNull();
+    expect($row->response_time)->toBeNull();
+    expect($row->status)->toBe('down');
+    expect($row->error_message)->toBe('URL host resolves to a non-routable address.');
+
+    Http::assertNothingSent();
+});
+
+test('response_time_ms comes from Guzzle on_stats transfer time, not wall-clock', function () {
+    Notification::fake();
+
+    $wallClockDelayMicros = 200_000; // ~200ms wall-clock delay inside the handler
+    $stubbedTransferSeconds = 0.01;  // ~10ms reported by on_stats
+
+    // Real Guzzle MockHandler — its invokeStats() builds a TransferStats with
+    // the transferTime taken from $options['transfer_time'] and invokes
+    // Laravel's wrapped on_stats callback. The callable response delays via
+    // usleep so wall-clock elapsed is provably distinct from the stubbed value.
+    $mockHandler = new MockHandler([
+        function ($request, $options) use ($wallClockDelayMicros) {
+            usleep($wallClockDelayMicros);
+
+            return new Psr7Response(200, [], 'OK');
+        },
+    ]);
+
+    // Push the MockHandler in via globalMiddleware so it short-circuits the
+    // PendingRequest's handler stack before the default cURL handler runs.
+    // Setting transfer_time here makes MockHandler hand on_stats a known value.
+    Http::globalMiddleware(function (callable $handler) use ($mockHandler, $stubbedTransferSeconds) {
+        return function ($request, $options) use ($mockHandler, $stubbedTransferSeconds) {
+            $options['transfer_time'] = $stubbedTransferSeconds;
+
+            return $mockHandler($request, $options);
+        };
+    });
+
+    $monitor = makeMonitor();
+
+    $service = app(MonitorCheckService::class);
+
+    $wallStart = microtime(true);
+    $result = $service->checkUptime($monitor);
+    $wallElapsedMs = (int) round((microtime(true) - $wallStart) * 1000);
+
+    expect($result['status'])->toBe('up');
+    expect($result['status_code'])->toBe(200);
+
+    // Wall-clock must clearly be in the delay range so the test is a real
+    // discriminator: if checkUptime() reverted to wall-clock measurement, the
+    // following response_time_ms assertions would fail.
+    expect($wallElapsedMs)->toBeGreaterThanOrEqual(150);
+
+    // response_time_ms must reflect the on_stats transfer time (≈10ms), with
+    // a small tolerance to absorb integer rounding.
+    expect($result['response_time_ms'])->not->toBeNull();
+    expect($result['response_time_ms'])->toBeGreaterThanOrEqual(8);
+    expect($result['response_time_ms'])->toBeLessThanOrEqual(15);
+
+    // And it must be clearly distinct from wall-clock (≥100ms gap).
+    expect($wallElapsedMs - $result['response_time_ms'])->toBeGreaterThanOrEqual(100);
 });
 
 test('SSL check is skipped when ssl_last_checked_at is within ssl_recheck_hours', function () {

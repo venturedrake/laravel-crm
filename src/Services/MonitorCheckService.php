@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use Carbon\Carbon;
+use GuzzleHttp\TransferStats;
 use Illuminate\Support\Facades\Http;
 use Throwable;
 use VentureDrake\LaravelCrm\Models\Monitor;
@@ -18,20 +19,27 @@ class MonitorCheckService
             'error' => null,
         ];
 
-        $timeout = (int) config('laravel-crm.monitoring.request_timeout_seconds', 15);
-
-        $start = microtime(true);
-
         if ($reason = MonitorUrlGuard::reasonForRejection($monitor->url)) {
             $result['error'] = $reason;
 
             return $result;
         }
 
-        try {
-            $response = Http::timeout($timeout)->get($monitor->url);
+        $timeout = (int) config('laravel-crm.monitoring.request_timeout_seconds', 15);
 
-            $result['response_time_ms'] = (int) round((microtime(true) - $start) * 1000);
+        $start = microtime(true);
+        $transferSeconds = null;
+
+        try {
+            $response = Http::timeout($timeout)
+                ->withOptions(['on_stats' => function (TransferStats $stats) use (&$transferSeconds) {
+                    $transferSeconds = $stats->getTransferTime();
+                }])
+                ->get($monitor->url);
+
+            $result['response_time_ms'] = $transferSeconds !== null
+                ? (int) round($transferSeconds * 1000)
+                : (int) round((microtime(true) - $start) * 1000);
             $result['status_code'] = $response->status();
 
             if ($response->successful()) {
