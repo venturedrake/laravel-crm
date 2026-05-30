@@ -143,11 +143,31 @@ trait HasCustomFormFields
     }
 
     /**
+     * Initialize default values for custom fields. Runs automatically on mount
+     * via Livewire's trait lifecycle hook.
+     */
+    public function mountHasCustomFormFields(): void
+    {
+        $this->initCustomFieldDefaults();
+    }
+
+    protected function initCustomFieldDefaults(): void
+    {
+        foreach ($this->customFields() as $field) {
+            if ($field->type === 'checkbox_multiple' && ! isset($this->fields[$field->id])) {
+                $this->fields[$field->id] = [];
+            }
+        }
+    }
+
+    /**
      * Hydrate the `$fields` property from a model's stored FieldValue rows.
      * Call this from a component's mount() method when editing.
      */
     protected function loadCustomFields(EloquentModel $model): void
     {
+        $this->initCustomFieldDefaults();
+
         if (! method_exists($model, 'fields')) {
             return;
         }
