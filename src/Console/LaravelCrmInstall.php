@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
+use function Laravel\Prompts\multiselect;
+
 class LaravelCrmInstall extends Command
 {
     /**
@@ -22,6 +24,7 @@ class LaravelCrmInstall extends Command
                            {--owner-password= : Owner password (skips prompt)}
                            {--enable-teams : Enable multi-tenancy without prompting}
                            {--enable-encryption : Enable sensitive field encryption without prompting}
+                           {--modules= : Comma-separated list of modules to enable (skips prompt). Use "all" for every module}
                            {--production : Skip dev-only steps (publishing, migrations, model patching) — only runs seeders, lead-sources, and user setup}';
 
     /**
@@ -134,6 +137,8 @@ class LaravelCrmInstall extends Command
                     $this->info('Existing configuration was not overwritten');
                 }
             }
+
+            $this->selectModules();
 
             $this->info('Publishing migrations...');
 
@@ -601,6 +606,87 @@ class LaravelCrmInstall extends Command
         DB::table($modelHasRoles)->insert($row);
 
         $this->info('Owner role assigned.');
+    }
+
+    /**
+     * Prompt the user to select which CRM modules to enable, then rewrite the
+     * `modules` array in the published config.
+     */
+    private function selectModules(): void
+    {
+        $available = [
+            'leads' => 'Leads',
+            'deals' => 'Deals',
+            'quotes' => 'Quotes',
+            'orders' => 'Orders',
+            'invoices' => 'Invoices',
+            'deliveries' => 'Deliveries',
+            'purchase-orders' => 'Purchase orders',
+            'teams' => 'Teams',
+            'chat' => 'Chat',
+            'email-marketing' => 'Email marketing',
+            'sms-marketing' => 'SMS marketing',
+            'features' => 'Features',
+            'monitoring' => 'Monitoring (uptime / SSL)',
+        ];
+
+        $allKeys = array_keys($available);
+
+        if ($modulesOption = $this->option('modules')) {
+            $selected = strtolower(trim($modulesOption)) === 'all'
+                ? $allKeys
+                : array_values(array_intersect(
+                    $allKeys,
+                    array_map('trim', explode(',', $modulesOption))
+                ));
+        } elseif ($this->isInteractive()) {
+            $selected = multiselect(
+                label: 'Which CRM modules would you like to enable?',
+                options: $available,
+                default: $allKeys,
+                hint: 'Use space to select, enter to confirm. You can change these later in config/laravel-crm.php.',
+            );
+        } else {
+            $selected = $allKeys;
+        }
+
+        $this->writeModulesToConfig($selected);
+
+        $this->info('Modules enabled: '.(empty($selected) ? '(none)' : implode(', ', $selected)));
+    }
+
+    /**
+     * Rewrite the `modules` array in the published config/laravel-crm.php file.
+     */
+    private function writeModulesToConfig(array $modules): void
+    {
+        $configPath = config_path('laravel-crm.php');
+
+        if (! File::exists($configPath)) {
+            $this->warn('Could not locate config/laravel-crm.php to update module list.');
+
+            return;
+        }
+
+        $contents = File::get($configPath);
+
+        $entries = array_map(fn ($m) => "        '{$m}',", $modules);
+        $replacement = "'modules' => [\n".implode("\n", $entries).(empty($entries) ? '' : "\n")."    ],";
+
+        $updated = preg_replace(
+            "/'modules'\s*=>\s*\[[^\]]*\],/s",
+            $replacement,
+            $contents,
+            1
+        );
+
+        if ($updated === null || $updated === $contents) {
+            $this->warn('Could not update modules in config/laravel-crm.php. Edit it manually.');
+
+            return;
+        }
+
+        File::put($configPath, $updated);
     }
 
     /**
