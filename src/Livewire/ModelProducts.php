@@ -265,6 +265,21 @@ class ModelProducts extends Component
     public function remove($index)
     {
         unset($this->products[$index]);
+        $this->products = array_values($this->products);
+
+        $this->sub_total = 0;
+        $this->tax = 0;
+
+        foreach ($this->products as $product) {
+            $this->sub_total += (float) ($product['amount'] ?? 0);
+            $this->tax += (float) ($product['tax_amount'] ?? 0);
+        }
+
+        $this->total = round($this->sub_total + $this->tax, 2);
+        $this->sub_total = round($this->sub_total, 2);
+        $this->tax = round($this->tax, 2);
+
+        $this->dispatch('model-products-updated', products: $this->products, sub_total: $this->sub_total, tax: $this->tax, total: $this->total);
     }
 
     public function render()

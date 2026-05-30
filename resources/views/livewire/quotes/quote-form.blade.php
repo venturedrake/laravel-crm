@@ -64,5 +64,5 @@
     <x-crm-custom-fields :model="$quote ?? new \VentureDrake\LaravelCrm\Models\Quote()" :group="true" />
 </div>
 <div>
-   <livewire:crm-model-products :model="$quote ?? null" />
+   <livewire:crm-model-products :model="$quote ?? null" wire:key="model-products-{{ $quote->id ?? 'new' }}" />
 </div>

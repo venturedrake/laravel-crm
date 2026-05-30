@@ -7,15 +7,15 @@
     <div class="grid gap-3" wire:key="data-products">
         <div class="overflow-x-auto">
             <table class="table">
-                <tbody id="sortableItems">
+                <tbody class="model-products-rows">
                 @foreach($products as $index => $product)
-                    <tr class="hover:bg-base-300 cursor-grab">
+                    <tr wire:key="product-row-{{ $index }}" class="hover:bg-base-300 cursor-grab">
                         <td class="px-3 relative" colspan="2">
                             <div class="space-y-3">
                                 @if(in_array($from, ['Quote', 'Order']) || class_basename($model) == 'Delivery')
                                     <x-mary-input wire:model="products.{{ $index }}.name" readonly />
                                 @else
-                                    <x-mary-select wire:model.live="products.{{ $index }}.id"
+                                    <x-mary-select wire:model.change="products.{{ $index }}.id"
                                                    :options="\VentureDrake\LaravelCrm\Models\Product::orderBy('name')->get() ?? []"
                                                    placeholder="{{ ucfirst(__('laravel-crm::lang.select_product')) }}"
                                                    label="{{ ucfirst(__('laravel-crm::lang.name')) }}" single>
