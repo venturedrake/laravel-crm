@@ -26,7 +26,7 @@
         <div>
             <fieldset class="fieldset py-0">
                 <legend class="fieldset-legend mb-2">{{ $label }}</legend>
-                <div class="gap-4 grid">
+                <div class="gap-1 grid [&_fieldset]:py-0">
                     @foreach($field->fieldOptions as $option)
                         <x-mary-checkbox
                             wire:model="{{ $key }}"
