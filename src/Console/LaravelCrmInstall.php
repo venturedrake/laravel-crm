@@ -632,7 +632,9 @@ class LaravelCrmInstall extends Command
 
         $allKeys = array_keys($available);
 
-        if ($modulesOption = $this->option('modules')) {
+        $modulesOption = $this->option('modules');
+
+        if ($modulesOption !== null) {
             $selected = strtolower(trim($modulesOption)) === 'all'
                 ? $allKeys
                 : array_values(array_intersect(
