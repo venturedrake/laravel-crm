@@ -34,16 +34,16 @@
                                 <div class="grid {{ ($creating != 'Delivery') ? 'lg:grid-cols-4' : null }} gap-2">
                                     @if($creating != 'Delivery')
                                         @if(in_array($from, ['Quote', 'Order']) && $creating != 'PurchaseOrder')
-                                            <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
+                                            <x-mary-input wire:model.live.debounce.500ms="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" readonly />
                                         @else
-                                            <x-mary-input wire:model.blur="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
+                                            <x-mary-input wire:model.live.debounce.500ms="products.{{ $index }}.unit_price" label="{{ ucfirst(__('laravel-crm::lang.price')) }}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" />
                                         @endif
                                     @endif
 
                                     @if(in_array($from, ['Order']) && $creating != 'PurchaseOrder')
-                                        <x-mary-select wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" :options="$products[$index]['quantities']" />
+                                        <x-mary-select wire:model.live="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" :options="$products[$index]['quantities']" />
                                     @else
-                                        <x-mary-input wire:model.blur="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" type="number" />
+                                        <x-mary-input wire:model.live.debounce.500ms="products.{{ $index }}.quantity" label="{{ ucfirst(__('laravel-crm::lang.quantity')) }}" type="number" />
                                     @endif
 
                                     @if($creating != 'Delivery')    
