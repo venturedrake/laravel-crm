@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use VentureDrake\LaravelCrm\Tests\Stubs\User;
 
 if (! class_exists('App\Models\User')) {
-    class_alias(\VentureDrake\LaravelCrm\Tests\Stubs\User::class, 'App\Models\User');
+    class_alias(User::class, 'App\Models\User');
 }
 
 beforeEach(function () {
@@ -37,7 +38,7 @@ test('install --modules=all writes all 13 known module keys to config', function
             '--owner-password' => 'secret-password',
             '--no-interaction' => true,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // selectModules() runs before downstream steps (migrate/seed/publish-assets)
         // that may fail in the testbench environment. The config is already written
         // by the time those steps run, so we tolerate the exception here and assert
@@ -72,7 +73,7 @@ test('install --modules=leads,deals,quotes writes exactly those three keys in or
             '--owner-password' => 'secret-password',
             '--no-interaction' => true,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // See note above.
     }
 
@@ -90,7 +91,7 @@ test('install --modules=leads,bogus,deals silently drops unknown keys via array_
             '--owner-password' => 'secret-password',
             '--no-interaction' => true,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // See note above.
     }
 
@@ -108,7 +109,7 @@ test('install --modules= (empty string) writes an empty modules array, not the d
             '--owner-password' => 'secret-password',
             '--no-interaction' => true,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // See note above.
     }
 
@@ -130,7 +131,7 @@ test('install warns and does not throw when published config file is missing', f
             '--owner-password' => 'secret-password',
             '--no-interaction' => true,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // The downstream install steps (migrate/seed/publish) can throw in
         // testbench. The selectModules() warning we want to assert on is
         // emitted before any of those, so we only fail the test if the
@@ -151,7 +152,7 @@ test('running install twice rewrites modules idempotently (regex replaces, not a
             '--owner-password' => 'secret-password',
             '--no-interaction' => true,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // See note above.
     }
 
@@ -168,7 +169,7 @@ test('running install twice rewrites modules idempotently (regex replaces, not a
             '--owner-password' => 'secret-password',
             '--no-interaction' => true,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // See note above.
     }
 

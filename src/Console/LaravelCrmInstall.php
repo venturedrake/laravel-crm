@@ -673,7 +673,7 @@ class LaravelCrmInstall extends Command
         $contents = File::get($configPath);
 
         $entries = array_map(fn ($m) => "        '{$m}',", $modules);
-        $replacement = "'modules' => [\n".implode("\n", $entries).(empty($entries) ? '' : "\n")."    ],";
+        $replacement = "'modules' => [\n".implode("\n", $entries).(empty($entries) ? '' : "\n").'    ],';
 
         $updated = preg_replace(
             "/'modules'\s*=>\s*\[[^\]]*\],/s",
