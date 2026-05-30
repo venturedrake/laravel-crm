@@ -21,10 +21,28 @@ class FileRelated extends Component
 
     public $uploadedFile;
 
+    public int $maxFileSizeKb = 10240;
+
+    public array $allowedMimes = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'tsv', 'txt', 'zip'];
+
+    public function getMaxFileSizeLabelProperty(): string
+    {
+        if ($this->maxFileSizeKb >= 1024) {
+            return (int) ($this->maxFileSizeKb / 1024).' MB';
+        }
+
+        return $this->maxFileSizeKb.' KB';
+    }
+
     public function save(): void
     {
         $this->validate([
-            'uploadedFile' => 'required|file|max:10240',
+            'uploadedFile' => [
+                'required',
+                'file',
+                'max:'.$this->maxFileSizeKb,
+                'mimes:'.implode(',', $this->allowedMimes),
+            ],
         ]);
 
         $disk = config('filesystems.default', 'local');
