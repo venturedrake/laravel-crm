@@ -227,7 +227,7 @@ class ModelProducts extends Component
 
                 $this->products[$updating[0]]['tax_rate'] = $taxRate;
 
-                $unitPrice = (float) ($this->products[$updating[0]]['unit_price'] ?? 0);
+                $unitPrice = \VentureDrake\LaravelCrm\Http\Helpers\ConvertCase\floatfromNumberFormat($this->products[$updating[0]]['unit_price'] ?? 0);
                 $tax = ($unitPrice * $quantity) * ((float) $taxRate / 100);
                 $this->products[$updating[0]]['tax_amount'] = round($tax, 2);
                 $this->products[$updating[0]]['amount'] = $unitPrice * $quantity;

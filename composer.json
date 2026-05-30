@@ -71,7 +71,8 @@
             "src/Http/Helpers/AutoComplete.php",
             "src/Http/Helpers/CheckAmount.php",
             "src/Http/Helpers/Validate.php",
-            "src/Http/Helpers/PublicProperties.php"
+            "src/Http/Helpers/PublicProperties.php",
+            "src/Http/Helpers/ConvertCase.php"
         ]
     },
     "autoload-dev": {
