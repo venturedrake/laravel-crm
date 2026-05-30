@@ -29,6 +29,10 @@ class FileRelated extends Component
 
         $disk = config('filesystems.default', 'local');
 
+        $originalName = $this->uploadedFile->getClientOriginalName();
+        $filesize = $this->uploadedFile->getSize();
+        $mime = $this->uploadedFile->getMimeType();
+
         $path = $this->uploadedFile->store(
             'laravel-crm/'.strtolower(class_basename($this->model)).'/'.$this->model->id.'/files',
             $disk
@@ -36,9 +40,9 @@ class FileRelated extends Component
 
         $fileModel = $this->model->files()->create([
             'file' => $path,
-            'name' => $this->uploadedFile->getClientOriginalName(),
-            'filesize' => $this->uploadedFile->getSize(),
-            'mime' => $this->uploadedFile->getMimeType(),
+            'name' => $originalName,
+            'filesize' => $filesize,
+            'mime' => $mime,
             'disk' => $disk,
         ]);
 
