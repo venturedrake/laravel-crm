@@ -52,5 +52,5 @@
     </x-mary-card>
 </div>
 <div>
-    <livewire:crm-model-products :model="$fromModel ?? $invoice ?? null" creating="Invoice" :from="$fromModel ? class_basename($fromModel) : null" />
+    <livewire:crm-model-products :model="$fromModel ?? $invoice ?? null" creating="Invoice" :from="$fromModel ? class_basename($fromModel) : null" wire:key="model-products-{{ $invoice->id ?? 'new' }}" />
 </div>
