@@ -15,7 +15,7 @@
                                 @if(in_array($from, ['Quote', 'Order']) || class_basename($model) == 'Delivery')
                                     <x-mary-input wire:model="products.{{ $index }}.name" readonly />
                                 @else
-                                    <x-mary-select wire:model.change="products.{{ $index }}.id"
+                                    <x-mary-select wire:model.live="products.{{ $index }}.id"
                                                    :options="\VentureDrake\LaravelCrm\Models\Product::orderBy('name')->get() ?? []"
                                                    placeholder="{{ ucfirst(__('laravel-crm::lang.select_product')) }}"
                                                    label="{{ ucfirst(__('laravel-crm::lang.name')) }}" single>
