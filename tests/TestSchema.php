@@ -309,6 +309,26 @@ class TestSchema
             $table->softDeletes();
         });
 
+        Schema::create($prefix.'files', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->morphs('fileable');
+            $table->string('file');
+            $table->string('name')->nullable();
+            $table->string('title')->nullable();
+            $table->string('format')->nullable();
+            $table->string('filesize')->nullable();
+            $table->string('mime')->nullable();
+            $table->string('disk')->default('local');
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create($prefix.'tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id')->nullable();
