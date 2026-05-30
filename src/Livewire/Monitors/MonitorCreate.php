@@ -17,7 +17,7 @@ class MonitorCreate extends Component
     public function save()
     {
         $validated = $this->validate();
-        
+
         try {
             $monitor = $this->monitorService->create($validated);
         } catch (\Throwable $e) {
