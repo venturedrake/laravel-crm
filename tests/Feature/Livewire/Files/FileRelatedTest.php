@@ -67,3 +67,39 @@ test('save with file larger than 10 MB triggers max validation error', function 
     expect(File::count())->toBe(0);
     expect(Activity::count())->toBe(0);
 });
+
+test('saved File.name preserves the original client filename, not the hashed store() path', function () {
+    $upload = UploadedFile::fake()->create('quarterly-report.pdf', 1, 'application/pdf');
+
+    Livewire::test(FileRelated::class, ['model' => $this->lead])
+        ->set('uploadedFile', $upload)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $file = File::first();
+    expect($file)->not->toBeNull();
+    expect($file->name)->toBe('quarterly-report.pdf');
+    expect($file->name)->not->toBe($file->file);
+    expect(Str::endsWith($file->file, '.pdf'))->toBeTrue();
+    expect(basename($file->file))->not->toBe('quarterly-report.pdf');
+});
+
+dataset('file mime types', [
+    'pdf' => ['quarterly-report.pdf', 'application/pdf'],
+    'png' => ['screenshot.png', 'image/png'],
+    'docx' => ['proposal.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+]);
+
+test('save records the correct mime for each upload type', function (string $filename, string $expectedMime) {
+    $upload = UploadedFile::fake()->create($filename, 1, $expectedMime);
+
+    Livewire::test(FileRelated::class, ['model' => $this->lead])
+        ->set('uploadedFile', $upload)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $file = File::first();
+    expect($file)->not->toBeNull();
+    expect($file->mime)->toBe($expectedMime);
+    expect($file->name)->toBe($filename);
+})->with('file mime types');
