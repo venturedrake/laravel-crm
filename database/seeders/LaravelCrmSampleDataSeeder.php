@@ -4047,19 +4047,13 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
         $statuses = FeatureStatus::all()->keyBy('name');
 
-        // All user IDs available for votes/comments (primary + sample users)
-        $allUserIds = collect([$this->userId])
-            ->merge($this->sampleUserIds ?? collect())
-            ->unique()
-            ->values();
-
         $features = [
             [
                 'title'       => 'Bulk email sending from contact list',
                 'description' => 'Allow users to select multiple contacts from the People or Organizations list and send a bulk email directly from the CRM without needing a campaign. Useful for quick one-off outreach.',
                 'status'      => 'Planned',
                 'is_public'   => true,
-                'votes'       => 8,
+                'votes'       => 142,
                 'comments'    => [
                     ['body' => 'This would save so much time for our sales team. We currently export to CSV and use a third-party tool.', 'is_admin_reply' => false],
                     ['body' => 'Great suggestion! We have this on our roadmap for the next major release. Stay tuned for updates.', 'is_admin_reply' => true],
@@ -4071,7 +4065,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'Sync meetings and tasks with Google Calendar so changes made in either system are reflected in the other. Would reduce double-entry and missed appointments.',
                 'status'      => 'Under Review',
                 'is_public'   => true,
-                'votes'       => 14,
+                'votes'       => 218,
                 'comments'    => [
                     ['body' => 'We desperately need this. Our team lives in Google Calendar and the CRM feels disconnected right now.', 'is_admin_reply' => false],
                     ['body' => 'Is Outlook Calendar support also on the cards?', 'is_admin_reply' => false],
@@ -4083,7 +4077,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'A dashboard widget that aggregates weighted deal values by pipeline stage probability to give a realistic revenue forecast for the current month and quarter.',
                 'status'      => 'In Progress',
                 'is_public'   => true,
-                'votes'       => 21,
+                'votes'       => 387,
                 'comments'    => [
                     ['body' => 'This is exactly what our CFO has been asking for. Weighted pipeline is a standard sales metric.', 'is_admin_reply' => false],
                     ['body' => 'We started building this! Targeting the next release. Will include monthly and quarterly views.', 'is_admin_reply' => true],
@@ -4096,7 +4090,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'Let each user configure which CRM events trigger email or in-app notifications. For example, some users only want notifications for their own deals while others want team-wide alerts.',
                 'status'      => 'Under Review',
                 'is_public'   => true,
-                'votes'       => 9,
+                'votes'       => 163,
                 'comments'    => [
                     ['body' => 'The current one-size-fits-all notifications are too noisy for large teams. This is a must-have.', 'is_admin_reply' => false],
                     ['body' => 'Agreed. A per-user notification preference panel is on our backlog. Upvote to help us prioritise.', 'is_admin_reply' => true],
@@ -4107,7 +4101,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'A native or progressive web app so sales reps can access leads, log calls and update deals while on the road without needing a laptop.',
                 'status'      => 'Under Review',
                 'is_public'   => true,
-                'votes'       => 37,
+                'votes'       => 521,
                 'comments'    => [
                     ['body' => 'By far the most requested feature from our team. Even a basic PWA would be a huge improvement.', 'is_admin_reply' => false],
                     ['body' => 'We are actively researching PWA vs native. This is a significant investment and we want to get it right.', 'is_admin_reply' => true],
@@ -4120,7 +4114,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'Automatically generate and optionally send invoices on a recurring schedule (weekly, monthly, quarterly) for subscription-style clients. Should support start/end date and max occurrences.',
                 'status'      => 'Planned',
                 'is_public'   => true,
-                'votes'       => 18,
+                'votes'       => 274,
                 'comments'    => [
                     ['body' => 'We have about 30 recurring clients and this would eliminate hours of manual work every month.', 'is_admin_reply' => false],
                     ['body' => 'Planned for Q3. Will also integrate with the Xero sync so recurring invoices push across automatically.', 'is_admin_reply' => true],
@@ -4131,7 +4125,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'Automatically score leads based on activities such as email opens, link clicks, page visits (via the chat widget), and call outcomes. Higher scores should surface leads in a priority view.',
                 'status'      => 'Under Review',
                 'is_public'   => true,
-                'votes'       => 11,
+                'votes'       => 198,
                 'comments'    => [
                     ['body' => 'We currently do this manually in a spreadsheet. Native scoring in the CRM would be game-changing.', 'is_admin_reply' => false],
                     ['body' => 'Configurable scoring rules (e.g. +10 for email open, +25 for demo booked) are the right approach here.', 'is_admin_reply' => false],
@@ -4143,7 +4137,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'Connect a WhatsApp Business account so agents can send and receive WhatsApp messages from within the CRM, with all messages logged against the contact record.',
                 'status'      => 'Under Review',
                 'is_public'   => true,
-                'votes'       => 29,
+                'votes'       => 445,
                 'comments'    => [
                     ['body' => 'Our customers mostly communicate via WhatsApp. This would unify all comms in one place.', 'is_admin_reply' => false],
                     ['body' => 'Is this feasible through the WhatsApp Cloud API?', 'is_admin_reply' => false],
@@ -4155,7 +4149,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'Several data tables and inline forms have poor contrast in dark mode. Specifically the quote line item table, invoice totals section, and the kanban board card details.',
                 'status'      => 'Completed',
                 'is_public'   => true,
-                'votes'       => 6,
+                'votes'       => 89,
                 'comments'    => [
                     ['body' => 'The invoice totals table is almost unreadable in dark mode on my external monitor.', 'is_admin_reply' => false],
                     ['body' => 'Fixed in v2.4.1 — all table and form contrast issues have been resolved. Thanks for reporting!', 'is_admin_reply' => true],
@@ -4166,7 +4160,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
                 'description' => 'Allow users to configure outbound webhooks that fire when CRM events occur (e.g. lead created, deal stage changed, invoice paid). Essential for Zapier and custom integration workflows.',
                 'status'      => 'Planned',
                 'is_public'   => true,
-                'votes'       => 24,
+                'votes'       => 312,
                 'comments'    => [
                     ['body' => 'We use Zapier to connect the CRM to our project management tool. Right now we poll the API which is inefficient.', 'is_admin_reply' => false],
                     ['body' => 'Webhooks are on the roadmap and will ship alongside the expanded REST API in the next major version.', 'is_admin_reply' => true],
@@ -4199,19 +4193,36 @@ class LaravelCrmSampleDataSeeder extends Seeder
 
             $this->backdateModel($feature, $createdAt);
 
-            // Add votes — pick random users up to the requested vote count
-            $voterPool = $allUserIds->shuffle()->take($data['votes']);
-            foreach ($voterPool as $voterId) {
-                DB::table(config('laravel-crm.db_table_prefix').'feature_votes')->insert([
+            // Add votes spread across the last 90 days.
+            // Because votes can come from portal visitors (not just CRM users), we use
+            // synthetic sequential IDs starting well above any real user ID to avoid FK
+            // conflicts while still satisfying the unique(feature_id, user_id) constraint.
+            $voteRows = [];
+            $ninetyDaysAgo = Carbon::now('UTC')->subDays(90);
+            $voteWindowStart = $createdAt->lt($ninetyDaysAgo) ? $ninetyDaysAgo : $createdAt;
+            $voteWindowSeconds = max(1, $voteWindowStart->diffInSeconds(Carbon::now('UTC')));
+
+            // Synthetic user IDs start at 1_000_000 + offset unique per feature to avoid
+            // collisions between features when running the seeder multiple times on a fresh DB.
+            $syntheticBase = 1_000_000 + ($featureNumber * 10_000);
+
+            for ($v = 0; $v < $data['votes']; $v++) {
+                $secondsOffset = mt_rand(0, $voteWindowSeconds);
+                $voteDate = $voteWindowStart->copy()->addSeconds($secondsOffset);
+                $voteRows[] = [
                     'feature_id' => $feature->id,
-                    'user_id'    => $voterId,
-                    'created_at' => $createdAt->copy()->addMinutes(mt_rand(5, 1440)),
-                    'updated_at' => $createdAt->copy()->addMinutes(mt_rand(5, 1440)),
-                ]);
+                    'user_id'    => $syntheticBase + $v,
+                    'created_at' => $voteDate,
+                    'updated_at' => $voteDate,
+                ];
             }
 
-            $voteCount = $voterPool->count();
-            DB::table($feature->getTable())->where('id', $feature->id)->update(['votes_count' => $voteCount]);
+            // Insert in chunks to avoid query size limits
+            foreach (array_chunk($voteRows, 500) as $chunk) {
+                DB::table(config('laravel-crm.db_table_prefix').'feature_votes')->insert($chunk);
+            }
+
+            DB::table($feature->getTable())->where('id', $feature->id)->update(['votes_count' => count($voteRows)]);
 
             // Add comments
             $commentOffset = mt_rand(10, 120);
