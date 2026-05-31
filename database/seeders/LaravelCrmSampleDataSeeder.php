@@ -61,6 +61,9 @@ use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\SmsCampaign;
 use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
 use VentureDrake\LaravelCrm\Models\SmsTemplate;
+use VentureDrake\LaravelCrm\Models\Feature;
+use VentureDrake\LaravelCrm\Models\FeatureComment;
+use VentureDrake\LaravelCrm\Models\FeatureStatus;
 use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\Team;
@@ -295,6 +298,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $this->seedEmailCampaigns();
         $this->seedSmsCampaigns();
         $this->seedMonitors();
+        $this->seedFeatures();
 
         $elapsed = round(microtime(true) - $startTime, 1);
         $this->printSummary($elapsed);
@@ -333,6 +337,7 @@ class LaravelCrmSampleDataSeeder extends Seeder
             ['Chat Messages',       ChatMessage::count()],
             ['Email Campaigns',     EmailCampaign::count()],
             ['SMS Campaigns',       SmsCampaign::count()],
+            ['Features',            Feature::count()],
         ];
 
         foreach ($rows as [$label, $count]) {
@@ -616,6 +621,8 @@ class LaravelCrmSampleDataSeeder extends Seeder
             'chat_messages', 'chat_conversations', 'chat_visitor_page_views', 'chat_visitors', 'chat_widgets',
             // Monitors
             'monitor_checks', 'monitors',
+            // Features
+            'feature_comments', 'feature_votes', 'feature_views', 'features', 'feature_statuses',
             // Custom fields seeded by seedCustomFieldGroups()
             'field_values', 'field_models', 'field_options', 'fields', 'field_groups',
         ];
@@ -4005,6 +4012,231 @@ class LaravelCrmSampleDataSeeder extends Seeder
         }
 
         $this->command->line('    <fg=green>✓ Monitors seeded (2)</>');
+        $this->command->line('');
+    }
+
+    // =========================================================================
+    // Features
+    // =========================================================================
+
+    protected function seedFeatures(): void
+    {
+        if (! Schema::hasTable(config('laravel-crm.db_table_prefix').'features')) {
+            return;
+        }
+
+        // Ensure feature statuses exist (seeded by laravelcrm:install or laravelcrm:update)
+        // If none are present, create a minimal set so features have valid status IDs.
+        if (FeatureStatus::count() === 0) {
+            $statusDefs = [
+                ['name' => 'Under Review',  'color' => '#6366f1', 'order' => 1, 'is_default' => true,  'is_closed' => false],
+                ['name' => 'Planned',       'color' => '#3b82f6', 'order' => 2, 'is_default' => false, 'is_closed' => false],
+                ['name' => 'In Progress',   'color' => '#f59e0b', 'order' => 3, 'is_default' => false, 'is_closed' => false],
+                ['name' => 'Completed',     'color' => '#10b981', 'order' => 4, 'is_default' => false, 'is_closed' => true],
+                ['name' => 'Declined',      'color' => '#ef4444', 'order' => 5, 'is_default' => false, 'is_closed' => true],
+            ];
+
+            foreach ($statusDefs as $def) {
+                FeatureStatus::create(array_merge($def, [
+                    'external_id'     => (string) Str::uuid(),
+                    'user_created_id' => $this->userId,
+                    'user_updated_id' => $this->userId,
+                ]));
+            }
+        }
+
+        $statuses = FeatureStatus::all()->keyBy('name');
+
+        // All user IDs available for votes/comments (primary + sample users)
+        $allUserIds = collect([$this->userId])
+            ->merge($this->sampleUserIds ?? collect())
+            ->unique()
+            ->values();
+
+        $features = [
+            [
+                'title'       => 'Bulk email sending from contact list',
+                'description' => 'Allow users to select multiple contacts from the People or Organizations list and send a bulk email directly from the CRM without needing a campaign. Useful for quick one-off outreach.',
+                'status'      => 'Planned',
+                'is_public'   => true,
+                'votes'       => 8,
+                'comments'    => [
+                    ['body' => 'This would save so much time for our sales team. We currently export to CSV and use a third-party tool.', 'is_admin_reply' => false],
+                    ['body' => 'Great suggestion! We have this on our roadmap for the next major release. Stay tuned for updates.', 'is_admin_reply' => true],
+                    ['body' => 'Would love to see a preview before sending as well.', 'is_admin_reply' => false],
+                ],
+            ],
+            [
+                'title'       => 'Two-way calendar sync with Google Calendar',
+                'description' => 'Sync meetings and tasks with Google Calendar so changes made in either system are reflected in the other. Would reduce double-entry and missed appointments.',
+                'status'      => 'Under Review',
+                'is_public'   => true,
+                'votes'       => 14,
+                'comments'    => [
+                    ['body' => 'We desperately need this. Our team lives in Google Calendar and the CRM feels disconnected right now.', 'is_admin_reply' => false],
+                    ['body' => 'Is Outlook Calendar support also on the cards?', 'is_admin_reply' => false],
+                    ['body' => 'We are evaluating both Google and Outlook integrations together. Will update this request once scoped.', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'Deal probability forecasting dashboard',
+                'description' => 'A dashboard widget that aggregates weighted deal values by pipeline stage probability to give a realistic revenue forecast for the current month and quarter.',
+                'status'      => 'In Progress',
+                'is_public'   => true,
+                'votes'       => 21,
+                'comments'    => [
+                    ['body' => 'This is exactly what our CFO has been asking for. Weighted pipeline is a standard sales metric.', 'is_admin_reply' => false],
+                    ['body' => 'We started building this! Targeting the next release. Will include monthly and quarterly views.', 'is_admin_reply' => true],
+                    ['body' => 'Can we export the forecast to CSV for board reporting?', 'is_admin_reply' => false],
+                    ['body' => 'CSV export will be included in the initial release. PDF export will follow.', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'Custom notification rules per user',
+                'description' => 'Let each user configure which CRM events trigger email or in-app notifications. For example, some users only want notifications for their own deals while others want team-wide alerts.',
+                'status'      => 'Under Review',
+                'is_public'   => true,
+                'votes'       => 9,
+                'comments'    => [
+                    ['body' => 'The current one-size-fits-all notifications are too noisy for large teams. This is a must-have.', 'is_admin_reply' => false],
+                    ['body' => 'Agreed. A per-user notification preference panel is on our backlog. Upvote to help us prioritise.', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'Mobile app for iOS and Android',
+                'description' => 'A native or progressive web app so sales reps can access leads, log calls and update deals while on the road without needing a laptop.',
+                'status'      => 'Under Review',
+                'is_public'   => true,
+                'votes'       => 37,
+                'comments'    => [
+                    ['body' => 'By far the most requested feature from our team. Even a basic PWA would be a huge improvement.', 'is_admin_reply' => false],
+                    ['body' => 'We are actively researching PWA vs native. This is a significant investment and we want to get it right.', 'is_admin_reply' => true],
+                    ['body' => 'I would pay extra for a mobile add-on subscription if it existed.', 'is_admin_reply' => false],
+                    ['body' => 'Good to know. Community enthusiasm like this really helps us prioritise the roadmap.', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'Recurring invoice generation',
+                'description' => 'Automatically generate and optionally send invoices on a recurring schedule (weekly, monthly, quarterly) for subscription-style clients. Should support start/end date and max occurrences.',
+                'status'      => 'Planned',
+                'is_public'   => true,
+                'votes'       => 18,
+                'comments'    => [
+                    ['body' => 'We have about 30 recurring clients and this would eliminate hours of manual work every month.', 'is_admin_reply' => false],
+                    ['body' => 'Planned for Q3. Will also integrate with the Xero sync so recurring invoices push across automatically.', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'Lead scoring based on engagement',
+                'description' => 'Automatically score leads based on activities such as email opens, link clicks, page visits (via the chat widget), and call outcomes. Higher scores should surface leads in a priority view.',
+                'status'      => 'Under Review',
+                'is_public'   => true,
+                'votes'       => 11,
+                'comments'    => [
+                    ['body' => 'We currently do this manually in a spreadsheet. Native scoring in the CRM would be game-changing.', 'is_admin_reply' => false],
+                    ['body' => 'Configurable scoring rules (e.g. +10 for email open, +25 for demo booked) are the right approach here.', 'is_admin_reply' => false],
+                    ['body' => 'Noted. We are gathering requirements for scoring rules before committing to a design.', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'WhatsApp Business messaging integration',
+                'description' => 'Connect a WhatsApp Business account so agents can send and receive WhatsApp messages from within the CRM, with all messages logged against the contact record.',
+                'status'      => 'Under Review',
+                'is_public'   => true,
+                'votes'       => 29,
+                'comments'    => [
+                    ['body' => 'Our customers mostly communicate via WhatsApp. This would unify all comms in one place.', 'is_admin_reply' => false],
+                    ['body' => 'Is this feasible through the WhatsApp Cloud API?', 'is_admin_reply' => false],
+                    ['body' => 'Yes, we are evaluating the WhatsApp Cloud API. Access requires business verification but it is achievable.', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'Dark mode improvements for data tables',
+                'description' => 'Several data tables and inline forms have poor contrast in dark mode. Specifically the quote line item table, invoice totals section, and the kanban board card details.',
+                'status'      => 'Completed',
+                'is_public'   => true,
+                'votes'       => 6,
+                'comments'    => [
+                    ['body' => 'The invoice totals table is almost unreadable in dark mode on my external monitor.', 'is_admin_reply' => false],
+                    ['body' => 'Fixed in v2.4.1 — all table and form contrast issues have been resolved. Thanks for reporting!', 'is_admin_reply' => true],
+                ],
+            ],
+            [
+                'title'       => 'API webhook support for CRM events',
+                'description' => 'Allow users to configure outbound webhooks that fire when CRM events occur (e.g. lead created, deal stage changed, invoice paid). Essential for Zapier and custom integration workflows.',
+                'status'      => 'Planned',
+                'is_public'   => true,
+                'votes'       => 24,
+                'comments'    => [
+                    ['body' => 'We use Zapier to connect the CRM to our project management tool. Right now we poll the API which is inefficient.', 'is_admin_reply' => false],
+                    ['body' => 'Webhooks are on the roadmap and will ship alongside the expanded REST API in the next major version.', 'is_admin_reply' => true],
+                    ['body' => 'Will there be a webhook log so we can debug failed deliveries?', 'is_admin_reply' => false],
+                    ['body' => 'Yes, a delivery log with retry functionality is part of the spec.', 'is_admin_reply' => true],
+                ],
+            ],
+        ];
+
+        $featureNumber = 1;
+
+        foreach ($features as $data) {
+            $status = $statuses->get($data['status']) ?? $statuses->first();
+
+            $createdAt = $this->weightedRandomDate();
+
+            $feature = Feature::create([
+                'external_id'     => (string) Str::uuid(),
+                'number'          => $featureNumber,
+                'feature_id'      => 'FR'.str_pad($featureNumber, 4, '0', STR_PAD_LEFT),
+                'title'           => $data['title'],
+                'description'     => $data['description'],
+                'is_public'       => $data['is_public'],
+                'votes_count'     => 0,
+                'comments_count'  => 0,
+                'feature_status_id' => $status?->id,
+                'user_created_id' => $this->userId,
+                'user_updated_id' => $this->userId,
+            ]);
+
+            $this->backdateModel($feature, $createdAt);
+
+            // Add votes — pick random users up to the requested vote count
+            $voterPool = $allUserIds->shuffle()->take($data['votes']);
+            foreach ($voterPool as $voterId) {
+                DB::table(config('laravel-crm.db_table_prefix').'feature_votes')->insert([
+                    'feature_id' => $feature->id,
+                    'user_id'    => $voterId,
+                    'created_at' => $createdAt->copy()->addMinutes(mt_rand(5, 1440)),
+                    'updated_at' => $createdAt->copy()->addMinutes(mt_rand(5, 1440)),
+                ]);
+            }
+
+            $voteCount = $voterPool->count();
+            DB::table($feature->getTable())->where('id', $feature->id)->update(['votes_count' => $voteCount]);
+
+            // Add comments
+            $commentOffset = mt_rand(10, 120);
+            foreach ($data['comments'] as $commentData) {
+                $commentDate = $createdAt->copy()->addMinutes($commentOffset);
+                $commentOffset += mt_rand(60, 2880);
+
+                FeatureComment::create([
+                    'external_id'     => (string) Str::uuid(),
+                    'feature_id'      => $feature->id,
+                    'body'            => $commentData['body'],
+                    'is_admin_reply'  => $commentData['is_admin_reply'],
+                    'user_created_id' => $this->userId,
+                    'user_updated_id' => $this->userId,
+                    'created_at'      => $commentDate,
+                    'updated_at'      => $commentDate,
+                ]);
+            }
+
+            DB::table($feature->getTable())->where('id', $feature->id)->update(['comments_count' => count($data['comments'])]);
+
+            $featureNumber++;
+        }
+
+        $this->command->line('    <fg=green>✓ Features seeded ('.count($features).')</>');
         $this->command->line('');
     }
 
