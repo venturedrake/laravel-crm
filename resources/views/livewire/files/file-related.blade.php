@@ -13,6 +13,40 @@
                 select(event) {
                     this.file = event.target.files[0] ?? null
                 },
+                accept(file) {
+                    if (!file) return false
+                    const parts = file.name.split('.')
+                    const ext = parts.length > 1 ? parts.pop().toLowerCase() : ''
+                    const allowed = this.allowed.map(a => String(a).toLowerCase())
+                    if (!allowed.includes(ext)) return false
+                    if (file.size > this.maxKb * 1024) return false
+                    this.file = file
+                    if (this.$refs.file) {
+                        const dt = new DataTransfer()
+                        dt.items.add(file)
+                        this.$refs.file.files = dt.files
+                    }
+                    return true
+                },
+                onDrop(event) {
+                    event.preventDefault()
+                    const file = event.dataTransfer && event.dataTransfer.files
+                        ? event.dataTransfer.files[0]
+                        : null
+                    if (!file) return
+                    if (this.accept(file)) {
+                        this.dropError = null
+                        return
+                    }
+                    const parts = file.name.split('.')
+                    const ext = parts.length > 1 ? parts.pop().toLowerCase() : ''
+                    const allowed = this.allowed.map(a => String(a).toLowerCase())
+                    if (!allowed.includes(ext)) {
+                        this.dropError = `${file.name} {{ __('laravel-crm::lang.invalid_file_type') }}`
+                    } else {
+                        this.dropError = `${file.name} exceeds {{ __('laravel-crm::lang.max_file_size') }} (${this.maxLabel})`
+                    }
+                },
                 submit() {
                     if (!this.file || this.uploading) return
                     this.uploading = true
