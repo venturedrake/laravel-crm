@@ -5,6 +5,11 @@
                 file: null,
                 uploading: false,
                 progress: 0,
+                dragging: false,
+                allowed: @js($allowedMimes),
+                maxKb: {{ $maxFileSizeKb }},
+                maxLabel: '{{ $this->maxFileSizeLabel }}',
+                dropError: null,
                 select(event) {
                     this.file = event.target.files[0] ?? null
                 },
