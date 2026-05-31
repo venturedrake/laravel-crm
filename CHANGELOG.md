@@ -10,6 +10,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.3.0 - 2026-05-31
+### Added
+- **Feature voting & feedback portal** — public roadmap board where customers and team members can submit feature requests, vote, comment, and follow status changes
+  - New entities: `Feature`, `FeatureStatus`, `FeatureComment`, `FeatureVote`, `FeatureView`
+  - Admin surface under `/crm/features`: list, kanban board grouped by status, show, create, edit, voters list
+  - Public portal under `/p/features`: board view, individual feature page, submit form, voting and commenting (gated by sign-in)
+  - **Charts on the show page** — votes-over-time and views-over-time displayed side by side, with selectable period (7 / 30 / 90 / 365 days)
+  - **View tracking** with per-visitor de-duplication (configurable via `LARAVEL_CRM_FEATURES_VIEW_DEDUP_MINUTES`)
+  - Notifications: `FeatureSubmittedNotification`, `FeatureStatusChangedNotification`, `FeatureCommentPostedNotification`
+  - Default statuses seeded: Under Review, Planned, In Progress, Completed, Declined
+  - Module toggle `features` and Blade directive `@hasfeaturesenabled`
+  - `FeaturePolicy` and permission seeding for view / create / update / delete / manage-statuses
+- **Uptime & SSL monitoring module** — track external HTTP/HTTPS endpoints from inside the CRM
+  - New entities: `Monitor`, `MonitorCheck`
+  - Admin surface under `/crm/monitors`: list with 7-day performance sparkline, show page with response-time bar chart (24h / 7d / 30d / 90d / 365d), CRUD forms
+  - Configurable per-monitor: URL, method, expected status code, check interval, timeout, performance threshold, custom request headers/body, SSL expiry alert window
+  - SSRF guard rejects loopback/private/reserved targets by default (override via `LARAVEL_CRM_MONITORING_ALLOW_PRIVATE_TARGETS`)
+  - Response time measured via Guzzle `on_stats` transfer time (more accurate than wall-clock)
+  - Queued `RunMonitorCheck` job + `laravelcrm:monitor-check` console command (scheduled via the package scheduler)
+  - Mail notifications for downtime and SSL expiry alerts
+  - Module toggle `monitoring` and `MonitorPolicy` / `MonitorCheckPolicy`
+- **Public portal redesign** — rebuilt the entire portal layout on Vite + Tailwind v4 + DaisyUI v5 + MaryUI
+  - New top navbar with logo, theme toggle, and auth-aware actions
+  - Centred main container, toast notifications, and a footer
+  - Public quote, invoice, and purchase-order show pages refactored to the new stack
+  - Portal auth scaffold (login / register) gated by `LARAVEL_CRM_PORTAL_ALLOW_REGISTRATION`
+- **File upload improvements**
+  - Drag-and-drop dropzone affordance on the file-upload component, with inline selected-file preview and remove control
+  - Upload progress bar
+  - Per-component `size` and `allowed-types` properties enforced via Livewire validation rules
+  - Translation keys for max-size and allowed-types hints
+  - Upload now deferred until the upload button is clicked (no auto-submit on file pick)
+  - Captures uploaded-file metadata before `store()` to avoid loss after the temporary file is moved
+- **Installer module selection prompt** — `laravelcrm:install` now asks which optional modules to enable, with `--modules=all` and `--modules=leads,deals,...` flags for non-interactive installs
+- **`@hasfeaturesenabled` Blade directive** for gating UI by the `features` module
+### Changed
+- **Sample data seeder** expanded to include 10 sample features with hundreds of votes spread across the last 90 days, and realistic comments
+- Sample monitors added to the seeder
+- Currency support added to float helpers
+- `checkbox_multiple` custom fields now render as checkboxes (was rendering incorrectly as a select)
+- Tightened spacing between `checkbox_multiple` options to match `mary-radio` styling
+- People index `name` sort key now correctly maps to `last_name`
+- Feature title in show header no longer double-encodes HTML entities
+- `FeatureStatus` colors normalised so badges render consistently
+- Monitor list drops the URL column and falls back to host when name is empty
+- Monitor performance threshold rendered as a dotted line on response-time charts
+- Monitor form expanded with hints, suffixes, and a threshold field; required fields and labels tightened
+- Quote / order / invoice / purchase-order product line UI repaired:
+  - `wire:model.live` restored on product select for auto-populating price
+  - Tax and amount recalculate when editing price or quantity
+  - Model-products keyed correctly on order, invoice, and purchase-order forms
+- `flasher:install` now runs silently inside the CRM installer
+- Hardened API V2, monitors, and feature-status colour input against SSRF / CSS injection / cross-team access
+### Fixed
+- Label filter SQL error on index pages
+- Monitor name column now nullable; underlying error surfaced when monitor save fails
+- `CarbonImmutable` accepted in monitor chart helpers
+- Sample data seeder now uses synthetic voter IDs for feature votes (avoids FK/uniqueness conflicts and supports portal-visitor votes)
+
 ## 2.2.1 - 2026-05-23
 ### Fixed
 - PDF save directory not created before writing invoice/quote/purchase-order PDF attachments (`file_put_contents: failed to open stream: No such file or directory`)
