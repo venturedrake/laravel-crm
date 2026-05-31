@@ -77,10 +77,15 @@
             <label for="crm-file-dropzone"
                    class="border-2 border-dashed border-base-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:bg-base-200"
                    :class="dragging && 'border-primary bg-primary/10'">
-                <div class="flex flex-col items-center gap-2">
+                <div x-show="!file" class="flex flex-col items-center gap-2">
                     <x-bx-cloud-upload class="w-10 h-10 text-base-content/60" />
                     <span class="text-sm">{{ ucfirst(__('laravel-crm::lang.drop_file_here')) }}</span>
                     <p class="text-base-content/60 text-xs">{{ ucfirst(__('laravel-crm::lang.max_file_size')) }}: {{ $this->maxFileSizeLabel }} &middot; {{ ucfirst(__('laravel-crm::lang.allowed_file_types')) }}: {{ strtoupper(implode(', ', $allowedMimes)) }}</p>
+                </div>
+                <div x-show="file" class="flex flex-col items-center gap-2">
+                    <span class="text-sm" x-text="file && file.name"></span>
+                    <a href="#" class="link link-primary text-xs"
+                       @click.prevent.stop="file = null; if ($refs.file) $refs.file.value = null; dropError = null">{{ ucfirst(__('laravel-crm::lang.remove_file')) }}</a>
                 </div>
                 <input type="file" x-ref="file" @change="select($event)"
                        id="crm-file-dropzone"
@@ -95,6 +100,7 @@
                 </div>
                 <progress class="progress progress-primary w-full" x-bind:value="progress" max="100"></progress>
             </div>
+            <div x-show="dropError" x-text="dropError" class="text-error text-sm"></div>
             @error('uploadedFile')
                 <div class="text-error text-sm">{{ $message }}</div>
             @enderror
