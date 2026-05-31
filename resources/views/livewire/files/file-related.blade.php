@@ -1,20 +1,43 @@
 <div class="grid gap-5">
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.add_file')) }}" separator>
         <div class="grid gap-4" wire:key="file-upload"
+             @dragenter.prevent="dragDepth++; dragging = true"
              @dragover.prevent="dragging = true"
-             @dragleave.prevent="dragging = false"
-             @drop.prevent="dragging = false; onDrop($event)"
+             @dragleave.prevent="dragDepth = Math.max(0, dragDepth - 1); if (dragDepth === 0) dragging = false"
+             @drop.prevent="dragDepth = 0; dragging = false; onDrop($event)"
              x-data="{
                 file: null,
                 uploading: false,
                 progress: 0,
                 dragging: false,
+                dragDepth: 0,
                 allowed: @js($allowedMimes),
                 maxKb: {{ $maxFileSizeKb }},
                 maxLabel: '{{ $this->maxFileSizeLabel }}',
                 dropError: null,
                 select(event) {
-                    this.file = event.target.files[0] ?? null
+                    const file = event.target.files[0] ?? null
+                    if (!file) {
+                        this.file = null
+                        this.dropError = null
+                        return
+                    }
+                    if (this.accept(file)) {
+                        this.dropError = null
+                        return
+                    }
+                    this.describeRejection(file)
+                    if (this.$refs.file) this.$refs.file.value = null
+                },
+                describeRejection(file) {
+                    const parts = file.name.split('.')
+                    const ext = parts.length > 1 ? parts.pop().toLowerCase() : ''
+                    const allowed = this.allowed.map(a => String(a).toLowerCase())
+                    if (!allowed.includes(ext)) {
+                        this.dropError = `${file.name} {{ __('laravel-crm::lang.invalid_file_type') }}`
+                    } else {
+                        this.dropError = `${file.name} exceeds {{ __('laravel-crm::lang.max_file_size') }} (${this.maxLabel})`
+                    }
                 },
                 accept(file) {
                     if (!file) return false
@@ -41,14 +64,7 @@
                         this.dropError = null
                         return
                     }
-                    const parts = file.name.split('.')
-                    const ext = parts.length > 1 ? parts.pop().toLowerCase() : ''
-                    const allowed = this.allowed.map(a => String(a).toLowerCase())
-                    if (!allowed.includes(ext)) {
-                        this.dropError = `${file.name} {{ __('laravel-crm::lang.invalid_file_type') }}`
-                    } else {
-                        this.dropError = `${file.name} exceeds {{ __('laravel-crm::lang.max_file_size') }} (${this.maxLabel})`
-                    }
+                    this.describeRejection(file)
                 },
                 submit() {
                     if (!this.file || this.uploading) return
