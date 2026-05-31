@@ -36,8 +36,10 @@
                 <legend class="fieldset-legend mb-0.5">{{ ucfirst(__('laravel-crm::lang.choose_file')) }}</legend>
                 <input type="file" x-ref="file" @change="select($event)"
                        :disabled="uploading"
+                       accept="{{ '.' . implode(',.', $allowedMimes) }}"
                        class="file-input w-full" />
             </fieldset>
+            <p class="text-base-content/60 text-xs mt-1">{{ ucfirst(__('laravel-crm::lang.max_file_size')) }}: {{ $this->maxFileSizeLabel }} &middot; {{ ucfirst(__('laravel-crm::lang.allowed_file_types')) }}: {{ strtoupper(implode(', ', $allowedMimes)) }}</p>
             <div x-show="uploading" class="grid gap-1">
                 <div class="flex justify-between text-sm text-base-content/60">
                     <span>{{ ucfirst(__('laravel-crm::lang.upload')) }}ing...</span>

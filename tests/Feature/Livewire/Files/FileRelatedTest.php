@@ -103,3 +103,43 @@ test('save records the correct mime for each upload type', function (string $fil
     expect($file->mime)->toBe($expectedMime);
     expect($file->name)->toBe($filename);
 })->with('file mime types');
+
+dataset('allowed extensions', [
+    'pdf' => ['report.pdf', 'application/pdf'],
+    'png' => ['screenshot.png', 'image/png'],
+    'docx' => ['proposal.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    'xlsx' => ['budget.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+    'csv' => ['contacts.csv', 'text/csv'],
+    'zip' => ['archive.zip', 'application/zip'],
+]);
+
+test('save accepts allowed file extensions and persists a File row', function (string $filename, string $mime) {
+    $upload = UploadedFile::fake()->create($filename, 1, $mime);
+
+    Livewire::test(FileRelated::class, ['model' => $this->lead])
+        ->set('uploadedFile', $upload)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(File::count())->toBe(1);
+    expect(File::first()->name)->toBe($filename);
+})->with('allowed extensions');
+
+dataset('disallowed extensions', [
+    'exe' => ['evil.exe', 'application/octet-stream'],
+    'sh' => ['malicious.sh', 'application/x-sh'],
+    'php' => ['payload.php', 'application/x-php'],
+    'js' => ['inject.js', 'application/javascript'],
+]);
+
+test('save rejects disallowed file extensions with mimes validation error', function (string $filename, string $mime) {
+    $upload = UploadedFile::fake()->create($filename, 1, $mime);
+
+    Livewire::test(FileRelated::class, ['model' => $this->lead])
+        ->set('uploadedFile', $upload)
+        ->call('save')
+        ->assertHasErrors(['uploadedFile' => 'mimes']);
+
+    expect(File::count())->toBe(0);
+    expect(Activity::count())->toBe(0);
+})->with('disallowed extensions');

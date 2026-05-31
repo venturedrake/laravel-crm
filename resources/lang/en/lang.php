@@ -377,6 +377,8 @@ return [
     'orders' => 'orders',
     'upload' => 'upload',
     'choose_file' => 'choose file',
+    'max_file_size' => 'max file size',
+    'allowed_file_types' => 'allowed file types',
     'items' => 'items',
     'quote_items' => 'quote items',
     'add_task' => 'add task',
