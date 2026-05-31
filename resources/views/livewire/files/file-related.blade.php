@@ -1,6 +1,9 @@
 <div class="grid gap-5">
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.add_file')) }}" separator>
         <div class="grid gap-4" wire:key="file-upload"
+             @dragover.prevent="dragging = true"
+             @dragleave.prevent="dragging = false"
+             @drop.prevent="dragging = false; onDrop($event)"
              x-data="{
                 file: null,
                 uploading: false,
@@ -71,14 +74,20 @@
                     )
                 }
              }">
-            <fieldset class="fieldset py-0">
-                <legend class="fieldset-legend mb-0.5">{{ ucfirst(__('laravel-crm::lang.choose_file')) }}</legend>
+            <label for="crm-file-dropzone"
+                   class="border-2 border-dashed border-base-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:bg-base-200"
+                   :class="dragging && 'border-primary bg-primary/10'">
+                <div class="flex flex-col items-center gap-2">
+                    <x-bx-cloud-upload class="w-10 h-10 text-base-content/60" />
+                    <span class="text-sm">{{ ucfirst(__('laravel-crm::lang.drop_file_here')) }}</span>
+                    <p class="text-base-content/60 text-xs">{{ ucfirst(__('laravel-crm::lang.max_file_size')) }}: {{ $this->maxFileSizeLabel }} &middot; {{ ucfirst(__('laravel-crm::lang.allowed_file_types')) }}: {{ strtoupper(implode(', ', $allowedMimes)) }}</p>
+                </div>
                 <input type="file" x-ref="file" @change="select($event)"
+                       id="crm-file-dropzone"
                        :disabled="uploading"
                        accept="{{ '.' . implode(',.', $allowedMimes) }}"
-                       class="file-input w-full" />
-            </fieldset>
-            <p class="text-base-content/60 text-xs mt-1">{{ ucfirst(__('laravel-crm::lang.max_file_size')) }}: {{ $this->maxFileSizeLabel }} &middot; {{ ucfirst(__('laravel-crm::lang.allowed_file_types')) }}: {{ strtoupper(implode(', ', $allowedMimes)) }}</p>
+                       class="sr-only" />
+            </label>
             <div x-show="uploading" class="grid gap-1">
                 <div class="flex justify-between text-sm text-base-content/60">
                     <span>{{ ucfirst(__('laravel-crm::lang.upload')) }}ing...</span>
