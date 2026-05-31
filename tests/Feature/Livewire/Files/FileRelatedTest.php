@@ -143,3 +143,9 @@ test('save rejects disallowed file extensions with mimes validation error', func
     expect(File::count())->toBe(0);
     expect(Activity::count())->toBe(0);
 })->with('disallowed extensions');
+
+test('file uploader view renders the dropzone affordance', function () {
+    Livewire::test(FileRelated::class, ['model' => $this->lead])
+        ->assertSeeHtml('@drop.prevent')
+        ->assertSee(ucfirst(__('laravel-crm::lang.drop_file_here')));
+});
