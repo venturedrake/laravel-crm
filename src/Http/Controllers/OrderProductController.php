@@ -15,7 +15,7 @@ class OrderProductController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Order $order)
     {
         abort(404);
     }
@@ -50,7 +50,7 @@ class OrderProductController extends Controller
      *
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Order $order)
     {
         abort(404);
     }
@@ -58,10 +58,9 @@ class OrderProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show(Order $order, OrderProduct $orderProduct)
     {
         abort(404);
     }
@@ -71,7 +70,7 @@ class OrderProductController extends Controller
      *
      * @return Response
      */
-    public function edit(Order $order, OrderProduct $product)
+    public function edit(Order $order, OrderProduct $orderProduct)
     {
         return view('laravel-crm::order-products.edit');
     }
@@ -79,10 +78,9 @@ class OrderProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Order $order, OrderProduct $orderProduct)
     {
         abort(404);
     }
@@ -90,10 +88,9 @@ class OrderProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Order $order, OrderProduct $orderProduct)
     {
         abort(404);
     }

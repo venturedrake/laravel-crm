@@ -15,7 +15,7 @@ class QuoteProductController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Quote $quote)
     {
         abort(404);
     }
@@ -50,7 +50,7 @@ class QuoteProductController extends Controller
      *
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Quote $quote)
     {
         abort(404);
     }
@@ -58,10 +58,9 @@ class QuoteProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show(Quote $quote, QuoteProduct $quoteProduct)
     {
         abort(404);
     }
@@ -71,7 +70,7 @@ class QuoteProductController extends Controller
      *
      * @return Response
      */
-    public function edit(Quote $quote, QuoteProduct $product)
+    public function edit(Quote $quote, QuoteProduct $quoteProduct)
     {
         return view('laravel-crm::quote-products.edit');
     }
@@ -79,10 +78,9 @@ class QuoteProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Quote $quote, QuoteProduct $quoteProduct)
     {
         abort(404);
     }
@@ -90,10 +88,9 @@ class QuoteProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Quote $quote, QuoteProduct $quoteProduct)
     {
         abort(404);
     }

@@ -198,7 +198,8 @@ Route::group(['prefix' => 'settings/feature-statuses', 'middleware' => 'auth.lar
 
 Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function () {
     Route::get('create-product', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@createProduct')
-        ->name('laravel-crm.deal-products.create-product');
+        ->name('laravel-crm.deal-products.create-product')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Deal']);
 
     Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@index')
         ->name('laravel-crm.deals.filter')
@@ -246,7 +247,7 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 
     /* Deal Products */
 
-    Route::group(['prefix' => '{deal}/products', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::prefix('{deal}/products')->middleware('auth.laravel-crm')->scopeBindings()->group(function () {
         Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@index')
             ->name('laravel-crm.deal-products.index')
             ->middleware(['can:view,deal']);
@@ -259,19 +260,19 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
             ->name('laravel-crm.deal-products.store')
             ->middleware(['can:update,deal']);
 
-        Route::get('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@show')
+        Route::get('{dealProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@show')
             ->name('laravel-crm.deal-products.show')
             ->middleware(['can:view,deal']);
 
-        Route::get('{product}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@edit')
+        Route::get('{dealProduct}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@edit')
             ->name('laravel-crm.deal-products.edit')
             ->middleware(['can:update,deal']);
 
-        Route::put('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@update')
+        Route::put('{dealProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@update')
             ->name('laravel-crm.deal-products.update')
             ->middleware(['can:update,deal']);
 
-        Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@destroy')
+        Route::delete('{dealProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\DealProductController@destroy')
             ->name('laravel-crm.deal-products.destroy')
             ->middleware(['can:update,deal']);
     });
@@ -330,7 +331,7 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
 
     /* Quote Products */
 
-    Route::group(['prefix' => '{quote}/products', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::prefix('{quote}/products')->middleware('auth.laravel-crm')->scopeBindings()->group(function () {
         Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@index')
             ->name('laravel-crm.quote-products.index')
             ->middleware(['can:view,quote']);
@@ -343,19 +344,19 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
             ->name('laravel-crm.quote-products.store')
             ->middleware(['can:update,quote']);
 
-        Route::get('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@show')
+        Route::get('{quoteProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@show')
             ->name('laravel-crm.quote-products.show')
             ->middleware(['can:view,quote']);
 
-        Route::get('{product}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@edit')
+        Route::get('{quoteProduct}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@edit')
             ->name('laravel-crm.quote-products.edit')
             ->middleware(['can:update,quote']);
 
-        Route::put('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@update')
+        Route::put('{quoteProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@update')
             ->name('laravel-crm.quote-products.update')
             ->middleware(['can:update,quote']);
 
-        Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@destroy')
+        Route::delete('{quoteProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteProductController@destroy')
             ->name('laravel-crm.quote-products.destroy')
             ->middleware(['can:update,quote']);
     });
@@ -410,7 +411,7 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
 
     /* Order Products */
 
-    Route::group(['prefix' => '{order}/products', 'middleware' => 'auth.laravel-crm'], function () {
+    Route::prefix('{order}/products')->middleware('auth.laravel-crm')->scopeBindings()->group(function () {
         Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@index')
             ->name('laravel-crm.order-products.index')
             ->middleware(['can:view,order']);
@@ -423,19 +424,19 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth.laravel-crm'], functio
             ->name('laravel-crm.order-products.store')
             ->middleware(['can:update,order']);
 
-        Route::get('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@show')
+        Route::get('{orderProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@show')
             ->name('laravel-crm.order-products.show')
             ->middleware(['can:view,order']);
 
-        Route::get('{product}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@edit')
+        Route::get('{orderProduct}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@edit')
             ->name('laravel-crm.order-products.edit')
             ->middleware(['can:update,order']);
 
-        Route::put('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@update')
+        Route::put('{orderProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@update')
             ->name('laravel-crm.order-products.update')
             ->middleware(['can:update,order']);
 
-        Route::delete('{product}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@destroy')
+        Route::delete('{orderProduct}', 'VentureDrake\LaravelCrm\Http\Controllers\OrderProductController@destroy')
             ->name('laravel-crm.order-products.destroy')
             ->middleware(['can:update,order']);
     });

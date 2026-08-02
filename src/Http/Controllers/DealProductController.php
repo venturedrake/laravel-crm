@@ -15,7 +15,7 @@ class DealProductController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Deal $deal)
     {
         abort(404);
     }
@@ -50,7 +50,7 @@ class DealProductController extends Controller
      *
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Deal $deal)
     {
         abort(404);
     }
@@ -58,10 +58,9 @@ class DealProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show(Deal $deal, DealProduct $dealProduct)
     {
         abort(404);
     }
@@ -71,7 +70,7 @@ class DealProductController extends Controller
      *
      * @return Response
      */
-    public function edit(Deal $deal, DealProduct $product)
+    public function edit(Deal $deal, DealProduct $dealProduct)
     {
         return view('laravel-crm::deal-products.edit');
     }
@@ -79,10 +78,9 @@ class DealProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Deal $deal, DealProduct $dealProduct)
     {
         abort(404);
     }
@@ -90,10 +88,9 @@ class DealProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Deal $deal, DealProduct $dealProduct)
     {
         abort(404);
     }
