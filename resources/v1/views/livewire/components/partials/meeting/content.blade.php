@@ -7,7 +7,7 @@
         </div>
     </form>
 @else
-    {!! $meeting->description !!}
+    {!! nl2br(e($meeting->description)) !!}
     <br />
     <span class="badge badge-secondary">{{ $meeting->start_at->format('h:i A') }} on {{ $meeting->start_at->toFormattedDateString() }}</span> to <span class="badge badge-secondary">{{ $meeting->finish_at->format('h:i A') }} on {{ $meeting->finish_at->toFormattedDateString() }}</span>
     @if($meeting->contacts->count() > 0)

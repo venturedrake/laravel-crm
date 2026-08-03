@@ -1,1 +1,1 @@
-<p>{!! $subject ?? null !!}</p>
+<p>{{ $subject ?? null }}</p>

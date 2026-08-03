@@ -61,7 +61,7 @@
                 <td>
                     <strong>{{ ucfirst(__('laravel-crm::lang.from')) }}</strong><br />
                     @if($contactDetails)
-                        {!! nl2br($contactDetails) !!}
+                        {!! nl2br(e($contactDetails)) !!}
                     @else
                         {{ $fromName }}
                     @endif
@@ -74,7 +74,7 @@
           <tbody>
             <tr>
                 <td><h4>{{ ucfirst(__('laravel-crm::lang.description')) }}</h4>
-                    {!! nl2br($invoice->description) !!}</td>
+                    {!! nl2br(e($invoice->description)) !!}</td>
             </tr>
           </tbody>  
         </table>
@@ -157,7 +157,7 @@
             <tr>
                 <td>
                     <h4>{{ ucfirst(__('laravel-crm::lang.payment')) }}</h4>
-                    {!! nl2br($paymentInstructions) !!}
+                    {!! nl2br(e($paymentInstructions)) !!}
                 </td>
             </tr>
             </tbody>
@@ -169,7 +169,7 @@
             <tr>
                 <td>
                     <h4>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h4>
-                    {!! nl2br($invoice->terms) !!}
+                    {!! nl2br(e($invoice->terms)) !!}
                 </td>
             </tr>
             </tbody>

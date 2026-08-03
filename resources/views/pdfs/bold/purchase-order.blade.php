@@ -149,14 +149,14 @@
     @if($purchaseOrder->delivery_instructions)
         <div class="bold-note bold-block">
             <div class="bold-note-heading">{{ ucfirst(__('laravel-crm::lang.delivery_instructions')) }}</div>
-            <div class="bold-note-body">{!! nl2br($purchaseOrder->delivery_instructions) !!}</div>
+            <div class="bold-note-body">{!! nl2br(e($purchaseOrder->delivery_instructions)) !!}</div>
         </div>
     @endif
 
     @if($purchaseOrder->terms)
         <div class="bold-note bold-block">
             <div class="bold-note-heading">{{ ucfirst(__('laravel-crm::lang.terms')) }}</div>
-            <div class="bold-note-body">{!! nl2br($purchaseOrder->terms) !!}</div>
+            <div class="bold-note-body">{!! nl2br(e($purchaseOrder->terms)) !!}</div>
         </div>
     @endif
 @endsection

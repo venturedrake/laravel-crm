@@ -136,7 +136,7 @@
                     <div class="row py-1">
                         <div class="col px-5 py-4">
                             <h5>{{ ucfirst(__('laravel-crm::lang.description')) }}</h5>
-                            {!! nl2br($quote->description) !!}
+                            {!! nl2br(e($quote->description)) !!}
                         </div>
                     </div>
                     @endif
@@ -209,7 +209,7 @@
                     <div class="row py-1">
                         <div class="col px-5 py-4">
                             <h5>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
-                            {!! nl2br($quote->terms) !!}
+                            {!! nl2br(e($quote->terms)) !!}
                         </div>
                     </div>
 

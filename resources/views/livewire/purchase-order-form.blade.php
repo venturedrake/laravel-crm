@@ -7,7 +7,7 @@
             ]   
         ])
         <script type="text/javascript">
-            let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsWithDetails() !!}
+            let organisations = {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsWithDetails(), true)) }}
         </script>
             
         <span wire:ignore>    
@@ -32,7 +32,7 @@
                 ]   
             ])
            <script type="text/javascript">
-            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\peopleWithDetails() !!}
+            let people =  {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\peopleWithDetails(), true)) }}
            </script>
             
             <span wire:ignore>

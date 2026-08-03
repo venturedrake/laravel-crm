@@ -145,7 +145,7 @@
                                 </div>
                                 <div class="col">
                                     @if($contactDetails)
-                                        {!! nl2br($contactDetails) !!}
+                                        {!! nl2br(e($contactDetails)) !!}
                                     @else
                                         {{ $fromName }}
                                     @endif
@@ -231,7 +231,7 @@
                         <div class="row py-1">
                             <div class="col px-5 py-4">
                                 <h5>{{ ucfirst(__('laravel-crm::lang.payment')) }}</h5>
-                                {!! nl2br($paymentInstructions) !!}
+                                {!! nl2br(e($paymentInstructions)) !!}
                             </div>
                         </div>
                     @endif
@@ -239,7 +239,7 @@
                         <div class="row py-1">
                             <div class="col px-5 py-4">
                                 <h5>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
-                                {!! nl2br($invoice->terms) !!}
+                                {!! nl2br(e($invoice->terms)) !!}
                             </div>
                         </div>
                     @endif

@@ -67,7 +67,7 @@
             </x-mary-form>
         @else
             @if($task->description)
-                <div>{!! $task->description !!}</div>
+                <div>{!! nl2br(e($task->description)) !!}</div>
             @endif
             <div class="flex flex-row gap-2">
                 @if($task->ownerUser)

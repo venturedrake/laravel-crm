@@ -74,7 +74,7 @@
 
 @endphp" name="formSearch" class="navbar-form-custom">
     @csrf
-    <input type="hidden" name="type" value="{!! Route::current()->getName() !!}">
+    <input type="hidden" name="type" value="{{ Route::current()->getName() }}">
     <div class="input-group">
         <input type="text" class="form-control" name="search" aria-label="Search" value="{{ old('search') ?? Request::input('search') ?? $searchValue ?? null }}">
         <div class="input-group-append">

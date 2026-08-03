@@ -64,7 +64,7 @@
                 <div class="compact-party-heading">{{ ucfirst(__('laravel-crm::lang.from')) }}</div>
                 <div class="compact-party-body">
                     @if($contactDetails)
-                        {!! nl2br($contactDetails) !!}
+                        {!! nl2br(e($contactDetails)) !!}
                     @else
                         {{ $fromName }}
                     @endif
@@ -96,13 +96,13 @@
         @if($order->description)
             <div class="compact-footer-note">
                 <div class="compact-footer-heading">{{ ucfirst(__('laravel-crm::lang.description')) }}</div>
-                <div class="compact-footer-body">{!! nl2br($order->description) !!}</div>
+                <div class="compact-footer-body">{!! nl2br(e($order->description)) !!}</div>
             </div>
         @endif
         @if($order->terms)
             <div class="compact-footer-note">
                 <div class="compact-footer-heading">{{ ucfirst(__('laravel-crm::lang.terms')) }}</div>
-                <div class="compact-footer-body">{!! nl2br($order->terms) !!}</div>
+                <div class="compact-footer-body">{!! nl2br(e($order->terms)) !!}</div>
             </div>
         @endif
 

@@ -52,54 +52,54 @@ class CallReminderNotification extends Notification
     public function toMail($notifiable)
     {
         $mailMessage = new MailMessage;
-        $subject = 'CALL REMINDER: '.$this->call->name.' ('.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').')';
-        $greeting = 'Hi '.$this->user->name.',';
+        $subject = 'CALL REMINDER: '.e($this->call->name).' ('.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').')';
+        $greeting = 'Hi '.e($this->user->name).',';
 
         $mailMessage
             ->subject($subject)
             ->greeting($greeting);
 
         $mailMessage->line(new HtmlString('<strong>THIS CALL IS COMING UP:</strong>'));
-        $mailMessage->line(new HtmlString('<strong>'.$this->call->name.'</strong>'));
-        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->call->finish_at)->format('M d, Y \\@ h:i A').'<br />Location: '.$this->call->location));
-        $mailMessage->line(new HtmlString($this->call->description));
+        $mailMessage->line(new HtmlString('<strong>'.e($this->call->name).'</strong>'));
+        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->call->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->call->finish_at)->format('M d, Y \\@ h:i A').'<br />Location: '.e($this->call->location)));
+        $mailMessage->line(new HtmlString(nl2br(e($this->call->description))));
 
         if ($this->call->callable) {
             switch (class_basename($this->call->callable->getMorphClass())) {
                 case 'Lead':
-                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->call->callable->id.'">'.$this->call->callable->title.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.e($this->call->callable->id).'">'.e($this->call->callable->title).'</a></small>'));
                     break;
 
                 case 'Deal':
-                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/deals/'.$this->call->callable->id.'">'.$this->call->callable->title.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/deals/'.e($this->call->callable->id).'">'.e($this->call->callable->title).'</a></small>'));
                     break;
 
                 case 'Quote':
-                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/quotes/'.$this->call->callable->id.'">'.$this->call->callable->title.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/quotes/'.e($this->call->callable->id).'">'.e($this->call->callable->title).'</a></small>'));
                     break;
 
                 case 'Order':
-                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/orders/'.$this->call->callable->id.'">'.$this->call->callable->order_id.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/orders/'.e($this->call->callable->id).'">'.e($this->call->callable->order_id).'</a></small>'));
                     break;
 
                 case 'Invoice':
-                    $mailMessage->line(new HtmlString('Invoice: <a href="'.config('app.url').'/invoices/'.$this->call->callable->id.'">'.$this->call->callable->invoice_id.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Invoice: <a href="'.config('app.url').'/invoices/'.e($this->call->callable->id).'">'.e($this->call->callable->invoice_id).'</a></small>'));
                     break;
 
                 case 'Delivery':
-                    $mailMessage->line(new HtmlString('Delivery: <a href="'.config('app.url').'/deliveries/'.$this->call->callable->id.'">'.$this->call->callable->delivery_id.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Delivery: <a href="'.config('app.url').'/deliveries/'.e($this->call->callable->id).'">'.e($this->call->callable->delivery_id).'</a></small>'));
                     break;
 
                 case 'Client':
-                    $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.$this->call->callable->id.'">'.$this->call->callable->name.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.e($this->call->callable->id).'">'.e($this->call->callable->name).'</a></small>'));
                     break;
 
                 case 'Organization':
-                    $mailMessage->line(new HtmlString('Organization: <a href="'.config('app.url').'/organization/'.$this->call->callable->id.'">'.$this->call->callable->name.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Organization: <a href="'.config('app.url').'/organization/'.e($this->call->callable->id).'">'.e($this->call->callable->name).'</a></small>'));
                     break;
 
                 case 'Person':
-                    $mailMessage->line(new HtmlString('Person: <a href="'.config('app.url').'/people/'.$this->call->callable->id.'">'.$this->call->callable->name.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Person: <a href="'.config('app.url').'/people/'.e($this->call->callable->id).'">'.e($this->call->callable->name).'</a></small>'));
                     break;
             }
         }

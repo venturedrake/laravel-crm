@@ -45,6 +45,8 @@ class SendPurchaseOrder extends Mailable
      */
     public function build()
     {
+        $this->content = e($this->content);
+
         $this->content = str_replace('[Online Purchase Order Link]', '<a href="'.$this->onlinePurchaseOrderLink.'">'.$this->onlinePurchaseOrderLink.'</a>', $this->content);
 
         $this->content = nl2br($this->content);

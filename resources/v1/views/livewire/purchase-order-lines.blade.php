@@ -2,11 +2,11 @@
     <h6 class="text-uppercase section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.purchase_order_lines')) }} <span class="float-right"><button class="btn btn-outline-secondary btn-sm" wire:click.prevent="add({{ $i }})"><span class="fa fa-plus" aria-hidden="true"></span></button></span></h6>
     <hr class="mb-0" />
     <script type="text/javascript">
-        let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\productsSelect2() !!}
+        let products =  {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\productsSelect2(), true)) }}
     </script>
     @if($fromOrder)
         <script type="text/javascript">
-            let organizations =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizationsSelect2() !!}
+            let organizations =  {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organizationsSelect2(), true)) }}
         </script> 
     @endif 
     <span id="invoiceLines">

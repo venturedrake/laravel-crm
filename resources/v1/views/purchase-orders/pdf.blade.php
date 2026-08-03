@@ -159,7 +159,7 @@
             <tr>
                 <td>
                     <h4>{{ ucfirst(__('laravel-crm::lang.delivery_instructions')) }}</h4>
-                    {!! nl2br($purchaseOrder->delivery_instructions) !!}
+                    {!! nl2br(e($purchaseOrder->delivery_instructions)) !!}
                 </td>
             </tr>
             </tbody>
@@ -171,7 +171,7 @@
             <tr>
                 <td>
                     <h4>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h4>
-                    {!! nl2br($purchaseOrder->terms) !!}
+                    {!! nl2br(e($purchaseOrder->terms)) !!}
                 </td>
             </tr>
             </tbody>
