@@ -7,7 +7,7 @@
             ])
          </span>
         <script type="text/javascript">
-            let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clientsWithDetails() !!}
+            let clients = {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clientsWithDetails(), true)) }}
         </script>
         <span wire:ignore>
             @include('laravel-crm::partials.form.text',[
@@ -45,7 +45,7 @@
                 ])
              </span>
         <script type="text/javascript">
-            let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsWithDetails() !!}
+            let organisations = {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisationsWithDetails(), true)) }}
         </script>
             
         <span wire:ignore>    
@@ -87,7 +87,7 @@
                 ])
             </span>
            <script type="text/javascript">
-            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\peopleWithDetails() !!}
+            let people =  {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\peopleWithDetails(), true)) }}
            </script>
             
             <span wire:ignore>

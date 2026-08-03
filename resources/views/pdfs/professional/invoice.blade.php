@@ -73,7 +73,7 @@
                 <div class="prof-party-heading">{{ ucfirst(__('laravel-crm::lang.from')) }}</div>
                 <div class="prof-party-body">
                     @if($contactDetails)
-                        {!! nl2br($contactDetails) !!}
+                        {!! nl2br(e($contactDetails)) !!}
                     @else
                         {{ $fromName }}
                     @endif
@@ -85,7 +85,7 @@
     @if($invoice->description)
         <div class="prof-note prof-block">
             <div class="prof-note-heading">{{ ucfirst(__('laravel-crm::lang.description')) }}</div>
-            <div class="prof-note-body">{!! nl2br($invoice->description) !!}</div>
+            <div class="prof-note-body">{!! nl2br(e($invoice->description)) !!}</div>
         </div>
     @endif
 
@@ -150,14 +150,14 @@
     @if($paymentInstructions)
         <div class="prof-note prof-block">
             <div class="prof-note-heading">{{ ucfirst(__('laravel-crm::lang.payment')) }}</div>
-            <div class="prof-note-body">{!! nl2br($paymentInstructions) !!}</div>
+            <div class="prof-note-body">{!! nl2br(e($paymentInstructions)) !!}</div>
         </div>
     @endif
 
     @if($invoice->terms)
         <div class="prof-note prof-block">
             <div class="prof-note-heading">{{ ucfirst(__('laravel-crm::lang.terms')) }}</div>
-            <div class="prof-note-body">{!! nl2br($invoice->terms) !!}</div>
+            <div class="prof-note-body">{!! nl2br(e($invoice->terms)) !!}</div>
         </div>
     @endif
 @endsection

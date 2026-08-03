@@ -69,7 +69,7 @@
           <tbody>
             <tr>
                 <td><h4>{{ ucfirst(__('laravel-crm::lang.description')) }}</h4>
-                    {!! nl2br($order->description) !!}</td>
+                    {!! nl2br(e($order->description)) !!}</td>
             </tr>
           </tbody>  
         </table>
@@ -141,7 +141,7 @@
             <tr>
                 <td>
                     <h4>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h4>
-                    {!! nl2br($order->terms) !!}
+                    {!! nl2br(e($order->terms)) !!}
                 </td>
             </tr>
             </tbody>

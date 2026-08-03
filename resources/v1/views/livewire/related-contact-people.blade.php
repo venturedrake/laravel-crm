@@ -23,7 +23,7 @@
                               'value' => null,
                            ])
                             <script type="text/javascript">
-                                let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
+                                let people =  {{ Illuminate\Support\Js::from(json_decode(\VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people(), true)) }}
                             </script>
                             <div class="form-group @error('person_name') text-danger @enderror">
                                 <label>{{ ucfirst(__('laravel-crm::lang.person_name')) }}</label>

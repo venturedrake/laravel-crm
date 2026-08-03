@@ -52,54 +52,54 @@ class LunchReminderNotification extends Notification
     public function toMail($notifiable)
     {
         $mailMessage = new MailMessage;
-        $subject = 'LUNCH REMINDER: '.$this->lunch->name.' ('.Carbon::parse($this->lunch->start_at)->format('M d, Y \\@ h:i A').')';
-        $greeting = 'Hi '.$this->user->name.',';
+        $subject = 'LUNCH REMINDER: '.e($this->lunch->name).' ('.Carbon::parse($this->lunch->start_at)->format('M d, Y \\@ h:i A').')';
+        $greeting = 'Hi '.e($this->user->name).',';
 
         $mailMessage
             ->subject($subject)
             ->greeting($greeting);
 
         $mailMessage->line(new HtmlString('<strong>THIS LUNCH IS COMING UP:</strong>'));
-        $mailMessage->line(new HtmlString('<strong>'.$this->lunch->name.'</strong>'));
-        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->lunch->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->lunch->finish_at)->format('M d, Y \\@ h:i A').'<br />Location: '.$this->lunch->location));
-        $mailMessage->line(new HtmlString($this->lunch->description));
+        $mailMessage->line(new HtmlString('<strong>'.e($this->lunch->name).'</strong>'));
+        $mailMessage->line(new HtmlString('Starting: '.Carbon::parse($this->lunch->start_at)->format('M d, Y \\@ h:i A').'<br />Ending: '.Carbon::parse($this->lunch->finish_at)->format('M d, Y \\@ h:i A').'<br />Location: '.e($this->lunch->location)));
+        $mailMessage->line(new HtmlString(nl2br(e($this->lunch->description))));
 
         if ($this->lunch->lunchable) {
             switch (class_basename($this->lunch->lunchable->getMorphClass())) {
                 case 'Lead':
-                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->title.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/leads/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->title).'</a></small>'));
                     break;
 
                 case 'Deal':
-                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/deals/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->title.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Lead: <a href="'.config('app.url').'/deals/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->title).'</a></small>'));
                     break;
 
                 case 'Quote':
-                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/quotes/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->title.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/quotes/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->title).'</a></small>'));
                     break;
 
                 case 'Order':
-                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/orders/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->order_id.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Quote: <a href="'.config('app.url').'/orders/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->order_id).'</a></small>'));
                     break;
 
                 case 'Invoice':
-                    $mailMessage->line(new HtmlString('Invoice: <a href="'.config('app.url').'/invoices/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->invoice_id.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Invoice: <a href="'.config('app.url').'/invoices/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->invoice_id).'</a></small>'));
                     break;
 
                 case 'Delivery':
-                    $mailMessage->line(new HtmlString('Delivery: <a href="'.config('app.url').'/deliveries/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->delivery_id.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Delivery: <a href="'.config('app.url').'/deliveries/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->delivery_id).'</a></small>'));
                     break;
 
                 case 'Client':
-                    $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->name.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Client: <a href="'.config('app.url').'/clients/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->name).'</a></small>'));
                     break;
 
                 case 'Organization':
-                    $mailMessage->line(new HtmlString('Organization: <a href="'.config('app.url').'/organization/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->name.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Organization: <a href="'.config('app.url').'/organization/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->name).'</a></small>'));
                     break;
 
                 case 'Person':
-                    $mailMessage->line(new HtmlString('Person: <a href="'.config('app.url').'/people/'.$this->lunch->lunchable->id.'">'.$this->lunch->lunchable->name.'</a></small>'));
+                    $mailMessage->line(new HtmlString('Person: <a href="'.config('app.url').'/people/'.e($this->lunch->lunchable->id).'">'.e($this->lunch->lunchable->name).'</a></small>'));
                     break;
             }
         }

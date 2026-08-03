@@ -7,7 +7,7 @@
         </div>
     </form>
 @else
-    {!! $lunch->description !!}
+    {!! nl2br(e($lunch->description)) !!}
     <br />
     <span class="badge badge-secondary">{{ $lunch->start_at->format('h:i A') }} on {{ $lunch->start_at->toFormattedDateString() }}</span> to <span class="badge badge-secondary">{{ $lunch->finish_at->format('h:i A') }} on {{ $lunch->finish_at->toFormattedDateString() }}</span>
     @if($lunch->contacts->count() > 0)

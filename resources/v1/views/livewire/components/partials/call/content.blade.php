@@ -7,7 +7,7 @@
         </div>
     </form>
 @else
-    {!! $call->description !!}
+    {!! nl2br(e($call->description)) !!}
     <br />
     <span class="badge badge-secondary">{{ $call->start_at->format('h:i A') }} on {{ $call->start_at->toFormattedDateString() }}</span> to <span class="badge badge-secondary">{{ $call->finish_at->format('h:i A') }} on {{ $call->finish_at->toFormattedDateString() }}</span>
     @if($call->contacts->count() > 0)

@@ -23,13 +23,13 @@ function clientsWithDetails()
     $data = [];
 
     foreach (Client::all() as $client) {
-        $label = '<strong>'.$client->name.'</strong>';
+        $label = '<strong>'.e($client->name).'</strong>';
 
         if ($contacts = $client->contacts()->get()) {
             $label .= '<br />';
 
             foreach ($contacts as $key => $contact) {
-                $label .= '<small>'.$contact->entityable->name.'</small>';
+                $label .= '<small>'.e($contact->entityable->name).'</small>';
                 if ($contacts->last() != $contact) {
                     $label .= ', ';
                 }
@@ -62,16 +62,16 @@ function peopleWithDetails()
     $data = [];
 
     foreach (Person::all() as $person) {
-        $label = '<strong>'.$person->name.'</strong>';
+        $label = '<strong>'.e($person->name).'</strong>';
 
         if ($email = $person->getPrimaryEmail()) {
             $label .= '<br />';
-            $label .= ' <small>'.$email->address.'</small>';
+            $label .= ' <small>'.e($email->address).'</small>';
         }
 
         if ($address = $person->getPrimaryAddress()) {
             $label .= '<br />';
-            $label .= ' <small>'.$address->state.', '.$address->code.'</small>';
+            $label .= ' <small>'.e($address->state).', '.e($address->code).'</small>';
         }
 
         $data[] = [
@@ -105,13 +105,13 @@ function organisationsWithDetails()
 
     foreach (Organisation::all() as $organisation) {
         if ($organisation->xeroContact) {
-            $label = '<strong>'.$organisation->name.'</strong> (xero contact)';
+            $label = '<strong>'.e($organisation->name).'</strong> (xero contact)';
 
             if ($contacts = $organisation->contacts()->get()) {
                 $label .= '<br />';
 
                 foreach ($contacts as $key => $contact) {
-                    $label .= '<small>'.$contact->entityable->name.'</small>';
+                    $label .= '<small>'.e($contact->entityable->name).'</small>';
                     if (end($contacts) != $key) {
                         $label .= ', ';
                     }
@@ -124,13 +124,13 @@ function organisationsWithDetails()
                 'name' => $organisation->name,
             ];
         } else {
-            $label = '<strong>'.$organisation->name.'</strong>';
+            $label = '<strong>'.e($organisation->name).'</strong>';
 
             if ($contacts = $organisation->contacts()->get()) {
                 $label .= '<br />';
 
                 foreach ($contacts as $key => $contact) {
-                    $label .= '<small>'.$contact->entityable->name.'</small>';
+                    $label .= '<small>'.e($contact->entityable->name).'</small>';
                     if (end($contacts) != $key) {
                         $label .= ', ';
                     }

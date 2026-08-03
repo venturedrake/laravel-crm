@@ -90,6 +90,7 @@
     var msgForm = document.getElementById('lcrm-msg-form');
     var onlineBar = document.getElementById('lcrm-online-bar');
     var onlineText = document.getElementById('lcrm-online-text');
+    var welcomeMessage = {{ Illuminate\Support\Js::from($widget->welcome_message ?: 'How can we help?') }};
 
     try { token = localStorage.getItem(STORAGE_KEY); } catch(e) {}
 
@@ -120,7 +121,7 @@
 
     function render(messages){
         if (!messages || !messages.length) {
-            bodyEl.innerHTML = '<div class="lcrm-empty">{{ $widget->welcome_message ?: 'How can we help?' }}</div>';
+            bodyEl.innerHTML = '<div class="lcrm-empty">'+escapeHtml(welcomeMessage)+'</div>';
             return;
         }
         bodyEl.innerHTML = messages.map(bubbleHtml).join('');
@@ -181,7 +182,7 @@
                 // hide the message composer until "Start chat" is submitted.
                 idForm.classList.add('show');
                 msgForm.style.display = 'none';
-                bodyEl.innerHTML = '<div class="lcrm-empty">{{ $widget->welcome_message ?: 'How can we help?' }}</div>';
+                bodyEl.innerHTML = '<div class="lcrm-empty">'+escapeHtml(welcomeMessage)+'</div>';
                 updateUnread(0);
             }
 

@@ -45,6 +45,8 @@ class SendQuote extends Mailable
      */
     public function build()
     {
+        $this->content = e($this->content);
+
         $this->content = str_replace('[Online Quote Link]', '<a href="'.$this->onlineQuoteLink.'">'.$this->onlineQuoteLink.'</a>', $this->content);
 
         $this->content = nl2br($this->content);

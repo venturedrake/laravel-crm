@@ -70,7 +70,7 @@
                 <div class="modern-party-heading">{{ ucfirst(__('laravel-crm::lang.from')) }}</div>
                 <div class="modern-party-body">
                     @if($contactDetails)
-                        {!! nl2br($contactDetails) !!}
+                        {!! nl2br(e($contactDetails)) !!}
                     @else
                         {{ $fromName }}
                     @endif
@@ -82,7 +82,7 @@
     @if($order->description)
         <div class="modern-note modern-block">
             <div class="modern-note-heading">{{ ucfirst(__('laravel-crm::lang.description')) }}</div>
-            <div class="modern-note-body">{!! nl2br($order->description) !!}</div>
+            <div class="modern-note-body">{!! nl2br(e($order->description)) !!}</div>
         </div>
     @endif
 
@@ -108,7 +108,7 @@
     @if($order->terms)
         <div class="modern-note modern-block">
             <div class="modern-note-heading">{{ ucfirst(__('laravel-crm::lang.terms')) }}</div>
-            <div class="modern-note-body">{!! nl2br($order->terms) !!}</div>
+            <div class="modern-note-body">{!! nl2br(e($order->terms)) !!}</div>
         </div>
     @endif
 

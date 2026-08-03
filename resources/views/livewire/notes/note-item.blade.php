@@ -54,7 +54,7 @@
             </x-mary-form>
         @else
             <div>
-                {!! $note->content !!}
+                {!! nl2br(e($note->content)) !!}
             </div>
 
             @if($note->noted_at)

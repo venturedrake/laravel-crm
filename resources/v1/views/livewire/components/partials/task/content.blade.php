@@ -7,7 +7,7 @@
         </div>
     </form>
 @else
-    {!! $task->description !!}
+    {!! nl2br(e($task->description)) !!}
     @if($task->due_at)
         <br />
         @include('laravel-crm::livewire.components.partials.task.status') <span class="badge badge-secondary">{{ ucfirst(__('laravel-crm::lang.due')) }} {{ $task->due_at->format('h:i A') }} on {{ $task->due_at->toFormattedDateString() }}</span>
