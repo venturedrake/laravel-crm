@@ -49,8 +49,13 @@
                         @hasquotesenabled
                             <x-mary-textarea wire:model="quoteTerms" label="{{ ucfirst(__('laravel-crm::lang.quote_terms')) }}" rows="5" />
                         @endhasquotesenabled
+                        {{-- Outside the module directives on purpose: this block prints on
+                             quote, order and delivery PDFs as well as invoices, so gating it
+                             on invoices being enabled would leave quote/order/delivery-only
+                             installs unable to fill it. --}}
+                        <x-mary-textarea wire:model="pdfContactDetails" label="{{ ucfirst(__('laravel-crm::lang.pdf_contact_details')) }}" hint="{{ ucfirst(__('laravel-crm::lang.pdf_contact_details_hint')) }}" rows="5" />
                         @hasinvoicesenabled
-                            <x-mary-textarea wire:model="invoiceContactDetails" label="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details')) }}" rows="5" />
+                            <x-mary-textarea wire:model="invoiceContactDetails" label="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details')) }}" hint="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details_hint')) }}" rows="5" />
                             <x-mary-textarea wire:model="invoiceTerms" label="{{ ucfirst(__('laravel-crm::lang.invoice_terms')) }}" rows="5" />
                             <x-mary-textarea wire:model="invoicePaymentInstructions" label="{{ ucfirst(__('laravel-crm::lang.invoice_payment_instructions')) }}" rows="5" />
                         @endhasinvoicesenabled

@@ -153,6 +153,13 @@ test('every new template renders sample line items — guards against the empty-
         'quote' => [
             'quote' => PdfSampleData::quote(),
         ],
+        // The delivery blades read the parent order's metadata alongside the
+        // delivery's own line items, so they need both — mirroring what
+        // TemplatePreviewController::sampleData() assembles for this doc type.
+        'delivery' => [
+            'delivery' => PdfSampleData::delivery(),
+            'order' => PdfSampleData::order(),
+        ],
     ];
 
     $common = [

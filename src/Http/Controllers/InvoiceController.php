@@ -16,6 +16,7 @@ use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -261,7 +262,7 @@ class InvoiceController extends Controller
                 'invoice' => $invoice,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                 'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
-                'contactDetails' => app('laravel-crm.settings')->get('invoice_contact_details', null),
+                'contactDetails' => PdfContactDetails::for('invoice'),
                 'paymentInstructions' => app('laravel-crm.settings')->get('invoice_payment_instructions', null),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,

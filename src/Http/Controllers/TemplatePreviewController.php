@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfSampleData;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
@@ -121,7 +122,7 @@ class TemplatePreviewController extends Controller
         $common = [
             'dateFormat' => $settings->get('date_format', config('laravel-crm.date_format', 'M j, Y')),
             'taxName' => $settings->get('tax_name', 'Tax'),
-            'contactDetails' => $settings->get('invoice_contact_details', null),
+            'contactDetails' => PdfContactDetails::for($docType),
             'paymentInstructions' => $settings->get('invoice_payment_instructions', null),
             'fromName' => $settings->get('organization_name', 'Sample Organization'),
             'logo' => PdfLogo::src($settings->get('logo_file', null)),

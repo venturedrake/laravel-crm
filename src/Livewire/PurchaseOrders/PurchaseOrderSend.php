@@ -11,6 +11,7 @@ use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Mail\SendPurchaseOrder;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -87,6 +88,7 @@ class PurchaseOrderSend extends Component
                 'purchaseOrder' => $this->purchaseOrder,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                 'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
+                'contactDetails' => PdfContactDetails::for('purchase-order'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

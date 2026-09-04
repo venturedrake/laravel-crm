@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.4.1
+
+### Fixed
+- **Downloading a quote, order or delivery PDF returned a 500 on every template except `classic`.** The themed templates added in 2.4.0 print a "From" contact block guarded on a `$contactDetails` variable, but only the invoice and purchase-order call sites ever passed one — the commit that repointed all 14 download / send / portal call sites at `PdfTemplateRegistry::viewForModel()` changed the view name and left the view-data array alone. Quotes, orders and deliveries therefore rendered a blade reading a variable nobody supplied, and `modern` is the default template, so a stock 2.4.0 install failed on `Undefined variable $contactDetails` at the first quote download. All six affected call sites now pass the variable, and all 16 themed blades guard the read with `?? null` so a host that published its views at 2.4.0 — and whose on-disk copy the view finder prefers over the package's — is fixed by `composer update` alone, without republishing
+- **Portal quote and invoice downloads never showed the organisation's address.** Both call sites guarded on `$quote->organisation` / `$invoice->organisation`, but the relation is spelled `organization` on both models, so Eloquent resolved the British spelling to `null`, the branch never ran, and `organization_address` was always passed as null. Portal-download PDFs now render the organisation address block, matching the authenticated download and the portal purchase-order controller. **This changes the visible output of portal PDFs** for records whose organisation has a primary address
+- **Template previews showed the invoice contact block for every document type.** `TemplatePreviewController::sampleData()` hardcoded the `invoice_contact_details` setting, so previewing a quote, order, delivery or purchase-order template displayed whatever the invoice was configured to say. It now resolves per document type
+
+### Added
+- **A shared `pdf_contact_details` setting** — **Settings → General → Document contact details** — filling the "From" block on quote, order, delivery and invoice PDFs. Only invoices had such a field before, which is why the other document types had no way to populate the block the 2.4.0 templates render. A document type's own `{type}_contact_details` setting still takes precedence, so existing invoice output is unchanged. Two gaps are deliberate, since closing either would change the visible output of a document that never rendered the block: **purchase orders** show no contact block on any of the 5 templates — their layouts pair a **Supplier** column with a **Delivery details** one rather than From/To, so `purchase_order_contact_details` resolves through the same chain but prints nowhere — and the **`classic`** template, which reproduces the pre-2.4.0 layout unchanged, renders the block on invoices only. Filling this field therefore affects quote, order and delivery PDFs on the `modern`, `bold`, `compact` and `professional` templates, and invoice PDFs on all 5. All 15 render call sites resolve through one `PdfContactDetails` helper
+
 ## 2.4.0 - 2026-08-09
 
 ### Added

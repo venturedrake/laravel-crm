@@ -17,6 +17,7 @@ use VentureDrake\LaravelCrm\Services\DeliveryService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -276,6 +277,7 @@ class DeliveryController extends Controller
                 'delivery' => $delivery,
                 'order' => $delivery->order,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                'contactDetails' => PdfContactDetails::for('delivery'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $delivery->getShippingAddress() ?? null,

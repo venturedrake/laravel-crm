@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
@@ -94,6 +95,7 @@ class SendQuote extends Component
             ->loadView(PdfTemplateRegistry::viewForModel('quote', $this->quote), [
                 'quote' => $this->quote,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                'contactDetails' => PdfContactDetails::for('quote'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

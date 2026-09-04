@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -77,7 +78,7 @@ class PurchaseOrderController extends Controller
                     'purchaseOrder' => $purchaseOrder,
                     'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                     'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
-                    'contactDetails' => app('laravel-crm.settings')->get('purchase_order_contact_details', null),
+                    'contactDetails' => PdfContactDetails::for('purchase-order'),
                     'email' => $email ?? null,
                     'phone' => $phone ?? null,
                     'address' => $address ?? null,

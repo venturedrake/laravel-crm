@@ -66,7 +66,7 @@
             <td>
                 <div class="bold-party-heading">{{ ucfirst(__('laravel-crm::lang.from')) }}</div>
                 <div class="bold-party-body">
-                    @if($contactDetails)
+                    @if($contactDetails ?? null)
                         {!! nl2br($contactDetails) !!}
                     @else
                         {{ $fromName }}

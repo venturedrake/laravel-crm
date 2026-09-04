@@ -13,6 +13,7 @@ use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 
 class SettingEdit extends Component
 {
@@ -68,6 +69,14 @@ class SettingEdit extends Component
     public $purchaseOrderPrefix;
 
     public $quoteTerms;
+
+    /**
+     * The shared "From" contact block, used wherever a doc type has no
+     * override of its own. Printed on quote, order and delivery PDFs on the
+     * themed templates and on invoice PDFs everywhere; PdfContactDetails
+     * carries the full matrix and why `classic` and purchase orders differ.
+     */
+    public $pdfContactDetails;
 
     public $invoiceContactDetails;
 
@@ -171,6 +180,7 @@ class SettingEdit extends Component
         $this->deliveryPrefix = app('laravel-crm.settings')->get('delivery_prefix');
         $this->purchaseOrderPrefix = app('laravel-crm.settings')->get('purchase_order_prefix');
         $this->quoteTerms = app('laravel-crm.settings')->get('quote_terms');
+        $this->pdfContactDetails = app('laravel-crm.settings')->get(PdfContactDetails::SHARED_KEY);
         $this->invoiceContactDetails = app('laravel-crm.settings')->get('invoice_contact_details');
         $this->invoiceTerms = app('laravel-crm.settings')->get('invoice_terms');
         $this->invoicePaymentInstructions = app('laravel-crm.settings')->get('invoice_payment_instructions');
@@ -299,6 +309,18 @@ class SettingEdit extends Component
 
         if ($this->quoteTerms) {
             app('laravel-crm.settings')->set('quote_terms', $this->quoteTerms);
+        }
+
+        // `!== null` rather than the truthy check its neighbours use: this
+        // one key feeds the "From" block on four doc types at once, so a
+        // truthy guard would make it write-once — clearing the textarea binds '',
+        // which would skip the set() and leave the old block printing on
+        // every PDF while mount() silently restored the stale value to the
+        // form. Null still means "never filled on this install", so an
+        // untouched field writes no row. PdfContactDetails::for() reads with
+        // filled(), so a cleared row resolves to null.
+        if ($this->pdfContactDetails !== null) {
+            app('laravel-crm.settings')->set(PdfContactDetails::SHARED_KEY, $this->pdfContactDetails);
         }
 
         if ($this->invoiceContactDetails) {

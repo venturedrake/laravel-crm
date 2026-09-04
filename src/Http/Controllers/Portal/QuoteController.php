@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -108,8 +109,8 @@ class QuoteController extends Controller
                     $address = $quote->person->getPrimaryAddress();
                 }
 
-                if ($quote->organisation) {
-                    $organisation_address = $quote->organisation->getPrimaryAddress();
+                if ($quote->organization) {
+                    $organization_address = $quote->organization->getPrimaryAddress();
                 }
 
                 return Pdf::setOption([
@@ -118,6 +119,7 @@ class QuoteController extends Controller
                     ->loadView(PdfTemplateRegistry::viewForModel('quote', $quote), [
                         'quote' => $quote,
                         'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                        'contactDetails' => PdfContactDetails::for('quote'),
                         'email' => $email ?? null,
                         'phone' => $phone ?? null,
                         'address' => $address ?? null,

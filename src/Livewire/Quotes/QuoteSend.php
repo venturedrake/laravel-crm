@@ -11,6 +11,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Mail\SendQuote;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -96,6 +97,7 @@ class QuoteSend extends Component
             ->loadView(PdfTemplateRegistry::viewForModel('quote', $this->quote), [
                 'quote' => $this->quote,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                'contactDetails' => PdfContactDetails::for('quote'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
