@@ -251,6 +251,7 @@ class TestSchema
             $table->unsignedBigInteger('lead_source_id')->nullable();
             $table->unsignedBigInteger('pipeline_id')->nullable();
             $table->unsignedBigInteger('pipeline_stage_id')->nullable();
+            $table->integer('pipeline_stage_order')->nullable();
             $table->integer('pipeline_order')->nullable();
             $table->boolean('qualified')->default(false);
             $table->datetime('expected_close')->nullable();
@@ -283,6 +284,7 @@ class TestSchema
             $table->string('currency', 3)->default('USD');
             $table->unsignedBigInteger('pipeline_id')->nullable();
             $table->unsignedBigInteger('pipeline_stage_id')->nullable();
+            $table->integer('pipeline_stage_order')->nullable();
             $table->integer('pipeline_order')->nullable();
             $table->boolean('qualified')->default(false);
             $table->datetime('expected_close')->nullable();
@@ -725,6 +727,7 @@ class TestSchema
             $table->datetime('rejected_at')->nullable();
             $table->unsignedBigInteger('pipeline_id')->nullable();
             $table->unsignedBigInteger('pipeline_stage_id')->nullable();
+            $table->integer('pipeline_stage_order')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->unsignedBigInteger('user_updated_id')->nullable();
             $table->unsignedBigInteger('user_deleted_id')->nullable();
@@ -773,6 +776,7 @@ class TestSchema
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('pipeline_id')->nullable();
             $table->unsignedBigInteger('pipeline_stage_id')->nullable();
+            $table->integer('pipeline_stage_order')->nullable();
             $table->string('delivery_id')->nullable();
             $table->string('prefix')->nullable();
             $table->integer('number')->nullable();
@@ -839,6 +843,7 @@ class TestSchema
             $table->text('terms')->nullable();
             $table->unsignedBigInteger('pipeline_id')->nullable();
             $table->unsignedBigInteger('pipeline_stage_id')->nullable();
+            $table->integer('pipeline_stage_order')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->unsignedBigInteger('user_updated_id')->nullable();
             $table->unsignedBigInteger('user_deleted_id')->nullable();
@@ -896,6 +901,7 @@ class TestSchema
             $table->datetime('fully_paid_at')->nullable();
             $table->unsignedBigInteger('pipeline_id')->nullable();
             $table->unsignedBigInteger('pipeline_stage_id')->nullable();
+            $table->integer('pipeline_stage_order')->nullable();
             $table->unsignedBigInteger('user_created_id')->nullable();
             $table->unsignedBigInteger('user_updated_id')->nullable();
             $table->unsignedBigInteger('user_deleted_id')->nullable();
@@ -937,6 +943,7 @@ class TestSchema
             $table->unsignedBigInteger('organization_id')->nullable();
             $table->unsignedBigInteger('pipeline_id')->nullable();
             $table->unsignedBigInteger('pipeline_stage_id')->nullable();
+            $table->integer('pipeline_stage_order')->nullable();
             $table->string('reference')->nullable();
             $table->string('purchase_order_id')->nullable();
             $table->string('prefix')->nullable();

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Models\Label;
@@ -58,15 +59,15 @@ class LeadBoard extends KanbanBoard
 
     public function onStageSorted($orderedIds)
     {
-        if ($record = Lead::whereIn('id', $orderedIds)->first()) {
+        $records = $this->resolve($orderedIds);
+
+        foreach ($records as $record) {
             $this->authorize('update', $record);
         }
 
-        foreach ($orderedIds as $orderNumber => $leadId) {
-            Lead::find($leadId)->update([
-                'pipeline_stage_order' => $orderNumber + 1,
-            ]);
-        }
+        DB::transaction(function () use ($records) {
+            $this->reorder($records);
+        });
     }
 
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
@@ -75,23 +76,49 @@ class LeadBoard extends KanbanBoard
             return;
         }
 
-        $this->authorize('update', $record);
+        $from = $this->resolve($fromOrderedIds);
+        $to = $this->resolve($toOrderedIds);
 
-        $record->update([
-            'pipeline_stage_id' => $stageId,
-        ]);
-
-        foreach ($fromOrderedIds as $orderNumber => $leadId) {
-            Lead::find($leadId)->update([
-                'pipeline_stage_order' => $orderNumber + 1,
-            ]);
+        foreach ($from->merge($to)->concat([$record]) as $authorizable) {
+            $this->authorize('update', $authorizable);
         }
 
-        foreach ($toOrderedIds as $orderNumber => $leadId) {
-            Lead::find($leadId)->update([
-                'pipeline_stage_order' => $orderNumber + 1,
+        DB::transaction(function () use ($record, $stageId, $from, $to) {
+            $record->update([
+                'pipeline_stage_id' => $stageId,
             ]);
-        }
+
+            $this->reorder($from);
+            $this->reorder($to);
+        });
+    }
+
+    /**
+     * Resolve the ids the board sent us, dropping anything that is not a lead.
+     *
+     * A stage container holds more than the record cards -- each card is followed by its
+     * delete-confirm dialog -- so a host still serving a stale published copy of
+     * kanban-board/sortable.blade.php harvests ids like 'modalDeleteLead4' alongside the
+     * real ones. Those have to be skipped rather than dereferenced, and they must not
+     * consume an order number either.
+     */
+    private function resolve(array $orderedIds): Collection
+    {
+        return collect($orderedIds)
+            ->map(fn ($leadId) => Lead::find($leadId))
+            ->filter()
+            ->values();
+    }
+
+    /**
+     * Renumber a stage contiguously from 1. Callers authorize the whole batch first, so a
+     * denial cannot leave the stage half renumbered.
+     */
+    private function reorder(Collection $records): void
+    {
+        $records->each(fn (Lead $record, int $index) => $record->update([
+            'pipeline_stage_order' => $index + 1,
+        ]));
     }
 
     public function records(): Collection

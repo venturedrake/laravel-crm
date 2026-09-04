@@ -23,7 +23,7 @@
                 <div class="card-body p-0">
                     <span id="{{ $stage['stageRecordsId'] }}" data-stage-id="{{ $stage['id'] }}">
                         @foreach($stage['records'] as $record)
-                            <div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}">
+                            <div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}" data-record-id="{{ $record['id'] }}">
                                 <div class="flex justify-between">
                                     <div>
                                         <span>{{ $record['title'] }}</span>

@@ -54,6 +54,11 @@ const PERSISTENCE_SIGNALS = [
     // ::dispatchSync( without catching Livewire's own $this->dispatch() events,
     // which are browser messages rather than side effects.
     '::dispatch',
+
+    // A transaction only ever wraps writes. The board reorder actions push their
+    // updates down into a private helper, so this is the only signal left in the
+    // action method itself.
+    'DB::transaction(',
 ];
 
 /**
