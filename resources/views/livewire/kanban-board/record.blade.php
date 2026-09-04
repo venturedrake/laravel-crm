@@ -1,4 +1,4 @@
-<div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}">
+<div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}" data-record-id="{{ $record['id'] }}">
     <div class="grow-1 null">
         <div class="flex justify-between">
             <div>
