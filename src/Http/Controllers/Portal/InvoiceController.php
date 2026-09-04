@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -57,7 +58,7 @@ class InvoiceController extends Controller
 
         return view('laravel-crm::portal.invoices.show', [
             'invoice' => $invoice,
-            'contactDetails' => app('laravel-crm.settings')->get('invoice_contact_details', null),
+            'contactDetails' => PdfContactDetails::for('invoice'),
             'paymentInstructions' => app('laravel-crm.settings')->get('invoice_payment_instructions', null),
             'email' => $email ?? null,
             'phone' => $phone ?? null,
@@ -91,8 +92,8 @@ class InvoiceController extends Controller
                     $address = $invoice->person->getPrimaryAddress();
                 }
 
-                if ($invoice->organisation) {
-                    $organisation_address = $invoice->organisation->getPrimaryAddress();
+                if ($invoice->organization) {
+                    $organization_address = $invoice->organization->getPrimaryAddress();
                 }
 
                 return Pdf::setOption([
@@ -102,7 +103,7 @@ class InvoiceController extends Controller
                         'invoice' => $invoice,
                         'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                         'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
-                        'contactDetails' => app('laravel-crm.settings')->get('invoice_contact_details', null),
+                        'contactDetails' => PdfContactDetails::for('invoice'),
                         'paymentInstructions' => app('laravel-crm.settings')->get('invoice_payment_instructions', null),
                         'email' => $email ?? null,
                         'phone' => $phone ?? null,

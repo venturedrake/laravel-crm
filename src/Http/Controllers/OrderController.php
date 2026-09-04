@@ -22,6 +22,7 @@ use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -430,6 +431,7 @@ class OrderController extends Controller
             ->loadView(PdfTemplateRegistry::viewForModel('order', $order), [
                 'order' => $order,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
+                'contactDetails' => PdfContactDetails::for('order'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,

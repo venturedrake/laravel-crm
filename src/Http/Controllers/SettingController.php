@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 
 class SettingController extends Controller
 {
@@ -92,6 +93,17 @@ class SettingController extends Controller
 
         if ($request->quote_terms) {
             $this->settingService->set('quote_terms', $request->quote_terms);
+        }
+
+        // `has()` rather than the truthy check its neighbours use: this one
+        // key feeds the "From" block on four doc types at once, so a truthy
+        // guard would make it write-once — clearing the field would post an empty
+        // string, skip the set(), and leave the old block printing on every
+        // PDF with no way to remove it short of DB access. An empty string
+        // is a meaningful value here; PdfContactDetails::for() reads it with
+        // filled(), so a cleared row resolves to null.
+        if ($request->has('pdf_contact_details')) {
+            $this->settingService->set(PdfContactDetails::SHARED_KEY, $request->pdf_contact_details);
         }
 
         if ($request->invoice_contact_details) {

@@ -11,6 +11,7 @@ use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Mail\SendInvoice;
 use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
@@ -87,7 +88,7 @@ class InvoiceSend extends Component
                 'invoice' => $this->invoice,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                 'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
-                'contactDetails' => app('laravel-crm.settings')->get('invoice_contact_details', null),
+                'contactDetails' => PdfContactDetails::for('invoice'),
                 'paymentInstructions' => app('laravel-crm.settings')->get('invoice_payment_instructions', null),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,

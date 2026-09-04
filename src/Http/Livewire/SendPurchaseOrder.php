@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Services\SettingService;
+use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
@@ -85,7 +86,7 @@ class SendPurchaseOrder extends Component
                 'purchaseOrder' => $this->purchaseOrder,
                 'dateFormat' => app('laravel-crm.settings')->get('date_format', config('laravel-crm.date_format')),
                 'taxName' => app('laravel-crm.settings')->get('tax_name', 'Tax'),
-                'contactDetails' => app('laravel-crm.settings')->get('purchase_order_contact_details', null),
+                'contactDetails' => PdfContactDetails::for('purchase-order'),
                 'email' => $email ?? null,
                 'phone' => $phone ?? null,
                 'address' => $address ?? null,
