@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
 /**
  * The half of the update that is safe to run unattended.
@@ -105,10 +106,108 @@ class LaravelCrmUpgrade extends Command
             }
         }
 
+        $this->warnAboutDriftedPublishedViews($filesystem);
+
         $this->info('Laravel CRM assets are up to date.');
         $this->line('Run "php artisan laravelcrm:update" to apply database migrations.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Tell the operator which published views no longer match the ones shipped.
+     *
+     * A view published into resources/views/vendor/laravel-crm is a frozen copy
+     * that Laravel resolves *ahead of* the package's own. Nothing re-syncs it,
+     * so when a Livewire component stops passing a variable the frozen view
+     * still references it and the page 500s — with no hint that the host is
+     * rendering a view from a previous release.
+     *
+     * Only a hash mismatch counts. vendor:publish --tag=views copies the whole
+     * directory, so presence says nothing on its own: a host that published
+     * last week and changed nothing has byte-identical copies it never intended
+     * as overrides, and warning about those would train operators to ignore
+     * this. Same reasoning as PdfTemplateRegistry::probePublishedOverride().
+     *
+     * Never fatal, and never noisy on the majority of hosts, which have not
+     * published views at all.
+     */
+    protected function warnAboutDriftedPublishedViews(Filesystem $filesystem): void
+    {
+        try {
+            $published = resource_path('views/vendor/laravel-crm');
+
+            if (! $filesystem->isDirectory($published) || ! is_readable($published)) {
+                return;
+            }
+
+            $shippedRoot = __DIR__.'/../../resources/views';
+
+            // The PDF views a host is explicitly meant to publish and edit. An
+            // edited copy of one of these is a supported customisation that
+            // PdfTemplateRegistry goes looking for, not drift.
+            $supported = array_map(
+                fn (string $view) => str_replace('.', '/', $view).'.blade.php',
+                array_values(PdfTemplateRegistry::LEGACY_VIEWS)
+            );
+
+            $drifted = [];
+
+            foreach ($filesystem->allFiles($published) as $file) {
+                if (! str_ends_with($file->getFilename(), '.blade.php')) {
+                    continue;
+                }
+
+                $relative = str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
+
+                if (in_array($relative, $supported, true)) {
+                    continue;
+                }
+
+                $shipped = $shippedRoot.'/'.$relative;
+
+                if (! is_file($shipped)) {
+                    $drifted[] = $relative.' (this release no longer ships this view)';
+
+                    continue;
+                }
+
+                // A file we cannot hash tells us nothing either way, and
+                // md5_file() on it would emit a raw PHP warning into the middle
+                // of the composer output and then return false — which compares
+                // unequal to the shipped hash and reports drift we never
+                // established. Skip it, as probePublishedOverride() does.
+                if (! is_readable($file->getPathname())) {
+                    continue;
+                }
+
+                if (md5_file($file->getPathname()) !== md5_file($shipped)) {
+                    $drifted[] = $relative;
+                }
+            }
+
+            if ($drifted === []) {
+                return;
+            }
+
+            $shown = array_slice($drifted, 0, 10);
+
+            $this->warn(count($drifted).' published Laravel CRM view(s) differ from the ones this release ships:');
+
+            foreach ($shown as $path) {
+                $this->warn('  - '.$path);
+            }
+
+            if ($remaining = count($drifted) - count($shown)) {
+                $this->warn("  ... and {$remaining} more.");
+            }
+
+            $this->warn('A published view is a frozen copy and is rendered instead of the package\'s own, so when a component stops passing a variable the frozen view still references it and the page 500s.');
+            $this->warn('Run "php artisan vendor:publish --tag=views --force" to take this release\'s views, then re-apply any customisations on top of them.');
+        } catch (\Throwable $e) {
+            // An unreadable resources directory is not a broken install.
+            $this->warn('Could not check published Laravel CRM views for drift: '.$e->getMessage());
+        }
     }
 
     /**
