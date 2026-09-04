@@ -37,7 +37,7 @@
                 @endif
             @endscope
             @scope('cell_overdue_by', $invoice)
-                @if(! $invoice->fully_paid_at && abs($invoice->due_date->diffinDays()) > 0 && $invoice->due_date < \Carbon\Carbon::now()->timezone($this->timezone ))
+                @if(! $invoice->fully_paid_at && $invoice->due_date && abs($invoice->due_date->diffInDays()) > 0 && $invoice->due_date < \Carbon\Carbon::now()->timezone($this->timezone))
                     {{ $invoice->due_date->diffForHumans() }}
                 @endif
             @endscope

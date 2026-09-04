@@ -1,5 +1,6 @@
 <?php
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\ServiceProvider as DomPdfServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -177,6 +178,78 @@ test('every new template renders sample line items — guards against the empty-
         }
     }
 });
+
+/**
+ * Dataset: every template slug crossed with the two doc types whose dates
+ * are nullable in the schema AND accepted as null by the V2 API — invoice
+ * (`issue_date` / `due_date`) and quote (`issue_at` / `expire_at`).
+ */
+dataset('null_date_docType_pairs', function () {
+    $rows = [];
+    foreach (['modern', 'classic', 'bold', 'compact', 'professional'] as $slug) {
+        foreach (['invoice', 'quote'] as $docType) {
+            $rows[$docType.'-'.$slug] = [$docType, $slug];
+        }
+    }
+
+    return $rows;
+});
+
+test('every template renders an invoice/quote with null dates to a valid PDF', function (string $docType, string $slug) {
+    // Regression cover for the null-date fatals: `crm_invoices.due_date`,
+    // `crm_quotes.issue_at` and `crm_quotes.expire_at` are all nullable and
+    // the V2 API accepts null, so a dateless record must render rather than
+    // throwing "Call to a member function format() on null".
+    //
+    // Rendered through Pdf::loadView rather than the preview route because
+    // the route is hardwired to PdfSampleData's fully-dated fixtures — there
+    // is no seam to inject null dates. This is the same DomPDF path
+    // InvoiceController::download() and QuoteController::download() use.
+    if ($docType === 'invoice') {
+        $entity = PdfSampleData::invoice();
+        $entity->issue_date = null;
+        $entity->due_date = null;
+        $data = ['invoice' => $entity];
+    } else {
+        $entity = PdfSampleData::quote();
+        $entity->issue_at = null;
+        $entity->expire_at = null;
+        $data = ['quote' => $entity];
+    }
+
+    $view = PdfTemplateRegistry::viewFor($docType, $slug);
+
+    $common = [
+        'dateFormat' => 'M j, Y',
+        'taxName' => 'Tax',
+        'contactDetails' => null,
+        'paymentInstructions' => null,
+        'fromName' => 'Sample Organization',
+        'logo' => null,
+        'email' => null,
+        'phone' => null,
+        'address' => PdfSampleData::address(),
+        'organization_address' => PdfSampleData::address(),
+    ];
+
+    // HTML pass first: a Blade-level failure surfaces a readable exception
+    // rather than opaque PDF bytes, and lets us assert the body still has
+    // its line items (i.e. the guards skipped only the date rows).
+    $html = View::make($view, array_merge($common, $data))->render();
+    expect($html)->toContain('Sample product A');
+
+    // Mirror TemplatePreviewController's DomPDF configuration so the
+    // packaged fonts resolve — without fontDir, php-font-lib tries to write
+    // its metrics cache into a storage/fonts directory testbench omits.
+    $binary = Pdf::setOption([
+        'fontDir' => public_path('vendor/laravel-crm/fonts'),
+    ])->setPaper('a4', 'portrait')
+        ->loadView($view, array_merge($common, $data))
+        ->output();
+
+    expect(strlen($binary))->toBeGreaterThan(0);
+    expect(substr($binary, 0, 5))->toBe('%PDF-');
+})->with('null_date_docType_pairs');
 
 test('classic template renders the existing pdf.blade.php content via @include pass-through', function () {
     // The Classic wrappers are one-line

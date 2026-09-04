@@ -36,8 +36,8 @@ class PurchaseOrderEdit extends Component
         $this->person_name = $purchaseOrder->person ? $purchaseOrder->person->name : null;
         $this->reference = $purchaseOrder->reference;
         $this->currency = $purchaseOrder->currency;
-        $this->issue_date = $purchaseOrder->issue_date->format('Y-m-d') ?? null;
-        $this->delivery_date = $purchaseOrder->delivery_date->format('Y-m-d') ?? null;
+        $this->issue_date = $purchaseOrder->issue_date?->format('Y-m-d');
+        $this->delivery_date = $purchaseOrder->delivery_date?->format('Y-m-d');
         $this->terms = $purchaseOrder->terms;
         $this->pipeline_stage_id = $purchaseOrder->pipelineStage->id ?? null;
         $this->user_owner_id = $purchaseOrder->ownerUser->id ?? null;

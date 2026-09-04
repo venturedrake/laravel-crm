@@ -26,13 +26,13 @@
             <td class="compact-meta-label">{{ ucfirst(__('laravel-crm::lang.invoice_number')) }}</td>
             <td class="compact-meta-value">{{ $invoice->xeroInvoice->number ?? $invoice->invoice_id }}</td>
             <td class="compact-meta-label">{{ ucfirst(__('laravel-crm::lang.invoice_date')) }}</td>
-            <td class="compact-meta-value">{{ $invoice->issue_date->format($dateFormat) }}</td>
+            <td class="compact-meta-value">@if($invoice->issue_date){{ $invoice->issue_date->format($dateFormat) }}@endif</td>
         </tr>
         <tr>
             <td class="compact-meta-label">{{ ucfirst(__('laravel-crm::lang.reference')) }}</td>
             <td class="compact-meta-value">{{ $invoice->xeroInvoice->reference ?? $invoice->reference }}</td>
             <td class="compact-meta-label">{{ ucfirst(__('laravel-crm::lang.due_date')) }}</td>
-            <td class="compact-meta-value">{{ $invoice->due_date->format($dateFormat) }}</td>
+            <td class="compact-meta-value">@if($invoice->due_date){{ $invoice->due_date->format($dateFormat) }}@endif</td>
         </tr>
     </table>
 

@@ -27,8 +27,8 @@ class DeliveryEdit extends Component
     {
         $this->mountCommon($this->delivery);
 
-        $this->delivery_expected = $this->delivery->delivery_expected->format('Y-m-d') ?? null;
-        $this->delivered_on = $this->delivery->delivered_on->format('Y-m-d') ?? null;
+        $this->delivery_expected = $this->delivery->delivery_expected?->format('Y-m-d');
+        $this->delivered_on = $this->delivery->delivered_on?->format('Y-m-d');
         $this->pipeline_stage_id = $this->delivery->pipelineStage->id ?? null;
         $this->user_owner_id = $this->delivery->ownerUser->id ?? null;
 

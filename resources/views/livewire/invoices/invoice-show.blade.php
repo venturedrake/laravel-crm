@@ -8,15 +8,15 @@
             @endif
             @if($invoice->fully_paid_at)
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.paid')) }}" class="badge badge-sm badge-success text-white" />
-            @elseif(! $invoice->fully_paid_at && $invoice->due_date->isToday())
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date && $invoice->due_date->isToday())
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.due_today')) }}" class="badge badge-sm badge-secondary text-white" />
-            @elseif(! $invoice->fully_paid_at && $invoice->due_date->isTomorrow())
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date && $invoice->due_date->isTomorrow())
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.due_tomorrow')) }}" class="badge badge-sm badge-secondary text-white" />
-            @elseif(! $invoice->fully_paid_at && $invoice->due_date->isYesterday())
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date && $invoice->due_date->isYesterday())
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.due_yesterday')) }}" class="badge badge-sm badge-secondary text-white" />
-            @elseif(! $invoice->fully_paid_at && abs($invoice->due_date->diffinDays()) > 0  && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date && abs($invoice->due_date->diffInDays()) > 0  && $invoice->due_date >= \Carbon\Carbon::now()->timezone($timezone))
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.due')) }} {{ $invoice->due_date->diffForHumans() }}" class="badge badge-sm badge-secondary text-white" />
-            @elseif(! $invoice->fully_paid_at && abs($invoice->due_date->diffinDays()) > 0  && $invoice->due_date < \Carbon\Carbon::now()->timezone($timezone))
+            @elseif(! $invoice->fully_paid_at && $invoice->due_date && abs($invoice->due_date->diffInDays()) > 0  && $invoice->due_date < \Carbon\Carbon::now()->timezone($timezone))
                 <x-mary-badge value="{{ $invoice->due_date->diffForHumans() }} {{ ucfirst(__('laravel-crm::lang.overdue')) }}" class="badge badge-sm badge-error text-white" />
             @endif
         </x-slot:title>

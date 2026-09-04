@@ -11,9 +11,13 @@
                     @if($invoice->reference || ($invoice->xeroInvoice && $invoice->xeroInvoice->reference))
                         <p><strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong> {{ $invoice->xeroInvoice->reference ?? $invoice->reference }}<br />
                     @endif
-                    <strong>{{ ucfirst(__('laravel-crm::lang.invoice_date')) }}</strong> {{ $invoice->issue_date->format($dateFormat) }}<br />
+                    @if($invoice->issue_date)
+                        <strong>{{ ucfirst(__('laravel-crm::lang.invoice_date')) }}</strong> {{ $invoice->issue_date->format($dateFormat) }}<br />
+                    @endif
                     <strong>{{ ucfirst(__('laravel-crm::lang.invoice_number')) }}</strong> {{ $invoice->xeroInvoice->number ?? $invoice->invoice_id   }}<br />
-                    <strong>{{ ucfirst(__('laravel-crm::lang.due_date')) }}</strong> {{ $invoice->due_date->format($dateFormat) }}
+                    @if($invoice->due_date)
+                        <strong>{{ ucfirst(__('laravel-crm::lang.due_date')) }}</strong> {{ $invoice->due_date->format($dateFormat) }}
+                    @endif
                     </p>
                 </td>
                 <td width="50%" style="text-align: right">

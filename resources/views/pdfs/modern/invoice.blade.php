@@ -32,14 +32,18 @@
                 <td>{{ $invoice->xeroInvoice->reference ?? $invoice->reference }}</td>
             </tr>
         @endif
-        <tr>
-            <td class="modern-meta-label">{{ ucfirst(__('laravel-crm::lang.invoice_date')) }}</td>
-            <td>{{ $invoice->issue_date->format($dateFormat) }}</td>
-        </tr>
-        <tr>
-            <td class="modern-meta-label">{{ ucfirst(__('laravel-crm::lang.due_date')) }}</td>
-            <td>{{ $invoice->due_date->format($dateFormat) }}</td>
-        </tr>
+        @if($invoice->issue_date)
+            <tr>
+                <td class="modern-meta-label">{{ ucfirst(__('laravel-crm::lang.invoice_date')) }}</td>
+                <td>{{ $invoice->issue_date->format($dateFormat) }}</td>
+            </tr>
+        @endif
+        @if($invoice->due_date)
+            <tr>
+                <td class="modern-meta-label">{{ ucfirst(__('laravel-crm::lang.due_date')) }}</td>
+                <td>{{ $invoice->due_date->format($dateFormat) }}</td>
+            </tr>
+        @endif
     </table>
 
     {{-- Parties block: bill-to left, from right --}}

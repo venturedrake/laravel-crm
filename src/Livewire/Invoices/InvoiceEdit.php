@@ -34,8 +34,8 @@ class InvoiceEdit extends Component
         $this->person_name = $invoice->person ? $invoice->person->name : null;
         $this->reference = $invoice->reference;
         $this->currency = $invoice->currency;
-        $this->issue_date = $invoice->issue_date->format('Y-m-d') ?? null;
-        $this->due_date = $invoice->due_date->format('Y-m-d') ?? null;
+        $this->issue_date = $invoice->issue_date?->format('Y-m-d');
+        $this->due_date = $invoice->due_date?->format('Y-m-d');
         $this->terms = $invoice->terms;
         $this->pipeline_stage_id = $invoice->pipelineStage->id ?? null;
         $this->user_owner_id = $invoice->ownerUser->id ?? null;
