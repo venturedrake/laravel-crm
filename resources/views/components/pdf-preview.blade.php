@@ -51,7 +51,7 @@
                     icon="o-magnifying-glass-minus"
                     class="btn-sm btn-square btn-ghost"
                     tooltip="{{ ucfirst(__('laravel-crm::lang.zoom_out')) }}"
-                    x-bind:disabled="! doc || scale <= 0.5"
+                    x-bind:disabled="! ready || scale <= 0.5"
                     @click="zoomOut()"
                 />
                 <span class="w-12 text-center text-xs tabular-nums opacity-70" x-text="zoomPercent + '%'"></span>
@@ -59,7 +59,7 @@
                     icon="o-magnifying-glass-plus"
                     class="btn-sm btn-square btn-ghost"
                     tooltip="{{ ucfirst(__('laravel-crm::lang.zoom_in')) }}"
-                    x-bind:disabled="! doc || scale >= 3"
+                    x-bind:disabled="! ready || scale >= 3"
                     @click="zoomIn()"
                 />
 
