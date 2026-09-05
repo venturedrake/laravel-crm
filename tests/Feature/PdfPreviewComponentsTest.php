@@ -103,6 +103,24 @@ it('renders the drawer listening on the window for the event the button dispatch
         ->and($html)->toContain('x-ref="pages"');
 });
 
+it('does not reuse the show-record icon for the preview button', function () {
+    // o-eye is the CRM's "show this record" icon across ~20 index views, and
+    // on every row carrying a preview button the show button sits directly
+    // beside it. Reusing o-eye put two identical buttons next to each other
+    // that do different things — one navigates, one opens the drawer.
+    $button = file_get_contents(__DIR__.'/../../resources/views/components/pdf-preview-button.blade.php');
+
+    preg_match('/^\s*icon="([^"]+)"/m', $button, $matches);
+
+    expect($matches)->not->toBeEmpty('the preview button renders no icon at all');
+    expect($matches[1])->not->toBe('o-eye');
+
+    // Whatever it is must be a real Heroicon, or Mary renders a blank button.
+    $svg = __DIR__.'/../../vendor/blade-ui-kit/blade-heroicons/resources/svg/'.$matches[1].'.svg';
+
+    expect(file_exists($svg))->toBeTrue("unknown heroicon: {$matches[1]}");
+});
+
 it('never binds markup to the raw pdf.js document', function () {
     // pdf.js brand-checks #private fields against the real instance, and
     // everything Alpine holds in its data object is a reactive Proxy. So the
