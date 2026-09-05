@@ -36,10 +36,10 @@ class SettingEdit extends Component
      * and deal carry only an ID prefix today, which is fine — a near-empty tab
      * beats a shared one an admin has to learn the contents of.
      *
-     * `documents` holds what applies across document types and sits ahead of
-     * them for that reason. It is ungated for the same reason
-     * `pdf_contact_details` carries no module directive: it feeds quote, order,
-     * delivery and invoice PDFs alike.
+     * The shared contact block lives on `general` rather than a document tab of
+     * its own: it feeds quote, order, delivery and invoice PDFs alike, so there
+     * is no one document tab it belongs to, and it is the only account-wide
+     * document setting left now that the dynamic-products toggle has moved.
      *
      * @var array<string, array<int, string>>
      */
@@ -47,7 +47,6 @@ class SettingEdit extends Component
         'general' => [],
         'leads' => ['leads'],
         'deals' => ['deals'],
-        'documents' => [],
         'quotes' => ['quotes'],
         'orders' => ['orders'],
         'invoices' => ['invoices'],
@@ -66,11 +65,11 @@ class SettingEdit extends Component
         'general' => [
             'organizationName', 'vatNumber', 'logoFile', 'logo', 'country', 'language',
             'currency', 'timezone', 'dateFormat', 'timeFormat', 'taxName', 'taxRate',
-            'showRelatedActivity', 'dynamicProducts', 'phones', 'emails', 'addresses',
+            'pdfContactDetails', 'showRelatedActivity', 'dynamicProducts',
+            'phones', 'emails', 'addresses',
         ],
         'leads' => ['leadPrefix'],
         'deals' => ['dealPrefix'],
-        'documents' => ['pdfContactDetails'],
         'quotes' => ['quotePrefix', 'quoteTerms'],
         'orders' => ['orderPrefix'],
         'invoices' => [

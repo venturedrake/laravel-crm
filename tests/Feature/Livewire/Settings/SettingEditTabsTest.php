@@ -6,8 +6,9 @@ use VentureDrake\LaravelCrm\Livewire\Settings\SettingEdit;
 use VentureDrake\LaravelCrm\Models\Setting;
 
 /*
- * The General settings page is split across tabs (General, Record IDs,
- * Documents, Quotes, Invoices, Purchase orders) rather than one flat column.
+ * The General settings page is split across one tab per entity (General, Leads,
+ * Deals, Quotes, Orders, Invoices, Deliveries, Purchase orders) rather than one
+ * flat column. Anything account-wide stays on General.
  */
 
 beforeEach(function () {
@@ -127,7 +128,7 @@ test('fields on hidden tabs still save from whichever tab is showing', function 
 
 test('render exposes the full tab set, and module gating removes whole tabs', function () {
     $everyTab = [
-        'general', 'leads', 'deals', 'documents',
+        'general', 'leads', 'deals',
         'quotes', 'orders', 'invoices', 'deliveries', 'purchase-orders',
     ];
 
@@ -142,23 +143,23 @@ test('render exposes the full tab set, and module gating removes whole tabs', fu
     Livewire::test(SettingEdit::class)
         ->assertViewHas('tabs', $everyTab);
 
-    // One tab per entity now, so a single-module install gets exactly that
-    // entity's tab plus the two ungated ones.
+    // One tab per entity, so a single-module install gets exactly that
+    // entity's tab plus General, the only ungated one.
     config()->set('laravel-crm.modules', ['leads']);
 
     Livewire::test(SettingEdit::class)
-        ->assertViewHas('tabs', ['general', 'leads', 'documents']);
+        ->assertViewHas('tabs', ['general', 'leads']);
 
     config()->set('laravel-crm.modules', ['quotes']);
 
     Livewire::test(SettingEdit::class)
-        ->assertViewHas('tabs', ['general', 'documents', 'quotes']);
+        ->assertViewHas('tabs', ['general', 'quotes']);
 
     // Declaration order holds regardless of the order modules are listed in.
     config()->set('laravel-crm.modules', ['purchase-orders', 'deals', 'orders']);
 
     Livewire::test(SettingEdit::class)
-        ->assertViewHas('tabs', ['general', 'deals', 'documents', 'orders', 'purchase-orders']);
+        ->assertViewHas('tabs', ['general', 'deals', 'orders', 'purchase-orders']);
 });
 
 test('each tab radio is immediately followed by its own panel', function () {
@@ -176,7 +177,7 @@ test('each tab radio is immediately followed by its own panel', function () {
         $pairs
     );
 
-    $expected = ['general', 'leads', 'documents', 'orders', 'purchase-orders'];
+    $expected = ['general', 'leads', 'orders', 'purchase-orders'];
 
     expect($pairs[1])->toBe($expected);
     expect($pairs[2])->toBe($expected);
@@ -201,15 +202,16 @@ test('a disabled module takes its fields off the page with its tab', function ()
         expect($html)->not->toContain('wire:model="'.$field.'"');
     }
 
-    // The shared block and the cross-document toggle are never gated.
+    // The account-wide settings on General are never gated.
     expect($html)->toContain('wire:model="pdfContactDetails"');
     expect($html)->toContain('wire:model="dynamicProducts"');
 });
 
-test('the dynamic-products toggle lives on the General tab', function () {
-    // It applies across quotes, orders and invoices rather than to any one doc
-    // type, and it is not a PDF-output setting, so it sits with the other
-    // account-wide toggles rather than on Documents.
+test('the account-wide settings live on the General tab', function () {
+    // None of these belongs to a single entity: the contact block feeds quote,
+    // order, delivery and invoice PDFs alike, and the two toggles apply across
+    // the CRM. There is no document tab that owns them, which is why the
+    // Documents tab they briefly shared was folded back into General.
     $html = Livewire::test(SettingEdit::class)->html();
 
     $general = substr(
@@ -218,9 +220,28 @@ test('the dynamic-products toggle lives on the General tab', function () {
         strpos($html, 'setting-tab-panel-leads') - strpos($html, 'setting-tab-panel-general')
     );
 
+    expect($general)->toContain('wire:model="pdfContactDetails"');
     expect($general)->toContain('wire:model="dynamicProducts"');
     expect($general)->toContain('wire:model="showRelatedActivity"');
-    expect($general)->not->toContain('wire:model="pdfContactDetails"');
+
+    // The per-document override stays with its own document.
+    expect($general)->not->toContain('wire:model="invoiceContactDetails"');
+});
+
+test('the hints render their punctuation instead of HTML entities', function () {
+    // MaryUI prints the hint through `{{ $hint }}`, so passing it an already
+    // escaped string escapes it twice and the reader sees a literal `&quot;`.
+    // Both contact-detail hints must bind with `:hint` so the component does
+    // the single escape.
+    $html = Livewire::test(SettingEdit::class)->html();
+
+    expect($html)->not->toContain('&amp;quot;');
+    expect($html)->not->toContain('&amp;#039;');
+    expect($html)->toContain('&quot;from&quot; block');
+
+    $blade = file_get_contents(__DIR__.'/../../../../resources/views/livewire/settings/setting-edit.blade.php');
+
+    expect($blade)->not->toMatch('/hint="\{\{/');
 });
 
 test('SettingEdit blade view uses the shared tab markup', function () {

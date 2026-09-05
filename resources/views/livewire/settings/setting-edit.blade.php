@@ -93,6 +93,24 @@
                             <x-mary-select wire:model="timeFormat" label="{{ ucfirst(__('laravel-crm::lang.time_format')) }}" :options="$timeFormats" required />
                             <x-mary-input wire:model="taxName" label="{{ ucfirst(__('laravel-crm::lang.default_tax_name')) }}" />
                             <x-mary-input wire:model="taxRate" label="{{ ucfirst(__('laravel-crm::lang.default_tax_rate')) }}" suffix="%" />
+                            {{-- Carries no module directive on purpose: this block prints on
+                                 quote, order and delivery PDFs as well as invoices, so gating
+                                 it on invoices being enabled would leave quote/order/delivery-only
+                                 installs unable to fill it. It sits here rather than on a
+                                 document tab for the same reason — no single document type
+                                 owns it.
+
+                                 The hint is bound with a colon rather than interpolated
+                                 into the attribute: MaryUI prints it through an escaping
+                                 echo, so a string that arrives already escaped is escaped a
+                                 second time and the reader sees a literal &quot; and &#039;
+                                 instead of the quotes and apostrophe. Binding hands over the
+                                 raw string and lets the component do the single escape. --}}
+                            <x-mary-textarea
+                                wire:model="pdfContactDetails"
+                                :label="ucfirst(__('laravel-crm::lang.pdf_contact_details'))"
+                                :hint="ucfirst(__('laravel-crm::lang.pdf_contact_details_hint'))"
+                                rows="5" />
                             <div class="mt-3">
                                 <x-mary-toggle wire:model="dynamicProducts" class="self-start">
                                     <x-slot:label>
@@ -151,27 +169,6 @@
                 </div>
             @endif
 
-            @if (in_array('documents', $tabs, true))
-                <input type="radio"
-                       name="setting-tabs"
-                       role="tab"
-                       class="tab"
-                       aria-label="{{ ucfirst(__('laravel-crm::lang.documents')) }}"
-                       value="documents"
-                       @checked($tab === 'documents')
-                       wire:key="setting-tab-input-documents"
-                       wire:model.live="tab" />
-                <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-documents">
-                    <div class="grid gap-3">
-                        {{-- Outside the module directives on purpose: this block prints on
-                             quote, order and delivery PDFs as well as invoices, so gating it
-                             on invoices being enabled would leave quote/order/delivery-only
-                             installs unable to fill it. --}}
-                        <x-mary-textarea wire:model="pdfContactDetails" label="{{ ucfirst(__('laravel-crm::lang.pdf_contact_details')) }}" hint="{{ ucfirst(__('laravel-crm::lang.pdf_contact_details_hint')) }}" rows="5" />
-                    </div>
-                </div>
-            @endif
-
             @if (in_array('quotes', $tabs, true))
                 <input type="radio"
                        name="setting-tabs"
@@ -220,7 +217,13 @@
                 <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-invoices">
                     <div class="grid gap-3">
                         <x-mary-input wire:model="invoicePrefix" label="{{ ucfirst(__('laravel-crm::lang.invoice_prefix')) }}" />
-                        <x-mary-textarea wire:model="invoiceContactDetails" label="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details')) }}" hint="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details_hint')) }}" rows="5" />
+                        {{-- `:hint` for the same double-escaping reason as the shared
+                             block on the General tab. --}}
+                        <x-mary-textarea
+                            wire:model="invoiceContactDetails"
+                            :label="ucfirst(__('laravel-crm::lang.invoice_contact_details'))"
+                            :hint="ucfirst(__('laravel-crm::lang.invoice_contact_details_hint'))"
+                            rows="5" />
                         <x-mary-textarea wire:model="invoiceTerms" label="{{ ucfirst(__('laravel-crm::lang.invoice_terms')) }}" rows="5" />
                         <x-mary-textarea wire:model="invoicePaymentInstructions" label="{{ ucfirst(__('laravel-crm::lang.invoice_payment_instructions')) }}" rows="5" />
                     </div>
