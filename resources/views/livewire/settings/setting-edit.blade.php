@@ -30,25 +30,42 @@
                         <div class="grid gap-3">
                             <x-mary-input wire:model="organizationName" label="{{ ucfirst(__('laravel-crm::lang.organization_name')) }}" required />
                             <x-mary-input wire:model="vatNumber" label="{{ ucfirst(__('laravel-crm::lang.vat_number')) }}" />
-                            {{-- The frame borrows the input's own DaisyUI tokens rather than
+                            {{-- Preview, file input and remove button are one field, so they
+                                 share a single fieldset under one legend — the same
+                                 `fieldset` / `fieldset-legend` pair MaryUI puts around its
+                                 own inputs, which is why the label lines up with the fields
+                                 above and below. `x-mary-file` is passed no label of its own
+                                 here; giving it one would print a second legend mid-field.
+
+                                 Not MaryUI's own preview slot: a non-empty slot makes the
+                                 component hide the native file input and swap in a
+                                 click-to-change surface, and the "Choose file" control has
+                                 to stay visible.
+
+                                 The frame borrows the input's own DaisyUI tokens rather than
                                  approximating them with utilities, so the preview keeps
                                  matching the fields around it if the theme changes
                                  `--input-color` or `--radius-field`. `w-fit` keeps the frame
                                  on the image instead of stretching it across the column. --}}
-                            @php($logoFrame = 'mt-3 w-fit p-3')
-                            @php($logoFrameStyle = 'border: var(--border) solid var(--input-color); border-radius: var(--radius-field);')
-                            <div wire:key="logo-preview">
-                                @if ($logoFile)
-                                    <div class="{{ $logoFrame }}" style="{{ $logoFrameStyle }}">
-                                        <img src="{{ $logoFile->temporaryUrl() }}" class="max-w-full h-auto" width="200" />
-                                    </div>
-                                @elseif($logo)
-                                    <div class="{{ $logoFrame }}" style="{{ $logoFrameStyle }}">
-                                        <img src="{{ asset('storage/'.$logo) }}" class="max-w-full h-auto" width="200" />
-                                    </div>
-                                @endif
-                            </div>
-                            <x-mary-file wire:model="logoFile" label="{{ ucfirst(__('laravel-crm::lang.logo')) }}" />
+                            <fieldset class="fieldset py-0">
+                                <legend class="fieldset-legend mb-0.5">{{ ucfirst(__('laravel-crm::lang.logo')) }}</legend>
+                                <div wire:key="logo-preview">
+                                    @if ($logoFile || $logo)
+                                        <div class="w-fit mb-2 p-3" style="border: var(--border) solid var(--input-color); border-radius: var(--radius-field);">
+                                            <img src="{{ $logoFile ? $logoFile->temporaryUrl() : asset('storage/'.$logo) }}" class="max-w-full h-auto" width="200" />
+                                            <x-mary-button
+                                                wire:click="deleteLogo"
+                                                wire:confirm="{{ ucfirst(__('laravel-crm::lang.delete_logo_confirm')) }}"
+                                                icon="o-trash"
+                                                title="{{ ucfirst(__('laravel-crm::lang.delete_logo')) }}"
+                                                type="button"
+                                                class="btn-sm btn-square btn-error text-white mt-2"
+                                                spinner="deleteLogo" />
+                                        </div>
+                                    @endif
+                                </div>
+                                <x-mary-file wire:model="logoFile" />
+                            </fieldset>
                             <x-mary-select wire:model="country" label="{{ ucfirst(__('laravel-crm::lang.country')) }}" :options="$countries" required />
                             <x-mary-select wire:model="language" label="{{ ucfirst(__('laravel-crm::lang.language')) }}" :options="$languages" required />
                             <x-mary-select wire:model="currency" label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" :options="$currencies" required />
