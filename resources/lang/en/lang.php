@@ -622,8 +622,8 @@ return [
     'allow_creating_products_when_creating_quotes_orders_and_invoices' => 'allow creating new products when creating or editing quotes orders & invoices',
     'tax_rate' => 'tax rate',
     'tax_name' => 'tax name',
-    'pdf_contact_details' => 'document contact details',
-    'pdf_contact_details_hint' => 'shown in the "from" block on quote, order, delivery and invoice PDFs, unless a document type overrides it on that document\'s tab; the classic template shows this block on invoices only',
+    'pdf_contact_details' => 'contact details',
+    'pdf_contact_details_hint' => 'shown in the "from" block on quote, order, delivery and invoice PDFs, unless a document type overrides it on its own tab; the classic template shows this block on invoices only',
     'invoice_contact_details' => 'invoice contact details',
     'invoice_contact_details_hint' => 'overrides the shared document contact details on invoices only',
     'overdue' => 'overdue',
@@ -1036,7 +1036,6 @@ return [
 
     // PDF templates (shared registry entries used across the 5 doc types)
     'templates' => 'templates',
-    'documents' => 'documents',
     'pdf_template' => 'PDF template',
     'pdf_template_use_default' => 'default (:template)',
     'pdf_template_published_override' => 'this document type is currently rendering through your own customised copy of the original PDF view, published under resources/views/vendor/laravel-crm. Saving this page replaces it with the template you pick here.',
