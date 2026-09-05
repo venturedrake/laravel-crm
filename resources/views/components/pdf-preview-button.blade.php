@@ -25,7 +25,12 @@
      own viewer renders it in place. --}}
 <x-mary-button
     x-data
-    icon="o-eye"
+    {{-- NOT o-eye: that is the CRM's established "show this record" icon,
+         used on ~20 index views — including the button immediately to the
+         right of this one on every row it appears in. Two identical eyes side
+         by side, one opening a page and one a drawer, is unreadable.
+         o-document-magnifying-glass says "inspect this document" instead. --}}
+    icon="o-document-magnifying-glass"
     tooltip="{{ ucfirst(__('laravel-crm::lang.preview')) }}"
     class="btn-sm btn-square btn-outline"
     @click="window.crmPdfPreviewMounted ? $dispatch('crm-pdf-preview', {{ $payload }}) : window.open({{ $previewUrl }}, '_blank', 'noopener')"
