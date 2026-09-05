@@ -126,6 +126,10 @@ document.addEventListener('alpine:init', () => {
                     this.ready = true;
                     this.pages = loaded.numPages;
 
+                    // Measured after the awaits above, by which point Alpine
+                    // has flushed `isOpen` and the panel has a real width.
+                    this.scale = await viewer.fitScale(loaded, this.$refs.pages.clientWidth);
+
                     await this.renderPages(mine);
                 } catch (error) {
                     this.fail(mine, error);

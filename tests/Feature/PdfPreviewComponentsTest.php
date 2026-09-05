@@ -103,6 +103,25 @@ it('renders the drawer listening on the window for the event the button dispatch
         ->and($html)->toContain('x-ref="pages"');
 });
 
+it('never constrains a page canvas with a max-width', function () {
+    // renderPages sets BOTH canvas dimensions in CSS to hold the aspect ratio
+    // while the backing store is oversampled for HiDPI. A max-width caps the
+    // width alone and leaves the inline height, so every zoom past fit-width
+    // stops widening the page and starts stretching it vertically — silent
+    // distortion that renders fine, reads wrong, and no PHP test can see.
+    $viewer = file_get_contents(__DIR__.'/../../resources/js/pdf-preview.js');
+
+    preg_match('/canvas\.className\s*=\s*[\'"]([^\'"]+)[\'"]/', $viewer, $matches);
+
+    expect($matches)->not->toBeEmpty('could not find the page canvas className');
+    expect($matches[1])->not->toMatch('/\bmax-w-/');
+
+    // The wrapper is what lets an unclamped page scroll instead of clipping.
+    $drawer = file_get_contents(__DIR__.'/../../resources/views/components/pdf-preview.blade.php');
+
+    expect($drawer)->toMatch('/x-ref="pages"[^>]*min-w-fit|min-w-fit[^>]*x-ref="pages"/');
+});
+
 it('does not reuse the show-record icon for the preview button', function () {
     // o-eye is the CRM's "show this record" icon across ~20 index views, and
     // on every row carrying a preview button the show button sits directly
