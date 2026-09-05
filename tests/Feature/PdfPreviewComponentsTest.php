@@ -103,6 +103,23 @@ it('renders the drawer listening on the window for the event the button dispatch
         ->and($html)->toContain('x-ref="pages"');
 });
 
+it('never binds markup to the raw pdf.js document', function () {
+    // pdf.js brand-checks #private fields against the real instance, and
+    // everything Alpine holds in its data object is a reactive Proxy. So the
+    // pdf.js document has to stay in the component's closure, and any markup
+    // that reads `doc` would both fail to react and re-expose the object that
+    // must never be proxied.
+    //
+    // The bug this pins was near-invisible: `numPages` reads a plain property
+    // and survives the proxy, so the drawer showed its title and "1 page" and
+    // only died on the first getPage() with "Cannot read from private field".
+    // `ready` is the reactive stand-in the toolbar binds instead.
+    $drawer = file_get_contents(__DIR__.'/../../resources/views/components/pdf-preview.blade.php');
+
+    expect($drawer)->not->toMatch('/x-(?:bind:|show|text|if)[^"]*"[^"]*\bdoc\b/')
+        ->and($drawer)->toContain('ready');
+});
+
 it('mounts exactly one drawer, in the layout rather than in any Livewire view', function () {
     // A per-row instance inside an index table would give every row its own
     // listener, so one click would open N overlapping drawers. The single
