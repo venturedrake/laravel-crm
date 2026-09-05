@@ -157,8 +157,34 @@ test('no preview frame renders when there is no logo', function () {
     $html = Livewire::test(SettingEdit::class)->html();
 
     expect($html)->not->toContain('deleteLogo');
-    expect(substr_count($html, 'var(--input-color)'))->toBe(0);
+    expect($html)->not->toContain('border-radius: var(--radius-field)');
 
     // The field itself is still there to upload into.
     expect(substr_count($html, '>Logo</legend>'))->toBe(1);
+});
+
+test('the preview frame draws an input-style border and corners the remove button', function () {
+    storeSavedLogo();
+
+    $html = Livewire::test(SettingEdit::class)->html();
+
+    // `--input-color` is declared by DaisyUI only inside `.input` / `.select` /
+    // `.textarea`, never at the theme root. Reading it from a plain div
+    // resolves to nothing and invalidates the whole declaration, leaving the
+    // frame with no border at all — which is exactly what this markup did
+    // before. The border must therefore be built from root-scoped tokens.
+    expect($html)->not->toContain('var(--input-color)');
+    expect($html)->toContain('border-width: var(--border)');
+    expect($html)->toContain('border-radius: var(--radius-field)');
+    expect($html)->toContain('var(--color-base-content)');
+
+    // Width, style and colour stay separate declarations, so a browser without
+    // color-mix loses the tint rather than the whole border.
+    expect($html)->toContain('border-style: solid');
+
+    // Remove button sits in the frame's top-right corner. `end-2` rather than
+    // `right-2` both because it is the RTL-aware side and because `right-2` is
+    // not in the compiled stylesheet.
+    expect($html)->toContain('absolute top-2 end-2');
+    expect($html)->toMatch('/class="relative w-fit[^"]*"/');
 });
