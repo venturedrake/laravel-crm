@@ -182,9 +182,15 @@ test('the preview frame draws an input-style border and corners the remove butto
     // color-mix loses the tint rather than the whole border.
     expect($html)->toContain('border-style: solid');
 
-    // Remove button sits in the frame's top-right corner. `end-2` rather than
-    // `right-2` both because it is the RTL-aware side and because `right-2` is
-    // not in the compiled stylesheet.
-    expect($html)->toContain('absolute top-2 end-2');
-    expect($html)->toMatch('/class="relative w-fit[^"]*"/');
+    // The remove button is a flex sibling of the image, not an overlay on it:
+    // absolutely positioning it over the top-right corner hid the end of any
+    // logo wider than it is tall. Nothing in the frame may be `absolute`.
+    expect($html)->toMatch('/class="w-fit[^"]*flex items-start[^"]*"/');
+    expect($html)->not->toMatch('/class="[^"]*absolute[^"]*"[^>]*wire:click="deleteLogo"/');
+
+    // The image is bounded rather than fixed, so neither a very wide nor a very
+    // tall logo escapes the frame — and object-contain keeps it undistorted
+    // when a limit bites.
+    expect($html)->toContain('max-h-24');
+    expect($html)->toContain('object-contain');
 });

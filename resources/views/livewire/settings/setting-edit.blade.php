@@ -54,22 +54,31 @@
                                  separate declarations so a browser without `color-mix`
                                  loses only the tint, not the border.
 
-                                 `w-fit` keeps the frame on the image rather than stretching
-                                 it across the column, and `relative` anchors the remove
-                                 button to the frame's top corner. --}}
+                                 The remove button is laid out as a flex sibling of the image
+                                 rather than absolutely positioned over it. Overlaying the
+                                 top-right corner covered part of the artwork — a wordmark
+                                 wider than it is tall loses its last few characters under
+                                 the button — so the frame reserves the space instead and
+                                 `w-fit` grows to hold both. `items-start` keeps the button
+                                 at the top, `shrink-0` stops a wide logo squashing it.
+
+                                 The image is bounded rather than fixed: `width` is a
+                                 starting size, `max-h-24` caps a tall logo, and
+                                 `object-contain` keeps the aspect ratio when either limit
+                                 bites, so no logo renders stretched. --}}
                             <fieldset class="fieldset py-0">
                                 <legend class="fieldset-legend mb-0.5">{{ ucfirst(__('laravel-crm::lang.logo')) }}</legend>
                                 <div wire:key="logo-preview">
                                     @if ($logoFile || $logo)
-                                        <div class="relative w-fit mb-2 p-3" style="border-width: var(--border); border-style: solid; border-color: color-mix(in oklab, var(--color-base-content) 20%, transparent); border-radius: var(--radius-field);">
-                                            <img src="{{ $logoFile ? $logoFile->temporaryUrl() : asset('storage/'.$logo) }}" class="block max-w-full h-auto" width="200" />
+                                        <div class="w-fit mb-2 p-3 flex items-start gap-3" style="border-width: var(--border); border-style: solid; border-color: color-mix(in oklab, var(--color-base-content) 20%, transparent); border-radius: var(--radius-field);">
+                                            <img src="{{ $logoFile ? $logoFile->temporaryUrl() : asset('storage/'.$logo) }}" class="block w-auto max-w-full max-h-24 object-contain" width="200" />
                                             <x-mary-button
                                                 wire:click="deleteLogo"
                                                 wire:confirm="{{ ucfirst(__('laravel-crm::lang.delete_logo_confirm')) }}"
                                                 icon="o-trash"
                                                 title="{{ ucfirst(__('laravel-crm::lang.delete_logo')) }}"
                                                 type="button"
-                                                class="btn-sm btn-square btn-error text-white shadow absolute top-2 end-2"
+                                                class="btn-sm btn-square btn-error text-white shrink-0"
                                                 spinner="deleteLogo" />
                                         </div>
                                     @endif
