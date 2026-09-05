@@ -46,7 +46,8 @@ class OrderRelatedIndex extends Component
     #[Computed]
     public function orders(): Collection
     {
-        return $this->model->orders()->latest()->get();
+        // organization/person back the preview button's `$order->title`.
+        return $this->model->orders()->with(['organization', 'person'])->latest()->get();
     }
 
     public function delete($id): void

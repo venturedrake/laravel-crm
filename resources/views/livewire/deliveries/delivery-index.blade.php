@@ -33,6 +33,7 @@
             @scope('actions', $delivery)
             <div class="flex gap-1 justify-end">
                 @can('view crm deliveries')
+                    <x-crm-pdf-preview-button :url="url(route('laravel-crm.deliveries.preview', $delivery))" :download-url="url(route('laravel-crm.deliveries.download', $delivery))" :title="$delivery->title" />
                     <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.deliveries.download', $delivery)) }}" no-wire-navigate class="btn-sm btn-square btn-outline" />
                     <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.deliveries.show', $delivery)) }}" class="btn-sm btn-square btn-outline" />
                 @endcan

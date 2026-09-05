@@ -7,6 +7,8 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use VentureDrake\LaravelCrm\Http\Controllers\Concerns\ServesPdfDocuments;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organization;
@@ -23,6 +25,8 @@ use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
 class QuoteController extends Controller
 {
+    use ServesPdfDocuments;
+
     /**
      * @var QuoteService
      */
@@ -231,6 +235,31 @@ class QuoteController extends Controller
 
     public function download(Quote $quote)
     {
+        return $this->pdfResponse($this->buildPdf($quote)->output(), $this->pdfFilename($quote));
+    }
+
+    /**
+     * The same document as download(), served inline so a browser (or the
+     * pdf.js preview drawer) renders it in place rather than saving it.
+     */
+    public function preview(Quote $quote)
+    {
+        return $this->pdfResponse(
+            $this->buildPdf($quote)->output(),
+            $this->pdfFilename($quote),
+            HeaderUtils::DISPOSITION_INLINE
+        );
+    }
+
+    /**
+     * Sole loadView() call site for quotes — download() and preview() must
+     * share it. PdfViewDataContractTest statically asserts exactly one per
+     * controller, and a second copy would drift from this one.
+     *
+     * @return \Barryvdh\DomPDF\PDF
+     */
+    protected function buildPdf(Quote $quote)
+    {
         if ($quote->person) {
             $email = $quote->person->getPrimaryEmail();
             $phone = $quote->person->getPrimaryPhone();
@@ -254,7 +283,12 @@ class QuoteController extends Controller
                 'organization_address' => $organization_address ?? null,
                 'fromName' => app('laravel-crm.settings')->get('organization_name', null),
                 'logo' => PdfLogo::fromSettings(),
-            ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
+            ]);
+    }
+
+    protected function pdfFilename(Quote $quote): string
+    {
+        return 'quote-'.strtolower($quote->quote_id).'.pdf';
     }
 
     public function list(Request $request)

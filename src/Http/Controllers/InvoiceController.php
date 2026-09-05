@@ -7,6 +7,8 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use VentureDrake\LaravelCrm\Http\Controllers\Concerns\ServesPdfDocuments;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateInvoiceRequest;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
@@ -22,6 +24,8 @@ use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
 class InvoiceController extends Controller
 {
+    use ServesPdfDocuments;
+
     /**
      * @var SettingService
      */
@@ -245,6 +249,31 @@ class InvoiceController extends Controller
 
     public function download(Invoice $invoice)
     {
+        return $this->pdfResponse($this->buildPdf($invoice)->output(), $this->pdfFilename($invoice));
+    }
+
+    /**
+     * The same document as download(), served inline so a browser (or the
+     * pdf.js preview drawer) renders it in place rather than saving it.
+     */
+    public function preview(Invoice $invoice)
+    {
+        return $this->pdfResponse(
+            $this->buildPdf($invoice)->output(),
+            $this->pdfFilename($invoice),
+            HeaderUtils::DISPOSITION_INLINE
+        );
+    }
+
+    /**
+     * Sole loadView() call site for invoices — download() and preview() must
+     * share it. PdfViewDataContractTest statically asserts exactly one per
+     * controller, and a second copy would drift from this one.
+     *
+     * @return \Barryvdh\DomPDF\PDF
+     */
+    protected function buildPdf(Invoice $invoice)
+    {
         if ($invoice->person) {
             $email = $invoice->person->getPrimaryEmail();
             $phone = $invoice->person->getPrimaryPhone();
@@ -255,7 +284,7 @@ class InvoiceController extends Controller
             $organization_address = $invoice->organization->getPrimaryAddress();
         }
 
-        $pdf = Pdf::setOption([
+        return Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
         ])
             ->loadView(PdfTemplateRegistry::viewForModel('invoice', $invoice), [
@@ -271,12 +300,10 @@ class InvoiceController extends Controller
                 'fromName' => app('laravel-crm.settings')->get('organization_name', null),
                 'logo' => PdfLogo::fromSettings(),
             ]);
+    }
 
-        $filename = 'invoice-'.strtolower($invoice->xeroInvoice->number ?? $invoice->invoice_id).'.pdf';
-
-        return new Response($pdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-        ]);
+    protected function pdfFilename(Invoice $invoice): string
+    {
+        return 'invoice-'.strtolower($invoice->xeroInvoice->number ?? $invoice->invoice_id).'.pdf';
     }
 }

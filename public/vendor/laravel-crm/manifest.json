@@ -1,13 +1,29 @@
 {
+  "node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs": {
+    "file": "assets/pdf.worker.min-rsCePomN.mjs",
+    "src": "node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-C-ktoIZZ.css",
+    "file": "assets/app-DrdHZG62.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-A3WhPnlV.js",
+    "file": "assets/app-GW_OtqrY.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/pdf-preview.js"
+    ]
+  },
+  "resources/js/pdf-preview.js": {
+    "file": "assets/pdf-preview-shH85Swh.js",
+    "name": "pdf-preview",
+    "src": "resources/js/pdf-preview.js",
+    "isDynamicEntry": true,
+    "assets": [
+      "assets/pdf.worker.min-rsCePomN.mjs"
+    ]
   }
 }

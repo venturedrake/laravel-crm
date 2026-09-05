@@ -98,6 +98,10 @@ class PurchaseOrderIndex extends Component
         )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'purchase_orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'purchase_orders.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
+            // The joins above only select columns onto the PurchaseOrder
+            // itself; the preview button's `$purchaseOrder->title` reads the
+            // relations, which would otherwise lazy-load once per row.
+            ->with(['organization', 'person'])
             ->when($this->search, function (Builder $q) {
                 $prefix = config('laravel-crm.db_table_prefix');
                 $term = $this->search;

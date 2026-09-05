@@ -42,7 +42,8 @@ class PurchaseOrderRelatedIndex extends Component
     #[Computed]
     public function purchaseOrders(): Collection
     {
-        return $this->model->purchaseOrders()->latest()->get();
+        // organization/person back the preview button's `$purchaseOrder->title`.
+        return $this->model->purchaseOrders()->with(['organization', 'person'])->latest()->get();
     }
 
     public function delete($id): void

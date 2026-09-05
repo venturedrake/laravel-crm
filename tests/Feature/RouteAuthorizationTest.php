@@ -1,5 +1,6 @@
 <?php
 
+use Barryvdh\DomPDF\ServiceProvider as DomPdfServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -227,6 +228,97 @@ it('binds the product-attributes URI parameter so the policy is consulted', func
     expect($route->uri())->toContain('{productAttribute}')
         ->and($route->uri())->not->toContain('{productCategory}')
         ->and($route->middleware())->toContain('can:view,productAttribute');
+});
+
+/* -------------------------------------------------------------------------
+ | PDF preview — the inline twin of each download route
+ | ------------------------------------------------------------------------- */
+
+/**
+ * Every doc type that serves a PDF, as [route prefix, can: argument, model].
+ *
+ * Deliveries and purchase orders are covered by the middleware assertion below
+ * rather than by a live request: both need a fixture (a parent order, an issue
+ * date) that has nothing to do with the gate under test.
+ */
+dataset('pdfPreviewRoutes', [
+    'quote' => ['laravel-crm.quotes.preview', 'quote', 'view crm quotes', Quote::class],
+    'order' => ['laravel-crm.orders.preview', 'order', 'view crm orders', Order::class],
+]);
+
+it('forbids the pdf preview routes without the parent view permission', function (
+    string $routeName,
+    string $param,
+    string $permission,
+    string $model
+) {
+    // A preview renders the entire document — totals, contact block and all —
+    // so leaving it ungated would disclose exactly what the download route
+    // protects. This is the guard against the preview route being added
+    // without its can: middleware.
+    $this->actingAsUserWithPermissions([]);
+    $record = $model::create(['title' => 'Seeded']);
+
+    assertRouteForbidden($routeName, [$param => $record->getRouteKey()]);
+})->with('pdfPreviewRoutes');
+
+it('allows the pdf preview routes for a user holding the parent view permission', function (
+    string $routeName,
+    string $param,
+    string $permission,
+    string $model
+) {
+    // Reaching the controller means rendering a real PDF, so the DomPDF
+    // provider has to be bound — it is not in the suite's package-provider
+    // list. Same discipline as the tests under tests/Feature/Pdf.
+    $this->app->register(DomPdfServiceProvider::class);
+
+    $this->actingAsUserWithPermissions([$permission]);
+    $record = $model::create(['title' => 'Seeded']);
+
+    expect(Gate::allows('view', $record))->toBeTrue();
+
+    assertRouteNotForbidden($routeName, [$param => $record->getRouteKey()]);
+})->with('pdfPreviewRoutes');
+
+it('gates every pdf preview route on the same ability as its download twin', function () {
+    // Covers all five doc types, including the two whose fixtures are awkward.
+    // Reading the middleware off the router (rather than hardcoding the pairs)
+    // means a preview route added later with a mismatched guard fails here.
+    $router = app('router')->getRoutes();
+
+    $mismatched = [];
+
+    foreach (['quotes', 'orders', 'deliveries', 'invoices', 'purchase-orders'] as $prefix) {
+        $preview = $router->getByName('laravel-crm.'.$prefix.'.preview');
+        $download = $router->getByName('laravel-crm.'.$prefix.'.download');
+
+        if ($preview === null) {
+            $mismatched[] = $prefix.': no preview route registered';
+
+            continue;
+        }
+
+        $previewGuards = array_values(array_filter(
+            $preview->middleware(),
+            fn ($m) => is_string($m) && str_starts_with($m, 'can:')
+        ));
+        $downloadGuards = array_values(array_filter(
+            $download->middleware(),
+            fn ($m) => is_string($m) && str_starts_with($m, 'can:')
+        ));
+
+        if ($previewGuards === [] || $previewGuards !== $downloadGuards) {
+            $mismatched[] = sprintf(
+                '%s: preview has [%s], download has [%s]',
+                $prefix,
+                implode(', ', $previewGuards),
+                implode(', ', $downloadGuards)
+            );
+        }
+    }
+
+    expect($mismatched)->toBe([], "Preview/download guards drifted:\n".implode("\n", $mismatched));
 });
 
 /* -------------------------------------------------------------------------

@@ -41,7 +41,10 @@ class DeliveryRelatedIndex extends Component
     #[Computed]
     public function deliveries(): Collection
     {
-        return $this->model->deliveries()->latest()->get();
+        // Deliveries read their contact details through the parent order, so
+        // the preview button's `$delivery->title` costs three queries a row
+        // without these.
+        return $this->model->deliveries()->with(['order.client', 'order.organization'])->latest()->get();
     }
 
     public function delete($id): void

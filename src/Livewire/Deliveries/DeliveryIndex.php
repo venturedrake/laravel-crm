@@ -100,7 +100,11 @@ class DeliveryIndex extends Component
 
     public function deliveries(): LengthAwarePaginator
     {
-        return Delivery::when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
+        // The order column and the preview button's `$delivery->title` both
+        // read through the parent order, so without these the table costs
+        // three extra queries per row.
+        return Delivery::with(['order.client', 'order.organization'])
+            ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);
