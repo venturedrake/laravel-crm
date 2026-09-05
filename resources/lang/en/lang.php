@@ -1033,8 +1033,6 @@ return [
 
     // PDF templates (shared registry entries used across the 5 doc types)
     'templates' => 'templates',
-    'record_ids' => 'record IDs',
-    'record_ids_hint' => 'prefixes for quotes, invoices and purchase orders are on their own tabs',
     'documents' => 'documents',
     'pdf_template' => 'PDF template',
     'pdf_template_use_default' => 'default (:template)',

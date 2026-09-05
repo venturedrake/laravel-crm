@@ -29,20 +29,27 @@ class SettingEdit extends Component
      * modules any one of which must be enabled for the tab to be shown. An
      * empty list means the tab is never gated.
      *
-     * Each document type keeps its own ID prefix beside its own terms, so
-     * `record-ids` is only for the entities that have nothing but a prefix.
-     * `documents` holds what applies across document types and is ungated for
-     * the same reason `pdf_contact_details` carries no module directive: it
-     * feeds quote, order, delivery and invoice PDFs alike.
+     * Every entity gets its own tab, in the order its records flow through the
+     * CRM, so a tab is always the one place that entity's settings live. Lead
+     * and deal carry only an ID prefix today, which is fine — a near-empty tab
+     * beats a shared one an admin has to learn the contents of.
+     *
+     * `documents` holds what applies across document types and sits ahead of
+     * them for that reason. It is ungated for the same reason
+     * `pdf_contact_details` carries no module directive: it feeds quote, order,
+     * delivery and invoice PDFs alike.
      *
      * @var array<string, array<int, string>>
      */
     protected const TABS = [
         'general' => [],
-        'record-ids' => ['leads', 'deals', 'orders', 'deliveries'],
+        'leads' => ['leads'],
+        'deals' => ['deals'],
         'documents' => [],
         'quotes' => ['quotes'],
+        'orders' => ['orders'],
         'invoices' => ['invoices'],
+        'deliveries' => ['deliveries'],
         'purchase-orders' => ['purchase-orders'],
     ];
 
@@ -57,14 +64,17 @@ class SettingEdit extends Component
         'general' => [
             'organizationName', 'vatNumber', 'logoFile', 'logo', 'country', 'language',
             'currency', 'timezone', 'dateFormat', 'timeFormat', 'taxName', 'taxRate',
-            'showRelatedActivity', 'phones', 'emails', 'addresses',
+            'showRelatedActivity', 'dynamicProducts', 'phones', 'emails', 'addresses',
         ],
-        'record-ids' => ['leadPrefix', 'dealPrefix', 'orderPrefix', 'deliveryPrefix'],
-        'documents' => ['pdfContactDetails', 'dynamicProducts'],
+        'leads' => ['leadPrefix'],
+        'deals' => ['dealPrefix'],
+        'documents' => ['pdfContactDetails'],
         'quotes' => ['quotePrefix', 'quoteTerms'],
+        'orders' => ['orderPrefix'],
         'invoices' => [
             'invoicePrefix', 'invoiceContactDetails', 'invoiceTerms', 'invoicePaymentInstructions',
         ],
+        'deliveries' => ['deliveryPrefix'],
         'purchase-orders' => [
             'purchaseOrderPrefix', 'purchaseOrderTerms', 'purchaseOrderDeliveryInstructions',
         ],

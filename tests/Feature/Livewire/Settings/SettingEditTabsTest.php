@@ -126,32 +126,39 @@ test('fields on hidden tabs still save from whichever tab is showing', function 
 });
 
 test('render exposes the full tab set, and module gating removes whole tabs', function () {
+    $everyTab = [
+        'general', 'leads', 'deals', 'documents',
+        'quotes', 'orders', 'invoices', 'deliveries', 'purchase-orders',
+    ];
+
     Livewire::test(SettingEdit::class)
         ->assertViewIs('laravel-crm::livewire.settings.setting-edit')
-        ->assertViewHas('tabs', [
-            'general', 'record-ids', 'documents', 'quotes', 'invoices', 'purchase-orders',
-        ]);
+        ->assertViewHas('tabs', $everyTab);
 
     // An empty array is "every module on", not "every module off" — the trap
     // Modules::enabled() exists to keep out of the tab set.
     config()->set('laravel-crm.modules', []);
 
     Livewire::test(SettingEdit::class)
-        ->assertViewHas('tabs', [
-            'general', 'record-ids', 'documents', 'quotes', 'invoices', 'purchase-orders',
-        ]);
+        ->assertViewHas('tabs', $everyTab);
 
-    // Record IDs covers four entities, so it survives while any one is on...
+    // One tab per entity now, so a single-module install gets exactly that
+    // entity's tab plus the two ungated ones.
     config()->set('laravel-crm.modules', ['leads']);
 
     Livewire::test(SettingEdit::class)
-        ->assertViewHas('tabs', ['general', 'record-ids', 'documents']);
+        ->assertViewHas('tabs', ['general', 'leads', 'documents']);
 
-    // ...and disappears when none of them is, while Documents never gates.
     config()->set('laravel-crm.modules', ['quotes']);
 
     Livewire::test(SettingEdit::class)
         ->assertViewHas('tabs', ['general', 'documents', 'quotes']);
+
+    // Declaration order holds regardless of the order modules are listed in.
+    config()->set('laravel-crm.modules', ['purchase-orders', 'deals', 'orders']);
+
+    Livewire::test(SettingEdit::class)
+        ->assertViewHas('tabs', ['general', 'deals', 'documents', 'orders', 'purchase-orders']);
 });
 
 test('each tab radio is immediately followed by its own panel', function () {
@@ -159,7 +166,7 @@ test('each tab radio is immediately followed by its own panel', function () {
     // is not its radio's next element sibling ends up controlled by the
     // *previous* tab — two panels open at once. Any module conditional has to
     // wrap the input and the panel together for this to hold.
-    config()->set('laravel-crm.modules', ['leads', 'purchase-orders']);
+    config()->set('laravel-crm.modules', ['leads', 'orders', 'purchase-orders']);
 
     $html = Livewire::test(SettingEdit::class)->html();
 
@@ -169,27 +176,51 @@ test('each tab radio is immediately followed by its own panel', function () {
         $pairs
     );
 
-    expect($pairs[1])->toBe(['general', 'record-ids', 'documents', 'purchase-orders']);
-    expect($pairs[2])->toBe(['general', 'record-ids', 'documents', 'purchase-orders']);
+    $expected = ['general', 'leads', 'documents', 'orders', 'purchase-orders'];
+
+    expect($pairs[1])->toBe($expected);
+    expect($pairs[2])->toBe($expected);
 
     // No stray panels beyond the paired ones.
-    expect(substr_count($html, 'role="tabpanel"'))->toBe(4);
+    expect(substr_count($html, 'role="tabpanel"'))->toBe(count($expected));
 });
 
-test('module-gated fields stay gated inside their tabs', function () {
+test('a disabled module takes its fields off the page with its tab', function () {
+    // Gating is now purely tab-level — each entity owns one tab — so a module
+    // being off has to remove the fields, not just the tab strip entry.
     config()->set('laravel-crm.modules', ['leads']);
 
     $html = Livewire::test(SettingEdit::class)->html();
 
     expect($html)->toContain('wire:model="leadPrefix"');
 
-    foreach (['dealPrefix', 'orderPrefix', 'deliveryPrefix'] as $field) {
+    foreach ([
+        'dealPrefix', 'orderPrefix', 'deliveryPrefix', 'quotePrefix', 'quoteTerms',
+        'invoicePrefix', 'invoiceTerms', 'purchaseOrderPrefix', 'purchaseOrderTerms',
+    ] as $field) {
         expect($html)->not->toContain('wire:model="'.$field.'"');
     }
 
     // The shared block and the cross-document toggle are never gated.
     expect($html)->toContain('wire:model="pdfContactDetails"');
     expect($html)->toContain('wire:model="dynamicProducts"');
+});
+
+test('the dynamic-products toggle lives on the General tab', function () {
+    // It applies across quotes, orders and invoices rather than to any one doc
+    // type, and it is not a PDF-output setting, so it sits with the other
+    // account-wide toggles rather than on Documents.
+    $html = Livewire::test(SettingEdit::class)->html();
+
+    $general = substr(
+        $html,
+        strpos($html, 'setting-tab-panel-general'),
+        strpos($html, 'setting-tab-panel-leads') - strpos($html, 'setting-tab-panel-general')
+    );
+
+    expect($general)->toContain('wire:model="dynamicProducts"');
+    expect($general)->toContain('wire:model="showRelatedActivity"');
+    expect($general)->not->toContain('wire:model="pdfContactDetails"');
 });
 
 test('SettingEdit blade view uses the shared tab markup', function () {
