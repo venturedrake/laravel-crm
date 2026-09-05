@@ -1,4 +1,4 @@
-@extends('laravel-crm::layouts.portal')
+@extends('laravel-crm::layouts.portal', ['hideNav' => true])
 
 @php
     $signedAction = url()->current().'?signature='.request()->input('signature').'&expires='.request()->input('expires');

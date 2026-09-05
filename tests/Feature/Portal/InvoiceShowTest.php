@@ -26,6 +26,7 @@ test('portal invoice show renders 200 for a valid signed link', function () {
     $response->assertDontSee('table table-hover');
     $response->assertDontSee('card shadow-sm');
     $response->assertDontSee('navbar-expand');
+    $response->assertDontSee('navbar-brand');
     $response->assertDontSee('col-3');
 });
 
