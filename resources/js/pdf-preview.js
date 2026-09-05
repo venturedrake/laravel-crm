@@ -59,6 +59,33 @@ export async function loadDocument(url, signal) {
 }
 
 /**
+ * The scale a document should open at to sit inside `availableWidth`.
+ *
+ * Capped at 1, so a page narrower than the panel opens at its native size
+ * rather than being blown up to fill it, and floored at the zoom control's own
+ * minimum so the displayed percentage is always one the buttons can return to.
+ *
+ * This exists because the canvases carry no max-width (see renderPages): a
+ * page wider than the panel scrolls instead of shrinking, which is right for a
+ * deliberate zoom and wrong for the first paint on a narrow screen, where an
+ * A4 page at 100% would open already overflowing.
+ *
+ * @param {import('pdfjs-dist').PDFDocumentProxy} doc
+ * @param {number} availableWidth
+ * @returns {Promise<number>}
+ */
+export async function fitScale(doc, availableWidth) {
+    const page = await doc.getPage(1);
+    const { width } = page.getViewport({ scale: 1 });
+
+    if (!width || !availableWidth) {
+        return 1;
+    }
+
+    return Math.min(1, Math.max(0.5, Math.floor((availableWidth / width) * 100) / 100));
+}
+
+/**
  * Draw every page of `doc` into `container`, in document order, replacing
  * whatever was there before.
  *
@@ -90,7 +117,15 @@ export async function renderPages(doc, container, scale, isStale = () => false) 
         canvas.height = Math.floor(viewport.height * ratio);
         canvas.style.width = `${Math.floor(viewport.width)}px`;
         canvas.style.height = `${Math.floor(viewport.height)}px`;
-        canvas.className = 'crm-pdf-preview-page mx-auto mb-4 bg-white shadow-lg max-w-full';
+
+        // No max-width here, deliberately. Both CSS dimensions are set from
+        // the viewport to hold the aspect ratio while the backing store is
+        // oversampled; a `max-width: 100%` would cap the width alone and
+        // leave the height untouched, so any zoom past fit-width would stop
+        // widening the page and start stretching it vertically instead. A
+        // page wider than the panel is meant to scroll, which is what the
+        // min-w-fit wrapper in the drawer markup is for.
+        canvas.className = 'crm-pdf-preview-page mx-auto mb-4 block bg-white shadow-lg';
 
         await page.render({
             canvasContext: canvas.getContext('2d'),

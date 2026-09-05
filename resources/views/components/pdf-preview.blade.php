@@ -87,7 +87,11 @@
             {{-- pdf.js writes its <canvas> elements straight in here. Kept in
                  the flow while zooming — the spinner overlays it rather than
                  replacing it, so a re-render doesn't blank the panel. --}}
-            <div x-ref="pages" x-show="! error"></div>
+            {{-- min-w-fit so a zoomed page wider than the panel grows this
+                 wrapper and scrolls the parent, rather than being clamped;
+                 when the page is narrower the wrapper stays panel-width and
+                 the canvas's own mx-auto centres it. --}}
+            <div x-ref="pages" x-show="! error" class="min-w-fit"></div>
 
             <div
                 x-show="loading"
