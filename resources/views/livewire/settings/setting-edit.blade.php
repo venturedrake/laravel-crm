@@ -42,24 +42,34 @@
                                  click-to-change surface, and the "Choose file" control has
                                  to stay visible.
 
-                                 The frame borrows the input's own DaisyUI tokens rather than
-                                 approximating them with utilities, so the preview keeps
-                                 matching the fields around it if the theme changes
-                                 `--input-color` or `--radius-field`. `w-fit` keeps the frame
-                                 on the image instead of stretching it across the column. --}}
+                                 The frame reproduces the input border rather than
+                                 approximating it with a utility. It cannot reuse
+                                 `--input-color` directly: DaisyUI only ever declares that
+                                 inside `.input` / `.select` / `.textarea` and never at the
+                                 theme root, so referencing it out here resolves to nothing
+                                 and takes the whole declaration down with it — a frame with
+                                 no border at all. The colour below is the value `.input`
+                                 itself computes; `--border` and `--radius-field` are theme
+                                 tokens and are safe to read. Width, style and colour stay
+                                 separate declarations so a browser without `color-mix`
+                                 loses only the tint, not the border.
+
+                                 `w-fit` keeps the frame on the image rather than stretching
+                                 it across the column, and `relative` anchors the remove
+                                 button to the frame's top corner. --}}
                             <fieldset class="fieldset py-0">
                                 <legend class="fieldset-legend mb-0.5">{{ ucfirst(__('laravel-crm::lang.logo')) }}</legend>
                                 <div wire:key="logo-preview">
                                     @if ($logoFile || $logo)
-                                        <div class="w-fit mb-2 p-3" style="border: var(--border) solid var(--input-color); border-radius: var(--radius-field);">
-                                            <img src="{{ $logoFile ? $logoFile->temporaryUrl() : asset('storage/'.$logo) }}" class="max-w-full h-auto" width="200" />
+                                        <div class="relative w-fit mb-2 p-3" style="border-width: var(--border); border-style: solid; border-color: color-mix(in oklab, var(--color-base-content) 20%, transparent); border-radius: var(--radius-field);">
+                                            <img src="{{ $logoFile ? $logoFile->temporaryUrl() : asset('storage/'.$logo) }}" class="block max-w-full h-auto" width="200" />
                                             <x-mary-button
                                                 wire:click="deleteLogo"
                                                 wire:confirm="{{ ucfirst(__('laravel-crm::lang.delete_logo_confirm')) }}"
                                                 icon="o-trash"
                                                 title="{{ ucfirst(__('laravel-crm::lang.delete_logo')) }}"
                                                 type="button"
-                                                class="btn-sm btn-square btn-error text-white mt-2"
+                                                class="btn-sm btn-square btn-error text-white shadow absolute top-2 end-2"
                                                 spinner="deleteLogo" />
                                         </div>
                                     @endif
