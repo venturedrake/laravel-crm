@@ -1,7 +1,6 @@
 <div class="crm-content">
-    @include('laravel-crm::layouts.partials.nav-integrations')
-    <x-mary-header title="ClickSend" class="mb-5" progress-indicator></x-mary-header>
-    <x-mary-card shadow separator>
+    <x-mary-header title="{{ ucwords(__('laravel-crm::lang.integrations')) }}" class="mb-5" progress-indicator></x-mary-header>
+    <x-laravel-crm::integration-tabs>
         <div class="grid gap-y-5">
             <p>{{ __('laravel-crm::lang.clicksend_connect_intro') }}</p>
 
@@ -62,5 +61,5 @@
                 </div>
             </form>
         </div>
-    </x-mary-card>
+    </x-laravel-crm::integration-tabs>
 </div>
