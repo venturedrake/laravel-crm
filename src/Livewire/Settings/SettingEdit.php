@@ -4,12 +4,14 @@ namespace VentureDrake\LaravelCrm\Livewire\Settings;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 use Ramsey\Uuid\Uuid;
+use Throwable;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Email;
@@ -474,6 +476,54 @@ class SettingEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.settings_updated'))
+        );
+    }
+
+    /**
+     * Remove the logo currently previewed on the General tab.
+     *
+     * Two different things can be on screen there, so this removes whichever
+     * one it is rather than both: a pending upload is discarded back to the
+     * saved logo, and only when nothing is pending does the button clear the
+     * saved one. Pressing it after picking the wrong file must not also
+     * destroy the logo still printing on every PDF.
+     *
+     * Unlike the rest of this form the clear is immediate rather than deferred
+     * to save(), because the preview it removes is the only feedback that the
+     * logo is gone — leaving it staged until Save would show a logo-less field
+     * while every PDF still carried the old artwork.
+     */
+    public function deleteLogo(): void
+    {
+        $this->authorize('update', Setting::class);
+
+        if ($this->logoFile) {
+            $this->logoFile = null;
+
+            return;
+        }
+
+        if (! $this->logo) {
+            return;
+        }
+
+        // Best-effort, and deliberately not fatal: the settings rows are the
+        // source of truth for whether a logo exists, so a disk that cannot be
+        // read must not leave the CRM still showing one the admin deleted.
+        // PdfLogo::src() already treats a missing file as "no logo".
+        try {
+            Storage::disk('public')->delete($this->logo);
+        } catch (Throwable $e) {
+            // Intentionally swallowed — see above.
+        }
+
+        app('laravel-crm.settings')->set('logo_file', null);
+        app('laravel-crm.settings')->set('logo_file_name', null);
+
+        $this->logo = null;
+
+        $this->success(
+            ucfirst(trans('laravel-crm::lang.logo_deleted'))
         );
     }
 
