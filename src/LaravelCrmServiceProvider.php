@@ -442,6 +442,7 @@ use VentureDrake\LaravelCrm\Policies\TeamPolicy;
 use VentureDrake\LaravelCrm\Policies\UserPolicy;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Services\SystemCheckService;
+use VentureDrake\LaravelCrm\Support\Modules;
 use VentureDrake\LaravelCrm\View\Components\Addresses;
 use VentureDrake\LaravelCrm\View\Components\CustomFields;
 use VentureDrake\LaravelCrm\View\Components\CustomFieldValues;
@@ -1189,109 +1190,31 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         View::composer('*', SettingsComposer::class);
 
-        Blade::if('hasleadsenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasleadsenabled', fn () => Modules::enabled('leads'));
 
-        Blade::if('hasfeaturesenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('features', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasfeaturesenabled', fn () => Modules::enabled('features'));
 
-        Blade::if('hasdealsenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('deals', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasdealsenabled', fn () => Modules::enabled('deals'));
 
-        Blade::if('hasquotesenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('quotes', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasquotesenabled', fn () => Modules::enabled('quotes'));
 
-        Blade::if('hasordersenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('orders', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasordersenabled', fn () => Modules::enabled('orders'));
 
-        Blade::if('hasinvoicesenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('invoices', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasinvoicesenabled', fn () => Modules::enabled('invoices'));
 
-        Blade::if('hasdeliveriesenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('deliveries', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasdeliveriesenabled', fn () => Modules::enabled('deliveries'));
 
-        Blade::if('haspurchaseordersenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('purchase-orders', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('haspurchaseordersenabled', fn () => Modules::enabled('purchase-orders'));
 
-        Blade::if('hasteamsenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('teams', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasteamsenabled', fn () => Modules::enabled('teams'));
 
-        Blade::if('haschatenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('chat', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('haschatenabled', fn () => Modules::enabled('chat'));
 
-        Blade::if('hasemailmarketingenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('email-marketing', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasemailmarketingenabled', fn () => Modules::enabled('email-marketing'));
 
-        Blade::if('hassmsmarketingenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('sms-marketing', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hassmsmarketingenabled', fn () => Modules::enabled('sms-marketing'));
 
-        Blade::if('hasmonitoringenabled', function () {
-            if (is_array(config('laravel-crm.modules')) && in_array('monitoring', config('laravel-crm.modules'))) {
-                return true;
-            } elseif (! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
+        Blade::if('hasmonitoringenabled', fn () => Modules::enabled('monitoring'));
     }
 
     /**

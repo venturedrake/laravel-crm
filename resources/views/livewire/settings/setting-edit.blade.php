@@ -1,90 +1,188 @@
 <div class="crm-content">
     <x-mary-header title="{{ ucfirst(__('laravel-crm::lang.settings')) }}" class="mb-5" progress-indicator ></x-mary-header>
-    <x-mary-form wire:submit="save">
-        <div class="grid lg:grid-cols-2 gap-5 items-start">
-            <div>
-                <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.general')) }}" separator>
-                    <div class="grid gap-3" wire:key="details">
-                        <x-mary-input wire:model="organizationName" label="{{ ucfirst(__('laravel-crm::lang.organization_name')) }}" required />
-                        <x-mary-input wire:model="vatNumber" label="{{ ucfirst(__('laravel-crm::lang.vat_number')) }}" />
-                        @if ($logoFile)
-                            <div>
-                                <img src="{{ $logoFile->temporaryUrl() }}">
+    {{-- `novalidate` is load-bearing, not a preference. MaryUI spreads the
+         component attributes onto the native control, so `<x-mary-input required>`
+         emits a real HTML `required`. Panels for the inactive tabs are
+         display:none, and a browser will not submit a form holding an invalid
+         control it cannot focus — wire:submit would never fire and Save would
+         look dead. Validation is enforced by rules() either way, and the red
+         asterisk comes from a separate attribute check, so both survive. --}}
+    <x-mary-form wire:submit="save" novalidate>
+        {{-- TABS (DaisyUI radio tabs-lift + tab content — same shape as Settings → Templates).
+             Each panel must stay the immediate next sibling of its own radio: the
+             `:checked + .tab-content` rule is what reveals it, so a conditional
+             that wraps only the input would leave its panel adjacent to the
+             previous tab's radio and show two panels at once. Every @if below
+             therefore wraps input and panel together. --}}
+        <div role="tablist" class="tabs tabs-lift">
+            @if (in_array('general', $tabs, true))
+                <input type="radio"
+                       name="setting-tabs"
+                       role="tab"
+                       class="tab"
+                       aria-label="{{ ucfirst(__('laravel-crm::lang.general')) }}"
+                       value="general"
+                       @checked($tab === 'general')
+                       wire:key="setting-tab-input-general"
+                       wire:model.live="tab" />
+                <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-general">
+                    <div class="grid lg:grid-cols-2 gap-5 items-start">
+                        <div class="grid gap-3">
+                            <x-mary-input wire:model="organizationName" label="{{ ucfirst(__('laravel-crm::lang.organization_name')) }}" required />
+                            <x-mary-input wire:model="vatNumber" label="{{ ucfirst(__('laravel-crm::lang.vat_number')) }}" />
+                            <div wire:key="logo-preview">
+                                @if ($logoFile)
+                                    <div>
+                                        <img src="{{ $logoFile->temporaryUrl() }}">
+                                    </div>
+                                @elseif($logo)
+                                    <div>
+                                        <img src=" {{ ($logo) ? asset('storage/'.$logo) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
+                                    </div>
+                                @endif
                             </div>
-                        @elseif($logo)
-                            <div>
-                                <img src=" {{ ($logo) ? asset('storage/'.$logo) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
+                            <x-mary-file wire:model="logoFile" label="{{ ucfirst(__('laravel-crm::lang.logo')) }}" />
+                            <x-mary-select wire:model="country" label="{{ ucfirst(__('laravel-crm::lang.country')) }}" :options="$countries" required />
+                            <x-mary-select wire:model="language" label="{{ ucfirst(__('laravel-crm::lang.language')) }}" :options="$languages" required />
+                            <x-mary-select wire:model="currency" label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" :options="$currencies" required />
+                            <x-mary-select wire:model="timezone" label="{{ ucfirst(__('laravel-crm::lang.timezone')) }}" :options="$timezones" required />
+                            <x-mary-select wire:model="dateFormat" label="{{ ucfirst(__('laravel-crm::lang.date_format')) }}" :options="$dateFormats" required />
+                            <x-mary-select wire:model="timeFormat" label="{{ ucfirst(__('laravel-crm::lang.time_format')) }}" :options="$timeFormats" required />
+                            <x-mary-input wire:model="taxName" label="{{ ucfirst(__('laravel-crm::lang.default_tax_name')) }}" />
+                            <x-mary-input wire:model="taxRate" label="{{ ucfirst(__('laravel-crm::lang.default_tax_rate')) }}" suffix="%" />
+                            <div class="mt-1">
+                                <x-mary-toggle wire:model="showRelatedActivity" class="self-start">
+                                    <x-slot:label>
+                                        {{ ucfirst(__('laravel-crm::lang.show_related_contact_activity')) }}
+                                    </x-slot:label>
+                                </x-mary-toggle>
                             </div>
-                        @endif
-                        <x-mary-file wire:model="logoFile" label="{{ ucfirst(__('laravel-crm::lang.logo')) }}" />
-                        <x-mary-select wire:model="country" label="{{ ucfirst(__('laravel-crm::lang.country')) }}" :options="$countries" required />
-                        <x-mary-select wire:model="language" label="{{ ucfirst(__('laravel-crm::lang.language')) }}" :options="$languages" required />
-                        <x-mary-select wire:model="currency" label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" :options="$currencies" required />
-                        <x-mary-select wire:model="timezone" label="{{ ucfirst(__('laravel-crm::lang.timezone')) }}" :options="$timezones" required />
-                        <x-mary-select wire:model="dateFormat" label="{{ ucfirst(__('laravel-crm::lang.date_format')) }}" :options="$dateFormats" required />
-                        <x-mary-select wire:model="timeFormat" label="{{ ucfirst(__('laravel-crm::lang.time_format')) }}" :options="$timeFormats" required />
-                        <x-mary-input wire:model="taxName" label="{{ ucfirst(__('laravel-crm::lang.default_tax_name')) }}" />
-                        <x-mary-input wire:model="taxRate" label="{{ ucfirst(__('laravel-crm::lang.default_tax_rate')) }}" suffix="%" />
+                        </div>
+                        <div>
+                            <x-crm-phones :$phones :$phoneTypes />
+                            <x-crm-emails :$emails :$emailTypes />
+                            <x-crm-addresses :$addresses :$addressTypes :$countries />
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if (in_array('record-ids', $tabs, true))
+                <input type="radio"
+                       name="setting-tabs"
+                       role="tab"
+                       class="tab"
+                       aria-label="{{ ucfirst(__('laravel-crm::lang.record_ids')) }}"
+                       value="record-ids"
+                       @checked($tab === 'record-ids')
+                       wire:key="setting-tab-input-record-ids"
+                       wire:model.live="tab" />
+                <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-record-ids">
+                    <div class="grid gap-3">
+                        {{-- This tab only carries the entities whose sole setting is a
+                             prefix; every document type keeps its prefix beside its own
+                             terms. Say so, or the tab reads as "all prefixes". --}}
+                        <p class="text-sm text-base-content/70">{{ ucfirst(__('laravel-crm::lang.record_ids_hint')) }}</p>
                         @hasleadsenabled
-                             <x-mary-input wire:model="leadPrefix" label="{{ ucfirst(__('laravel-crm::lang.lead_prefix')) }}" />
+                            <x-mary-input wire:model="leadPrefix" label="{{ ucfirst(__('laravel-crm::lang.lead_prefix')) }}" />
                         @endhasleadsenabled
                         @hasdealsenabled
                             <x-mary-input wire:model="dealPrefix" label="{{ ucfirst(__('laravel-crm::lang.deal_prefix')) }}" />
                         @endhasdealsenabled
-                        @hasquotesenabled
-                            <x-mary-input wire:model="quotePrefix" label="{{ ucfirst(__('laravel-crm::lang.quote_prefix')) }}" />
-                        @endhasquotesenabled
                         @hasordersenabled
                             <x-mary-input wire:model="orderPrefix" label="{{ ucfirst(__('laravel-crm::lang.order_prefix')) }}" />
                         @endhasordersenabled
-                        @hasinvoicesenabled
-                            <x-mary-input wire:model="invoicePrefix" label="{{ ucfirst(__('laravel-crm::lang.invoice_prefix')) }}" />
-                        @endhasinvoicesenabled
                         @hasdeliveriesenabled
                             <x-mary-input wire:model="deliveryPrefix" label="{{ ucfirst(__('laravel-crm::lang.delivery_prefix')) }}" />
                         @endhasdeliveriesenabled
-                        @haspurchaseordersenabled
-                            <x-mary-input wire:model="purchaseOrderPrefix" label="{{ ucfirst(__('laravel-crm::lang.purchase_order_prefix')) }}" />
-                        @endhaspurchaseordersenabled
-                        @hasquotesenabled
-                            <x-mary-textarea wire:model="quoteTerms" label="{{ ucfirst(__('laravel-crm::lang.quote_terms')) }}" rows="5" />
-                        @endhasquotesenabled
+                    </div>
+                </div>
+            @endif
+
+            @if (in_array('documents', $tabs, true))
+                <input type="radio"
+                       name="setting-tabs"
+                       role="tab"
+                       class="tab"
+                       aria-label="{{ ucfirst(__('laravel-crm::lang.documents')) }}"
+                       value="documents"
+                       @checked($tab === 'documents')
+                       wire:key="setting-tab-input-documents"
+                       wire:model.live="tab" />
+                <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-documents">
+                    <div class="grid gap-3">
                         {{-- Outside the module directives on purpose: this block prints on
                              quote, order and delivery PDFs as well as invoices, so gating it
                              on invoices being enabled would leave quote/order/delivery-only
                              installs unable to fill it. --}}
                         <x-mary-textarea wire:model="pdfContactDetails" label="{{ ucfirst(__('laravel-crm::lang.pdf_contact_details')) }}" hint="{{ ucfirst(__('laravel-crm::lang.pdf_contact_details_hint')) }}" rows="5" />
-                        @hasinvoicesenabled
-                            <x-mary-textarea wire:model="invoiceContactDetails" label="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details')) }}" hint="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details_hint')) }}" rows="5" />
-                            <x-mary-textarea wire:model="invoiceTerms" label="{{ ucfirst(__('laravel-crm::lang.invoice_terms')) }}" rows="5" />
-                            <x-mary-textarea wire:model="invoicePaymentInstructions" label="{{ ucfirst(__('laravel-crm::lang.invoice_payment_instructions')) }}" rows="5" />
-                        @endhasinvoicesenabled
-                        @haspurchaseordersenabled
-                            <x-mary-textarea wire:model="purchaseOrderTerms" label="{{ ucfirst(__('laravel-crm::lang.purchase_order_terms')) }}" rows="5" />
-                            <x-mary-textarea wire:model="purchaseOrderDeliveryInstructions" label="{{ ucfirst(__('laravel-crm::lang.purchase_order_delivery_instructions')) }}" rows="5" />
-                        @endhaspurchaseordersenabled
                         <div class="mt-3">
                             <x-mary-toggle wire:model="dynamicProducts" class="self-start">
-                            <x-slot:label>
-                                {{ ucfirst(__('laravel-crm::lang.allow_creating_products_when_creating_quotes_orders_and_invoices')) }}
-                            </x-slot:label>
-                        </x-mary-toggle>
-                        </div>
-                        <div class="mt-1">
-                        <x-mary-toggle wire:model="showRelatedActivity" class="self-start">
-                            <x-slot:label>
-                                {{ ucfirst(__('laravel-crm::lang.show_related_contact_activity')) }}
-                            </x-slot:label>
+                                <x-slot:label>
+                                    {{ ucfirst(__('laravel-crm::lang.allow_creating_products_when_creating_quotes_orders_and_invoices')) }}
+                                </x-slot:label>
                             </x-mary-toggle>
                         </div>
                     </div>
-                </x-mary-card>
-            </div>
-            <div>
-                <x-crm-phones :$phones :$phoneTypes />
-                <x-crm-emails :$emails :$emailTypes />
-                <x-crm-addresses :$addresses :$addressTypes :$countries />
-            </div>
+                </div>
+            @endif
+
+            @if (in_array('quotes', $tabs, true))
+                <input type="radio"
+                       name="setting-tabs"
+                       role="tab"
+                       class="tab"
+                       aria-label="{{ ucfirst(__('laravel-crm::lang.quotes')) }}"
+                       value="quotes"
+                       @checked($tab === 'quotes')
+                       wire:key="setting-tab-input-quotes"
+                       wire:model.live="tab" />
+                <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-quotes">
+                    <div class="grid gap-3">
+                        <x-mary-input wire:model="quotePrefix" label="{{ ucfirst(__('laravel-crm::lang.quote_prefix')) }}" />
+                        <x-mary-textarea wire:model="quoteTerms" label="{{ ucfirst(__('laravel-crm::lang.quote_terms')) }}" rows="5" />
+                    </div>
+                </div>
+            @endif
+
+            @if (in_array('invoices', $tabs, true))
+                <input type="radio"
+                       name="setting-tabs"
+                       role="tab"
+                       class="tab"
+                       aria-label="{{ ucfirst(__('laravel-crm::lang.invoices')) }}"
+                       value="invoices"
+                       @checked($tab === 'invoices')
+                       wire:key="setting-tab-input-invoices"
+                       wire:model.live="tab" />
+                <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-invoices">
+                    <div class="grid gap-3">
+                        <x-mary-input wire:model="invoicePrefix" label="{{ ucfirst(__('laravel-crm::lang.invoice_prefix')) }}" />
+                        <x-mary-textarea wire:model="invoiceContactDetails" label="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details')) }}" hint="{{ ucfirst(__('laravel-crm::lang.invoice_contact_details_hint')) }}" rows="5" />
+                        <x-mary-textarea wire:model="invoiceTerms" label="{{ ucfirst(__('laravel-crm::lang.invoice_terms')) }}" rows="5" />
+                        <x-mary-textarea wire:model="invoicePaymentInstructions" label="{{ ucfirst(__('laravel-crm::lang.invoice_payment_instructions')) }}" rows="5" />
+                    </div>
+                </div>
+            @endif
+
+            @if (in_array('purchase-orders', $tabs, true))
+                <input type="radio"
+                       name="setting-tabs"
+                       role="tab"
+                       class="tab"
+                       aria-label="{{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}"
+                       value="purchase-orders"
+                       @checked($tab === 'purchase-orders')
+                       wire:key="setting-tab-input-purchase-orders"
+                       wire:model.live="tab" />
+                <div role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6" wire:key="setting-tab-panel-purchase-orders">
+                    <div class="grid gap-3">
+                        <x-mary-input wire:model="purchaseOrderPrefix" label="{{ ucfirst(__('laravel-crm::lang.purchase_order_prefix')) }}" />
+                        <x-mary-textarea wire:model="purchaseOrderTerms" label="{{ ucfirst(__('laravel-crm::lang.purchase_order_terms')) }}" rows="5" />
+                        <x-mary-textarea wire:model="purchaseOrderDeliveryInstructions" label="{{ ucfirst(__('laravel-crm::lang.purchase_order_delivery_instructions')) }}" rows="5" />
+                    </div>
+                </div>
+            @endif
         </div>
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.save_changes')) }}" class="btn-primary text-white" type="submit" spinner="save" />

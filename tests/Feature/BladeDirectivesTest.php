@@ -29,6 +29,29 @@ test('module directives are true when modules config is empty', function () {
     expect(evaluateDirective('hasfeaturesenabled'))->toBe('YESNO');
 });
 
+test('module directives are true when modules config is an empty array', function () {
+    // `[]` is not the same shape as `null`, but the closures treat it the same:
+    // the `! config('laravel-crm.modules')` fallthrough is truthy for both, so an
+    // empty array means "every module on", not "every module off". Pinned here
+    // because the obvious refactor — `is_array($m) ? in_array($slug, $m) : true` —
+    // silently disables the whole CRM for hosts that publish an empty array.
+    config()->set('laravel-crm.modules', []);
+
+    expect(evaluateDirective('hasleadsenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasdealsenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasquotesenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasordersenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasinvoicesenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasdeliveriesenabled'))->toBe('YESNO');
+    expect(evaluateDirective('haspurchaseordersenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasteamsenabled'))->toBe('YESNO');
+    expect(evaluateDirective('haschatenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasemailmarketingenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hassmsmarketingenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasfeaturesenabled'))->toBe('YESNO');
+    expect(evaluateDirective('hasmonitoringenabled'))->toBe('YESNO');
+});
+
 test('features directive is true when features module enabled', function () {
     config()->set('laravel-crm.modules', ['features']);
 

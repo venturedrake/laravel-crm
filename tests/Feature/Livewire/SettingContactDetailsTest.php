@@ -146,3 +146,43 @@ test('an untouched shared field writes no row at all', function () {
 
     expect(Setting::where('name', PdfContactDetails::SHARED_KEY)->exists())->toBeFalse();
 });
+
+test('clearing the invoice override drops invoices back to the shared value', function () {
+    // The override needs the same `!== null` guard as the shared key, and for
+    // a sharper reason: it *shadows* the shared value. Under a truthy guard
+    // the save reports success, the row survives, mount() restores the stale
+    // text on the next visit, and every invoice PDF keeps printing a block
+    // the admin just deleted — with the shared value permanently unreachable
+    // for invoices. Which is the opposite of what the field's hint promises.
+    app('laravel-crm.settings')->set(PdfContactDetails::settingKey('invoice'), 'Stale invoice block');
+    app('laravel-crm.settings')->set(PdfContactDetails::SHARED_KEY, 'Shared block');
+    app('laravel-crm.settings')->forgetCache();
+
+    Livewire::test(SettingContactDetailsEdit::class)
+        ->assertSet('invoiceContactDetails', 'Stale invoice block')
+        ->set(requiredSettings())
+        ->set('invoiceContactDetails', '')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    app('laravel-crm.settings')->forgetCache();
+
+    expect(app('laravel-crm.settings')->get(PdfContactDetails::settingKey('invoice')))->toBe('');
+    expect(PdfContactDetails::for('invoice'))->toBe('Shared block');
+
+    // ...and the form no longer resurrects the override on the next visit.
+    Livewire::test(SettingContactDetailsEdit::class)
+        ->assertSet('invoiceContactDetails', '');
+});
+
+test('an untouched invoice override writes no row at all', function () {
+    // Same null-vs-empty distinction as the shared key: an install that never
+    // filled the override must not gain an empty row that then shadows the
+    // shared value's resolution path for no reason.
+    Livewire::test(SettingContactDetailsEdit::class)
+        ->set(requiredSettings())
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(Setting::where('name', PdfContactDetails::settingKey('invoice'))->exists())->toBeFalse();
+});
