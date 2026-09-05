@@ -30,14 +30,21 @@
                         <div class="grid gap-3">
                             <x-mary-input wire:model="organizationName" label="{{ ucfirst(__('laravel-crm::lang.organization_name')) }}" required />
                             <x-mary-input wire:model="vatNumber" label="{{ ucfirst(__('laravel-crm::lang.vat_number')) }}" />
+                            {{-- The frame borrows the input's own DaisyUI tokens rather than
+                                 approximating them with utilities, so the preview keeps
+                                 matching the fields around it if the theme changes
+                                 `--input-color` or `--radius-field`. `w-fit` keeps the frame
+                                 on the image instead of stretching it across the column. --}}
+                            @php($logoFrame = 'mt-3 w-fit p-3')
+                            @php($logoFrameStyle = 'border: var(--border) solid var(--input-color); border-radius: var(--radius-field);')
                             <div wire:key="logo-preview">
                                 @if ($logoFile)
-                                    <div>
-                                        <img src="{{ $logoFile->temporaryUrl() }}">
+                                    <div class="{{ $logoFrame }}" style="{{ $logoFrameStyle }}">
+                                        <img src="{{ $logoFile->temporaryUrl() }}" class="max-w-full h-auto" width="200" />
                                     </div>
                                 @elseif($logo)
-                                    <div>
-                                        <img src=" {{ ($logo) ? asset('storage/'.$logo) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
+                                    <div class="{{ $logoFrame }}" style="{{ $logoFrameStyle }}">
+                                        <img src="{{ asset('storage/'.$logo) }}" class="max-w-full h-auto" width="200" />
                                     </div>
                                 @endif
                             </div>
