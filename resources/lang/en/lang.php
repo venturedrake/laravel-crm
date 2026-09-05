@@ -1046,4 +1046,8 @@ return [
     'pdf_template_compact_description' => 'A dense layout that fits more onto a single page.',
     'pdf_template_professional' => 'professional',
     'pdf_template_professional_description' => 'A polished layout with branded headers and a summary panel.',
+    'pages' => 'pages',
+    'zoom_in' => 'zoom in',
+    'zoom_out' => 'zoom out',
+    'close' => 'close',
 ];

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use VentureDrake\LaravelCrm\Http\Controllers\Concerns\ServesPdfDocuments;
 use VentureDrake\LaravelCrm\Http\Requests\StoreOrderRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateOrderRequest;
 use VentureDrake\LaravelCrm\Models\Address;
@@ -28,6 +30,8 @@ use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
 class OrderController extends Controller
 {
+    use ServesPdfDocuments;
+
     /**
      * @var OrderService
      */
@@ -399,6 +403,31 @@ class OrderController extends Controller
 
     public function download(Order $order)
     {
+        return $this->pdfResponse($this->buildPdf($order)->output(), $this->pdfFilename($order));
+    }
+
+    /**
+     * The same document as download(), served inline so a browser (or the
+     * pdf.js preview drawer) renders it in place rather than saving it.
+     */
+    public function preview(Order $order)
+    {
+        return $this->pdfResponse(
+            $this->buildPdf($order)->output(),
+            $this->pdfFilename($order),
+            HeaderUtils::DISPOSITION_INLINE
+        );
+    }
+
+    /**
+     * Sole loadView() call site for orders — download() and preview() must
+     * share it. PdfViewDataContractTest statically asserts exactly one per
+     * controller, and a second copy would drift from this one.
+     *
+     * @return \Barryvdh\DomPDF\PDF
+     */
+    protected function buildPdf(Order $order)
+    {
         if ($order->person) {
             $email = $order->person->getPrimaryEmail();
             $phone = $order->person->getPrimaryPhone();
@@ -438,6 +467,11 @@ class OrderController extends Controller
                 'organization_address' => $organization_address ?? null,
                 'fromName' => app('laravel-crm.settings')->get('organization_name', null),
                 'logo' => PdfLogo::fromSettings(),
-            ])->download('order-'.strtolower($order->order_id).'.pdf');
+            ]);
+    }
+
+    protected function pdfFilename(Order $order): string
+    {
+        return 'order-'.strtolower($order->order_id).'.pdf';
     }
 }

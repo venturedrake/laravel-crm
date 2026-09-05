@@ -336,6 +336,11 @@
     
     <x-mary-toast />
 
+    {{-- Rendered once, outside every Livewire root, so an open preview
+         survives wire:navigate visits and index-table re-renders. Opened from
+         anywhere via the bubbling `crm-pdf-preview` window event. --}}
+    <x-crm-pdf-preview />
+
     @stack('modals')
     @livewireScripts
     @stack('livewire-js')

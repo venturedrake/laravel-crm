@@ -449,6 +449,8 @@ use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
 use VentureDrake\LaravelCrm\View\Components\Emails;
 use VentureDrake\LaravelCrm\View\Components\Header;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
+use VentureDrake\LaravelCrm\View\Components\PdfPreview;
+use VentureDrake\LaravelCrm\View\Components\PdfPreviewButton;
 use VentureDrake\LaravelCrm\View\Components\Phones;
 use VentureDrake\LaravelCrm\View\Components\TimelineItem;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
@@ -894,6 +896,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::component('crm-timeline-item', TimelineItem::class);
         Blade::component('crm-custom-fields', CustomFields::class);
         Blade::component('crm-custom-field-values', CustomFieldValues::class);
+        Blade::component('crm-pdf-preview', PdfPreview::class);
+        Blade::component('crm-pdf-preview-button', PdfPreviewButton::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);

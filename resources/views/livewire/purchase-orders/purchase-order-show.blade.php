@@ -18,6 +18,7 @@
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_purchase_orders')) }}" link="{{ url(route('laravel-crm.purchase-orders.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive /> |
             <livewire:crm-purchase-order-send :key="'purchase-order-send-'.$purchaseOrder->id" :$purchaseOrder />
             @can('view crm purchase orders')
+                <x-crm-pdf-preview-button :url="url(route('laravel-crm.purchase-orders.preview', $purchaseOrder))" :download-url="url(route('laravel-crm.purchase-orders.download', $purchaseOrder))" :title="$purchaseOrder->title" />
                 <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.purchase-orders.download', $purchaseOrder)) }}" no-wire-navigate class="btn-sm btn-square btn-outline" />
             @endcan
             | <livewire:crm-activity-menu /> |

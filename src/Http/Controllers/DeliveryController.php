@@ -7,6 +7,8 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use VentureDrake\LaravelCrm\Http\Controllers\Concerns\ServesPdfDocuments;
 use VentureDrake\LaravelCrm\Http\Requests\StoreDeliveryRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateDeliveryRequest;
 use VentureDrake\LaravelCrm\Models\Address;
@@ -23,6 +25,8 @@ use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 
 class DeliveryController extends Controller
 {
+    use ServesPdfDocuments;
+
     /**
      * @var SettingService
      */
@@ -261,6 +265,34 @@ class DeliveryController extends Controller
 
     public function download(Delivery $delivery)
     {
+        return $this->pdfResponse($this->buildPdf($delivery)->output(), $this->pdfFilename($delivery));
+    }
+
+    /**
+     * The same document as download(), served inline so a browser (or the
+     * pdf.js preview drawer) renders it in place rather than saving it.
+     */
+    public function preview(Delivery $delivery)
+    {
+        return $this->pdfResponse(
+            $this->buildPdf($delivery)->output(),
+            $this->pdfFilename($delivery),
+            HeaderUtils::DISPOSITION_INLINE
+        );
+    }
+
+    /**
+     * Sole loadView() call site for deliveries — download() and preview()
+     * must share it. PdfViewDataContractTest statically asserts exactly one
+     * per controller, and a second copy would drift from this one.
+     *
+     * Deliveries read their contact details through the parent order, unlike
+     * the other four doc types.
+     *
+     * @return \Barryvdh\DomPDF\PDF
+     */
+    protected function buildPdf(Delivery $delivery)
+    {
         if ($person = $delivery->order->person) {
             $email = $person->getPrimaryEmail();
             $phone = $person->getPrimaryPhone();
@@ -284,6 +316,11 @@ class DeliveryController extends Controller
                 'organization_address' => $delivery->order->getShippingAddress() ?? $organization_address ?? null,
                 'fromName' => app('laravel-crm.settings')->get('organization_name', null),
                 'logo' => PdfLogo::fromSettings(),
-            ])->download('delivery-'.strtolower($delivery->delivery_id).'.pdf');
+            ]);
+    }
+
+    protected function pdfFilename(Delivery $delivery): string
+    {
+        return 'delivery-'.strtolower($delivery->delivery_id).'.pdf';
     }
 }

@@ -97,6 +97,7 @@
                     @endcan
                     @can('view crm orders')
                         @if(! $subTotalError && ! $taxError && ! $totalError)
+                            <x-crm-pdf-preview-button :url="url(route('laravel-crm.orders.preview', $order))" :download-url="url(route('laravel-crm.orders.download', $order))" :title="$order->title" />
                             <x-mary-button icon="o-arrow-down-tray" link="{{ url(route('laravel-crm.orders.download', $order)) }}" no-wire-navigate class="btn-sm btn-square btn-outline" />
                         @endif
                         <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.orders.show', $order)) }}" class="btn-sm btn-square btn-outline" />
