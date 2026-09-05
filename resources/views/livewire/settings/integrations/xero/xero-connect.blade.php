@@ -1,7 +1,6 @@
 <div class="crm-content">
-    @include('laravel-crm::layouts.partials.nav-integrations')
-    <x-mary-header title="Xero" class="mb-5" progress-indicator></x-mary-header>
-    <x-mary-card shadow separator>
+    <x-mary-header title="{{ ucwords(__('laravel-crm::lang.integrations')) }}" class="mb-5" progress-indicator></x-mary-header>
+    <x-laravel-crm::integration-tabs>
         <div class="grid gap-y-5">
             <p>Connect to xero accounting to sync contacts, products, quotes & generate invoices.</p>
             <hr />
@@ -30,7 +29,7 @@
                 <x-mary-button label="Connect to Xero" link="{{ route('laravel-crm.integrations.xero.connect') }}" class="btn btn-outline" />
             @endif
         </div>
-    </x-mary-card>
+    </x-laravel-crm::integration-tabs>
 </div>
 
 @push('livewire-js')
