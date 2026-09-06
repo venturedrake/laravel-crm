@@ -180,8 +180,8 @@
                         @foreach($purchaseOrder->purchaseOrderLines()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $purchaseOrderLine)
                             <tr>
                                 <td class="px-0">
-                                    {{ $purchaseOrderLine->product->name }}
-                                    @if($purchaseOrderLine->product->code)
+                                    {{ $purchaseOrderLine->product?->name }}
+                                    @if($purchaseOrderLine->product?->code)
                                         <br /><small>{{ $purchaseOrderLine->product->code }}</small>
                                     @endif
                                 </td>

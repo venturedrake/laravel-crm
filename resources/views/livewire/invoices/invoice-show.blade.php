@@ -192,8 +192,8 @@
                         @foreach($invoice->invoiceLines()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $invoiceProduct)
                             <tr>
                                 <td class="px-0">
-                                    {{ $invoiceProduct->product->name }}
-                                    @if($invoiceProduct->product->code)
+                                    {{ $invoiceProduct->product?->name }}
+                                    @if($invoiceProduct->product?->code)
                                         <br /><small>{{ $invoiceProduct->product->code }}</small>
                                     @endif
                                 </td>

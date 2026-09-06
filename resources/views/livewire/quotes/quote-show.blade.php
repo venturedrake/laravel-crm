@@ -170,8 +170,8 @@
                         @foreach($quote->quoteProducts()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $quoteProduct)
                             <tr>
                                 <td class="px-0">
-                                    {{ $quoteProduct->product->name }}
-                                    @if($quoteProduct->product->code)
+                                    {{ $quoteProduct->product?->name }}
+                                    @if($quoteProduct->product?->code)
                                         <br /><small>{{ $quoteProduct->product->code }}</small>
                                     @endif
                                 </td>

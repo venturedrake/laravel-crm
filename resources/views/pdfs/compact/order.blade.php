@@ -80,7 +80,7 @@
         <tbody>
             @foreach($order->orderProducts->whereNotNull('product_id')->sortBy([['order', 'asc'], ['created_at', 'asc']]) as $orderProduct)
                 <tr>
-                    <td>{{ $orderProduct->product->name }}</td>
+                    <td>{{ $orderProduct->product?->name }}</td>
                     <td class="compact-num">{{ money($orderProduct->price ?? null, $orderProduct->currency) }}</td>
                     <td class="compact-num">{{ $orderProduct->quantity }}</td>
                     <td class="compact-num">{{ money($orderProduct->amount ?? null, $orderProduct->currency) }}</td>

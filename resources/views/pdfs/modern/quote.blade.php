@@ -105,7 +105,7 @@
         <tbody>
             @foreach($quote->quoteProducts->whereNotNull('product_id')->sortBy([['order', 'asc'], ['created_at', 'asc']]) as $quoteProduct)
                 <tr>
-                    <td>{{ $quoteProduct->product->name }}</td>
+                    <td>{{ $quoteProduct->product?->name }}</td>
                     <td class="modern-num">{{ money($quoteProduct->price ?? null, $quoteProduct->currency) }}</td>
                     <td class="modern-num">{{ $quoteProduct->quantity }}</td>
                     <td class="modern-num">{{ money($quoteProduct->amount ?? null, $quoteProduct->currency) }}</td>

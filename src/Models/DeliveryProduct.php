@@ -26,6 +26,6 @@ class DeliveryProduct extends Model
 
     public function orderProduct()
     {
-        return $this->belongsTo(OrderProduct::class);
+        return $this->belongsTo(OrderProduct::class)->withTrashed();
     }
 }

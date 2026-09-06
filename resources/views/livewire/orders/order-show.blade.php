@@ -174,8 +174,8 @@
                         @foreach($order->orderProducts()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $orderProduct)
                             <tr>
                                 <td class="px-0">
-                                    {{ $orderProduct->product->name }}
-                                    @if($orderProduct->product->code)
+                                    {{ $orderProduct->product?->name }}
+                                    @if($orderProduct->product?->code)
                                         <br /><small>{{ $orderProduct->product->code }}</small>
                                     @endif
                                 </td>
