@@ -61,6 +61,34 @@ class SettingService
     protected ?int $generation = null;
 
     /**
+     * The team this service has been pinned to, when it has been pinned.
+     *
+     * Null is a meaningful value — "this document belongs to no team" — so the
+     * flag rather than the id is what says whether an override is in force.
+     */
+    protected ?int $teamId = null;
+
+    protected bool $hasTeamOverride = false;
+
+    /**
+     * Read settings as though the given team were the current one.
+     *
+     * BelongsToTeamsScope only engages for a signed-in user with a currentTeam,
+     * so on the anonymous public portal a plain read returns every team's rows
+     * and pluck() hands the page whichever tenant the database listed last.
+     * The portal controllers call this with the document's own team_id, which
+     * corrects every downstream reader of the shared scoped instance —
+     * PdfContactDetails, PdfLogo and the view composer included.
+     */
+    public function forTeam(?int $teamId): static
+    {
+        $this->teamId = $teamId;
+        $this->hasTeamOverride = true;
+
+        return $this;
+    }
+
+    /**
      * The global settings map, keyed by name.
      *
      * Scoped to rows with a null user_id so a per-user row can never shadow the
@@ -71,8 +99,9 @@ class SettingService
      * is queried at most once per TTL rather than on every request, and so
      * hosts that never ran add_user_to_laravel_crm_settings_table still boot.
      *
-     * The query is team-scoped by BelongsToTeamsScope, so the cache it fills
-     * must be partitioned the same way — see cacheKey().
+     * The query is team-scoped by BelongsToTeamsScope, or by forTeam() where a
+     * caller has pinned the team explicitly — see query(). Either way the cache
+     * it fills must be partitioned the same way, see cacheKey().
      */
     public function all(): array
     {
@@ -83,13 +112,61 @@ class SettingService
         }
 
         return $this->memo[$key] = Cache::remember($key, $this->ttl, function () {
-            return Setting::query()
-                ->when(
-                    $this->hasUserColumn(),
-                    fn ($query) => $query->whereNull('user_id')
-                )
+            return $this->query()
                 ->pluck('value', 'name')
                 ->toArray();
+        });
+    }
+
+    /**
+     * The query all() plucks the map from.
+     *
+     * Ordinarily this is BelongsToTeamsScope's job. When forTeam() has pinned
+     * the service the scope is dropped and its condition restated against the
+     * given team instead — including the model_with_global check, compared
+     * against getTable() exactly as the scope compares it rather than assumed
+     * either way, so the rows here are exactly the rows an authenticated
+     * member of the same team would read. The two share a cache key by design
+     * (see cacheKey()), so any disagreement between them would have one poison
+     * the other's map.
+     *
+     * With no team to pin to, `global = 1` rows only: a document that predates
+     * teams should render a blank From block, not another tenant's branding.
+     */
+    protected function query()
+    {
+        $query = Setting::query()
+            ->when(
+                $this->hasUserColumn(),
+                fn ($query) => $query->whereNull('user_id')
+            );
+
+        if (! $this->hasTeamOverride || ! config('laravel-crm.teams')) {
+            return $query;
+        }
+
+        $table = (new Setting)->getTable();
+
+        $query->withoutGlobalScope(BelongsToTeamsScope::class);
+
+        $withGlobal = in_array($table, config('laravel-crm.model_with_global') ?? []);
+
+        if ($this->teamId === null) {
+            return $withGlobal
+                ? $query->where($table.'.global', 1)
+                // Nothing is readable without a team on a model that has no
+                // global rows, and returning the unfiltered map would be the
+                // leak this exists to close.
+                : $query->whereRaw('1 = 0');
+        }
+
+        if (! $withGlobal) {
+            return $query->where($table.'.team_id', $this->teamId);
+        }
+
+        return $query->where(function ($query) use ($table) {
+            $query->where($table.'.team_id', $this->teamId)
+                ->orWhere($table.'.global', 1);
         });
     }
 
@@ -257,14 +334,36 @@ class SettingService
     {
         $key = $this->cacheKeyPrefix.'.'.$this->generation();
 
+        if (! config('laravel-crm.teams')) {
+            return $key;
+        }
+
+        // Checked before appliesToRequest(), because the override exists
+        // precisely for the requests the scope stands down on — an anonymous
+        // portal page. Asking the scope first would file that request's map
+        // under the unsuffixed key every teamless reader shares, which is the
+        // leak the override is closing. `.team.{id}` deliberately collides
+        // with the key an authenticated member of the same team produces:
+        // query() restates the scope's condition, so both hold the same rows.
+        if ($this->hasTeamOverride) {
+            return $key.'.team.'.($this->teamId ?? 'none');
+        }
+
         // The scope also stands down on Nova requests, and the map all() fills
         // there spans every team. Partitioning it under one team's key would
         // hand that team another tenant's organisation name for the rest of
         // the TTL, so the partition has to stand down in exactly the same
         // cases — hence the shared predicate rather than a second copy of the
         // condition.
-        if (! config('laravel-crm.teams') || ! BelongsToTeamsScope::appliesToRequest()) {
-            return $key;
+        if (! BelongsToTeamsScope::appliesToRequest()) {
+            // The scope stands down on the signed document routes too, and the
+            // map all() fills there spans every team. The portal controllers
+            // pin the service before rendering anything, so this only catches
+            // a read that beat them to it — the view composer on an abort(401)
+            // error page, say. Those get a key of their own so an all-teams
+            // map can never land on the one console commands, queued jobs and
+            // teamless users read from.
+            return BelongsToTeamsScope::signedDocumentRequest() ? $key.'.portal' : $key;
         }
 
         $teamId = auth()->user()->currentTeam->id ?? null;

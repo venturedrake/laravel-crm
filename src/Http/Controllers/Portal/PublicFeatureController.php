@@ -155,8 +155,7 @@ class PublicFeatureController extends Controller
      * A public feature is reachable by its own link whoever owns it — that is
      * what makes a shared roadmap link work for someone with no account — and
      * opening one moves the visitor onto that team's board for the rest of the
-     * session. An install that pinned the portal with `portal.team_id` keeps
-     * its old behaviour and still 404s everything outside that team.
+     * session.
      */
     private function ensurePortalTeam(Feature $feature): void
     {
@@ -167,8 +166,6 @@ class PublicFeatureController extends Controller
         // A teamless feature belongs to no board, so it is on none of them.
         abort_if($feature->team_id === null, 404);
 
-        $featureTeamId = (int) $feature->team_id;
-
-        abort_if(PortalTeam::adopt($featureTeamId) !== $featureTeamId, 404);
+        PortalTeam::adopt((int) $feature->team_id);
     }
 }

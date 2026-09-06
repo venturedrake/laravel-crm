@@ -95,13 +95,12 @@ class PublicFeatureBoard extends Component
      *
      * `$portalTeamId` is a public property and so is whatever the client sends
      * back — which is harmless, because every public board is public and
-     * reachable at its own URL anyway. The one case where it is not harmless
-     * is a `portal.team_id` lock, so that is re-applied here rather than
-     * trusted from the mount.
+     * reachable at its own URL anyway. Falling back to resolve() rather than
+     * to null keeps a component mounted without one on the visitor's board.
      */
     protected function portalTeamId(): ?int
     {
-        return PortalTeam::locked() ?? $this->portalTeamId ?? PortalTeam::resolve();
+        return $this->portalTeamId ?? PortalTeam::resolve();
     }
 
     public function render()

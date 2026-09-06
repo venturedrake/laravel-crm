@@ -243,6 +243,81 @@ test('set install wide creates a global row when none exists', function () {
         ->and(Setting::where('name', 'db_update_1201')->count())->toBe(1);
 });
 
+/**
+ * forTeam() is what makes the anonymous portal read the right tenant's
+ * branding: BelongsToTeamsScope only engages for a signed-in user with a
+ * current team, so without an explicit override a portal request reads every
+ * team's rows and pluck() keeps whichever one the database listed last.
+ */
+function settingRowFor(?int $teamId, string $name, string $value, int $global = 0): void
+{
+    Setting::withoutGlobalScopes()->create([
+        'name' => $name,
+        'value' => $value,
+        'team_id' => $teamId,
+        'global' => $global,
+    ]);
+}
+
+test('for team reads that teams rows and not another teams', function () {
+    config()->set('laravel-crm.teams', true);
+
+    settingRowFor(1, 'organization_name', 'A Co');
+    settingRowFor(2, 'organization_name', 'B Co');
+
+    $service = app('laravel-crm.settings');
+
+    expect($service->forTeam(2)->get('organization_name'))->toBe('B Co')
+        ->and($service->forTeam(1)->get('organization_name'))->toBe('A Co');
+});
+
+test('for team with no team reads neither teams rows', function () {
+    // A document written before teams existed. Rendering a blank From block is
+    // correct; borrowing whichever tenant sorted last is the bug.
+    config()->set('laravel-crm.teams', true);
+
+    settingRowFor(1, 'organization_name', 'A Co');
+    settingRowFor(2, 'organization_name', 'B Co');
+
+    expect(app('laravel-crm.settings')->forTeam(null)->get('organization_name'))->toBeNull();
+});
+
+test('for team is inert when teams are disabled', function () {
+    config()->set('laravel-crm.teams', false);
+
+    settingRowFor(null, 'organization_name', 'Single Tenant Co');
+
+    expect(app('laravel-crm.settings')->forTeam(2)->get('organization_name'))->toBe('Single Tenant Co');
+});
+
+test('two for team values in one request do not share a cache entry', function () {
+    config()->set('laravel-crm.teams', true);
+
+    $service = app('laravel-crm.settings');
+
+    $keyForTeamOne = $service->forTeam(1)->cacheKey();
+    $keyForTeamTwo = $service->forTeam(2)->cacheKey();
+    $keyForNoTeam = $service->forTeam(null)->cacheKey();
+
+    expect($keyForTeamOne)->toContain('.team.1')
+        ->and($keyForTeamTwo)->toContain('.team.2')
+        ->and($keyForNoTeam)->toContain('.team.none')
+        ->and([$keyForTeamOne, $keyForTeamTwo, $keyForNoTeam])->toHaveCount(3)
+        ->and(array_unique([$keyForTeamOne, $keyForTeamTwo, $keyForNoTeam]))->toHaveCount(3);
+});
+
+test('for team pins the key even where the team scope stands down', function () {
+    // The whole point: on an anonymous request the scope is inert, so the
+    // unsuffixed key would be filled with an all-teams map and handed to every
+    // console command and queued job that reads settings.
+    config()->set('laravel-crm.teams', true);
+
+    $service = app('laravel-crm.settings');
+    $unpinned = $service->cacheKey();
+
+    expect($service->forTeam(2)->cacheKey())->not->toBe($unpinned);
+});
+
 test('get for user is a direct query rather than a cache read', function () {
     $service = app('laravel-crm.settings');
     $service->setForUser(1, 'live', 'before');

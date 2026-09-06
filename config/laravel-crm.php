@@ -247,7 +247,6 @@ return [
     */
 
     'portal' => [
-        'team_id' => env('LARAVEL_CRM_PORTAL_TEAM_ID'),
         'allow_registration' => env('LARAVEL_CRM_PORTAL_ALLOW_REGISTRATION', false),
     ],
 

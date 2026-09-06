@@ -13,12 +13,13 @@ use VentureDrake\LaravelCrm\Tests\Stubs\User;
  * The regression this file guards: the portal used to read one team id out of
  * `laravel-crm.portal.team_id` and 404 everything else, so on a teams install
  * every team but the configured one had no portal, and an install that had not
- * set the key had none at all.
+ * set the key had none at all. That key is gone entirely — see the last test
+ * here, and PortalTeam's class docblock for why an env var could not be left
+ * sitting in front of the resolution order.
  */
 beforeEach(function () {
     config()->set('laravel-crm.modules', ['features']);
     config()->set('laravel-crm.teams', true);
-    config()->set('laravel-crm.portal.team_id', null);
 
     FeatureStatus::firstOrCreate(['name' => 'New'], ['is_default' => true, 'order' => 1, 'color' => '#6c757d']);
 });
@@ -55,8 +56,6 @@ test('each team has its own board at a shareable URL', function () {
 test('the team board works for a guest with no session and no config', function () {
     // The whole point: the people who read a roadmap are the team's customers.
     teamFeature(7, 'Customer visible');
-
-    expect(config('laravel-crm.portal.team_id'))->toBeNull();
 
     $this->get('/p/features/team/7')
         ->assertStatus(200)
@@ -140,47 +139,32 @@ test('opening a feature moves the visitor onto that team board', function () {
 });
 
 // -----------------------------------------------------------------------
-// The configured lock still locks
+// The configured lock is gone
 // -----------------------------------------------------------------------
 
-test('portal.team_id still pins the portal to one team', function () {
+test('a leftover portal.team_id no longer pins the portal to one team', function () {
+    // `LARAVEL_CRM_PORTAL_TEAM_ID` used to sit in front of every other signal
+    // as a hard single-tenant lock. It is not read any more, and an upgraded
+    // install that still has the variable in its .env must not keep behaving
+    // as though it were — the value would otherwise go on silently deciding
+    // which team's board, and which team's invoice branding, everyone saw.
     config()->set('laravel-crm.portal.team_id', 1);
 
-    teamFeature(1, 'Locked in');
-    $outside = teamFeature(2, 'Locked out');
-
-    $this->get('/p/features')
-        ->assertStatus(200)
-        ->assertSee('Locked in')
-        ->assertDontSee('Locked out');
-
-    $this->get('/p/features/'.$outside->external_id)->assertStatus(404);
-});
-
-test('the lock beats a team named in the URL', function () {
-    config()->set('laravel-crm.portal.team_id', 1);
-
-    teamFeature(1, 'Locked in');
-    teamFeature(2, 'Locked out');
+    teamFeature(1, 'Team one idea');
+    $outside = teamFeature(2, 'Team two idea');
 
     $this->get('/p/features/team/2')
         ->assertStatus(200)
-        ->assertSee('Locked in')
-        ->assertDontSee('Locked out');
-});
+        ->assertSee('Team two idea')
+        ->assertDontSee('Team one idea');
 
-test('the lock is re-applied on the board component, not trusted from the mount', function () {
-    // portalTeamId is a public Livewire property and so is whatever the client
-    // sends back. Harmless in general — every public board is reachable at its
-    // own URL — but a portal.team_id install has said it wants exactly one.
-    config()->set('laravel-crm.portal.team_id', 1);
-
-    teamFeature(1, 'Locked in');
-    teamFeature(2, 'Locked out');
+    $this->get('/p/features/'.$outside->external_id)
+        ->assertStatus(200)
+        ->assertSee('Team two idea');
 
     Livewire::test(PublicFeatureBoard::class, ['portalTeamId' => 2])
-        ->assertSee('Locked in')
-        ->assertDontSee('Locked out');
+        ->assertSee('Team two idea')
+        ->assertDontSee('Team one idea');
 });
 
 test('the board component stays on the team it was mounted with', function () {
