@@ -23,7 +23,7 @@
         </tr>
         <tr>
             <td class="bold-meta-label">{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</td>
-            <td class="bold-meta-value">{{ $purchaseOrder->issue_date->format($dateFormat) }}</td>
+            <td class="bold-meta-value">{{ $purchaseOrder->issue_date?->format($dateFormat) }}</td>
         </tr>
         @if($purchaseOrder->delivery_date)
             <tr>

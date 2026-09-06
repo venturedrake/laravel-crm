@@ -48,7 +48,7 @@
                 <x-mary-datetime wire:model="due_date" label="{{ ucfirst(__('laravel-crm::lang.due_date')) }}" />
             </div>
             <x-mary-textarea wire:model="terms" label="{{ ucfirst(__('laravel-crm::lang.terms')) }}" rows="5" />
-            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.pdf_template')) }}" wire:model="pdf_template" :options="$this->pdfTemplateOptions()" :placeholder="$this->pdfTemplateDefaultLabel()" placeholder-value="" />
+            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.template')) }}" wire:model="pdf_template" :options="$this->pdfTemplateOptions()" :placeholder="$this->pdfTemplateDefaultLabel()" placeholder-value="" />
         </div>
     </x-mary-card>
 </div>

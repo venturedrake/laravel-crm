@@ -58,7 +58,7 @@
                     placeholder="Search ..."
                     searchable />
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.owner')) }}" wire:model="user_owner_id" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false)" />
-            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.pdf_template')) }}" wire:model="pdf_template" :options="$this->pdfTemplateOptions()" :placeholder="$this->pdfTemplateDefaultLabel()" placeholder-value="" />
+            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.template')) }}" wire:model="pdf_template" :options="$this->pdfTemplateOptions()" :placeholder="$this->pdfTemplateDefaultLabel()" placeholder-value="" />
             <x-crm-custom-fields :model="$quote ?? new \VentureDrake\LaravelCrm\Models\Quote()" />
         </div>
     </x-mary-card>

@@ -202,7 +202,9 @@ function pdfCallSites(string $path): array
 }
 
 /**
- * The 14 files that render a PDF blade through `loadView()`.
+ * The 14 files that render a PDF blade through `loadView()` or, for the three
+ * portal `show()` methods, through `PortalDocument::html()` — the same view
+ * plus the same inline view-data array, so the same static parse covers both.
  *
  * TemplatePreviewController is deliberately absent: it passes a `$data`
  * variable rather than an inline literal, so there is nothing static to
@@ -252,8 +254,10 @@ test('every call site is discovered and yields a non-empty view-data array', fun
         $total += count($sites);
     }
 
-    // 14 files, one loadView() each.
-    expect($total)->toBe(14);
+    // 14 files: 11 with a single render call, plus the three portal
+    // controllers, which render the same document twice — once embedded in
+    // show(), once as the PDF their Download button returns.
+    expect($total)->toBe(17);
 });
 
 test('every variable a PDF blade reads is a key its call sites pass', function () {

@@ -1036,6 +1036,7 @@ return [
 
     // PDF templates (shared registry entries used across the 5 doc types)
     'templates' => 'templates',
+    'template' => 'template',
     'pdf_template' => 'PDF template',
     'pdf_template_use_default' => 'default (:template)',
     'pdf_template_published_override' => 'this document type is currently rendering through your own customised copy of the original PDF view, published under resources/views/vendor/laravel-crm. Saving this page replaces it with the template you pick here.',

@@ -5,7 +5,7 @@
                 <x-mary-datetime wire:model="delivery_expected" label="{{ ucfirst(__('laravel-crm::lang.delivery_expected')) }}" />
                 <x-mary-datetime wire:model="delivered_on" label="{{ ucfirst(__('laravel-crm::lang.delivered_on')) }}" />
             </div>
-            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.pdf_template')) }}" wire:model="pdf_template" :options="$this->pdfTemplateOptions()" :placeholder="$this->pdfTemplateDefaultLabel()" placeholder-value="" />
+            <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.template')) }}" wire:model="pdf_template" :options="$this->pdfTemplateOptions()" :placeholder="$this->pdfTemplateDefaultLabel()" placeholder-value="" />
         </div>
     </x-mary-card>
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.shipping_address')) }}" class="mt-5" separator>

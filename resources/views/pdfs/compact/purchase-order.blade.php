@@ -24,7 +24,7 @@
             <td class="compact-meta-label">{{ ucfirst(__('laravel-crm::lang.purchase_order_number')) }}</td>
             <td class="compact-meta-value">{{ $purchaseOrder->xeroPurchaseOrder->number ?? $purchaseOrder->purchase_order_id }}</td>
             <td class="compact-meta-label">{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</td>
-            <td class="compact-meta-value">{{ $purchaseOrder->issue_date->format($dateFormat) }}</td>
+            <td class="compact-meta-value">{{ $purchaseOrder->issue_date?->format($dateFormat) }}</td>
         </tr>
         @if($purchaseOrder->delivery_date || $purchaseOrder->reference || ($purchaseOrder->xeroPurchaseOrder && $purchaseOrder->xeroPurchaseOrder->reference))
             <tr>

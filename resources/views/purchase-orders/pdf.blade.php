@@ -8,7 +8,7 @@
                 <td width="50%"> 
                     <h1>{{ strtoupper(__('laravel-crm::lang.purchase_order')) }}</h1>
                     <p>
-                    <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</strong> {{ $purchaseOrder->issue_date->format($dateFormat) }}<br />
+                    <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</strong> {{ $purchaseOrder->issue_date?->format($dateFormat) }}<br />
                     <strong>{{ ucfirst(__('laravel-crm::lang.purchase_order_number')) }}</strong> {{ $purchaseOrder->xeroPurchaseOrder->number ?? $purchaseOrder->purchase_order_id  }}
                     @if($purchaseOrder->delivery_date)
                     <br /><strong>{{ ucfirst(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $purchaseOrder->delivery_date->format($dateFormat) }}

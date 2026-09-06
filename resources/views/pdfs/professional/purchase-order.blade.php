@@ -24,7 +24,7 @@
         </tr>
         <tr>
             <td class="prof-meta-label">{{ ucfirst(__('laravel-crm::lang.purchase_order_date')) }}</td>
-            <td class="prof-meta-value">{{ $purchaseOrder->issue_date->format($dateFormat) }}</td>
+            <td class="prof-meta-value">{{ $purchaseOrder->issue_date?->format($dateFormat) }}</td>
         </tr>
         @if($purchaseOrder->delivery_date)
             <tr>
