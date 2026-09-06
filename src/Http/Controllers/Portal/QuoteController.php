@@ -13,6 +13,7 @@ use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\PortalDocument;
+use VentureDrake\LaravelCrm\Support\PortalTeam;
 
 class QuoteController extends Controller
 {
@@ -47,6 +48,13 @@ class QuoteController extends Controller
         if (! $request->hasValidSignature()) {
             abort(401);
         }
+
+        // Before any settings read. The portal is anonymous, so without this
+        // the team scope stands down and the From block, ABN and logo come
+        // from whichever tenant the database happened to list last. Pinning
+        // the shared scoped service here corrects every reader below it,
+        // PdfContactDetails and PdfLogo included.
+        $this->settingService->forTeam(PortalTeam::forDocument($quote));
 
         if ($quote->person) {
             $email = $quote->person->getPrimaryEmail();
@@ -104,6 +112,10 @@ class QuoteController extends Controller
         if (! $request->hasValidSignature()) {
             abort(401);
         }
+
+        // Same reason as show(): the downloaded PDF has to carry the same
+        // branding the page did.
+        $this->settingService->forTeam(PortalTeam::forDocument($quote));
 
         switch ($request->action) {
             case 'accept':

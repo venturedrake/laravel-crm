@@ -92,7 +92,7 @@ class FeatureIndex extends Component
     public function publicBoardUrl(): string
     {
         if (PortalTeam::scoped()) {
-            $teamId = PortalTeam::locked() ?? (auth()->user()->currentTeam->id ?? null);
+            $teamId = auth()->user()->currentTeam->id ?? null;
 
             if ($teamId !== null) {
                 return route('laravel-crm.portal.features.team', ['portalTeam' => (int) $teamId]);

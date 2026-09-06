@@ -378,14 +378,17 @@ The public feature board is team-aware on a `laravel-crm.teams` install. Each te
 at `/p/features/team/{team_id}` — a shareable URL that works for an anonymous visitor, which is
 the whole point of a public roadmap.
 
-`LARAVEL_CRM_PORTAL_TEAM_ID` is **no longer required**. Bare `/p/features` resolves the board
-from, in order: the team in the URL, the board remembered in the visitor's session, the signed-in
-user's current team, and finally — when exactly one team has a public board — that team. So a
-single-team install needs no configuration at all. Admins can copy the right link from the
-**Public board** button on `/crm/features`.
+`LARAVEL_CRM_PORTAL_TEAM_ID` is **gone**, and `config('laravel-crm.portal.team_id')` with it.
+Bare `/p/features` resolves the board from, in order: the team in the URL, the board remembered in
+the visitor's session, the signed-in user's current team, and finally — when exactly one team has
+a public board — that team. So a single-team install needs no configuration at all. Admins can
+copy the right link from the **Public board** button on `/crm/features`.
 
-If you *have* set `portal.team_id`, it still behaves exactly as before: a hard single-tenant lock
-that 404s every feature outside that team. Unset it to give the other teams a portal.
+**If you had that variable set,** delete it from your `.env` and drop the `team_id` line from
+`config/laravel-crm.php` if you have published the config. Nothing reads it any more, so leaving
+it in place is inert rather than harmful — but the portal will stop behaving as a single-tenant
+lock, which is the point. A team whose board you do *not* want public should have its features
+marked non-public rather than relying on the other teams being locked out.
 
 One behaviour fix comes with this: submitting a feature through the portal used to require the
 submitter's `currentTeam` to match the board's team, which `403`'d every visitor who registered

@@ -10,27 +10,30 @@ use VentureDrake\LaravelCrm\Models\Feature;
  * On a `laravel-crm.teams` install every team has its own public board. The
  * portal is anonymous by definition — the people reading a roadmap are the
  * team's customers, not its staff — so the team cannot come from
- * `auth()->user()->currentTeam` alone, and requiring an operator to nominate
- * one team in `LARAVEL_CRM_PORTAL_TEAM_ID` gave the other teams no portal at
- * all.
+ * `auth()->user()->currentTeam` alone.
  *
  * Resolution order:
  *
- *  1. `laravel-crm.portal.team_id`, when set. Anyone who configured it wanted
- *     a single-tenant portal, so it stays a hard lock and every other signal
- *     is ignored. It is now entirely optional.
- *  2. The team named in the URL (`/p/features/team/{id}`), which is what makes
+ *  1. The team named in the URL (`/p/features/team/{id}`), which is what makes
  *     a board shareable with people who have no account.
- *  3. The team remembered in the session from (2) or from a feature page the
+ *  2. The team remembered in the session from (1) or from a feature page the
  *     visitor already opened, so "back to the board", voting and submitting
  *     stay on the board they arrived at.
- *  4. The signed-in user's current team — the natural default for staff.
- *  5. The only team that has a public board, when there is exactly one. This
+ *  3. The signed-in user's current team — the natural default for staff.
+ *  4. The only team that has a public board, when there is exactly one. This
  *     is what makes the common "teams enabled, one team" install work with no
  *     configuration and no team in the URL.
  *
  * Returns null only when teams are enabled and none of the above answered, at
  * which point the caller should 404 rather than guess.
+ *
+ * There is deliberately no configured override. `LARAVEL_CRM_PORTAL_TEAM_ID`
+ * used to sit ahead of all four as a hard single-tenant lock, which was
+ * harmless while the portal only served roadmaps but wrong the moment
+ * forDocument() started answering "whose branding does this invoice carry?" —
+ * a document states its own owner, and one env var was silently overruling it
+ * for every team on the install. Every signal above is now derived from the
+ * request or the record.
  */
 class PortalTeam
 {
@@ -46,16 +49,6 @@ class PortalTeam
     }
 
     /**
-     * The configured single-tenant lock, or null when unset.
-     */
-    public static function locked(): ?int
-    {
-        $configured = config('laravel-crm.portal.team_id');
-
-        return ($configured !== null && $configured !== '') ? (int) $configured : null;
-    }
-
-    /**
      * Resolve the team whose board this request should show.
      *
      * @param  int|null  $fromUrl  the team id taken from the route, when the
@@ -65,10 +58,6 @@ class PortalTeam
     {
         if (! static::scoped()) {
             return null;
-        }
-
-        if ($locked = static::locked()) {
-            return $locked;
         }
 
         if ($fromUrl !== null) {
@@ -89,28 +78,49 @@ class PortalTeam
     }
 
     /**
-     * Take the team from a feature the visitor has navigated to, and remember
-     * it so the rest of the portal follows them onto that board.
+     * The team a signed-URL document belongs to.
      *
-     * A public feature is public: it is reachable by its own link whichever
-     * team owns it. The lock, when set, still wins — an install that pinned
-     * the portal to one team keeps 404ing everything else.
+     * Unlike resolve(), nothing about the visitor is consulted: a quote or
+     * invoice link is authorised by its signature and carries its own team, so
+     * the branding on the page follows the document rather than whoever
+     * happens to be signed in. Returns null on a single-tenant install (no
+     * scoping to do) and for a document that predates teams.
+     *
+     * Nothing about the install overrides it either: the document's own
+     * team_id is the only answer, because anything else is another tenant's
+     * organisation name, ABN and logo printed on this tenant's invoice.
      */
-    public static function adopt(?int $teamId): ?int
+    public static function forDocument($model): ?int
     {
         if (! static::scoped()) {
             return null;
         }
 
-        if ($locked = static::locked()) {
-            return $locked;
+        return $model->team_id === null ? null : (int) $model->team_id;
+    }
+
+    /**
+     * Take the team from a feature the visitor has navigated to, and remember
+     * it so the rest of the portal follows them onto that board.
+     *
+     * A public feature is public: it is reachable by its own link whichever
+     * team owns it.
+     *
+     * Returns nothing on purpose. This used to hand back the team actually
+     * adopted, because the configured lock could answer with a different one
+     * than the caller offered — and both call sites turned that into an
+     * `abort_if(adopt($id) !== $id, 404)`. With the lock gone it can only ever
+     * return its own argument, so keeping the return value would leave two
+     * guards that read as tenancy checks on public routes and enforce nothing.
+     * Adopting a board is a side effect; the caller decides what is reachable.
+     */
+    public static function adopt(?int $teamId): void
+    {
+        if (! static::scoped() || $teamId === null) {
+            return;
         }
 
-        if ($teamId !== null) {
-            static::remember($teamId);
-        }
-
-        return $teamId;
+        static::remember($teamId);
     }
 
     /**

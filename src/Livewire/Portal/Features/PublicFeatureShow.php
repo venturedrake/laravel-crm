@@ -21,9 +21,7 @@ class PublicFeatureShow extends Component
             // controller action that first rendered it.
             abort_if($feature->team_id === null, 404);
 
-            $featureTeamId = (int) $feature->team_id;
-
-            abort_if(PortalTeam::adopt($featureTeamId) !== $featureTeamId, 404);
+            PortalTeam::adopt((int) $feature->team_id);
         }
 
         $this->feature = $feature;
