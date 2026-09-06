@@ -56,12 +56,12 @@
                     <div class="mx-auto max-w-6xl px-4 py-8">
                         @yield('content', $slot ?? null)
                     </div>
-
-                    <footer class="footer footer-center bg-base-100 text-base-content/60 py-4 mt-10">
-                        <span>© {{ \Carbon\Carbon::now()->year }} · Powered by <a href="https://laravelcrm.com" target="_blank" rel="noopener noreferrer" class="link link-hover">Laravel CRM</a></span>
-                    </footer>
                 </x-slot:content>
             </x-mary-main>
+
+            <footer class="mt-auto w-full bg-base-100 text-base-content/60 text-sm text-center py-4">
+                <p>© {{ \Carbon\Carbon::now()->year }} · Powered by <a href="https://laravelcrm.com" target="_blank" rel="noopener noreferrer" class="link link-hover">Laravel CRM</a></p>
+            </footer>
         </div>
 
         <x-mary-toast />
