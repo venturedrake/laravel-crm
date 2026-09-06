@@ -43,7 +43,9 @@ class PdfTemplateRegistry
     ];
 
     /**
-     * Public-relative directory holding the picker thumbnails.
+     * Public-relative directory holding the picker thumbnails — where
+     * `vendor:publish --tag=assets` lands the artwork shipped in
+     * `resources/assets/img/pdf-templates`.
      */
     public const THUMBNAIL_DIR = 'vendor/laravel-crm/img/pdf-templates';
 
@@ -121,6 +123,13 @@ class PdfTemplateRegistry
      * host whose `vendor:publish --tag=assets` predates this artwork — the
      * thumbnails ship with the package, so requiring a re-publish just to
      * see them silently degraded the picker to text-only placeholders.
+     *
+     * The packaged copy lives under `resources/assets`, not under `public/`:
+     * `public/vendor/laravel-crm` is the Vite output directory and
+     * `emptyOutDir: true` deletes anything in it that the build did not
+     * produce, which is how 2.4.0 shipped with no thumbnail artwork at all
+     * and left this fallback with nothing to fall back to. `resources/assets`
+     * publishes to the same destination, so THUMBNAIL_DIR is unaffected.
      */
     public static function thumbnailFile(string $slug): ?string
     {
@@ -132,7 +141,7 @@ class PdfTemplateRegistry
 
         $candidates = [
             public_path($relative),
-            __DIR__.'/../../public/'.$relative,
+            __DIR__.'/../../resources/assets/img/pdf-templates/'.$slug.'.svg',
         ];
 
         foreach ($candidates as $path) {

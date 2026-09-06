@@ -11,6 +11,11 @@ export default defineConfig({
     ],
     build: {
         /*outDir: 'resources/build',*/
+        // `public/vendor/laravel-crm/` is build output only. This wipes the
+        // whole directory on every build, including any file the build did
+        // not produce — hand-authored artwork committed there is deleted
+        // silently. Static assets belong in `resources/assets/`, which
+        // publishes to the same destination and the build never touches.
         emptyOutDir: true,
     }
 });

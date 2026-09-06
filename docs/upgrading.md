@@ -140,6 +140,67 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.4.1
+
+### No migrations, no new config keys
+
+This is a patch release. It adds no tables or columns and no configuration keys, so
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+is the whole upgrade. `laravelcrm:update` still advances the `db_version` marker, so run it even
+though there is nothing to migrate — otherwise the system check reports the database as behind the
+code.
+
+### Multi-tenant installs should upgrade promptly
+
+Before this release the settings cache was global while the query behind it was team-scoped, so on
+a `laravel-crm.teams` install whichever team warmed the cache served its organisation name, ABN,
+address and logo to every other team until the next settings write — on the settings screen and on
+the documents those settings are rendered into. See the **Security** entry in
+[CHANGELOG.md](../CHANGELOG.md) for the full description.
+
+**No data migration is needed.** The fix is in the cache key, so upgrading and clearing the
+application cache is sufficient. Single-tenant installs were never affected.
+
+### Views to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, the view finder prefers your
+frozen copy, and this release changes:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| `livewire/settings/setting-edit.blade.php` | The flat single-column settings page persists — harmless, and it keeps saving correctly |
+| `livewire/kanban-board/record.blade.php`, `livewire/kanban-board/sortable.blade.php` | The client-side half of the drag-and-drop fix — the `data-record-id` marking. The server side resolves, filters and renumbers regardless, so the 500 and the authorization gap are closed either way |
+| The quote / order / delivery / invoice / purchase-order `*-index`, `*-related-index`, `*-show` and `*-form` views | The Preview and **Get link** buttons — the routes exist, but nothing renders a link to them |
+| `portal/quotes/show`, `portal/invoices/show`, `portal/purchase-orders/show` | The portal page keeps its own hand-built layout instead of rendering the record's PDF template |
+| `layouts/app.blade.php`, `layouts/portal.blade.php` | The Get-link modal mount, the chrome-free portal document pages and the footer fix. `layouts/partials/nav-integrations.blade.php` no longer exists in the package at all |
+| `pdfs/{modern,bold,compact,professional}/*` and the five classic `*/pdf.blade.php` | The null-date guards, the Bold header inset and its logo alignment |
+| `mail/templates/send-invoice/message.blade.php` | The no-due-date variant of the emailed invoice body |
+
+`php artisan laravelcrm:upgrade` now names your drifted published views on every deploy, so you no
+longer have to work this out by hand — it md5-compares each published blade against the packaged
+one and warns on both drifted views and views the package no longer ships. It only warns; it never
+fails the run.
+
+**The Settings → Templates thumbnails come back on their own.** 2.4.0 shipped without the five
+template SVGs, so the picker rendered broken images; the artwork has moved out of the build output
+directory and is republished by `laravelcrm:upgrade`, which `laravelcrm:update` calls first. Nothing
+manual is needed.
+
+**If you published the portal views**, note the three `crm-portal-*-line-items` Livewire components
+are gone. A published portal view still referencing one will throw — remove the reference, or
+re-publish the view.
+
+### New routes
+
+Five preview routes are added: `laravel-crm.quotes.preview` and its order, delivery, invoice and
+purchase-order siblings. Each carries the same `can:view` guard as the download route it mirrors,
+so they grant nothing your existing roles did not already allow.
+
 ## 2.4.0
 
 ### Migrations no longer need publishing

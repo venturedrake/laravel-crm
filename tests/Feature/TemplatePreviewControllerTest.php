@@ -186,6 +186,12 @@ test('thumbnail falls back to the packaged artwork when the host has not publish
         expect(is_file($path))->toBeTrue();
         expect(file_get_contents($path))->toContain('<svg');
 
+        // The packaged artwork must not live in the Vite output directory:
+        // `emptyOutDir: true` wipes it on every `npm run build`, which is how
+        // 2.4.0 shipped with no thumbnails at all and this fallback resolved
+        // to null on every host.
+        expect($path)->not->toContain('public/vendor/laravel-crm');
+
         $response = $this->get(route('laravel-crm.settings.templates.thumbnail', ['slug' => $slug]));
 
         $response->assertOk();
