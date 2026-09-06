@@ -15,17 +15,18 @@ function warmSettingCaches(): void
     app('laravel-crm.settings')->all();
     app('laravel-crm.system-check')->alerts();
 
-    expect(Cache::has('app.crm-settings'))->toBeTrue('settings cache should be warm');
+    expect(Cache::has(app('laravel-crm.settings')->cacheKey()))->toBeTrue('settings cache should be warm');
     expect(Cache::has(SystemCheckService::CACHE_KEY))->toBeTrue('system-check cache should be warm');
 }
 
 function settingCachesAreCold(): bool
 {
-    return ! Cache::has('app.crm-settings') && ! Cache::has(SystemCheckService::CACHE_KEY);
+    return ! Cache::has(app('laravel-crm.settings')->cacheKey())
+        && ! Cache::has(SystemCheckService::CACHE_KEY);
 }
 
 beforeEach(function () {
-    Cache::forget('app.crm-settings');
+    app('laravel-crm.settings')->forgetCache();
     Cache::forget(SystemCheckService::CACHE_KEY);
     config(['laravel-crm.update_notifications' => true]);
 });

@@ -1233,16 +1233,24 @@ class LaravelCrmServiceProvider extends ServiceProvider
             return new LaravelCrm;
         });
 
-        $this->app->singleton('laravel-crm.settings', function () {
+        // Scoped rather than singleton: the service memoises the settings map
+        // for the life of the instance, and scoped is the binding Laravel
+        // flushes between queued jobs and Octane requests. As a singleton that
+        // memo would outlive the request that filled it, so a worker could
+        // render mail from settings another process had already changed. Under
+        // php-fpm the two are identical — a fresh container per request.
+        $this->app->scoped('laravel-crm.settings', function () {
             return new SettingService;
         });
 
-        // Alias so type-hinting SettingService resolves the same singleton the
+        // Alias so type-hinting SettingService resolves the same instance the
         // ~30 existing app('laravel-crm.settings') call sites already share,
         // instead of auto-wiring a fresh instance per injection.
         $this->app->alias('laravel-crm.settings', SettingService::class);
 
-        $this->app->singleton('laravel-crm.system-check', function ($app) {
+        // Scoped for the same reason, and because it holds the SettingService
+        // above — a singleton here would pin one flushed instance forever.
+        $this->app->scoped('laravel-crm.system-check', function ($app) {
             return new SystemCheckService($app->make('laravel-crm.settings'));
         });
 

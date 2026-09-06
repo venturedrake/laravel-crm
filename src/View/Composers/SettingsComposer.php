@@ -2,53 +2,56 @@
 
 namespace VentureDrake\LaravelCrm\View\Composers;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
-use VentureDrake\LaravelCrm\Models\Setting;
 
 class SettingsComposer
 {
-    public static ?array $cachedParameters = null;
-
+    /**
+     * Share the handful of settings every view formats against.
+     *
+     * Values come from the SettingService rather than from a cache of this
+     * class's own. The service's cache is partitioned by team and dropped by
+     * SettingObserver on any write; the private cache this composer used to
+     * keep was neither, so one team's date format, tax name and organisation
+     * details leaked into every other team's views and a settings change took
+     * up to an hour to show up.
+     */
     public function compose(View $view)
     {
-        static::$cachedParameters ??= Cache::remember(
-            self::class,
-            now()->addHour(),
-            function () {
-                $defaults = [
-                    'dateFormat' => 'Y-m-d',
-                    'timeFormat' => 'H:i',
-                    'timezone' => 'UTC',
-                    'taxName' => 'Tax',
-                    'dynamicProducts' => 'true',
-                ];
+        $defaults = [
+            'dateFormat' => 'Y-m-d',
+            'timeFormat' => 'H:i',
+            'timezone' => 'UTC',
+            'taxName' => 'Tax',
+            'dynamicProducts' => 'true',
+        ];
 
-                if (! Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
-                    return $defaults;
-                }
+        $settings = app('laravel-crm.settings');
 
-                if ($dynamicProductsSetting = Setting::where('name', 'dynamic_products')->first()) {
-                    if ($dynamicProductsSetting->value == 1) {
-                        $dynamicProducts = 'true';
-                    } else {
-                        $dynamicProducts = 'false';
-                    }
-                } else {
-                    $dynamicProducts = $defaults['dynamicProducts'];
-                }
+        // Registered against every view, so this runs for views rendered
+        // before the package's migrations have created crm_settings.
+        if (! $settings->tableExists()) {
+            $view->with([
+                'crmDateFormat' => $defaults['dateFormat'],
+                'crmTimeFormat' => $defaults['timeFormat'],
+                'crmTimezone' => $defaults['timezone'],
+                'crmTaxName' => $defaults['taxName'],
+                'crmDynamicProducts' => $defaults['dynamicProducts'],
+            ]);
 
-                return [
-                    'crmDateFormat' => Setting::where('name', 'date_format')->first()?->value ?? $defaults['dateFormat'],
-                    'crmTimeFormat' => Setting::where('name', 'time_format')->first()?->value ?? $defaults['timeFormat'],
-                    'crmTimezone' => Setting::where('name', 'timezone')->first()?->value ?? $defaults['timezone'],
-                    'crmTaxName' => Setting::where('name', 'tax_name')->first()?->value ?? $defaults['taxName'],
-                    'crmDynamicProducts' => $dynamicProducts,
-                ];
-            }
-        );
+            return;
+        }
 
-        $view->with(static::$cachedParameters);
+        $dynamicProducts = $settings->get('dynamic_products');
+
+        $view->with([
+            'crmDateFormat' => $settings->get('date_format') ?? $defaults['dateFormat'],
+            'crmTimeFormat' => $settings->get('time_format') ?? $defaults['timeFormat'],
+            'crmTimezone' => $settings->get('timezone') ?? $defaults['timezone'],
+            'crmTaxName' => $settings->get('tax_name') ?? $defaults['taxName'],
+            'crmDynamicProducts' => $dynamicProducts === null
+                ? $defaults['dynamicProducts']
+                : ($dynamicProducts == 1 ? 'true' : 'false'),
+        ]);
     }
 }
