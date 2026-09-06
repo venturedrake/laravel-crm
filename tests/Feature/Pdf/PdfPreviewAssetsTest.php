@@ -68,6 +68,21 @@ it('ships a worker that defines Promise.withResolvers rather than only calling i
     expect(file_get_contents($worker))->toMatch('/withResolvers\s*:\s*function/');
 });
 
+it('ships the worker under an extension web servers have a MIME type for', function () {
+    // `.mjs` is missing from nginx's mime.types and older Apache, so hosts
+    // serve it as application/octet-stream. Module scripts get a strict MIME
+    // check, so the browser refuses both `new Worker(url, {type:'module'})`
+    // and pdf.js's own import() fallback — every preview dies with "setting up
+    // fake worker failed" on a correctly published, correctly built asset.
+    // vite.config.js rewrites the extension; this is what holds it there.
+    $manifest = pdfPreviewManifest();
+
+    $entry = collect($manifest)->first(fn ($entry, $key) => str_contains($key, 'pdf.worker'));
+
+    expect($entry)->not->toBeNull('no pdf.js worker in the built manifest');
+    expect($entry['file'])->toEndWith('.js', "the built worker is served as {$entry['file']}");
+});
+
 it('points the built chunk at a worker that is actually on disk', function () {
     // The worker URL is baked into the chunk at build time against Vite's
     // base (`/vendor/laravel-crm/`). Getting that wrong 404s the worker and
@@ -78,7 +93,7 @@ it('points the built chunk at a worker that is actually on disk', function () {
 
     expect(is_file($chunk))->toBeTrue('no built pdf-preview chunk');
 
-    preg_match('#"(/vendor/laravel-crm/assets/pdf\.worker[^"]*\.mjs)"#', file_get_contents($chunk), $matches);
+    preg_match('#"(/vendor/laravel-crm/assets/pdf\.worker[^"]*\.js)"#', file_get_contents($chunk), $matches);
 
     expect($matches)->not->toBeEmpty('the chunk does not request an absolute worker URL under the package base');
 

@@ -17,5 +17,24 @@ export default defineConfig({
         // silently. Static assets belong in `resources/assets/`, which
         // publishes to the same destination and the build never touches.
         emptyOutDir: true,
+        rollupOptions: {
+            output: {
+                // `.mjs` is not in the default MIME map of nginx or older
+                // Apache, so hosts serve it as application/octet-stream —
+                // which the browser's strict module-script MIME check rejects
+                // outright, taking out both the pdf.js worker and its own
+                // fallback import. The bytes are the same either way;
+                // module-ness comes from {type:'module'} and the Content-Type,
+                // not the extension. Emit `.js` so the worker inherits the
+                // mapping every server already has.
+                assetFileNames: (asset) => {
+                    const source = asset.name ?? asset.names?.[0] ?? '';
+
+                    return source.endsWith('.mjs')
+                        ? 'assets/[name]-[hash].js'
+                        : 'assets/[name]-[hash][extname]';
+                },
+            },
+        },
     }
 });
