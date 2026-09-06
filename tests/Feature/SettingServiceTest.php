@@ -4,6 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Tests\Stubs\CountingCacheStore;
 
 test('set creates a new setting', function () {
     $setting = app('laravel-crm.settings')->set('lead_prefix', 'L', 'Lead Prefix');
@@ -76,11 +77,48 @@ test('forget cache removes cached entry', function () {
     $service->set('x', 'y');
     $service->all();
 
-    expect(Cache::has('app.crm-settings'))->toBeTrue();
+    expect(Cache::has($service->cacheKey()))->toBeTrue();
 
     $service->forgetCache();
 
-    expect(Cache::has('app.crm-settings'))->toBeFalse();
+    expect(Cache::has($service->cacheKey()))->toBeFalse();
+});
+
+test('repeated reads within a request do not keep hitting the cache store', function () {
+    // SettingsComposer is registered against every view, so a page render asks
+    // for the map hundreds of times. Each one used to cost two store reads —
+    // the generation counter and the map — which measured ~3000 redis calls on
+    // a single dashboard render.
+    Cache::extend('counting', fn () => Cache::repository(new CountingCacheStore));
+    config([
+        'cache.stores.counting' => ['driver' => 'counting'],
+        'cache.default' => 'counting',
+    ]);
+    Cache::purge('counting');
+
+    $service = app('laravel-crm.settings');
+    $service->set('date_format', 'd/m/Y');
+
+    CountingCacheStore::reset();
+
+    for ($i = 0; $i < 50; $i++) {
+        expect($service->get('date_format'))->toBe('d/m/Y');
+    }
+
+    // One for the generation counter, one for the map, and nothing after that.
+    expect(CountingCacheStore::$reads)->toBeLessThanOrEqual(3);
+});
+
+test('a write is visible to the rest of the request that made it', function () {
+    $service = app('laravel-crm.settings');
+    $service->set('date_format', 'd/m/Y');
+
+    // Fill the memo before the second write, so a stale one would be caught.
+    expect($service->get('date_format'))->toBe('d/m/Y');
+
+    $service->set('date_format', 'm/d/Y');
+
+    expect($service->get('date_format'))->toBe('m/d/Y');
 });
 
 test('all excludes user scoped rows', function () {

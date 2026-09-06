@@ -41,6 +41,12 @@ class TeamCreate extends Component
             $user->forceFill(['current_team_id' => $team->id])->save();
         }
 
+        // The relation still holds the team we just switched away from, and
+        // anything reading it later this request — the settings cache key
+        // included — would resolve to the wrong tenant.
+        $user->unsetRelation('currentTeam');
+        app('laravel-crm.settings')->forgetCache();
+
         $this->success(
             ucfirst(trans('laravel-crm::lang.team_created')),
             redirectTo: route('laravel-crm.dashboard')

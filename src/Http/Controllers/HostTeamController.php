@@ -48,6 +48,12 @@ class HostTeamController extends Controller
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
+        // The relation still holds the team we just switched away from, and
+        // anything reading it later this request — the settings cache key
+        // included — would resolve to the wrong tenant.
+        $user->unsetRelation('currentTeam');
+        app('laravel-crm.settings')->forgetCache();
+
         return redirect()->route('laravel-crm.dashboard');
     }
 

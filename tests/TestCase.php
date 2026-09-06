@@ -19,7 +19,6 @@ use Spatie\Permission\PermissionServiceProvider;
 use VentureDrake\LaravelCrm\Facades\LaravelCrmFacade;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
 use VentureDrake\LaravelCrm\Tests\Stubs\User;
-use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -33,7 +32,6 @@ abstract class TestCase extends OrchestraTestCase
             class_alias(User::class, 'App\\Models\\User');
         }
 
-        SettingsComposer::$cachedParameters = null;
         Cache::flush();
 
         // Stub the Xero facade accessor so services that call Xero::isConnected()
