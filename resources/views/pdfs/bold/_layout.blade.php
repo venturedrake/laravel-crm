@@ -79,6 +79,14 @@
         background: #ffffff;
         padding: 8px 12px;
         border-radius: 4px;
+        /* An inline-block sits on the text baseline by default, so a browser
+           keeps the line box's descender space free *below* the plate and
+           the plate rides ~5px high inside the band — visibly more teal
+           underneath it than above. DomPDF centres it either way, so this
+           only ever mattered on the portal page. Aligning to the middle
+           makes the plate fill its line box, leaving the cell's 18px
+           padding as the only gap top and bottom. */
+        vertical-align: middle;
     }
 
     .bold-pdf .bold-band-brand img {
