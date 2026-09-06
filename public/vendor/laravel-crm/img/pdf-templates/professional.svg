@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320" width="240" height="320" role="img" aria-label="Professional PDF template preview">
+    <!-- Page background -->
+    <rect x="0" y="0" width="240" height="320" fill="#ffffff" stroke="#d9d9d9" stroke-width="1" rx="4" />
+
+    <!-- Large title top-left / small brand top-right -->
+    <rect x="20" y="24" width="90" height="14" rx="1" fill="#2b2b2b" />
+    <rect x="160" y="22" width="60" height="12" rx="2" fill="#7a7a7a" />
+    <rect x="170" y="40" width="50" height="4" rx="1" fill="#2b2b2b" />
+
+    <!-- Stacked meta rows with thin underlines -->
+    <rect x="20" y="66" width="60" height="3" rx="1" fill="#7a7a7a" />
+    <rect x="180" y="66" width="40" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="76" x2="220" y2="76" stroke="#d9d9d9" stroke-width="1" />
+    <rect x="20" y="82" width="60" height="3" rx="1" fill="#7a7a7a" />
+    <rect x="180" y="82" width="40" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="92" x2="220" y2="92" stroke="#d9d9d9" stroke-width="1" />
+    <rect x="20" y="98" width="60" height="3" rx="1" fill="#7a7a7a" />
+    <rect x="180" y="98" width="40" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="108" x2="220" y2="108" stroke="#d9d9d9" stroke-width="1" />
+
+    <!-- Parties block with thin border top/bottom + vertical divider -->
+    <line x1="20" y1="122" x2="220" y2="122" stroke="#d9d9d9" stroke-width="1" />
+    <line x1="120" y1="122" x2="120" y2="164" stroke="#d9d9d9" stroke-width="1" />
+    <rect x="26" y="130" width="28" height="3" rx="1" fill="#7a7a7a" />
+    <rect x="26" y="140" width="76" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="26" y="148" width="60" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="26" y="156" width="52" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="132" y="130" width="30" height="3" rx="1" fill="#7a7a7a" />
+    <rect x="132" y="140" width="72" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="132" y="148" width="58" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="170" x2="220" y2="170" stroke="#d9d9d9" stroke-width="1" />
+
+    <!-- Items table header (thin bottom border) -->
+    <rect x="20" y="184" width="24" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="112" y="184" width="20" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="150" y="184" width="20" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="188" y="184" width="30" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="192" x2="220" y2="192" stroke="#2b2b2b" stroke-width="1" />
+
+    <!-- Items rows with hair-line dividers -->
+    <rect x="20" y="200" width="80" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="112" y="200" width="22" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="150" y="200" width="16" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="188" y="200" width="30" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="208" x2="220" y2="208" stroke="#eeeeee" stroke-width="1" />
+    <rect x="20" y="214" width="72" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="112" y="214" width="22" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="150" y="214" width="16" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="188" y="214" width="30" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="222" x2="220" y2="222" stroke="#eeeeee" stroke-width="1" />
+    <rect x="20" y="228" width="86" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="112" y="228" width="22" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="150" y="228" width="16" height="3" rx="1" fill="#2b2b2b" />
+    <rect x="188" y="228" width="30" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="20" y1="236" x2="220" y2="236" stroke="#eeeeee" stroke-width="1" />
+
+    <!-- Totals stack right-aligned with thin underlines -->
+    <rect x="140" y="250" width="40" height="3" rx="1" fill="#7a7a7a" />
+    <rect x="190" y="250" width="30" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="138" y1="258" x2="220" y2="258" stroke="#d9d9d9" stroke-width="1" />
+    <rect x="140" y="264" width="30" height="3" rx="1" fill="#7a7a7a" />
+    <rect x="190" y="264" width="30" height="3" rx="1" fill="#2b2b2b" />
+    <line x1="138" y1="272" x2="220" y2="272" stroke="#d9d9d9" stroke-width="1" />
+    <line x1="138" y1="280" x2="220" y2="280" stroke="#2b2b2b" stroke-width="2" />
+    <rect x="140" y="286" width="26" height="4" rx="1" fill="#2b2b2b" />
+    <rect x="190" y="286" width="30" height="4" rx="1" fill="#2b2b2b" />
+</svg>

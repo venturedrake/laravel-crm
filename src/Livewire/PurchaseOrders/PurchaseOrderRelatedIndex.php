@@ -15,6 +15,15 @@ class PurchaseOrderRelatedIndex extends Component
 {
     use AuthorizesRequests, Toast;
 
+    /**
+     * The Sent badge on these rows goes stale the moment the layout's
+     * get-link modal ticks "mark as sent" -- that write runs in a
+     * different Livewire root, so nothing re-renders this table.
+     */
+    protected $listeners = [
+        'crm-get-link-sent' => '$refresh',
+    ];
+
     public Model $model;
 
     public ?Pipeline $pipeline = null;

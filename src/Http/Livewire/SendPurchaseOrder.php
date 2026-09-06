@@ -7,12 +7,12 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
+use VentureDrake\LaravelCrm\Support\PortalLink;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
 class SendPurchaseOrder extends Component
@@ -119,13 +119,7 @@ class SendPurchaseOrder extends Component
 
     public function generateUrl()
     {
-        $this->signedUrl = URL::temporarySignedRoute(
-            'laravel-crm.portal.purchase-orders.show',
-            now()->addDays(14),
-            [
-                'purchaseOrder' => $this->purchaseOrder,
-            ]
-        );
+        $this->signedUrl = PortalLink::for($this->purchaseOrder);
     }
 
     private function resetFields()

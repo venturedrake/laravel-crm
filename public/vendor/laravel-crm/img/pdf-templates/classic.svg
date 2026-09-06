@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320" width="240" height="320" role="img" aria-label="Classic PDF template preview">
+    <!-- Page background -->
+    <rect x="0" y="0" width="240" height="320" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="4" />
+
+    <!-- Centered document title (traditional heading) -->
+    <rect x="90" y="22" width="60" height="8" rx="1" fill="#111827" />
+    <rect x="100" y="34" width="40" height="3" rx="1" fill="#6b7280" />
+
+    <!-- Full-width rule under title -->
+    <line x1="20" y1="46" x2="220" y2="46" stroke="#111827" stroke-width="1.2" />
+
+    <!-- Two-column top block: From (left) + Invoice meta (right) -->
+    <rect x="20" y="58" width="24" height="3" rx="1" fill="#6b7280" />
+    <rect x="20" y="66" width="80" height="3" rx="1" fill="#374151" />
+    <rect x="20" y="74" width="72" height="3" rx="1" fill="#374151" />
+    <rect x="20" y="82" width="60" height="3" rx="1" fill="#374151" />
+
+    <rect x="148" y="58" width="32" height="3" rx="1" fill="#6b7280" />
+    <rect x="184" y="58" width="32" height="3" rx="1" fill="#374151" />
+    <rect x="148" y="66" width="32" height="3" rx="1" fill="#6b7280" />
+    <rect x="184" y="66" width="32" height="3" rx="1" fill="#374151" />
+    <rect x="148" y="74" width="32" height="3" rx="1" fill="#6b7280" />
+    <rect x="184" y="74" width="32" height="3" rx="1" fill="#374151" />
+
+    <!-- Boxed Bill-To section (classic hallmark) -->
+    <rect x="20" y="98" width="200" height="34" fill="#ffffff" stroke="#9ca3af" stroke-width="1" />
+    <rect x="26" y="104" width="26" height="3" rx="1" fill="#6b7280" />
+    <rect x="26" y="114" width="90" height="3" rx="1" fill="#374151" />
+    <rect x="26" y="122" width="70" height="3" rx="1" fill="#374151" />
+
+    <!-- Items table: bordered header row, plain body -->
+    <line x1="20" y1="148" x2="220" y2="148" stroke="#111827" stroke-width="1" />
+    <line x1="20" y1="162" x2="220" y2="162" stroke="#111827" stroke-width="1" />
+    <rect x="24" y="153" width="30" height="3" rx="1" fill="#111827" />
+    <rect x="112" y="153" width="16" height="3" rx="1" fill="#111827" />
+    <rect x="148" y="153" width="16" height="3" rx="1" fill="#111827" />
+    <rect x="188" y="153" width="26" height="3" rx="1" fill="#111827" />
+
+    <!-- Table rows -->
+    <rect x="24" y="172" width="80" height="3" rx="1" fill="#374151" />
+    <rect x="112" y="172" width="22" height="3" rx="1" fill="#374151" />
+    <rect x="148" y="172" width="12" height="3" rx="1" fill="#374151" />
+    <rect x="188" y="172" width="26" height="3" rx="1" fill="#374151" />
+    <line x1="20" y1="182" x2="220" y2="182" stroke="#e5e7eb" stroke-width="1" />
+
+    <rect x="24" y="190" width="72" height="3" rx="1" fill="#374151" />
+    <rect x="112" y="190" width="22" height="3" rx="1" fill="#374151" />
+    <rect x="148" y="190" width="12" height="3" rx="1" fill="#374151" />
+    <rect x="188" y="190" width="26" height="3" rx="1" fill="#374151" />
+    <line x1="20" y1="200" x2="220" y2="200" stroke="#e5e7eb" stroke-width="1" />
+
+    <rect x="24" y="208" width="88" height="3" rx="1" fill="#374151" />
+    <rect x="112" y="208" width="22" height="3" rx="1" fill="#374151" />
+    <rect x="148" y="208" width="12" height="3" rx="1" fill="#374151" />
+    <rect x="188" y="208" width="26" height="3" rx="1" fill="#374151" />
+    <line x1="20" y1="218" x2="220" y2="218" stroke="#111827" stroke-width="1" />
+
+    <!-- Right-aligned totals stack (no background box — classic style) -->
+    <rect x="140" y="232" width="34" height="3" rx="1" fill="#6b7280" />
+    <rect x="188" y="232" width="26" height="3" rx="1" fill="#374151" />
+    <rect x="140" y="244" width="20" height="3" rx="1" fill="#6b7280" />
+    <rect x="188" y="244" width="26" height="3" rx="1" fill="#374151" />
+    <line x1="138" y1="254" x2="216" y2="254" stroke="#111827" stroke-width="1" />
+    <rect x="140" y="262" width="26" height="4" rx="1" fill="#111827" />
+    <rect x="188" y="262" width="26" height="4" rx="1" fill="#111827" />
+    <line x1="138" y1="272" x2="216" y2="272" stroke="#111827" stroke-width="1" />
+
+    <!-- Footer note (thanks / terms) -->
+    <rect x="20" y="290" width="120" height="3" rx="1" fill="#9ca3af" />
+    <rect x="20" y="298" width="90" height="3" rx="1" fill="#9ca3af" />
+</svg>

@@ -341,6 +341,10 @@
          anywhere via the bubbling `crm-pdf-preview` window event. --}}
     <x-crm-pdf-preview />
 
+    {{-- Likewise mounted once, outside every Livewire root, so the buttons on
+         an index row all drive the same modal rather than one each. --}}
+    <livewire:crm-get-link />
+
     @stack('modals')
     @livewireScripts
     @stack('livewire-js')

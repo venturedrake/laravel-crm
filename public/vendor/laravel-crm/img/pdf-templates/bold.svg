@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320" width="240" height="320" role="img" aria-label="Bold PDF template preview">
+    <!-- Page background -->
+    <rect x="0" y="0" width="240" height="320" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="4" />
+
+    <!-- Full-width primary-colour header band -->
+    <rect x="0" y="0" width="240" height="50" fill="#05b3a9" />
+    <text x="20" y="32" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">INVOICE</text>
+    <rect x="170" y="20" width="52" height="10" rx="2" fill="#ffffff" />
+
+    <!-- Meta rows with primary-coloured labels -->
+    <rect x="20" y="66" width="42" height="3" rx="1" fill="#05b3a9" />
+    <rect x="140" y="66" width="80" height="3" rx="1" fill="#111827" />
+    <rect x="20" y="78" width="42" height="3" rx="1" fill="#05b3a9" />
+    <rect x="140" y="78" width="70" height="3" rx="1" fill="#111827" />
+    <rect x="20" y="90" width="42" height="3" rx="1" fill="#05b3a9" />
+    <rect x="140" y="90" width="60" height="3" rx="1" fill="#111827" />
+
+    <!-- Parties block -->
+    <rect x="20" y="112" width="22" height="3" rx="1" fill="#05b3a9" />
+    <rect x="20" y="122" width="80" height="3" rx="1" fill="#111827" />
+    <rect x="20" y="130" width="68" height="3" rx="1" fill="#111827" />
+    <rect x="20" y="138" width="52" height="3" rx="1" fill="#111827" />
+
+    <rect x="128" y="112" width="26" height="3" rx="1" fill="#05b3a9" />
+    <rect x="128" y="122" width="72" height="3" rx="1" fill="#111827" />
+    <rect x="128" y="130" width="60" height="3" rx="1" fill="#111827" />
+    <rect x="128" y="138" width="46" height="3" rx="1" fill="#111827" />
+
+    <!-- Items table header (filled primary-colour band) -->
+    <rect x="20" y="156" width="200" height="14" rx="2" fill="#05b3a9" />
+    <rect x="26" y="162" width="18" height="3" rx="1" fill="#ffffff" />
+    <rect x="112" y="162" width="16" height="3" rx="1" fill="#ffffff" />
+    <rect x="148" y="162" width="16" height="3" rx="1" fill="#ffffff" />
+    <rect x="188" y="162" width="26" height="3" rx="1" fill="#ffffff" />
+
+    <!-- Items rows -->
+    <rect x="26" y="180" width="72" height="3" rx="1" fill="#111827" />
+    <rect x="112" y="180" width="22" height="3" rx="1" fill="#111827" />
+    <rect x="148" y="180" width="12" height="3" rx="1" fill="#111827" />
+    <rect x="188" y="180" width="26" height="3" rx="1" fill="#111827" />
+    <line x1="20" y1="190" x2="220" y2="190" stroke="#e5e7eb" stroke-width="1" />
+    <rect x="26" y="196" width="86" height="3" rx="1" fill="#111827" />
+    <rect x="112" y="196" width="22" height="3" rx="1" fill="#111827" />
+    <rect x="148" y="196" width="12" height="3" rx="1" fill="#111827" />
+    <rect x="188" y="196" width="26" height="3" rx="1" fill="#111827" />
+    <line x1="20" y1="206" x2="220" y2="206" stroke="#e5e7eb" stroke-width="1" />
+    <rect x="26" y="212" width="78" height="3" rx="1" fill="#111827" />
+    <rect x="112" y="212" width="22" height="3" rx="1" fill="#111827" />
+    <rect x="148" y="212" width="12" height="3" rx="1" fill="#111827" />
+    <rect x="188" y="212" width="26" height="3" rx="1" fill="#111827" />
+    <line x1="20" y1="222" x2="220" y2="222" stroke="#e5e7eb" stroke-width="1" />
+
+    <!-- Tinted totals box on the right -->
+    <rect x="130" y="238" width="90" height="60" rx="4" fill="#e6f7f6" stroke="#b7e5e1" stroke-width="1" />
+    <rect x="140" y="248" width="34" height="3" rx="1" fill="#0e766e" />
+    <rect x="188" y="248" width="26" height="3" rx="1" fill="#0b3f3c" />
+    <rect x="140" y="260" width="20" height="3" rx="1" fill="#0e766e" />
+    <rect x="188" y="260" width="26" height="3" rx="1" fill="#0b3f3c" />
+    <!-- Final total pill in the primary colour -->
+    <rect x="132" y="278" width="86" height="16" rx="0" fill="#05b3a9" />
+    <rect x="140" y="284" width="28" height="4" rx="1" fill="#ffffff" />
+    <rect x="188" y="284" width="26" height="4" rx="1" fill="#ffffff" />
+</svg>

@@ -134,6 +134,7 @@ use VentureDrake\LaravelCrm\Livewire\Features\FeatureShow;
 use VentureDrake\LaravelCrm\Livewire\Features\FeatureVoters;
 use VentureDrake\LaravelCrm\Livewire\Files\FileItem;
 use VentureDrake\LaravelCrm\Livewire\Files\FileRelated;
+use VentureDrake\LaravelCrm\Livewire\GetLink;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceCreate;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceEdit;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceIndex;
@@ -448,6 +449,7 @@ use VentureDrake\LaravelCrm\View\Components\CustomFields;
 use VentureDrake\LaravelCrm\View\Components\CustomFieldValues;
 use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
 use VentureDrake\LaravelCrm\View\Components\Emails;
+use VentureDrake\LaravelCrm\View\Components\GetLinkButton;
 use VentureDrake\LaravelCrm\View\Components\Header;
 use VentureDrake\LaravelCrm\View\Components\IndexToggle;
 use VentureDrake\LaravelCrm\View\Components\PdfPreview;
@@ -899,6 +901,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::component('crm-custom-field-values', CustomFieldValues::class);
         Blade::component('crm-pdf-preview', PdfPreview::class);
         Blade::component('crm-pdf-preview-button', PdfPreviewButton::class);
+        Blade::component('crm-get-link-button', GetLinkButton::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);
@@ -953,6 +956,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-auth-reset-password', ResetPassword::class);
         Livewire::component('crm-kanban-board', KanbanBoard::class);
         Livewire::component('crm-activity-menu', ActivityMenu::class);
+        Livewire::component('crm-get-link', GetLink::class);
         Livewire::component('crm-activity-tabs', ActivityTabs::class);
         Livewire::component('crm-lead-index', LeadIndex::class);
         Livewire::component('crm-lead-board', LeadBoard::class);

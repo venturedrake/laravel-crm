@@ -6,7 +6,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Mail\SendPurchaseOrder;
@@ -14,6 +13,7 @@ use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
+use VentureDrake\LaravelCrm\Support\PortalLink;
 
 class PurchaseOrderSend extends Component
 {
@@ -117,13 +117,7 @@ class PurchaseOrderSend extends Component
 
     public function generateUrl()
     {
-        $this->signedUrl = URL::temporarySignedRoute(
-            'laravel-crm.portal.purchase-orders.show',
-            now()->addDays(14),
-            [
-                'purchaseOrder' => $this->purchaseOrder,
-            ]
-        );
+        $this->signedUrl = PortalLink::for($this->purchaseOrder);
     }
 
     private function resetFields()

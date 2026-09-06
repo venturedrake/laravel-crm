@@ -28,6 +28,10 @@ class InvoiceShow extends Component
 
     protected $listeners = [
         'refreshInvoice' => '$refresh',
+        // The Sent badge here goes stale the moment the layout's get-link
+        // modal ticks "mark as sent" -- that write runs in a different
+        // Livewire root, so nothing re-renders this page on its own.
+        'crm-get-link-sent' => '$refresh',
     ];
 
     public function mount(Invoice $invoice)

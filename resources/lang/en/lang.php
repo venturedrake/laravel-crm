@@ -1053,4 +1053,15 @@ return [
     'zoom_in' => 'zoom in',
     'zoom_out' => 'zoom out',
     'close' => 'close',
+
+    // Get link (portal share modal)
+    'get_link' => 'get link',
+    'get_link_hint' => 'Anyone with this link will be able to view the :record.',
+    'link_expires_days' => 'This link expires in :days days.',
+    'copy' => 'copy',
+    'copied' => 'copied',
+    'mark_as_sent' => 'mark as sent',
+    'marked_as_sent' => 'marked as sent',
+    'ok' => 'ok',
+    'record' => 'record',
 ];
