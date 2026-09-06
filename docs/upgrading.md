@@ -140,6 +140,73 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.4.2
+
+### Republish assets — the pdf.js worker filename changed
+
+The pdf.js worker is now emitted as `pdf.worker.min-<hash>.js` where it was
+`pdf.worker.min-<hash>.mjs`. `.mjs` is in the default MIME map of neither nginx nor older Apache, so
+those servers handed it over as `application/octet-stream` and the browser's strict module-script
+MIME check refused to run it — every PDF preview failed with *"setting up fake worker failed"*, on a
+build and a publish that were both correct.
+
+`manifest.json` names the new filename, so **a host that upgrades without republishing assets has a
+manifest pointing at a file that is no longer on disk, and every preview fails.** Nothing manual is
+needed — the composer hook fires `laravelcrm:upgrade`, which republishes the assets and prunes the
+stale content-hashed file — but this is the release where `composer update` on its own is not
+enough. If you have not added the hook, see **One-time step for installs from before 2.4.0** above,
+or run `php artisan laravelcrm:upgrade` by hand.
+
+### No migrations; one config key removed
+
+No tables and no columns. Unlike 2.4.1 this is *not* a "no new config keys" release: `portal.team_id`
+is **removed** — see below. Run
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+as usual. `laravelcrm:update` still advances the `db_version` marker, so run it even though there is
+nothing to migrate — otherwise the system check reports the database as behind the code.
+
+### Multi-tenant installs should upgrade promptly
+
+Before this release the public portal rendered a document's page and PDF from **unscoped** settings.
+The portal is anonymous — a signed link, no login — so `BelongsToTeamsScope` never engaged there and
+the settings query returned every team's rows; `pluck()` keys by name, so whichever team the database
+listed last supplied the organisation name, ABN, contact block and logo on every tenant's quotes,
+invoices and purchase orders alike. On a `laravel-crm.teams` install, a customer opening one team's
+emailed invoice link could be shown another team's branding. See the **Security** entry in
+[CHANGELOG.md](../CHANGELOG.md) for the full description.
+
+**No data migration is needed.** The fix is in the scope and the cache key — the portal controllers
+pin the settings service to the document's own team before rendering — so upgrading and clearing the
+application cache is sufficient. Single-tenant installs were never affected.
+
+### `LARAVEL_CRM_PORTAL_TEAM_ID` is gone
+
+`LARAVEL_CRM_PORTAL_TEAM_ID` and `config('laravel-crm.portal.team_id')` are **removed**. The variable
+sat ahead of every other portal team signal as a hard single-tenant lock, which was harmless while
+the portal served only roadmaps and wrong once the portal started answering "whose branding does this
+invoice carry?" — a document states its own owner, and one env var was silently overruling it for
+every team on the install. Every portal team signal is now derived from the request or the record.
+
+**If you had that variable set,** delete it from your `.env` and drop the `team_id` line from
+`config/laravel-crm.php` if you have published the config. Nothing reads it any more, so leaving it
+in place is inert rather than harmful — but the portal will stop behaving as a single-tenant lock,
+which is the point. A team whose board you do *not* want public should have its features marked
+non-public rather than relying on the other teams being locked out.
+
+Boards stay reachable per team at `/p/features/team/{id}`, and bare `/p/features` resolves as it has
+since 2.4.0: the team in the URL, the board remembered in the visitor's session, the signed-in user's
+current team, and finally — when exactly one team has a public board — that team.
+
+### Views to re-publish
+
+**None.** Neither change in this release touches `resources/views`, so a published view cannot hide
+either fix. If you are coming from 2.4.0, the 2.4.1 table below still applies to you.
+
 ## 2.4.1
 
 ### No migrations, no new config keys
@@ -378,17 +445,17 @@ The public feature board is team-aware on a `laravel-crm.teams` install. Each te
 at `/p/features/team/{team_id}` — a shareable URL that works for an anonymous visitor, which is
 the whole point of a public roadmap.
 
-`LARAVEL_CRM_PORTAL_TEAM_ID` is **gone**, and `config('laravel-crm.portal.team_id')` with it.
-Bare `/p/features` resolves the board from, in order: the team in the URL, the board remembered in
-the visitor's session, the signed-in user's current team, and finally — when exactly one team has
-a public board — that team. So a single-team install needs no configuration at all. Admins can
-copy the right link from the **Public board** button on `/crm/features`.
+`LARAVEL_CRM_PORTAL_TEAM_ID` is **no longer required**. Bare `/p/features` resolves the board
+from, in order: the team in the URL, the board remembered in the visitor's session, the signed-in
+user's current team, and finally — when exactly one team has a public board — that team. So a
+single-team install needs no configuration at all. Admins can copy the right link from the
+**Public board** button on `/crm/features`.
 
-**If you had that variable set,** delete it from your `.env` and drop the `team_id` line from
-`config/laravel-crm.php` if you have published the config. Nothing reads it any more, so leaving
-it in place is inert rather than harmful — but the portal will stop behaving as a single-tenant
-lock, which is the point. A team whose board you do *not* want public should have its features
-marked non-public rather than relying on the other teams being locked out.
+If you *have* set `portal.team_id`, it still behaves exactly as before: a hard single-tenant lock
+that 404s every feature outside that team. Unset it to give the other teams a portal.
+
+> The variable is **removed** in 2.4.2. If you are upgrading past this release, see the
+> **`LARAVEL_CRM_PORTAL_TEAM_ID` is gone** note in the 2.4.2 section above.
 
 One behaviour fix comes with this: submitting a feature through the portal used to require the
 submitter's `currentTeam` to match the board's team, which `403`'d every visitor who registered
