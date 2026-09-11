@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.4.4 - 2026-09-11
+
+### Changed
+- **Version bumped to `2.4.4`.** `config/package.php` still read `2.4.3`, which `SystemCheckService::normalisedVersion()`, the `db_version` marker and the Settings middleware's `crm.settings-seeded.<version>` flag all key off — so the update banner and the "database is behind the code" check would both have compared this release against the previous one's number, and the seeding pass would never have been re-armed on deploy
+- **The Owner filter searches server-side instead of rendering every user.** It handed `User::orderBy('name')->get()` straight to `<x-mary-choices>`, which json_encodes every option into an Alpine `x-data` block and renders a `<div>` per option — and Livewire then serialises and checksums that payload on every round trip. On an install with ~11,500 users a 25-row people page weighed **31.7 MB** and spent six seconds in render, and every keystroke, filter toggle and page change paid it again. Rendering `PersonIndex` against 3,000 users goes from **7,813,797 bytes to 94,868**. New `src/Livewire/Traits/HasUserOwnerFilter.php` replaces the 15 copy-pasted `users()` methods with one `#[Computed]` source capped at 20 rows and searched server-side; selected owners are merged back into that collection because MaryUI resolves a chip's label out of the same options it was handed, so an owner that falls out of the matches would otherwise render as a blank badge. Covered by `tests/Feature/Livewire/OwnerFilterSearchTest.php`
+  - **`allow-all` ("Select all") is gone from the Owner filter** on all 15 screens. MaryUI throws when `allow-all` is combined with `searchable`, and selecting all would only ever have covered the rendered page of options anyway. `clearable` takes its place. **This is a visible change** to the filter drawer on the 12 index pages and the 3 boards
+  - `Label`, `LeadSource` and `Role` filter options are narrowed to the `id` and `name` columns the list items actually render
+
+### Fixed
+- **Selecting an owner on nine screens threw an ambiguous-column `QueryException`.** `DealIndex`, `DealBoard`, `LeadIndex`, `LeadBoard`, `QuoteIndex`, `QuoteBoard`, `OrderIndex`, `InvoiceIndex` and `PurchaseOrderIndex` all left-join `crm_people` / `crm_organizations`, both of which carry their own `user_owner_id`, so the filter's unqualified column was ambiguous — a hard 500 on applying the filter, not merely a slow render. The column is now table-qualified
+
 ## 2.4.3 - 2026-09-11
 
 ### Changed

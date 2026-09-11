@@ -140,6 +140,53 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.4.4
+
+### No migrations, no new config keys
+
+This is a performance patch release. It adds no tables or columns and no configuration keys, so
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+is the whole upgrade. `laravelcrm:update` still advances the `db_version` marker, so run it even
+though there is nothing to migrate — otherwise the system check reports the database as behind the
+code.
+
+### The Owner filter no longer has a "Select all"
+
+The Owner filter used to hand the whole users table to the filter drawer, which is why a page on a
+large install could weigh tens of megabytes and take seconds to render. It now searches server-side:
+type a name and the matches come back from the database, capped at 20 at a time, instead of scrolling
+a list that was pre-rendered in full on every request.
+
+The trade is **Select all**, which is gone from that filter. It could only ever have selected the
+options that happened to be rendered, so on any install big enough for this to matter it was already
+selecting a subset rather than "all owners". **Clear** takes its place for emptying the filter in one
+click, and owners you have already selected stay visible as chips even when they fall outside the
+current search.
+
+No action is required. Tell your support and sales people, since it is the one change in this release
+they will notice.
+
+### Views to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, the view finder prefers your
+frozen copy, and this release changes the Owner `<x-mary-choices>` on 15 of them:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| The 12 index blades (`livewire/people/person-index.blade.php`, `livewire/organizations/organization-index.blade.php`, `livewire/leads/lead-index.blade.php`, and the same file under `.../deals`, `.../quotes`, `.../orders`, `.../invoices`, `.../deliveries`, `.../purchase-orders`, `.../products`, `.../tasks`, `.../teams`) | The `searchable` / `search-function="searchUsers"` / `clearable` Owner filter. **This one does not error — it goes quietly wrong.** A frozen copy keeps `allow-all` and has no search box, while the component behind it now returns at most 20 users, so the filter lists only the first 20 owners alphabetically with no way to reach the rest, and **Select all** selects those 20 rather than everyone. On an install with more than 20 users, re-publishing these is not optional |
+| The 3 board blades (`livewire/leads/lead-board.blade.php`, `livewire/deals/deal-board.blade.php`, `livewire/quotes/quote-board.blade.php`) | The same change, and the same silent failure |
+
+`php artisan laravelcrm:upgrade` names your drifted published views on every deploy (added in 2.4.1),
+so this table is a cross-check rather than the only signal you will get.
+
+(The reverse combination *does* throw: MaryUI rejects `allow-all` together with `searchable`, which is
+why **Select all** could not simply be kept alongside the new search.)
+
 ## 2.4.3
 
 ### No migrations, no new config keys
