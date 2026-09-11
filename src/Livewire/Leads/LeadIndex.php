@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Leads;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -11,6 +10,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Lead;
@@ -20,7 +20,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class LeadIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -53,21 +53,15 @@ class LeadIndex extends Component
      * them rather than re-querying on every render.
      */
     #[Computed]
-    public function users(): Collection
-    {
-        return User::orderBy('name')->get();
-    }
-
-    #[Computed]
     public function labels(): Collection
     {
-        return Label::all();
+        return Label::select('id', 'name')->get();
     }
 
     #[Computed]
     public function leadSources(): Collection
     {
-        return LeadSource::orderBy('name')->get();
+        return LeadSource::select('id', 'name')->orderBy('name')->get();
     }
 
     public function headers()
@@ -127,7 +121,7 @@ class LeadIndex extends Component
                     }
                 });
             })
-            ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
+            ->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'leads.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->when($this->lead_source_id, fn (Builder $q) => $q->whereIn('lead_source_id', $this->lead_source_id))
             ->orderBy(...array_values($this->sortBy))

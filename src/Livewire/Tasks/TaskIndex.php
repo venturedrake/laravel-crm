@@ -2,22 +2,20 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Tasks;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class TaskIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -38,16 +36,6 @@ class TaskIndex extends Component
     public function filterCount(): int
     {
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->status ? 1 : 0);
-    }
-
-    /**
-     * Assignee options for the filter drawer, computed so a debounced search
-     * keystroke reuses them rather than re-querying on every render.
-     */
-    #[Computed]
-    public function users(): Collection
-    {
-        return User::orderBy('name')->get();
     }
 
     public function headers(): array

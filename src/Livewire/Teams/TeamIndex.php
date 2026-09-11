@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Teams;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,6 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Team;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
@@ -19,7 +19,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class TeamIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -44,18 +44,12 @@ class TeamIndex extends Component
 
     /**
      * Filter drawer options, computed so a debounced search keystroke reuses
-     * them rather than re-querying users and labels on every render.
+     * them rather than re-querying labels on every render.
      */
-    #[Computed]
-    public function users(): Collection
-    {
-        return User::orderBy('name')->get();
-    }
-
     #[Computed]
     public function labels(): Collection
     {
-        return Label::all();
+        return Label::select('id', 'name')->get();
     }
 
     public function headers()

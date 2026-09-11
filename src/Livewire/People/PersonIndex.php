@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\People;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -11,6 +10,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -19,7 +19,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class PersonIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -43,22 +43,16 @@ class PersonIndex extends Component
     }
 
     /**
-     * Owner and label options for the filter drawer.
+     * Label options for the filter drawer.
      *
-     * Computed rather than plain methods so a debounced search keystroke — which
-     * re-renders the whole component — reuses them instead of re-running
-     * `User::orderBy('name')->get()` and `Label::all()` on every hydration.
+     * Computed rather than a plain method so a debounced search keystroke —
+     * which re-renders the whole component — reuses it instead of re-running
+     * the query on every hydration.
      */
-    #[Computed]
-    public function users(): Collection
-    {
-        return User::orderBy('name')->get();
-    }
-
     #[Computed]
     public function labels(): Collection
     {
-        return Label::all();
+        return Label::select('id', 'name')->get();
     }
 
     public function headers()

@@ -66,7 +66,7 @@ class UserIndex extends Component
     #[Computed]
     public function roles(): Collection
     {
-        return Role::crm()->orderBy('name')->get();
+        return Role::crm()->select('id', 'name')->orderBy('name')->get();
     }
 
     public function headers()
