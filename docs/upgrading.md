@@ -140,6 +140,78 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.4.3
+
+### No migrations, no new config keys
+
+This is a performance patch release. It adds no tables or columns and no configuration keys, so
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+is the whole upgrade. `laravelcrm:update` still advances the `db_version` marker, so run it even
+though there is nothing to migrate — otherwise the system check reports the database as behind the
+code.
+
+### Clear your application cache after deploying
+
+This release gates the settings-seeding pass that used to run on every CRM page behind a cache flag,
+which is the one genuinely new operator-facing behaviour here. The flag is stamped with the package
+version (`crm.settings-seeded.2.4.3`), so **the version bump re-arms it on its own** — the first CRM
+request after the upgrade runs the seeding pass once, and every request after that skips it. You do
+not have to clear anything by hand for that to happen, and `laravelcrm:upgrade` (which fires from
+the composer hook, and which `laravelcrm:update` calls first) clears your caches anyway. This is a
+caveat only for anyone who bypasses both.
+
+The flag also carries a 24-hour TTL, so a settings row deleted by hand heals itself on the next day's
+first request rather than staying missing until the next release.
+
+**On a teams install the flag is partitioned by team.** Most of what the pass seeds is team-scoped —
+`organization_name`, `currency`, the document prefixes — so each team's first request after a deploy
+does its own seeding pass, once. A single shared flag would have meant whichever team requested first
+got its rows and no other team did.
+
+### The version phone-home now has timeouts
+
+The CRM's version check posts to `api.laravelcrm.com`. Guzzle defaults both `connect_timeout` and
+`timeout` to "wait forever", and the install id is only recorded from a successful response, so **an
+install with blocked egress to that host was putting a blocking outbound POST with no timeout in
+front of every CRM page load.** The call is now capped at 2s connect / 3s total, with an hour-long
+backoff marked before the request goes out, so a failure costs one attempt an hour rather than one
+per page view.
+
+No action is needed. It is worth knowing about if your page load times drop noticeably after this
+upgrade, or if you had previously worked around the stall by blocking the CRM's own checks.
+
+### `crm_usage_requests.visitor` values change format
+
+The visitor pseudonym was hashed with `crypt($ip, config('hashing.encryption_key'))` — not a stock
+Laravel config key, so the salt was null and PHP emitted a deprecation on every page view. It is now
+a sha256 over your application key.
+
+**Rows written before the upgrade will not match rows written after it for the same visitor.** There
+is no migration and no backfill, and none is offered: the column is a pseudonym, not a key, and
+nothing joins on it. The practical consequence is that any report counting *distinct* visitors over a
+window spanning the upgrade double-counts anyone who appears on both sides of it. Pick a window that
+starts after the deploy if the number has to be exact.
+
+### Views to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, the view finder prefers your
+frozen copy, and this release changes:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| `livewire/people/person-index.blade.php`, `livewire/organizations/organization-index.blade.php` | The removal of the always-blank `next_activity` column. The eager loading is in the components, not the views, so the pages are fast either way |
+| `livewire/quotes/quote-index.blade.php`, `livewire/users/user-index.blade.php` | Column changes paired with the new eager loads |
+| `layouts/app.blade.php` | The `version_compare()` badge fix and the cached settings read — a frozen copy keeps two raw queries on every page and keeps showing the wrong badge once the minor version passes 2.10 |
+| `mail/templates/send-quote/*`, `send-invoice/*`, `send-purchase-order/*` (both `message` and `subject`) | The memoised settings read. The rendered output is identical; the query count is not, and these render once per row behind the index send buttons |
+
+`php artisan laravelcrm:upgrade` names your drifted published views on every deploy (added in 2.4.1),
+so this table is a cross-check rather than the only signal you will get.
+
 ## 2.4.2
 
 ### Republish assets — the pdf.js worker filename changed
