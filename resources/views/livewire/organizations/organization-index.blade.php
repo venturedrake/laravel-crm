@@ -38,13 +38,13 @@
                 @endforeach
             @endscope
             @scope('cell_open_deals', $organization)
-                {{ $organization->deals->whereNull('closed_at')->count() }}
+                {{ $organization->open_deals_count }}
             @endscope
             @scope('cell_lost_deals', $organization)
-                {{ $organization->deals->where('closed_status', 'lost')->count() }}
+                {{ $organization->lost_deals_count }}
             @endscope
             @scope('cell_won_deals', $organization)
-                {{ $organization->deals->where('closed_status', 'won')->count() }}
+                {{ $organization->won_deals_count }}
             @endscope
             @scope('actions', $organization)
                 @hasleadsenabled

@@ -32,7 +32,13 @@ class ActivityIndex extends Component
         }
 
         if (count($activityIds) > 0) {
-            return Activity::whereIn('id', $activityIds)->latest()->get();
+            // Every row reads its causer's name and its subject, and the
+            // timeline item then mounts a sub-component on the subject — two
+            // lazy morph loads per activity without these.
+            return Activity::with(['causeable', 'recordable'])
+                ->whereIn('id', $activityIds)
+                ->latest()
+                ->get();
         }
 
         return [];

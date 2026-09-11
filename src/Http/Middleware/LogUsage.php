@@ -31,7 +31,12 @@ class LogUsage
                 'method' => $request->method(),
                 'route' => optional($request->route())->getName(),
                 'user_agent' => $request->userAgent(),
-                'visitor' => crypt($request->ip(), config('hashing.encryption_key')),
+                // Not crypt(): `hashing.encryption_key` is not a stock Laravel
+                // config key, so the salt was null on every install and PHP
+                // emitted a deprecation on every page view (a hard error in a
+                // future release). sha256 over the app key gives the same
+                // "stable pseudonym per visitor, not reversible to an IP".
+                'visitor' => hash('sha256', $request->ip().config('app.key')),
                 'response_time' => Carbon::now()->getTimestampMs() - $requestTime->getTimestampMs(),
                 'day' => date('l', $requestTime->timestamp),
                 'hour' => $requestTime->hour,

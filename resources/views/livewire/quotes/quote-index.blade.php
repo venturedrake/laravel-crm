@@ -50,11 +50,11 @@
                             @if(!$quote->accepted_at && !$quote->rejected_at)
                                 <x-mary-button wire:click="accept({{ $quote->id }})" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.accept')) }}" />
                                 <x-mary-button wire:click="reject({{ $quote->id }})" class="btn-sm btn-error text-white" label="{{ ucfirst(__('laravel-crm::lang.reject')) }}" />
-                            @elseif($quote->accepted_at && $quote->orders()->count() > 0 && ! $quote->orderComplete())
+                            @elseif($quote->accepted_at && $quote->orders->count() > 0 && ! $quote->orderComplete())
                                 @hasordersenabled
                                 <x-mary-button link="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" />
                                 @endhasordersenabled
-                            @elseif($quote->accepted_at && $quote->orders()->count() < 1)
+                            @elseif($quote->accepted_at && $quote->orders->count() < 1)
                                 <x-mary-button wire:click="unaccept({{ $quote->id }})" class="btn-sm btn-outline"  label="{{ ucfirst(__('laravel-crm::lang.unaccept')) }}" />
                                 @hasordersenabled
                                 <x-mary-button link="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" />

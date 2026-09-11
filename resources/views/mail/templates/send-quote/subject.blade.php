@@ -1,1 +1,1 @@
-Quote {{ $quote->reference }} from {{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organization_name')->first()->value }} for {{ $quote->organization->name ?? null }}.
+Quote {{ $quote->reference }} from {{ app('laravel-crm.settings')->get('organization_name') }} for {{ $quote->organization->name ?? null }}.

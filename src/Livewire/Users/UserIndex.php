@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schema;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -58,6 +59,11 @@ class UserIndex extends Component
             + ($this->crm_access !== null && $this->crm_access !== '' ? 1 : 0);
     }
 
+    /**
+     * Role options for the filter drawer, computed so a debounced search
+     * keystroke reuses them rather than re-querying on every render.
+     */
+    #[Computed]
     public function roles(): Collection
     {
         return Role::crm()->orderBy('name')->get();
@@ -91,9 +97,13 @@ class UserIndex extends Component
 
     public function users(): LengthAwarePaginator
     {
-        return User::when($this->search, function (Builder $q) {
-            $q->where('name', 'like', "%$this->search%");
-        })->when($this->crm_access !== null && $this->crm_access !== '', fn (Builder $q) => $q->where('crm_access', (bool) $this->crm_access))
+        // The role cell reads the user's first role; without this it is a query
+        // per row.
+        return User::with('roles')
+            ->when($this->search, function (Builder $q) {
+                $q->where('name', 'like', "%$this->search%");
+            })
+            ->when($this->crm_access !== null && $this->crm_access !== '', fn (Builder $q) => $q->where('crm_access', (bool) $this->crm_access))
             ->when($this->role_id, fn (Builder $q) => $q->whereHas('roles', fn (Builder $q) => $q->where('crm_role', 1)->whereIn('roles.id', $this->role_id)))
             // Mirrors the team scoping in pendingInvitationsQuery(). Without it a
             // Team A admin lists every user in the host application and the delete
@@ -181,7 +191,9 @@ class UserIndex extends Component
 
     protected function pendingInvitationsQuery(): Builder
     {
-        return UserInvitation::query()
+        // role and invitedByUser are both rendered per row on the invitations
+        // tab.
+        return UserInvitation::with(['role', 'invitedByUser'])
             ->whereNull('accepted_at')
             ->where(function (Builder $q) {
                 $q->whereNull('expires_at')
@@ -221,7 +233,7 @@ class UserIndex extends Component
     public function render()
     {
         return view('laravel-crm::livewire.users.user-index', [
-            'roles' => $this->roles(),
+            'roles' => $this->roles,
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
             'users' => $this->users(),

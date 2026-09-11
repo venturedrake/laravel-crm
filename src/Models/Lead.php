@@ -8,6 +8,7 @@ use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\HasPrimaryContactDetails;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Lead extends Model
@@ -15,6 +16,7 @@ class Lead extends Model
     use BelongsToTeams;
     use HasCrmActivities;
     use HasCrmFields;
+    use HasPrimaryContactDetails;
     use SearchFilters;
     use SoftDeletes;
 
@@ -77,13 +79,19 @@ class Lead extends Model
         return $this->morphMany(Email::class, 'emailable');
     }
 
+    /**
+     * A lead's contact details are the person's where there is one, so this
+     * keeps its override of the HasPrimaryContactDetails getter. The fallback
+     * still goes through the trait, so a `with('primaryEmail')` on a lead
+     * without a person is honoured.
+     */
     public function getPrimaryEmail()
     {
         if ($this->person) {
             return $this->person->getPrimaryEmail();
-        } else {
-            return $this->emails()->where('primary', 1)->first();
         }
+
+        return $this->primaryContactDetail('primaryEmail', 'emails');
     }
 
     /**
@@ -98,9 +106,9 @@ class Lead extends Model
     {
         if ($this->person) {
             return $this->person->getPrimaryPhone();
-        } else {
-            return $this->phones()->where('primary', 1)->first();
         }
+
+        return $this->primaryContactDetail('primaryPhone', 'phones');
     }
 
     /**
@@ -115,9 +123,9 @@ class Lead extends Model
     {
         if ($this->organization) {
             return $this->organization->getPrimaryAddress();
-        } else {
-            return $this->addresses()->where('primary', 1)->first();
         }
+
+        return $this->primaryContactDetail('primaryAddress', 'addresses');
     }
 
     public function leadStatus()

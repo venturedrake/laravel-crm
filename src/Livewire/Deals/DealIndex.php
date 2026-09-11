@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -50,11 +51,17 @@ class DealIndex extends Component
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
     }
 
+    /**
+     * Filter drawer options, computed so a debounced search keystroke reuses
+     * them rather than re-querying users and labels on every render.
+     */
+    #[Computed]
     public function users(): Collection
     {
         return User::orderBy('name')->get();
     }
 
+    #[Computed]
     public function labels(): Collection
     {
         return Label::all();
@@ -87,12 +94,18 @@ class DealIndex extends Component
 
     public function deals(): LengthAwarePaginator
     {
-        return Deal::select(
-            config('laravel-crm.db_table_prefix').'deals.*',
-            config('laravel-crm.db_table_prefix').'people.first_name',
-            config('laravel-crm.db_table_prefix').'people.last_name',
-            config('laravel-crm.db_table_prefix').'organizations.name'
-        )
+        // The joins below only feed the search predicates; the contact and
+        // organization columns are resolved by MaryUI with
+        // data_get($row, 'person.name'), which walks the relation. Without the
+        // eager loads that is five queries per row across person, organization,
+        // labels, stage and owner.
+        return Deal::with(['labels', 'person', 'organization', 'ownerUser', 'pipelineStage'])
+            ->select(
+                config('laravel-crm.db_table_prefix').'deals.*',
+                config('laravel-crm.db_table_prefix').'people.first_name',
+                config('laravel-crm.db_table_prefix').'people.last_name',
+                config('laravel-crm.db_table_prefix').'organizations.name'
+            )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'deals.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'deals.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
             ->when($this->search, function (Builder $q) {
@@ -182,8 +195,8 @@ class DealIndex extends Component
     public function render()
     {
         return view('laravel-crm::livewire.deals.deal-index', [
-            'users' => $this->users(),
-            'labels' => $this->labels(),
+            'users' => $this->users,
+            'labels' => $this->labels,
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
             'deals' => $this->deals(),

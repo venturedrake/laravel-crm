@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -48,11 +49,17 @@ class DeliveryIndex extends Component
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
     }
 
+    /**
+     * Filter drawer options, computed so a debounced search keystroke reuses
+     * them rather than re-querying users and labels on every render.
+     */
+    #[Computed]
     public function users(): Collection
     {
         return User::orderBy('name')->get();
     }
 
+    #[Computed]
     public function labels(): Collection
     {
         return Label::all();
@@ -102,8 +109,9 @@ class DeliveryIndex extends Component
     {
         // The order column and the preview button's `$delivery->title` both
         // read through the parent order, so without these the table costs
-        // three extra queries per row.
-        return Delivery::with(['order.client', 'order.organization'])
+        // three extra queries per row. addresses feeds the shipping address
+        // cell and ownerUser the dotted `ownerUser.name` header key.
+        return Delivery::with(['order.client', 'order.organization', 'ownerUser', 'addresses'])
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
@@ -124,8 +132,8 @@ class DeliveryIndex extends Component
     public function render()
     {
         return view('laravel-crm::livewire.deliveries.delivery-index', [
-            'users' => $this->users(),
-            'labels' => $this->labels(),
+            'users' => $this->users,
+            'labels' => $this->labels,
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
             'deliveries' => $this->deliveries(),

@@ -101,8 +101,16 @@ class Delivery extends Model
         return $this->morphMany(Address::class, 'addressable');
     }
 
+    /**
+     * Prefers an eager-loaded addresses relation — the deliveries index calls
+     * this once per row.
+     */
     public function getShippingAddress()
     {
+        if ($this->relationLoaded('addresses')) {
+            return $this->addresses->firstWhere('address_type_id', 6);
+        }
+
         return $this->addresses()->where('address_type_id', 6)->first();
     }
 }

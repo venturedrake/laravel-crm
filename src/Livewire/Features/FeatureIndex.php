@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -42,6 +43,11 @@ class FeatureIndex extends Component
             + ($this->is_public !== null ? 1 : 0);
     }
 
+    /**
+     * Status options for the filter drawer, computed so a debounced search
+     * keystroke reuses them rather than re-querying on every render.
+     */
+    #[Computed]
     public function statuses(): Collection
     {
         return FeatureStatus::orderBy('order')->orderBy('id')->get();
@@ -62,7 +68,9 @@ class FeatureIndex extends Component
 
     public function features(): LengthAwarePaginator
     {
-        return Feature::query()
+        // The status badge is the one relation the table touches; votes_count
+        // and comments_count are real columns.
+        return Feature::with('status')
             ->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%{$this->search}%"))
             ->when($this->feature_status_id, fn (Builder $q) => $q->whereIn('feature_status_id', $this->feature_status_id))
             ->when($this->is_public !== null, fn (Builder $q) => $q->where('is_public', $this->is_public))
@@ -107,7 +115,7 @@ class FeatureIndex extends Component
         return view('laravel-crm::livewire.features.feature-index', [
             'headers' => $this->headers(),
             'features' => $this->features(),
-            'statuses' => $this->statuses(),
+            'statuses' => $this->statuses,
             'filterCount' => $this->filterCount(),
         ]);
     }

@@ -1,1 +1,1 @@
-Purchase Order {{ $purchaseOrder->purchase_order_id }} from {{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organization_name')->first()->value }} for {{ $purchaseOrder->organization->name  ?? null }} 
+Purchase Order {{ $purchaseOrder->purchase_order_id }} from {{ app('laravel-crm.settings')->get('organization_name') }} for {{ $purchaseOrder->organization->name  ?? null }} 

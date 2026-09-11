@@ -103,7 +103,23 @@ class OrderIndex extends Component
             // The joins above only select columns onto the Order itself; the
             // preview button's `$order->title` reads the relations, which
             // would otherwise lazy-load once per row.
-            ->with(['organization', 'person'])
+            //
+            // orderProducts feeds the three CheckAmount helpers, which the
+            // subtotal, tax and total cells and the action column each call —
+            // six reads per row. invoices.invoiceLines and
+            // deliveries.deliveryProducts feed invoiceComplete() and
+            // deliveryComplete(), which walk every line of every child
+            // document. Left lazy, a 25-row page cost close to 500 queries.
+            ->with([
+                'organization',
+                'person',
+                'labels',
+                'ownerUser',
+                'quote',
+                'orderProducts',
+                'invoices.invoiceLines',
+                'deliveries.deliveryProducts',
+            ])
             ->when($this->search, function (Builder $q) {
                 $prefix = config('laravel-crm.db_table_prefix');
                 $term = $this->search;

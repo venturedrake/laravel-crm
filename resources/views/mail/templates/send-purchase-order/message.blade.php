@@ -9,5 +9,5 @@ From your online invoice you can print a PDF version.
 If you have any questions, please let us know.
 
 Thanks,
-{{ \VentureDrake\LaravelCrm\Models\Setting::where('name', 'organization_name')->first()->value }}
+{{ app('laravel-crm.settings')->get('organization_name') }}
 {{ ($purchaseOrder->terms) ? "\nTerms:\n" . $purchaseOrder->terms : null }}

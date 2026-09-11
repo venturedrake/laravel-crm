@@ -110,7 +110,12 @@ class PurchaseOrderIndex extends Component
             // The joins above only select columns onto the PurchaseOrder
             // itself; the preview button's `$purchaseOrder->title` reads the
             // relations, which would otherwise lazy-load once per row.
-            ->with(['organization', 'person'])
+            //
+            // order backs the order-number cell, xeroPurchaseOrder the Xero
+            // action buttons, and person.primaryEmail the per-row
+            // <livewire:crm-purchase-order-send>, whose mount() pre-fills the
+            // To field.
+            ->with(['organization', 'person.primaryEmail', 'order', 'xeroPurchaseOrder'])
             ->when($this->search, function (Builder $q) {
                 $prefix = config('laravel-crm.db_table_prefix');
                 $term = $this->search;

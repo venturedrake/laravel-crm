@@ -115,7 +115,11 @@ class InvoiceIndex extends Component
             // The joins above only select columns onto the Invoice itself; the
             // preview button's `$invoice->title` reads the relations, which
             // would otherwise lazy-load once per row.
-            ->with(['organization', 'person'])
+            //
+            // order backs the order-number cell, xeroInvoice the Xero action
+            // buttons, and person.primaryEmail the per-row
+            // <livewire:crm-invoice-send>, whose mount() pre-fills the To field.
+            ->with(['organization', 'person.primaryEmail', 'order', 'xeroInvoice'])
             ->when($this->search, function (Builder $q) {
                 $prefix = config('laravel-crm.db_table_prefix');
                 $term = $this->search;

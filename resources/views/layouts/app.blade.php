@@ -39,10 +39,15 @@
                 <x-slot:content>
                     Version {{ config('laravel-crm.version') }} <br>
                     @php
-                        $currentVersion = \VentureDrake\LaravelCrm\Models\Setting::where('name','version')->first()?->value;
-                        $latestVersion = \VentureDrake\LaravelCrm\Models\Setting::where('name','version_latest')->first()?->value;
+                        // Off the memoised settings map, not two raw queries on
+                        // every page render. version_compare rather than a
+                        // string compare: '2.2.0' < '2.10.0' is false
+                        // lexicographically, so the badge lied once the minor
+                        // hit double digits.
+                        $currentVersion = app('laravel-crm.settings')->get('version');
+                        $latestVersion = app('laravel-crm.settings')->get('version_latest');
                     @endphp
-                    @if($currentVersion && $latestVersion && $currentVersion < $latestVersion)
+                    @if($currentVersion && $latestVersion && version_compare($currentVersion, $latestVersion, '<'))
                         <x-mary-badge value="Upgrade Available" class="badge-success" />
                     @else
                         <x-mary-badge value="Latest Version" class="badge-primary" />

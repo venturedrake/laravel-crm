@@ -58,7 +58,10 @@ class Invoice extends Model
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'invoice_prefix')->first()->value ?? null).$this->number;
+            // Off the memoised settings map rather than a fresh
+            // crm_settings query. This accessor runs for every row of an index
+            // page and for every document a mail template renders.
+            return app('laravel-crm.settings')->get('invoice_prefix').$this->number;
         }
     }
 

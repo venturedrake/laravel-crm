@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
@@ -15,6 +16,28 @@ use VentureDrake\LaravelCrm\Services\SystemCheckService;
 class Settings
 {
     /**
+     * How long a completed seeding pass suppresses the next one.
+     *
+     * A day rather than forever so the pass stays genuinely self-healing — a
+     * row deleted by hand comes back tomorrow without anyone clearing a cache —
+     * and so the version check below still gets to run on its own three-day
+     * cadence. A deploy or `php artisan cache:clear` re-arms it immediately;
+     * see seedCacheKey(), which is stamped with the package version.
+     */
+    protected const SEED_TTL = 86400; // 24 hours
+
+    /**
+     * How long a version check (successful or not) suppresses the next attempt.
+     *
+     * Separate from the three-day cadence the `version` setting's updated_at
+     * carries, because that row is only touched after the call returns. Without
+     * this, an install whose `install_id` never landed — the API unreachable,
+     * DNS slow, egress blocked — retries the blocking POST on every single
+     * request.
+     */
+    protected const VERSION_CHECK_BACKOFF = 3600; // 1 hour
+
+    /**
      * Handle an incoming request.
      *
      * @param  Request  $request
@@ -22,6 +45,15 @@ class Settings
      */
     public function handle($request, Closure $next)
     {
+        // Everything below is idempotent seeding — it only has work to do after
+        // an install, an upgrade or a cache clear. Left ungated it cost 36
+        // crm_settings queries plus an information_schema probe on every CRM
+        // page, which on a database a network hop away is most of a second
+        // before any rendering starts.
+        if (Cache::get($this->seedCacheKey())) {
+            return $next($request);
+        }
+
         if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
             Setting::updateOrCreate([
                 'name' => 'app_name',
@@ -213,7 +245,17 @@ class Settings
                 'name' => 'install_id',
             ])->first();
 
-            if ($versionSetting && ($versionSetting->updated_at < Carbon::now()->subDays(3) || ! $installIdSetting)) {
+            $versionCheckDue = $versionSetting
+                && ! Cache::get('crm.version-check-attempted')
+                && ($versionSetting->updated_at < Carbon::now()->subDays(3) || ! $installIdSetting);
+
+            if ($versionCheckDue) {
+                // Marked before the call rather than after. install_id is only
+                // written from a successful response, so a failing endpoint
+                // would otherwise leave the `! $installIdSetting` arm true
+                // forever and put a blocking outbound POST on every page load.
+                Cache::put('crm.version-check-attempted', true, self::VERSION_CHECK_BACKOFF);
+
                 try {
                     $client = new Client;
                     $url = 'https://api.laravelcrm.com/api/v2/public/version';
@@ -227,6 +269,12 @@ class Settings
                     }
 
                     $response = $client->request('POST', $url, [
+                        // Guzzle defaults both of these to 0, meaning "wait
+                        // forever". This call sits in front of every CRM page,
+                        // so slow DNS or a degraded API stalls the whole
+                        // request until the socket gives up.
+                        'connect_timeout' => 2,
+                        'timeout' => 3,
                         'json' => [
                             'id' => $installIdSetting->value ?? null,
                             'name' => config('app.name') ?? null,
@@ -261,8 +309,33 @@ class Settings
                     $versionSetting->touch();
                 }
             }
+
+            Cache::put($this->seedCacheKey(), true, self::SEED_TTL);
         }
 
         return $next($request);
+    }
+
+    /**
+     * The flag that says this install has already been seeded.
+     *
+     * Stamped with the package version so a deploy re-runs the pass once,
+     * automatically, without anyone remembering to clear a cache.
+     *
+     * Partitioned by team when teams are on, because most of what is seeded
+     * goes through Setting's team scope: `organization_name`, `currency`, the
+     * document prefixes and so on are per-team rows. A single shared flag would
+     * mean whichever team made the first request after a deploy got its rows
+     * and every other team got none.
+     */
+    protected function seedCacheKey(): string
+    {
+        $key = 'crm.settings-seeded.'.(config('laravel-crm.version') ?? 'unversioned');
+
+        if (! config('laravel-crm.teams')) {
+            return $key;
+        }
+
+        return $key.'.team.'.(auth()->user()?->currentTeam?->id ?? 'none');
     }
 }

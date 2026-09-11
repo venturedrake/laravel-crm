@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -39,6 +40,11 @@ class TaskIndex extends Component
         return (count($this->user_id) > 0 ? 1 : 0) + ($this->status ? 1 : 0);
     }
 
+    /**
+     * Assignee options for the filter drawer, computed so a debounced search
+     * keystroke reuses them rather than re-querying on every render.
+     */
+    #[Computed]
     public function users(): Collection
     {
         return User::orderBy('name')->get();
@@ -59,7 +65,9 @@ class TaskIndex extends Component
 
     public function tasks(): LengthAwarePaginator
     {
-        return Task::query()
+        // The created-by and assigned-to columns are dotted header keys, which
+        // MaryUI resolves with data_get() — two queries per row without these.
+        return Task::with(['ownerUser', 'assignedToUser'])
             ->when($this->search, fn (Builder $q) => $q->where('name', 'like', "%$this->search%")
                 ->orWhere('description', 'like', "%$this->search%"))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_assigned_id', $this->user_id))
@@ -94,7 +102,7 @@ class TaskIndex extends Component
     public function render()
     {
         return view('laravel-crm::livewire.tasks.task-index', [
-            'users' => $this->users(),
+            'users' => $this->users,
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
             'tasks' => $this->tasks(),

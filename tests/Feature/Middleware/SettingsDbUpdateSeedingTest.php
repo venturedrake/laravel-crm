@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings as SettingsMiddleware;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Scopes\BelongsToTeamsScope;
@@ -12,9 +13,16 @@ use VentureDrake\LaravelCrm\Services\SystemCheckService;
  * install_id is seeded first so the version-phone-home block short-circuits —
  * without it the middleware would attempt a real HTTP call to
  * api.laravelcrm.com on every test.
+ *
+ * The cache is flushed so the seeding pass actually runs: in production it is
+ * gated behind a version-stamped flag and a warm request skips it entirely
+ * (see SettingsSeedingCacheTest). These tests are about what the pass does when
+ * it runs, so each call here is a cold one.
  */
 function runSettingsMiddleware(): void
 {
+    Cache::flush();
+
     Setting::firstOrCreate(['name' => 'install_id'], ['value' => 'test-install']);
 
     (new SettingsMiddleware)->handle(Request::create('/'), fn ($request) => $request);

@@ -51,7 +51,10 @@ class Order extends Model
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'order_prefix')->first()->value ?? null).$this->number;
+            // Off the memoised settings map rather than a fresh
+            // crm_settings query. This accessor runs for every row of an index
+            // page and for every document a mail template renders.
+            return app('laravel-crm.settings')->get('order_prefix').$this->number;
         }
     }
 
@@ -206,7 +209,11 @@ class Order extends Model
             $quantity = Quantity::toFloat($orderProduct->quantity);
 
             foreach ($this->invoices as $invoice) {
-                if ($invoiceLine = $invoice->invoiceLines()->where('order_product_id', $orderProduct->id)->first()) {
+                // Through the collection rather than the query builder, so a
+                // caller that eager loaded invoices.invoiceLines pays nothing
+                // here. Uneager-loaded this is still one query per invoice
+                // rather than one per invoice per line.
+                if ($invoiceLine = $invoice->invoiceLines->firstWhere('order_product_id', $orderProduct->id)) {
                     $quantity -= Quantity::toFloat($invoiceLine->quantity);
                 }
             }
@@ -228,7 +235,8 @@ class Order extends Model
             $quantity = Quantity::toFloat($orderProduct->quantity);
 
             foreach ($this->deliveries as $delivery) {
-                if ($deliveryProduct = $delivery->deliveryProducts()->where('order_product_id', $orderProduct->id)->first()) {
+                // See invoiceComplete() — read the loaded collection.
+                if ($deliveryProduct = $delivery->deliveryProducts->firstWhere('order_product_id', $orderProduct->id)) {
                     $quantity -= Quantity::toFloat($deliveryProduct->quantity);
                 }
             }

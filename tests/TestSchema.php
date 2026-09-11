@@ -1039,6 +1039,35 @@ class TestSchema
             $table->softDeletes();
         });
 
+        // The organizations and products index pages both render a Xero badge
+        // off these, so the tables have to exist for those tables to render at
+        // all — even on an install with no Xero connection.
+        Schema::create($prefix.'xero_contacts', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('organization_id')->nullable();
+            $table->string('xero_id')->nullable();
+            $table->string('name')->nullable();
+            $table->string('status')->nullable();
+            $table->datetime('xero_updated_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create($prefix.'xero_items', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->string('xero_id')->nullable();
+            $table->string('code')->nullable();
+            $table->string('name')->nullable();
+            $table->datetime('xero_updated_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         // -------------------------------------------------------------------
         // Email & SMS marketing tables
         // -------------------------------------------------------------------

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -47,16 +48,23 @@ class LeadIndex extends Component
             + (count($this->lead_source_id) > 0 ? 1 : 0);
     }
 
+    /**
+     * Filter drawer options, computed so a debounced search keystroke reuses
+     * them rather than re-querying on every render.
+     */
+    #[Computed]
     public function users(): Collection
     {
         return User::orderBy('name')->get();
     }
 
+    #[Computed]
     public function labels(): Collection
     {
         return Label::all();
     }
 
+    #[Computed]
     public function leadSources(): Collection
     {
         return LeadSource::orderBy('name')->get();
@@ -80,7 +88,11 @@ class LeadIndex extends Component
 
     public function leads(): LengthAwarePaginator
     {
-        return Lead::whereNull('converted_at')
+        // As DealIndex: the joins feed the search predicates only, while the
+        // contact, organization, source, stage and label columns are resolved
+        // off the relations — six queries per row without these.
+        return Lead::with(['labels', 'person', 'organization', 'ownerUser', 'pipelineStage', 'leadSource'])
+            ->whereNull('converted_at')
             ->select(
                 config('laravel-crm.db_table_prefix').'leads.*',
                 config('laravel-crm.db_table_prefix').'people.first_name',
@@ -136,9 +148,9 @@ class LeadIndex extends Component
     public function render()
     {
         return view('laravel-crm::livewire.leads.lead-index', [
-            'users' => $this->users(),
-            'labels' => $this->labels(),
-            'leadSources' => $this->leadSources(),
+            'users' => $this->users,
+            'labels' => $this->labels,
+            'leadSources' => $this->leadSources,
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
             'leads' => $this->leads(),

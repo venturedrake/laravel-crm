@@ -81,17 +81,29 @@ function lineAmount($item): bool
     return matches(lineTotal($item), $item->amount);
 }
 
+/**
+ * The line items to check, off the eager-loaded relation where the caller
+ * loaded one.
+ *
+ * subTotal() and total() are both called for every row of the quotes and orders
+ * index pages, so querying here cost two round trips per row on top of whatever
+ * else the row needed.
+ */
 function getItems($model)
 {
-    switch (class_basename($model)) {
-        case 'Quote':
-            return $model->quoteProducts()->whereNotNull('product_id')->get();
+    $relation = match (class_basename($model)) {
+        'Quote' => 'quoteProducts',
+        'Order' => 'orderProducts',
+        default => null,
+    };
 
-            break;
-
-        case 'Order':
-            return $model->orderProducts()->whereNotNull('product_id')->get();
-
-            break;
+    if ($relation === null) {
+        return;
     }
+
+    if ($model->relationLoaded($relation)) {
+        return $model->getRelation($relation)->whereNotNull('product_id');
+    }
+
+    return $model->{$relation}()->whereNotNull('product_id')->get();
 }

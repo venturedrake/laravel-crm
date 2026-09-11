@@ -62,7 +62,10 @@ class Quote extends Model
         if ($value) {
             return $value;
         } else {
-            return (Setting::where('name', 'quote_prefix')->first()->value ?? null).$this->number;
+            // Off the memoised settings map rather than a fresh
+            // crm_settings query. This accessor runs for every row of an index
+            // page and for every document a mail template renders.
+            return app('laravel-crm.settings')->get('quote_prefix').$this->number;
         }
     }
 
@@ -182,7 +185,11 @@ class Quote extends Model
             $quantity = Quantity::toFloat($quoteProduct->quantity);
 
             foreach ($this->orders as $order) {
-                if ($orderProduct = $order->orderProducts()->where('quote_product_id', $quoteProduct->id)->first()) {
+                // Through the collection rather than the query builder, so a
+                // caller that eager loaded orders.orderProducts pays nothing
+                // here. Uneager-loaded this is still one query per order rather
+                // than one per order per line.
+                if ($orderProduct = $order->orderProducts->firstWhere('quote_product_id', $quoteProduct->id)) {
                     $quantity -= Quantity::toFloat($orderProduct->quantity);
                 }
             }

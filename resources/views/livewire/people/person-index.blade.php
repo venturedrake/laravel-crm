@@ -32,19 +32,19 @@
                 @endforeach
             @endscope
             @scope('cell_email', $person)
-                {{ $person->getPrimaryEmail()->address ?? null }}
+                {{ $person->primaryEmail?->address }}
             @endscope
             @scope('cell_phone', $person)
-                {{ $person->getPrimaryPhone()->number ?? null }}
+                {{ $person->primaryPhone?->number }}
             @endscope
             @scope('cell_open_deals', $person)
-                {{ $person->deals->whereNull('closed_at')->count() }}
+                {{ $person->open_deals_count }}
             @endscope
             @scope('cell_lost_deals', $person)
-                {{ $person->deals->where('closed_status', 'lost')->count() }}
+                {{ $person->lost_deals_count }}
             @endscope
             @scope('cell_won_deals', $person)
-                {{ $person->deals->where('closed_status', 'won')->count() }}
+                {{ $person->won_deals_count }}
             @endscope
             @scope('actions', $person)
                 @hasleadsenabled
