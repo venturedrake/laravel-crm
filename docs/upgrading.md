@@ -140,6 +140,86 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.4.5
+
+### No migrations, no new config keys
+
+This release changes only which packages composer installs and how the Xero integration behaves when
+one of them is absent. It adds no tables, columns or configuration keys, so
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+is the whole upgrade. `laravelcrm:update` still advances the `db_version` marker, so run it even
+though there is nothing to migrate — otherwise the system check reports the database as behind the
+code.
+
+### If you use the Xero integration, require it yourself *before* you deploy
+
+`dcblogdev/laravel-xero` was in this package's `require`. It is now a `suggest` plus a `require-dev`,
+which means nothing pulls it into your application any more. Add it to your own `composer.json`:
+
+```bash
+composer require dcblogdev/laravel-xero:1.1.3
+```
+
+Do that **in the same change as the upgrade**, not after it. Upgrade first and the package is gone
+between the two deploys, and the integration stops syncing in that window without saying so.
+
+**Nothing errors when it is missing — it goes quiet.** Every entry point now gates on
+`XeroIntegration::installed()`, so with the package absent the `XeroToken` observer is never
+registered, `XeroTenant` is never pushed onto the `web` or `crm-api` middleware groups,
+`Product` / `Invoice` / `PurchaseOrder` sync becomes a no-op, and `php artisan laravelcrm:xero`
+exits non-zero with the install command instead of a fatal error. There is no banner and no failed
+job. The one visible sign is **Settings → Integrations → Xero**, where the "Connect to Xero" button
+is replaced by an alert naming the missing package.
+
+Your data is not touched. Stored tokens and the `crm_xero_*` mirror rows survive, so installing the
+package restores the connection with nothing to re-authorise.
+
+### Why: the package would not install on Guzzle 8
+
+`composer require venturedrake/laravel-crm` failed outright in any app that had resolved
+`guzzlehttp/guzzle` 8 — which includes a stock Laravel 13.32+ app, since `laravel/framework` moved
+to `^7.8.2 || ^8.0` at that version. Composer named this package's own `^6.0|^7.0` constraint first,
+so it read as a one-line bump, but the binding cap arrived transitively from `dcblogdev/laravel-xero`,
+which pins guzzle to `^7.9.3` at most in **every version it has ever published**. There is no
+upstream release of it compatible with Guzzle 8.
+
+So the choice is yours rather than ours, and it is a real one:
+
+| You want | Do this | Consequence |
+| --- | --- | --- |
+| Xero sync | `composer require dcblogdev/laravel-xero:1.1.3` | Your app stays on Guzzle 7 until that package ships a Guzzle 8 release |
+| Guzzle 8 / Laravel 13.32+ | Nothing | The Xero integration is inert, as described above |
+
+You cannot have both today.
+
+### Views to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, the view finder prefers your
+frozen copy, and this release changes one of them:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| `livewire/settings/integrations/xero/xero-connect.blade.php` | The "not installed" alert. A frozen copy still renders a **Connect to Xero** button with the package absent. It is not fatal — the route redirects back to this same screen — but it loops silently instead of naming what to install, which removes the only signal this release gives you |
+
+`php artisan laravelcrm:upgrade` names your drifted published views on every deploy (added in 2.4.1),
+so this table is a cross-check rather than the only signal you will get.
+
+### If you copied blades out of `resources/v1/` during a v1 → v2 migration
+
+`resources/v1/views/invoices/partials/fields.blade.php` and its purchase-order twin were gated in
+this release too, but nothing in the package loads or publishes that tree — it is there for v1-era
+apps that lifted the blades into their own `resources/views`. If yours is one of them, a copy taken
+before this release calls `\Dcblogdev\Xero\Facades\Xero::isConnected()` directly, and with the
+package absent that is a hard `Class "Dcblogdev\Xero\Facades\Xero" not found` on the invoice and
+purchase-order forms. Swap the call for
+`\VentureDrake\LaravelCrm\Support\XeroIntegration::connected()`, which is a drop-in replacement, or
+keep `dcblogdev/laravel-xero` installed.
+
 ## 2.4.4
 
 ### No migrations, no new config keys

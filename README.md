@@ -40,7 +40,7 @@ The free Laravel CRM you have been looking for, this package will add CRM functi
  - Users & Teams
  - Secure registration & login
  - Roles & Permissions thanks to [Spatie Permissions](https://github.com/spatie/laravel-permission)
- - Xero integration
+ - Xero integration (optional — see [Optional integrations](#optional-integrations))
  - ClickSend integration
 
 ## Live Demo
@@ -85,6 +85,20 @@ php artisan laravelcrm:install
 #### Step 5. Access the CRN
 
 Navigate to http://yoursite.com/crm (or whatever you set LARAVEL_CRM_ROUTE_PREFIX to). Log in with the owner credentials you created during installation.
+
+## Optional integrations
+
+### Xero
+
+The Xero integration needs a package this one only suggests:
+
+```bash
+composer require dcblogdev/laravel-xero:1.1.3
+```
+
+It is not required by default because every published version of it caps `guzzlehttp/guzzle` at `^7.9.3`, which would make this package uninstallable in any app that has moved to Guzzle 8 — including a stock Laravel 13.32+ app. Installing it holds your app on Guzzle 7 until upstream ships a Guzzle 8 release.
+
+Without it the CRM runs normally and the Xero integration is simply inert: nothing errors, and **Settings → Integrations → Xero** tells you what to install.
 
 ## Updating
 
