@@ -16,6 +16,7 @@ use VentureDrake\LaravelCrm\Repositories\PurchaseOrderRepository;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 
 class PurchaseOrderService
 {
@@ -114,7 +115,7 @@ class PurchaseOrderService
             }
         }
 
-        if (Xero::isConnected()) {
+        if (XeroIntegration::connected()) {
             $lineItems = [];
 
             foreach ($purchaseOrder->purchaseOrderLines as $line) {

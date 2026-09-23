@@ -25,6 +25,13 @@
                         <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
                     </div>
                 </form>
+            @elseif(! $installed)
+                <div role="alert" class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-6 w-6 shrink-0 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19H19a2 2 0 001.73-3L13.73 4a2 2 0 00-3.46 0L3.34 16A2 2 0 005.07 19z"></path>
+                    </svg>
+                    <span>The Xero integration needs the <code>dcblogdev/laravel-xero</code> package, which is not installed. Run <code>composer require dcblogdev/laravel-xero</code> to enable it. Note that package caps Guzzle at <code>^7</code>, so it will hold your app back from Guzzle 8.</span>
+                </div>
             @else
                 <x-mary-button label="Connect to Xero" link="{{ route('laravel-crm.integrations.xero.connect') }}" class="btn btn-outline" />
             @endif

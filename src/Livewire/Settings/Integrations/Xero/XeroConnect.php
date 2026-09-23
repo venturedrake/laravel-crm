@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 
 class XeroConnect extends Component
 {
@@ -14,6 +15,9 @@ class XeroConnect extends Component
     use Toast;
 
     public $tennantName;
+
+    /** Whether the suggested dcblogdev/laravel-xero package is present at all. */
+    public $installed = false;
 
     public $invoices;
 
@@ -34,7 +38,9 @@ class XeroConnect extends Component
      */
     public function mount()
     {
-        if (Xero::isConnected()) {
+        $this->installed = XeroIntegration::installed();
+
+        if (XeroIntegration::connected()) {
             $this->tenantName = Xero::getTenantName();
             /*$this->invoices = Xero::invoices()->get();
             $this->contacts = Xero::contacts()->get();*/

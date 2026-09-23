@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\View;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\ClickSend\ClickSendConnect;
 use VentureDrake\LaravelCrm\Livewire\Settings\Integrations\Xero\XeroConnect;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 
 /* Portal routes (public, signed-URL + portal auth + public feature board)
    are registered separately in LaravelCrmServiceProvider::registerRoutes()
@@ -1578,12 +1579,19 @@ Route::group(['prefix' => 'integrations', 'middleware' => 'auth.laravel-crm'], f
     Route::group(['prefix' => 'xero'], function () {
         Route::get('', XeroConnect::class)->name('laravel-crm.integrations.xero');
 
+        // Both routes stay registered even without dcblogdev/laravel-xero, because
+        // the settings view and the app layout build links to them by name; they
+        // just bounce back to the settings screen, which explains what's missing.
         Route::get('connect', function () {
+            if (! XeroIntegration::installed()) {
+                return redirect(route('laravel-crm.integrations.xero'));
+            }
+
             return Xero::connect();
         })->name('laravel-crm.integrations.xero.connect');
 
         Route::get('disconnect', function () {
-            if (Xero::isConnected()) {
+            if (XeroIntegration::connected()) {
                 Xero::disconnect();
             }
 

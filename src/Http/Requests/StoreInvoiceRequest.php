@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Http\Requests;
 
-use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Foundation\Http\FormRequest;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 

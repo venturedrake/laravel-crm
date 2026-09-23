@@ -31,7 +31,7 @@
                      'value' => old('prefix', ($invoice->prefix ?? $prefix->value ?? 'INV-')),
                 ])
                 
-                @if(! \Dcblogdev\Xero\Facades\Xero::isConnected())
+                @if(! \VentureDrake\LaravelCrm\Support\XeroIntegration::connected())
                     @include('laravel-crm::partials.form.text',[
                         'name' => 'number',
                         'label' => ucfirst(__('laravel-crm::lang.invoice_number')),

@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 
 class LaravelCrmXero extends Command
 {
@@ -33,6 +34,12 @@ class LaravelCrmXero extends Command
      */
     public function handle()
     {
+        if (! XeroIntegration::installed()) {
+            $this->error('LaravelCRM Xero integration requires the dcblogdev/laravel-xero package. Run: composer require dcblogdev/laravel-xero');
+
+            return self::FAILURE;
+        }
+
         $this->info('Updating LaravelCRM Xero Integration '.ucfirst($this->argument('model')).'...');
 
         if (Xero::isConnected()) {

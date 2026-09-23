@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use Dcblogdev\Xero\Facades\Xero;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Repositories\ProductRepository;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 
 class ProductService
 {
@@ -42,7 +43,7 @@ class ProductService
             'currency' => $request->currency,
         ]);
 
-        if (Xero::isConnected()) {
+        if (XeroIntegration::connected()) {
             $xeroProduct = Xero::post('Items', [
                 'Code' => $product->code,
                 'Name' => $product->name,
@@ -104,7 +105,7 @@ class ProductService
             ]);
         }
 
-        if (Xero::isConnected()) {
+        if (XeroIntegration::connected()) {
             $xeroProduct = Xero::post('Items', [
                 'ItemID' => $product->xeroItem->item_id ?? null,
                 'Code' => $product->code,

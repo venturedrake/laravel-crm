@@ -38,7 +38,6 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "cknow/laravel-money": "^7.0|^8.0",
         "codeat3/blade-forkawesome": "^1.11",
-        "dcblogdev/laravel-xero": "1.1.3",
         "doctrine/dbal": "^3.9|^4.0",
         "guzzlehttp/guzzle": "^6.0|^7.0|^8.0",
         "illuminate/support": "^11.0|^12.0|^13.0",
@@ -53,11 +52,15 @@
         "spatie/laravel-permission": "^6.0"
     },
     "require-dev": {
+        "dcblogdev/laravel-xero": "1.1.3",
         "laravel/boost": "^2.3",
         "laravel/pint": "^1.10",
         "orchestra/testbench": "^9.0|^10.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0"
+    },
+    "suggest": {
+        "dcblogdev/laravel-xero": "Required for the Xero integration (contact, product, invoice and purchase order sync). Note: capped at guzzlehttp/guzzle ^7, so installing it pins your app to Guzzle 7."
     },
     "autoload": {
         "psr-4": {

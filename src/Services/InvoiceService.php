@@ -14,6 +14,7 @@ use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 
 class InvoiceService
 {
@@ -91,7 +92,7 @@ class InvoiceService
             }
         }
 
-        if (Xero::isConnected()) {
+        if (XeroIntegration::connected()) {
             $lineItems = [];
 
             foreach ($invoice->invoiceLines as $line) {

@@ -6,6 +6,7 @@ use Closure;
 use Dcblogdev\Xero\Facades\Xero;
 use Dcblogdev\Xero\Models\XeroToken;
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 
 class XeroTenant
 {
@@ -17,6 +18,14 @@ class XeroTenant
      */
     public function handle($request, Closure $next)
     {
+        // The service provider already keeps this out of the stack when the suggested
+        // dcblogdev/laravel-xero package is absent; repeated here because a host app
+        // is free to register the middleware itself, and XeroToken/Xero below would
+        // then be a fatal error rather than a skipped integration.
+        if (! XeroIntegration::installed()) {
+            return $next($request);
+        }
+
         if (auth()->guest()) {
             return $next($request);
         }

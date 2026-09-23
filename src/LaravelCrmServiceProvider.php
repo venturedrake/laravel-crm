@@ -441,6 +441,7 @@ use VentureDrake\LaravelCrm\Policies\UserPolicy;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Services\SystemCheckService;
 use VentureDrake\LaravelCrm\Support\Modules;
+use VentureDrake\LaravelCrm\Support\XeroIntegration;
 use VentureDrake\LaravelCrm\View\Components\Addresses;
 use VentureDrake\LaravelCrm\View\Components\CustomFields;
 use VentureDrake\LaravelCrm\View\Components\CustomFieldValues;
@@ -554,8 +555,12 @@ class LaravelCrmServiceProvider extends ServiceProvider
         if (config('laravel-crm.teams')) {
             $router->pushMiddlewareToGroup('web', TeamsPermission::class);
             $router->pushMiddlewareToGroup('crm-api', TeamsPermission::class);
-            $router->pushMiddlewareToGroup('web', XeroTenant::class);
-            $router->pushMiddlewareToGroup('crm-api', XeroTenant::class);
+            // XeroTenant resolves Dcblogdev\Xero\Models\XeroToken on every request,
+            // so it only goes in the stack when the suggested package is installed.
+            if (XeroIntegration::installed()) {
+                $router->pushMiddlewareToGroup('web', XeroTenant::class);
+                $router->pushMiddlewareToGroup('crm-api', XeroTenant::class);
+            }
         }
 
         if (config('laravel-crm.route_subdomain')) {
@@ -601,7 +606,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         XeroInvoice::observe(XeroInvoiceObserver::class);
         Task::observe(TaskObserver::class);
         Activity::observe(ActivityObserver::class);
-        XeroToken::observe(XeroTokenObserver::class);
+        // XeroToken ships with the suggested dcblogdev/laravel-xero package, not with us.
+        if (XeroIntegration::installed()) {
+            XeroToken::observe(XeroTokenObserver::class);
+        }
         Call::observe(CallObserver::class);
         Meeting::observe(MeetingObserver::class);
         Monitor::observe(MonitorObserver::class);
