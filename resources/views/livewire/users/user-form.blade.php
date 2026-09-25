@@ -18,7 +18,7 @@
                 <hr />
             @endforeach
         </div>
-    </x-mary-card>>
+    </x-mary-card>
 </div>
 <div>
     <x-crm-phones :$phones :$phoneTypes />
