@@ -1,5 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Gate;
+use Livewire\Component;
+use Livewire\Livewire;
+use VentureDrake\LaravelCrm\Http\Livewire\SendInvoice as LegacySendInvoice;
+use VentureDrake\LaravelCrm\Http\Livewire\SendPurchaseOrder as LegacySendPurchaseOrder;
+use VentureDrake\LaravelCrm\Http\Livewire\SendQuote as LegacySendQuote;
+use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceSend;
+use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderSend;
+use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteSend;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -16,7 +25,77 @@ use VentureDrake\LaravelCrm\Models\Setting;
  * A record with no organization used to produce "... for" / "... for." with
  * nothing after it. The recipient now falls back to the linked person, and
  * the " for ..." clause is dropped when there is neither.
+ *
+ * The templates must not use Blade conditionals: while a Livewire component
+ * is rendering, Livewire wraps every @if in <!--[if BLOCK]> morph-marker
+ * comments. In the app each Send component is mounted inside its parent
+ * page's render, so the markers land in the subject and message fields as
+ * literal text. Neither rendering the view on its own nor Livewire::test()
+ * on the Send component reproduces that, so the last tests below mount each
+ * component inside a host component's render.
  */
+
+// The components' blades reach for tables the minimal TestSchema does not
+// ship, so each is mounted through a render-stub subclass (as in PdfSendTest)
+// that records the fields mount() pre-filled.
+trait CapturesSendFields
+{
+    public static array $captured = [];
+
+    public function render()
+    {
+        static::$captured = ['subject' => $this->subject, 'message' => $this->message];
+
+        return '<div></div>';
+    }
+}
+
+class SendSubjectQuoteSend extends QuoteSend
+{
+    use CapturesSendFields;
+}
+
+class SendSubjectLegacySendQuote extends LegacySendQuote
+{
+    use CapturesSendFields;
+}
+
+class SendSubjectInvoiceSend extends InvoiceSend
+{
+    use CapturesSendFields;
+}
+
+class SendSubjectLegacySendInvoice extends LegacySendInvoice
+{
+    use CapturesSendFields;
+}
+
+class SendSubjectPurchaseOrderSend extends PurchaseOrderSend
+{
+    use CapturesSendFields;
+}
+
+class SendSubjectLegacySendPurchaseOrder extends LegacySendPurchaseOrder
+{
+    use CapturesSendFields;
+}
+
+/**
+ * Stands in for the show page that nests a Send component in its view.
+ */
+class SendSubjectHost extends Component
+{
+    public string $component;
+
+    public string $parameter;
+
+    public $model;
+
+    public function render()
+    {
+        return '<div>@livewire($component, [$parameter => $model])</div>';
+    }
+}
 
 beforeEach(function () {
     Setting::query()->delete();
@@ -73,3 +152,27 @@ it('drops the recipient clause when there is neither', function (string $view, s
         ->toBe($prefix.$suffix)
         ->not->toContain(' for');
 })->with('send subjects');
+
+dataset('send components', [
+    'quote' => [SendSubjectQuoteSend::class, 'quote', fn ($person) => Quote::create(['title' => 'Q', 'currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+    'legacy quote' => [SendSubjectLegacySendQuote::class, 'quote', fn ($person) => Quote::create(['title' => 'Q', 'currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+    'invoice' => [SendSubjectInvoiceSend::class, 'invoice', fn ($person) => Invoice::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+    'legacy invoice' => [SendSubjectLegacySendInvoice::class, 'invoice', fn ($person) => Invoice::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+    'purchase order' => [SendSubjectPurchaseOrderSend::class, 'purchaseOrder', fn ($person) => PurchaseOrder::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+    'legacy purchase order' => [SendSubjectLegacySendPurchaseOrder::class, 'purchaseOrder', fn ($person) => PurchaseOrder::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+]);
+
+it('pre-fills a marker-free subject and message in the Send component', function (string $component, string $parameter, Closure $record) {
+    $this->actingAsUser(['crm_access' => 1]);
+    Gate::before(fn () => true);
+
+    $model = $record(Person::create(['first_name' => 'Jane', 'last_name' => 'Smith']));
+
+    Livewire::test(SendSubjectHost::class, ['component' => $component, 'parameter' => $parameter, 'model' => $model]);
+
+    expect($component::$captured['subject'])
+        ->toEndWith(str_contains($component, 'Quote') ? ' for Jane Smith.' : ' for Jane Smith')
+        ->not->toContain('<!--');
+
+    expect($component::$captured['message'])->not->toContain('<!--');
+})->with('send components');

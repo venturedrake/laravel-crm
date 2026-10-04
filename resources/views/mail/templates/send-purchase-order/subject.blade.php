@@ -1,1 +1,1 @@
-Purchase Order {{ $purchaseOrder->purchase_order_id }} from {{ app('laravel-crm.settings')->get('organization_name') }}@if($for = $purchaseOrder->organization->name ?? $purchaseOrder->person->name ?? null) for {{ $for }}@endif
+Purchase Order {{ $purchaseOrder->purchase_order_id }} from {{ app('laravel-crm.settings')->get('organization_name') }}{{ ($for = $purchaseOrder->organization->name ?? $purchaseOrder->person->name ?? null) ? ' for '.$for : '' }}
