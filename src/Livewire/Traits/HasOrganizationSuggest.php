@@ -6,6 +6,8 @@ use VentureDrake\LaravelCrm\Models\Organization;
 
 trait HasOrganizationSuggest
 {
+    use SearchesEncryptableContacts;
+
     public $organizations;
 
     public $showOrganizations = false;
@@ -13,16 +15,23 @@ trait HasOrganizationSuggest
     public function searchOrganizations()
     {
         if (! empty($this->organization_name)) {
-
-            $this->organizations = Organization::orderby('name', 'asc')
-                ->select('*')
-                ->where('name', 'like', '%'.$this->organization_name.'%')
-                ->limit(10)
-                ->get();
-
-            if ($this->organizations->count() > 0) {
-                $this->showOrganizations = true;
+            if ($this->encryptionEnabled()) {
+                // Names are stored encrypted, so neither LIKE nor ORDER BY on
+                // the column means anything — match and sort on decrypted values.
+                $this->organizations = Organization::whereIn('id', $this->matchingOrganizationIds($this->organization_name))
+                    ->get()
+                    ->sortBy(fn ($organization) => strtolower((string) $organization->name))
+                    ->take(10)
+                    ->values();
+            } else {
+                $this->organizations = Organization::orderby('name', 'asc')
+                    ->select('*')
+                    ->where('name', 'like', '%'.$this->organization_name.'%')
+                    ->limit(10)
+                    ->get();
             }
+
+            $this->showOrganizations = $this->organizations->isNotEmpty();
         } else {
             $this->showOrganizations = false;
         }
