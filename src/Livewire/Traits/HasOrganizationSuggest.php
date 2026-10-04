@@ -51,6 +51,19 @@ trait HasOrganizationSuggest
         $this->showOrganizations = false;
     }
 
+    /**
+     * Drop the link once the typed name no longer matches the linked
+     * organization, so the form treats it as a new one. Livewire calls this
+     * trait hook alongside any updatedOrganizationName() the component defines.
+     */
+    public function updatedHasOrganizationSuggest($property, $value)
+    {
+        if ($property === 'organization_name' && $this->organization_id
+            && trim((string) $value) !== Organization::find($this->organization_id)?->name) {
+            $this->organization_id = null;
+        }
+    }
+
     public function hideOrganizations()
     {
         $this->showOrganizations = false;

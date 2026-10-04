@@ -61,6 +61,19 @@ trait HasPersonSuggest
         $this->showPeople = false;
     }
 
+    /**
+     * Drop the link once the typed name no longer matches the linked person,
+     * so the form treats it as a new contact. Livewire calls this trait hook
+     * alongside any updatedPersonName() the component defines.
+     */
+    public function updatedHasPersonSuggest($property, $value)
+    {
+        if ($property === 'person_name' && $this->person_id
+            && trim((string) $value) !== Person::find($this->person_id)?->name) {
+            $this->person_id = null;
+        }
+    }
+
     public function hidePeople()
     {
         $this->showPeople = false;
