@@ -140,6 +140,40 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.4.6
+
+### No migrations, no new config keys
+
+This is a bug-fix patch release. It adds no tables, columns or configuration keys, so
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+is the whole upgrade. Run `laravelcrm:update` even though there is nothing to migrate. It still
+advances the `db_version` marker, and without it the system check reports the database as behind
+the code.
+
+### Views to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, the view finder uses your
+frozen copy instead of the package's. This release changes these views:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| `livewire/related-organizations.blade.php`, `livewire/related-people.blade.php` | The autocomplete fix. **A frozen copy stays broken**: it keeps `wire:blur`, so clicking a suggestion still does not link the organization or person |
+| `livewire/leads/lead-form.blade.php` and the same file under `.../deals`, `.../quotes`, `.../orders`, `.../invoices`, `.../purchase-orders` (`deal-form`, `quote-form`, `order-form`, `invoice-form`, `purchase-order-form`) | The same fix for the person and organization fields on the create and edit forms. A frozen copy still loses the click on a suggestion |
+| `mail/templates/send-quote/subject.blade.php`, `mail/templates/send-invoice/subject.blade.php`, `mail/templates/send-purchase-order/subject.blade.php` | The person-name fallback. A frozen copy still ends the subject in a dangling "for" when the document has no organization |
+| `mail/templates/send-invoice/message.blade.php` | The morph-marker fix. A frozen copy still puts `<!--[if BLOCK]><![endif]-->` into the message body |
+| `livewire/users/user-form.blade.php` | Cosmetic only: a frozen copy still prints a stray `>` under the form |
+
+The team-members fix (`TeamEdit`) and the encrypted autocomplete search are PHP-only. They apply even
+if you keep frozen views.
+
+`php artisan laravelcrm:upgrade` names your drifted published views on every deploy (added in 2.4.1),
+so this table is a cross-check rather than the only signal you will get.
+
 ## 2.4.5
 
 ### No migrations, no new config keys

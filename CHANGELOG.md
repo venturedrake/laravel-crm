@@ -10,6 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.4.6 - 2026-10-04
+
+### Changed
+- **Version bumped to `2.4.6`.** `config/package.php` still read `2.4.5`. `SystemCheckService::normalisedVersion()`, the `db_version` marker written by `laravelcrm:update`, the update banner in `UpdateController` and the Settings middleware's `crm.settings-seeded.<version>` flag all key off that value. Without the bump, the update banner and the "database is behind the code" check would compare this release against the previous one's number, and a deploy would not re-arm the seeding pass
+
+### Fixed
+- **Picking a suggestion from a person or organization autocomplete did nothing.** The input had `wire:blur="hidePeople"` / `wire:blur="hideOrganizations"`. Clicking a suggestion blurred the input first, so the round trip removed the dropdown before the click on the item registered, and the person or organization was never linked. Alpine now controls the dropdown: it opens on focus and input and closes on `@click.outside`, Esc and Tab. The input has `autocomplete="off"`, so the browser's own suggestion list no longer covers it. Thanks [@opwatchlabs](https://github.com/opwatchlabs) ([#97](https://github.com/venturedrake/laravel-crm/pull/97))
+  - #97 fixed the **Related organizations** and **Related people** cards. This release applies the same pattern to the person and organization autocompletes on the **lead, deal, quote, order, invoice and purchase-order** forms, which had the same race
+  - Fixes a `w-cloak` typo in `related-organizations.blade.php`, which made the attribute a no-op. It is now `x-cloak`, matching the people card
+  - `hidePeople()` and `hideOrganizations()` stay on the traits. The package views no longer call them, but published copies of the old blades still do
+- **Saving a team removed all of its members.** `TeamEdit::mount()` loaded the current members into `$team_users`, but the checkboxes and `save()` read `$teamUsers`. The form opened with nothing checked, and saving synced an empty list. Members now load into `$teamUsers`, and the unused `$team_users` property is removed. Thanks [@tixastronauta](https://github.com/tixastronauta) ([#92](https://github.com/venturedrake/laravel-crm/pull/92))
+- **The user create/edit form printed a stray `>`** after the card, from a leftover character after `</x-mary-card>`. Thanks [@tixastronauta](https://github.com/tixastronauta) ([#91](https://github.com/venturedrake/laravel-crm/pull/91))
+- **The organization and person autocompletes found nothing when `encrypt_db_fields` was on.** `searchOrganizations()` and `searchPeople()` ran `LIKE` and `ORDER BY` against the encrypted columns, so they compared the search term with ciphertext. With encryption on, both now match and sort on decrypted values through `SearchesEncryptableContacts`, the same trait the index searches already use. With encryption off, the SQL path is unchanged. Covered by `tests/Feature/Livewire/ContactSuggestSearchTest.php`
+- **The Send quote, invoice and purchase-order subjects ended in a dangling "for".** The subject templates always printed `for {{ organization->name }}`, so a document with no organization got "…from Acme for" (or "for." on quotes). They now fall back to the person's name, and drop the clause when there is neither. Covered by `tests/Feature/Mail/SendSubjectTemplateTest.php`
+- **`<!--[if BLOCK]><![endif]-->` appeared as literal text in the Send invoice message.** Livewire wraps every Blade `@if` in morph-marker comments. The send templates are rendered into the subject and message fields as plain text, so the markers ended up in the email. The `@if` in `send-invoice/message.blade.php` is now an inline expression, and the send templates contain no Blade conditionals
+
 ## 2.4.5 - 2026-09-23
 
 ### Changed

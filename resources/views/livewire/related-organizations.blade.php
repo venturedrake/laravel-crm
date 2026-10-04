@@ -33,7 +33,7 @@
                     @if($showOrganizations && !empty($organizations))
                         <div
                             x-show="open"
-                            w-cloak
+                            x-cloak
                             class="border border-solid border-primary absolute bg-base-100 dark:bg-base-200 z-50 w-96"
                         >
                             @foreach($organizations as $organization)

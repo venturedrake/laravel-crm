@@ -1,19 +1,41 @@
 <div>
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.contact')) }}" separator>
         <div class="grid gap-3" wire:key="person">
-            <div class="autocomplete-input z-50">
-                <x-mary-input wire:model.live="person_name" wire:keyup="searchPeople" wire:blur="hidePeople" label="{{ ucfirst(__('laravel-crm::lang.name')) }}" icon="fas.user" />
-                @if($showPeople)
-                    <div class="border border-solid border-primary absolute bg-base-100 dark:bg-base-200 z-40 w-96">
-                        @if(!empty($people))
-                            @foreach($people as $person)
-                                <x-mary-list-item wire:click="linkPerson({{ $person->id }})" :item="$person">
-                                    <x-slot:value>
-                                        {{ $person->name }}
-                                    </x-slot:value>
-                                </x-mary-list-item>
-                            @endforeach
-                        @endif
+            <div
+                class="autocomplete-input relative z-50"
+                x-data="{ open: false }"
+                @click.outside="open = false"
+            >
+                <x-mary-input
+                    wire:model.live="person_name"
+                    wire:keyup="searchPeople"
+                    @focus="open = true"
+                    @input="open = true"
+                    @keydown.tab="open = false"
+                    @keydown.escape="if (open) { open = false; $event.stopPropagation() }"
+                    autocomplete="off"
+                    label="{{ ucfirst(__('laravel-crm::lang.name')) }}"
+                    icon="fas.user"
+                />
+                @if($showPeople && !empty($people))
+                    <div
+                        x-show="open"
+                        x-cloak
+                        class="border border-solid border-primary absolute bg-base-100 dark:bg-base-200 z-40 w-96"
+                    >
+                        @foreach($people as $person)
+                            <x-mary-list-item
+                                wire:key="person-option-{{ $person->id }}"
+                                wire:click="linkPerson({{ $person->id }})"
+                                @click="open = false"
+                                :item="$person"
+                                class="cursor-pointer"
+                            >
+                                <x-slot:value>
+                                    {{ $person->name }}
+                                </x-slot:value>
+                            </x-mary-list-item>
+                        @endforeach
                     </div>
                 @endif
                 @if(! $person_id && $person_name)
@@ -34,19 +56,41 @@
     </x-mary-card>
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.organization')) }}" separator>
         <div class="grid gap-3" wire:key="organization">
-            <div class="autocomplete-input z-40">
-                <x-mary-input wire:model.live="organization_name" wire:keyup="searchOrganizations" wire:blur="hideOrganizations" label="{{ ucfirst(__('laravel-crm::lang.name')) }}" icon="fas.building" />
-                @if($showOrganizations)
-                    <div class="border border-solid border-primary absolute bg-base-100 dark:bg-base-200 z-50 w-96">
-                        @if(!empty($organizations))
-                            @foreach($organizations as $organization)
-                                <x-mary-list-item wire:click="linkOrganization({{ $organization->id }})" :item="$organization">
-                                    <x-slot:value>
-                                        {{ $organization->name }}
-                                    </x-slot:value>
-                                </x-mary-list-item>
-                            @endforeach
-                        @endif
+            <div
+                class="autocomplete-input relative z-40"
+                x-data="{ open: false }"
+                @click.outside="open = false"
+            >
+                <x-mary-input
+                    wire:model.live="organization_name"
+                    wire:keyup="searchOrganizations"
+                    @focus="open = true"
+                    @input="open = true"
+                    @keydown.tab="open = false"
+                    @keydown.escape="if (open) { open = false; $event.stopPropagation() }"
+                    autocomplete="off"
+                    label="{{ ucfirst(__('laravel-crm::lang.name')) }}"
+                    icon="fas.building"
+                />
+                @if($showOrganizations && !empty($organizations))
+                    <div
+                        x-show="open"
+                        x-cloak
+                        class="border border-solid border-primary absolute bg-base-100 dark:bg-base-200 z-50 w-96"
+                    >
+                        @foreach($organizations as $organization)
+                            <x-mary-list-item
+                                wire:key="org-option-{{ $organization->id }}"
+                                wire:click="linkOrganization({{ $organization->id }})"
+                                @click="open = false"
+                                :item="$organization"
+                                class="cursor-pointer"
+                            >
+                                <x-slot:value>
+                                    {{ $organization->name }}
+                                </x-slot:value>
+                            </x-mary-list-item>
+                        @endforeach
                     </div>
                 @endif
                 @if(! $organization_id && $organization_name)
