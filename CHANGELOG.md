@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.4.7 - 2026-10-04
+
+### Changed
+- **Version bumped to `2.4.7`.** `config/package.php` still read `2.4.6`. `SystemCheckService::normalisedVersion()`, the `db_version` marker written by `laravelcrm:update`, the update banner in `UpdateController` and the Settings middleware's `crm.settings-seeded.<version>` flag all key off that value. Without the bump, the update banner and the "database is behind the code" check would compare this release against the previous one's number, and a deploy would not re-arm the seeding pass
+
+### Fixed
+- **Editing a linked person or organization name kept the old link.** After you picked "Paul Clark" from the autocomplete and then changed the name to "Paul", the form stayed linked to Paul Clark. The "New" badge stayed hidden, and saving attached the existing Paul Clark instead of creating "Paul". The `HasPersonSuggest` and `HasOrganizationSuggest` traits now clear `person_id` / `organization_id` once the trimmed name no longer matches the linked record. They use Livewire's trait-scoped `updatedHasPersonSuggest()` / `updatedHasOrganizationSuggest()` hooks, so they still fire on forms that define their own `updatedPersonName()` / `updatedOrganizationName()`. The comparison uses the decrypted model name, so it works with `encrypt_db_fields` on. Covered by `tests/Feature/Livewire/ContactSuggestSearchTest.php`
+
 ## 2.4.6 - 2026-10-04
 
 ### Changed

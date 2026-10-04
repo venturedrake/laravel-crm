@@ -140,6 +140,27 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.4.7
+
+### No migrations, no new config keys
+
+This is a bug-fix patch release. It adds no tables, columns or configuration keys, so
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+is the whole upgrade. Run `laravelcrm:update` even though there is nothing to migrate. It still
+advances the `db_version` marker, and without it the system check reports the database as behind
+the code.
+
+### Views
+
+No views changed. The fix that unlinks a person or organization when you edit its name is
+PHP-only (in the `HasPersonSuggest` and `HasOrganizationSuggest` traits), so it applies even if you
+keep published or frozen views.
+
 ## 2.4.6
 
 ### No migrations, no new config keys
