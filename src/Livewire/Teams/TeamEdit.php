@@ -21,7 +21,7 @@ class TeamEdit extends Component
 
         $this->name = $this->team->name;
         $this->user_id = $this->team->user_id;
-        $this->team_users = $this->team->users->pluck('id')->toArray();
+        $this->teamUsers = $this->team->users->pluck('id')->toArray();
     }
 
     public function save()

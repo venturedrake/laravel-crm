@@ -13,8 +13,6 @@ trait HasTeamCommon
 
     public $user_id;
 
-    public $team_users = [];
-
     public $users = [];
 
     public $teamUsers = [];
