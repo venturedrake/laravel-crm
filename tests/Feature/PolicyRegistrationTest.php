@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Gate;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Order;
-use VentureDrake\LaravelCrm\Models\ProductAttribute;
 use VentureDrake\LaravelCrm\Models\Quote;
 
 test('manageProducts is granted by the entity edit permission, not the product permission', function () {
@@ -25,9 +24,8 @@ test('manageProducts is denied without the matching edit permission', function (
         ->and(Gate::allows('manageProducts', Order::class))->toBeFalse();
 });
 
-test('activity and product attribute policies resolve through the gate', function () {
+test('the activity policy resolves through the gate', function () {
     $this->actingAsUserWithPermissions(['view crm activities']);
 
-    expect(Gate::allows('viewAny', Activity::class))->toBeTrue()
-        ->and(Gate::allows('viewAny', ProductAttribute::class))->toBeFalse();
+    expect(Gate::allows('viewAny', Activity::class))->toBeTrue();
 });

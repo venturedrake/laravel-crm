@@ -9,7 +9,6 @@ use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\ProductAttribute;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\Task;
@@ -384,7 +383,7 @@ it('denies a fully-permissioned Owner every ability on a module that is switched
 });
 
 // ---------------------------------------------------------------------------
-// AC 3 -- product sub-resource routes and the product-attributes parameter fix.
+// AC 3 -- product sub-resource routes.
 // ---------------------------------------------------------------------------
 
 it('resolves the class-string manageProducts guard on the deal, quote and order product routes', function (string $role) {
@@ -406,49 +405,4 @@ it('denies the manageProducts guard when the role cannot edit the parent entity'
     expect(Gate::allows('manageProducts', Deal::class))->toBeFalse()
         ->and(Gate::allows('manageProducts', Quote::class))->toBeFalse()
         ->and(Gate::allows('manageProducts', Order::class))->toBeFalse();
-});
-
-it('resolves the product-attributes route guards through the renamed route parameter', function () {
-    $this->actingAsUserWithPermissions(smokeSeededRolePermissions()['Owner']);
-
-    $attribute = ProductAttribute::create(['name' => 'Smoke attribute']);
-
-    // Before the US-006 fix the URI read {productCategory} while the guard read
-    // `productAttribute`, so $request->route('productAttribute') was null and every
-    // one of these was a 403 for everyone -- including Owner.
-    expect(Gate::allows('view', $attribute))->toBeTrue()
-        ->and(Gate::allows('update', $attribute))->toBeTrue()
-        ->and(Gate::allows('delete', $attribute))->toBeTrue();
-
-    // The URI parameter must match both the can: argument and the controller's
-    // ProductAttribute $productAttribute type-hint, or implicit binding hands the
-    // Gate a null and it fails closed again.
-    $routes = collect(app('router')->getRoutes())->filter(
-        fn ($r) => str_starts_with($r->getName() ?? '', 'laravel-crm.product-attributes.')
-    );
-
-    expect($routes)->not->toBeEmpty();
-
-    foreach ($routes as $route) {
-        foreach ($route->middleware() as $middleware) {
-            if (! str_starts_with($middleware, 'can:')) {
-                continue;
-            }
-
-            [, $argument] = explode(',', $middleware, 2);
-
-            // Class-string arguments (index/create/store) always resolve; parameter
-            // arguments must appear in the URI or the Gate receives null.
-            if (str_contains($argument, '\\')) {
-                expect(class_exists($argument))->toBeTrue("Unresolvable class-string in {$middleware}");
-
-                continue;
-            }
-
-            // NB: toContain() is variadic in Pest -- a second argument is read as a
-            // second needle, not a message. Assert on a boolean instead.
-            expect(str_contains($route->uri(), '{'.$argument.'}'))
-                ->toBeTrue("Route {$route->uri()} guards on '{$argument}' but has no such URI parameter");
-        }
-    }
 });

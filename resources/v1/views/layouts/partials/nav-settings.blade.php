@@ -22,11 +22,6 @@
         <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.product-categories') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.product-categories.index')) }}" role="product-categories" aria-controls="product-categories" aria-selected="false">{{ ucwords(__('laravel-crm::lang.product_categories')) }}</a>
     </li>
     @endcan
-    @can('view crm product attributes')
-        <li class="nav-item">
-            <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.product-attributes') === 0) ? 'active' : '' }}" href="#" role="product-attributes" aria-controls="product-attributes" aria-selected="false">{{ ucwords(__('laravel-crm::lang.product_attributes')) }}</a>
-        </li>
-    @endcan
     @can('view crm tax rates')
         <li class="nav-item">
             <a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.tax-rates') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.tax-rates.index')) }}" role="tax-rates" aria-controls="tax-rates" aria-selected="false">{{ ucwords(__('laravel-crm::lang.tax_rates')) }}</a>

@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+### Removed
+- **Product Attributes settings page removed.** It was an unfinished v1 stub (no table, no views), so every route errored with `Table 'product_attributes' doesn't exist` ([#53](https://github.com/venturedrake/laravel-crm/issues/53)). The `laravel-crm.product-attributes.*` routes, `ProductAttributeController`, the `ProductAttribute` model, `ProductAttributePolicy`, the empty index view, both Settings nav entries and the unused `product_attribute*` lang keys are gone. Use custom fields attached to Products for product details (material, brand, warranty and so on). Product variations are tracked separately, and `ProductVariation` is unchanged
+- **The four `crm product attributes` permissions.** The seeder no longer creates them. Existing installs still had them, and the role form lists every permission, so they showed up as checkboxes that granted nothing. A new `database/updates` migration deletes them along with their `role_has_permissions` / `model_has_permissions` rows and clears Spatie's permission cache. It runs from a plain `php artisan migrate` or `laravelcrm:update`. Its `down()` recreates the permissions but not the roles that held them. Covered by `tests/Feature/ProductAttributesRemovedTest.php`
+
 ## 2.4.7 - 2026-10-04
 
 ### Changed

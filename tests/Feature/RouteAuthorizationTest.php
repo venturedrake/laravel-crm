@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Gate;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Order;
-use VentureDrake\LaravelCrm\Models\ProductAttribute;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
 
@@ -184,50 +183,6 @@ it('allows the stray deals create-product route with the deal edit permission', 
     $this->actingAsUserWithPermissions(['edit crm deals']);
 
     assertRouteNotForbidden('laravel-crm.deal-products.create-product');
-});
-
-/* -------------------------------------------------------------------------
- | Product attributes — the pre-existing 403-for-everyone fix
- | ------------------------------------------------------------------------- */
-
-it('forbids the product-attributes routes without the matching permissions', function () {
-    $this->actingAsUserWithPermissions([]);
-    $attribute = ProductAttribute::create(['name' => 'Colour']);
-
-    assertRouteForbidden('laravel-crm.product-attributes.index');
-    assertRouteForbidden('laravel-crm.product-attributes.create');
-    assertRouteForbidden('laravel-crm.product-attributes.show', [$attribute->id]);
-    assertRouteForbidden('laravel-crm.product-attributes.edit', [$attribute->id]);
-});
-
-it('allows the product-attributes routes for a user holding the permissions', function () {
-    // Before US-006, show/edit/update/destroy were 403 for every user including Owner:
-    // the URI named {productCategory} while the guard read productAttribute, so
-    // Authorize::getModel() returned null and no policy was ever consulted.
-    // (index/create/store were fine — their lowercase class-string still resolved a
-    // policy via Laravel's case-insensitive guesser fallback.)
-    $this->actingAsUserWithPermissions([
-        'view crm product attributes',
-        'create crm product attributes',
-        'edit crm product attributes',
-        'delete crm product attributes',
-    ]);
-    $attribute = ProductAttribute::create(['name' => 'Colour']);
-
-    assertRouteNotForbidden('laravel-crm.product-attributes.index');
-    assertRouteNotForbidden('laravel-crm.product-attributes.create');
-    assertRouteNotForbidden('laravel-crm.product-attributes.show', [$attribute->id]);
-    assertRouteNotForbidden('laravel-crm.product-attributes.edit', [$attribute->id]);
-});
-
-it('binds the product-attributes URI parameter so the policy is consulted', function () {
-    // The URI parameter must be {productAttribute} so it matches BOTH the can: argument
-    // and ProductAttributeController's ProductAttribute $productAttribute type-hint.
-    $route = app('router')->getRoutes()->getByName('laravel-crm.product-attributes.show');
-
-    expect($route->uri())->toContain('{productAttribute}')
-        ->and($route->uri())->not->toContain('{productCategory}')
-        ->and($route->middleware())->toContain('can:view,productAttribute');
 });
 
 /* -------------------------------------------------------------------------

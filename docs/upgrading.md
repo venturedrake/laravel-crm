@@ -140,6 +140,20 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## Unreleased
+
+### Product Attributes removed
+
+The unfinished Settings → Product Attributes page is gone, along with its `laravel-crm.product-attributes.*`
+routes. Host code that calls `route('laravel-crm.product-attributes.index')` (or any sibling) now throws
+`RouteNotFoundException`. The page never worked, because core never created a `product_attributes` table.
+Use custom fields attached to Products instead.
+
+One migration, `remove_product_attribute_permissions_from_laravel_crm`, deletes the four
+`crm product attributes` permissions and their role and user assignments. It does not touch any
+`product_attributes` table your application may have created itself. Its `down()` is lossy: it
+recreates the permissions but cannot restore which roles held them.
+
 ## 2.4.7
 
 ### No migrations, no new config keys

@@ -425,7 +425,6 @@ use VentureDrake\LaravelCrm\Policies\PermissionPolicy;
 use VentureDrake\LaravelCrm\Policies\PersonPolicy;
 use VentureDrake\LaravelCrm\Policies\PipelinePolicy;
 use VentureDrake\LaravelCrm\Policies\PipelineStagePolicy;
-use VentureDrake\LaravelCrm\Policies\ProductAttributePolicy;
 use VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy;
 use VentureDrake\LaravelCrm\Policies\ProductPolicy;
 use VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy;
@@ -481,7 +480,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Contact' => ContactPolicy::class,
         'VentureDrake\LaravelCrm\Models\Product' => ProductPolicy::class,
         'VentureDrake\LaravelCrm\Models\ProductCategory' => ProductCategoryPolicy::class,
-        'VentureDrake\LaravelCrm\Models\ProductAttribute' => ProductAttributePolicy::class,
         'VentureDrake\LaravelCrm\Models\TaxRate' => TaxRatePolicy::class,
         'VentureDrake\LaravelCrm\Models\Label' => LabelPolicy::class,
         'VentureDrake\LaravelCrm\Models\LeadSource' => LeadSourcePolicy::class,

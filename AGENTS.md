@@ -59,7 +59,7 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Profile components** (v2, in `src/Livewire/Profile/`): `UpdateProfileInformationForm`, `UpdatePasswordForm`, `TwoFactorAuthenticationForm`, `LogoutOtherBrowserSessionsForm`, `DeleteUserForm`.
 
-**Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `LeadSources/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductAttributes/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`, `Integrations/ClickSend/ClickSendConnect`.
+**Settings sub-components** (v2, in `src/Livewire/Settings/`): Full CRUD components for `CustomFieldGroups/`, `CustomFields/`, `Labels/`, `LeadSources/`, `Permissions/` (role management), `Pipelines/`, `PipelineStages/`, `ProductCategories/`, `TaxRates/`, plus `SettingEdit` and `Integrations/Xero/XeroConnect`, `Integrations/ClickSend/ClickSendConnect`.
 
 **Email & SMS Marketing** (v2): Full-CRUD components in `src/Livewire/EmailCampaigns/`, `src/Livewire/EmailTemplates/`, `src/Livewire/SmsCampaigns/`, `src/Livewire/SmsTemplates/`. Backed by models `EmailCampaign`, `EmailTemplate`, `SmsCampaign`, `SmsTemplate` (plus `*Click`, `*Recipient` models). Services: `EmailCampaignService`, `EmailTemplateService`, `SmsCampaignService`, `SmsTemplateService`. SMS sending uses `ClickSendService` (HTTP Basic auth to `https://rest.clicksend.com/v3`; credentials stored as CRM settings `clicksend_username` / `clicksend_api_key` / `clicksend_default_from`).
 
@@ -98,7 +98,7 @@ Form-specific traits live in `src/Livewire/Traits/`:
 | **Encryption** | Sensitive fields (person names, emails, phones) encrypted via `LaravelEncryptableTrait`; declared in `$encryptable` array |
 | **Multi-tenancy** | `BelongsToTeams` trait adds a global `BelongsToTeamsScope` — queries are automatically scoped to `auth()->user()->currentTeam` when `LARAVEL_CRM_TEAMS=true` |
 | **Pipelines** | `Pipeline` + `PipelineStage` + `PipelineStageProbability` models drive the kanban board; `Pipeline` has-many `PipelineStage`; stages are ordered and colour-coded |
-| **Products** | `Product` → `ProductVariation` → `ProductPrice` (with `ProductAttribute` for variant dimensions); all linked to `PurchaseOrderLine`, `QuoteProduct`, `OrderProduct`, etc. |
+| **Products** | `Product` → `ProductVariation` → `ProductPrice`; all linked to `PurchaseOrderLine`, `QuoteProduct`, `OrderProduct`, etc. |
 | **Tax rates** | `TaxRate` model — applied to quote/invoice line items; managed via Settings > Tax Rates UI |
 | **Usage tracking** | `UsageRequest` model records API/feature usage; populated automatically by `LogUsage` middleware |
 

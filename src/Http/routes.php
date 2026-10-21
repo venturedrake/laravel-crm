@@ -1240,46 +1240,6 @@ Route::group(['prefix' => 'product-categories', 'middleware' => 'auth.laravel-cr
         ->middleware(['can:delete,productCategory']);
 });
 
-/* Product Attributes */
-
-Route::group(['prefix' => 'product-attributes', 'middleware' => 'auth.laravel-crm'], function () {
-    // Cosmetic only: these class-strings were lowercase Models\productAttribute, which
-    // still resolved a policy via Laravel's case-insensitive guesser fallback. Capitalised
-    // here so they match the real class name and hit the explicit $policies registration
-    // directly, consistent with every sibling route group.
-    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductAttributeController@index')
-        ->name('laravel-crm.product-attributes.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\ProductAttribute']);
-
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\ProductAttributeController@create')
-        ->name('laravel-crm.product-attributes.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\ProductAttribute']);
-
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\ProductAttributeController@store')
-        ->name('laravel-crm.product-attributes.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\ProductAttribute']);
-
-    // The URI parameter is {productAttribute}, not {productCategory}. It must match both
-    // the can: argument (Authorize::getModel() reads $request->route('productAttribute'))
-    // and ProductAttributeController's ProductAttribute $productAttribute type-hint, so
-    // implicit binding resolves a model before the gate runs.
-    Route::get('{productAttribute}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductAttributeController@show')
-        ->name('laravel-crm.product-attributes.show')
-        ->middleware(['can:view,productAttribute']);
-
-    Route::get('{productAttribute}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\ProductAttributeController@edit')
-        ->name('laravel-crm.product-attributes.edit')
-        ->middleware(['can:update,productAttribute']);
-
-    Route::put('{productAttribute}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductAttributeController@update')
-        ->name('laravel-crm.product-attributes.update')
-        ->middleware(['can:update,productAttribute']);
-
-    Route::delete('{productAttribute}', 'VentureDrake\LaravelCrm\Http\Controllers\ProductAttributeController@destroy')
-        ->name('laravel-crm.product-attributes.destroy')
-        ->middleware(['can:delete,productAttribute']);
-});
-
 /* Tax Rates */
 
 Route::group(['prefix' => 'tax-rates', 'middleware' => 'auth.laravel-crm'], function () {

@@ -634,19 +634,6 @@ class TestSchema
             $table->softDeletes();
         });
 
-        // Core ships no migration stub for product_attributes, but the model, controller
-        // and routes all exist. Mirrors the product_categories shape so the routes are
-        // exercisable in tests.
-        Schema::create($prefix.'product_attributes', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('external_id')->nullable();
-            $table->unsignedBigInteger('team_id')->nullable();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
         Schema::create($prefix.'products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id')->nullable();

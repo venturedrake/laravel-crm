@@ -12,7 +12,6 @@ use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\ProductAttribute;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Services\SystemCheckService;
@@ -78,7 +77,6 @@ test('policies are registered for core models', function () {
     expect(Gate::getPolicyFor(Order::class))->not->toBeNull();
     expect(Gate::getPolicyFor(Invoice::class))->not->toBeNull();
     expect(Gate::getPolicyFor(Activity::class))->not->toBeNull();
-    expect(Gate::getPolicyFor(ProductAttribute::class))->not->toBeNull();
 });
 
 test('blade components are namespaced under crm', function () {
