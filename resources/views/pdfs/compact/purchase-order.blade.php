@@ -104,7 +104,7 @@
         <tbody>
             @foreach($purchaseOrder->purchaseOrderLines->whereNotNull('product_id') as $purchaseOrderLine)
                 <tr>
-                    <td>{{ $purchaseOrderLine->product->name ?? null }}</td>
+                    <td>{{ $purchaseOrderLine->displayName() }}</td>
                     <td class="compact-num">{{ money($purchaseOrderLine->price ?? null, $purchaseOrderLine->currency) }}</td>
                     <td class="compact-num">{{ $purchaseOrderLine->quantity }}</td>
                     <td class="compact-num">{{ money($purchaseOrderLine->tax_amount ?? null, $purchaseOrderLine->currency) }}</td>

@@ -7,15 +7,19 @@ use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\OrderRepository;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
+use VentureDrake\LaravelCrm\Traits\ResolvesProductVariation;
 
 class OrderService
 {
+    use ResolvesProductVariation;
+
     /**
      * @var OrderRepository
      */
@@ -59,7 +63,7 @@ class OrderService
                 $orderProductOrder++;
 
                 if (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
-                    if (! Product::find($product['id'])) {
+                    if (! Product::withTrashed()->find($product['id'])) {
                         $newProduct = $this->addProduct($product, $request);
                         $product['id'] = $newProduct->id;
                     }
@@ -67,7 +71,7 @@ class OrderService
 
                 if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
                     $taxRate = 0;
-                    if ($productForTax = Product::find($product['id'])) {
+                    if ($productForTax = Product::withTrashed()->find($product['id'])) {
                         if ($productForTax->taxRate) {
                             $taxRate = $productForTax->taxRate->rate;
                         } elseif ($productForTax->tax_rate) {
@@ -81,6 +85,7 @@ class OrderService
 
                     $order->orderProducts()->create([
                         'product_id' => $product['id'],
+                        'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $this->sourceVariationId(QuoteProduct::class, $product['quote_product_id'] ?? null)),
                         'quantity' => $product['quantity'],
                         'price' => $product['unit_price'],
                         'amount' => $product['amount'],
@@ -150,14 +155,14 @@ class OrderService
                     if (! isset($product['id']) || Quantity::isZero($product['quantity'])) {
                         $orderProduct->delete();
                     } else {
-                        if (! Product::find($product['id'])) {
+                        if (! Product::withTrashed()->find($product['id'])) {
                             $newProduct = $this->addProduct($product, $request);
                             $product['id'] = $newProduct->id;
                         }
 
                         if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
                             $taxRate = 0;
-                            if ($productForTax = Product::find($product['id'])) {
+                            if ($productForTax = Product::withTrashed()->find($product['id'])) {
                                 if ($productForTax->taxRate) {
                                     $taxRate = $productForTax->taxRate->rate;
                                 } elseif ($productForTax->tax_rate) {
@@ -171,6 +176,7 @@ class OrderService
 
                             $orderProduct->update([
                                 'product_id' => $product['id'],
+                                'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $orderProduct->product_variation_id),
                                 'quantity' => $product['quantity'],
                                 'price' => $product['unit_price'],
                                 'amount' => $product['amount'],
@@ -185,14 +191,14 @@ class OrderService
                         }
                     }
                 } elseif (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
-                    if (! Product::find($product['id'])) {
+                    if (! Product::withTrashed()->find($product['id'])) {
                         $newProduct = $this->addProduct($product, $request);
                         $product['id'] = $newProduct->id;
                     }
 
                     if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
                         $taxRate = 0;
-                        if ($productForTax = Product::find($product['id'])) {
+                        if ($productForTax = Product::withTrashed()->find($product['id'])) {
                             if ($productForTax->taxRate) {
                                 $taxRate = $productForTax->taxRate->rate;
                             } elseif ($productForTax->tax_rate) {
@@ -206,6 +212,7 @@ class OrderService
 
                         $orderProduct = $order->orderProducts()->create([
                             'product_id' => $product['id'],
+                            'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null),
                             'quantity' => $product['quantity'],
                             'price' => $product['unit_price'],
                             'amount' => $product['amount'],

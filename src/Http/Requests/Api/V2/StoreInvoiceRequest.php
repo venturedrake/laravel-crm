@@ -3,11 +3,14 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Requests\Api\V2\Concerns\ValidatesLineItemVariations;
 use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 use VentureDrake\LaravelCrm\Http\Rules\Api\V2\ScopedExists;
 
 class StoreInvoiceRequest extends FormRequest
 {
+    use ValidatesLineItemVariations;
+
     public function authorize(): bool
     {
         return true;
@@ -39,6 +42,7 @@ class StoreInvoiceRequest extends FormRequest
             'labels.*' => ['string', 'uuid', ScopedExists::for($prefix.'labels', 'external_id')],
             'line_items' => ['nullable', 'array'],
             'line_items.*.product_id' => ['required', 'string', 'uuid', ScopedExists::for($prefix.'products', 'external_id')],
+            'line_items.*.product_variation_id' => ['nullable', 'string', 'uuid', ScopedExists::for($prefix.'product_variations', 'external_id')],
             'line_items.*.quantity' => ['required', 'numeric', 'min:0.001', 'max:999999999', 'decimal:0,3'],
             'line_items.*.unit_price' => ['required', 'numeric', 'min:0'],
             'line_items.*.amount' => ['required', 'numeric', 'min:0'],

@@ -1,4 +1,5 @@
-@php($canManageProducts = ! $model || (auth()->user()?->can('update', $model) ?? false))
+{{-- A deal only seeds the lines of a new quote, so it needs no update right of its own. --}}
+@php($canManageProducts = ! $model || $model instanceof \VentureDrake\LaravelCrm\Models\Deal || (auth()->user()?->can('update', $model) ?? false))
 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }}" separator>
     @if($canManageProducts && ! $from && class_basename($model) != 'Delivery')
         <x-slot:menu>
@@ -24,9 +25,21 @@
                                             <x-slot:append>
                                                 <x-mary-button @click="$wire.showCreateProduct = true" {{--label="{{ ucfirst(__('laravel-crm::lang.create')) }}"--}} icon="o-plus" class="join-item btn-primary" />
                                             </x-slot:append>
-                                        @endif    
+                                        @endif
                                     </x-mary-select>
-                                    
+
+                                    {{-- Only a product with variations gets the select - or a line
+                                         already on one, which keeps it listed even once it has been
+                                         deactivated or deleted. The placeholder posts '' (no variation). --}}
+                                    @php($variationOptions = $this->variationOptions($product['id'] ?? null, $product['product_variation_id'] ?? null))
+                                    @if(count($variationOptions) > 0)
+                                        <x-mary-select wire:model.live="products.{{ $index }}.product_variation_id"
+                                                       :options="$variationOptions"
+                                                       placeholder="{{ ucfirst(__('laravel-crm::lang.no_variation')) }}"
+                                                       placeholder-value=""
+                                                       label="{{ ucfirst(__('laravel-crm::lang.variation')) }}" />
+                                    @endif
+
                                     <div class="absolute top-3 right-3">
                                         <x-mary-icon name="fas.arrows-alt-v"/>
                                         @if($canManageProducts)

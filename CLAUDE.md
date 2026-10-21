@@ -78,7 +78,7 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 |---|---|
 | `src/Models/` | 75+ Eloquent models, all extend `src/Models/Model.php` |
 | `src/Services/` | Business logic for create/update (LeadService, DealService, etc.) |
-| `src/Observers/` | 58 observers — generate IDs, trigger audit events |
+| `src/Observers/` | 64 observers — generate IDs; about half also set the `user_created_id` / `user_updated_id` / `user_deleted_id` audit columns, and only some set `user_restored_id` (`DealObserver` and `LeadObserver` do not) |
 | `src/Policies/` | 41 authorization policies, one per model |
 | `src/Console/` | 18 artisan commands |
 | `src/Livewire/` | Current Livewire components by domain |
@@ -102,14 +102,15 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 | Convention | Detail |
 |---|---|
-| **Base model** | All models extend `src/Models/Model.php`, which implements `OwenIt\Auditing\Auditable` and defines `saveQuietly()` |
+| **Base model** | All models extend `src/Models/Model.php`, a thin Eloquent base that only defines `saveQuietly()`. There is no audit-log package; the audit trail is the `user_*_id` columns observers set |
 | **Table prefix** | `getTable()` prepends `config('laravel-crm.db_table_prefix')` (default `crm_`) |
 | **External IDs** | Routes use `external_id` (UUID set by Observer on `creating`), not integer PKs |
 | **Human IDs** | Observers auto-generate `lead_id`, `quote_id`, etc. (e.g. `L1001`) |
 | **Money** | Stored as integers ×100; set via `setAmountAttribute`; display with `money($amount, $currency)` |
 | **Encryption** | Sensitive fields (names, emails, phones) encrypted via `HasEncryptableFields` trait; declared in `$encryptable` |
-| **Soft audit bypass** | Use `saveQuietly()` (defined on base Model) to skip observers/events |
+| **Observer bypass** | Use `saveQuietly()` (defined on base Model) to skip observers/events |
 | **Multi-tenancy** | `BelongsToTeams` trait + `BelongsToTeamsScope` add global scope to `currentTeam` when `laravel-crm.teams=true` |
+| **Products** | `Product` → `ProductVariation` → `ProductPrice`. `Product::productPrices()` is product-level rows only; variation prices also carry `product_variation_id`. Lines (deal, quote, order, invoice, PO) have an optional `product_variation_id`: price with `Product::unitPriceFor($variation, $currency)` (falls back to the product price), label with `displayName()` / `displayCode()` (`HasProductLineName`), never `->product->name` |
 | **Custom fields** | `HasCrmFields` trait on relevant models; values stored in `FieldValue` records |
 
 ## UI Stack
@@ -151,21 +152,21 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 ## Key Integrations
 
-- **Xero**: `dcblogdev/laravel-xero` (pinned 1.1.3) — **optional**, in `suggest` + `require-dev`, not `require`. Every published version caps `guzzlehttp/guzzle` at `^7.9.3`, so having it in `require` made the package uninstallable on Guzzle 8 (i.e. a stock Laravel 13.32+ app). Because the `Dcblogdev\*` classes may be absent, **every runtime reference to one must go through `src/Support/XeroIntegration.php`** (`installed()` / `connected()`); a bare `Xero::isConnected()` is a fatal error on an install without the package. `tests/Feature/Support/XeroIntegrationTest.php` fails the build for any file under `src/` or `resources/` that reaches a `Dcblogdev\` class — by imported alias or fully qualified — without calling `XeroIntegration::installed()`/`::connected()` somewhere in that file. Imports and parameter type hints are exempt (PHP resolves neither eagerly, which is why `XeroTokenObserver` is safe). Comments are stripped with PHP's tokenizer before either half of the check runs, so naming the gate in a comment or docblock does not count as calling it. The check is per file, not per line, so a file that already has a legitimate guarded call will not flag a second unguarded one — keep new call sites inside an existing guard. Mirror models in `src/Models/Xero*.php`; sync via observers; settings managed via `src/Livewire/Settings/Integrations/Xero/`
+- **Xero**: `dcblogdev/laravel-xero` (pinned 1.1.3) — **optional**, in `suggest` + `require-dev`, not `require`. Every published version caps `guzzlehttp/guzzle` at `^7.9.3`, so having it in `require` made the package uninstallable on Guzzle 8 (i.e. a stock Laravel 13.32+ app). Because the `Dcblogdev\*` classes may be absent, **every runtime reference to one must go through `src/Support/XeroIntegration.php`** (`installed()` / `connected()`); a bare `Xero::isConnected()` is a fatal error on an install without the package. `tests/Feature/Support/XeroIntegrationTest.php` fails the build for any file under `src/` or `resources/` that reaches a `Dcblogdev\` class — by imported alias or fully qualified — without calling `XeroIntegration::installed()`/`::connected()` somewhere in that file. Imports and parameter type hints are exempt (PHP resolves neither eagerly, which is why `XeroTokenObserver` is safe). Comments are stripped with PHP's tokenizer before either half of the check runs, so naming the gate in a comment or docblock does not count as calling it. The check is per file, not per line, so a file that already has a legitimate guarded call will not flag a second unguarded one — keep new call sites inside an existing guard. Invoice and purchase-order line items take `ItemCode` / `Description` from `src/Support/XeroLineItem.php` (a variation's code only when a synced `XeroItem` already has it; variations are never created as Xero items). Mirror models in `src/Models/Xero*.php`; sync via observers; settings managed via `src/Livewire/Settings/Integrations/Xero/`
 - **ClickSend SMS**: `src/Services/ClickSendService.php` — SMS campaign dispatch; settings keys `clicksend_username`, `clicksend_api_key`, `clicksend_default_from`
 - **Spatie Permissions**: roles seeded by `laravelcrm:permissions`; `laravel-crm.teams=true` requires Spatie teams mode
 - **PDF**: `barryvdh/laravel-dompdf` and `mpdf/mpdf` for quotes/invoices
-- **Audit log**: `owen-it/laravel-auditing` — all models auto-audited
 - **Flash notifications**: `php-flasher/flasher-laravel` for non-Livewire flash messages
 
 ## REST API
 
-The package ships a Sanctum-authenticated JSON REST API mounted at `/api/crm/v2`. It exposes 8
+The package ships a Sanctum-authenticated JSON REST API mounted at `/crm/api/v2` (under `laravel-crm.route_prefix`). It exposes 8
 resourceful entities (`leads`, `products`, `organizations`, `people`, `deals`, `quotes`, `orders`,
-`invoices`) with full CRUD plus 3 auth routes (`POST auth/token`, `GET auth/me`,
+`invoices`) with full CRUD, a `products/{product}/variations` sub-resource,
+plus 3 auth routes (`POST auth/token`, `GET auth/me`,
 `DELETE auth/token`).
 
-Tokens can be issued via `POST /api/crm/v2/auth/token` or via the ops command
+Tokens can be issued via `POST /crm/api/v2/auth/token` or via the ops command
 `php artisan laravel-crm:api-token <email> --name="..."`. The named rate limiter
 `laravel-crm-api` enforces 60 req/min/user (authenticated) and 30 req/min/IP (unauthenticated).
 Multi-tenancy uses the optional `X-Team-ID` header.

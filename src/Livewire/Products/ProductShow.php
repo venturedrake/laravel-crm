@@ -13,6 +13,11 @@ class ProductShow extends Component
 
     public Product $product;
 
+    public function mount()
+    {
+        $this->product->loadMissing('productPrices', 'productVariations.productPrices');
+    }
+
     public function delete($id)
     {
         if ($product = Product::find($id)) {

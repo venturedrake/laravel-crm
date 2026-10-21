@@ -6,9 +6,9 @@ use Carbon\Carbon;
 use Dcblogdev\Xero\Facades\Xero;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Address;
+use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
-use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
@@ -17,9 +17,13 @@ use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
 use VentureDrake\LaravelCrm\Support\XeroIntegration;
+use VentureDrake\LaravelCrm\Support\XeroLineItem;
+use VentureDrake\LaravelCrm\Traits\ResolvesProductVariation;
 
 class PurchaseOrderService
 {
+    use ResolvesProductVariation;
+
     /**
      * @var PurchaseOrderRepository
      */
@@ -68,7 +72,7 @@ class PurchaseOrderService
 
             foreach ($request->products as $purchaseOrderLine) {
                 if (isset($purchaseOrderLine['id']) && Quantity::isPositive($purchaseOrderLine['quantity'])) {
-                    if (! Product::find($purchaseOrderLine['id'])) {
+                    if (! Product::withTrashed()->find($purchaseOrderLine['id'])) {
                         $newProduct = $this->addProduct($purchaseOrderLine, $request);
                         $purchaseOrderLine['id'] = $newProduct->id;
                     }
@@ -76,7 +80,7 @@ class PurchaseOrderService
 
                 if (isset($purchaseOrderLine['id']) && $purchaseOrderLine['id'] > 0 && Quantity::isPositive($purchaseOrderLine['quantity'])) {
                     $taxRate = 0;
-                    if ($product = Product::find($purchaseOrderLine['id'])) {
+                    if ($product = Product::withTrashed()->find($purchaseOrderLine['id'])) {
                         if ($product->taxRate) {
                             $taxRate = $product->taxRate->rate;
                         } elseif ($product->tax_rate) {
@@ -94,6 +98,7 @@ class PurchaseOrderService
 
                     $purchaseOrder->purchaseOrderLines()->create([
                         'product_id' => $purchaseOrderLine['id'],
+                        'product_variation_id' => $this->variationIdFor($purchaseOrderLine['id'], $purchaseOrderLine['product_variation_id'] ?? null, $this->sourceVariationId(OrderProduct::class, $purchaseOrderLine['order_product_id'] ?? null)),
                         'quantity' => $purchaseOrderLine['quantity'],
                         'price' => $purchaseOrderLine['unit_price'],
                         'amount' => $purchaseOrderLine['amount'],
@@ -101,7 +106,7 @@ class PurchaseOrderService
                         'tax_amount' => Money::toFloat($purchaseOrderLine['amount']) * ($taxRate / 100),
                         'currency' => $request->currency,
                         'order_product_id' => $purchaseOrderLine['order_product_id'] ?? null,
-                        'comments' => $purchaseOrderLine['comments'],
+                        'comments' => $purchaseOrderLine['comments'] ?? null,
                     ]);
                 }
             }
@@ -120,13 +125,13 @@ class PurchaseOrderService
 
             foreach ($purchaseOrder->purchaseOrderLines as $line) {
                 $lineItems[] = [
-                    'Description' => $line->product->name,
+                    'Description' => XeroLineItem::description($line),
                     'Quantity' => $line->quantity,
                     'UnitAmount' => $line->price / 100,
                     'TaxType' => 'INPUT',
                     /* 'TaxAmount' => ($line->tax_total->value / 100), */
                     // 'LineAmount' => null,
-                    'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
+                    'ItemCode' => XeroLineItem::itemCode($line),
                     'AccountCode' => $line->product->purchase_account ?? 300,
                 ];
             }
@@ -209,84 +214,66 @@ class PurchaseOrderService
             }
         }
 
-        if (isset($request->purchaseOrderLines)) {
+        // Rows come from crm-model-products with the same keys create() reads:
+        // the product in `id`, the line in `purchase_order_line_id`. This used
+        // to read `purchaseOrderLines`, which the form has never sent, so line
+        // edits were silently dropped.
+        if (isset($request->products)) {
             $purchaseOrderLineIds = [];
+            $purchaseOrderLineOrder = 0;
 
-            foreach ($request->purchaseOrderLines as $line) {
-                if (isset($line['purchase_order_line_id']) && $purchaseOrderLine = PurchaseOrderLine::find($line['purchase_order_line_id'])) {
-                    if (! isset($line['product_id']) || Quantity::isZero($line['quantity'])) {
-                        $purchaseOrderLine->delete();
-                    } else {
-                        if (! Product::find($line['product_id'])) {
-                            $newProduct = $this->addProduct($line, $request);
-                            $line['product_id'] = $newProduct->id;
-                        }
+            foreach ($request->products as $line) {
+                $purchaseOrderLineOrder++;
 
-                        if (isset($line['product_id']) && $line['product_id'] > 0 && Quantity::isPositive($line['quantity'])) {
-                            $taxRate = 0;
-                            if ($product = Product::find($purchaseOrderLine['product_id'])) {
-                                if ($product->taxRate) {
-                                    $taxRate = $product->taxRate->rate;
-                                } elseif ($product->tax_rate) {
-                                    $taxRate = $product->tax_rate;
-                                } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                                    $taxRate = $taxRate->rate;
-                                } else {
-                                    $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
-                                }
-                            }
+                $purchaseOrderLine = isset($line['purchase_order_line_id'])
+                    ? $purchaseOrder->purchaseOrderLines()->whereKey($line['purchase_order_line_id'])->first()
+                    : null;
 
-                            $purchaseOrderLine->update([
-                                'product_id' => $line['product_id'],
-                                'quantity' => $line['quantity'],
-                                'price' => $line['price'],
-                                'amount' => $line['amount'],
-                                'tax_rate' => $taxRate ?? 0,
-                                'tax_amount' => Money::toFloat($line['amount']) * ($taxRate / 100),
-                                'currency' => $request->currency,
-                                'comments' => $line['comments'],
-                            ]);
-
-                            $purchaseOrderLineIds[] = $purchaseOrderLine->id;
-                        }
-                    }
-                } elseif (isset($line['product_id']) && Quantity::isPositive($line['quantity'])) {
-                    if (! Product::find($line['product_id'])) {
-                        $newProduct = $this->addProduct($line, $request);
-                        $line['product_id'] = $newProduct->id;
-                    }
-
-                    if (isset($line['product_id']) && $line['product_id'] > 0 && Quantity::isPositive($line['quantity'])) {
-                        $taxRate = 0;
-                        if ($product = Product::find($line['product_id'])) {
-                            if ($product->taxRate) {
-                                $taxRate = $product->taxRate->rate;
-                            } elseif ($product->tax_rate) {
-                                $taxRate = $product->tax_rate;
-                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                                $taxRate = $taxRate->rate;
-                            } else {
-                                $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
-                            }
-                        }
-
-                        $purchaseOrderLine = $purchaseOrder->purchaseOrderLines()->create([
-                            'product_id' => $line['product_id'],
-                            'quantity' => $line['quantity'],
-                            'price' => $line['price'],
-                            'amount' => $line['amount'],
-                            'tax_rate' => $taxRate ?? 0,
-                            'tax_amount' => Money::toFloat($line['amount']) * ($taxRate / 100),
-                            'currency' => $request->currency,
-                            'comments' => $line['comments'],
-                        ]);
-
-                        $purchaseOrderLineIds[] = $purchaseOrderLine->id;
-                    }
+                if (! isset($line['id']) || ! Quantity::isPositive($line['quantity'] ?? null)) {
+                    continue;
                 }
+
+                // withTrashed: a line whose product has since been deleted keeps
+                // it, rather than reading as a typed-in name and spawning a new
+                // product called after the old id.
+                if (! Product::withTrashed()->find($line['id'])) {
+                    $line['id'] = $this->addProduct($line, $request)->id;
+                }
+
+                $taxRate = $this->resolveTaxRate($line['id']);
+
+                $attributes = [
+                    'product_id' => $line['id'],
+                    'product_variation_id' => $this->variationIdFor(
+                        $line['id'],
+                        $line['product_variation_id'] ?? null,
+                        $purchaseOrderLine
+                            ? $purchaseOrderLine->product_variation_id
+                            : $this->sourceVariationId(OrderProduct::class, $line['order_product_id'] ?? null)
+                    ),
+                    'quantity' => $line['quantity'],
+                    'price' => $line['unit_price'] ?? null,
+                    'amount' => $line['amount'] ?? null,
+                    'tax_rate' => $taxRate,
+                    'tax_amount' => Money::toFloat($line['amount'] ?? 0) * ($taxRate / 100),
+                    'currency' => $request->currency,
+                    'comments' => $line['comments'] ?? null,
+                    'order' => $purchaseOrderLineOrder,
+                ];
+
+                if ($purchaseOrderLine) {
+                    $purchaseOrderLine->update($attributes);
+                } else {
+                    $purchaseOrderLine = $purchaseOrder->purchaseOrderLines()->create($attributes + [
+                        'order_product_id' => $line['order_product_id'] ?? null,
+                    ]);
+                }
+
+                $purchaseOrderLineIds[] = $purchaseOrderLine->id;
             }
 
-            foreach ($purchaseOrder->purchaseOrderLines as $purchaseOrderLine) {
+            // Anything not resubmitted - removed from the form, or zeroed - goes.
+            foreach ($purchaseOrder->purchaseOrderLines()->get() as $purchaseOrderLine) {
                 if (! in_array($purchaseOrderLine->id, $purchaseOrderLineIds)) {
                     $purchaseOrderLine->delete();
                 }
@@ -296,15 +283,42 @@ class PurchaseOrderService
         return $purchaseOrder;
     }
 
+    /**
+     * Resolve the applicable tax rate for a product, falling back through
+     * product → default tax rate → settings → 0.
+     */
+    protected function resolveTaxRate($productId): float
+    {
+        if ($product = Product::withTrashed()->find($productId)) {
+            if ($product->taxRate) {
+                return (float) $product->taxRate->rate;
+            }
+
+            if ($product->tax_rate) {
+                return (float) $product->tax_rate;
+            }
+        }
+
+        if ($default = TaxRate::where('default', 1)->first()) {
+            return (float) $default->rate;
+        }
+
+        return (float) (optional(Setting::where('name', 'tax_rate')->first())->value ?? 0);
+    }
+
+    /**
+     * Create the product a dynamic-products line typed in by name. The row
+     * carries the typed name in `id`, as on the other document forms.
+     */
     protected function addProduct($product, $request)
     {
         $newProduct = Product::create([
-            'name' => $product['product_id'],
+            'name' => $product['id'],
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
         $newProduct->productPrices()->create([
-            'unit_price' => $product['price'],
+            'unit_price' => $product['unit_price'] ?? null,
             'currency' => $request->currency,
         ]);
 

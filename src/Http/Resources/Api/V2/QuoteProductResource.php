@@ -13,6 +13,12 @@ class QuoteProductResource extends JsonResource
             'id' => $this->external_id,
             'product_id' => $this->whenLoaded('product', fn () => $this->product?->external_id),
             'product' => $this->whenLoaded('product', fn () => $this->product ? new ProductBriefResource($this->product) : null),
+            'product_variation_id' => $this->whenLoaded('productVariation', fn () => $this->productVariation?->external_id),
+            'variation' => $this->whenLoaded('productVariation', fn () => $this->productVariation ? [
+                'id' => $this->productVariation->external_id,
+                'name' => $this->productVariation->name,
+                'code' => $this->productVariation->code,
+            ] : null),
             'quantity' => $this->quantity !== null ? (float) $this->quantity : null,
             'unit_price' => $this->price !== null ? $this->price / 100 : null,
             'amount' => $this->amount !== null ? $this->amount / 100 : null,

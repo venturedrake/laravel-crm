@@ -136,9 +136,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($deal->dealProducts()->whereNotNull('product_id')->get() as $dealProduct)
+                            @foreach($deal->dealProducts()->with(['product', 'productVariation'])->whereNotNull('product_id')->get() as $dealProduct)
                                 <tr> 
-                                    <td class="px-0">{{ $dealProduct->product?->name }}</td>
+                                    <td class="px-0">{{ $dealProduct->displayName() }}</td>
                                     <td>{{ money($dealProduct->price ?? null, $dealProduct->currency) }}</td>
                                     <td>{{ $dealProduct->quantity }}</td>
                                     <th>{{ money($dealProduct->amount ?? null, $dealProduct->currency) }}</th>

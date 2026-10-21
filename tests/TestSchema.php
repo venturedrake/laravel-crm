@@ -664,7 +664,15 @@ class TestSchema
             $table->unsignedBigInteger('team_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->string('name')->nullable();
-            $table->string('code')->nullable();
+            $table->string('code')->nullable()->index();
+            $table->string('barcode')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('order')->nullable();
+            $table->boolean('active')->default(true);
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -734,7 +742,6 @@ class TestSchema
             // draws down against it.
             $table->unsignedBigInteger('order_product_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->unsignedBigInteger('product_variation_id')->nullable();
             $table->text('comments')->nullable();
             $table->integer('order')->nullable();
             $table->decimal('quantity', 15, 3)->nullable();
@@ -965,6 +972,7 @@ class TestSchema
             $table->unsignedBigInteger('purchase_order_id');
             $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('product_variation_id')->nullable();
+            $table->unsignedBigInteger('order_product_id')->nullable();
             $table->text('description')->nullable();
             $table->text('comments')->nullable();
             $table->integer('order')->nullable();

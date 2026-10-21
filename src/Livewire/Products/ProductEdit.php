@@ -27,11 +27,16 @@ class ProductEdit extends Component
         $this->sales_account = $this->product->sales_account;
         $this->description = $this->product->description;
         $this->unit = $this->product->unit;
-        $this->unit_price = (isset($this->product->getDefaultPrice()->unit_price)) ? ($this->product->getDefaultPrice()->unit_price / 100) : null;
+        // The row update() saves to. For a product priced only in another
+        // currency, the default price would load blanks that saving clears.
+        $productPrice = $this->product->getPrimaryPrice();
+
+        $this->unit_price = isset($productPrice->unit_price) ? ($productPrice->unit_price / 100) : null;
         $this->tax_rate_id = $this->product->tax_rate_id;
         $this->tax_rate = $this->product->tax_rate;
-        $this->currency = (isset($this->product->getDefaultPrice()->currency)) ? $this->product->getDefaultPrice()->currency : app('laravel-crm.settings')->get('currency', 'USD');
+        $this->currency = $productPrice->currency ?? app('laravel-crm.settings')->get('currency', 'USD');
         $this->user_owner_id = $this->product->user_owner_id;
+        $this->variations = $this->variationRows($this->product, $this->currency);
 
         $this->loadCustomFields($this->product);
     }

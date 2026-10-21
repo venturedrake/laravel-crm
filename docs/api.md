@@ -39,8 +39,9 @@ The API ships with the package; you only need to wire Sanctum into the host appl
    ```
 
    You should see 8 resourceful entities (`leads`, `products`, `organizations`, `people`, `deals`,
-   `quotes`, `orders`, `invoices`) × 5 verbs each, plus 3 auth routes (`POST auth/token`,
-   `GET auth/me`, `DELETE auth/token`).
+   `quotes`, `orders`, `invoices`) × 5 verbs each, the 5 nested
+   [product variation](#product-variations) routes (`products/{product}/variations`), plus 3
+   auth routes (`POST auth/token`, `GET auth/me`, `DELETE auth/token`).
 
 4. **Issue a token via the ops command** (no controller round-trip required):
 
@@ -170,7 +171,7 @@ The `{uuid}` in URIs is the entity's `external_id` (UUID), exposed as `id` in JS
 | Resource | Path | Notable fields |
 |---|---|---|
 | Lead | `/crm/api/v2/leads` | `title`, `description`, `amount`, `currency`, `expected_close`, `person_id`, `organization_id`, `lead_source_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
-| Product | `/crm/api/v2/products` | `name`, `code`, `description`, `unit_price`, `currency`, `tax_rate`, `tax_rate_id`, `product_category_id`, `active`, `user_owner_id` |
+| Product | `/crm/api/v2/products` | `name`, `code`, `description`, `unit_price`, `currency`, `tax_rate`, `tax_rate_id`, `product_category_id`, `active`, `user_owner_id`; responses also carry `variations[]` (read-only here — see [Product variations](#product-variations)) |
 | Organization | `/crm/api/v2/organizations` | `name`, `website`, `email`, `phone`, `annual_revenue`, `total_money_raised`, `number_of_employees`, `industry_id`, `organization_type_id`, `timezone_id`, `labels[]`, `user_owner_id` |
 | Person | `/crm/api/v2/people` | `first_name`, `last_name`, `gender`, `birthday`, `description`, `organization_id`, `labels[]`, `user_owner_id` |
 | Deal | `/crm/api/v2/deals` | `title`, `description`, `amount`, `currency`, `expected_close`, `lead_id`, `person_id`, `organization_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
@@ -209,6 +210,65 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   quote / order / invoice writes. A negative discount was a way to inflate a total; send an
   `adjustments` value instead.
 
+### Product variations
+
+A product can have variations (sizes, colours, …), each with an optional price of its own.
+They are a sub-resource of the product:
+
+| Method | Path | Permission | Notes |
+|---|---|---|---|
+| `GET` | `/crm/api/v2/products/{product}/variations` | `view crm products` | All the product's variations (active and inactive), ordered by `order`. Not paginated. |
+| `POST` | `/crm/api/v2/products/{product}/variations` | `edit crm products` | Create. `201`. |
+| `GET` | `/crm/api/v2/products/{product}/variations/{variation}` | `view crm products` | Show. |
+| `PUT` / `PATCH` | `/crm/api/v2/products/{product}/variations/{variation}` | `edit crm products` | Update. Only the fields sent change. |
+| `DELETE` | `/crm/api/v2/products/{product}/variations/{variation}` | `edit crm products` | Soft-delete. `204`. |
+
+There are no variation permissions: reading a variation needs `view` on its product, and
+creating, updating or deleting one needs `update` (edit) on the product. `{product}` and
+`{variation}` are both UUIDs. The variation is looked up **within** the URL's product, so a
+variation of another product — or a deleted one — is a `404`.
+
+**Fields:**
+
+| Field | Rules | Notes |
+|---|---|---|
+| `name` | required on `POST`; string, max 255 | |
+| `code` | nullable string, max 255 | Shown on lines in place of the product code when set. |
+| `barcode` | nullable string, max 255 | |
+| `active` | boolean | Defaults to `true`. |
+| `order` | nullable integer ≥ 0 | Defaults to after the last variation. |
+| `unit_price` | nullable number ≥ 0, dollars | On `PUT`, omitting it leaves the price alone; sending `null` removes the variation's price in `currency`. |
+| `currency` | nullable 3-letter code | The currency `unit_price` applies to. Defaults to the product's price currency. |
+
+**Response:**
+
+```json
+{
+  "data": {
+    "id": "6b0e...variation-uuid",
+    "name": "Large",
+    "code": "WDG-L",
+    "barcode": null,
+    "active": true,
+    "order": 2,
+    "prices": [
+      { "currency": "USD", "unit_price": 12.50 }
+    ],
+    "created_at": "2026-10-22T09:00:00+00:00",
+    "updated_at": "2026-10-22T09:00:00+00:00"
+  }
+}
+```
+
+`GET /products` and `GET /products/{uuid}` return the same objects in a `variations` array.
+The product's own `prices` never include variation prices.
+
+**Price fallback:** a line on a variation with no price in the document currency uses the
+product price.
+
+**Product writes leave variations alone.** `POST` / `PUT` on `/products` neither accepts nor
+changes variations; use the sub-resource above.
+
 ### Nested line items (Quote / Order / Invoice)
 
 The `line_items` array is accepted on `POST` and `PUT`. Each item has the following shape:
@@ -217,6 +277,7 @@ The `line_items` array is accepted on `POST` and `PUT`. Each item has the follow
 {
   "id": "8f1a...optional-uuid-for-existing-line",
   "product_id": "44d4...product-uuid",
+  "product_variation_id": "6b0e...optional-variation-uuid",
   "quantity": 3.5,
   "unit_price": 100.00,
   "amount": 350.00,
@@ -228,6 +289,25 @@ The `line_items` array is accepted on `POST` and `PUT`. Each item has the follow
 - **Update in place:** include the existing line's `id` (UUID). The line is updated.
 - **Replace lines:** omit `id` on every line in a `PUT`. Existing lines not matched in the
   payload are deleted.
+
+#### `product_variation_id` (optional)
+
+The UUID of one of `product_id`'s [variations](#product-variations). A variation of a
+different product, or one from another team, is a `422` on
+`line_items.N.product_variation_id`. Lines are replaced as a whole, so a line sent without
+`product_variation_id` has no variation. A line already on a variation that has since been
+deleted keeps it when re-sent with the same id; a new line cannot pick a deleted variation
+(it is stored without one).
+
+`unit_price` is still whatever you send — the API does not price the line for you.
+
+Each line in a response carries `product_variation_id` and `variation`, both `null` when
+the line has no variation:
+
+```json
+"product_variation_id": "6b0e...variation-uuid",
+"variation": { "id": "6b0e...variation-uuid", "name": "Large", "code": "WDG-L" }
+```
 
 #### `quantity` accepts decimals (up to 3 places)
 

@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasDecimalQuantity;
+use VentureDrake\LaravelCrm\Traits\HasProductLineName;
 
 class OrderProduct extends Model
 {
     use BelongsToTeams;
     use HasDecimalQuantity;
+    use HasProductLineName;
     use SoftDeletes;
 
     protected $guarded = ['id'];

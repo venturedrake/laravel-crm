@@ -43,8 +43,13 @@ class ProductPrice extends Model
         return $this->belongsTo(ProductVariation::class);
     }
 
+    /**
+     * Product-level prices in the install currency - the rows
+     * Product::getDefaultPrice() reads. Variation prices are excluded.
+     */
     public function scopeDefault($query)
     {
-        return $query->where('currency', Setting::currency() ?? 'USD');
+        return $query->where('currency', app('laravel-crm.settings')->get('currency') ?? 'USD')
+            ->whereNull('product_variation_id');
     }
 }

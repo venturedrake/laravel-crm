@@ -94,7 +94,8 @@ class ProductObserver
     public function restored(Product $product)
     {
         if (! app()->runningInConsole()) {
-            $product->user_deleted_id = auth()->user()->id ?? null;
+            $product->user_deleted_id = null;
+            $product->user_restored_id = auth()->user()->id ?? null;
             $product->saveQuietly();
         }
     }

@@ -98,7 +98,7 @@ Form-specific traits live in `src/Livewire/Traits/`:
 | **Encryption** | Sensitive fields (person names, emails, phones) encrypted via `LaravelEncryptableTrait`; declared in `$encryptable` array |
 | **Multi-tenancy** | `BelongsToTeams` trait adds a global `BelongsToTeamsScope` — queries are automatically scoped to `auth()->user()->currentTeam` when `LARAVEL_CRM_TEAMS=true` |
 | **Pipelines** | `Pipeline` + `PipelineStage` + `PipelineStageProbability` models drive the kanban board; `Pipeline` has-many `PipelineStage`; stages are ordered and colour-coded |
-| **Products** | `Product` → `ProductVariation` → `ProductPrice`; all linked to `PurchaseOrderLine`, `QuoteProduct`, `OrderProduct`, etc. |
+| **Products** | `Product` → `ProductVariation` → `ProductPrice`. A variation price row carries both `product_id` and `product_variation_id`; `Product::productPrices()` returns product-level rows only (`whereNull('product_variation_id')`). Deal, quote, order, invoice and purchase-order lines have an optional `product_variation_id` (delivery lines read it through `orderProduct`). Price a line with `Product::unitPriceFor($variation, $currency)` — the variation's price in that currency, else the product price — and label it with `displayName()` / `displayCode()` (`HasProductLineName` trait), never `->product->name`. Services keep a submitted variation only via `ResolvesProductVariation::variationIdFor()`. Xero lines go through `Support/XeroLineItem` |
 | **Tax rates** | `TaxRate` model — applied to quote/invoice line items; managed via Settings > Tax Rates UI |
 | **Usage tracking** | `UsageRequest` model records API/feature usage; populated automatically by `LogUsage` middleware |
 
@@ -212,7 +212,7 @@ php artisan laravelcrm:sms-campaigns-dispatch    # queue due SMS campaign sends 
 
 ## Integration Points
 
-- **Xero**: `dcblogdev/laravel-xero` — mirror models in `src/Models/Xero*.php`; sync via observers (`XeroContactObserver`, etc.)
+- **Xero**: `dcblogdev/laravel-xero` — mirror models in `src/Models/Xero*.php`; sync via observers (`XeroContactObserver`, etc.). Invoice and purchase-order line items take their `ItemCode` / `Description` from `src/Support/XeroLineItem.php` (variation code only when a synced `XeroItem` already has it; variations are never pushed to Xero as items)
 - **Spatie Permissions**: roles/permissions seeded by `laravelcrm:permissions`; `LARAVEL_CRM_TEAMS=true` requires Spatie teams mode
 - **PDF generation**: `barryvdh/laravel-dompdf` and `mpdf/mpdf` for quotes/invoices
 - **Countries**: `rinvex/countries` — country list used in address forms and select options

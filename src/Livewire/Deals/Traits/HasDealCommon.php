@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Deals\Traits;
 
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasVariationOptions;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Services\DealService;
@@ -16,6 +17,7 @@ trait HasDealCommon
 {
     use HasCustomFormFields;
     use HasLineItemQuantityRules;
+    use HasVariationOptions;
     use Toast;
 
     protected DealService $dealService;
@@ -139,13 +141,27 @@ trait HasDealCommon
     {
         $updating = explode('.', $key);
 
+        // Picking a new product drops the old product's variation before the
+        // row is repriced below.
+        if (count($updating) > 1 && $updating[1] == 'id' && isset($this->products[$updating[0]])) {
+            $this->products[$updating[0]]['product_variation_id'] = null;
+        }
+
+        // withTrashed, as in ModelProducts: a line on a since-deleted product
+        // is still that product's line, not one to wipe as unresolved.
         foreach ($this->products as $index => $product) {
-            if ($dealProduct = Product::find($product['id'])) {
-                $price = $dealProduct->getDefaultPrice()->unit_price ?? 0;
+            if ($dealProduct = Product::withTrashed()->find($product['id'] ?? null)) {
+                // Scoped to the row's product (and team); a variation of
+                // anything else - or the blank placeholder - is dropped.
+                $variation = $this->resolveRowVariation($dealProduct->id, $product['product_variation_id'] ?? null);
+                $this->products[$index]['product_variation_id'] = $variation?->id;
+
+                $price = $dealProduct->unitPriceFor($variation, $this->currency) ?? 0;
                 $quantity = Quantity::toFloat($product['quantity'] ?? 1);
                 $this->products[$index]['price'] = ($price / 100);
                 $this->products[$index]['amount'] = ($price / 100) * $quantity;
-            } elseif ($updating[1] == 'id') {
+            } elseif (($updating[1] ?? null) == 'id') {
+                $this->products[$index]['product_variation_id'] = null;
                 $this->products[$index]['price'] = null;
                 $this->products[$index]['quantity'] = 1;
                 $this->products[$index]['amount'] = null;
@@ -157,6 +173,7 @@ trait HasDealCommon
     {
         $this->products[] = [
             'id' => null,
+            'product_variation_id' => null,
             'price' => null,
             'quantity' => 1,
             'amount' => null,

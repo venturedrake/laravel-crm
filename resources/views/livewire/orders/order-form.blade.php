@@ -94,7 +94,7 @@
             <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
             <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="reference" label="{{ ucfirst(__('laravel-crm::lang.reference')) }}" />
-                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
+                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model.live="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.stage')) }}" wire:model="pipeline_stage_id" :options="$pipeline->pipelineStages()->orderBy('order')->orderBy('id')->get() ?? []" />
             <x-mary-choices-offline
@@ -175,5 +175,5 @@
     </x-mary-card>
 </div>
 <div>
-    <livewire:crm-model-products :model="$fromModel ?? $order ?? null" :from="$fromModel ? class_basename($fromModel) : null" wire:key="model-products-{{ $order->id ?? 'new' }}" />
+    <livewire:crm-model-products :model="$fromModel ?? $order ?? null" :currency="$currency" :from="$fromModel ? class_basename($fromModel) : null" wire:key="model-products-{{ $order->id ?? 'new' }}" />
 </div>

@@ -2,7 +2,9 @@
 
 namespace VentureDrake\LaravelCrm\Livewire;
 
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasVariationOptions;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Support\Money;
@@ -10,7 +12,16 @@ use VentureDrake\LaravelCrm\Support\Quantity;
 
 class ModelProducts extends Component
 {
+    use HasVariationOptions;
+
     public ?string $creating = null;
+
+    /**
+     * The document currency, used to pick a variation's price. Bound from
+     * the parent form so a currency change there reaches this component.
+     */
+    #[Reactive]
+    public ?string $currency = null;
 
     public $model = null;
 
@@ -47,7 +58,8 @@ class ModelProducts extends Component
                         $this->products[] = [
                             'quote_product_id' => $quoteProduct->id,
                             'id' => $quoteProduct->product_id,
-                            'name' => $quoteProduct->product->name,
+                            'product_variation_id' => $quoteProduct->product_variation_id,
+                            'name' => $quoteProduct->displayName(),
                             'quantity' => $quoteProduct->quantity,
                             'unit_price' => $quoteProduct->price / 100,
                             'tax_rate' => $quoteProduct->tax_rate,
@@ -98,7 +110,8 @@ class ModelProducts extends Component
                         $this->products[] = [
                             'order_product_id' => $orderProduct->id,
                             'id' => $orderProduct->product_id,
-                            'name' => $orderProduct->product->name,
+                            'product_variation_id' => $orderProduct->product_variation_id,
+                            'name' => $orderProduct->displayName(),
                             'quantity_max' => $quantityRemaining,
                             'quantity' => $quantityRemaining ?? $orderProduct->quantity,
                             'unit_price' => $orderProduct->price / 100,
@@ -115,7 +128,8 @@ class ModelProducts extends Component
                         $this->products[] = [
                             'invoice_line_id' => $invoiceLine->id,
                             'id' => $invoiceLine->product_id,
-                            'name' => $invoiceLine->product->name,
+                            'product_variation_id' => $invoiceLine->product_variation_id,
+                            'name' => $invoiceLine->displayName(),
                             'quantity' => $invoiceLine->quantity,
                             'unit_price' => $invoiceLine->price / 100,
                             'tax_rate' => $invoiceLine->tax_rate,
@@ -131,7 +145,8 @@ class ModelProducts extends Component
                         $this->products[] = [
                             'delivery_product_id' => $deliveryProduct->id,
                             'id' => $deliveryProduct->orderProduct->product_id,
-                            'name' => $deliveryProduct->orderProduct->product->name,
+                            'product_variation_id' => $deliveryProduct->orderProduct->product_variation_id,
+                            'name' => $deliveryProduct->displayName(),
                             'quantity' => $deliveryProduct->quantity,
                         ];
                     }
@@ -143,7 +158,8 @@ class ModelProducts extends Component
                         $this->products[] = [
                             'purchase_order_line_id' => $purchaseOrderLine->id,
                             'id' => $purchaseOrderLine->product_id,
-                            'name' => $purchaseOrderLine->name,
+                            'product_variation_id' => $purchaseOrderLine->product_variation_id,
+                            'name' => $purchaseOrderLine->displayName(),
                             'quantity' => $purchaseOrderLine->quantity,
                             'unit_price' => $purchaseOrderLine->price / 100,
                             'tax_rate' => $purchaseOrderLine->tax_rate,
@@ -152,6 +168,48 @@ class ModelProducts extends Component
                             'comments' => $purchaseOrderLine->comments,
                         ];
                     }
+                    break;
+
+                case 'Deal':
+                    // A quote created from a deal starts from the deal's lines.
+                    // They stay editable - the form passes no `from` - and the
+                    // deal_product_id lets the quote carry the line's variation
+                    // across even if it has since been deleted.
+                    foreach ($this->model->dealProducts()->whereNotNull('product_id')->get() as $dealProduct) {
+                        $index = count($this->products);
+
+                        $this->products[] = [
+                            'deal_product_id' => $dealProduct->id,
+                            'id' => $dealProduct->product_id,
+                            'product_variation_id' => $dealProduct->product_variation_id,
+                            'name' => $dealProduct->displayName(),
+                            'quantity' => $dealProduct->quantity,
+                            'quantity_max' => null,
+                            'unit_price' => $dealProduct->price / 100,
+                            'tax_rate' => null,
+                            'tax_amount' => null,
+                            'amount' => $dealProduct->amount / 100,
+                            'comments' => $dealProduct->comments ?? null,
+                        ];
+
+                        // Deal lines carry no tax, so it is worked out here the
+                        // same way picking the product on a blank row would.
+                        if ($dealProduct->product) {
+                            $this->recalculateProduct($index, $dealProduct->product);
+                        }
+                    }
+
+                    if (! $this->products) {
+                        $this->add();
+                    }
+
+                    break;
+
+                default:
+                    // Anything else (a lead, person or organization) has no
+                    // lines to start from - give the form its blank row.
+                    $this->add();
+
                     break;
             }
 
@@ -178,8 +236,32 @@ class ModelProducts extends Component
             $this->clampQuantity($index);
 
             if ($updating[1] == 'id') {
+                // A variation belongs to one product, so a new product clears it.
+                $this->products[$index]['product_variation_id'] = null;
+
                 if ($product = Product::find($value)) {
-                    $this->products[$index]['unit_price'] = (($product->getDefaultPrice()->unit_price ?? 0) / 100);
+                    // With no variation this is the product's default price,
+                    // exactly as before variations existed.
+                    $this->products[$index]['unit_price'] = (($product->unitPriceFor(null, $this->currency) ?? 0) / 100);
+
+                    $this->recalculateProduct($index, $product);
+                }
+            } elseif ($updating[1] == 'product_variation_id') {
+                // withTrashed, as in the services: a line kept on a since-deleted
+                // product still lists its variations, so a pick must stick.
+                $product = Product::withTrashed()->find($this->products[$index]['id'] ?? null);
+
+                // Scoped to the row's product (and, through the global scope,
+                // the team) - anything else is dropped rather than stored. The
+                // placeholder option posts '', which resolves to null here.
+                $variation = $product ? $this->resolveRowVariation($product->id, $value) : null;
+
+                $this->products[$index]['product_variation_id'] = $variation?->id;
+
+                if ($product) {
+                    // Falls back to the product price when the variation has
+                    // none in the document currency.
+                    $this->products[$index]['unit_price'] = (($product->unitPriceFor($variation, $this->currency) ?? 0) / 100);
 
                     $this->recalculateProduct($index, $product);
                 }
@@ -300,6 +382,7 @@ class ModelProducts extends Component
     {
         $this->products[] = [
             'id' => null,
+            'product_variation_id' => null,
             'name' => null,
             'quantity' => 1,
             'quantity_max' => null,

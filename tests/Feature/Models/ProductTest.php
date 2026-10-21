@@ -59,3 +59,22 @@ test('product uses soft deletes', function () {
     $product->delete();
     $this->assertSoftDeleted('crm_products', ['id' => $product->id]);
 });
+
+test('restoring a product clears who deleted it and records who restored it', function () {
+    // ProductObserver only stamps users outside the console, as in a web request.
+    (fn () => $this->isRunningInConsole = false)->call(app());
+
+    $deleter = $this->actingAsUser();
+    $product = Product::create(['name' => 'Bin']);
+    $product->delete();
+
+    expect($product->fresh()->user_deleted_id)->toBe($deleter->id);
+
+    $restorer = $this->actingAsUser();
+    Product::withTrashed()->find($product->id)->restore();
+
+    $restored = $product->fresh();
+    expect($restored->deleted_at)->toBeNull();
+    expect($restored->user_deleted_id)->toBeNull();
+    expect($restored->user_restored_id)->toBe($restorer->id);
+});

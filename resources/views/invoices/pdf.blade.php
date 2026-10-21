@@ -97,7 +97,7 @@
         @foreach($invoice->invoiceLines->whereNotNull('product_id')->sortBy([['order', 'asc'], ['created_at', 'asc']]) as $invoiceLine)
             <tr>
                 <td>
-                    {{ $invoiceLine->product->name ?? null }}
+                    {{ $invoiceLine->displayName() }}
                     @if($invoiceLine->comments)
                         {{-- Block wrapper with a small top margin rather than a
                              second <br />, which added a whole empty line. --}}
