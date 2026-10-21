@@ -6,9 +6,12 @@ use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Repositories\DealRepository;
+use VentureDrake\LaravelCrm\Traits\ResolvesProductVariation;
 
 class DealService
 {
+    use ResolvesProductVariation;
+
     /**
      * @var DealRepository
      */
@@ -47,6 +50,7 @@ class DealService
                 $deal->dealProducts()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'product_id' => $product['id'],
+                    'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null),
                     'price' => $product['price'],
                     'quantity' => $product['quantity'],
                     'amount' => $product['amount'],
@@ -80,6 +84,7 @@ class DealService
                 if (isset($product['deal_product_id']) && $dealProduct = $deal->dealProducts()->where('id', $product['deal_product_id'])->first()) {
                     $dealProduct->update([
                         'product_id' => $product['id'],
+                        'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $dealProduct->product_variation_id),
                         'price' => $product['price'],
                         'quantity' => $product['quantity'],
                         'amount' => $product['amount'],
@@ -88,6 +93,7 @@ class DealService
                     $deal->dealProducts()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'product_id' => $product['id'],
+                        'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null),
                         'price' => $product['price'],
                         'quantity' => $product['quantity'],
                         'amount' => $product['amount'],

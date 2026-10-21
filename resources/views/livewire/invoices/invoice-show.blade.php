@@ -189,12 +189,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($invoice->invoiceLines()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $invoiceProduct)
+                        @foreach($invoice->invoiceLines()->with(['product', 'productVariation'])->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $invoiceProduct)
                             <tr>
                                 <td class="px-0">
-                                    {{ $invoiceProduct->product?->name }}
-                                    @if($invoiceProduct->product?->code)
-                                        <br /><small>{{ $invoiceProduct->product->code }}</small>
+                                    {{ $invoiceProduct->displayName() }}
+                                    @if($invoiceProduct->displayCode())
+                                        <br /><small>{{ $invoiceProduct->displayCode() }}</small>
                                     @endif
                                 </td>
                                 <td>{{ money($invoiceProduct->price ?? null, $invoiceProduct->currency) }}</td>

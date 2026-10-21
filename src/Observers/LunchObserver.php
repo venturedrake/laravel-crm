@@ -89,7 +89,8 @@ class LunchObserver
     public function restored(Lunch $lunch)
     {
         if (! app()->runningInConsole()) {
-            $lunch->user_deleted_id = auth()->user()->id ?? null;
+            $lunch->user_deleted_id = null;
+            $lunch->user_restored_id = auth()->user()->id ?? null;
             $lunch->saveQuietly();
         }
     }

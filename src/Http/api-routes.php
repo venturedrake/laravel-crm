@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrderController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrganizationController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\PersonController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\ProductController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\ProductVariationController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\QuoteController;
 
 /*
@@ -38,6 +39,13 @@ Route::middleware(['auth:sanctum', 'crm-api', 'laravel-crm.api.team'])->group(fu
     Route::apiResource('products', ProductController::class)
         ->names('laravel-crm.api.v2.products')
         ->scoped(['product' => 'external_id']);
+
+    // The variation resolves through Product::productVariations(), so a
+    // variation of another product, or a soft-deleted one, is a 404.
+    Route::apiResource('products.variations', ProductVariationController::class)
+        ->parameters(['variations' => 'productVariation'])
+        ->names('laravel-crm.api.v2.products.variations')
+        ->scoped(['product' => 'external_id', 'productVariation' => 'external_id']);
 
     Route::apiResource('organizations', OrganizationController::class)
         ->names('laravel-crm.api.v2.organizations')

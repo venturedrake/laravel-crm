@@ -43,6 +43,7 @@ class DealEdit extends Component
             $this->products[] = [
                 'deal_product_id' => $dealProduct->id,
                 'id' => $dealProduct->product->id,
+                'product_variation_id' => $dealProduct->product_variation_id,
                 'price' => $dealProduct->price / 100,
                 'quantity' => $dealProduct->quantity,
                 'amount' => $dealProduct->amount / 100,

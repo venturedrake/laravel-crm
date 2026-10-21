@@ -113,10 +113,54 @@
                     </table>
                 </div>
             </x-mary-card>
-            {{--<x-mary-card title="{{ ucfirst(__('laravel-crm::lang.variations')) }}" shadow separator>
-                
+            @php($defaultPrice = $product->getPrimaryPrice())
+            <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.variations')) }}" shadow separator>
+                @if($product->productVariations->isEmpty())
+                    <p class="text-base-content/60">{{ ucfirst(__('laravel-crm::lang.no_variations')) }}</p>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th class="px-0 pt-0">{{ ucfirst(__('laravel-crm::lang.name')) }}</th>
+                                <th class="pt-0">{{ strtoupper(__('laravel-crm::lang.sku')) }}</th>
+                                <th class="pt-0">{{ ucfirst(__('laravel-crm::lang.barcode')) }}</th>
+                                <th class="pt-0">{{ ucwords(__('laravel-crm::lang.unit_price')) }}</th>
+                                <th class="px-0 pt-0 text-right">{{ ucfirst(__('laravel-crm::lang.active')) }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($product->productVariations as $variation)
+                                @php($variationPrice = $variation->priceFor($defaultPrice->currency ?? null))
+                                <tr wire:key="variation-{{ $variation->id }}">
+                                    <td class="px-0">{{ $variation->name }}</td>
+                                    <td>{{ $variation->code }}</td>
+                                    <td>{{ $variation->barcode }}</td>
+                                    <td>
+                                        @if($variationPrice)
+                                            {{ money($variationPrice->unit_price, $variationPrice->currency) }}
+                                        @elseif($defaultPrice)
+                                            <span class="text-base-content/50" title="{{ ucfirst(__('laravel-crm::lang.variation_price_fallback')) }}">{{ money($defaultPrice->unit_price, $defaultPrice->currency) }}</span>
+                                        @else
+                                            <span class="text-base-content/50">&mdash;</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-0 text-right">
+                                        @if($variation->active)
+                                            <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.yes')) }}" class="badge-success badge-sm text-white" />
+                                        @else
+                                            <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.no')) }}" class="badge-ghost badge-sm" />
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-3 text-sm text-base-content/60">{{ ucfirst(__('laravel-crm::lang.variation_price_fallback')) }}</p>
+                @endif
             </x-mary-card>
-            @can('view crm deals')
+            {{--@can('view crm deals')
                 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.deals')) }}" shadow separator>
                     
                 </x-mary-card>

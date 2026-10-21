@@ -85,7 +85,7 @@
             </div>
             <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="reference" label="{{ ucfirst(__('laravel-crm::lang.reference')) }}" />
-                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
+                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model.live="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>
             <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-datetime wire:model="issue_date" label="{{ ucfirst(__('laravel-crm::lang.issue_date')) }}" />
@@ -106,5 +106,5 @@
     </x-mary-card>
 </div>
 <div>
-    <livewire:crm-model-products :model="$fromModel ?? $purchaseOrder ?? null" creating="PurchaseOrder" :from="$fromModel ? class_basename($fromModel) : null" wire:key="model-products-{{ $purchaseOrder->id ?? 'new' }}" />
+    <livewire:crm-model-products :model="$fromModel ?? $purchaseOrder ?? null" :currency="$currency" creating="PurchaseOrder" :from="$fromModel ? class_basename($fromModel) : null" wire:key="model-products-{{ $purchaseOrder->id ?? 'new' }}" />
 </div>

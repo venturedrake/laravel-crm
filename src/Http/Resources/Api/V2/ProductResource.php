@@ -27,6 +27,7 @@ class ProductResource extends JsonResource
                 'unit_price' => $price->unit_price !== null ? $price->unit_price / 100 : null,
                 'default' => (bool) $price->default,
             ])->values()),
+            'variations' => ProductVariationResource::collection($this->whenLoaded('productVariations')),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
             'deleted_at' => $this->deleted_at?->toIso8601String(),

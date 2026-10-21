@@ -13,6 +13,7 @@ use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\ProductVariation;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Services\QuoteService;
@@ -25,7 +26,7 @@ class QuoteController extends ApiController
     {
         $this->authorize('viewAny', Quote::class);
 
-        $query = Quote::query()->with(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product']);
+        $query = Quote::query()->with(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product', 'quoteProducts.productVariation']);
 
         if ($request->filled('user_owner_id')) {
             $query->where('user_owner_id', $request->input('user_owner_id'));
@@ -47,7 +48,7 @@ class QuoteController extends ApiController
     {
         $this->authorize('view', $quote);
 
-        $quote->load(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product']);
+        $quote->load(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product', 'quoteProducts.productVariation']);
 
         return new QuoteResource($quote);
     }
@@ -60,7 +61,7 @@ class QuoteController extends ApiController
 
         $quote = $this->quoteService->create($payload, $person, $organization);
 
-        $quote->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product']);
+        $quote->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product', 'quoteProducts.productVariation']);
 
         return (new QuoteResource($quote))->response()->setStatusCode(201);
     }
@@ -73,7 +74,7 @@ class QuoteController extends ApiController
 
         $this->quoteService->update($payload, $quote, $person, $organization);
 
-        $quote->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product']);
+        $quote->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'quoteProducts.product', 'quoteProducts.productVariation']);
 
         return new QuoteResource($quote);
     }
@@ -158,6 +159,13 @@ class QuoteController extends ApiController
         return collect($lineItems)->map(function (array $item) use ($existing) {
             $productId = Product::where('external_id', $item['product_id'])->value('id');
 
+            // withTrashed: a line re-sent unchanged keeps a variation deleted since
+            // it was added. The service only keeps a deleted variation when the
+            // line already points at it, and only for that product.
+            $variationId = ! empty($item['product_variation_id'])
+                ? ProductVariation::withTrashed()->where('external_id', $item['product_variation_id'])->value('id')
+                : null;
+
             $quoteProductId = null;
             if ($existing && ! empty($item['id'])) {
                 $quoteProductId = QuoteProduct::where('external_id', $item['id'])
@@ -168,6 +176,7 @@ class QuoteController extends ApiController
             return [
                 'id' => $productId,
                 'product_id' => $productId,
+                'product_variation_id' => $variationId,
                 'quote_product_id' => $quoteProductId,
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['unit_price'],

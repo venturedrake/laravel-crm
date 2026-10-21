@@ -28,4 +28,18 @@ class DeliveryProduct extends Model
     {
         return $this->belongsTo(OrderProduct::class)->withTrashed();
     }
+
+    /**
+     * A delivery line has no product of its own - it prints the order line it
+     * draws down, variation included.
+     */
+    public function displayName(): string
+    {
+        return $this->orderProduct?->displayName() ?? '';
+    }
+
+    public function displayCode(): ?string
+    {
+        return $this->orderProduct?->displayCode();
+    }
 }

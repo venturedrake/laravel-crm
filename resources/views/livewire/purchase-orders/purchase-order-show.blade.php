@@ -177,12 +177,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($purchaseOrder->purchaseOrderLines()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $purchaseOrderLine)
+                        @foreach($purchaseOrder->purchaseOrderLines()->with(['product', 'productVariation'])->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $purchaseOrderLine)
                             <tr>
                                 <td class="px-0">
-                                    {{ $purchaseOrderLine->product?->name }}
-                                    @if($purchaseOrderLine->product?->code)
-                                        <br /><small>{{ $purchaseOrderLine->product->code }}</small>
+                                    {{ $purchaseOrderLine->displayName() }}
+                                    @if($purchaseOrderLine->displayCode())
+                                        <br /><small>{{ $purchaseOrderLine->displayCode() }}</small>
                                     @endif
                                 </td>
                                 <td>{{ money($purchaseOrderLine->price ?? null, $purchaseOrderLine->currency) }}</td>

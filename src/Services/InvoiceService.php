@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Dcblogdev\Xero\Facades\Xero;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
+use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
@@ -15,9 +16,13 @@ use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
 use VentureDrake\LaravelCrm\Support\XeroIntegration;
+use VentureDrake\LaravelCrm\Support\XeroLineItem;
+use VentureDrake\LaravelCrm\Traits\ResolvesProductVariation;
 
 class InvoiceService
 {
+    use ResolvesProductVariation;
+
     /**
      * @var InvoiceRepository
      */
@@ -56,7 +61,7 @@ class InvoiceService
                 $invoiceLineOrder++;
 
                 if (isset($invoiceLine['id']) && Quantity::isPositive($invoiceLine['quantity'])) {
-                    if (! Product::find($invoiceLine['id'])) {
+                    if (! Product::withTrashed()->find($invoiceLine['id'])) {
                         $newProduct = $this->addProduct($invoiceLine, $request);
                         $invoiceLine['id'] = $newProduct->id;
                     }
@@ -64,7 +69,7 @@ class InvoiceService
 
                 if (isset($invoiceLine['id']) && $invoiceLine['id'] > 0 && Quantity::isPositive($invoiceLine['quantity'])) {
                     $taxRate = 0;
-                    if ($product = Product::find($invoiceLine['id'])) {
+                    if ($product = Product::withTrashed()->find($invoiceLine['id'])) {
                         if ($product->taxRate) {
                             $taxRate = $product->taxRate->rate;
                         } elseif ($product->tax_rate) {
@@ -78,6 +83,7 @@ class InvoiceService
 
                     $invoice->invoiceLines()->create([
                         'product_id' => $invoiceLine['id'],
+                        'product_variation_id' => $this->variationIdFor($invoiceLine['id'], $invoiceLine['product_variation_id'] ?? null, $this->sourceVariationId(OrderProduct::class, $invoiceLine['order_product_id'] ?? null)),
                         'quantity' => $invoiceLine['quantity'],
                         'price' => $invoiceLine['unit_price'],
                         'amount' => $invoiceLine['amount'],
@@ -97,13 +103,13 @@ class InvoiceService
 
             foreach ($invoice->invoiceLines as $line) {
                 $lineItems[] = [
-                    'Description' => $line->product->name,
+                    'Description' => XeroLineItem::description($line),
                     'Quantity' => $line->quantity,
                     'UnitAmount' => $line->price / 100,
                     'TaxType' => 'OUTPUT',
                     /* 'TaxAmount' => ($line->tax_total->value / 100), */
                     // 'LineAmount' => null,
-                    'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
+                    'ItemCode' => XeroLineItem::itemCode($line),
                     'AccountCode' => $line->product->sales_account ?? 200,
                 ];
             }
@@ -166,14 +172,14 @@ class InvoiceService
                     if (! isset($line['id']) || Quantity::isZero($line['quantity'])) {
                         $invoiceLine->delete();
                     } else {
-                        if (! Product::find($line['id'])) {
+                        if (! Product::withTrashed()->find($line['id'])) {
                             $newProduct = $this->addProduct($line, $request);
                             $line['id'] = $newProduct->id;
                         }
 
                         if (isset($line['id']) && $line['id'] > 0 && Quantity::isPositive($line['quantity'])) {
                             $taxRate = 0;
-                            if ($product = Product::find($invoiceLine['id'])) {
+                            if ($product = Product::withTrashed()->find($invoiceLine['id'])) {
                                 if ($product->taxRate) {
                                     $taxRate = $product->taxRate->rate;
                                 } elseif ($product->tax_rate) {
@@ -187,6 +193,7 @@ class InvoiceService
 
                             $invoiceLine->update([
                                 'product_id' => $line['id'],
+                                'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null, $invoiceLine->product_variation_id),
                                 'quantity' => $line['quantity'],
                                 'price' => $line['unit_price'],
                                 'amount' => $line['amount'],
@@ -201,14 +208,14 @@ class InvoiceService
                         }
                     }
                 } elseif (isset($line['id']) && Quantity::isPositive($line['quantity'])) {
-                    if (! Product::find($line['id'])) {
+                    if (! Product::withTrashed()->find($line['id'])) {
                         $newProduct = $this->addProduct($line, $request);
                         $line['id'] = $newProduct->id;
                     }
 
                     if (isset($line['id']) && $line['id'] > 0 && Quantity::isPositive($line['quantity'])) {
                         $taxRate = 0;
-                        if ($product = Product::find($line['id'])) {
+                        if ($product = Product::withTrashed()->find($line['id'])) {
                             if ($product->taxRate) {
                                 $taxRate = $product->taxRate->rate;
                             } elseif ($product->tax_rate) {
@@ -222,6 +229,7 @@ class InvoiceService
 
                         $invoiceLine = $invoice->invoiceLines()->create([
                             'product_id' => $line['id'],
+                            'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null),
                             'quantity' => $line['quantity'],
                             'price' => $line['unit_price'],
                             'amount' => $line['amount'],

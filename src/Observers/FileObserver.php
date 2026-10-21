@@ -89,7 +89,8 @@ class FileObserver
     public function restored(File $file)
     {
         if (! app()->runningInConsole()) {
-            $file->user_deleted_id = auth()->user()->id ?? null;
+            $file->user_deleted_id = null;
+            $file->user_restored_id = auth()->user()->id ?? null;
             $file->saveQuietly();
         }
     }

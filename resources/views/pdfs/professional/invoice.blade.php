@@ -107,7 +107,7 @@
             @foreach($invoice->invoiceLines->whereNotNull('product_id')->sortBy([['order', 'asc'], ['created_at', 'asc']]) as $invoiceLine)
                 <tr>
                     <td>
-                        {{ $invoiceLine->product->name ?? null }}
+                        {{ $invoiceLine->displayName() }}
                         @if($invoiceLine->comments)
                             <br /><span style="color:#7a7a7a">{{ $invoiceLine->comments }}</span>
                         @endif

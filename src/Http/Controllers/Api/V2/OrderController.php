@@ -15,6 +15,7 @@ use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\ProductVariation;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrderService;
 
@@ -26,7 +27,7 @@ class OrderController extends ApiController
     {
         $this->authorize('viewAny', Order::class);
 
-        $query = Order::query()->with(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product']);
+        $query = Order::query()->with(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product', 'orderProducts.productVariation']);
 
         if ($request->filled('user_owner_id')) {
             $query->where('user_owner_id', $request->input('user_owner_id'));
@@ -48,7 +49,7 @@ class OrderController extends ApiController
     {
         $this->authorize('view', $order);
 
-        $order->load(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product']);
+        $order->load(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product', 'orderProducts.productVariation']);
 
         return new OrderResource($order);
     }
@@ -61,7 +62,7 @@ class OrderController extends ApiController
 
         $order = $this->orderService->create($payload, $person, $organization);
 
-        $order->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product']);
+        $order->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product', 'orderProducts.productVariation']);
 
         return (new OrderResource($order))->response()->setStatusCode(201);
     }
@@ -74,7 +75,7 @@ class OrderController extends ApiController
 
         $this->orderService->update($payload, $order, $person, $organization);
 
-        $order->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product']);
+        $order->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'orderProducts.product', 'orderProducts.productVariation']);
 
         return new OrderResource($order);
     }
@@ -162,6 +163,13 @@ class OrderController extends ApiController
         return collect($lineItems)->map(function (array $item) use ($existing) {
             $productId = Product::where('external_id', $item['product_id'])->value('id');
 
+            // withTrashed: a line re-sent unchanged keeps a variation deleted since
+            // it was added. The service only keeps a deleted variation when the
+            // line already points at it, and only for that product.
+            $variationId = ! empty($item['product_variation_id'])
+                ? ProductVariation::withTrashed()->where('external_id', $item['product_variation_id'])->value('id')
+                : null;
+
             $orderProductId = null;
             if ($existing && ! empty($item['id'])) {
                 $orderProductId = OrderProduct::where('external_id', $item['id'])
@@ -172,6 +180,7 @@ class OrderController extends ApiController
             return [
                 'id' => $productId,
                 'product_id' => $productId,
+                'product_variation_id' => $variationId,
                 'order_product_id' => $orderProductId,
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['unit_price'],

@@ -154,6 +154,45 @@ One migration, `remove_product_attribute_permissions_from_laravel_crm`, deletes 
 `product_attributes` table your application may have created itself. Its `down()` is lossy: it
 recreates the permissions but cannot restore which roles held them.
 
+### Product variations: two migrations
+
+`php artisan laravelcrm:update` (or a plain `php artisan migrate`) runs two new migrations from
+`database/updates`. You do not need to publish anything:
+
+- `add_code_and_audit_columns_to_laravel_crm_product_variations_table` adds `code` (indexed),
+  `barcode`, `order`, `active` (default `true`) and the `user_created_id` / `user_updated_id` /
+  `user_deleted_id` / `user_restored_id` columns to `crm_product_variations`.
+- `add_comments_and_order_product_id_to_laravel_crm_purchase_order_lines_table` adds `comments`
+  and `order_product_id` to `crm_purchase_order_lines`. `PurchaseOrderService` already wrote both
+  columns, so before this migration, saving a purchase order with lines failed on a real database.
+
+Both migrations check for each column before adding it, so they are safe on installs that added any
+of these columns by hand, and running them twice does nothing. Neither migration changes existing
+rows.
+
+A product with no variations behaves as before. If host code reads `$product->productPrices`, note
+that it now returns product-level prices only. Variation prices share the `crm_product_prices` table
+and are reached through `$variation->productPrices`.
+
+#### Views to re-publish
+
+If you publish or freeze the package views, re-publish these:
+
+- the product form and show page
+- the deal form and show page
+- `livewire/model-products.blade.php`
+- the quote, order, invoice and purchase-order forms
+- the quote, order, invoice, purchase-order and delivery show pages
+- every PDF template
+
+- **Line-item views** (the show pages and PDFs): these now print the variation name
+  (`$line->displayName()`). A published copy that still prints `$line->product->name` shows the
+  product name without the variation.
+- **Quote, order, invoice and purchase-order forms:** these now pass the document currency to
+  `crm-model-products`. Without it, variations are priced in the install currency, not the
+  document's.
+- **Quote form:** it also starts a quote created from a deal with the deal's lines.
+
 ## 2.4.7
 
 ### No migrations, no new config keys

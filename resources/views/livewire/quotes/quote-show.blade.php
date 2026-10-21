@@ -167,12 +167,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($quote->quoteProducts()->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $quoteProduct)
+                        @foreach($quote->quoteProducts()->with(['product', 'productVariation'])->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $quoteProduct)
                             <tr>
                                 <td class="px-0">
-                                    {{ $quoteProduct->product?->name }}
-                                    @if($quoteProduct->product?->code)
-                                        <br /><small>{{ $quoteProduct->product->code }}</small>
+                                    {{ $quoteProduct->displayName() }}
+                                    @if($quoteProduct->displayCode())
+                                        <br /><small>{{ $quoteProduct->displayCode() }}</small>
                                     @endif
                                 </td>
                                 <td>{{ money($quoteProduct->price ?? null, $quoteProduct->currency) }}</td>

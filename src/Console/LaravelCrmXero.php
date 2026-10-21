@@ -154,6 +154,7 @@ class LaravelCrmXero extends Command
                                 if ((isset($item['SalesDetails']['UnitPrice']))) {
                                     $product->productPrices()->updateOrCreate([
                                         'currency' => Setting::currency()->value ?? 'USD',
+                                        'product_variation_id' => null,
                                     ], [
                                         'unit_price' => $item['SalesDetails']['UnitPrice'],
                                     ]);

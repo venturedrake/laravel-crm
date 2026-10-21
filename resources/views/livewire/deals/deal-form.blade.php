@@ -141,11 +141,25 @@
         </x-slot:menu>
         <div id="dealProducts" class="grid gap-3" wire:key="products">
             @foreach($products as $index => $product)
-                <div class="grid lg:grid-cols-10 gap-3 items-end">
+                <div class="grid lg:grid-cols-12 gap-3 items-end">
                     <input type="hidden" wire:model="products.{{ $index }}.deal_product_id" />
                     <span class="lg:col-span-4">
                         <x-mary-select wire:model.live="products.{{ $index }}.id" :options="$productOptions" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.item')) : null }}" />
                     </span>
+                    {{-- Only a product with variations (or a line already on one) gets the select;
+                         the empty span keeps the columns lined up. The placeholder posts '' (no variation). --}}
+                    @php($variationOptions = $this->variationOptions($product['id'] ?? null, $product['product_variation_id'] ?? null))
+                    @if(count($variationOptions) > 0)
+                        <span class="lg:col-span-2">
+                            <x-mary-select wire:model.live="products.{{ $index }}.product_variation_id"
+                                           :options="$variationOptions"
+                                           placeholder="{{ ucfirst(__('laravel-crm::lang.no_variation')) }}"
+                                           placeholder-value=""
+                                           label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.variation')) : null }}" />
+                        </span>
+                    @else
+                        <span class="lg:col-span-2"></span>
+                    @endif
                     <span class="lg:col-span-2">
                         <x-mary-input wire:model.blur="products.{{ $index }}.price" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.price'))  : null}}" prefix="$" x-mask:dynamic="$money($input)" x-on:keyup="$el.dispatchEvent(new Event('input'))" placeholder="0.00" />
                     </span>

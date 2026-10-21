@@ -14,6 +14,7 @@ use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\ProductVariation;
 use VentureDrake\LaravelCrm\Services\InvoiceService;
 
 class InvoiceController extends ApiController
@@ -24,7 +25,7 @@ class InvoiceController extends ApiController
     {
         $this->authorize('viewAny', Invoice::class);
 
-        $query = Invoice::query()->with(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product']);
+        $query = Invoice::query()->with(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product', 'invoiceLines.productVariation']);
 
         if ($request->filled('user_owner_id')) {
             $query->where('user_owner_id', $request->input('user_owner_id'));
@@ -46,7 +47,7 @@ class InvoiceController extends ApiController
     {
         $this->authorize('view', $invoice);
 
-        $invoice->load(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product']);
+        $invoice->load(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product', 'invoiceLines.productVariation']);
 
         return new InvoiceResource($invoice);
     }
@@ -59,7 +60,7 @@ class InvoiceController extends ApiController
 
         $invoice = $this->invoiceService->create($payload, $person, $organization);
 
-        $invoice->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product']);
+        $invoice->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product', 'invoiceLines.productVariation']);
 
         return (new InvoiceResource($invoice))->response()->setStatusCode(201);
     }
@@ -72,7 +73,7 @@ class InvoiceController extends ApiController
 
         $this->invoiceService->update($payload, $invoice, $person, $organization);
 
-        $invoice->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product']);
+        $invoice->refresh()->load(['ownerUser', 'person', 'organization', 'labels', 'invoiceLines.product', 'invoiceLines.productVariation']);
 
         return new InvoiceResource($invoice);
     }
@@ -146,6 +147,13 @@ class InvoiceController extends ApiController
         return collect($lineItems)->map(function (array $item) use ($existing) {
             $productId = Product::where('external_id', $item['product_id'])->value('id');
 
+            // withTrashed: a line re-sent unchanged keeps a variation deleted since
+            // it was added. The service only keeps a deleted variation when the
+            // line already points at it, and only for that product.
+            $variationId = ! empty($item['product_variation_id'])
+                ? ProductVariation::withTrashed()->where('external_id', $item['product_variation_id'])->value('id')
+                : null;
+
             $invoiceLineId = null;
             if ($existing && ! empty($item['id'])) {
                 $invoiceLineId = InvoiceLine::where('external_id', $item['id'])
@@ -156,6 +164,7 @@ class InvoiceController extends ApiController
             return [
                 'id' => $productId,
                 'product_id' => $productId,
+                'product_variation_id' => $variationId,
                 'invoice_line_id' => $invoiceLineId,
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['unit_price'],

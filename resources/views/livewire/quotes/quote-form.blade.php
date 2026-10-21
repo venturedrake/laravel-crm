@@ -87,7 +87,7 @@
             <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
             <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-input wire:model="reference" label="{{ ucfirst(__('laravel-crm::lang.reference')) }}" />
-                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
+                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.currency')) }}" wire:model.live="currency" :options="\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\currencyOptions()" />
             </div>
             <div class="grid lg:grid-cols-2 gap-5 items-start">
                 <x-mary-datetime wire:model="issue_at" label="{{ ucfirst(__('laravel-crm::lang.issue_date')) }}" />
@@ -109,5 +109,7 @@
     <x-crm-custom-fields :model="$quote ?? new \VentureDrake\LaravelCrm\Models\Quote()" :group="true" />
 </div>
 <div>
-   <livewire:crm-model-products :model="$quote ?? null" wire:key="model-products-{{ $quote->id ?? 'new' }}" />
+   {{-- A quote created from a deal starts from the deal's lines. No `from` is passed, so they stay editable. --}}
+   @php($productsSourceDeal = ($fromModel ?? null) instanceof \VentureDrake\LaravelCrm\Models\Deal ? $fromModel : null)
+   <livewire:crm-model-products :model="$quote ?? $productsSourceDeal" :currency="$currency" wire:key="model-products-{{ isset($quote) ? $quote->id : ($productsSourceDeal ? 'deal-'.$productsSourceDeal->id : 'new') }}" />
 </div>

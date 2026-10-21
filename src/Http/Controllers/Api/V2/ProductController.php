@@ -19,7 +19,7 @@ class ProductController extends ApiController
     {
         $this->authorize('viewAny', Product::class);
 
-        $query = Product::query()->with(['ownerUser', 'productCategory', 'productPrices']);
+        $query = Product::query()->with(['ownerUser', 'productCategory', 'productPrices', 'productVariations.productPrices']);
 
         if ($request->filled('user_owner_id')) {
             $query->where('user_owner_id', $request->input('user_owner_id'));
@@ -45,7 +45,7 @@ class ProductController extends ApiController
     {
         $this->authorize('view', $product);
 
-        $product->load(['ownerUser', 'productCategory', 'productPrices']);
+        $product->load(['ownerUser', 'productCategory', 'productPrices', 'productVariations.productPrices']);
 
         return new ProductResource($product);
     }
@@ -58,7 +58,7 @@ class ProductController extends ApiController
 
         $product = $this->productService->create($payload);
 
-        $product->refresh()->load(['ownerUser', 'productCategory', 'productPrices']);
+        $product->refresh()->load(['ownerUser', 'productCategory', 'productPrices', 'productVariations.productPrices']);
 
         return (new ProductResource($product))->response()->setStatusCode(201);
     }
@@ -71,7 +71,7 @@ class ProductController extends ApiController
 
         $this->productService->update($product, $payload);
 
-        $product->refresh()->load(['ownerUser', 'productCategory', 'productPrices']);
+        $product->refresh()->load(['ownerUser', 'productCategory', 'productPrices', 'productVariations.productPrices']);
 
         return new ProductResource($product);
     }
@@ -91,8 +91,11 @@ class ProductController extends ApiController
             ? ProductCategory::where('external_id', $request->input('product_category_id'))->first()
             : null;
 
-        $existingDefaultPrice = $existing?->productPrices()->first();
+        $existingDefaultPrice = $existing?->getPrimaryPrice();
 
+        // No `variations` key: ProductService only syncs variations when the
+        // payload carries that array, so a product write leaves them alone.
+        // Variations are written through /products/{product}/variations.
         return (object) [
             'name' => $request->input('name', $existing?->name),
             'code' => $request->input('code', $existing?->code),

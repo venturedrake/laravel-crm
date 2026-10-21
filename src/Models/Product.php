@@ -40,9 +40,16 @@ class Product extends Model
         return config('laravel-crm.db_table_prefix').'products';
     }
 
+    /**
+     * The product-level prices.
+     *
+     * Variation prices share crm_product_prices and carry this product's id
+     * too, so they are excluded here - otherwise one could be read back as the
+     * product price. They are reached through ProductVariation::productPrices().
+     */
     public function productPrices()
     {
-        return $this->hasMany(ProductPrice::class);
+        return $this->hasMany(ProductPrice::class)->whereNull('product_variation_id');
     }
 
     /**
@@ -63,9 +70,42 @@ class Product extends Model
         return $this->productPrices()->where('currency', $currency)->first();
     }
 
+    /**
+     * The product's own price row: the install currency's, or failing that
+     * whichever row it has - a product priced only in another currency has
+     * no default. The edit form, its save and the show page all read this
+     * row, so the variation prices they show and write share its currency.
+     */
+    public function getPrimaryPrice()
+    {
+        if ($price = $this->getDefaultPrice()) {
+            return $price;
+        }
+
+        return $this->relationLoaded('productPrices')
+            ? $this->productPrices->first()
+            : $this->productPrices()->first();
+    }
+
+    /**
+     * The unit price, in cents, for a line of this product.
+     *
+     * A variation's price in the document currency wins; otherwise the line
+     * falls back to the product price, exactly as a line with no variation.
+     */
+    public function unitPriceFor(?ProductVariation $variation, ?string $currency): ?int
+    {
+        return $variation?->priceFor($currency)?->unit_price ?? $this->getDefaultPrice()?->unit_price;
+    }
+
     public function productVariations()
     {
-        return $this->hasMany(ProductVariation::class);
+        return $this->hasMany(ProductVariation::class)->ordered();
+    }
+
+    public function activeProductVariations()
+    {
+        return $this->productVariations()->active();
     }
 
     public function productCategory()

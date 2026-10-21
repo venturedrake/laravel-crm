@@ -94,12 +94,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($delivery->deliveryProducts()->whereNotNull('order_product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $deliveryProduct)
+                        @foreach($delivery->deliveryProducts()->with(['orderProduct.product', 'orderProduct.productVariation'])->whereNotNull('order_product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $deliveryProduct)
                             <tr>
                                 <td class="px-0">
-                                    {{ $deliveryProduct->orderProduct?->product?->name }}
-                                    @if($deliveryProduct->orderProduct?->product?->code)
-                                        <br /><small>{{ $deliveryProduct->orderProduct->product->code }}</small>
+                                    {{ $deliveryProduct->displayName() }}
+                                    @if($deliveryProduct->displayCode())
+                                        <br /><small>{{ $deliveryProduct->displayCode() }}</small>
                                     @endif
                                 </td>
                                 <td class="text-center w-30">{{ $deliveryProduct->quantity }}</td>
