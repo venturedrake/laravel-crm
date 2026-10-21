@@ -932,50 +932,6 @@ Route::group(['prefix' => 'files', 'middleware' => 'auth.laravel-crm'], function
         ->middleware(['can:update,file']);
 });
 
-/* Customers */
-
-Route::group(['prefix' => 'customers', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@index')
-        ->name('laravel-crm.customers.filter')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
-
-    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@search')
-        ->name('laravel-crm.customers.search')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
-
-    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@index')
-        ->name('laravel-crm.customers.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
-
-    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@create')
-        ->name('laravel-crm.customers.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Customer']);
-
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@store')
-        ->name('laravel-crm.customers.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Customer']);
-
-    Route::get('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@show')
-        ->name('laravel-crm.customers.show')
-        ->middleware(['can:view,customer']);
-
-    Route::get('{client}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@edit')
-        ->name('laravel-crm.customers.edit')
-        ->middleware(['can:update,customer']);
-
-    Route::put('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@update')
-        ->name('laravel-crm.customers.update')
-        ->middleware(['can:update,customer']);
-
-    Route::delete('{client}', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@destroy')
-        ->name('laravel-crm.customers.destroy')
-        ->middleware(['can:delete,customer']);
-
-    Route::get('{client}/autocomplete', 'VentureDrake\LaravelCrm\Http\Controllers\CustomerController@autocomplete')
-        ->name('laravel-crm.customers.autocomplete')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Customer']);
-});
-
 /* People */
 
 Route::group(['prefix' => 'people', 'middleware' => 'auth.laravel-crm'], function () {

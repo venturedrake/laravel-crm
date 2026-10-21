@@ -154,6 +154,14 @@ One migration, `remove_product_attribute_permissions_from_laravel_crm`, deletes 
 `product_attributes` table your application may have created itself. Its `down()` is lossy: it
 recreates the permissions but cannot restore which roles held them.
 
+### Customers routes removed
+
+The leftover v1 `/customers` pages are gone, along with their `laravel-crm.customers.*` routes.
+Host code that calls `route('laravel-crm.customers.index')` (or any sibling) now throws
+`RouteNotFoundException`. The pages never worked in v2: the index threw a `BadMethodCallException`
+and the other pages pointed at views that no longer exist. Use People and Organizations instead.
+The `customers` table and `Customer` model are unchanged, and no migration runs.
+
 ## 2.4.7
 
 ### No migrations, no new config keys
