@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.5.0 - 2026-10-23
+
+### Changed
+- **Version bumped to `2.5.0`.** `config/package.php` still read `2.4.7`. `SystemCheckService::normalisedVersion()`, the `db_version` marker written by `laravelcrm:update`, the update banner in `UpdateController` and the Settings middleware's `crm.settings-seeded.<version>` flag all key off that value. Without the bump, the update banner and the "database is behind the code" check would compare this release against the previous one's number, and a deploy would not re-arm the seeding pass. This is a minor release rather than a patch because it adds a feature (product variations) and a new API sub-resource
+
 ### Added
 - **Product variations.** A product can now have named variations (for example "Small" or "Gold / 18in"). Each variation has its own SKU, barcode, price and active flag, and you can pick one on deal, quote, order, invoice and purchase-order lines. The `crm_product_variations` table, `crm_product_prices.product_variation_id` and the `product_variation_id` line columns were already in the schema, but no code read or wrote them. A product with no variations behaves exactly as before
   - **Product form.** A new Variations card adds, edits, reorders, deactivates and removes variations. Each variation has one price, in the product's currency, and a variation without a price sells at the product price. Removing a variation soft-deletes it, so lines that use it keep their label. The product show page lists the variations, and searching the products index by a variation SKU finds the parent product

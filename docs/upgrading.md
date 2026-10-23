@@ -140,7 +140,17 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
-## Unreleased
+## 2.5.0
+
+This minor release adds product variations, and it runs three migrations. The upgrade is still
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+but read the sections below before you deploy. Two route groups are gone, and if you publish or
+freeze the package views, several of them need re-publishing. No configuration keys are added.
 
 ### Product Attributes removed
 
@@ -200,6 +210,14 @@ If you publish or freeze the package views, re-publish these:
   `crm-model-products`. Without it, variations are priced in the install currency, not the
   document's.
 - **Quote form:** it also starts a quote created from a deal with the deal's lines.
+
+### Person and organization linking
+
+Saving a lead, deal, quote, order, invoice or purchase order with both a contact person and an
+organization now links the two as related contacts. The fix is PHP-only (the create and edit
+Livewire components and `PersonService::linkToOrganization()`), so it applies even if you keep
+published or frozen views. It does not backfill: records saved before this release stay unlinked
+until they are saved again.
 
 ## 2.4.7
 
