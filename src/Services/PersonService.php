@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Repositories\PersonRepository;
@@ -75,6 +76,28 @@ class PersonService
         }
 
         return $person;
+    }
+
+    /**
+     * Link a person and an organization as related contacts, in both directions,
+     * when they are saved together on a lead, deal, quote, order, invoice or
+     * purchase order. Existing links are left as they are.
+     */
+    public function linkToOrganization(?Person $person, ?Organization $organization): void
+    {
+        if (! $person || ! $organization) {
+            return;
+        }
+
+        $person->contacts()->firstOrCreate([
+            'entityable_type' => $organization->getMorphClass(),
+            'entityable_id' => $organization->id,
+        ]);
+
+        $organization->contacts()->firstOrCreate([
+            'entityable_type' => $person->getMorphClass(),
+            'entityable_id' => $person->id,
+        ]);
     }
 
     public function update(Person $person, $request)

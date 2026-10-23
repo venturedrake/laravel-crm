@@ -71,6 +71,8 @@ class QuoteEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $this->quoteService->update($request, $this->quote, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($this->quote->fresh());

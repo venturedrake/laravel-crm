@@ -115,6 +115,8 @@ class OrderCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $order = $this->orderService->create($request, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($order);

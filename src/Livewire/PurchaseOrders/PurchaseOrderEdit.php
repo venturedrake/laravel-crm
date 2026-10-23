@@ -71,6 +71,8 @@ class PurchaseOrderEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $this->purchaseOrderService->update($request, $this->purchaseOrder, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($this->purchaseOrder->fresh());

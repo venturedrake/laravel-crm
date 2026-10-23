@@ -94,6 +94,8 @@ class DealEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $this->dealService->update($request, $this->deal, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($this->deal->fresh());

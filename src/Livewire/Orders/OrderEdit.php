@@ -109,6 +109,8 @@ class OrderEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $this->orderService->update($request, $this->order, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($this->order->fresh());

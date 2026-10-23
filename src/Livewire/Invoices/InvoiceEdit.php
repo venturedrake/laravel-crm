@@ -64,6 +64,8 @@ class InvoiceEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $this->invoiceService->update($request, $this->invoice, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($this->invoice->fresh());

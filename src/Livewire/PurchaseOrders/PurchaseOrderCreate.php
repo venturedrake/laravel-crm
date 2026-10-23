@@ -92,6 +92,8 @@ class PurchaseOrderCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $purchaseOrder = $this->purchaseOrderService->create($request, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($purchaseOrder);

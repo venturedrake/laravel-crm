@@ -82,6 +82,8 @@ class LeadEdit extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $this->leadService->update($request, $this->lead, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($this->lead->fresh());

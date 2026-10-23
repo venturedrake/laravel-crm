@@ -93,6 +93,8 @@ class LeadCreate extends Component
             $organization = Organization::find($this->organization_id);
         }
 
+        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+
         $lead = $this->leadService->create($request, $person ?? null, $organization ?? null);
 
         $this->saveCustomFields($lead);
