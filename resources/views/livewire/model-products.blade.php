@@ -11,7 +11,7 @@
             <table class="table">
                 <tbody class="model-products-rows">
                 @foreach($products as $index => $product)
-                    <tr wire:key="product-row-{{ $index }}" class="hover:bg-base-300 cursor-grab">
+                    <tr wire:key="product-row-{{ $product['row_key'] ?? $index }}" class="hover:bg-base-300">
                         <td class="px-3 relative" colspan="2">
                             <div class="space-y-3">
                                 @if(in_array($from, ['Quote', 'Order']) || class_basename($model) == 'Delivery')
@@ -41,7 +41,7 @@
                                     @endif
 
                                     <div class="absolute top-3 right-3">
-                                        <x-mary-icon name="fas.arrows-alt-v"/>
+                                        <x-mary-icon name="fas.arrows-alt-v" class="model-products-handle cursor-grab"/>
                                         @if($canManageProducts)
                                             <x-mary-button wire:click="remove({{ $index }})" class="btn-xs btn-error btn-square text-white" type="button" icon="fas.x" />
                                         @endif
@@ -144,3 +144,27 @@
         </x-mary-drawer>
     </div>
 </x-mary-card>
+
+@if($canManageProducts && ! $from && class_basename($model) != 'Delivery')
+    @script
+    <script>
+        Sortable.create($wire.$el.querySelector('.model-products-rows'), {
+            handle: '.model-products-handle',
+            animation: 150,
+            ghostClass: 'bg-base-300',
+
+            onEnd: function (evt) {
+                if (evt.oldIndex === evt.newIndex) {
+                    return;
+                }
+
+                // Put the row back where it was, so Livewire's keyed morph does
+                // the real move once the server has reordered the products.
+                evt.from.insertBefore(evt.item, evt.from.children[evt.oldIndex + (evt.oldIndex > evt.newIndex ? 1 : 0)] ?? null);
+
+                $wire.moveProduct(evt.oldIndex, evt.newIndex);
+            },
+        });
+    </script>
+    @endscript
+@endif
