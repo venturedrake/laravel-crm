@@ -3,6 +3,7 @@
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -305,9 +306,9 @@ test('v2 upgrade renames tables columns permissions and polymorphic types', func
 
     $countsBefore = snapshotV1RowCounts();
 
-    $this->artisan('laravelcrm:v2')
-        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+    $this->artisan('laravelcrm:v2', ['--force' => true])
         ->doesntExpectOutputToContain('has NOT been updated')
+        ->expectsOutputToContain('Laravel CRM is now updated to version 2.')
         ->assertExitCode(0);
 
     $prefix = config('laravel-crm.db_table_prefix');
@@ -404,13 +405,17 @@ test('v2 upgrade is idempotent', function () {
         ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
         ->assertExitCode(0);
 
-    $snapshot = snapshotV2RowCounts();
+    $counts = snapshotV2RowCounts();
+    $migrations = DB::table('migrations')->orderBy('migration')->get(['migration', 'batch'])->all();
+    $classNames = snapshotClassNames();
 
-    $this->artisan('laravelcrm:v2')
-        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+    $this->artisan('laravelcrm:v2', ['--force' => true])
+        ->doesntExpectOutputToContain('has NOT been updated')
         ->assertExitCode(0);
 
-    expect(snapshotV2RowCounts())->toBe($snapshot, 'Second upgrade run mutated data.');
+    expect(snapshotV2RowCounts())->toBe($counts, 'Second upgrade run mutated data.')
+        ->and(DB::table('migrations')->orderBy('migration')->get(['migration', 'batch'])->all())->toEqual($migrations)
+        ->and(snapshotClassNames())->toBe($classNames);
 
     $prefix = config('laravel-crm.db_table_prefix');
     expect(Schema::hasTable($prefix.'organizations'))->toBeTrue();
@@ -419,14 +424,11 @@ test('v2 upgrade is idempotent', function () {
     expect(Schema::hasColumn($prefix.'leads', 'customer_id'))->toBeTrue();
 });
 
-test('v2 upgrade aborts when user declines backup confirmation', function () {
-    seedV1Data();
-
-    $this->artisan('laravelcrm:v2')
-        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'no')
-        ->expectsOutputToContain('Aborted')
-        ->assertExitCode(0);
-
+/**
+ * The state a v2 upgrade that changed nothing leaves behind.
+ */
+function assertStillOnV1(): void
+{
     $prefix = config('laravel-crm.db_table_prefix');
 
     expect(Schema::hasTable($prefix.'organisations'))->toBeTrue();
@@ -434,6 +436,61 @@ test('v2 upgrade aborts when user declines backup confirmation', function () {
     expect(Schema::hasTable($prefix.'organizations'))->toBeFalse();
     expect(Schema::hasTable($prefix.'customers'))->toBeFalse();
     expect(Permission::where('name', 'view organisations')->exists())->toBeTrue();
+}
+
+test('v2 upgrade aborts when user declines backup confirmation', function () {
+    seedV1Data();
+
+    // A non-zero exit, deliberately: nothing was upgraded, and a deploy
+    // script chaining `laravelcrm:v2 && ...` must not carry on as if it had.
+    $this->artisan('laravelcrm:v2')
+        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'no')
+        ->expectsOutputToContain('Aborted')
+        ->assertExitCode(1);
+
+    assertStillOnV1();
+});
+
+test('v2 upgrade refuses to run unattended without --force', function () {
+    seedV1Data();
+
+    $this->artisan('laravelcrm:v2', ['--no-interaction' => true])
+        ->expectsOutputToContain('--force')
+        ->assertExitCode(1);
+
+    assertStillOnV1();
+});
+
+test('v2 upgrade fails when the nested laravelcrm:update fails', function () {
+    seedV1Data();
+
+    $path = sys_get_temp_dir().DIRECTORY_SEPARATOR.'crm-failing-migration-'.uniqid();
+    mkdir($path);
+    file_put_contents($path.'/2099_01_01_000000_fail_the_crm_v2_upgrade.php', <<<'PHP'
+        <?php
+
+        use Illuminate\Database\Migrations\Migration;
+
+        return new class extends Migration
+        {
+            public function up(): void
+            {
+                throw new RuntimeException('Simulated migration failure');
+            }
+        };
+        PHP);
+
+    app('migrator')->path($path);
+
+    try {
+        $this->artisan('laravelcrm:v2', ['--force' => true])
+            ->expectsOutputToContain('Simulated migration failure')
+            ->expectsOutputToContain('laravelcrm:update did not finish')
+            ->doesntExpectOutputToContain('now updated to version 2')
+            ->assertExitCode(1);
+    } finally {
+        (new Filesystem)->deleteDirectory($path);
+    }
 });
 
 // --------------------------------------------------------------------

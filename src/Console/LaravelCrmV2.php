@@ -85,7 +85,8 @@ class LaravelCrmV2 extends Command
      *
      * @var string
      */
-    protected $signature = 'laravelcrm:v2';
+    protected $signature = 'laravelcrm:v2
+                           {--force : Skip the backup confirmation and run laravelcrm:update with --force}';
 
     /**
      * The console command description.
@@ -123,7 +124,7 @@ class LaravelCrmV2 extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
     public function handle()
     {
@@ -135,10 +136,22 @@ class LaravelCrmV2 extends Command
         $this->warn(' Please take a FULL DATABASE BACKUP before continuing.');
         $this->warn('=========================================================');
 
-        if (! $this->confirm('Have you taken a backup and do you want to continue?', false)) {
-            $this->info('Aborted. No changes have been made.');
+        $force = (bool) $this->option('force');
 
-            return self::SUCCESS;
+        // Every way out that changes nothing is a failure, so a deploy script's
+        // `&&` chain stops instead of carrying on against a v1 database.
+        if (! $force) {
+            if (! $this->input->isInteractive()) {
+                $this->error('laravelcrm:v2 needs confirmation. Take a full database backup, then re-run it with --force.');
+
+                return self::FAILURE;
+            }
+
+            if (! $this->confirm('Have you taken a backup and do you want to continue?', false)) {
+                $this->info('Aborted. No changes have been made.');
+
+                return self::FAILURE;
+            }
         }
 
         $this->prefix = config('laravel-crm.db_table_prefix', 'crm_');
@@ -170,7 +183,11 @@ class LaravelCrmV2 extends Command
 
         $this->info('v1 -> v2 renames complete. Publishing and running v2 migrations...');
 
-        $this->call('laravelcrm:update');
+        if ($this->call('laravelcrm:update', $force ? ['--force' => true] : []) !== self::SUCCESS) {
+            $this->error('laravelcrm:update did not finish. Fix the error above and re-run php artisan laravelcrm:v2, which is safe to repeat.');
+
+            return self::FAILURE;
+        }
 
         // v2 upgraders may also have flipped `LARAVEL_CRM_TEAMS=true` during the
         // upgrade. Unconditionally back-fill per-team CRM lookup data + pipelines
@@ -199,6 +216,8 @@ class LaravelCrmV2 extends Command
         }
 
         $this->info('Laravel CRM is now updated to version 2.');
+
+        return self::SUCCESS;
     }
 
     /**
