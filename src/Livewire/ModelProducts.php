@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire;
 
+use Illuminate\Support\Str;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasVariationOptions;
@@ -54,7 +55,7 @@ class ModelProducts extends Component
         } else {
             switch (class_basename($this->model)) {
                 case 'Quote':
-                    foreach ($this->model->quoteProducts as $quoteProduct) {
+                    foreach ($this->model->quoteProducts()->orderBy('order')->orderBy('id')->get() as $quoteProduct) {
                         $this->products[] = [
                             'quote_product_id' => $quoteProduct->id,
                             'id' => $quoteProduct->product_id,
@@ -72,7 +73,7 @@ class ModelProducts extends Component
                     break;
 
                 case 'Order':
-                    foreach ($this->model->orderProducts as $orderProduct) {
+                    foreach ($this->model->orderProducts()->orderBy('order')->orderBy('id')->get() as $orderProduct) {
                         // Reset per iteration - leaving it set leaks the previous
                         // line's remainder onto a line that does not draw down.
                         $quantityRemaining = null;
@@ -124,7 +125,7 @@ class ModelProducts extends Component
                     break;
 
                 case 'Invoice':
-                    foreach ($this->model->invoiceLines as $invoiceLine) {
+                    foreach ($this->model->invoiceLines()->orderBy('order')->orderBy('id')->get() as $invoiceLine) {
                         $this->products[] = [
                             'invoice_line_id' => $invoiceLine->id,
                             'id' => $invoiceLine->product_id,
@@ -141,7 +142,7 @@ class ModelProducts extends Component
                     break;
 
                 case 'Delivery':
-                    foreach ($this->model->deliveryProducts as $deliveryProduct) {
+                    foreach ($this->model->deliveryProducts()->orderBy('order')->orderBy('id')->get() as $deliveryProduct) {
                         $this->products[] = [
                             'delivery_product_id' => $deliveryProduct->id,
                             'id' => $deliveryProduct->orderProduct->product_id,
@@ -154,7 +155,7 @@ class ModelProducts extends Component
                     break;
 
                 case 'PurchaseOrder':
-                    foreach ($this->model->purchaseOrderLines as $purchaseOrderLine) {
+                    foreach ($this->model->purchaseOrderLines()->orderBy('order')->orderBy('id')->get() as $purchaseOrderLine) {
                         $this->products[] = [
                             'purchase_order_line_id' => $purchaseOrderLine->id,
                             'id' => $purchaseOrderLine->product_id,
@@ -175,7 +176,7 @@ class ModelProducts extends Component
                     // They stay editable - the form passes no `from` - and the
                     // deal_product_id lets the quote carry the line's variation
                     // across even if it has since been deleted.
-                    foreach ($this->model->dealProducts()->whereNotNull('product_id')->get() as $dealProduct) {
+                    foreach ($this->model->dealProducts()->whereNotNull('product_id')->orderBy('order')->orderBy('id')->get() as $dealProduct) {
                         $index = count($this->products);
 
                         $this->products[] = [
@@ -212,6 +213,8 @@ class ModelProducts extends Component
 
                     break;
             }
+
+            $this->keyRows();
 
             $this->recalculateTotals();
 
@@ -378,9 +381,21 @@ class ModelProducts extends Component
         $this->dispatch('model-products-updated', products: $this->products, sub_total: $this->sub_total, tax: $this->tax, total: $this->total);
     }
 
+    /**
+     * Give each loaded row a stable key, so the view can follow a row by
+     * identity rather than by its index once rows are dragged around.
+     */
+    protected function keyRows(): void
+    {
+        foreach ($this->products as $index => $product) {
+            $this->products[$index]['row_key'] ??= (string) Str::uuid();
+        }
+    }
+
     public function add()
     {
         $this->products[] = [
+            'row_key' => (string) Str::uuid(),
             'id' => null,
             'product_variation_id' => null,
             'name' => null,
@@ -400,6 +415,33 @@ class ModelProducts extends Component
     {
         unset($this->products[$index]);
         $this->products = array_values($this->products);
+
+        $this->recalculateTotals();
+
+        $this->dispatchProductsUpdated();
+    }
+
+    /**
+     * Move a row to a new position, from a drag in the browser. The services
+     * save each line's `order` from its position in the array, so the parent
+     * form only needs the reordered rows.
+     */
+    public function moveProduct(int $from, int $to)
+    {
+        $count = count($this->products);
+
+        if ($from === $to || $from < 0 || $to < 0 || $from >= $count || $to >= $count) {
+            return;
+        }
+
+        $products = array_values($this->products);
+        $row = array_splice($products, $from, 1);
+        array_splice($products, $to, 0, $row);
+
+        $this->products = $products;
+
+        // Errors are keyed by row index, so they would land on the wrong rows.
+        $this->resetErrorBag();
 
         $this->recalculateTotals();
 

@@ -103,7 +103,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($purchaseOrder->purchaseOrderLines->whereNotNull('product_id') as $purchaseOrderLine)
+            @foreach($purchaseOrder->purchaseOrderLines->whereNotNull('product_id')->sortBy([['order', 'asc'], ['created_at', 'asc']]) as $purchaseOrderLine)
                 <tr>
                     <td>{{ $purchaseOrderLine->displayName() }}</td>
                     <td class="bold-num">{{ money($purchaseOrderLine->price ?? null, $purchaseOrderLine->currency) }}</td>

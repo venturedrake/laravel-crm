@@ -69,6 +69,7 @@ class PurchaseOrderService
             $subTotal = 0;
             $tax = 0;
             $total = 0;
+            $purchaseOrderLineOrder = 0;
 
             foreach ($request->products as $purchaseOrderLine) {
                 if (isset($purchaseOrderLine['id']) && Quantity::isPositive($purchaseOrderLine['quantity'])) {
@@ -107,6 +108,7 @@ class PurchaseOrderService
                         'currency' => $request->currency,
                         'order_product_id' => $purchaseOrderLine['order_product_id'] ?? null,
                         'comments' => $purchaseOrderLine['comments'] ?? null,
+                        'order' => ++$purchaseOrderLineOrder,
                     ]);
                 }
             }
