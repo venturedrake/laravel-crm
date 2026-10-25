@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.5.1 - 2026-10-25
+
+### Changed
+- **Version bumped to `2.5.1`.** `config/package.php` still read `2.5.0`. `SystemCheckService::normalisedVersion()`, the `db_version` marker written by `laravelcrm:update`, the update banner in `UpdateController` and the Settings middleware's `crm.settings-seeded.<version>` flag all key off that value
+
+### Fixed
+- **`laravelcrm:v2` left v1 class names in ten columns.** It rewrote `Organisation` → `Organization` and `Client` → `Customer` only in the emails, phones, addresses, field values, notes, contacts, files and customers morphs. Labels, tasks, calls, meetings and lunches on an organization, activity timeline entries (`timelineable_type`, `recordable_type`, `causeable_type`), custom-field model assignments (`crm_field_models.model`) and the v1 `audits.auditable_type` still pointed at classes that no longer exist, so those records disappeared from organization pages. The rewrite now covers every column that stores a CRM class name. It matches exactly, so `Person` rows are untouched, and it leaves `audits.old_values` / `new_values` alone. Hosts that already ran 2.5.0's `laravelcrm:v2` can re-run `php artisan laravelcrm:v2 --force` on 2.5.1 to repair them (see [docs/upgrading.md](docs/upgrading.md))
+- **`laravelcrm:v2` aborted with a duplicate column on v1 hosts.** v2 republishes seven v1 migrations under new names, and the nested `migrate` ran them again. `add_extra_fields_to_laravel_crm_organizations_table` has no guards, so it failed on `vat_number`. The stub now adds and drops only the columns it needs to, and `laravelcrm:update` re-publishes it over your copy. `laravelcrm:v2` also marks the v2 name of each renamed v1 migration as run, in the v1 row's batch, and keeps the v1 row. `add_client_to_laravel_crm_deals_table` is deliberately not reconciled: from 0.19.0 that v1 stub added `url` columns instead of `client_id`, so its guarded v2 counterpart runs and adds `customer_id` where it is missing
+- **Running `migrate` before `laravelcrm:v2` stranded the v1 data.** It created empty `crm_organizations`, `crm_organization_types` and `crm_customers` tables and NULL `customer_id` columns next to the v1 ones, and the renames then skipped them. `migrate` and `laravelcrm:update` now refuse to start while a v1 table exists, and tell you to run `laravelcrm:v2` first (`GuardCrmV2Upgrade`; `migrate:status` and the commands `laravelcrm:v2` runs itself are not affected). `laravelcrm:v2` checks for stranded v2 tables and columns before it changes anything. Empty ones are dropped, and v2 data next to v1 data stops the upgrade with both row counts and "Nothing has been changed"
+- **`laravelcrm:v2` reported success when it had failed.** It ignored the exit code of the nested `laravelcrm:update` and printed "Laravel CRM is now updated to version 2." over a failed migration. **Exit codes change:** it now exits `1` when `laravelcrm:update` fails, when you decline the backup prompt (previously `0`), and when it runs non-interactively without `--force`. The new `--force` option skips the prompt and passes `--force` on to `laravelcrm:update`, for deploy scripts. Re-running it after a failure is safe
+- Covered by `tests/Upgrade/V1ToV2UpgradeTest.php`, which now runs against a realistic v1 database (`tests/Stubs/V1Schema.php`), so the nested `laravelcrm:update` has to succeed for real
+
 ## 2.5.0 - 2026-10-23
 
 ### Changed

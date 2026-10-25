@@ -140,6 +140,124 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.5.1
+
+This is a bug-fix release for the v1 → v2 upgrade (`laravelcrm:v2`). If you are already on v2,
+nothing changes for you, and the upgrade is the usual
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+### No migrations, no new config keys
+
+2.5.1 adds no tables, columns or configuration keys, and no views changed. One migration you have
+already published is fixed in place: `add_extra_fields_to_laravel_crm_organizations_table` now adds
+and drops only the columns it needs to. `laravelcrm:update` re-publishes it over your copy, and
+because the file name stays the same, a migration that has already run does not run again.
+
+### Upgrading from v1: go straight to 2.5.1
+
+If you are still on CRM 1.x, upgrade directly to 2.5.1 and do **not** run 2.5.0's `laravelcrm:v2`.
+2.5.0 left v1 class names in ten columns and could abort part-way. The procedure is:
+
+1. Take a full database backup.
+2. `composer require venturedrake/laravel-crm:^2.5.1`
+3. `php artisan laravelcrm:v2 --force`
+
+Do not run `php artisan migrate` or `php artisan laravelcrm:update` before step 3. `laravelcrm:v2`
+renames the v1 tables first and then runs `laravelcrm:update` itself.
+
+### `laravelcrm:v2 --force`
+
+`--force` skips the backup prompt and passes `--force` on to `laravelcrm:update`, so the command can
+run from a deploy script. Without it, `laravelcrm:v2` still asks you to confirm that you have taken
+a backup.
+
+### Exit codes
+
+`laravelcrm:v2` now exits `1` when:
+
+- you decline the backup prompt (it used to exit `0`)
+- it runs non-interactively without `--force` (it used to treat that as declining)
+- the nested `laravelcrm:update` fails (it used to ignore the failure and print "Laravel CRM is now
+  updated to version 2.")
+
+On a failure it tells you to fix the error and re-run `php artisan laravelcrm:v2`. Re-running it is
+safe: every step skips work that is already done.
+
+### `migrate` is blocked on a v1 database
+
+`php artisan migrate` and `php artisan laravelcrm:update` now refuse to start while any of
+`crm_organisations`, `crm_organisation_types` or `crm_clients` exists (with your table prefix). They
+stop with a message that tells you to take a backup and run `php artisan laravelcrm:v2` first.
+Running the v2 migrations first creates empty v2 tables next to the v1 ones, and that used to strand
+the v1 data. `migrate:status` and other commands are not affected, and neither are the `migrate` and
+`laravelcrm:update` calls that `laravelcrm:v2` makes itself. The check uses the default database
+connection only.
+
+If you added an `App\Listeners\GuardCrmV2Upgrade` listener to work around this, you can delete it
+once you are on 2.5.1. Keeping it is harmless.
+
+### Stranded v2 tables are healed
+
+If `migrate` already ran before `laravelcrm:v2`, `laravelcrm:v2` now finds the v2 tables and
+columns sitting next to their v1 counterparts before it changes anything:
+
+- A v2 table with no rows (`crm_customers`, `crm_organization_types`, `crm_organizations`) is
+  dropped, and the v1 table is renamed into its place.
+- A v2 column that is NULL in every row (for example `crm_leads.customer_id` next to `client_id`) is
+  dropped, together with its indexes, and the v1 column is renamed into its place.
+
+If a v2 table has rows, or a v2 column has values, the command lists each one with both names and
+both counts, prints "Nothing has been changed" and exits `1`. Decide which side holds the data you
+want. Usually that is the v1 side, unless people have used the CRM since the early `migrate`. Then
+remove or empty the other side, or restore your backup, and re-run `php artisan laravelcrm:v2`.
+
+### If you already ran 2.5.0's `laravelcrm:v2`
+
+2.5.0 rewrote `Organisation` and `Client` class names only in the emails, phones, addresses, field
+values, notes, contacts, files and customers tables. Check the other columns with this query. It
+assumes the default `crm_` prefix, so adjust it if yours differs, and leave out the `audits` line if
+you never had that table. MySQL needs the doubled backslashes in string literals; on PostgreSQL and
+SQLite, use single ones.
+
+```sql
+SELECT 'crm_labelables.crm_labelable_type' AS col, COUNT(*) AS n FROM crm_labelables WHERE crm_labelable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_tasks.taskable_type', COUNT(*) FROM crm_tasks WHERE taskable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_calls.callable_type', COUNT(*) FROM crm_calls WHERE callable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_meetings.meetingable_type', COUNT(*) FROM crm_meetings WHERE meetingable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_lunches.lunchable_type', COUNT(*) FROM crm_lunches WHERE lunchable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_activities.timelineable_type', COUNT(*) FROM crm_activities WHERE timelineable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_activities.recordable_type', COUNT(*) FROM crm_activities WHERE recordable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_activities.causeable_type', COUNT(*) FROM crm_activities WHERE causeable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'crm_field_models.model', COUNT(*) FROM crm_field_models WHERE model IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client')
+UNION ALL SELECT 'audits.auditable_type', COUNT(*) FROM audits WHERE auditable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+```
+
+If any count is above zero, take a backup and re-run `php artisan laravelcrm:v2 --force` on 2.5.1.
+It is idempotent: on a database that is already on v2 it renames nothing, rewrites the class names
+in the newly covered columns, marks the renamed migrations as run, and runs `laravelcrm:update`.
+
+To fix the columns by hand instead, run one statement per column (MySQL shown):
+
+```sql
+UPDATE crm_labelables SET crm_labelable_type = CASE crm_labelable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE crm_labelable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_tasks SET taskable_type = CASE taskable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE taskable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_calls SET callable_type = CASE callable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE callable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_meetings SET meetingable_type = CASE meetingable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE meetingable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_lunches SET lunchable_type = CASE lunchable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE lunchable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_activities SET timelineable_type = CASE timelineable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE timelineable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_activities SET recordable_type = CASE recordable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE recordable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_activities SET causeable_type = CASE causeable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE causeable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE crm_field_models SET model = CASE model WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE model IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+UPDATE audits SET auditable_type = CASE auditable_type WHEN 'VentureDrake\\LaravelCrm\\Models\\Organisation' THEN 'VentureDrake\\LaravelCrm\\Models\\Organization' ELSE 'VentureDrake\\LaravelCrm\\Models\\Customer' END WHERE auditable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
+```
+
+`audits.old_values` and `new_values` are history and are not rewritten, by the command or by these
+statements.
+
 ## 2.5.0
 
 This minor release adds product variations, and it runs three migrations. The upgrade is still
