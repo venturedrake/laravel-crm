@@ -6,12 +6,37 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
 use VentureDrake\LaravelCrm\Models\Permission;
 use VentureDrake\LaravelCrm\Observers\TeamObserver;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
 class LaravelCrmV2 extends Command
 {
+    /**
+     * v1 migrations that v2 publishes under a new name for the same schema
+     * change, keyed by v1 name suffix (the part after the timestamp).
+     *
+     * A v1 host has a migrations row for the v1 name only, so without
+     * reconciliation the nested `migrate` runs the v2 file again. The
+     * `add_client_to_laravel_crm_deals_table` pair is left out on purpose:
+     * from 0.19.0 its v1 stub added `url` columns instead of `client_id`, so
+     * on many v1 hosts the row exists but the column was never added. Its v2
+     * counterpart is guarded and adds `customer_id` only when missing.
+     *
+     * @var array<string, string>
+     */
+    public const RENAMED_MIGRATIONS = [
+        'create_laravel_crm_organisation_types_table' => 'create_laravel_crm_organization_types_table',
+        'create_laravel_crm_clients_table' => 'create_laravel_crm_customers_table',
+        'add_name_to_laravel_crm_clients_table' => 'add_name_to_laravel_crm_customers_table',
+        'add_client_to_laravel_crm_leads_table' => 'add_customer_to_laravel_crm_leads_table',
+        'add_client_to_laravel_crm_orders_table' => 'add_customer_to_laravel_crm_orders_table',
+        'add_client_to_laravel_crm_quotes_table' => 'add_customer_to_laravel_crm_quotes_table',
+        'add_extra_fields_to_laravel_crm_organisations_table' => 'add_extra_fields_to_laravel_crm_organizations_table',
+    ];
+
     /**
      * @var SettingService
      */
@@ -97,6 +122,8 @@ class LaravelCrmV2 extends Command
         } finally {
             Schema::enableForeignKeyConstraints();
         }
+
+        $this->reconcileRenamedMigrations();
 
         $this->info('v1 -> v2 renames complete. Publishing and running v2 migrations...');
 
@@ -269,6 +296,48 @@ class LaravelCrmV2 extends Command
                     DB::table($table)->where($column, $from)->update([$column => $to]);
                 }
             }
+        }
+    }
+
+    /**
+     * Mark the v2 name of each renamed v1 migration as run, in the v1 row's batch.
+     *
+     * The v1 row is kept. If the v1 file is still in the host's
+     * database/migrations, deleting its row would make `migrate` run it again.
+     */
+    protected function reconcileRenamedMigrations(): void
+    {
+        $repository = app('migration.repository');
+
+        if (! $repository->repositoryExists()) {
+            return;
+        }
+
+        $batches = $repository->getMigrationBatches();
+        $ran = collect(array_keys($batches));
+
+        // The names laravelcrm:update is about to publish: the host's existing
+        // file where there is one, otherwise the provider's minted name.
+        $published = collect(ServiceProvider::pathsToPublish(LaravelCrmServiceProvider::class, 'migrations'))
+            ->map(fn ($path) => basename($path, '.php'))
+            ->values();
+
+        foreach (self::RENAMED_MIGRATIONS as $v1 => $v2) {
+            $v1Migration = $ran->first(fn ($name) => preg_match('/^\d{4}_\d{2}_\d{2}_\d{6}_'.preg_quote($v1, '/').'$/', $name));
+
+            if ($v1Migration === null || $ran->contains(fn ($name) => str_ends_with($name, '_'.$v2))) {
+                continue;
+            }
+
+            $v2Migration = $published->first(fn ($name) => str_ends_with($name, '_'.$v2));
+
+            if ($v2Migration === null) {
+                continue;
+            }
+
+            $this->line("Marking migration as run: {$v2Migration} (already applied as {$v1Migration})");
+
+            $repository->log($v2Migration, $batches[$v1Migration]);
         }
     }
 

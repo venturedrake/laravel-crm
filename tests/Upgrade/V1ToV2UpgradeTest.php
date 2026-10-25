@@ -2,9 +2,13 @@
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\PermissionRegistrar;
+use VentureDrake\LaravelCrm\Console\LaravelCrmV2;
+use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
 use VentureDrake\LaravelCrm\Models\Permission;
 use VentureDrake\LaravelCrm\Services\SystemCheckService;
+use VentureDrake\LaravelCrm\Tests\Stubs\V1Schema;
 
 /**
  * End-to-end test of the v1 → v2 upgrade pipeline driven by `laravelcrm:v2`.
@@ -22,9 +26,13 @@ function seedV1Data(): void
     $prefix = config('laravel-crm.db_table_prefix');
     $now = now();
 
+    // The four types the v1 seeder created. The v2 seeder keys on a setting v1
+    // never wrote, so it re-runs firstOrCreate by id and must find them all.
     DB::table($prefix.'organisation_types')->insert([
-        ['id' => 1, 'name' => 'Customer', 'created_at' => $now, 'updated_at' => $now],
-        ['id' => 2, 'name' => 'Supplier', 'created_at' => $now, 'updated_at' => $now],
+        ['id' => 1, 'name' => 'Sole Trader', 'created_at' => $now, 'updated_at' => $now],
+        ['id' => 2, 'name' => 'Partnership', 'created_at' => $now, 'updated_at' => $now],
+        ['id' => 3, 'name' => 'Company', 'created_at' => $now, 'updated_at' => $now],
+        ['id' => 4, 'name' => 'Trust', 'created_at' => $now, 'updated_at' => $now],
     ]);
     DB::table($prefix.'organisations')->insert([
         ['id' => 1, 'external_id' => 'org-1', 'name' => 'Acme Inc', 'organisation_type_id' => 1, 'created_at' => $now, 'updated_at' => $now],
@@ -253,6 +261,21 @@ function snapshotClassNames(): array
     return $out;
 }
 
+/**
+ * The published file name (without .php) of a migration stub, as the
+ * provider resolves it.
+ */
+function publishedMigrationName(string $suffix): string
+{
+    $name = collect(ServiceProvider::pathsToPublish(LaravelCrmServiceProvider::class, 'migrations'))
+        ->map(fn ($path) => basename($path, '.php'))
+        ->first(fn ($name) => str_ends_with($name, '_'.$suffix));
+
+    expect($name)->not->toBeNull("No published migration ends in {$suffix}.");
+
+    return $name;
+}
+
 function assertPolymorphTypeRewritten(string $table, string $column): void
 {
     expect(DB::table($table)->where($column, V1_ORG_CLASS)->count())
@@ -278,9 +301,20 @@ test('v2 upgrade renames tables columns permissions and polymorphic types', func
 
     $this->artisan('laravelcrm:v2')
         ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+        ->doesntExpectOutputToContain('has NOT been updated')
         ->assertExitCode(0);
 
     $prefix = config('laravel-crm.db_table_prefix');
+
+    // The v2 names of the renamed v1 migrations are recorded in the v1 rows'
+    // batch, so the nested migrate does not run them again.
+    $batches = app('migration.repository')->getMigrationBatches();
+    foreach (LaravelCrmV2::RENAMED_MIGRATIONS as $v2) {
+        expect($batches[publishedMigrationName($v2)] ?? null)->toBe(1, "Expected {$v2} to be marked as run in batch 1.");
+    }
+
+    // The deals pair is deliberately not reconciled: its v2 migration really ran.
+    expect($batches[publishedMigrationName('add_customer_to_laravel_crm_deals_table')] ?? null)->toBeGreaterThan(1);
 
     expect(Schema::hasTable($prefix.'organisations'))->toBeFalse();
     expect(Schema::hasTable($prefix.'organisation_types'))->toBeFalse();
@@ -334,6 +368,26 @@ test('v2 upgrade renames tables columns permissions and polymorphic types', func
     $countsAfter = snapshotV2RowCounts();
     foreach ($countsBefore as $key => $count) {
         expect($countsAfter[$key] ?? null)->toBe($count, "Row count drift on {$key} after upgrade.");
+    }
+});
+
+test('the v2 extra-fields migration skips the columns a v1 host already has', function () {
+    // Without the v1 row there is nothing to reconcile, so the v2 migration
+    // runs against an organizations table that already has all 16 columns.
+    DB::table('migrations')->where('migration', V1Schema::V1_EXTRA_FIELDS_MIGRATION)->delete();
+    seedV1Data();
+
+    $this->artisan('laravelcrm:v2')
+        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+        ->doesntExpectOutputToContain('has NOT been updated')
+        ->assertExitCode(0);
+
+    $batches = app('migration.repository')->getMigrationBatches();
+    expect($batches[publishedMigrationName('add_extra_fields_to_laravel_crm_organizations_table')] ?? null)->toBeGreaterThan(1);
+
+    $prefix = config('laravel-crm.db_table_prefix');
+    foreach (['vat_number', 'domain', 'year_founded', 'timezone_id', 'google'] as $column) {
+        expect(Schema::hasColumn($prefix.'organizations', $column))->toBeTrue();
     }
 });
 
