@@ -40,13 +40,20 @@ function seedV1Data(): void
     ]);
 
     foreach (['leads', 'deals', 'quotes', 'orders'] as $entity) {
+        // Orders have no title column.
+        $label = $entity === 'orders' ? 'description' : 'title';
+
         DB::table($prefix.$entity)->insert([
-            ['id' => 1, 'external_id' => $entity.'-1', 'title' => ucfirst($entity).' One', 'client_id' => 1, 'organisation_id' => 1, 'person_id' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 2, 'external_id' => $entity.'-2', 'title' => ucfirst($entity).' Two', 'client_id' => 2, 'organisation_id' => 2, 'person_id' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 1, 'external_id' => $entity.'-1', $label => ucfirst($entity).' One', 'client_id' => 1, 'organisation_id' => 1, 'person_id' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 2, 'external_id' => $entity.'-2', $label => ucfirst($entity).' Two', 'client_id' => 2, 'organisation_id' => 2, 'person_id' => 2, 'created_at' => $now, 'updated_at' => $now],
         ]);
     }
 
-    foreach (['invoices', 'purchase_orders', 'xero_contacts'] as $entity) {
+    DB::table($prefix.'invoices')->insert([
+        ['id' => 1, 'external_id' => 'invoices-1', 'invoice_id' => 'INV1001', 'organisation_id' => 1, 'created_at' => $now, 'updated_at' => $now],
+    ]);
+
+    foreach (['purchase_orders', 'xero_contacts'] as $entity) {
         DB::table($prefix.$entity)->insert([
             ['id' => 1, 'external_id' => $entity.'-1', 'organisation_id' => 1, 'created_at' => $now, 'updated_at' => $now],
         ]);
@@ -73,13 +80,43 @@ function seedV1Data(): void
         DB::table($table)->insert($rows);
     };
 
-    $prefix = config('laravel-crm.db_table_prefix');
     $insertMorph($prefix.'emails', 'emailable', ['address' => 'a@b.test']);
     $insertMorph($prefix.'phones', 'phoneable', ['number' => '555-0100']);
     $insertMorph($prefix.'addresses', 'addressable', ['line1' => '1 Test St']);
     $insertMorph($prefix.'field_values', 'field_valueable', ['field_id' => 1, 'value' => 'x']);
     $insertMorph($prefix.'notes', 'noteable', ['content' => 'note']);
-    $insertMorph($prefix.'files', 'fileable', ['filename' => 'f.txt']);
+    $insertMorph($prefix.'files', 'fileable', ['file' => 'f.txt']);
+    $insertMorph($prefix.'tasks', 'taskable', ['name' => 'Task']);
+    $insertMorph($prefix.'calls', 'callable', ['name' => 'Call']);
+    $insertMorph($prefix.'meetings', 'meetingable', ['name' => 'Meeting']);
+    $insertMorph($prefix.'lunches', 'lunchable', ['name' => 'Lunch']);
+    $insertMorph('audits', 'auditable', ['event' => 'updated']);
+
+    // labelables has no id or timestamps, and its morph columns carry the table prefix.
+    foreach ($polyTargets as $t) {
+        DB::table($prefix.'labelables')->insert([
+            'label_id' => 1, $prefix.'labelable_type' => $t['type'], $prefix.'labelable_id' => $t['id'],
+        ]);
+    }
+
+    // Activities carry three morphs; point all three at the same targets.
+    $i = 1;
+    foreach ($polyTargets as $t) {
+        DB::table($prefix.'activities')->insert([
+            'id' => $i++,
+            'timelineable_type' => $t['type'], 'timelineable_id' => $t['id'],
+            'recordable_type' => $t['type'], 'recordable_id' => $t['id'],
+            'causeable_type' => $t['type'], 'causeable_id' => $t['id'],
+            'created_at' => $now, 'updated_at' => $now,
+        ]);
+    }
+
+    $i = 1;
+    foreach ($polyTargets as $t) {
+        DB::table($prefix.'field_models')->insert([
+            'id' => $i++, 'field_id' => 1, 'model' => $t['type'], 'created_at' => $now, 'updated_at' => $now,
+        ]);
+    }
 
     $contactRows = [];
     $i = 1;
@@ -112,16 +149,66 @@ function seedV1Data(): void
     }
 }
 
-function snapshotV1RowCounts(): array
+/**
+ * Every column that persists a CRM model class name, by its v2 table name.
+ *
+ * @return list<array{0: string, 1: string}>
+ */
+function classNameColumns(): array
 {
     $prefix = config('laravel-crm.db_table_prefix');
-    $tables = [
+
+    return [
+        [$prefix.'emails', 'emailable_type'],
+        [$prefix.'phones', 'phoneable_type'],
+        [$prefix.'addresses', 'addressable_type'],
+        [$prefix.'field_values', 'field_valueable_type'],
+        [$prefix.'notes', 'noteable_type'],
+        [$prefix.'contacts', 'contactable_type'],
+        [$prefix.'contacts', 'entityable_type'],
+        [$prefix.'files', 'fileable_type'],
+        [$prefix.'customers', 'customerable_type'],
+        [$prefix.'labelables', $prefix.'labelable_type'],
+        [$prefix.'tasks', 'taskable_type'],
+        [$prefix.'calls', 'callable_type'],
+        [$prefix.'meetings', 'meetingable_type'],
+        [$prefix.'lunches', 'lunchable_type'],
+        [$prefix.'activities', 'timelineable_type'],
+        [$prefix.'activities', 'recordable_type'],
+        [$prefix.'activities', 'causeable_type'],
+        [$prefix.'field_models', 'model'],
+        ['audits', 'auditable_type'],
+    ];
+}
+
+/**
+ * Tables the upgrade must not add rows to or remove rows from, by their v1 name.
+ *
+ * `permissions` is left out: the nested laravelcrm:update seeds the v2
+ * permission set, so the count grows by design. The renamed v1 permissions
+ * are asserted on separately.
+ *
+ * @return list<string>
+ */
+function v1DataTables(): array
+{
+    $prefix = config('laravel-crm.db_table_prefix');
+
+    return [
         $prefix.'organisations', $prefix.'organisation_types', $prefix.'clients',
         $prefix.'people', $prefix.'leads', $prefix.'deals', $prefix.'quotes', $prefix.'orders',
         $prefix.'invoices', $prefix.'purchase_orders', $prefix.'xero_contacts',
         $prefix.'emails', $prefix.'phones', $prefix.'addresses', $prefix.'field_values',
-        $prefix.'notes', $prefix.'contacts', $prefix.'files', 'permissions',
+        $prefix.'notes', $prefix.'contacts', $prefix.'files',
+        $prefix.'labelables', $prefix.'tasks', $prefix.'calls', $prefix.'meetings', $prefix.'lunches',
+        $prefix.'activities', $prefix.'field_models', 'audits',
     ];
+}
+
+function snapshotV1RowCounts(): array
+{
+    $prefix = config('laravel-crm.db_table_prefix');
+    $tables = v1DataTables();
     $renames = [
         $prefix.'organisations' => $prefix.'organizations',
         $prefix.'organisation_types' => $prefix.'organization_types',
@@ -138,16 +225,29 @@ function snapshotV1RowCounts(): array
 function snapshotV2RowCounts(): array
 {
     $prefix = config('laravel-crm.db_table_prefix');
-    $tables = [
-        $prefix.'organizations', $prefix.'organization_types', $prefix.'customers',
-        $prefix.'people', $prefix.'leads', $prefix.'deals', $prefix.'quotes', $prefix.'orders',
-        $prefix.'invoices', $prefix.'purchase_orders', $prefix.'xero_contacts',
-        $prefix.'emails', $prefix.'phones', $prefix.'addresses', $prefix.'field_values',
-        $prefix.'notes', $prefix.'contacts', $prefix.'files', 'permissions',
+    $renames = [
+        $prefix.'organisations' => $prefix.'organizations',
+        $prefix.'organisation_types' => $prefix.'organization_types',
+        $prefix.'clients' => $prefix.'customers',
     ];
     $out = [];
-    foreach ($tables as $t) {
+    foreach (v1DataTables() as $t) {
+        $t = $renames[$t] ?? $t;
         $out[$t] = DB::table($t)->count();
+    }
+    $out['permissions'] = DB::table('permissions')->count();
+
+    return $out;
+}
+
+/**
+ * The class-name columns' contents, for comparing two upgrade runs.
+ */
+function snapshotClassNames(): array
+{
+    $out = [];
+    foreach (classNameColumns() as [$table, $column]) {
+        $out["{$table}.{$column}"] = DB::table($table)->orderBy($column)->pluck($column)->all();
     }
 
     return $out;
@@ -207,18 +307,12 @@ test('v2 upgrade renames tables columns permissions and polymorphic types', func
     expect(Schema::hasColumn($prefix.'customers', 'clientable_type'))->toBeFalse();
     expect(Schema::hasColumn($prefix.'customers', 'clientable_id'))->toBeFalse();
 
-    assertPolymorphTypeRewritten($prefix.'emails', 'emailable_type');
-    assertPolymorphTypeRewritten($prefix.'phones', 'phoneable_type');
-    assertPolymorphTypeRewritten($prefix.'addresses', 'addressable_type');
-    assertPolymorphTypeRewritten($prefix.'field_values', 'field_valueable_type');
-    assertPolymorphTypeRewritten($prefix.'notes', 'noteable_type');
-    assertPolymorphTypeRewritten($prefix.'contacts', 'contactable_type');
-    assertPolymorphTypeRewritten($prefix.'contacts', 'entityable_type');
-    assertPolymorphTypeRewritten($prefix.'files', 'fileable_type');
-    assertPolymorphTypeRewritten($prefix.'customers', 'customerable_type');
+    foreach (classNameColumns() as [$table, $column]) {
+        assertPolymorphTypeRewritten($table, $column);
 
-    expect(DB::table($prefix.'customers')->where('customerable_type', V1_PERSON_CLASS)->count())
-        ->toBe(1, 'Person customerable_type rows should not be rewritten.');
+        expect(DB::table($table)->where($column, V1_PERSON_CLASS)->count())
+            ->toBe(1, "Person rows in {$table}.{$column} should not be rewritten.");
+    }
 
     app(PermissionRegistrar::class)->forgetCachedPermissions();
     foreach (['view', 'create', 'edit', 'delete'] as $verb) {

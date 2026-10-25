@@ -217,7 +217,14 @@ class LaravelCrmV2 extends Command
     }
 
     /**
-     * Replace v1 model class names stored in polymorphic `*_type` columns with their v2 equivalents.
+     * Replace v1 model class names persisted in the database with their v2 equivalents.
+     *
+     * No morph map is registered, so every polymorphic `*_type` column stores the
+     * full class name, as does `field_models.model`. Matching is exact, so
+     * `Person` and every other class is left alone. Tables and columns a host
+     * does not have are skipped: `audits` only exists where owen-it/laravel-auditing
+     * was installed, which v2 no longer uses. `audits.old_values` / `new_values`
+     * are history and are deliberately not rewritten.
      */
     protected function updatePolymorphicTypes(): void
     {
@@ -227,7 +234,7 @@ class LaravelCrmV2 extends Command
         ];
 
         $targets = [
-            // [table, type-column]
+            // [table, class-name column]
             [$this->prefix.'emails', 'emailable_type'],
             [$this->prefix.'phones', 'phoneable_type'],
             [$this->prefix.'addresses', 'addressable_type'],
@@ -237,6 +244,16 @@ class LaravelCrmV2 extends Command
             [$this->prefix.'contacts', 'entityable_type'],
             [$this->prefix.'files', 'fileable_type'],
             [$this->prefix.'customers', 'customerable_type'],
+            [$this->prefix.'labelables', $this->prefix.'labelable_type'],
+            [$this->prefix.'tasks', 'taskable_type'],
+            [$this->prefix.'calls', 'callable_type'],
+            [$this->prefix.'meetings', 'meetingable_type'],
+            [$this->prefix.'lunches', 'lunchable_type'],
+            [$this->prefix.'activities', 'timelineable_type'],
+            [$this->prefix.'activities', 'recordable_type'],
+            [$this->prefix.'activities', 'causeable_type'],
+            [$this->prefix.'field_models', 'model'],
+            ['audits', 'auditable_type'],
         ];
 
         foreach ($targets as [$table, $column]) {
