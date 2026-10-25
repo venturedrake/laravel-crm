@@ -1,9 +1,15 @@
 <?php
 
+use Illuminate\Console\Events\CommandStarting;
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\PermissionRegistrar;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use VentureDrake\LaravelCrm\Console\LaravelCrmV2;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
 use VentureDrake\LaravelCrm\Models\Permission;
@@ -428,4 +434,161 @@ test('v2 upgrade aborts when user declines backup confirmation', function () {
     expect(Schema::hasTable($prefix.'organizations'))->toBeFalse();
     expect(Schema::hasTable($prefix.'customers'))->toBeFalse();
     expect(Permission::where('name', 'view organisations')->exists())->toBeTrue();
+});
+
+// --------------------------------------------------------------------
+// Running v2 migrations on a v1 database
+// --------------------------------------------------------------------
+
+/**
+ * Laravel only turns Symfony's console events into CommandStarting outside
+ * unit tests. Switch it on, and drop the cached Artisan application so the
+ * next call is built with the dispatcher.
+ */
+function rerouteCommandEvents(): void
+{
+    $kernel = app(Kernel::class);
+    $kernel->rerouteSymfonyCommandEvents();
+    $kernel->setArtisan(null);
+}
+
+/**
+ * Strand the v1 data the way 2.5.0 allowed: run `migrate` on the v1 database
+ * before laravelcrm:v2. The guard is not listening (command events are not
+ * rerouted), so this creates empty v2 tables and NULL v2 columns next to the
+ * v1 ones.
+ */
+function strandV1Data(): void
+{
+    Artisan::call('vendor:publish', [
+        '--provider' => LaravelCrmServiceProvider::class,
+        '--tag' => 'migrations',
+        '--force' => true,
+    ]);
+
+    expect(Artisan::call('migrate', ['--force' => true]))->toBe(0);
+
+    $prefix = config('laravel-crm.db_table_prefix');
+    expect(Schema::hasTable($prefix.'customers'))->toBeTrue()
+        ->and(Schema::hasTable($prefix.'organization_types'))->toBeTrue()
+        ->and(Schema::hasColumn($prefix.'leads', 'customer_id'))->toBeTrue();
+}
+
+foreach (['migrate', 'laravelcrm:update'] as $guardedCommand) {
+    test("{$guardedCommand} refuses to run on a v1 database", function () use ($guardedCommand) {
+        seedV1Data();
+        rerouteCommandEvents();
+
+        $migrationsBefore = DB::table('migrations')->count();
+
+        expect(fn () => Artisan::call($guardedCommand, ['--force' => true]))
+            ->toThrow(RuntimeException::class, 'run `php artisan laravelcrm:v2` first');
+
+        $prefix = config('laravel-crm.db_table_prefix');
+        expect(Schema::hasTable($prefix.'organizations'))->toBeFalse()
+            ->and(Schema::hasTable($prefix.'customers'))->toBeFalse()
+            ->and(Schema::hasTable($prefix.'organization_types'))->toBeFalse()
+            ->and(DB::table('migrations')->count())->toBe($migrationsBefore);
+    });
+}
+
+test('the v1 guard leaves other commands alone', function () {
+    rerouteCommandEvents();
+
+    expect(Artisan::call('migrate:status'))->toBe(0);
+});
+
+test('the v1 guard does nothing before there is a migrations table', function () {
+    Schema::drop('migrations');
+
+    event(new CommandStarting('migrate', new ArrayInput([]), new NullOutput));
+
+    expect(Schema::hasTable('migrations'))->toBeFalse();
+});
+
+test('the v1 guard does not block the migrations laravelcrm:v2 runs itself', function () {
+    seedV1Data();
+    rerouteCommandEvents();
+
+    $this->artisan('laravelcrm:v2')
+        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+        ->doesntExpectOutputToContain('has NOT been updated')
+        ->assertExitCode(0);
+
+    $prefix = config('laravel-crm.db_table_prefix');
+    expect(Schema::hasTable($prefix.'organisations'))->toBeFalse()
+        ->and(Schema::hasTable($prefix.'organizations'))->toBeTrue();
+});
+
+test('v2 upgrade heals empty v2 tables and columns created by an early migrate', function () {
+    seedV1Data();
+    strandV1Data();
+
+    $prefix = config('laravel-crm.db_table_prefix');
+
+    // An index on the stranded column, which has to go before the column can.
+    Schema::table($prefix.'leads', fn (Blueprint $table) => $table->index('customer_id'));
+
+    $this->artisan('laravelcrm:v2')
+        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+        ->expectsOutputToContain("Dropping empty v2 table: {$prefix}customers")
+        ->expectsOutputToContain("Dropping empty v2 table: {$prefix}organization_types")
+        ->expectsOutputToContain("Dropping empty v2 column: {$prefix}leads.customer_id")
+        ->doesntExpectOutputToContain('has NOT been updated')
+        ->assertExitCode(0);
+
+    expect(Schema::hasTable($prefix.'clients'))->toBeFalse()
+        ->and(Schema::hasTable($prefix.'organisations'))->toBeFalse()
+        ->and(Schema::hasTable($prefix.'organisation_types'))->toBeFalse()
+        ->and(DB::table($prefix.'customers')->count())->toBe(2)
+        ->and(DB::table($prefix.'organization_types')->count())->toBe(4)
+        ->and(DB::table($prefix.'organizations')->count())->toBe(2);
+
+    foreach (['leads', 'deals', 'quotes', 'orders'] as $t) {
+        expect(Schema::hasColumn($prefix.$t, 'client_id'))->toBeFalse()
+            ->and(DB::table($prefix.$t)->orderBy('id')->pluck('customer_id')->all())->toBe([1, 2]);
+    }
+
+    assertPolymorphTypeRewritten($prefix.'customers', 'customerable_type');
+});
+
+test('v2 upgrade stops when a stranded v2 table has rows', function () {
+    seedV1Data();
+    strandV1Data();
+
+    $prefix = config('laravel-crm.db_table_prefix');
+    DB::table($prefix.'customers')->insert([
+        'external_id' => 'v2-1', 'customerable_type' => V2_ORG_CLASS, 'customerable_id' => 1,
+    ]);
+
+    $this->artisan('laravelcrm:v2')
+        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+        ->expectsOutputToContain("Both {$prefix}clients (2 rows) and {$prefix}customers (1 rows) exist.")
+        ->expectsOutputToContain('Nothing has been changed')
+        ->assertExitCode(1);
+
+    expect(Schema::hasTable($prefix.'clients'))->toBeTrue()
+        ->and(Schema::hasTable($prefix.'organisations'))->toBeTrue()
+        ->and(Schema::hasColumn($prefix.'leads', 'client_id'))->toBeTrue()
+        ->and(DB::table($prefix.'customers')->count())->toBe(1)
+        ->and(DB::table('permissions')->where('name', 'view organisations')->exists())->toBeTrue();
+});
+
+test('v2 upgrade stops when a stranded v2 column has values', function () {
+    seedV1Data();
+    strandV1Data();
+
+    $prefix = config('laravel-crm.db_table_prefix');
+    DB::table($prefix.'leads')->where('id', 1)->update(['customer_id' => 1]);
+
+    $this->artisan('laravelcrm:v2')
+        ->expectsConfirmation('Have you taken a backup and do you want to continue?', 'yes')
+        ->expectsOutputToContain("Both {$prefix}leads.client_id (2 non-null) and {$prefix}leads.customer_id (1 non-null) exist.")
+        ->expectsOutputToContain('Nothing has been changed')
+        ->assertExitCode(1);
+
+    expect(Schema::hasTable($prefix.'clients'))->toBeTrue()
+        ->and(Schema::hasTable($prefix.'customers'))->toBeTrue()
+        ->and(Schema::hasColumn($prefix.'leads', 'client_id'))->toBeTrue()
+        ->and(DB::table('permissions')->where('name', 'view organisations')->exists())->toBeTrue();
 });

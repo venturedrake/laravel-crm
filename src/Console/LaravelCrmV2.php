@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -14,6 +15,43 @@ use VentureDrake\LaravelCrm\Services\SettingService;
 
 class LaravelCrmV2 extends Command
 {
+    /**
+     * v1 tables and their v2 names, without the table prefix.
+     *
+     * GuardCrmV2Upgrade reads the keys: while any of them exists, the
+     * database is still on v1.
+     *
+     * @var array<string, string>
+     */
+    public const TABLE_RENAMES = [
+        'organisations' => 'organizations',
+        'organisation_types' => 'organization_types',
+        'clients' => 'customers',
+    ];
+
+    /**
+     * v1 columns and their v2 names, as [v2 table, v1 column, v2 column].
+     *
+     * @var list<array{0: string, 1: string, 2: string}>
+     */
+    protected const COLUMN_RENAMES = [
+        ['people', 'organisation_id', 'organization_id'],
+        ['leads', 'organisation_id', 'organization_id'],
+        ['deals', 'organisation_id', 'organization_id'],
+        ['quotes', 'organisation_id', 'organization_id'],
+        ['orders', 'organisation_id', 'organization_id'],
+        ['invoices', 'organisation_id', 'organization_id'],
+        ['purchase_orders', 'organisation_id', 'organization_id'],
+        ['xero_contacts', 'organisation_id', 'organization_id'],
+        ['organizations', 'organisation_type_id', 'organization_type_id'],
+        ['leads', 'client_id', 'customer_id'],
+        ['deals', 'client_id', 'customer_id'],
+        ['quotes', 'client_id', 'customer_id'],
+        ['orders', 'client_id', 'customer_id'],
+        ['customers', 'clientable_type', 'customerable_type'],
+        ['customers', 'clientable_id', 'customerable_id'],
+    ];
+
     /**
      * v1 migrations that v2 publishes under a new name for the same schema
      * change, keyed by v1 name suffix (the part after the timestamp).
@@ -105,6 +143,12 @@ class LaravelCrmV2 extends Command
 
         $this->prefix = config('laravel-crm.db_table_prefix', 'crm_');
 
+        $drops = $this->preflight();
+
+        if ($drops === null) {
+            return self::FAILURE;
+        }
+
         // Rename v1 tables/columns/morph types BEFORE running v2 migrations and seeders.
         // The v2 migrations reference the renamed tables (e.g. `organizations`, `customers`,
         // `organization_id`, `customer_id`), so they would otherwise fail on a v1 database.
@@ -113,11 +157,10 @@ class LaravelCrmV2 extends Command
         Schema::disableForeignKeyConstraints();
 
         try {
+            $this->dropStrandedV2Schema($drops);
             $this->migratePermissions();
             $this->renameTables();
-            $this->renameOrganisationColumns();
-            $this->renameClientColumns();
-            $this->renameCustomerableMorph();
+            $this->renameColumns();
             $this->updatePolymorphicTypes();
         } finally {
             Schema::enableForeignKeyConstraints();
@@ -173,17 +216,134 @@ class LaravelCrmV2 extends Command
     }
 
     /**
+     * Find v2 tables and columns that already sit next to their v1 counterparts.
+     *
+     * They appear when the v2 migrations ran before this command (a plain
+     * `migrate` on a v1 database), and they would make the renames skip, leaving
+     * the v1 data behind. An empty v2 table, or a v2 column that is NULL in every
+     * row, holds nothing and is queued to be dropped. Anything else is a conflict
+     * an operator has to resolve, so the upgrade stops before changing anything.
+     *
+     * Read-only. Returns the queued drops, or null when there is a conflict.
+     *
+     * @return array{tables: list<string>, columns: list<array{0: string, 1: string}>}|null
+     */
+    protected function preflight(): ?array
+    {
+        $drops = ['tables' => [], 'columns' => []];
+        $conflicts = [];
+
+        foreach (self::TABLE_RENAMES as $from => $to) {
+            $fromTable = $this->prefix.$from;
+            $toTable = $this->prefix.$to;
+
+            if (! Schema::hasTable($fromTable) || ! Schema::hasTable($toTable)) {
+                continue;
+            }
+
+            $fromRows = DB::table($fromTable)->count();
+            $toRows = DB::table($toTable)->count();
+
+            if ($toRows === 0) {
+                $drops['tables'][] = $toTable;
+            } else {
+                $conflicts[] = "Both {$fromTable} ({$fromRows} rows) and {$toTable} ({$toRows} rows) exist.";
+            }
+        }
+
+        $v1Names = array_flip(self::TABLE_RENAMES);
+
+        foreach (self::COLUMN_RENAMES as [$table, $from, $to]) {
+            // A renamed table is inspected on whichever side survives: the v1
+            // table while it is still there, the v2 table once it is renamed.
+            $tableName = isset($v1Names[$table]) && Schema::hasTable($this->prefix.$v1Names[$table])
+                ? $this->prefix.$v1Names[$table]
+                : $this->prefix.$table;
+
+            if (! Schema::hasTable($tableName)
+                || ! Schema::hasColumn($tableName, $from)
+                || ! Schema::hasColumn($tableName, $to)) {
+                continue;
+            }
+
+            $fromValues = DB::table($tableName)->whereNotNull($from)->count();
+            $toValues = DB::table($tableName)->whereNotNull($to)->count();
+
+            if ($toValues === 0) {
+                $drops['columns'][] = [$tableName, $to];
+            } else {
+                $conflicts[] = "Both {$tableName}.{$from} ({$fromValues} non-null) and {$tableName}.{$to} ({$toValues} non-null) exist.";
+            }
+        }
+
+        if ($conflicts !== []) {
+            $this->error('The database holds both v1 and v2 versions of these CRM tables or columns, and the v2 side has data:');
+
+            foreach ($conflicts as $conflict) {
+                $this->error('  '.$conflict);
+            }
+
+            $this->error('Nothing has been changed. Decide which side to keep, remove the other (or restore your backup), then re-run php artisan laravelcrm:v2.');
+
+            return null;
+        }
+
+        return $drops;
+    }
+
+    /**
+     * Drop the empty v2 tables and all-NULL v2 columns preflight() queued.
+     *
+     * @param  array{tables: list<string>, columns: list<array{0: string, 1: string}>}  $drops
+     */
+    protected function dropStrandedV2Schema(array $drops): void
+    {
+        foreach ($drops['tables'] as $table) {
+            $this->line("Dropping empty v2 table: {$table}");
+            Schema::drop($table);
+        }
+
+        foreach ($drops['columns'] as [$table, $column]) {
+            $this->line("Dropping empty v2 column: {$table}.{$column}");
+            $this->dropColumnWithIndexes($table, $column);
+        }
+    }
+
+    /**
+     * Drop a column after the indexes and foreign keys that include it, which
+     * SQLite and MySQL both refuse to drop the column out from under.
+     */
+    protected function dropColumnWithIndexes(string $table, string $column): void
+    {
+        $indexes = collect(Schema::getIndexes($table))
+            ->filter(fn ($index) => ! $index['primary'] && in_array($column, $index['columns'], true))
+            ->pluck('name');
+
+        $foreignKeys = collect(Schema::getForeignKeys($table))
+            ->filter(fn ($foreignKey) => in_array($column, $foreignKey['columns'], true));
+
+        $sqlite = Schema::getConnection()->getDriverName() === 'sqlite';
+
+        Schema::table($table, function (Blueprint $blueprint) use ($column, $indexes, $foreignKeys, $sqlite) {
+            foreach ($foreignKeys as $foreignKey) {
+                // SQLite foreign keys have no name; it drops them by column.
+                $blueprint->dropForeign($sqlite ? $foreignKey['columns'] : $foreignKey['name']);
+            }
+
+            foreach ($indexes as $index) {
+                $blueprint->dropIndex($index);
+            }
+
+            $blueprint->dropColumn($column);
+        });
+    }
+
+    /**
      * Rename v1 tables to their v2 names.
      */
     protected function renameTables(): void
     {
-        $renames = [
-            'organisations' => 'organizations',
-            'organisation_types' => 'organization_types',
-            'clients' => 'customers',
-        ];
-
-        foreach ($renames as $from => $to) {
+        foreach (self::TABLE_RENAMES as $from => $to) {
             $fromTable = $this->prefix.$from;
             $toTable = $this->prefix.$to;
 
@@ -195,52 +355,13 @@ class LaravelCrmV2 extends Command
     }
 
     /**
-     * Rename `organisation_id` columns to `organization_id` and `organisation_type_id` to `organization_type_id`.
+     * Rename v1 columns to their v2 names. Runs after renameTables().
      */
-    protected function renameOrganisationColumns(): void
+    protected function renameColumns(): void
     {
-        $tables = [
-            'people',
-            'leads',
-            'deals',
-            'quotes',
-            'orders',
-            'invoices',
-            'purchase_orders',
-            'xero_contacts',
-        ];
-
-        foreach ($tables as $table) {
-            $this->renameColumn($this->prefix.$table, 'organisation_id', 'organization_id');
+        foreach (self::COLUMN_RENAMES as [$table, $from, $to]) {
+            $this->renameColumn($this->prefix.$table, $from, $to);
         }
-
-        // organization_type_id lives on the (now-renamed) organizations table
-        $this->renameColumn($this->prefix.'organizations', 'organisation_type_id', 'organization_type_id');
-    }
-
-    /**
-     * Rename `client_id` columns to `customer_id` on entity tables.
-     */
-    protected function renameClientColumns(): void
-    {
-        foreach (['leads', 'deals', 'quotes', 'orders'] as $table) {
-            $this->renameColumn($this->prefix.$table, 'client_id', 'customer_id');
-        }
-    }
-
-    /**
-     * Rename the polymorphic `clientable_*` morph columns to `customerable_*` on the customers table.
-     */
-    protected function renameCustomerableMorph(): void
-    {
-        $table = $this->prefix.'customers';
-
-        if (! Schema::hasTable($table)) {
-            return;
-        }
-
-        $this->renameColumn($table, 'clientable_type', 'customerable_type');
-        $this->renameColumn($table, 'clientable_id', 'customerable_id');
     }
 
     /**
