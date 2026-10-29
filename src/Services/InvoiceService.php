@@ -179,7 +179,8 @@ class InvoiceService
 
                         if (isset($line['id']) && $line['id'] > 0 && Quantity::isPositive($line['quantity'])) {
                             $taxRate = 0;
-                            if ($product = Product::withTrashed()->find($invoiceLine['id'])) {
+                            // $line['id'] is the product - $invoiceLine is the line model, whose id is the line's own.
+                            if ($product = Product::withTrashed()->find($line['id'])) {
                                 if ($product->taxRate) {
                                     $taxRate = $product->taxRate->rate;
                                 } elseif ($product->tax_rate) {
