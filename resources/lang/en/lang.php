@@ -583,6 +583,7 @@ return [
     'back_to_deliveries' => 'back to deliveries',
     'delivery_items' => 'delivery items',
     'shipping_address' => 'shipping address',
+    'billing_address' => 'billing address',
     'edit_delivery' => 'edit delivery',
     'delivery_updated' => 'delivery updated',
     'delivery_deleted' => 'delivery deleted',

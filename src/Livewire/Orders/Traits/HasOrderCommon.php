@@ -10,6 +10,7 @@ use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Support\FormOptions;
 use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 
 trait HasOrderCommon
@@ -86,7 +87,7 @@ trait HasOrderCommon
 
     public $pipeline_stage_id;
 
-    public array $labels;
+    public array $labels = [];
 
     public $user_owner_id;
 
@@ -120,15 +121,30 @@ trait HasOrderCommon
         return 'order';
     }
 
+    /**
+     * The install-wide order form toggles (config laravel-crm.orders.form).
+     */
+    protected function orderForm(): FormOptions
+    {
+        return FormOptions::for('orders');
+    }
+
     protected function rules()
     {
+        $form = $this->orderForm();
+
         return array_merge([
             'person_name' => 'required_without_all:organization_name,organization_id|max:255',
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
             'amount' => 'nullable|numeric',
-        ], $this->lineItemQuantityRules(), $this->pdfTemplateRules(), $this->customFieldRules());
+        ],
+            $form->allowsUnallocatedOwner() ? [] : ['user_owner_id' => 'required|not_in:0'],
+            $this->lineItemQuantityRules(),
+            $this->pdfTemplateRules(),
+            $form->shows('custom_fields') ? $this->customFieldRules() : []
+        );
     }
 
     protected function messages()
@@ -138,12 +154,40 @@ trait HasOrderCommon
             'organization_name.required_without_all' => 'The organization field is required if no contact person.',
             'person_id.required_without_all' => 'The contact person field is required if no organization.',
             'organization_id.required_without_all' => 'The organization field is required of no contact person.',
-        ], $this->lineItemQuantityMessages(), $this->customFieldMessages());
+        ], $this->lineItemQuantityMessages(), $this->orderForm()->shows('custom_fields') ? $this->customFieldMessages() : []);
     }
 
     protected function validationAttributes()
     {
-        return $this->customFieldValidationAttributes();
+        $form = $this->orderForm();
+
+        return array_merge(
+            $form->allowsUnallocatedOwner() ? [] : ['user_owner_id' => __('laravel-crm::lang.owner')],
+            $form->shows('custom_fields') ? $this->customFieldValidationAttributes() : []
+        );
+    }
+
+    /**
+     * The address rows to save: only the configured types, in the form's
+     * own order. An address of a type left out is never sent, so it is
+     * neither validated nor touched by the service.
+     */
+    protected function addressesToSave(): array
+    {
+        return array_intersect_key($this->addresses, array_flip($this->orderForm()->addressTypes()));
+    }
+
+    /**
+     * The view data the shared order form reads.
+     */
+    protected function orderFormViewData(): array
+    {
+        $form = $this->orderForm();
+
+        return [
+            'orderForm' => $form,
+            'addressTypes' => $form->addressTypes(),
+        ];
     }
 
     public function boot(OrderService $orderService, PersonService $personService, OrganizationService $organizationService): void
@@ -158,6 +202,10 @@ trait HasOrderCommon
         $this->countries = \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\countries();
         $this->pipeline = Pipeline::where('model', get_class(new Order))->first();
         $this->mountPdfTemplate($order);
+
+        if (! $this->orderForm()->showsAddressType($this->selectedAddressTab)) {
+            $this->selectedAddressTab = $this->orderForm()->addressTypes()[0] ?? $this->selectedAddressTab;
+        }
     }
 
     public function updateProducts($products, $sub_total = 0, $tax = 0, $total = 0): void

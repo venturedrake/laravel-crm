@@ -542,6 +542,7 @@ return [
     'back_to_deliveries' => 'بازگشت به تحویل‌ها',
     'delivery_items' => 'آیتم‌های تحویل',
     'shipping_address' => 'آدرس ارسال',
+    'billing_address' => 'آدرس صورتحساب',
     'edit_delivery' => 'ویرایش تحویل',
     'delivery_updated' => 'تحویل به‌روز شد',
     'delivery_deleted' => 'تحویل حذف شد',

@@ -40,6 +40,10 @@ class OrderEdit extends Component
         $this->labels = $order->labels->pluck('id')->toArray();
         $this->user_owner_id = $order->ownerUser->id ?? null;
 
+        if (! $this->user_owner_id && ! $this->orderForm()->allowsUnallocatedOwner()) {
+            $this->user_owner_id = auth()->user()->id;
+        }
+
         $billingAddressTypeId = AddressType::where('name', 'Billing')->first()->id ?? null;
         $shippingAddressTypeId = AddressType::where('name', 'Shipping')->first()->id ?? null;
 
@@ -97,6 +101,10 @@ class OrderEdit extends Component
         // Create a request object to pass to services
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
+        $form = $this->orderForm();
+
+        $request->merge(['addresses' => $this->addressesToSave()]);
+
         if ($this->person_name && ! $this->person_id) {
             $person = $this->personService->createFromRelated($request);
         } elseif ($this->person_id) {
@@ -111,9 +119,11 @@ class OrderEdit extends Component
 
         $this->personService->linkToOrganization($person ?? null, $organization ?? null);
 
-        $this->orderService->update($request, $this->order, $person ?? null, $organization ?? null);
+        $this->orderService->update($request, $this->order, $person ?? null, $organization ?? null, form: $form);
 
-        $this->saveCustomFields($this->order->fresh());
+        if ($form->shows('custom_fields')) {
+            $this->saveCustomFields($this->order->fresh());
+        }
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.order_updated')),
@@ -123,6 +133,6 @@ class OrderEdit extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.orders.order-edit');
+        return view('laravel-crm::livewire.orders.order-edit', $this->orderFormViewData());
     }
 }

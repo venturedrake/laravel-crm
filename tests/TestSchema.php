@@ -537,6 +537,9 @@ class TestSchema
             $table->string('key')->nullable();
             $table->string('type')->nullable();
             $table->string('label_type')->nullable();
+            // Real installs get this from add_label_type_to_laravel_crm_fields_table.
+            // Nullable here because the legacy field form writes a null through it.
+            $table->boolean('required')->nullable()->default(false);
             $table->string('default')->nullable();
             $table->boolean('system')->default(false);
             $table->unsignedBigInteger('field_group_id')->nullable();

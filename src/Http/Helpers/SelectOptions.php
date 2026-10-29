@@ -50,14 +50,16 @@ function users($null = true)
     return $array;
 }
 
-function usersOptions($null = true)
+function usersOptions($null = true, $unallocated = true)
 {
-    $items = [
-        [
+    $items = [];
+
+    if ($unallocated) {
+        $items[] = [
             'id' => 0,
             'name' => ucfirst(__('laravel-crm::lang.unallocated')),
-        ],
-    ];
+        ];
+    }
 
     foreach (\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users($null) as $id => $value) {
         $items[] = [

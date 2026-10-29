@@ -201,6 +201,42 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Order Form
+    |--------------------------------------------------------------------------
+    |
+    | Trim the order create / edit form. Every key defaults to the full form,
+    | so an install that sets nothing sees no change. These are install-wide,
+    | including on teams installs.
+    |
+    | Hiding a field never changes stored data: an existing description,
+    | labels, custom field values or address of an unlisted type survive an
+    | edit and save untouched, and validation skips the hidden fields.
+    |
+    | `unallocated_owner` false removes "Unallocated" from the owner select,
+    | presets an order with no owner to the current user, and makes the owner
+    | required.
+    |
+    | `addresses` lists the address tabs to show and save, by address type
+    | name ("billing", "shipping"). With one listed it is shown without tabs;
+    | an empty array hides the addresses card.
+    |
+    | The quote, invoice and purchase-order forms are not covered yet; they
+    | will take the same `form` shape under their own key.
+    |
+    */
+
+    'orders' => [
+        'form' => [
+            'description' => true,
+            'labels' => true,
+            'custom_fields' => true,
+            'unallocated_owner' => true,
+            'addresses' => ['billing', 'shipping'],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Monitoring
     |--------------------------------------------------------------------------
     |

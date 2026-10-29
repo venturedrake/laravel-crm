@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\OrderRepository;
+use VentureDrake\LaravelCrm\Support\FormOptions;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
@@ -33,7 +34,12 @@ class OrderService
         $this->orderRepository = $orderRepository;
     }
 
-    public function create($request, $person = null, $organization = null, $client = null)
+    /**
+     * $form carries the order form toggles when the save comes from the
+     * order form; a field it hides is left as stored. Callers that pass no
+     * $form (the API, the legacy controller) write every field as before.
+     */
+    public function create($request, $person = null, $organization = null, $client = null, ?FormOptions $form = null)
     {
         $order = Order::create([
             'lead_id' => $request->lead_id ?? null,
@@ -54,7 +60,9 @@ class OrderService
             'user_owner_id' => $request->user_owner_id,
         ]);
 
-        $order->labels()->sync($request->labels ?? []);
+        if (! $form || $form->shows('labels')) {
+            $order->labels()->sync($request->labels ?? []);
+        }
 
         if (isset($request->products)) {
             $orderProductOrder = 0;
@@ -124,9 +132,9 @@ class OrderService
         return $order;
     }
 
-    public function update($request, Order $order, $person = null, $organization = null, $client = null)
+    public function update($request, Order $order, $person = null, $organization = null, $client = null, ?FormOptions $form = null)
     {
-        $order->update([
+        $attributes = [
             'person_id' => $person->id ?? null,
             'organization_id' => $organization->id ?? null,
             'client_id' => $client->id ?? null,
@@ -140,9 +148,17 @@ class OrderService
             'total' => $request->total,
             'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $order->pdf_template),
             'user_owner_id' => $request->user_owner_id,
-        ]);
+        ];
 
-        $order->labels()->sync($request->labels ?? []);
+        if ($form && ! $form->shows('description')) {
+            unset($attributes['description']);
+        }
+
+        $order->update($attributes);
+
+        if (! $form || $form->shows('labels')) {
+            $order->labels()->sync($request->labels ?? []);
+        }
 
         if (isset($request->products)) {
             $orderProductIds = [];
@@ -235,12 +251,16 @@ class OrderService
             }
         }
 
-        $this->updateOrderAddresses($order, $request->addresses);
+        $this->updateOrderAddresses($order, $request->addresses, $form?->hiddenAddressTypeIds() ?? []);
 
         return $order;
     }
 
-    protected function updateOrderAddresses($order, $addresses)
+    /**
+     * Addresses of a type in $keepTypeIds are never deleted: the form hides
+     * that type, so it was not submitted rather than removed.
+     */
+    protected function updateOrderAddresses($order, $addresses, array $keepTypeIds = [])
     {
         if ($addresses === null) {
             return;
@@ -292,7 +312,7 @@ class OrderService
         }
 
         foreach ($order->addresses as $address) {
-            if (! in_array($address->id, $addressIds)) {
+            if (! in_array($address->id, $addressIds) && ! in_array($address->address_type_id, $keepTypeIds)) {
                 $address->delete();
             }
         }

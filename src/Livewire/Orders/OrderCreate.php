@@ -103,6 +103,16 @@ class OrderCreate extends Component
         // Create a request object to pass to services
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
+        $form = $this->orderForm();
+
+        // A hidden description still carries the quote's copy, as it would
+        // have if the field were shown and left alone.
+        if (! $form->shows('description')) {
+            $request->merge(['description' => $this->quote?->description]);
+        }
+
+        $request->merge(['addresses' => $this->addressesToSave()]);
+
         if ($this->person_name && ! $this->person_id) {
             $person = $this->personService->createFromRelated($request);
         } elseif ($this->person_id) {
@@ -117,9 +127,11 @@ class OrderCreate extends Component
 
         $this->personService->linkToOrganization($person ?? null, $organization ?? null);
 
-        $order = $this->orderService->create($request, $person ?? null, $organization ?? null);
+        $order = $this->orderService->create($request, $person ?? null, $organization ?? null, form: $form);
 
-        $this->saveCustomFields($order);
+        if ($form->shows('custom_fields')) {
+            $this->saveCustomFields($order);
+        }
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.order_created')),
@@ -129,6 +141,6 @@ class OrderCreate extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.orders.order-create');
+        return view('laravel-crm::livewire.orders.order-create', $this->orderFormViewData());
     }
 }
