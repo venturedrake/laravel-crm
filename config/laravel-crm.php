@@ -87,6 +87,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Route Domain
+    |--------------------------------------------------------------------------
+    |
+    | The full host the crm is served from, eg. crm.yourdomain.com.au. This is
+    | the recommended setting for a subdomain install. When set it wins over
+    | route_subdomain: the crm, login and API routes are bound to exactly this
+    | host, so `php artisan route:cache`, queue workers and generated URLs no
+    | longer depend on the host of whatever request booted the app.
+    |
+    | With route_prefix empty, GET and HEAD requests for the bare domain or
+    | www. (eg. yourdomain.com.au/leads) redirect to the same path and query
+    | on this host. API paths and the public /p links are never redirected.
+    |
+    | Leave it empty to keep working the host out from route_subdomain below.
+    |
+    */
+
+    'route_domain' => env('LARAVEL_CRM_ROUTE_DOMAIN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Subdomain
     |--------------------------------------------------------------------------
     |
@@ -94,6 +115,9 @@ return [
     |
     | eg. https://subdomain.yourdomain.com
     |
+    | The domain is worked out from the host of each request, which only works
+    | for hosts of three or four labels. Prefer route_domain above. A request
+    | for a two-label host (eg. yourdomain.com) is redirected to the subdomain.
     |
     */
 

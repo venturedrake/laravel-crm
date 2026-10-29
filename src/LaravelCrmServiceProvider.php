@@ -7,6 +7,8 @@ use App\User;
 use Dcblogdev\Xero\Models\XeroToken;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -91,6 +93,7 @@ use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
 use VentureDrake\LaravelCrm\Http\Middleware\HasCrmAccess;
 use VentureDrake\LaravelCrm\Http\Middleware\LastOnlineAt;
 use VentureDrake\LaravelCrm\Http\Middleware\LogUsage;
+use VentureDrake\LaravelCrm\Http\Middleware\RedirectToRouteDomain;
 use VentureDrake\LaravelCrm\Http\Middleware\RouteSubdomain;
 use VentureDrake\LaravelCrm\Http\Middleware\SetApiTeamContext;
 use VentureDrake\LaravelCrm\Http\Middleware\Settings;
@@ -442,6 +445,7 @@ use VentureDrake\LaravelCrm\Policies\UserPolicy;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Services\SystemCheckService;
 use VentureDrake\LaravelCrm\Support\Modules;
+use VentureDrake\LaravelCrm\Support\RouteDomain;
 use VentureDrake\LaravelCrm\Support\XeroIntegration;
 use VentureDrake\LaravelCrm\View\Components\Addresses;
 use VentureDrake\LaravelCrm\View\Components\CustomFields;
@@ -563,8 +567,28 @@ class LaravelCrmServiceProvider extends ServiceProvider
             }
         }
 
-        if (config('laravel-crm.route_subdomain')) {
+        if (config('laravel-crm.route_subdomain') || RouteDomain::configured()) {
             $router->pushMiddlewareToGroup('crm', RouteSubdomain::class);
+
+            // Check the host before Authenticate, so a guest on the bare
+            // domain is sent to the subdomain, not to a login page on the
+            // bare domain whose session the subdomain never sees.
+            $kernel = $this->app->make(HttpKernel::class);
+
+            if (method_exists($kernel, 'addToMiddlewarePriorityBefore')) {
+                $kernel->addToMiddlewarePriorityBefore(AuthenticatesRequests::class, RouteSubdomain::class);
+            }
+        }
+
+        // Global, not a route group: the bare domain and www. match no CRM
+        // route once the routes are bound to route_domain, and group
+        // middleware never runs on an unmatched route.
+        if (RouteDomain::configured()) {
+            $kernel = $this->app->make(HttpKernel::class);
+
+            if (method_exists($kernel, 'pushMiddleware')) {
+                $kernel->pushMiddleware(RedirectToRouteDomain::class);
+            }
         }
 
         $router->pushMiddlewareToGroup('crm', Settings::class);
@@ -1319,45 +1343,39 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         // API routes (v2) — JSON-only with named rate limiter
         // Mounted under the CRM route prefix (defaults to `crm/api/v2`).
-        Route::group([
+        // Bound to route_domain when one is configured; otherwise to no
+        // domain, as before.
+        $apiGroup = [
             'prefix' => trim(config('laravel-crm.route_prefix', 'crm'), '/').'/api/v2',
             'middleware' => ['api', 'laravel-crm.api.json', 'throttle:laravel-crm-api'],
-        ], function () {
+        ];
+
+        if ($domain = RouteDomain::configured()) {
+            $apiGroup['domain'] = $domain;
+        }
+
+        Route::group($apiGroup, function () {
             $this->loadRoutesFrom(__DIR__.'/Http/api-routes.php');
         });
     }
 
     protected function authRouteConfiguration()
     {
-        if (config('laravel-crm.route_subdomain')) {
-            $host = explode('.', request()->getHost());
-            if (count($host) == 3) {
-                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 2)].'.'.end($host);
-            } elseif (count($host) == 4) {
-                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 3)].'.'.$host[(count($host) - 2)].'.'.end($host);
-            }
-        }
-
+        // RouteSubdomain sends a login on the bare domain to the subdomain,
+        // so the session is started on the host the CRM pages are served from.
         return [
-            'domain' => $domain ?? null,
+            'domain' => RouteDomain::forRoutes(),
             'prefix' => (config('laravel-crm.route_prefix')) ? config('laravel-crm.route_prefix') : null,
-            'middleware' => ['web'],
+            'middleware' => (config('laravel-crm.route_subdomain') || RouteDomain::configured()) ? ['web', RouteSubdomain::class] : ['web'],
         ];
     }
 
     protected function routeConfiguration()
     {
-        if (config('laravel-crm.route_subdomain')) {
-            $host = explode('.', request()->getHost());
-            if (count($host) == 3) { // .com
-                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 2)].'.'.end($host);
-            } elseif (count($host) == 4) { // .com.au
-                $domain = config('laravel-crm.route_subdomain').'.'.$host[(count($host) - 3)].'.'.$host[(count($host) - 2)].'.'.end($host);
-            }
-        }
-
+        // route_domain when set; otherwise guessed from the request host when
+        // route_subdomain is set (see RouteDomain::forRoutes()).
         return [
-            'domain' => $domain ?? null,
+            'domain' => RouteDomain::forRoutes(),
             'prefix' => (config('laravel-crm.route_prefix')) ? config('laravel-crm.route_prefix') : null,
             'middleware' => array_unique(array_merge(['web', 'crm', 'crm-api'], config('laravel-crm.route_middleware') ?? [])),
         ];
