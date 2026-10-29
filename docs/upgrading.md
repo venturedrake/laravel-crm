@@ -140,6 +140,131 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.6.0
+
+This minor release adds three groups of configuration keys: order form options, delivery options
+and a fixed route domain. Every key defaults to today's behaviour, so an install that sets nothing
+sees no change. The upgrade is the usual
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+### No migrations
+
+2.6.0 adds no tables or columns. Run `laravelcrm:update` anyway: it advances the `db_version`
+marker, and without it the system check reports the database as behind the code.
+
+### New config keys
+
+The new keys reach an existing install through `mergeConfigFrom`, so you do not need to re-publish
+`config/laravel-crm.php`. Clear a stale `config:cache` (the composer hook does this). The merge
+only covers top-level keys. If you add an `orders` block to your published config and leave out a
+`form` key, that key uses its default.
+
+```php
+'route_domain' => env('LARAVEL_CRM_ROUTE_DOMAIN'), // e.g. crm.example.com.au
+
+'orders' => [
+    'form' => [
+        'description' => true,        // false hides the description textarea
+        'labels' => true,             // false hides the labels picker
+        'custom_fields' => true,      // false hides both custom field blocks
+        'unallocated_owner' => true,  // false removes "Unallocated" from the owner select
+        'addresses' => ['billing', 'shipping'], // which address tabs to show and save
+    ],
+],
+
+'deliveries' => [
+    'delivered_on' => true,                          // false hides "Delivered on" everywhere
+    'delivery_expected_label' => 'delivery_expected', // lang key used to label delivery_expected
+],
+```
+
+All three are install-wide, including on teams installs. They are not in the Settings UI.
+
+**Hiding a field never changes stored data.** Validation and save skip a hidden field rather than
+clearing it, so an order's description, labels, custom field values and any address of an unlisted
+type survive an edit, and so does a delivery's `delivered_on`. With `unallocated_owner` off, editing
+an order with no owner presets the select to the signed-in user, and the owner becomes required.
+`addresses` names `Billing` / `Shipping` address types, not ids. An order created from a quote still
+copies the quote's description when the field is hidden. The REST API is not affected by any of
+these keys.
+
+`delivery_expected_label` must be a key in the `laravel-crm::lang` file. `delivery_expected` and
+`delivery_date` exist in `en`, `en_au`, `en_gb` and `fa`. An unknown key falls back to
+`delivery_expected`. The delivery PDFs have always headed this date "Delivery date", and at the
+default they still do. Any other key relabels the PDFs too.
+
+For a host that wants the trimmed order form and deliveries:
+
+```php
+'orders' => [
+    'form' => [
+        'description' => false,
+        'labels' => false,
+        'custom_fields' => false,
+        'unallocated_owner' => false,
+        'addresses' => ['shipping'],
+    ],
+],
+
+'deliveries' => [
+    'delivered_on' => false,
+    'delivery_expected_label' => 'delivery_date',
+],
+```
+
+### Subdomain installs: set `route_domain`
+
+`route_domain` is now the recommended setting for a subdomain install:
+
+```dotenv
+LARAVEL_CRM_ROUTE_DOMAIN=crm.example.com.au
+LARAVEL_CRM_ROUTE_PREFIX=
+```
+
+When it is set, it wins over `route_subdomain`:
+
+- The CRM, login and API route groups are bound to exactly that host. Before, the domain was worked
+  out from the host of whatever request booted the app, so `php artisan route:cache` and queue
+  workers registered routes from the CLI environment. A cached route list now matches an uncached
+  boot. Check it with `php artisan route:cache && php artisan route:list --name=laravel-crm.dashboard`.
+- The public `/p` routes (quote and invoice portal, chat widget embed, email and SMS tracking) stay
+  unbound, as before.
+- **New redirect.** With `route_prefix` empty, `GET` and `HEAD` requests for the bare domain or
+  `www.` go to the same path and query on `route_domain`, including URLs that match no CRM route.
+  It is registered as global HTTP middleware (`RedirectToRouteDomain`). `POST` and other methods,
+  `/api/*` and `/p/*` are never redirected, and nothing is redirected while `route_prefix` is set.
+  If you added your own middleware to redirect the bare domain to the subdomain, remove it once
+  `route_domain` is set.
+- `RouteSubdomain` compares the full host with `route_domain` and 404s any other host.
+
+Without `route_domain`, nothing changes except one thing. `RouteSubdomain` used to 404 a two-label
+host such as `example.com`, so the login page rendered on the bare domain and every page behind it
+404'd. It now redirects `GET` and `HEAD` there to `{route_subdomain}.{host}`, keeping the path and
+query, and other methods still 404. It also runs on the login routes now, and before
+`Authenticate`, so a guest is sent to the subdomain before the login page.
+
+### Views to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, the view finder uses your
+frozen copy instead of the package's. This release changes these views:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| `livewire/orders/order-form.blade.php` | The order form options. **A frozen copy still shows every field**, but a save skips the fields you hide, so an edit to a field that is still on screen is silently not saved |
+| `livewire/orders/partials/order-address-fields.blade.php` | New in 2.6.0. The address fields `order-form` now includes for each tab. Publish it along with `order-form` |
+| `livewire/deliveries/delivery-form.blade.php`, `livewire/deliveries/delivery-show.blade.php` | `delivered_on` and `delivery_expected_label`. A frozen form still shows "Delivered on" when it is off, and a save does not write it |
+| `deliveries/pdf.blade.php` (the `classic` delivery template) and `pdfs/bold/delivery.blade.php`, `pdfs/compact/delivery.blade.php`, `pdfs/modern/delivery.blade.php`, `pdfs/professional/delivery.blade.php` | `delivery_expected_label` on the PDFs. A frozen copy keeps "Delivery date" |
+
+The delivery index and related index columns are built in PHP, so they follow the delivery options
+even if you keep frozen views.
+
+If you publish lang files, `billing_address` was added to `en` and `fa`. `delivery_expected` and
+`delivery_date` were added to `en_au` and `en_gb`.
+
 ## 2.5.1
 
 This is a bug-fix release for the v1 → v2 upgrade (`laravelcrm:v2`). If you are already on v2,

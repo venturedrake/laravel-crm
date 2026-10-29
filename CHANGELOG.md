@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.6.0 - 2026-10-29
+
+### Changed
+- **Version bumped to `2.6.0`.** `config/package.php` still read `2.5.1`. `SystemCheckService::normalisedVersion()`, the `db_version` marker written by `laravelcrm:update`, the update banner in `UpdateController` and the Settings middleware's `crm.settings-seeded.<version>` flag all key off that value. This is a minor release because it adds configuration keys
+
+### Added
+- **Order form options (`laravel-crm.orders.form`).** `description`, `labels` and `custom_fields` set to `false` hide the description textarea, the labels picker and both custom field blocks. `unallocated_owner` set to `false` removes "Unallocated" from the owner select (`usersOptions()` takes a new `$unallocated` parameter), presets an order with no owner to the signed-in user, and makes the owner required. `addresses` lists the address tabs to show and save by type name (`['billing', 'shipping']`). With one listed it is shown without the tab switcher. Every key defaults to the full form. Hidden fields are skipped by validation and save, never cleared: an existing description, labels, custom field values and an address of an unlisted type survive an edit. An order created from a quote still copies the quote's description when the field is hidden. `OrderService::create()` / `update()` take the options as an optional `FormOptions` argument, so the API and the legacy controller save as before. The address tabs moved into `livewire/orders/partials/order-address-fields.blade.php`. The keys are read through `Support\FormOptions`, keyed by document type, so quotes, invoices and purchase orders can take the same `form` shape later. Covered by `tests/Feature/Livewire/OrderFormOptionsTest.php`
+- **Delivery options (`laravel-crm.deliveries`).** `delivered_on` set to `false` removes "Delivered on" from the delivery form, show page, index and related index, and a save no longer writes the column, so a stored date survives an edit. No PDF template printed it. `delivery_expected_label` names the `laravel-crm::lang` key that labels `delivery_expected` on the form, show page, both index headers and the delivery PDFs. An unknown key falls back to `delivery_expected`, and at the default the PDFs keep their existing "Delivery date" heading. `delivery_expected` and `delivery_date` were added to the `en_au` and `en_gb` lang files. Covered by `tests/Feature/Livewire/DeliveryOptionsTest.php`
+- **`route_domain` (`LARAVEL_CRM_ROUTE_DOMAIN`).** A fixed host for the CRM, login and API route groups, which wins over `route_subdomain` and is now the recommended setting for subdomain installs. With `route_prefix` empty, new global middleware (`RedirectToRouteDomain`) redirects `GET` / `HEAD` on the bare domain and `www.` to the same path and query on `route_domain`, including URLs that match no CRM route. It never redirects other methods, `/api/*` or the domain-less `/p` routes (portal, chat embed, tracking), whose signed URLs would stop validating. Covered by `tests/Feature/Routing/RouteDomainTest.php`
+
+### Fixed
+- **Subdomain installs on a two-label host landed on a 404 after login.** `routeConfiguration()` and `authRouteConfiguration()` guessed the domain from `request()->getHost()` and bound none on a host like `example.com`, so the login page rendered on the bare domain while `RouteSubdomain` 404'd every CRM page behind it. `RouteSubdomain` now redirects `GET` / `HEAD` on a two-label host to `{route_subdomain}.{host}` and 404s other methods. It also runs on the login routes, and before `Authenticate`, so a guest's session starts on the subdomain. Covered by `tests/Feature/Routing/RouteSubdomainTest.php`
+- **Route registration depended on the booting host.** Under `php artisan route:cache` and in queue workers there is no real request, so subdomain routes and generated URLs followed the CLI environment. With `route_domain` set they no longer read the request at all
+- **Drag-and-drop ordering of product lines was restored** on the quote, order, invoice and purchase-order forms, and purchase-order PDFs print their lines in that order. Covered by `tests/Feature/Livewire/ModelProductsOrderingTest.php`. This fix was merged to `develop` after the 2.5.1 release commit
+
 ## 2.5.1 - 2026-10-25
 
 ### Changed
