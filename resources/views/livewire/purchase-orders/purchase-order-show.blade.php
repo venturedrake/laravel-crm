@@ -178,11 +178,18 @@
                         </thead>
                         <tbody>
                         @foreach($purchaseOrder->purchaseOrderLines()->with(['product', 'productVariation'])->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $purchaseOrderLine)
-                            <tr>
+                            <tr class="align-baseline">
                                 <td class="px-0">
                                     {{ $purchaseOrderLine->displayName() }}
                                     @if($purchaseOrderLine->displayCode())
                                         <br /><small>{{ $purchaseOrderLine->displayCode() }}</small>
+                                    @endif
+                                    {{-- Inside the item cell, as on the PDF - in a row of its own it read as a separate line. --}}
+                                    @if($purchaseOrderLine->comments)
+                                        <div class="mt-2 text-sm text-base-content/70">
+                                            <span class="font-semibold">{{ ucfirst(__('laravel-crm::lang.comments')) }}:</span>
+                                            {{ $purchaseOrderLine->comments }}
+                                        </div>
                                     @endif
                                 </td>
                                 <td>{{ money($purchaseOrderLine->price ?? null, $purchaseOrderLine->currency) }}</td>
@@ -198,14 +205,6 @@
                                     @endif
                                 </td>
                             </tr>
-                            @if($purchaseOrderLine->comments)
-                                <tr>
-                                    <td colspan="5" class="border-0 pt-0">
-                                        <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong><br />
-                                        {{ $purchaseOrderLine->comments }}
-                                    </td>
-                                </tr>
-                            @endif
                         @endforeach
                         </tbody>
                         <tfoot>

@@ -190,11 +190,18 @@
                         </thead>
                         <tbody>
                         @foreach($invoice->invoiceLines()->with(['product', 'productVariation'])->whereNotNull('product_id')->orderBy('order', 'asc')->orderBy('created_at', 'asc')->get() as $invoiceProduct)
-                            <tr>
+                            <tr class="align-baseline">
                                 <td class="px-0">
                                     {{ $invoiceProduct->displayName() }}
                                     @if($invoiceProduct->displayCode())
                                         <br /><small>{{ $invoiceProduct->displayCode() }}</small>
+                                    @endif
+                                    {{-- Inside the item cell, as on the PDF - in a row of its own it read as a separate line. --}}
+                                    @if($invoiceProduct->comments)
+                                        <div class="mt-2 text-sm text-base-content/70">
+                                            <span class="font-semibold">{{ ucfirst(__('laravel-crm::lang.comments')) }}:</span>
+                                            {{ $invoiceProduct->comments }}
+                                        </div>
                                     @endif
                                 </td>
                                 <td>{{ money($invoiceProduct->price ?? null, $invoiceProduct->currency) }}</td>
@@ -210,14 +217,6 @@
                                     @endif
                                 </td>
                             </tr>
-                            @if($invoiceProduct->comments)
-                                <tr>
-                                    <td colspan="5" class="border-0 pt-0">
-                                        <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong><br />
-                                        {{ $invoiceProduct->comments }}
-                                    </td>
-                                </tr>
-                            @endif
                         @endforeach
                         </tbody>
                         <tfoot>
