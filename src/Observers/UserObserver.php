@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Observers;
 
 use App\User;
+use VentureDrake\LaravelCrm\Support\UserReferences;
 
 class UserObserver
 {
@@ -53,7 +54,12 @@ class UserObserver
      */
     public function deleting(User $user)
     {
-        //
+        // A soft delete keeps the row, so its foreign keys still resolve.
+        if (method_exists($user, 'isForceDeleting') && ! $user->isForceDeleting()) {
+            return;
+        }
+
+        UserReferences::release($user);
     }
 
     /**

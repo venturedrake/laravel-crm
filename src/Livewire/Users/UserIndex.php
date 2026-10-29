@@ -225,7 +225,7 @@ class UserIndex extends Component
 
         abort_unless(TeamMembership::inCurrentTeam($user), 403);
 
-        $user->delete();
+        $user->deleteOrFail();
 
         $this->success(ucfirst(trans('laravel-crm::lang.user_deleted')));
     }
