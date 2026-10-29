@@ -56,7 +56,7 @@ class ChatIndex extends Component
         return ChatConversation::query()
             ->select("{$conversationTable}.*", "{$visitorTable}.last_seen_at as visitor_last_seen_at")
             ->leftJoin($visitorTable, "{$conversationTable}.chat_visitor_id", '=', "{$visitorTable}.id")
-            ->with(['visitor', 'latestMessage'])
+            ->with(['visitor', 'latestMessage', 'lead'])
             ->when($this->search, fn ($q) => $q->where("{$conversationTable}.chat_id", 'like', "%$this->search%")
                 ->orWhere("{$conversationTable}.subject", 'like', "%$this->search%"))
             ->when($this->status, fn ($q) => $q->where("{$conversationTable}.status", $this->status))
@@ -104,7 +104,8 @@ class ChatIndex extends Component
             return;
         }
 
-        if ($conversation->lead_id) {
+        // A lead_id whose lead was since deleted doesn't count as converted
+        if ($conversation->lead) {
             $this->warning(ucfirst(trans('laravel-crm::lang.chat_already_converted')));
 
             return;

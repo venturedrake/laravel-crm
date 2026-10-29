@@ -36,7 +36,7 @@
                         <x-mary-button icon="o-eye" link="{{ url(route('laravel-crm.chat.show', $c)) }}" class="btn-sm btn-square btn-outline" />
                     @endcan
                     @can('create', \VentureDrake\LaravelCrm\Models\Lead::class)
-                        @if(!$c->lead_id)
+                        @if(!$c->lead)
                             <x-mary-button onclick="modalConvertConversation{{ $c->id }}.showModal()" icon="fas.crosshairs" class="btn-sm btn-square btn-success text-white" spinner />
                             <dialog id="modalConvertConversation{{ $c->id }}" class="modal">
                                 <div class="modal-box text-left">

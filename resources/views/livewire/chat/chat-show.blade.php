@@ -19,7 +19,7 @@
         </x-slot:middle>
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_chat')) }}" link="{{ url(route('laravel-crm.chat.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" />
-            @if($conversation->lead_id)
+            @if($conversation->lead)
                 <x-mary-button
                     label="{{ ucfirst(__('laravel-crm::lang.view_lead')) }}"
                     link="{{ url(route('laravel-crm.leads.show', $conversation->lead)) }}"
@@ -118,7 +118,7 @@
                     <dt class="opacity-60">{{ ucfirst(__('laravel-crm::lang.last_active')) }}</dt>
                     <dd class="col-span-2">{{ $visitor?->last_seen_at?->diffForHumans() ?: '—' }}</dd>
 
-                    @if($conversation->lead_id)
+                    @if($conversation->lead)
                         <dt class="opacity-60">{{ ucfirst(__('laravel-crm::lang.lead')) }}</dt>
                         <dd class="col-span-2">
                             <a href="{{ url(route('laravel-crm.leads.show', $conversation->lead)) }}" class="link link-primary text-xs font-medium">

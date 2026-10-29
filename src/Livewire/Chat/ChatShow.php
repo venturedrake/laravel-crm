@@ -68,8 +68,8 @@ class ChatShow extends Component
     {
         $this->authorize('create', Lead::class);
 
-        // Prevent double-conversion
-        if ($this->conversation->lead_id) {
+        // Prevent double-conversion; a lead_id whose lead was since deleted doesn't count
+        if ($this->conversation->lead) {
             $this->warning(ucfirst(trans('laravel-crm::lang.chat_already_converted')));
 
             return;
