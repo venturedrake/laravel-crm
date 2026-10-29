@@ -144,7 +144,9 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 This minor release adds three groups of configuration keys: order form options, delivery options
 and a fixed route domain. Every key defaults to today's behaviour, so an install that sets nothing
-sees no change. The upgrade is the usual
+sees no change. It also fixes the v1 → v2 upgrade (`laravelcrm:v2`). Those fixes were prepared as
+2.5.1, which was never tagged, so 2.6.0 is the first release that has them. If you are still on CRM
+1.x, read [Upgrading from v1](#upgrading-from-v1-go-straight-to-260) first. On v2, the upgrade is the usual
 
 ```bash
 composer update venturedrake/laravel-crm
@@ -155,6 +157,11 @@ php artisan laravelcrm:update
 
 2.6.0 adds no tables or columns. Run `laravelcrm:update` anyway: it advances the `db_version`
 marker, and without it the system check reports the database as behind the code.
+
+One migration you have already published is fixed in place:
+`add_extra_fields_to_laravel_crm_organizations_table` now adds and drops only the columns it needs
+to. `laravelcrm:update` re-publishes it over your copy, and because the file name stays the same, a
+migration that has already run does not run again.
 
 ### New config keys
 
@@ -247,6 +254,25 @@ host such as `example.com`, so the login page rendered on the bare domain and ev
 query, and other methods still 404. It also runs on the login routes now, and before
 `Authenticate`, so a guest is sent to the subdomain before the login page.
 
+### Deleting a user now releases their CRM records
+
+Deleting a user used to fail with an integrity violation once they had a personal setting, had
+created a CRM record or had a team seat. The CRM tables reference users with foreign keys that have
+no `ON DELETE` action. The delete now goes through:
+
+- The user's personal `crm_settings` rows and their `crm_team_user` rows are deleted.
+- Every nullable CRM column with a foreign key to the user is set to `NULL`. That includes
+  `user_owner_id`, so records the user owned become unallocated, `user_assigned_id`, and the
+  `user_created_id`, `user_updated_id`, `user_deleted_id` and `user_restored_id` audit columns.
+  Reassign the user's records first if you want to keep an owner on them.
+- A required reference still blocks the delete. The usual one is a team owner (`crm_teams.user_id`).
+  In that case nothing is changed.
+- A soft delete of the user leaves every reference in place.
+
+This runs from `UserObserver::deleting()`, so it also applies to users deleted by your own code,
+for example a Filament `DeleteAction`. The foreign keys are read from your live schema, so a column
+your published stubs never constrained is left as it is.
+
 ### Views to re-publish
 
 If you have published views into `resources/views/vendor/laravel-crm`, the view finder uses your
@@ -258,6 +284,10 @@ frozen copy instead of the package's. This release changes these views:
 | `livewire/orders/partials/order-address-fields.blade.php` | New in 2.6.0. The address fields `order-form` now includes for each tab. Publish it along with `order-form` |
 | `livewire/deliveries/delivery-form.blade.php`, `livewire/deliveries/delivery-show.blade.php` | `delivered_on` and `delivery_expected_label`. A frozen form still shows "Delivered on" when it is off, and a save does not write it |
 | `deliveries/pdf.blade.php` (the `classic` delivery template) and `pdfs/bold/delivery.blade.php`, `pdfs/compact/delivery.blade.php`, `pdfs/modern/delivery.blade.php`, `pdfs/professional/delivery.blade.php` | `delivery_expected_label` on the PDFs. A frozen copy keeps "Delivery date" |
+| `livewire/model-products.blade.php` | Drag-and-drop ordering of product lines, and saving line comments on Livewire 4. **With a frozen copy, line comments are still not saved on Livewire 4** |
+| `purchase-orders/pdf.blade.php` (the `classic` purchase-order template) and `pdfs/bold/purchase-order.blade.php`, `pdfs/compact/purchase-order.blade.php`, `pdfs/modern/purchase-order.blade.php`, `pdfs/professional/purchase-order.blade.php` | Purchase-order lines printed in their saved order |
+| `livewire/quotes/quote-show.blade.php`, `livewire/orders/order-show.blade.php`, `livewire/invoices/invoice-show.blade.php`, `livewire/purchase-orders/purchase-order-show.blade.php` | Line comments printed inside the product's cell instead of in a row of their own |
+| `livewire/chat/chat-index.blade.php`, `livewire/chat/chat-show.blade.php` | The fix for a conversation whose lead was deleted. **A frozen `chat-show` still crashes** on such a conversation |
 
 The delivery index and related index columns are built in PHP, so they follow the delivery options
 even if you keep frozen views.
@@ -265,42 +295,27 @@ even if you keep frozen views.
 If you publish lang files, `billing_address` was added to `en` and `fa`. `delivery_expected` and
 `delivery_date` were added to `en_au` and `en_gb`.
 
-## 2.5.1
+### Upgrading from v1: go straight to 2.6.0
 
-This is a bug-fix release for the v1 → v2 upgrade (`laravelcrm:v2`). If you are already on v2,
-nothing changes for you, and the upgrade is the usual
+If you are already on v2, the `laravelcrm:v2` changes below do not affect you.
 
-```bash
-composer update venturedrake/laravel-crm
-php artisan laravelcrm:update
-```
-
-### No migrations, no new config keys
-
-2.5.1 adds no tables, columns or configuration keys, and no views changed. One migration you have
-already published is fixed in place: `add_extra_fields_to_laravel_crm_organizations_table` now adds
-and drops only the columns it needs to. `laravelcrm:update` re-publishes it over your copy, and
-because the file name stays the same, a migration that has already run does not run again.
-
-### Upgrading from v1: go straight to 2.5.1
-
-If you are still on CRM 1.x, upgrade directly to 2.5.1 and do **not** run 2.5.0's `laravelcrm:v2`.
+If you are still on CRM 1.x, upgrade directly to 2.6.0 and do **not** run 2.5.0's `laravelcrm:v2`.
 2.5.0 left v1 class names in ten columns and could abort part-way. The procedure is:
 
 1. Take a full database backup.
-2. `composer require venturedrake/laravel-crm:^2.5.1`
+2. `composer require venturedrake/laravel-crm:^2.6.0`
 3. `php artisan laravelcrm:v2 --force`
 
 Do not run `php artisan migrate` or `php artisan laravelcrm:update` before step 3. `laravelcrm:v2`
 renames the v1 tables first and then runs `laravelcrm:update` itself.
 
-### `laravelcrm:v2 --force`
+#### `laravelcrm:v2 --force`
 
 `--force` skips the backup prompt and passes `--force` on to `laravelcrm:update`, so the command can
 run from a deploy script. Without it, `laravelcrm:v2` still asks you to confirm that you have taken
 a backup.
 
-### Exit codes
+#### Exit codes
 
 `laravelcrm:v2` now exits `1` when:
 
@@ -312,7 +327,7 @@ a backup.
 On a failure it tells you to fix the error and re-run `php artisan laravelcrm:v2`. Re-running it is
 safe: every step skips work that is already done.
 
-### `migrate` is blocked on a v1 database
+#### `migrate` is blocked on a v1 database
 
 `php artisan migrate` and `php artisan laravelcrm:update` now refuse to start while any of
 `crm_organisations`, `crm_organisation_types` or `crm_clients` exists (with your table prefix). They
@@ -323,9 +338,9 @@ the v1 data. `migrate:status` and other commands are not affected, and neither a
 connection only.
 
 If you added an `App\Listeners\GuardCrmV2Upgrade` listener to work around this, you can delete it
-once you are on 2.5.1. Keeping it is harmless.
+once you are on 2.6.0. Keeping it is harmless.
 
-### Stranded v2 tables are healed
+#### Stranded v2 tables are healed
 
 If `migrate` already ran before `laravelcrm:v2`, `laravelcrm:v2` now finds the v2 tables and
 columns sitting next to their v1 counterparts before it changes anything:
@@ -340,7 +355,7 @@ both counts, prints "Nothing has been changed" and exits `1`. Decide which side 
 want. Usually that is the v1 side, unless people have used the CRM since the early `migrate`. Then
 remove or empty the other side, or restore your backup, and re-run `php artisan laravelcrm:v2`.
 
-### If you already ran 2.5.0's `laravelcrm:v2`
+#### If you already ran 2.5.0's `laravelcrm:v2`
 
 2.5.0 rewrote `Organisation` and `Client` class names only in the emails, phones, addresses, field
 values, notes, contacts, files and customers tables. Check the other columns with this query. It
@@ -361,7 +376,7 @@ UNION ALL SELECT 'crm_field_models.model', COUNT(*) FROM crm_field_models WHERE 
 UNION ALL SELECT 'audits.auditable_type', COUNT(*) FROM audits WHERE auditable_type IN ('VentureDrake\\LaravelCrm\\Models\\Organisation', 'VentureDrake\\LaravelCrm\\Models\\Client');
 ```
 
-If any count is above zero, take a backup and re-run `php artisan laravelcrm:v2 --force` on 2.5.1.
+If any count is above zero, take a backup and re-run `php artisan laravelcrm:v2 --force` on 2.6.0.
 It is idempotent: on a database that is already on v2 it renames nothing, rewrites the class names
 in the newly covered columns, marks the renamed migrations as run, and runs `laravelcrm:update`.
 
