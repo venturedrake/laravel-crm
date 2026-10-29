@@ -30,7 +30,7 @@ class DeleteUserForm extends Component
 
         Auth::logout();
 
-        $user->delete();
+        $user->deleteOrFail();
 
         request()->session()->invalidate();
         request()->session()->regenerateToken();

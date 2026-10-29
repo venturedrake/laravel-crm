@@ -38,7 +38,7 @@
  */
 const PERSISTENCE_SIGNALS = [
     // Eloquent / query-builder writes.
-    '->save(', '->saveQuietly(', '->delete(', '->forceDelete(', '->update(',
+    '->save(', '->saveQuietly(', '->delete(', '->deleteOrFail(', '->forceDelete(', '->update(',
     '->updateOrCreate(', '->forceFill(', '->create(', '::create(', '::updateOrCreate(',
     '::destroy(', '->attach(', '->detach(', '->sync(', '->syncWithoutDetaching(',
     '->restore(', '->increment(', '->decrement(', '->push(', '->firstOrCreate(',

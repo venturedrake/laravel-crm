@@ -341,7 +341,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
+        $user->deleteOrFail();
 
         flash()->success(ucfirst(trans('laravel-crm::lang.user_deleted')));
 
