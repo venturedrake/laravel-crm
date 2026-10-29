@@ -237,6 +237,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Deliveries
+    |--------------------------------------------------------------------------
+    |
+    | `delivered_on` false hides the "Delivered on" date from the delivery
+    | form, show page, index and related index. The column, the API and any
+    | stored value are left alone, and a save no longer writes it.
+    |
+    | `delivery_expected_label` is a key in the laravel-crm::lang file used to
+    | label the expected delivery date on the form, show page, index and
+    | related index, and on the delivery PDFs. For example "delivery_date"
+    | prints "Delivery date". A key that does not exist falls back to
+    | "delivery_expected". Left at "delivery_expected", the PDFs keep their
+    | existing "Delivery date" heading.
+    |
+    */
+
+    'deliveries' => [
+        'delivered_on' => true,
+        'delivery_expected_label' => 'delivery_expected',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Monitoring
     |--------------------------------------------------------------------------
     |

@@ -25,7 +25,7 @@
         @endif
         @if($delivery->delivery_expected)
             <tr>
-                <td class="bold-meta-label">{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</td>
+                <td class="bold-meta-label">{{ ucwords(\VentureDrake\LaravelCrm\Support\DeliveryOptions::pdfExpectedLabel()) }}</td>
                 <td class="bold-meta-value">{{ $delivery->delivery_expected }}</td>
             </tr>
         @endif

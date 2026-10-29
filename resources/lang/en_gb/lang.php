@@ -34,4 +34,8 @@ return [
     'password_reset_success' => 'your password has been reset.',
     'back_to_login' => 'back to login',
     'user_cannot_delete_self' => 'you cannot delete your own user account',
+
+    // Deliveries: config laravel-crm.deliveries.delivery_expected_label picks one
+    'delivery_expected' => 'delivery expected',
+    'delivery_date' => 'delivery date',
 ];

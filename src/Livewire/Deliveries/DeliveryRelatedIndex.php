@@ -10,6 +10,7 @@ use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Support\DeliveryOptions;
 
 class DeliveryRelatedIndex extends Component
 {
@@ -27,15 +28,21 @@ class DeliveryRelatedIndex extends Component
 
     public function headers(): array
     {
-        return [
+        $headers = [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
             ['key' => 'delivery_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'reference', 'label' => ucfirst(__('laravel-crm::lang.reference'))],
             ['key' => 'address', 'label' => ucfirst(__('laravel-crm::lang.shipping_address')), 'sortable' => false],
-            ['key' => 'delivery_expected', 'label' => ucwords(__('laravel-crm::lang.delivery_expected')), 'format' => fn ($row, $field) => $field?->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d'))],
-            ['key' => 'delivered_on', 'label' => ucwords(__('laravel-crm::lang.delivered_on')), 'format' => fn ($row, $field) => $field?->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d'))],
-            ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
+            ['key' => 'delivery_expected', 'label' => ucwords(DeliveryOptions::expectedLabel()), 'format' => fn ($row, $field) => $field?->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d'))],
         ];
+
+        if (DeliveryOptions::showsDeliveredOn()) {
+            $headers[] = ['key' => 'delivered_on', 'label' => ucwords(__('laravel-crm::lang.delivered_on')), 'format' => fn ($row, $field) => $field?->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d'))];
+        }
+
+        $headers[] = ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false];
+
+        return $headers;
     }
 
     #[Computed]

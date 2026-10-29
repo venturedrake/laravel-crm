@@ -23,7 +23,7 @@
         <tr>
             <td class="compact-meta-label">{{ ucfirst(__('laravel-crm::lang.reference')) }}</td>
             <td class="compact-meta-value">{{ $order->reference }}</td>
-            <td class="compact-meta-label">{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</td>
+            <td class="compact-meta-label">{{ ucwords(\VentureDrake\LaravelCrm\Support\DeliveryOptions::pdfExpectedLabel()) }}</td>
             <td class="compact-meta-value">{{ $delivery->delivery_expected }}</td>
         </tr>
     </table>

@@ -17,7 +17,7 @@
                             @if($order->reference)
                                 <br />
                             @endif    
-                            <strong>{{ ucwords(__('laravel-crm::lang.delivery_date')) }}</strong> {{ $delivery->delivery_expected }}
+                            <strong>{{ ucwords(\VentureDrake\LaravelCrm\Support\DeliveryOptions::pdfExpectedLabel()) }}</strong> {{ $delivery->delivery_expected }}
                         @endif
                     @if($order->reference || $delivery->delivery_expected)
                     </p>

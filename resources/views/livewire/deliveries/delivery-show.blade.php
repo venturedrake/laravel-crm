@@ -47,17 +47,19 @@
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
-                        <strong>{{ ucwords(__('laravel-crm::lang.delivery_expected')) }}</strong>
+                        <strong>{{ ucwords(\VentureDrake\LaravelCrm\Support\DeliveryOptions::expectedLabel()) }}</strong>
                         <span>
                         {{ $delivery->delivery_expected ? $delivery->delivery_expected->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null }}
                         </span>
                     </div>
+                    @if(\VentureDrake\LaravelCrm\Support\DeliveryOptions::showsDeliveredOn())
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucwords(__('laravel-crm::lang.delivered_on')) }}</strong>
                         <span>
                         {{ $delivery->delivered_on ? $delivery->delivered_on->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null }}
                         </span>
                     </div>
+                    @endif
                     @hasordersenabled
                     @if($delivery->order)
                         <div class="flex flex-row gap-5">

@@ -24,15 +24,26 @@ class DeliveryService
         $this->deliveryRepository = $deliveryRepository;
     }
 
-    public function create($request, $person = null, $organization = null)
+    /**
+     * $withDeliveredOn is false when the delivery screens hide "Delivered on"
+     * (config laravel-crm.deliveries.delivered_on): the column is then left
+     * as stored rather than written from a field the form never showed.
+     */
+    public function create($request, $person = null, $organization = null, bool $withDeliveredOn = true)
     {
-        $delivery = Delivery::create([
+        $attributes = [
             'order_id' => $request->order_id,
             'delivery_expected' => $request->delivery_expected,
             'delivered_on' => $request->delivered_on,
             'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
-        ]);
+        ];
+
+        if (! $withDeliveredOn) {
+            unset($attributes['delivered_on']);
+        }
+
+        $delivery = Delivery::create($attributes);
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
@@ -69,13 +80,19 @@ class DeliveryService
         return $delivery;
     }
 
-    public function update($request, Delivery $delivery, $person = null, $organization = null)
+    public function update($request, Delivery $delivery, $person = null, $organization = null, bool $withDeliveredOn = true)
     {
-        $delivery->update([
+        $attributes = [
             'delivery_expected' => $request->delivery_expected,
             'delivered_on' => $request->delivered_on,
             'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $delivery->pdf_template),
-        ]);
+        ];
+
+        if (! $withDeliveredOn) {
+            unset($attributes['delivered_on']);
+        }
+
+        $delivery->update($attributes);
 
         if ($request->addresses) {
             foreach ($request->addresses as $addressRequest) {

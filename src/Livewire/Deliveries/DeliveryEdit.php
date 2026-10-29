@@ -8,6 +8,7 @@ use VentureDrake\LaravelCrm\Livewire\Deliveries\Traits\HasDeliveryCommon;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Support\DeliveryOptions;
 
 class DeliveryEdit extends Component
 {
@@ -65,7 +66,7 @@ class DeliveryEdit extends Component
         // Create a request object to pass to services
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
-        $this->deliveryService->update($request, $this->delivery);
+        $this->deliveryService->update($request, $this->delivery, withDeliveredOn: DeliveryOptions::showsDeliveredOn());
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.delivery_updated')),

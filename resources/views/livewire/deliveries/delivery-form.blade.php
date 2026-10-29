@@ -2,8 +2,10 @@
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.details')) }}" separator>
         <div class="grid gap-3" wire:key="details">
             <div class="grid lg:grid-cols-2 gap-5 items-start">
-                <x-mary-datetime wire:model="delivery_expected" label="{{ ucfirst(__('laravel-crm::lang.delivery_expected')) }}" />
+                <x-mary-datetime wire:model="delivery_expected" label="{{ ucfirst(\VentureDrake\LaravelCrm\Support\DeliveryOptions::expectedLabel()) }}" />
+                @if(\VentureDrake\LaravelCrm\Support\DeliveryOptions::showsDeliveredOn())
                 <x-mary-datetime wire:model="delivered_on" label="{{ ucfirst(__('laravel-crm::lang.delivered_on')) }}" />
+                @endif
             </div>
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.template')) }}" wire:model="pdf_template" :options="$this->pdfTemplateOptions()" :placeholder="$this->pdfTemplateDefaultLabel()" placeholder-value="" />
         </div>
