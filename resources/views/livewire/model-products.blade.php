@@ -79,7 +79,11 @@
                                     @if(in_array($from, ['Quote', 'Order']))
                                         <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" readonly />
                                     @else
-                                        <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />
+                                        {{-- Live, not .blur: on Livewire 4 .blur only updates the browser copy and
+                                             sends nothing, so the comment never reached the parent form's save.
+                                             Debounced rather than .live.blur, which would only send on the Save
+                                             click itself and lose the race to the save request. --}}
+                                        <x-mary-input wire:model.live.debounce.500ms="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />
                                     @endif
                                 @endif    
                             </div>
