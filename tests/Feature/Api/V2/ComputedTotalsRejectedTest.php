@@ -4,6 +4,7 @@ use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Tests\Stubs\User;
 
 /**
@@ -34,7 +35,9 @@ function totalsApiHeaders(User $user): array
 
 function totalsApiLineItems(): array
 {
-    $product = Product::create(['name' => 'Widget'])->refresh();
+    // Taxed at 10%: the header tax is summed from the lines, not posted.
+    $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
+    $product = Product::create(['name' => 'Widget', 'tax_rate_id' => $gst->id])->refresh();
 
     return [[
         'product_id' => $product->external_id,
@@ -69,13 +72,15 @@ test('POST still accepts a payload that omits them, and computes both', function
     $response = $this->withHeaders(totalsApiHeaders(totalsApiUser()))
         ->postJson('/crm/api/v2/'.$resource, $attributes + [
             'currency' => 'USD',
-            'tax' => 10.00,
+            // Ignored: the header tax is the lines' tax (10% of 100).
+            'tax' => 99.00,
             'line_items' => totalsApiLineItems(),
         ]);
 
     $response->assertStatus(201);
 
     expect($response->json('data.subtotal'))->toEqual(100.00)
+        ->and($response->json('data.tax'))->toEqual(10.00)
         ->and($response->json('data.total'))->toEqual(110.00)
         ->and($modelClass::where('external_id', $response->json('data.id'))->exists())->toBeTrue();
 })->with('totals resources');

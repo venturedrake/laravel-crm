@@ -40,13 +40,16 @@ test('POST /orders creates an order with nested line items', function () {
     $user = orderApiUser();
     $organization = Organization::create(['name' => 'Acme Co']);
     $product = createOrderApiProduct();
+    // The header tax is the lines' tax at the product's rate; the posted
+    // `tax` is ignored.
+    $product->update(['tax_rate' => 10]);
 
     $response = $this->withHeaders(orderApiHeaders($user))
         ->postJson('/crm/api/v2/orders', [
             'reference' => 'O-REF-1',
             'description' => 'First order',
             'currency' => 'USD',
-            'tax' => 20.00,
+            'tax' => 99.00,
             'organization_id' => $organization->external_id,
             'user_owner_id' => $user->id,
             'line_items' => [
@@ -65,6 +68,7 @@ test('POST /orders creates an order with nested line items', function () {
     $payload = $response->json('data');
     expect(Str::isUuid($payload['id']))->toBeTrue();
     expect($payload['reference'])->toBe('O-REF-1');
+    expect($payload['tax'])->toEqual(20.00);
     expect($payload['total'])->toEqual(220.00);
     expect($payload['line_items'])->toHaveCount(1);
     expect($payload['line_items'][0]['product_id'])->toBe($product->external_id);

@@ -49,13 +49,17 @@ test('POST /quotes creates a quote with nested line items', function () {
     $organization = Organization::create(['name' => 'Acme Co']);
     $productA = createApiProduct('Widget A');
     $productB = createApiProduct('Widget B');
+    // The header tax is the lines' tax at the product's rate; the posted
+    // `tax` is ignored.
+    $productA->update(['tax_rate' => 10]);
+    $productB->update(['tax_rate' => 10]);
 
     $response = $this->withHeaders(quoteApiHeaders($user))
         ->postJson('/crm/api/v2/quotes', [
             'title' => 'Initial proposal',
             'reference' => 'Q-REF-1',
             'currency' => 'USD',
-            'tax' => 25.00,
+            'tax' => 99.00,
             'organization_id' => $organization->external_id,
             'user_owner_id' => $user->id,
             'line_items' => [

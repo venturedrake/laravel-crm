@@ -331,3 +331,48 @@ test('a line already invoiced in full is left off the follow-up invoice', functi
         ->and($component->get('products.0.order_product_id'))->not->toBe($wholeLine->id);
     $component->assertSet('sub_total', 416.5);
 });
+
+/*
+ * A quantity set to 0 in a wholesale update. The money mask reformats every
+ * row's read-only amount, so Livewire sends `products` as one update rather
+ * than "{index}.quantity" - and that path only re-summed the rows, leaving the
+ * zeroed row's amount in the totals.
+ */
+
+test('a row zeroed in a wholesale update drops out of the totals', function () {
+    $this->actingAsUser();
+
+    $component = Livewire::test(ModelProducts::class, ['model' => quoteWithLines()]);
+
+    $products = $component->get('products');
+    $products[0]['quantity'] = 0;
+    // The mask's reformatting of the other row's amount.
+    $products[1]['amount'] = '14,000.00';
+
+    $component->set('products', $products);
+
+    expect($component->get('products.0.amount'))->toEqual(0)
+        ->and($component->get('products.0.tax_amount'))->toEqual(0);
+
+    $component->assertSet('sub_total', 14000.0)
+        ->assertSet('tax', 1400.0)
+        ->assertSet('total', 15400.0);
+});
+
+test('a wholesale update reprices a row whose quantity changed', function () {
+    $this->actingAsUser();
+
+    $component = Livewire::test(ModelProducts::class, ['model' => quoteWithLines()]);
+
+    $products = $component->get('products');
+    $products[1]['quantity'] = 2;
+
+    $component->set('products', $products);
+
+    // 2 x 3500.00, keeping the row's 10% tax rate.
+    expect($component->get('products.1.amount'))->toEqual(7000)
+        ->and($component->get('products.1.tax_amount'))->toEqual(700);
+
+    $component->assertSet('sub_total', 20500.0)
+        ->assertSet('tax', 2050.0);
+});

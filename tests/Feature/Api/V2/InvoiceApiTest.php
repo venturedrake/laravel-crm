@@ -40,12 +40,15 @@ test('POST /invoices creates an invoice with nested line items', function () {
     $user = invoiceApiUser();
     $organization = Organization::create(['name' => 'Acme Co']);
     $product = createInvoiceApiProduct();
+    // The header tax is the lines' tax at the product's rate; the posted
+    // `tax` is ignored.
+    $product->update(['tax_rate' => 10]);
 
     $response = $this->withHeaders(invoiceApiHeaders($user))
         ->postJson('/crm/api/v2/invoices', [
             'reference' => 'INV-REF-1',
             'currency' => 'USD',
-            'tax' => 30.00,
+            'tax' => 99.00,
             'issue_date' => '2026-05-19T00:00:00Z',
             'due_date' => '2026-06-19T00:00:00Z',
             'organization_id' => $organization->external_id,
@@ -68,6 +71,7 @@ test('POST /invoices creates an invoice with nested line items', function () {
     expect($payload['invoice_id'])->toBeString();
     expect($payload['reference'])->toBe('INV-REF-1');
     expect($payload['subtotal'])->toEqual(300.00);
+    expect($payload['tax'])->toEqual(30.00);
     expect($payload['total'])->toEqual(330.00);
     expect($payload['line_items'])->toHaveCount(1);
     expect($payload['line_items'][0]['product_id'])->toBe($product->external_id);

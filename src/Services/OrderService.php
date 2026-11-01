@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\OrderRepository;
+use VentureDrake\LaravelCrm\Support\DocumentTotals;
 use VentureDrake\LaravelCrm\Support\FormOptions;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
@@ -128,6 +129,8 @@ class OrderService
                 ]);
             }
         }
+
+        $this->syncTotals($order);
 
         return $order;
     }
@@ -253,7 +256,26 @@ class OrderService
 
         $this->updateOrderAddresses($order, $request->addresses, $form?->hiddenAddressTypeIds() ?? []);
 
+        $this->syncTotals($order);
+
         return $order;
+    }
+
+    /**
+     * Set the header totals from the lines actually saved. The request's
+     * totals are only what the form last summed, and can count a row the
+     * loop above dropped. Discount and adjustments stay as the request set
+     * them.
+     */
+    protected function syncTotals(Order $order): void
+    {
+        $totals = DocumentTotals::fromLines($order->orderProducts()->get());
+
+        $order->update([
+            'subtotal' => $totals['subtotal'] / 100,
+            'tax' => $totals['tax'] / 100,
+            'total' => ($totals['subtotal'] - (int) $order->discount + $totals['tax'] + (int) $order->adjustments) / 100,
+        ]);
     }
 
     /**

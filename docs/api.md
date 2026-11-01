@@ -209,6 +209,12 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
 - **`discount` and `tax` reject negatives.** *(Changed in 2.4.0.)* Both gained `min:0` on
   quote / order / invoice writes. A negative discount was a way to inflate a total; send an
   `adjustments` value instead.
+- **Header `tax` is derived from `line_items`.** *(Changed after 2.6.0 — unreleased.)* A
+  quote / order / invoice's `tax` is now the sum of the tax on the lines it saved, each
+  line taxed at its product's rate. `tax` is still accepted on the request (and still
+  rejects negatives) but no longer changes the stored document, the same way the
+  form-posted totals no longer do. Previously the posted `tax` was stored as sent and could
+  disagree with the lines.
 
 ### Product variations
 
@@ -326,8 +332,8 @@ the line would then be discarded without an error.
 #### `subtotal` and `total` are computed, and rejected on input
 
 *(Changed in 2.4.0.)* `subtotal` and `total` were accepted on quote / order / invoice
-`POST` and `PUT` and are now derived from `line_items`, `discount`, `tax` and
-`adjustments`. Sending either returns a `422` naming the cause:
+`POST` and `PUT` and are now derived from the saved `line_items` (and their tax),
+`discount` and `adjustments`. Sending either returns a `422` naming the cause:
 
 ```json
 {

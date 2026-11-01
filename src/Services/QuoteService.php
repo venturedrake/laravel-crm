@@ -10,6 +10,7 @@ use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\QuoteRepository;
+use VentureDrake\LaravelCrm\Support\DocumentTotals;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
@@ -90,6 +91,8 @@ class QuoteService
                 }
             }
         }
+
+        $this->syncTotals($quote);
 
         return $quote;
     }
@@ -189,7 +192,26 @@ class QuoteService
             }
         }
 
+        $this->syncTotals($quote);
+
         return $quote;
+    }
+
+    /**
+     * Set the header totals from the lines actually saved. The request's
+     * totals are only what the form last summed, and can count a row the
+     * loop above dropped. Discount and adjustments stay as the request set
+     * them.
+     */
+    protected function syncTotals(Quote $quote): void
+    {
+        $totals = DocumentTotals::fromLines($quote->quoteProducts()->get());
+
+        $quote->update([
+            'subtotal' => $totals['subtotal'] / 100,
+            'tax' => $totals['tax'] / 100,
+            'total' => ($totals['subtotal'] - (int) $quote->discount + $totals['tax'] + (int) $quote->adjustments) / 100,
+        ]);
     }
 
     /**

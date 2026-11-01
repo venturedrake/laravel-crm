@@ -5,12 +5,18 @@ use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\QuoteService;
 
 test('service creates a quote with minimum data', function () {
+    // The header totals come from the saved lines.
+    $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
+    $product = Product::create(['name' => 'Taxed', 'tax_rate_id' => $gst->id]);
+
     $quote = app(QuoteService::class)->create(new Request([
         'title' => 'Quote 1', 'description' => 'Some description',
         'currency' => 'USD', 'sub_total' => 100, 'tax' => 10, 'total' => 110,
+        'products' => [['id' => $product->id, 'quantity' => 1, 'unit_price' => 100, 'amount' => 100, 'comments' => null]],
     ]));
 
     expect($quote)->toBeInstanceOf(Quote::class);

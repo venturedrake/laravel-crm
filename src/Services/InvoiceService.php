@@ -12,6 +12,7 @@ use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
+use VentureDrake\LaravelCrm\Support\DocumentTotals;
 use VentureDrake\LaravelCrm\Support\LineAmount;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
@@ -98,6 +99,8 @@ class InvoiceService
             }
         }
 
+        $this->syncTotals($invoice);
+
         if (XeroIntegration::connected()) {
             $lineItems = [];
 
@@ -156,7 +159,6 @@ class InvoiceService
             'subtotal' => $request->sub_total,
             'tax' => $request->tax,
             'total' => $request->total,
-            'amount_due' => Money::toFloat($request->total) - ($invoice->amount_paid / 100),
             'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $invoice->pdf_template),
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
@@ -251,7 +253,32 @@ class InvoiceService
             }
         }
 
+        $this->syncTotals($invoice, withAmountDue: true);
+
         return $invoice;
+    }
+
+    /**
+     * Set the header totals from the lines actually saved. The request's
+     * totals are only what the form last summed, and can count a row the
+     * loop above dropped.
+     */
+    protected function syncTotals(Invoice $invoice, bool $withAmountDue = false): void
+    {
+        $totals = DocumentTotals::fromLines($invoice->invoiceLines()->get());
+        $total = $totals['subtotal'] + $totals['tax'];
+
+        $attributes = [
+            'subtotal' => $totals['subtotal'] / 100,
+            'tax' => $totals['tax'] / 100,
+            'total' => $total / 100,
+        ];
+
+        if ($withAmountDue) {
+            $attributes['amount_due'] = ($total - (int) $invoice->getRawOriginal('amount_paid')) / 100;
+        }
+
+        $invoice->update($attributes);
     }
 
     /**

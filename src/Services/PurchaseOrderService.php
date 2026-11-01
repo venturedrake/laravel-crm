@@ -13,6 +13,7 @@ use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Repositories\PurchaseOrderRepository;
+use VentureDrake\LaravelCrm\Support\DocumentTotals;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
@@ -66,9 +67,6 @@ class PurchaseOrderService
         }
 
         if (isset($request->products)) {
-            $subTotal = 0;
-            $tax = 0;
-            $total = 0;
             $purchaseOrderLineOrder = 0;
 
             foreach ($request->products as $purchaseOrderLine) {
@@ -93,10 +91,6 @@ class PurchaseOrderService
                         }
                     }
 
-                    $subTotal += Money::toFloat($purchaseOrderLine['amount']);
-                    $tax += Money::toFloat($purchaseOrderLine['amount']) * ($taxRate / 100);
-                    $total += (Money::toFloat($purchaseOrderLine['amount']) + (Money::toFloat($purchaseOrderLine['amount']) * ($taxRate / 100)));
-
                     $purchaseOrder->purchaseOrderLines()->create([
                         'product_id' => $purchaseOrderLine['id'],
                         'product_variation_id' => $this->variationIdFor($purchaseOrderLine['id'], $purchaseOrderLine['product_variation_id'] ?? null, $this->sourceVariationId(OrderProduct::class, $purchaseOrderLine['order_product_id'] ?? null)),
@@ -113,14 +107,9 @@ class PurchaseOrderService
                 }
             }
 
-            if (! $request->total) {
-                $purchaseOrder->update([
-                    'subtotal' => $subTotal,
-                    'tax' => $tax,
-                    'total' => $total,
-                ]);
-            }
         }
+
+        $this->syncTotals($purchaseOrder);
 
         if (XeroIntegration::connected()) {
             $lineItems = [];
@@ -182,7 +171,6 @@ class PurchaseOrderService
             'subtotal' => $request->sub_total,
             'tax' => $request->tax,
             'total' => $request->total,
-            'amount_due' => Money::toFloat($request->total) - ($purchaseOrder->amount_paid / 100),
             'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $purchaseOrder->pdf_template),
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
@@ -282,7 +270,25 @@ class PurchaseOrderService
             }
         }
 
+        $this->syncTotals($purchaseOrder);
+
         return $purchaseOrder;
+    }
+
+    /**
+     * Set the header totals from the lines actually saved. The request's
+     * totals are only what the form last summed, and can count a row the
+     * loop above dropped.
+     */
+    protected function syncTotals(PurchaseOrder $purchaseOrder): void
+    {
+        $totals = DocumentTotals::fromLines($purchaseOrder->purchaseOrderLines()->get());
+
+        $purchaseOrder->update([
+            'subtotal' => $totals['subtotal'] / 100,
+            'tax' => $totals['tax'] / 100,
+            'total' => ($totals['subtotal'] + $totals['tax']) / 100,
+        ]);
     }
 
     /**

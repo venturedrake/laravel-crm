@@ -4,12 +4,17 @@ use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrderService;
 
 test('service creates an order with minimum data', function () {
+    // The header totals come from the saved lines.
+    $product = Product::create(['name' => 'Plain']);
+
     $order = app(OrderService::class)->create(new Request([
         'description' => 'd', 'currency' => 'USD', 'sub_total' => 200, 'total' => 200,
+        'products' => [['id' => $product->id, 'quantity' => 2, 'unit_price' => 100, 'amount' => 200, 'comments' => null]],
     ]));
 
     expect($order)->toBeInstanceOf(Order::class);

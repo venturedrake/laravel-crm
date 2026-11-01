@@ -14,10 +14,15 @@ beforeEach(function () {
 });
 
 test('service creates an invoice with minimum data', function () {
+    // The header totals come from the saved lines.
+    $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
+    $product = Product::create(['name' => 'Taxed', 'tax_rate_id' => $gst->id]);
+
     $invoice = app(InvoiceService::class)->create(new Request([
         'reference' => 'INV-1', 'currency' => 'USD',
         'issue_date' => '2025-01-01', 'due_date' => '2025-01-31',
         'sub_total' => 100, 'tax' => 10, 'total' => 110,
+        'products' => [['id' => $product->id, 'quantity' => 1, 'unit_price' => 100, 'amount' => 100, 'comments' => null]],
     ]));
 
     expect($invoice)->toBeInstanceOf(Invoice::class);

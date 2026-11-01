@@ -290,12 +290,18 @@ class ModelProducts extends Component
 
                     $this->recalculateProduct($index, $product);
                 }
-            } elseif ($product = Product::find($this->products[$index]['id'] ?? null)) {
-                $this->recalculateProduct($index, $product);
+            } else {
+                $this->recalculateRow($index);
             }
         } else {
+            // Livewire sends the array wholesale whenever every row changed -
+            // which the money mask makes the usual case, as it reformats each
+            // row's read-only amount. A quantity typed in that same update
+            // still has to reprice its row, or a row set to 0 keeps its
+            // amount in the totals.
             foreach (array_keys($this->products) as $index) {
                 $this->clampQuantity($index);
+                $this->recalculateRow($index, keepTaxRate: true);
             }
         }
 
@@ -369,6 +375,33 @@ class ModelProducts extends Component
         $this->products[$index]['tax_rate'] = $taxRate;
         $this->products[$index]['tax_amount'] = round($line['tax'] / 100, 2);
         $this->products[$index]['amount'] = round($line['amount'] / 100, 2);
+    }
+
+    /**
+     * Reprice a row that has a product picked. A delivery row has no price
+     * to work from and a blank row nothing to price, so both are left alone.
+     *
+     * $keepTaxRate keeps the rate the row already carries rather than
+     * resolving it from the product again - a wholesale update touches rows
+     * the user never edited, and those should not have their tax changed.
+     */
+    protected function recalculateRow($index, bool $keepTaxRate = false): void
+    {
+        $row = $this->products[$index] ?? null;
+
+        if (! $row || ! array_key_exists('unit_price', $row) || empty($row['id'])) {
+            return;
+        }
+
+        if ($keepTaxRate && ($row['tax_rate'] ?? null) !== null && $row['tax_rate'] !== '') {
+            $this->recalculateProduct($index, null);
+
+            return;
+        }
+
+        // withTrashed, as in the services: a line kept on a since-deleted
+        // product is still priced.
+        $this->recalculateProduct($index, Product::withTrashed()->find($row['id']));
     }
 
     protected function resolveTaxRate(Product $product): float
