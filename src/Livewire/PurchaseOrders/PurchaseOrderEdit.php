@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\PurchaseOrders;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\Traits\HasPurchaseOrderCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
@@ -59,23 +60,27 @@ class PurchaseOrderEdit extends Component
         // Create a request object to pass to services
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
-        if ($this->person_name && ! $this->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($this->person_id) {
-            $person = Person::find($this->person_id);
-        }
+        // One transaction, so a failure part-way - in the service or in
+        // the custom fields - leaves no contact, document or lines behind.
+        DB::transaction(function () use ($request) {
+            if ($this->person_name && ! $this->person_id) {
+                $person = $this->personService->createFromRelated($request);
+            } elseif ($this->person_id) {
+                $person = Person::find($this->person_id);
+            }
 
-        if ($this->organization_name && ! $this->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($this->organization_id) {
-            $organization = Organization::find($this->organization_id);
-        }
+            if ($this->organization_name && ! $this->organization_id) {
+                $organization = $this->organizationService->createFromRelated($request);
+            } elseif ($this->organization_id) {
+                $organization = Organization::find($this->organization_id);
+            }
 
-        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+            $this->personService->linkToOrganization($person ?? null, $organization ?? null);
 
-        $this->purchaseOrderService->update($request, $this->purchaseOrder, $person ?? null, $organization ?? null);
+            $this->purchaseOrderService->update($request, $this->purchaseOrder, $person ?? null, $organization ?? null);
 
-        $this->saveCustomFields($this->purchaseOrder->fresh());
+            $this->saveCustomFields($this->purchaseOrder->fresh());
+        });
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.purchase_order_updated')),

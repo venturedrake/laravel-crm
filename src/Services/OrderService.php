@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Order;
@@ -42,138 +43,177 @@ class OrderService
      */
     public function create($request, $person = null, $organization = null, $client = null, ?FormOptions $form = null)
     {
-        $order = Order::create([
-            'lead_id' => $request->lead_id ?? null,
-            'deal_id' => $request->deal_id ?? null,
-            'quote_id' => $request->quote_id ?? null,
-            'person_id' => $person->id ?? null,
-            'organization_id' => $organization->id ?? null,
-            'client_id' => $client->id ?? null,
-            'description' => $request->description,
-            'reference' => $request->reference,
-            'currency' => $request->currency,
-            'subtotal' => $request->sub_total,
-            'discount' => $request->discount,
-            'tax' => $request->tax,
-            'adjustments' => $request->adjustment,
-            'total' => $request->total,
-            'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
-            'user_owner_id' => $request->user_owner_id,
-        ]);
+        return DB::transaction(function () use ($request, $person, $organization, $client, $form) {
+            $order = Order::create([
+                'lead_id' => $request->lead_id ?? null,
+                'deal_id' => $request->deal_id ?? null,
+                'quote_id' => $request->quote_id ?? null,
+                'person_id' => $person->id ?? null,
+                'organization_id' => $organization->id ?? null,
+                'client_id' => $client->id ?? null,
+                'description' => $request->description,
+                'reference' => $request->reference,
+                'currency' => $request->currency,
+                'subtotal' => $request->sub_total,
+                'discount' => $request->discount,
+                'tax' => $request->tax,
+                'adjustments' => $request->adjustment,
+                'total' => $request->total,
+                'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
+                'user_owner_id' => $request->user_owner_id,
+            ]);
 
-        if (! $form || $form->shows('labels')) {
-            $order->labels()->sync($request->labels ?? []);
-        }
+            if (! $form || $form->shows('labels')) {
+                $order->labels()->sync($request->labels ?? []);
+            }
 
-        if (isset($request->products)) {
-            $orderProductOrder = 0;
+            if (isset($request->products)) {
+                $orderProductOrder = 0;
 
-            foreach ($request->products as $product) {
-                $orderProductOrder++;
+                foreach ($request->products as $product) {
+                    $orderProductOrder++;
 
-                if (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
-                    if (! Product::withTrashed()->find($product['id'])) {
-                        $newProduct = $this->addProduct($product, $request);
-                        $product['id'] = $newProduct->id;
-                    }
-                }
-
-                if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
-                    $taxRate = 0;
-                    if ($productForTax = Product::withTrashed()->find($product['id'])) {
-                        if ($productForTax->taxRate) {
-                            $taxRate = $productForTax->taxRate->rate;
-                        } elseif ($productForTax->tax_rate) {
-                            $taxRate = $productForTax->tax_rate;
-                        } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                            $taxRate = $taxRate->rate;
-                        } else {
-                            $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
+                    if (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
+                        if (! Product::withTrashed()->find($product['id'])) {
+                            $newProduct = $this->addProduct($product, $request);
+                            $product['id'] = $newProduct->id;
                         }
                     }
 
-                    $order->orderProducts()->create([
-                        'product_id' => $product['id'],
-                        'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $this->sourceVariationId(QuoteProduct::class, $product['quote_product_id'] ?? null)),
-                        'quantity' => $product['quantity'],
-                        'price' => $product['unit_price'],
-                        'amount' => $product['amount'],
-                        'tax_rate' => $taxRate ?? 0,
-                        'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
-                        'currency' => $request->currency,
-                        'comments' => $product['comments'],
-                        'quote_product_id' => $product['quote_product_id'] ?? null,
-                        'order' => $orderProductOrder,
+                    if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
+                        $taxRate = 0;
+                        if ($productForTax = Product::withTrashed()->find($product['id'])) {
+                            if ($productForTax->taxRate) {
+                                $taxRate = $productForTax->taxRate->rate;
+                            } elseif ($productForTax->tax_rate) {
+                                $taxRate = $productForTax->tax_rate;
+                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
+                                $taxRate = $taxRate->rate;
+                            } else {
+                                $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
+                            }
+                        }
+
+                        $order->orderProducts()->create([
+                            'product_id' => $product['id'],
+                            'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $this->sourceVariationId(QuoteProduct::class, $product['quote_product_id'] ?? null)),
+                            'quantity' => $product['quantity'],
+                            'price' => $product['unit_price'],
+                            'amount' => $product['amount'],
+                            'tax_rate' => $taxRate ?? 0,
+                            'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
+                            'currency' => $request->currency,
+                            'comments' => $product['comments'],
+                            'quote_product_id' => $product['quote_product_id'] ?? null,
+                            'order' => $orderProductOrder,
+                        ]);
+                    }
+                }
+            }
+
+            if ($request->addresses) {
+                foreach ($request->addresses as $addressRequest) {
+                    $address = $order->addresses()->create([
+                        'external_id' => Uuid::uuid4()->toString(),
+                        'address_type_id' => $addressRequest['address_type_id'] ?? null,
+                        'address' => $addressRequest['address'] ?? null,
+                        'name' => $addressRequest['name'] ?? null,
+                        'contact' => $addressRequest['contact'] ?? null,
+                        'phone' => $addressRequest['phone'] ?? null,
+                        'line1' => $addressRequest['line1'],
+                        'line2' => $addressRequest['line2'],
+                        'line3' => $addressRequest['line3'],
+                        'city' => $addressRequest['city'],
+                        'state' => $addressRequest['state'],
+                        'code' => $addressRequest['code'],
+                        'country' => $addressRequest['country'],
+                        'primary' => true,
                     ]);
                 }
             }
-        }
 
-        if ($request->addresses) {
-            foreach ($request->addresses as $addressRequest) {
-                $address = $order->addresses()->create([
-                    'external_id' => Uuid::uuid4()->toString(),
-                    'address_type_id' => $addressRequest['address_type_id'] ?? null,
-                    'address' => $addressRequest['address'] ?? null,
-                    'name' => $addressRequest['name'] ?? null,
-                    'contact' => $addressRequest['contact'] ?? null,
-                    'phone' => $addressRequest['phone'] ?? null,
-                    'line1' => $addressRequest['line1'],
-                    'line2' => $addressRequest['line2'],
-                    'line3' => $addressRequest['line3'],
-                    'city' => $addressRequest['city'],
-                    'state' => $addressRequest['state'],
-                    'code' => $addressRequest['code'],
-                    'country' => $addressRequest['country'],
-                    'primary' => true,
-                ]);
-            }
-        }
+            $this->syncTotals($order);
 
-        $this->syncTotals($order);
-
-        return $order;
+            return $order;
+        });
     }
 
     public function update($request, Order $order, $person = null, $organization = null, $client = null, ?FormOptions $form = null)
     {
-        $attributes = [
-            'person_id' => $person->id ?? null,
-            'organization_id' => $organization->id ?? null,
-            'client_id' => $client->id ?? null,
-            'description' => $request->description,
-            'reference' => $request->reference,
-            'currency' => $request->currency,
-            'subtotal' => $request->sub_total,
-            'discount' => $request->discount,
-            'tax' => $request->tax,
-            'adjustments' => $request->adjustment,
-            'total' => $request->total,
-            'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $order->pdf_template),
-            'user_owner_id' => $request->user_owner_id,
-        ];
+        return DB::transaction(function () use ($request, $order, $person, $organization, $client, $form) {
+            $attributes = [
+                'person_id' => $person->id ?? null,
+                'organization_id' => $organization->id ?? null,
+                'client_id' => $client->id ?? null,
+                'description' => $request->description,
+                'reference' => $request->reference,
+                'currency' => $request->currency,
+                'subtotal' => $request->sub_total,
+                'discount' => $request->discount,
+                'tax' => $request->tax,
+                'adjustments' => $request->adjustment,
+                'total' => $request->total,
+                'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $order->pdf_template),
+                'user_owner_id' => $request->user_owner_id,
+            ];
 
-        if ($form && ! $form->shows('description')) {
-            unset($attributes['description']);
-        }
+            if ($form && ! $form->shows('description')) {
+                unset($attributes['description']);
+            }
 
-        $order->update($attributes);
+            $order->update($attributes);
 
-        if (! $form || $form->shows('labels')) {
-            $order->labels()->sync($request->labels ?? []);
-        }
+            if (! $form || $form->shows('labels')) {
+                $order->labels()->sync($request->labels ?? []);
+            }
 
-        if (isset($request->products)) {
-            $orderProductIds = [];
-            $orderProductOrder = 0;
+            if (isset($request->products)) {
+                $orderProductIds = [];
+                $orderProductOrder = 0;
 
-            foreach ($request->products as $product) {
-                $orderProductOrder++;
+                foreach ($request->products as $product) {
+                    $orderProductOrder++;
 
-                if (isset($product['order_product_id']) && $orderProduct = OrderProduct::find($product['order_product_id'])) {
-                    if (! isset($product['id']) || Quantity::isZero($product['quantity'])) {
-                        $orderProduct->delete();
-                    } else {
+                    if (isset($product['order_product_id']) && $orderProduct = OrderProduct::find($product['order_product_id'])) {
+                        if (! isset($product['id']) || Quantity::isZero($product['quantity'])) {
+                            $orderProduct->delete();
+                        } else {
+                            if (! Product::withTrashed()->find($product['id'])) {
+                                $newProduct = $this->addProduct($product, $request);
+                                $product['id'] = $newProduct->id;
+                            }
+
+                            if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
+                                $taxRate = 0;
+                                if ($productForTax = Product::withTrashed()->find($product['id'])) {
+                                    if ($productForTax->taxRate) {
+                                        $taxRate = $productForTax->taxRate->rate;
+                                    } elseif ($productForTax->tax_rate) {
+                                        $taxRate = $productForTax->tax_rate;
+                                    } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
+                                        $taxRate = $taxRate->rate;
+                                    } else {
+                                        $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
+                                    }
+                                }
+
+                                $orderProduct->update([
+                                    'product_id' => $product['id'],
+                                    'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $orderProduct->product_variation_id),
+                                    'quantity' => $product['quantity'],
+                                    'price' => $product['unit_price'],
+                                    'amount' => $product['amount'],
+                                    'tax_rate' => $taxRate ?? 0,
+                                    'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
+                                    'currency' => $request->currency,
+                                    'comments' => $product['comments'],
+                                    'order' => $orderProductOrder,
+                                ]);
+
+                                $orderProductIds[] = $orderProduct->id;
+                            }
+                        }
+                    } elseif (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
                         if (! Product::withTrashed()->find($product['id'])) {
                             $newProduct = $this->addProduct($product, $request);
                             $product['id'] = $newProduct->id;
@@ -193,9 +233,9 @@ class OrderService
                                 }
                             }
 
-                            $orderProduct->update([
+                            $orderProduct = $order->orderProducts()->create([
                                 'product_id' => $product['id'],
-                                'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $orderProduct->product_variation_id),
+                                'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null),
                                 'quantity' => $product['quantity'],
                                 'price' => $product['unit_price'],
                                 'amount' => $product['amount'],
@@ -209,56 +249,21 @@ class OrderService
                             $orderProductIds[] = $orderProduct->id;
                         }
                     }
-                } elseif (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
-                    if (! Product::withTrashed()->find($product['id'])) {
-                        $newProduct = $this->addProduct($product, $request);
-                        $product['id'] = $newProduct->id;
-                    }
+                }
 
-                    if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
-                        $taxRate = 0;
-                        if ($productForTax = Product::withTrashed()->find($product['id'])) {
-                            if ($productForTax->taxRate) {
-                                $taxRate = $productForTax->taxRate->rate;
-                            } elseif ($productForTax->tax_rate) {
-                                $taxRate = $productForTax->tax_rate;
-                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                                $taxRate = $taxRate->rate;
-                            } else {
-                                $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
-                            }
-                        }
-
-                        $orderProduct = $order->orderProducts()->create([
-                            'product_id' => $product['id'],
-                            'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null),
-                            'quantity' => $product['quantity'],
-                            'price' => $product['unit_price'],
-                            'amount' => $product['amount'],
-                            'tax_rate' => $taxRate ?? 0,
-                            'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
-                            'currency' => $request->currency,
-                            'comments' => $product['comments'],
-                            'order' => $orderProductOrder,
-                        ]);
-
-                        $orderProductIds[] = $orderProduct->id;
+                foreach ($order->orderProducts as $orderProduct) {
+                    if (! in_array($orderProduct->id, $orderProductIds)) {
+                        $orderProduct->delete();
                     }
                 }
             }
 
-            foreach ($order->orderProducts as $orderProduct) {
-                if (! in_array($orderProduct->id, $orderProductIds)) {
-                    $orderProduct->delete();
-                }
-            }
-        }
+            $this->updateOrderAddresses($order, $request->addresses, $form?->hiddenAddressTypeIds() ?? []);
 
-        $this->updateOrderAddresses($order, $request->addresses, $form?->hiddenAddressTypeIds() ?? []);
+            $this->syncTotals($order);
 
-        $this->syncTotals($order);
-
-        return $order;
+            return $order;
+        });
     }
 
     /**

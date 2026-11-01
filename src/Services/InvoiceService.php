@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Services;
 
 use Carbon\Carbon;
 use Dcblogdev\Xero\Facades\Xero;
+use Illuminate\Support\Facades\DB;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
@@ -40,69 +41,198 @@ class InvoiceService
 
     public function create($request, $person = null, $organization = null)
     {
-        $invoice = Invoice::create([
-            'order_id' => $request->order_id ?? null,
-            'person_id' => $person->id ?? null,
-            'organization_id' => $organization->id ?? null,
-            'reference' => $request->reference,
-            'issue_date' => $request->issue_date,
-            'due_date' => $request->due_date,
-            'currency' => $request->currency,
-            'terms' => $request->terms,
-            'subtotal' => $request->sub_total,
-            'tax' => $request->tax,
-            'total' => $request->total,
-            // Nothing is paid yet; syncTotals() sets amount_due to the total.
-            'amount_paid' => 0,
-            'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
-            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
-        ]);
+        return DB::transaction(function () use ($request, $person, $organization) {
+            $invoice = Invoice::create([
+                'order_id' => $request->order_id ?? null,
+                'person_id' => $person->id ?? null,
+                'organization_id' => $organization->id ?? null,
+                'reference' => $request->reference,
+                'issue_date' => $request->issue_date,
+                'due_date' => $request->due_date,
+                'currency' => $request->currency,
+                'terms' => $request->terms,
+                'subtotal' => $request->sub_total,
+                'tax' => $request->tax,
+                'total' => $request->total,
+                // Nothing is paid yet; syncTotals() sets amount_due to the total.
+                'amount_paid' => 0,
+                'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
+                'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
+            ]);
 
-        if (isset($request->products)) {
-            $invoiceLineOrder = 0;
+            if (isset($request->products)) {
+                $invoiceLineOrder = 0;
 
-            foreach ($request->products as $invoiceLine) {
-                $invoiceLineOrder++;
+                foreach ($request->products as $invoiceLine) {
+                    $invoiceLineOrder++;
 
-                if (isset($invoiceLine['id']) && Quantity::isPositive($invoiceLine['quantity'])) {
-                    if (! Product::withTrashed()->find($invoiceLine['id'])) {
-                        $newProduct = $this->addProduct($invoiceLine, $request);
-                        $invoiceLine['id'] = $newProduct->id;
-                    }
-                }
-
-                if (isset($invoiceLine['id']) && $invoiceLine['id'] > 0 && Quantity::isPositive($invoiceLine['quantity'])) {
-                    $taxRate = 0;
-                    if ($product = Product::withTrashed()->find($invoiceLine['id'])) {
-                        if ($product->taxRate) {
-                            $taxRate = $product->taxRate->rate;
-                        } elseif ($product->tax_rate) {
-                            $taxRate = $product->tax_rate;
-                        } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                            $taxRate = $taxRate->rate;
-                        } else {
-                            $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
+                    if (isset($invoiceLine['id']) && Quantity::isPositive($invoiceLine['quantity'])) {
+                        if (! Product::withTrashed()->find($invoiceLine['id'])) {
+                            $newProduct = $this->addProduct($invoiceLine, $request);
+                            $invoiceLine['id'] = $newProduct->id;
                         }
                     }
 
-                    $invoice->invoiceLines()->create([
-                        'product_id' => $invoiceLine['id'],
-                        'product_variation_id' => $this->variationIdFor($invoiceLine['id'], $invoiceLine['product_variation_id'] ?? null, $this->sourceVariationId(OrderProduct::class, $invoiceLine['order_product_id'] ?? null)),
-                        'quantity' => $invoiceLine['quantity'],
-                        'price' => $invoiceLine['unit_price'],
-                        ...$this->lineValues($invoiceLine, $taxRate),
-                        'tax_rate' => $taxRate ?? 0,
-                        'currency' => $request->currency,
-                        'order_product_id' => $invoiceLine['order_product_id'] ?? null,
-                        'comments' => $invoiceLine['comments'],
-                        'order' => $invoiceLineOrder,
-                    ]);
+                    if (isset($invoiceLine['id']) && $invoiceLine['id'] > 0 && Quantity::isPositive($invoiceLine['quantity'])) {
+                        $taxRate = 0;
+                        if ($product = Product::withTrashed()->find($invoiceLine['id'])) {
+                            if ($product->taxRate) {
+                                $taxRate = $product->taxRate->rate;
+                            } elseif ($product->tax_rate) {
+                                $taxRate = $product->tax_rate;
+                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
+                                $taxRate = $taxRate->rate;
+                            } else {
+                                $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
+                            }
+                        }
+
+                        $invoice->invoiceLines()->create([
+                            'product_id' => $invoiceLine['id'],
+                            'product_variation_id' => $this->variationIdFor($invoiceLine['id'], $invoiceLine['product_variation_id'] ?? null, $this->sourceVariationId(OrderProduct::class, $invoiceLine['order_product_id'] ?? null)),
+                            'quantity' => $invoiceLine['quantity'],
+                            'price' => $invoiceLine['unit_price'],
+                            ...$this->lineValues($invoiceLine, $taxRate),
+                            'tax_rate' => $taxRate ?? 0,
+                            'currency' => $request->currency,
+                            'order_product_id' => $invoiceLine['order_product_id'] ?? null,
+                            'comments' => $invoiceLine['comments'],
+                            'order' => $invoiceLineOrder,
+                        ]);
+                    }
                 }
             }
-        }
 
-        $this->syncTotals($invoice);
+            $this->syncTotals($invoice);
 
+            // After the commit, so a save that rolls back - including one
+            // wrapped by the form around custom fields - never leaves a
+            // invoice in Xero with nothing behind it in the CRM.
+            DB::afterCommit(fn () => $this->pushToXero($invoice));
+
+            return $invoice;
+        });
+    }
+
+    public function update($request, Invoice $invoice, $person = null, $organization = null)
+    {
+        return DB::transaction(function () use ($request, $invoice, $person, $organization) {
+            $invoice->update([
+                'person_id' => $person->id ?? null,
+                'organization_id' => $organization->id ?? null,
+                'reference' => $request->reference,
+                'issue_date' => $request->issue_date,
+                'due_date' => $request->due_date,
+                'currency' => $request->currency,
+                'terms' => $request->terms,
+                'subtotal' => $request->sub_total,
+                'tax' => $request->tax,
+                'total' => $request->total,
+                'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $invoice->pdf_template),
+                'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
+            ]);
+
+            if (isset($request->products)) {
+                $invoiceLineIds = [];
+                $invoiceLineOrder = 0;
+
+                foreach ($request->products as $line) {
+                    $invoiceLineOrder++;
+
+                    if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
+                        if (! isset($line['id']) || Quantity::isZero($line['quantity'])) {
+                            $invoiceLine->delete();
+                        } else {
+                            if (! Product::withTrashed()->find($line['id'])) {
+                                $newProduct = $this->addProduct($line, $request);
+                                $line['id'] = $newProduct->id;
+                            }
+
+                            if (isset($line['id']) && $line['id'] > 0 && Quantity::isPositive($line['quantity'])) {
+                                $taxRate = 0;
+                                // $line['id'] is the product - $invoiceLine is the line model, whose id is the line's own.
+                                if ($product = Product::withTrashed()->find($line['id'])) {
+                                    if ($product->taxRate) {
+                                        $taxRate = $product->taxRate->rate;
+                                    } elseif ($product->tax_rate) {
+                                        $taxRate = $product->tax_rate;
+                                    } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
+                                        $taxRate = $taxRate->rate;
+                                    } else {
+                                        $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
+                                    }
+                                }
+
+                                $invoiceLine->update([
+                                    'product_id' => $line['id'],
+                                    'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null, $invoiceLine->product_variation_id),
+                                    'quantity' => $line['quantity'],
+                                    'price' => $line['unit_price'],
+                                    ...$this->lineValues($line, $taxRate),
+                                    'tax_rate' => $taxRate ?? 0,
+                                    'currency' => $request->currency,
+                                    'comments' => $line['comments'],
+                                    'order' => $invoiceLineOrder,
+                                ]);
+
+                                $invoiceLineIds[] = $invoiceLine->id;
+                            }
+                        }
+                    } elseif (isset($line['id']) && Quantity::isPositive($line['quantity'])) {
+                        if (! Product::withTrashed()->find($line['id'])) {
+                            $newProduct = $this->addProduct($line, $request);
+                            $line['id'] = $newProduct->id;
+                        }
+
+                        if (isset($line['id']) && $line['id'] > 0 && Quantity::isPositive($line['quantity'])) {
+                            $taxRate = 0;
+                            if ($product = Product::withTrashed()->find($line['id'])) {
+                                if ($product->taxRate) {
+                                    $taxRate = $product->taxRate->rate;
+                                } elseif ($product->tax_rate) {
+                                    $taxRate = $product->tax_rate;
+                                } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
+                                    $taxRate = $taxRate->rate;
+                                } else {
+                                    $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
+                                }
+                            }
+
+                            $invoiceLine = $invoice->invoiceLines()->create([
+                                'product_id' => $line['id'],
+                                'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null),
+                                'quantity' => $line['quantity'],
+                                'price' => $line['unit_price'],
+                                ...$this->lineValues($line, $taxRate),
+                                'tax_rate' => $taxRate ?? 0,
+                                'currency' => $request->currency,
+                                'comments' => $line['comments'],
+                                'order' => $invoiceLineOrder,
+                            ]);
+
+                            $invoiceLineIds[] = $invoiceLine->id;
+                        }
+                    }
+                }
+
+                foreach ($invoice->invoiceLines as $invoiceLine) {
+                    if (! in_array($invoiceLine->id, $invoiceLineIds)) {
+                        $invoiceLine->delete();
+                    }
+                }
+            }
+
+            $this->syncTotals($invoice);
+
+            return $invoice;
+        });
+    }
+
+    /**
+     * Push a newly created invoice to Xero, when it is connected.
+     */
+    protected function pushToXero(Invoice $invoice): void
+    {
         if (XeroIntegration::connected()) {
             $lineItems = [];
 
@@ -144,120 +274,6 @@ class InvoiceService
                 //
             }
         }
-
-        return $invoice;
-    }
-
-    public function update($request, Invoice $invoice, $person = null, $organization = null)
-    {
-        $invoice->update([
-            'person_id' => $person->id ?? null,
-            'organization_id' => $organization->id ?? null,
-            'reference' => $request->reference,
-            'issue_date' => $request->issue_date,
-            'due_date' => $request->due_date,
-            'currency' => $request->currency,
-            'terms' => $request->terms,
-            'subtotal' => $request->sub_total,
-            'tax' => $request->tax,
-            'total' => $request->total,
-            'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $invoice->pdf_template),
-            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
-        ]);
-
-        if (isset($request->products)) {
-            $invoiceLineIds = [];
-            $invoiceLineOrder = 0;
-
-            foreach ($request->products as $line) {
-                $invoiceLineOrder++;
-
-                if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
-                    if (! isset($line['id']) || Quantity::isZero($line['quantity'])) {
-                        $invoiceLine->delete();
-                    } else {
-                        if (! Product::withTrashed()->find($line['id'])) {
-                            $newProduct = $this->addProduct($line, $request);
-                            $line['id'] = $newProduct->id;
-                        }
-
-                        if (isset($line['id']) && $line['id'] > 0 && Quantity::isPositive($line['quantity'])) {
-                            $taxRate = 0;
-                            // $line['id'] is the product - $invoiceLine is the line model, whose id is the line's own.
-                            if ($product = Product::withTrashed()->find($line['id'])) {
-                                if ($product->taxRate) {
-                                    $taxRate = $product->taxRate->rate;
-                                } elseif ($product->tax_rate) {
-                                    $taxRate = $product->tax_rate;
-                                } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                                    $taxRate = $taxRate->rate;
-                                } else {
-                                    $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
-                                }
-                            }
-
-                            $invoiceLine->update([
-                                'product_id' => $line['id'],
-                                'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null, $invoiceLine->product_variation_id),
-                                'quantity' => $line['quantity'],
-                                'price' => $line['unit_price'],
-                                ...$this->lineValues($line, $taxRate),
-                                'tax_rate' => $taxRate ?? 0,
-                                'currency' => $request->currency,
-                                'comments' => $line['comments'],
-                                'order' => $invoiceLineOrder,
-                            ]);
-
-                            $invoiceLineIds[] = $invoiceLine->id;
-                        }
-                    }
-                } elseif (isset($line['id']) && Quantity::isPositive($line['quantity'])) {
-                    if (! Product::withTrashed()->find($line['id'])) {
-                        $newProduct = $this->addProduct($line, $request);
-                        $line['id'] = $newProduct->id;
-                    }
-
-                    if (isset($line['id']) && $line['id'] > 0 && Quantity::isPositive($line['quantity'])) {
-                        $taxRate = 0;
-                        if ($product = Product::withTrashed()->find($line['id'])) {
-                            if ($product->taxRate) {
-                                $taxRate = $product->taxRate->rate;
-                            } elseif ($product->tax_rate) {
-                                $taxRate = $product->tax_rate;
-                            } elseif ($taxRate = TaxRate::where('default', 1)->first()) {
-                                $taxRate = $taxRate->rate;
-                            } else {
-                                $taxRate = optional(Setting::where('name', 'tax_rate')->first())->value ?? 0;
-                            }
-                        }
-
-                        $invoiceLine = $invoice->invoiceLines()->create([
-                            'product_id' => $line['id'],
-                            'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null),
-                            'quantity' => $line['quantity'],
-                            'price' => $line['unit_price'],
-                            ...$this->lineValues($line, $taxRate),
-                            'tax_rate' => $taxRate ?? 0,
-                            'currency' => $request->currency,
-                            'comments' => $line['comments'],
-                            'order' => $invoiceLineOrder,
-                        ]);
-
-                        $invoiceLineIds[] = $invoiceLine->id;
-                    }
-                }
-            }
-
-            foreach ($invoice->invoiceLines as $invoiceLine) {
-                if (! in_array($invoiceLine->id, $invoiceLineIds)) {
-                    $invoiceLine->delete();
-                }
-            }
-        }
-
-        $this->syncTotals($invoice);
-
-        return $invoice;
     }
 
     /**

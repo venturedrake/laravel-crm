@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\PurchaseOrders\Traits;
 
+use Illuminate\Validation\Rule;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
@@ -91,7 +92,26 @@ trait HasPurchaseOrderCommon
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
+            // A delivered PO needs an address, and only one the form offers.
+            // The service used to call ->replicate() on whatever id came in,
+            // so a missing or foreign one was a 500 after the PO was saved.
+            'delivery_address' => ['nullable', 'required_if:delivery_type,deliver', Rule::in($this->allowedDeliveryAddressIds())],
         ], $this->lineItemQuantityRules(), $this->pdfTemplateRules(), $this->customFieldRules());
+    }
+
+    /**
+     * The team's delivery addresses, plus - when editing - the PO's own copy
+     * of the one it was saved with, which the edit form starts on.
+     */
+    protected function allowedDeliveryAddressIds(): array
+    {
+        $ids = array_column($this->deliveryAddresses, 'id');
+
+        if (isset($this->purchaseOrder) && $this->purchaseOrder->address) {
+            $ids[] = $this->purchaseOrder->address->id;
+        }
+
+        return $ids;
     }
 
     protected function messages()
@@ -101,6 +121,8 @@ trait HasPurchaseOrderCommon
             'organization_name.required_without_all' => 'The organization field is required if no contact person.',
             'person_id.required_without_all' => 'The contact person field is required if no organization.',
             'organization_id.required_without_all' => 'The organization field is required of no contact person.',
+            'delivery_address.required_if' => ucfirst(__('laravel-crm::lang.delivery_address_required')),
+            'delivery_address.in' => ucfirst(__('laravel-crm::lang.delivery_address_required')),
         ], $this->lineItemQuantityMessages(), $this->customFieldMessages());
     }
 

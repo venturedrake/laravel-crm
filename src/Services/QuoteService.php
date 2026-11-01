@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use Illuminate\Support\Facades\DB;
 use VentureDrake\LaravelCrm\Models\DealProduct;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Models\Product;
@@ -35,105 +36,133 @@ class QuoteService
 
     public function create($request, $person = null, $organization = null, $client = null)
     {
-        $quote = Quote::create([
-            'lead_id' => $request->lead_id ?? null,
-            'person_id' => $person->id ?? null,
-            'organization_id' => $organization->id ?? null,
-            'client_id' => $client->id ?? null,
-            'title' => $request->title,
-            'description' => $request->description,
-            'reference' => $request->reference,
-            'currency' => $request->currency,
-            'issue_at' => $request->issue_at,
-            'expire_at' => $request->expire_at,
-            'terms' => $request->terms,
-            'subtotal' => $request->sub_total,
-            'discount' => $request->discount,
-            'tax' => $request->tax,
-            'adjustments' => $request->adjustment,
-            'total' => $request->total,
-            'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
-            'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
-            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
-        ]);
+        return DB::transaction(function () use ($request, $person, $organization, $client) {
+            $quote = Quote::create([
+                'lead_id' => $request->lead_id ?? null,
+                'person_id' => $person->id ?? null,
+                'organization_id' => $organization->id ?? null,
+                'client_id' => $client->id ?? null,
+                'title' => $request->title,
+                'description' => $request->description,
+                'reference' => $request->reference,
+                'currency' => $request->currency,
+                'issue_at' => $request->issue_at,
+                'expire_at' => $request->expire_at,
+                'terms' => $request->terms,
+                'subtotal' => $request->sub_total,
+                'discount' => $request->discount,
+                'tax' => $request->tax,
+                'adjustments' => $request->adjustment,
+                'total' => $request->total,
+                'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
+                'user_owner_id' => $request->user_owner_id,
+                'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
+                'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
+            ]);
 
-        $quote->labels()->sync($request->labels ?? []);
+            $quote->labels()->sync($request->labels ?? []);
 
-        if (isset($request->products)) {
-            $quoteProductOrder = 0;
+            if (isset($request->products)) {
+                $quoteProductOrder = 0;
 
-            foreach ($request->products as $product) {
-                $quoteProductOrder++;
+                foreach ($request->products as $product) {
+                    $quoteProductOrder++;
 
-                if (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
-                    if (! Product::withTrashed()->find($product['id'])) {
-                        $newProduct = $this->addProduct($product, $request);
-                        $product['id'] = $newProduct->id;
+                    if (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
+                        if (! Product::withTrashed()->find($product['id'])) {
+                            $newProduct = $this->addProduct($product, $request);
+                            $product['id'] = $newProduct->id;
+                        }
+                    }
+
+                    if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
+                        $taxRate = $this->resolveTaxRate($product['id']);
+
+                        $quote->quoteProducts()->create([
+                            'product_id' => $product['id'],
+                            'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $this->sourceVariationId(DealProduct::class, $product['deal_product_id'] ?? null)),
+                            'quantity' => $product['quantity'],
+                            'price' => $product['unit_price'],
+                            'amount' => $product['amount'],
+                            'tax_rate' => $taxRate,
+                            'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
+                            'currency' => $request->currency,
+                            'comments' => $product['comments'],
+                            'order' => $quoteProductOrder,
+                        ]);
                     }
                 }
-
-                if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
-                    $taxRate = $this->resolveTaxRate($product['id']);
-
-                    $quote->quoteProducts()->create([
-                        'product_id' => $product['id'],
-                        'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $this->sourceVariationId(DealProduct::class, $product['deal_product_id'] ?? null)),
-                        'quantity' => $product['quantity'],
-                        'price' => $product['unit_price'],
-                        'amount' => $product['amount'],
-                        'tax_rate' => $taxRate,
-                        'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
-                        'currency' => $request->currency,
-                        'comments' => $product['comments'],
-                        'order' => $quoteProductOrder,
-                    ]);
-                }
             }
-        }
 
-        $this->syncTotals($quote);
+            $this->syncTotals($quote);
 
-        return $quote;
+            return $quote;
+        });
     }
 
     public function update($request, Quote $quote, $person = null, $organization = null, $client = null)
     {
-        $quote->update([
-            'person_id' => $person->id ?? null,
-            'organization_id' => $organization->id ?? null,
-            'client_id' => $client->id ?? null,
-            'title' => $request->title,
-            'description' => $request->description,
-            'reference' => $request->reference,
-            'currency' => $request->currency,
-            'issue_at' => $request->issue_at,
-            'expire_at' => $request->expire_at,
-            'terms' => $request->terms,
-            'subtotal' => $request->sub_total,
-            'discount' => $request->discount,
-            'tax' => $request->tax,
-            'adjustments' => $request->adjustment,
-            'total' => $request->total,
-            'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $quote->pdf_template),
-            'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
-            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
-        ]);
+        return DB::transaction(function () use ($request, $quote, $person, $organization, $client) {
+            $quote->update([
+                'person_id' => $person->id ?? null,
+                'organization_id' => $organization->id ?? null,
+                'client_id' => $client->id ?? null,
+                'title' => $request->title,
+                'description' => $request->description,
+                'reference' => $request->reference,
+                'currency' => $request->currency,
+                'issue_at' => $request->issue_at,
+                'expire_at' => $request->expire_at,
+                'terms' => $request->terms,
+                'subtotal' => $request->sub_total,
+                'discount' => $request->discount,
+                'tax' => $request->tax,
+                'adjustments' => $request->adjustment,
+                'total' => $request->total,
+                'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $quote->pdf_template),
+                'user_owner_id' => $request->user_owner_id,
+                'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
+                'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
+            ]);
 
-        $quote->labels()->sync($request->labels ?? []);
+            $quote->labels()->sync($request->labels ?? []);
 
-        if (isset($request->products)) {
-            $quoteProductIds = [];
-            $quoteProductOrder = 0;
+            if (isset($request->products)) {
+                $quoteProductIds = [];
+                $quoteProductOrder = 0;
 
-            foreach ($request->products as $product) {
-                $quoteProductOrder++;
+                foreach ($request->products as $product) {
+                    $quoteProductOrder++;
 
-                if (isset($product['quote_product_id']) && $quoteProduct = QuoteProduct::find($product['quote_product_id'])) {
-                    if (! isset($product['id']) || Quantity::isZero($product['quantity'])) {
-                        $quoteProduct->delete();
-                    } else {
+                    if (isset($product['quote_product_id']) && $quoteProduct = QuoteProduct::find($product['quote_product_id'])) {
+                        if (! isset($product['id']) || Quantity::isZero($product['quantity'])) {
+                            $quoteProduct->delete();
+                        } else {
+                            if (! Product::withTrashed()->find($product['id'])) {
+                                $newProduct = $this->addProduct($product, $request);
+                                $product['id'] = $newProduct->id;
+                            }
+
+                            if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
+                                $taxRate = $this->resolveTaxRate($product['id']);
+
+                                $quoteProduct->update([
+                                    'product_id' => $product['id'],
+                                    'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $quoteProduct->product_variation_id),
+                                    'quantity' => $product['quantity'],
+                                    'price' => $product['unit_price'],
+                                    'amount' => $product['amount'],
+                                    'tax_rate' => $taxRate,
+                                    'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
+                                    'currency' => $request->currency,
+                                    'comments' => $product['comments'],
+                                    'order' => $quoteProductOrder,
+                                ]);
+
+                                $quoteProductIds[] = $quoteProduct->id;
+                            }
+                        }
+                    } elseif (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
                         if (! Product::withTrashed()->find($product['id'])) {
                             $newProduct = $this->addProduct($product, $request);
                             $product['id'] = $newProduct->id;
@@ -142,9 +171,9 @@ class QuoteService
                         if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
                             $taxRate = $this->resolveTaxRate($product['id']);
 
-                            $quoteProduct->update([
+                            $quoteProduct = $quote->quoteProducts()->create([
                                 'product_id' => $product['id'],
-                                'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null, $quoteProduct->product_variation_id),
+                                'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null),
                                 'quantity' => $product['quantity'],
                                 'price' => $product['unit_price'],
                                 'amount' => $product['amount'],
@@ -158,43 +187,19 @@ class QuoteService
                             $quoteProductIds[] = $quoteProduct->id;
                         }
                     }
-                } elseif (isset($product['id']) && Quantity::isPositive($product['quantity'])) {
-                    if (! Product::withTrashed()->find($product['id'])) {
-                        $newProduct = $this->addProduct($product, $request);
-                        $product['id'] = $newProduct->id;
-                    }
+                }
 
-                    if (isset($product['id']) && $product['id'] > 0 && Quantity::isPositive($product['quantity'])) {
-                        $taxRate = $this->resolveTaxRate($product['id']);
-
-                        $quoteProduct = $quote->quoteProducts()->create([
-                            'product_id' => $product['id'],
-                            'product_variation_id' => $this->variationIdFor($product['id'], $product['product_variation_id'] ?? null),
-                            'quantity' => $product['quantity'],
-                            'price' => $product['unit_price'],
-                            'amount' => $product['amount'],
-                            'tax_rate' => $taxRate,
-                            'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
-                            'currency' => $request->currency,
-                            'comments' => $product['comments'],
-                            'order' => $quoteProductOrder,
-                        ]);
-
-                        $quoteProductIds[] = $quoteProduct->id;
+                foreach ($quote->quoteProducts as $quoteProduct) {
+                    if (! in_array($quoteProduct->id, $quoteProductIds)) {
+                        $quoteProduct->delete();
                     }
                 }
             }
 
-            foreach ($quote->quoteProducts as $quoteProduct) {
-                if (! in_array($quoteProduct->id, $quoteProductIds)) {
-                    $quoteProduct->delete();
-                }
-            }
-        }
+            $this->syncTotals($quote);
 
-        $this->syncTotals($quote);
-
-        return $quote;
+            return $quote;
+        });
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Orders;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Orders\Traits\HasOrderCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
@@ -105,25 +106,29 @@ class OrderEdit extends Component
 
         $request->merge(['addresses' => $this->addressesToSave()]);
 
-        if ($this->person_name && ! $this->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($this->person_id) {
-            $person = Person::find($this->person_id);
-        }
+        // One transaction, so a failure part-way - in the service or in
+        // the custom fields - leaves no contact, document or lines behind.
+        DB::transaction(function () use ($request, $form) {
+            if ($this->person_name && ! $this->person_id) {
+                $person = $this->personService->createFromRelated($request);
+            } elseif ($this->person_id) {
+                $person = Person::find($this->person_id);
+            }
 
-        if ($this->organization_name && ! $this->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($this->organization_id) {
-            $organization = Organization::find($this->organization_id);
-        }
+            if ($this->organization_name && ! $this->organization_id) {
+                $organization = $this->organizationService->createFromRelated($request);
+            } elseif ($this->organization_id) {
+                $organization = Organization::find($this->organization_id);
+            }
 
-        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+            $this->personService->linkToOrganization($person ?? null, $organization ?? null);
 
-        $this->orderService->update($request, $this->order, $person ?? null, $organization ?? null, form: $form);
+            $this->orderService->update($request, $this->order, $person ?? null, $organization ?? null, form: $form);
 
-        if ($form->shows('custom_fields')) {
-            $this->saveCustomFields($this->order->fresh());
-        }
+            if ($form->shows('custom_fields')) {
+                $this->saveCustomFields($this->order->fresh());
+            }
+        });
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.order_updated')),

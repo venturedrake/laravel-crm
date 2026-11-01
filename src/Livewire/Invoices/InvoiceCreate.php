@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Invoices;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Invoices\Traits\HasInvoiceCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
@@ -76,23 +77,27 @@ class InvoiceCreate extends Component
         // Create a request object to pass to services
         $request = \VentureDrake\LaravelCrm\Http\Helpers\PublicProperties\asRequest($this);
 
-        if ($this->person_name && ! $this->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($this->person_id) {
-            $person = Person::find($this->person_id);
-        }
+        // One transaction, so a failure part-way - in the service or in
+        // the custom fields - leaves no contact, document or lines behind.
+        DB::transaction(function () use ($request) {
+            if ($this->person_name && ! $this->person_id) {
+                $person = $this->personService->createFromRelated($request);
+            } elseif ($this->person_id) {
+                $person = Person::find($this->person_id);
+            }
 
-        if ($this->organization_name && ! $this->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($this->organization_id) {
-            $organization = Organization::find($this->organization_id);
-        }
+            if ($this->organization_name && ! $this->organization_id) {
+                $organization = $this->organizationService->createFromRelated($request);
+            } elseif ($this->organization_id) {
+                $organization = Organization::find($this->organization_id);
+            }
 
-        $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+            $this->personService->linkToOrganization($person ?? null, $organization ?? null);
 
-        $invoice = $this->invoiceService->create($request, $person ?? null, $organization ?? null);
+            $invoice = $this->invoiceService->create($request, $person ?? null, $organization ?? null);
 
-        $this->saveCustomFields($invoice);
+            $this->saveCustomFields($invoice);
+        });
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.invoice_created')),

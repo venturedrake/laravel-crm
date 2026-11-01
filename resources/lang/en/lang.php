@@ -670,6 +670,7 @@ return [
     'purchase_order_date' => 'purchase order date',
     'purchase_order_number' => 'purchase order number',
     'delivery_address' => 'delivery address',
+    'delivery_address_required' => 'choose one of your delivery addresses, or set the type to pickup',
     'edit_purchase_order' => 'edit purchase order',
     'delivery_details' => 'delivery details',
     'purchase_order_terms' => 'purchase order terms',
