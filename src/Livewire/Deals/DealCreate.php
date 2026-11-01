@@ -31,8 +31,6 @@ class DealCreate extends Component
 
     public function mount()
     {
-        $this->mountCommon();
-
         $this->currency = Setting::currency()->value ?? 'USD';
         $this->pipeline = Pipeline::where('model', get_class(new Deal))->first();
         $this->pipeline_stage_id = $this->pipeline->pipelineStages->first()->id ?? null;

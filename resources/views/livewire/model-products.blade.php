@@ -17,16 +17,22 @@
                                 @if(in_array($from, ['Quote', 'Order']) || class_basename($model) == 'Delivery')
                                     <x-mary-input wire:model="products.{{ $index }}.name" readonly />
                                 @else
-                                    <x-mary-select wire:model.live="products.{{ $index }}.id"
-                                                   :options="\VentureDrake\LaravelCrm\Models\Product::orderBy('name')->get() ?? []"
-                                                   placeholder="{{ ucfirst(__('laravel-crm::lang.select_product')) }}"
-                                                   label="{{ ucfirst(__('laravel-crm::lang.name')) }}" single>
+                                    {{-- Searched on the server and capped, rather than every product
+                                         rendered into every row - see HasProductSearch. --}}
+                                    @php($rowKey = $product['row_key'] ?? $index)
+                                    <x-mary-choices wire:model.live="products.{{ $index }}.id"
+                                                    :options="$this->productOptions($rowKey, $product['id'] ?? null)"
+                                                    search-function="searchProducts('{{ $rowKey }}')"
+                                                    option-sub-label="code"
+                                                    placeholder="{{ ucfirst(__('laravel-crm::lang.select_product')) }}"
+                                                    label="{{ ucfirst(__('laravel-crm::lang.name')) }}"
+                                                    searchable single clearable>
                                         @if($dynamicProducts)
                                             <x-slot:append>
                                                 <x-mary-button @click="$wire.showCreateProduct = true" {{--label="{{ ucfirst(__('laravel-crm::lang.create')) }}"--}} icon="o-plus" class="join-item btn-primary" />
                                             </x-slot:append>
                                         @endif
-                                    </x-mary-select>
+                                    </x-mary-choices>
 
                                     {{-- Only a product with variations gets the select - or a line
                                          already on one, which keeps it listed even once it has been

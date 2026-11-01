@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Deals\Traits;
 
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasProductSearch;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasVariationOptions;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Product;
@@ -17,6 +18,7 @@ trait HasDealCommon
 {
     use HasCustomFormFields;
     use HasLineItemQuantityRules;
+    use HasProductSearch;
     use HasVariationOptions;
     use Toast;
 
@@ -76,13 +78,6 @@ trait HasDealCommon
 
     public array $products;
 
-    public array $productOptions = [
-        [
-            'id' => null,
-            'name' => null,
-        ],
-    ];
-
     protected function customFieldsModel(): string
     {
         return Deal::class;
@@ -127,24 +122,17 @@ trait HasDealCommon
         $this->organizationService = $organizationService;
     }
 
-    public function mountCommon()
-    {
-        foreach (Product::orderBy('name')->get() as $product) {
-            $this->productOptions[] = [
-                'id' => $product->id,
-                'name' => $product->name,
-            ];
-        }
-    }
-
     public function updatedProducts($value, $key)
     {
         $updating = explode('.', $key);
 
         // Picking a new product drops the old product's variation before the
-        // row is repriced below.
+        // row is repriced below, and puts the row's picker back to its full list.
+        // Deal rows are never reindexed, so the index is the row's search key.
         if (count($updating) > 1 && $updating[1] == 'id' && isset($this->products[$updating[0]])) {
             $this->products[$updating[0]]['product_variation_id'] = null;
+
+            $this->clearProductSearch($updating[0]);
         }
 
         // withTrashed, as in ModelProducts: a line on a since-deleted product
@@ -183,5 +171,7 @@ trait HasDealCommon
     public function deleteProduct($index)
     {
         unset($this->products[$index]);
+
+        $this->clearProductSearch($index);
     }
 }

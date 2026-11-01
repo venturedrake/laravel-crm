@@ -284,10 +284,10 @@ test('mounting with a deal builds editable lines from its products', function ()
 
     $component->assertSet('sub_total', 34.0);
 
-    // Editable: the product select and the add button are rendered, not the
-    // read-only name.
+    // Editable: the product picker and the add button are rendered, not the
+    // read-only name. The picker binds through @entangle, not a wire:model attribute.
     $html = $component->html();
-    expect($html)->toContain('wire:model.live="products.0.id"')
+    expect($html)->toContain("entangle('products.0.id')")
         ->and($html)->toContain('wire:click="add"')
         ->and($html)->not->toContain('wire:model="products.0.name"');
 

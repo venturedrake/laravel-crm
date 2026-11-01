@@ -144,7 +144,15 @@
                 <div class="grid lg:grid-cols-12 gap-3 items-end">
                     <input type="hidden" wire:model="products.{{ $index }}.deal_product_id" />
                     <span class="lg:col-span-4">
-                        <x-mary-select wire:model.live="products.{{ $index }}.id" :options="$productOptions" label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.item')) : null }}" />
+                        {{-- Searched on the server and capped - see HasProductSearch. Deal rows
+                             are never reindexed, so the index keys the row's search. --}}
+                        <x-mary-choices wire:model.live="products.{{ $index }}.id"
+                                        :options="$this->productOptions($index, $product['id'] ?? null)"
+                                        search-function="searchProducts('{{ $index }}')"
+                                        option-sub-label="code"
+                                        placeholder="{{ ucfirst(__('laravel-crm::lang.select_product')) }}"
+                                        label="{{ ($loop->first) ? ucfirst(__('laravel-crm::lang.item')) : null }}"
+                                        searchable single clearable />
                     </span>
                     {{-- Only a product with variations (or a line already on one) gets the select;
                          the empty span keeps the columns lined up. The placeholder posts '' (no variation). --}}

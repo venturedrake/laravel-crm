@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasProductSearch;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasVariationOptions;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\TaxRate;
@@ -13,6 +14,7 @@ use VentureDrake\LaravelCrm\Support\Quantity;
 
 class ModelProducts extends Component
 {
+    use HasProductSearch;
     use HasVariationOptions;
 
     public ?string $creating = null;
@@ -239,6 +241,9 @@ class ModelProducts extends Component
             $this->clampQuantity($index);
 
             if ($updating[1] == 'id') {
+                // The pick is made, so the row's picker goes back to its full list.
+                $this->clearProductSearch($this->products[$index]['row_key'] ?? $index);
+
                 // A variation belongs to one product, so a new product clears it.
                 $this->products[$index]['product_variation_id'] = null;
 
@@ -413,6 +418,8 @@ class ModelProducts extends Component
 
     public function remove($index)
     {
+        $this->clearProductSearch($this->products[$index]['row_key'] ?? $index);
+
         unset($this->products[$index]);
         $this->products = array_values($this->products);
 
