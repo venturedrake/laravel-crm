@@ -85,3 +85,48 @@ test('service keeps the tax on existing lines when the invoice is updated', func
     expect((float) $lines[1]->tax_rate)->toBe(10.0);
     expect((int) $lines[1]->getRawOriginal('tax_amount'))->toBe(6000);
 });
+
+/*
+ * Line amounts are priced from the unit price and quantity. The request's
+ * amount is only what the form last showed - a follow-up invoice from an
+ * order used to post the order line's full amount against a part quantity.
+ */
+
+test('service prices a new line from its unit price and quantity', function () {
+    $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
+    $product = Product::create(['name' => 'Taxed', 'tax_rate_id' => $gst->id]);
+
+    $invoice = app(InvoiceService::class)->create(new Request([
+        'currency' => 'USD',
+        'products' => [
+            // 3 of 5 left to invoice, still carrying the order line's 5 x 2000.
+            ['id' => $product->id, 'quantity' => 3, 'unit_price' => '2,000.00', 'amount' => '10,000.00', 'comments' => null],
+            ['id' => $product->id, 'quantity' => 1.25, 'unit_price' => '333.20', 'amount' => '833.00', 'comments' => null],
+        ],
+    ]));
+
+    $lines = $invoice->invoiceLines()->orderBy('order')->get();
+
+    expect($lines->pluck('amount')->all())->toBe([600000, 41650])
+        ->and($lines->pluck('tax_amount')->all())->toBe([60000, 4165]);
+});
+
+test('service reprices an existing line and a line added on update', function () {
+    $product = Product::create(['name' => 'Plain']);
+
+    $invoice = Invoice::create(['currency' => 'USD']);
+    $existing = $invoice->invoiceLines()->create([
+        'product_id' => $product->id, 'quantity' => 1, 'price' => 100,
+        'amount' => 100, 'tax_rate' => 0, 'tax_amount' => 0, 'currency' => 'USD',
+    ]);
+
+    app(InvoiceService::class)->update(new Request([
+        'currency' => 'USD',
+        'products' => [
+            ['invoice_line_id' => $existing->id, 'id' => $product->id, 'quantity' => 2.5, 'unit_price' => '333.33', 'amount' => '999.99', 'comments' => null],
+            ['id' => $product->id, 'quantity' => 3.5, 'unit_price' => '9.99', 'amount' => '1.00', 'comments' => null],
+        ],
+    ]), $invoice);
+
+    expect($invoice->invoiceLines()->orderBy('order')->pluck('amount')->all())->toBe([83333, 3497]);
+});

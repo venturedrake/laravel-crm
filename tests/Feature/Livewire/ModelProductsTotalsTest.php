@@ -16,6 +16,7 @@ use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Models\TaxRate;
 
 function quoteWithLines(): Quote
 {
@@ -252,4 +253,81 @@ test('two half-cent lines total the cents each line shows', function () {
     expect($component->get('products.0.amount'))->toEqual(5.0)
         ->and($component->get('products.1.amount'))->toEqual(5.0);
     $component->assertSet('sub_total', 10.0);
+});
+
+/*
+ * A follow-up invoice from a part-invoiced order. The rows were seeded with
+ * the outstanding quantity but kept the order line's full amount and tax, so
+ * the second invoice billed the whole order again.
+ */
+
+function orderWithTwoPartInvoicedLines(): Order
+{
+    $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
+    $whole = Product::create(['name' => 'Whole', 'tax_rate_id' => $gst->id]);
+    $weighed = Product::create(['name' => 'Weighed', 'tax_rate_id' => $gst->id]);
+
+    $order = Order::create(['currency' => 'USD']);
+
+    // Line amounts take dollars; tax_amount has no mutator, so it is in cents.
+    $wholeLine = $order->orderProducts()->create([
+        'product_id' => $whole->id, 'quantity' => 5, 'price' => 2000,
+        'tax_rate' => 10, 'tax_amount' => 100000, 'amount' => 10000,
+    ]);
+    $weighedLine = $order->orderProducts()->create([
+        'product_id' => $weighed->id, 'quantity' => 2.5, 'price' => 333.20,
+        'tax_rate' => 10, 'tax_amount' => 8330, 'amount' => 833.00,
+    ]);
+
+    $invoice = Invoice::create(['order_id' => $order->id, 'currency' => 'USD']);
+    $invoice->invoiceLines()->create([
+        'product_id' => $whole->id, 'order_product_id' => $wholeLine->id,
+        'quantity' => 2, 'price' => 2000, 'amount' => 4000,
+    ]);
+    $invoice->invoiceLines()->create([
+        'product_id' => $weighed->id, 'order_product_id' => $weighedLine->id,
+        'quantity' => 1.25, 'price' => 333.20, 'amount' => 416.50,
+    ]);
+
+    return $order->fresh();
+}
+
+test('a follow-up invoice is priced from the quantity still outstanding', function () {
+    $this->actingAsUser();
+
+    $component = Livewire::test(ModelProducts::class, [
+        'model' => orderWithTwoPartInvoicedLines(), 'creating' => 'Invoice', 'from' => 'Order',
+    ]);
+
+    expect($component->get('products.0.quantity'))->toEqual(3)
+        ->and($component->get('products.0.amount'))->toEqual(6000)
+        ->and($component->get('products.0.tax_amount'))->toEqual(600)
+        ->and($component->get('products.1.quantity'))->toEqual(1.25)
+        ->and($component->get('products.1.amount'))->toEqual(416.5)
+        ->and($component->get('products.1.tax_amount'))->toEqual(41.65);
+
+    $component->assertSet('sub_total', 6416.5)
+        ->assertSet('tax', 641.65)
+        ->assertSet('total', 7058.15);
+});
+
+test('a line already invoiced in full is left off the follow-up invoice', function () {
+    $this->actingAsUser();
+
+    $order = orderWithTwoPartInvoicedLines();
+    $wholeLine = $order->orderProducts()->orderBy('id')->first();
+
+    // Invoice the remaining 3 of the first line.
+    Invoice::create(['order_id' => $order->id, 'currency' => 'USD'])->invoiceLines()->create([
+        'product_id' => $wholeLine->product_id, 'order_product_id' => $wholeLine->id,
+        'quantity' => 3, 'price' => 2000, 'amount' => 6000,
+    ]);
+
+    $component = Livewire::test(ModelProducts::class, [
+        'model' => $order->fresh(), 'creating' => 'Invoice', 'from' => 'Order',
+    ]);
+
+    expect($component->get('products'))->toHaveCount(1)
+        ->and($component->get('products.0.order_product_id'))->not->toBe($wholeLine->id);
+    $component->assertSet('sub_total', 416.5);
 });

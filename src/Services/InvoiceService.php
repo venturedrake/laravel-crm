@@ -12,6 +12,7 @@ use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
+use VentureDrake\LaravelCrm\Support\LineAmount;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
@@ -86,9 +87,8 @@ class InvoiceService
                         'product_variation_id' => $this->variationIdFor($invoiceLine['id'], $invoiceLine['product_variation_id'] ?? null, $this->sourceVariationId(OrderProduct::class, $invoiceLine['order_product_id'] ?? null)),
                         'quantity' => $invoiceLine['quantity'],
                         'price' => $invoiceLine['unit_price'],
-                        'amount' => $invoiceLine['amount'],
+                        ...$this->lineValues($invoiceLine, $taxRate),
                         'tax_rate' => $taxRate ?? 0,
-                        'tax_amount' => Money::toFloat($invoiceLine['amount']) * ($taxRate / 100),
                         'currency' => $request->currency,
                         'order_product_id' => $invoiceLine['order_product_id'] ?? null,
                         'comments' => $invoiceLine['comments'],
@@ -197,9 +197,8 @@ class InvoiceService
                                 'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null, $invoiceLine->product_variation_id),
                                 'quantity' => $line['quantity'],
                                 'price' => $line['unit_price'],
-                                'amount' => $line['amount'],
+                                ...$this->lineValues($line, $taxRate),
                                 'tax_rate' => $taxRate ?? 0,
-                                'tax_amount' => Money::toFloat($line['amount']) * ($taxRate / 100),
                                 'currency' => $request->currency,
                                 'comments' => $line['comments'],
                                 'order' => $invoiceLineOrder,
@@ -233,9 +232,8 @@ class InvoiceService
                             'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null),
                             'quantity' => $line['quantity'],
                             'price' => $line['unit_price'],
-                            'amount' => $line['amount'],
+                            ...$this->lineValues($line, $taxRate),
                             'tax_rate' => $taxRate ?? 0,
-                            'tax_amount' => Money::toFloat($line['amount']) * ($taxRate / 100),
                             'currency' => $request->currency,
                             'comments' => $line['comments'],
                             'order' => $invoiceLineOrder,
@@ -254,6 +252,26 @@ class InvoiceService
         }
 
         return $invoice;
+    }
+
+    /**
+     * A line's amount and tax, priced from its unit price and quantity rather
+     * than taken from the request. The posted amount is only what the form
+     * last showed - a follow-up invoice from an order used to carry the order
+     * line's full amount against the part quantity still outstanding.
+     *
+     * In dollars, as the line mutators take them.
+     *
+     * @return array{amount: float, tax_amount: float}
+     */
+    private function lineValues(array $line, $taxRate): array
+    {
+        $amount = LineAmount::amountCents(Money::toInteger($line['unit_price'] ?? null) ?? 0, $line['quantity']);
+
+        return [
+            'amount' => $amount / 100,
+            'tax_amount' => LineAmount::taxCents($amount, $taxRate ?? 0) / 100,
+        ];
     }
 
     protected function addProduct($product, $request)

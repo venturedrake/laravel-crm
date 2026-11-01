@@ -111,6 +111,15 @@ class ModelProducts extends Component
                             $quantityRemaining = max(0.0, Quantity::round($quantityRemaining));
                         }
 
+                        $invoicingFromOrder = $this->creating == 'Invoice' && $this->from == 'Order';
+
+                        // A line already invoiced in full has nothing left to bill.
+                        if ($invoicingFromOrder && Quantity::isZero($quantityRemaining)) {
+                            continue;
+                        }
+
+                        $index = count($this->products);
+
                         $this->products[] = [
                             'order_product_id' => $orderProduct->id,
                             'id' => $orderProduct->product_id,
@@ -124,6 +133,13 @@ class ModelProducts extends Component
                             'amount' => $orderProduct->amount / 100,
                             'comments' => $orderProduct->comments,
                         ];
+
+                        // The order line's amount and tax are for its full
+                        // quantity, so a follow-up invoice seeded with only
+                        // the remainder has to be priced from that remainder.
+                        if ($invoicingFromOrder) {
+                            $this->recalculateProduct($index, Product::withTrashed()->find($orderProduct->product_id));
+                        }
                     }
                     break;
 
@@ -332,10 +348,15 @@ class ModelProducts extends Component
 
     /**
      * Recalculate a single line from its unit price, quantity and tax rate.
+     *
+     * With no product (one since hard-deleted) the row keeps the tax rate it
+     * already carries.
      */
-    protected function recalculateProduct($index, Product $product): void
+    protected function recalculateProduct($index, ?Product $product): void
     {
-        $taxRate = $this->resolveTaxRate($product);
+        $taxRate = $product
+            ? $this->resolveTaxRate($product)
+            : (float) ($this->products[$index]['tax_rate'] ?? 0);
 
         // In cents, the same way the CheckAmount helpers price the saved line,
         // so the two cannot disagree on a half-cent boundary.
