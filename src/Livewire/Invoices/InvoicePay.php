@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Support\Money;
 
 class InvoicePay extends Component
 {
@@ -25,12 +26,17 @@ class InvoicePay extends Component
     /**
      * Returns validation rules.
      *
+     * Any amount up to what is still outstanding - a part payment is fine,
+     * an overpayment is not. This used to be `size:` the amount due, which
+     * refused anything but the exact balance, and the balance itself was
+     * never set on a new invoice.
+     *
      * @return array
      */
     protected function rules()
     {
         return [
-            'amount' => 'required|numeric|size:'.($this->invoice->amount_due / 100),
+            'amount' => 'required|numeric|gt:0|lte:'.($this->outstandingCents() / 100),
         ];
     }
 
@@ -38,8 +44,8 @@ class InvoicePay extends Component
     {
         $this->invoice = $invoice;
 
-        $this->amount_due = $invoice->amount_due / 100;
-        $this->amount_paid = $invoice->amount_paid / 100;
+        $this->amount_due = $this->outstandingCents() / 100;
+        $this->amount_paid = ((int) $invoice->amount_paid) / 100;
 
         if ($this->amount_due > 0) {
             $this->amount = $this->amount_due;
@@ -50,15 +56,29 @@ class InvoicePay extends Component
     {
         $this->authorize('update', $this->invoice);
 
+        // The input is masked ("1,234.56"), so normalise it before the
+        // numeric rules see it.
+        if ($this->amount !== null && $this->amount !== '') {
+            $this->amount = Money::toFloat($this->amount);
+        }
+
         $this->validate();
 
-        $this->amount_due = ($this->invoice->amount_due / 100) - ($this->amount + ($this->invoice->amount_paid / 100));
+        $invoice = $this->invoice->fresh();
 
-        $this->invoice->update([
-            'amount_paid' => $this->amount + ($this->invoice->amount_paid / 100),
-            'amount_due' => $this->amount_due,
-            'fully_paid_at' => (($this->amount_due == 0) ? Carbon::now() : null),
+        // In cents throughout, so a run of part payments adds up exactly.
+        $paid = (int) $invoice->getRawOriginal('amount_paid') + Money::toInteger($this->amount);
+        $due = (int) $invoice->getRawOriginal('total') - $paid;
+
+        $invoice->update([
+            'amount_paid' => $paid / 100,
+            'amount_due' => $due / 100,
+            'fully_paid_at' => $due <= 0 ? Carbon::now() : null,
         ]);
+
+        $this->invoice = $invoice;
+        $this->amount_paid = $paid / 100;
+        $this->amount_due = $due / 100;
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.invoice_paid'))
@@ -67,6 +87,18 @@ class InvoicePay extends Component
         $this->resetFields();
 
         $this->showPayInvoice = false;
+    }
+
+    /**
+     * What is left to pay, in cents, worked out from the invoice's total and
+     * what has been paid - not from the stored amount_due, which older
+     * invoices may never have had set.
+     */
+    protected function outstandingCents(): int
+    {
+        $invoice = $this->invoice->fresh() ?? $this->invoice;
+
+        return max(0, (int) $invoice->getRawOriginal('total') - (int) $invoice->getRawOriginal('amount_paid'));
     }
 
     private function resetFields()

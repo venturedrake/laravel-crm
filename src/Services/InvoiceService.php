@@ -52,6 +52,8 @@ class InvoiceService
             'subtotal' => $request->sub_total,
             'tax' => $request->tax,
             'total' => $request->total,
+            // Nothing is paid yet; syncTotals() sets amount_due to the total.
+            'amount_paid' => 0,
             'pdf_template' => PdfTemplateRegistry::sanitize($request->pdf_template ?? null),
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
@@ -253,7 +255,7 @@ class InvoiceService
             }
         }
 
-        $this->syncTotals($invoice, withAmountDue: true);
+        $this->syncTotals($invoice);
 
         return $invoice;
     }
@@ -261,24 +263,20 @@ class InvoiceService
     /**
      * Set the header totals from the lines actually saved. The request's
      * totals are only what the form last summed, and can count a row the
-     * loop above dropped.
+     * loop above dropped. Amount due follows the total, less what has been
+     * paid.
      */
-    protected function syncTotals(Invoice $invoice, bool $withAmountDue = false): void
+    protected function syncTotals(Invoice $invoice): void
     {
         $totals = DocumentTotals::fromLines($invoice->invoiceLines()->get());
         $total = $totals['subtotal'] + $totals['tax'];
 
-        $attributes = [
+        $invoice->update([
             'subtotal' => $totals['subtotal'] / 100,
             'tax' => $totals['tax'] / 100,
             'total' => $total / 100,
-        ];
-
-        if ($withAmountDue) {
-            $attributes['amount_due'] = ($total - (int) $invoice->getRawOriginal('amount_paid')) / 100;
-        }
-
-        $invoice->update($attributes);
+            'amount_due' => ($total - (int) $invoice->getRawOriginal('amount_paid')) / 100,
+        ]);
     }
 
     /**
