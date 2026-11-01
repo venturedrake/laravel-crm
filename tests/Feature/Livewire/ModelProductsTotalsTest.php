@@ -208,3 +208,48 @@ test('a plain quote line has no cap and is not clamped', function () {
     expect($component->get('products.0.quantity'))->toBe(99.5);
     $component->assertHasNoErrors('products.0.quantity');
 });
+
+/*
+ * Lines on a half-cent boundary. The form multiplied float dollars and
+ * rounded to 2dp, which landed a cent below the half-up rounding the
+ * CheckAmount helpers apply to the saved line - so the quote's show page
+ * flagged its own lines and hid Send/Accept.
+ */
+
+test('a line exactly on the half cent rounds up', function () {
+    $this->actingAsUser();
+
+    $component = Livewire::test(ModelProducts::class, ['model' => quoteWithLines()]);
+
+    $component->set('products.0.unit_price', '333.33');
+    $component->set('products.0.quantity', 2.5);
+
+    expect($component->get('products.0.amount'))->toBe(833.33);
+});
+
+test('a fractional quantity is priced to the nearest cent', function () {
+    $this->actingAsUser();
+
+    $component = Livewire::test(ModelProducts::class, ['model' => quoteWithLines()]);
+
+    $component->set('products.0.unit_price', '9.99');
+    $component->set('products.0.quantity', 3.5);
+
+    expect($component->get('products.0.amount'))->toBe(34.97);
+});
+
+test('two half-cent lines total the cents each line shows', function () {
+    $this->actingAsUser();
+
+    $component = Livewire::test(ModelProducts::class, ['model' => quoteWithLines()]);
+
+    foreach ([0, 1] as $index) {
+        $component->set("products.$index.unit_price", '9.99');
+        $component->set("products.$index.quantity", 0.5);
+    }
+
+    // toEqual: a whole 5.0 comes back through the JSON round trip as 5.
+    expect($component->get('products.0.amount'))->toEqual(5.0)
+        ->and($component->get('products.1.amount'))->toEqual(5.0);
+    $component->assertSet('sub_total', 10.0);
+});

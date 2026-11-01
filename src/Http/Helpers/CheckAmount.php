@@ -2,7 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Helpers\CheckAmount;
 
-use VentureDrake\LaravelCrm\Support\Quantity;
+use VentureDrake\LaravelCrm\Support\LineAmount;
 
 /**
  * Half a cent - the smallest amount the stored integer cents can tell apart.
@@ -34,7 +34,7 @@ function matches(float $computed, $stored): bool
  */
 function lineTotal($item): float
 {
-    return round(Quantity::toFloat($item->quantity) * $item->price);
+    return LineAmount::amountCents($item->price, $item->quantity);
 }
 
 function subTotal($model): bool

@@ -98,3 +98,22 @@ test('line amount reads the string shape a decimal column returns', function () 
 
     expect(lineAmount($item))->toBeTrue();
 });
+
+test('line amount agrees with the form on a line exactly on the half cent', function () {
+    // $333.33 x 2.5 is exactly 83332.5 cents, which the form now saves as 83333.
+    $item = new stdClass;
+    $item->price = 33333;
+    $item->quantity = 2.5;
+    $item->amount = 83333;
+
+    expect(lineAmount($item))->toBeTrue();
+});
+
+test('line amount rejects the old round-down of a half-cent line', function () {
+    $item = new stdClass;
+    $item->price = 33333;
+    $item->quantity = 2.5;
+    $item->amount = 83332;
+
+    expect(lineAmount($item))->toBeFalse();
+});

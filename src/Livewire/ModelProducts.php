@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasProductSearch;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasVariationOptions;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\TaxRate;
+use VentureDrake\LaravelCrm\Support\LineAmount;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\Quantity;
 
@@ -335,12 +336,18 @@ class ModelProducts extends Component
     protected function recalculateProduct($index, Product $product): void
     {
         $taxRate = $this->resolveTaxRate($product);
-        $quantity = Quantity::toFloat($this->products[$index]['quantity'] ?? 1);
-        $unitPrice = Money::toFloat($this->products[$index]['unit_price'] ?? 0);
+
+        // In cents, the same way the CheckAmount helpers price the saved line,
+        // so the two cannot disagree on a half-cent boundary.
+        $line = LineAmount::forForm(
+            $this->products[$index]['unit_price'] ?? 0,
+            $this->products[$index]['quantity'] ?? 1,
+            $taxRate,
+        );
 
         $this->products[$index]['tax_rate'] = $taxRate;
-        $this->products[$index]['tax_amount'] = round(($unitPrice * $quantity) * ($taxRate / 100), 2);
-        $this->products[$index]['amount'] = round($unitPrice * $quantity, 2);
+        $this->products[$index]['tax_amount'] = round($line['tax'] / 100, 2);
+        $this->products[$index]['amount'] = round($line['amount'] / 100, 2);
     }
 
     protected function resolveTaxRate(Product $product): float
@@ -364,7 +371,8 @@ class ModelProducts extends Component
      * Sum the totals from the lines themselves.
      *
      * The line values come back from the masked inputs as formatted strings
-     * ("14,000.00"), so they are normalised rather than cast.
+     * ("14,000.00"), so they are normalised rather than cast. They are summed
+     * as integer cents, so adding many lines picks up no float drift.
      */
     protected function recalculateTotals(): void
     {
@@ -372,13 +380,13 @@ class ModelProducts extends Component
         $tax = 0;
 
         foreach ($this->products as $product) {
-            $subTotal += Money::toFloat($product['amount'] ?? 0);
-            $tax += Money::toFloat($product['tax_amount'] ?? 0);
+            $subTotal += Money::toInteger($product['amount'] ?? 0) ?? 0;
+            $tax += Money::toInteger($product['tax_amount'] ?? 0) ?? 0;
         }
 
-        $this->sub_total = round($subTotal, 2);
-        $this->tax = round($tax, 2);
-        $this->total = round($subTotal + $tax, 2);
+        $this->sub_total = round($subTotal / 100, 2);
+        $this->tax = round($tax / 100, 2);
+        $this->total = round(($subTotal + $tax) / 100, 2);
     }
 
     protected function dispatchProductsUpdated(): void
