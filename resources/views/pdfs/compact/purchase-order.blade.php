@@ -150,13 +150,13 @@
             @if($purchaseOrder->delivery_instructions)
                 <div class="compact-footer-note">
                     <div class="compact-footer-heading">{{ ucfirst(__('laravel-crm::lang.delivery_instructions')) }}</div>
-                    <div class="compact-footer-body">{!! nl2br($purchaseOrder->delivery_instructions) !!}</div>
+                    <div class="compact-footer-body">{!! nl2br(e($purchaseOrder->delivery_instructions)) !!}</div>
                 </div>
             @endif
             @if($purchaseOrder->terms)
                 <div class="compact-footer-note">
                     <div class="compact-footer-heading">{{ ucfirst(__('laravel-crm::lang.terms')) }}</div>
-                    <div class="compact-footer-body">{!! nl2br($purchaseOrder->terms) !!}</div>
+                    <div class="compact-footer-body">{!! nl2br(e($purchaseOrder->terms)) !!}</div>
                 </div>
             @endif
         </div>

@@ -70,7 +70,8 @@
             </x-mary-form>
         @else
             @if($task->description)
-                <div>{!! $task->description !!}</div>
+                {{-- Typed into a plain textarea: escaped, with its line breaks kept. --}}
+                <div>{!! nl2br(e($task->description)) !!}</div>
             @endif
             <div class="flex flex-row gap-2">
                 @if($task->ownerUser)

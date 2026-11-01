@@ -54,7 +54,8 @@
             </x-mary-form>
         @else
             <div>
-                {!! $note->content !!}
+                {{-- Typed into a plain textarea: escaped, with its line breaks kept. --}}
+                {!! nl2br(e($note->content)) !!}
             </div>
 
             @if($note->noted_at)

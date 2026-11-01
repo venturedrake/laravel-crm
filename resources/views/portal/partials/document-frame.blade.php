@@ -3,12 +3,13 @@
     same-origin, self-sizing iframe.
 
     `sandbox="allow-same-origin"` is load-bearing and deliberately omits
-    `allow-scripts`. The PDF templates emit record content unescaped —
-    `{!! nl2br($invoice->terms) !!}` and friends — which is harmless in DomPDF
-    but would be live stored XSS in a browser on a public, unauthenticated
-    page. Dropping script execution neuters it; keeping `allow-same-origin` is
-    what lets the parent read `contentDocument` to sync the height. Do not
-    "tidy" either half of that attribute away.
+    `allow-scripts`. The PDF templates now escape their free text
+    (`{!! nl2br(e($invoice->terms)) !!}` and friends), but this is a public,
+    unauthenticated page rendering record content, so dropping script
+    execution stays as the second line of defence should a template ever
+    emit something unescaped again. Keeping `allow-same-origin` is what lets
+    the parent read `contentDocument` to sync the height. Do not "tidy"
+    either half of that attribute away.
 
     Alpine is available here because layouts.portal loads Livewire. The
     ResizeObserver on the frame's documentElement re-syncs after webfonts land
