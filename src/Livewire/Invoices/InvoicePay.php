@@ -73,7 +73,7 @@ class InvoicePay extends Component
         // against that balance: validate() saw the balance from before the
         // lock, so two tabs paying the last 100.00 both passed it.
         try {
-            [$invoice, $paid, $due] = DB::transaction(function () {
+            [$invoice, $amount, $paid, $due] = DB::transaction(function () {
                 $invoice = app(InvoiceService::class)->lockForEdit($this->invoice);
                 $amount = Money::toInteger($this->amount);
                 $outstanding = (int) $invoice->getRawOriginal('total') - (int) $invoice->getRawOriginal('amount_paid');
@@ -96,7 +96,7 @@ class InvoicePay extends Component
                     'fully_paid_at' => $due <= 0 ? Carbon::now() : null,
                 ]);
 
-                return [$invoice, $paid, $due];
+                return [$invoice, $amount, $paid, $due];
             });
         } catch (ValidationException $e) {
             // The drawer's balance is out of date, so bring it up to what
@@ -111,9 +111,16 @@ class InvoicePay extends Component
         $this->amount_paid = $paid / 100;
         $this->amount_due = $due / 100;
 
-        $this->success(
-            ucfirst(trans('laravel-crm::lang.invoice_paid'))
-        );
+        // A part payment leaves the invoice open, so say what is still due
+        // rather than that it is paid.
+        if ($due > 0) {
+            $this->success(ucfirst(trans('laravel-crm::lang.invoice_payment_recorded', [
+                'amount' => money($amount, $invoice->currency),
+                'due' => money($due, $invoice->currency),
+            ])));
+        } else {
+            $this->success(ucfirst(trans('laravel-crm::lang.invoice_paid')));
+        }
 
         $this->resetFields();
 

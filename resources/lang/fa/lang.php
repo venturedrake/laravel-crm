@@ -720,6 +720,7 @@ return [
     'select_product' => 'انتخاب محصول',
     'order_created' => 'سفارش ایجاد شد',
     'invoice_paid' => 'فاکتور پرداخت شد',
+    'invoice_payment_recorded' => 'پرداخت :amount ثبت شد. :due همچنان باقی مانده است.',
     'due_today' => 'سررسید امروز',
     'due_yesterday' => 'سررسید دیروز',
     'view' => 'مشاهده',

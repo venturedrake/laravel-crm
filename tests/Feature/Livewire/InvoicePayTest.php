@@ -80,6 +80,39 @@ test('paying the rest marks the invoice paid', function () {
         ->and($invoice->fully_paid_at)->not->toBeNull();
 });
 
+/*
+ * INV-2288: a part payment said "Invoice paid", though most of the invoice
+ * was still owing.
+ */
+test('a part payment says how much is still due, not that the invoice is paid', function () {
+    $invoice = payableInvoice();
+
+    $component = Livewire::test(InvoicePay::class, ['invoice' => $invoice])
+        ->set('amount', '100.00')
+        ->call('pay')
+        ->assertHasNoErrors();
+
+    // Mary shows a toast through a js effect.
+    expect(json_encode($component->effects['xjs'] ?? []))->toContain('Payment of $100.00 recorded. $120.00 still due.')
+        ->not->toContain(ucfirst(__('laravel-crm::lang.invoice_paid')));
+});
+
+test('the payment that clears the balance says the invoice is paid', function () {
+    $invoice = payableInvoice();
+
+    Livewire::test(InvoicePay::class, ['invoice' => $invoice])
+        ->set('amount', '100.00')
+        ->call('pay');
+
+    $component = Livewire::test(InvoicePay::class, ['invoice' => $invoice->fresh()])
+        ->set('amount', '120.00')
+        ->call('pay')
+        ->assertHasNoErrors();
+
+    expect(json_encode($component->effects['xjs'] ?? []))->toContain(ucfirst(__('laravel-crm::lang.invoice_paid')))
+        ->not->toContain('still due');
+});
+
 test('a masked amount with a thousands separator is accepted', function () {
     $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
     $product = Product::create(['name' => 'Big', 'tax_rate_id' => $gst->id]);

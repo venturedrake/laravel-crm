@@ -771,6 +771,7 @@ return [
     'select_product' => 'select product',
     'order_created' => 'order created',
     'invoice_paid' => 'invoice paid',
+    'invoice_payment_recorded' => 'payment of :amount recorded. :due still due.',
     'due_today' => 'due today',
     'due_yesterday' => 'due yesterday',
     'view' => 'view',
