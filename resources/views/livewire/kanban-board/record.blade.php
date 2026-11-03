@@ -78,11 +78,11 @@
                                         @if(!$quote->accepted_at && !$quote->rejected_at)
                                             <x-mary-menu-item wire:click="accept({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.accept')) }}" />
                                             <x-mary-menu-item wire:click="reject({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.reject')) }}" />
-                                        @elseif($quote->accepted_at && $quote->orders()->count() > 0 && !$quote->orderComplete())
+                                        @elseif($quote->accepted_at && $quote->hasOrders() && !$quote->orderComplete())
                                             @hasordersenabled
                                             <x-mary-menu-item link="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" title="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" />
                                             @endhasordersenabled
-                                        @elseif($quote->accepted_at && $quote->orders()->count() < 1)
+                                        @elseif($quote->accepted_at && ! $quote->hasOrders())
                                             <x-mary-menu-item wire:click="unaccept({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.unaccept')) }}" />
                                             @hasordersenabled
                                             <x-mary-menu-item link="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" title="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" />
@@ -98,10 +98,10 @@
                                     @endif
                                     <x-mary-menu-item link="{{ route('laravel-crm.quotes.show', ['quote' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
                                 @endcan
-                                @can('edit crm quotes')
-                                    @if(! $quote->accepted_at)
-                                        <x-mary-menu-item link="{{ route('laravel-crm.quotes.edit', ['quote' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
-                                    @endif
+                                @can('edit', $quote)
+                                    <x-mary-menu-item link="{{ route('laravel-crm.quotes.edit', ['quote' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.edit')) }}" />
+                                @elsecan('update', $quote)
+                                    <x-mary-menu-item icon="o-lock-closed" title="{{ $quote->lockReason() }}" disabled />
                                 @endcan
                                 @can('delete crm quotes')
                                     <x-mary-menu-item onclick="modalDeleteQuote{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />

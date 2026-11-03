@@ -61,6 +61,22 @@ class QuotePolicy
     }
 
     /**
+     * Determine whether the user can edit the quote's contents.
+     *
+     * Narrower than update(): accepting, rejecting and moving a quote on the
+     * board still go through update() once it is accepted or ordered, but
+     * its lines and totals are fixed then.
+     *
+     * @return mixed
+     */
+    public function edit(User $user, Quote $quote)
+    {
+        if ($this->update($user, $quote) && ! $quote->isLocked()) {
+            return true;
+        }
+    }
+
+    /**
      * Determine whether the user can delete the quote.
      *
      * @param  \App\Quote  $quote

@@ -227,6 +227,10 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   amount and tax, so re-sending the lines unchanged saves; a line that differs (or arrives without
   its `id`, which replaces it) is repriced, and the result is judged. Omitting `line_items` always saves the other fields. In every saving case the stored
   totals and balance are left untouched.
+- **An accepted or ordered quote is read-only.** *(Changed after 2.6.0 — unreleased.)* A `PUT`
+  to a quote that has been accepted, or that has an order made from it, is rejected with a `422`
+  on `quote` and nothing is saved — header fields included. Unaccept the quote in the app first;
+  once it has an order it cannot be unaccepted.
 
 ### Product variations
 

@@ -424,6 +424,8 @@ return [
     'quote_accepted' => 'quote accepted',
     'quote_rejected' => 'quote rejected',
     'quote_unaccepted' => 'quote unaccepted',
+    'quote_locked_accepted' => 'this quote has been accepted - unaccept it before editing',
+    'quote_locked_ordered' => 'this quote has an order, so it can no longer be edited or unaccepted',
     'task' => 'task',
     'tasks' => 'tasks',
     'due' => 'Due',

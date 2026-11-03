@@ -5,6 +5,11 @@
             @if($quote->pipelineStage)
                 <x-mary-badge :value="$quote->pipelineStage->name" class="badge badge-neutral text-white" />
             @endif
+            @if($quote->hasOrders())
+                <span class="tooltip tooltip-bottom" data-tip="{{ $quote->lockReason() }}">
+                    <x-mary-badge :value="ucfirst(__('laravel-crm::lang.ordered'))" icon="o-lock-closed" class="badge badge-warning" />
+                </span>
+            @endif
         </x-slot:badges>
         
         {{-- ACTIONS --}}
@@ -17,17 +22,17 @@
                     <livewire:crm-quote-send :key="'quote-send-'.$quote->id" :$quote />
                 @endif
                 @can('edit crm quotes')
-                    @if($quoteError)
+                    @if($quoteError && ! $quote->isLocked())
                         <x-mary-button link="{{ url(route('laravel-crm.quotes.edit', $quote)) }}" class="btn-sm btn-warning" label="Error with quote, check amounts" />
                     @else
                         @if(!$quote->accepted_at && !$quote->rejected_at)
                             <x-mary-button wire:click="accept({{ $quote->id }})" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.accept')) }}" />
                             <x-mary-button wire:click="reject({{ $quote->id }})" class="btn-sm btn-error text-white" label="{{ ucfirst(__('laravel-crm::lang.reject')) }}" />
-                        @elseif($quote->accepted_at && $quote->orders()->count() > 0 && ! $quote->orderComplete())
+                        @elseif($quote->accepted_at && $quote->hasOrders() && ! $quote->orderComplete())
                             @hasordersenabled
                             <x-mary-button link="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" />
                             @endhasordersenabled
-                        @elseif($quote->accepted_at && $quote->orders()->count() < 1)
+                        @elseif($quote->accepted_at && ! $quote->hasOrders())
                             <x-mary-button wire:click="unaccept({{ $quote->id }})" class="btn-sm btn-outline"  label="{{ ucfirst(__('laravel-crm::lang.unaccept')) }}" />
                             @hasordersenabled
                             <x-mary-button link="{{ route('laravel-crm.orders.create',['model' => 'quote', 'id' => $quote->id]) }}" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.create_order')) }}" />
@@ -45,8 +50,13 @@
                     @endif
                 @endcan
             | <livewire:crm-activity-menu /> |
-            @can('edit crm quotes')
+            @can('edit', $quote)
                 <x-mary-button link="{{ url(route('laravel-crm.quotes.edit', $quote)) }}" icon="o-pencil-square" class="btn-sm btn-square btn-outline" responsive />
+            @elsecan('update', $quote)
+                {{-- The tooltip sits on a wrapper: a disabled button takes no hover. --}}
+                <span class="tooltip tooltip-left" data-tip="{{ $quote->lockReason() }}">
+                    <x-mary-button icon="o-lock-closed" class="btn-sm btn-square btn-outline" disabled />
+                </span>
             @endcan
             @can('delete crm quotes')
                 <x-mary-button onclick="modalDeleteQuote{{ $quote->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />

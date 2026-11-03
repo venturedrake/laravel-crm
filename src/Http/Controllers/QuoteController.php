@@ -146,6 +146,14 @@ class QuoteController extends Controller
      */
     public function edit(Quote $quote)
     {
+        // The Edit button is hidden on an accepted or ordered quote, but the
+        // URL still works, so it is turned away here.
+        if ($reason = $quote->lockReason()) {
+            flash()->error($reason);
+
+            return redirect(route('laravel-crm.quotes.show', $quote));
+        }
+
         if ($quote->person) {
             $email = $quote->person->getPrimaryEmail();
             $phone = $quote->person->getPrimaryPhone();

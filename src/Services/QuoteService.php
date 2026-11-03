@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use VentureDrake\LaravelCrm\Models\DealProduct;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Models\Product;
@@ -104,6 +105,15 @@ class QuoteService
     public function update($request, Quote $quote, $person = null, $organization = null, $client = null)
     {
         return DB::transaction(function () use ($request, $quote, $person, $organization, $client) {
+            // An accepted or ordered quote is what was agreed, so it is not
+            // edited. Checked here so the form, the API and any other caller
+            // are all held to it.
+            $this->lockForEdit($quote);
+
+            if ($reason = $quote->lockReason()) {
+                throw ValidationException::withMessages(['quote' => $reason]);
+            }
+
             $quote->update([
                 'person_id' => $person->id ?? null,
                 'organization_id' => $organization->id ?? null,
@@ -201,6 +211,25 @@ class QuoteService
 
             return $quote;
         });
+    }
+
+    /**
+     * Lock the quote's row for the rest of the transaction and refresh the
+     * model from it, so an accept that lands while this waits is seen by
+     * the lock check. See InvoiceService::lockForEdit().
+     */
+    public function lockForEdit(Quote $quote): Quote
+    {
+        $locked = Quote::withoutGlobalScopes()
+            ->whereKey($quote->getKey())
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        $quote->setRawAttributes($locked->getAttributes(), true);
+        $quote->unsetRelation('orders');
+        $quote->unsetRelation('quoteProducts');
+
+        return $quote;
     }
 
     /**

@@ -188,6 +188,13 @@ class QuoteIndex extends Component
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
+            // An order was made from what was accepted.
+            if ($quote->hasOrders()) {
+                $this->error(ucfirst(trans('laravel-crm::lang.quote_locked_ordered')));
+
+                return;
+            }
+
             $quote->update([
                 'accepted_at' => null,
                 'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,

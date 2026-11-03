@@ -179,6 +179,44 @@ class Quote extends Model
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * Whether an order has been made from the quote. A soft-deleted order
+     * does not count.
+     */
+    public function hasOrders(): bool
+    {
+        if ($this->relationLoaded('orders')) {
+            return $this->orders->isNotEmpty();
+        }
+
+        return $this->orders()->exists();
+    }
+
+    /**
+     * Whether the quote's contents are fixed: once accepted, or once an
+     * order has been made from it, its lines and totals are what was agreed.
+     */
+    public function isLocked(): bool
+    {
+        return $this->accepted_at !== null || $this->hasOrders();
+    }
+
+    /**
+     * Why the quote cannot be edited, or null when it can.
+     */
+    public function lockReason(): ?string
+    {
+        if ($this->hasOrders()) {
+            return ucfirst(__('laravel-crm::lang.quote_locked_ordered'));
+        }
+
+        if ($this->accepted_at !== null) {
+            return ucfirst(__('laravel-crm::lang.quote_locked_accepted'));
+        }
+
+        return null;
+    }
+
     public function orderComplete()
     {
         foreach ($this->quoteProducts as $quoteProduct) {
