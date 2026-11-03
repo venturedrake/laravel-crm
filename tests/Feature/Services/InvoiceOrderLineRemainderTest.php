@@ -149,6 +149,38 @@ test('the final invoice is priced on its own when an earlier one was repriced', 
     expect(lineCents($second))->toBe([41666, 4167]);
 });
 
+test('an order line stored with a discounted amount is invoiced at price x quantity', function () {
+    // 2 x 100.00 posted with an amount of 80.00 - order lines keep the
+    // posted amount. Billing the remainder would have the second invoice
+    // absorb the whole discount: 80.00 - 100.00 = -20.00.
+    $this->orderProduct->update(['quantity' => 2, 'price' => 100, 'amount' => 80, 'tax_amount' => 800]);
+
+    $first = invoiceOrderLine($this, 1, 100);
+    $second = invoiceOrderLine($this, 1, 100);
+
+    expect(lineCents($first))->toBe([10000, 1000])
+        ->and(lineCents($second))->toBe([10000, 1000])
+        ->and(lineAmount(InvoiceLine::where('invoice_id', $second->id)->first()))->toBeTrue();
+});
+
+test('the whole of a discounted order line on one invoice is price x quantity', function () {
+    $this->orderProduct->update(['quantity' => 2, 'price' => 100, 'amount' => 80, 'tax_amount' => 800]);
+
+    expect(lineCents(invoiceOrderLine($this, 2, 100)))->toBe([20000, 2000]);
+});
+
+test('the final invoice is priced on its own when an earlier line holds more than rounding', function () {
+    $first = invoiceOrderLine($this, 1.25);
+
+    // A legacy line stored at some other amount for the same price.
+    $first->invoiceLines()->first()->update(['amount' => 300]);
+
+    $second = invoiceOrderLine($this, 1.25);
+
+    // Not the 533.33 left of the order line's amount.
+    expect(lineCents($second))->toBe([41666, 4167]);
+});
+
 test('a line on a soft-deleted invoice is not counted', function () {
     invoiceOrderLine($this, 1.25)->delete();
 

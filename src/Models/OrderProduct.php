@@ -92,8 +92,11 @@ class OrderProduct extends Model
      * exactly what is left instead, so the invoices add up to the order.
      *
      * Only when every invoice involved bills at the order line's price and
-     * tax rate: then the difference is rounding alone. A line repriced on
-     * its invoice is priced on its own.
+     * tax rate, and the order line is itself its price x quantity: then the
+     * difference is rounding alone. A line repriced on its invoice is priced
+     * on its own, and so is one drawing down an order line stored with a
+     * posted amount (a discount, say) - otherwise the last invoice would
+     * absorb the whole discount, and could bill a negative amount.
      *
      * @return array{amount: int, tax: int}
      */
@@ -102,7 +105,7 @@ class OrderProduct extends Model
         $amount = LineAmount::amountCents($priceCents, $quantity);
         $line = ['amount' => $amount, 'tax' => LineAmount::taxCents($amount, $taxRate ?? 0)];
 
-        if (! $this->atOrderPricing($priceCents, $taxRate)) {
+        if (! $this->atOrderPricing($priceCents, $taxRate) || ! $this->pricedAtPriceTimesQuantity()) {
             return $line;
         }
 
@@ -115,6 +118,15 @@ class OrderProduct extends Model
         $remainder = $this->remainderAfter($invoiced);
 
         if (! Quantity::isPositive($remainder['quantity']) || ! Quantity::equals($quantity, $remainder['quantity'])) {
+            return $line;
+        }
+
+        // Each invoice, and the order line, is out by at most a cent of
+        // rounding. More than that is not rounding - an invoice line stored
+        // with some other amount - so the line is priced on its own.
+        $slack = $invoiced->count() + 1;
+
+        if (abs($remainder['amount'] - $line['amount']) > $slack || abs($remainder['tax'] - $line['tax']) > $slack) {
             return $line;
         }
 
@@ -137,5 +149,17 @@ class OrderProduct extends Model
     {
         return $priceCents === (int) $this->getRawOriginal('price')
             && abs((float) $taxRate - (float) $this->tax_rate) < 0.0001;
+    }
+
+    /**
+     * Whether the order line's amount and tax are its price x quantity at
+     * its tax rate, rather than an amount posted for it.
+     */
+    protected function pricedAtPriceTimesQuantity(): bool
+    {
+        $amount = LineAmount::amountCents((int) $this->getRawOriginal('price'), Quantity::toFloat($this->quantity));
+
+        return $amount === (int) $this->getRawOriginal('amount')
+            && LineAmount::taxCents($amount, $this->tax_rate ?? 0) === (int) $this->getRawOriginal('tax_amount');
     }
 }
