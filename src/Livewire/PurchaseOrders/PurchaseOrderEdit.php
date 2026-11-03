@@ -42,6 +42,7 @@ class PurchaseOrderEdit extends Component
         $this->terms = $purchaseOrder->terms;
         $this->pipeline_stage_id = $purchaseOrder->pipelineStage->id ?? null;
         $this->user_owner_id = $purchaseOrder->ownerUser->id ?? null;
+        $this->delivery_type = $purchaseOrder->delivery_type ?? 'deliver';
         $this->delivery_instructions = $purchaseOrder->delivery_instructions ?? null;
 
         if ($purchaseOrder->address) {

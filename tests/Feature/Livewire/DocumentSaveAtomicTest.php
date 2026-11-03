@@ -13,6 +13,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderCreate;
 use VentureDrake\LaravelCrm\Livewire\PurchaseOrders\PurchaseOrderEdit;
@@ -155,6 +156,127 @@ test('editing a purchase order accepts the address it was saved with', function 
         ->assertSet('delivery_address', $purchaseOrder->address->id)
         ->call('save')
         ->assertHasNoErrors();
+});
+
+test('saving an edit leaves the delivery address it was saved with intact', function () {
+    // update() used to rewrite the address from address_* fields the form
+    // never sends, blanking it on every save.
+    $purchaseOrder = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'delivery_address' => $this->teamAddress->id,
+    ]), null, $this->supplier);
+    $copy = $purchaseOrder->fresh()->address;
+
+    Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->set('reference', 'PO-REF-2')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $address = $purchaseOrder->fresh()->address;
+
+    expect($address->id)->toBe($copy->id)
+        ->and($address->line1)->toBe('1 Dock Road');
+});
+
+test('picking another address on edit gives the purchase order a copy of it', function () {
+    $purchaseOrder = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'delivery_address' => $this->teamAddress->id,
+    ]), null, $this->supplier);
+    $oldCopy = $purchaseOrder->fresh()->address;
+
+    $yard = Setting::where('name', 'team')->first()->addresses()->create([
+        'external_id' => Str::uuid()->toString(), 'address' => 'Yard', 'line1' => '9 Yard Lane',
+    ]);
+
+    Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->set('delivery_address', $yard->id)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $address = $purchaseOrder->fresh()->address;
+
+    expect($address->line1)->toBe('9 Yard Lane')
+        ->and($address->id)->not->toBe($yard->id)
+        ->and($oldCopy->fresh()->trashed())->toBeTrue()
+        ->and($yard->fresh()->line1)->toBe('9 Yard Lane');
+});
+
+test('switching a pickup purchase order to delivery copies the address picked', function () {
+    $purchaseOrder = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'pickup',
+    ]), null, $this->supplier);
+
+    Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->set('delivery_type', 'deliver')
+        ->set('delivery_address', $this->teamAddress->id)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($purchaseOrder->fresh()->address->line1)->toBe('1 Dock Road');
+});
+
+test('the service copies only a team address, whoever calls it', function () {
+    // The legacy controller posts straight to the service, unvalidated.
+    $foreign = Person::create(['first_name' => 'Other'])->addresses()->create([
+        'external_id' => Str::uuid()->toString(), 'line1' => 'Elsewhere',
+    ]);
+
+    $created = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'delivery_address' => $foreign->id,
+    ]));
+
+    expect($created->fresh()->address)->toBeNull();
+
+    $purchaseOrder = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'delivery_address' => $this->teamAddress->id,
+    ]));
+
+    app(PurchaseOrderService::class)->update(new Request([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'delivery_address' => $foreign->id,
+    ]), $purchaseOrder->fresh());
+
+    expect($purchaseOrder->fresh()->address->line1)->toBe('1 Dock Road');
+});
+
+test('the edit form offers the address the purchase order has now', function () {
+    $purchaseOrder = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'delivery_address' => $this->teamAddress->id,
+    ]), null, $this->supplier);
+    $copy = $purchaseOrder->fresh()->address;
+
+    $options = Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->get('deliveryAddresses');
+
+    expect($options[0])->toBe(['id' => $copy->id, 'name' => 'Current delivery address: Warehouse'])
+        ->and(array_column($options, 'id'))->toContain($this->teamAddress->id);
+});
+
+test('an empty current address is offered without a stray label', function () {
+    $purchaseOrder = PurchaseOrder::create(['currency' => 'USD', 'delivery_type' => 'deliver']);
+    $copy = $purchaseOrder->address()->create(['external_id' => Str::uuid()->toString()]);
+
+    $options = Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->get('deliveryAddresses');
+
+    expect($options[0])->toBe(['id' => $copy->id, 'name' => 'Current delivery address']);
+});
+
+test('the offered delivery addresses cannot be changed from the browser', function () {
+    Livewire::test(AtomicPurchaseOrderCreate::class)
+        ->set('deliveryAddresses', [['id' => 999, 'name' => 'Injected']]);
+})->throws(CannotUpdateLockedPropertyException::class);
+
+test('editing a pickup purchase order keeps it a pickup and needs no address', function () {
+    $purchaseOrder = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'pickup',
+    ]), null, $this->supplier);
+
+    Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->assertSet('delivery_type', 'pickup')
+        ->set('reference', 'PO-REF-2')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($purchaseOrder->fresh()->delivery_type)->toBe('pickup');
 });
 
 test('the service makes no address when it is given none', function () {

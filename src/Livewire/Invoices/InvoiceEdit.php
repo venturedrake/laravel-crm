@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Invoices;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Invoices\Traits\HasInvoiceCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
@@ -55,25 +56,37 @@ class InvoiceEdit extends Component
 
         // One transaction, so a failure part-way - in the service or in
         // the custom fields - leaves no contact, document or lines behind.
-        DB::transaction(function () use ($request) {
-            if ($this->person_name && ! $this->person_id) {
-                $person = $this->personService->createFromRelated($request);
-            } elseif ($this->person_id) {
-                $person = Person::find($this->person_id);
-            }
+        // The service refuses a total change once a payment is recorded; the
+        // form has no field for that error, so it is shown as a toast.
+        try {
+            DB::transaction(function () use ($request) {
+                // First, before any plain read fixes this transaction's
+                // snapshot - see InvoiceService::lockForEdit().
+                $this->invoiceService->lockForEdit($this->invoice);
 
-            if ($this->organization_name && ! $this->organization_id) {
-                $organization = $this->organizationService->createFromRelated($request);
-            } elseif ($this->organization_id) {
-                $organization = Organization::find($this->organization_id);
-            }
+                if ($this->person_name && ! $this->person_id) {
+                    $person = $this->personService->createFromRelated($request);
+                } elseif ($this->person_id) {
+                    $person = Person::find($this->person_id);
+                }
 
-            $this->personService->linkToOrganization($person ?? null, $organization ?? null);
+                if ($this->organization_name && ! $this->organization_id) {
+                    $organization = $this->organizationService->createFromRelated($request);
+                } elseif ($this->organization_id) {
+                    $organization = Organization::find($this->organization_id);
+                }
 
-            $this->invoiceService->update($request, $this->invoice, $person ?? null, $organization ?? null);
+                $this->personService->linkToOrganization($person ?? null, $organization ?? null);
 
-            $this->saveCustomFields($this->invoice->fresh());
-        });
+                $this->invoiceService->update($request, $this->invoice, $person ?? null, $organization ?? null);
+
+                $this->saveCustomFields($this->invoice->fresh());
+            });
+        } catch (ValidationException $e) {
+            $this->error(collect($e->errors())->flatten()->first());
+
+            return;
+        }
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.invoice_updated')),

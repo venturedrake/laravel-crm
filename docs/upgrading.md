@@ -140,6 +140,35 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## Unreleased (after 2.6.0)
+
+### Two invoice balance migrations, neither reversible
+
+Both live in `database/updates/` and run with a plain `php artisan migrate` (or `laravelcrm:update`).
+Each only fills in or corrects stored values, and each has an empty `down()`: the values they
+replace carried no information worth restoring, so a rollback leaves the corrected ones in place.
+
+- `2026_11_01_000001_backfill_amount_due_on_laravel_crm_invoices_table` gives every invoice with
+  a `NULL` balance one: `amount_due = total - amount_paid`, `amount_paid` set to `0` where it was
+  `NULL`. Form-created invoices never had a balance before, so the Pay drawer could not take a
+  payment against them and the dashboard's outstanding total skipped them.
+- `2026_11_01_000002_settle_legacy_paid_invoices_on_laravel_crm_invoices_table` records as paid in
+  full any invoice marked paid with nothing recorded against it (`amount_paid = total`,
+  `amount_due = 0`). The old Pay drawer only ever accepted a payment of `0`, so that is how every
+  invoice paid through it was stored. It also raises any `amount_due` below zero to `0`. **This is
+  the lossy one**: the previous `amount_paid` (always `0` or `NULL`) is overwritten and is not
+  kept anywhere.
+
+### Paid invoices keep their total
+
+Once a payment is recorded against an invoice, an edit that would change its subtotal or tax is
+refused - through the form, the API (`422` on `line_items`) and the legacy controller alike. A
+line re-sent with the product, price and quantity it was saved with keeps its saved amount and
+tax, so edits that leave the lines alone still save (even after a product's tax rate has
+changed); an edit that changes a line is repriced and then judged. Previously such an edit could
+leave a part-paid invoice with no way to close it, or reopen a paid one and lose the date it was
+paid on.
+
 ## 2.6.0
 
 This minor release adds three groups of configuration keys: order form options, delivery options

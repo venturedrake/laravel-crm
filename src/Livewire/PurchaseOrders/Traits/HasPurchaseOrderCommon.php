@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\PurchaseOrders\Traits;
 
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Locked;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
@@ -69,6 +70,12 @@ trait HasPurchaseOrderCommon
 
     public $delivery_type = 'deliver';
 
+    /**
+     * The select's options, for display only. The rule checks a submitted
+     * address against the team's addresses read fresh, as a public property
+     * round-trips through the browser.
+     */
+    #[Locked]
     public array $deliveryAddresses = [];
 
     public $delivery_address;
@@ -105,7 +112,9 @@ trait HasPurchaseOrderCommon
      */
     protected function allowedDeliveryAddressIds(): array
     {
-        $ids = array_column($this->deliveryAddresses, 'id');
+        $team = app('laravel-crm.settings')->first('team');
+
+        $ids = $team ? $team->addresses()->pluck('id')->all() : [];
 
         if (isset($this->purchaseOrder) && $this->purchaseOrder->address) {
             $ids[] = $this->purchaseOrder->address->id;
@@ -142,6 +151,19 @@ trait HasPurchaseOrderCommon
     {
         $this->pipeline = Pipeline::where('model', get_class(new PurchaseOrder))->first();
         $this->mountPdfTemplate($purchaseOrder);
+
+        // On edit the form starts on the PO's own copy of its address, which
+        // is not one of the team's - list it first, so the select shows it.
+        if ($current = $purchaseOrder?->address) {
+            // The accessor builds a label from the parts when there is none,
+            // which for an empty address is only separators.
+            $label = trim((string) $current->address, " ,\t\n");
+
+            $this->deliveryAddresses[] = [
+                'id' => $current->id,
+                'name' => ucfirst(__('laravel-crm::lang.current_delivery_address')).($label !== '' ? ': '.$label : ''),
+            ];
+        }
 
         $related = app('laravel-crm.settings')->first('team');
 

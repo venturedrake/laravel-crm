@@ -4,9 +4,12 @@ namespace VentureDrake\LaravelCrm\Livewire\Invoices;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Invoice;
+use VentureDrake\LaravelCrm\Services\InvoiceService;
 use VentureDrake\LaravelCrm\Support\Money;
 
 class InvoicePay extends Component
@@ -64,17 +67,45 @@ class InvoicePay extends Component
 
         $this->validate();
 
-        $invoice = $this->invoice->fresh();
+        // The row is held while the payment is added, so an edit or a second
+        // payment running at the same time reads the balance this one
+        // leaves, not the one it started from. The amount is checked again
+        // against that balance: validate() saw the balance from before the
+        // lock, so two tabs paying the last 100.00 both passed it.
+        try {
+            [$invoice, $paid, $due] = DB::transaction(function () {
+                $invoice = app(InvoiceService::class)->lockForEdit($this->invoice);
+                $amount = Money::toInteger($this->amount);
+                $outstanding = (int) $invoice->getRawOriginal('total') - (int) $invoice->getRawOriginal('amount_paid');
 
-        // In cents throughout, so a run of part payments adds up exactly.
-        $paid = (int) $invoice->getRawOriginal('amount_paid') + Money::toInteger($this->amount);
-        $due = (int) $invoice->getRawOriginal('total') - $paid;
+                if ($amount > $outstanding) {
+                    throw ValidationException::withMessages([
+                        'amount' => ucfirst(__('laravel-crm::lang.payment_exceeds_amount_due', [
+                            'due' => money(max(0, $outstanding), $invoice->currency),
+                        ])),
+                    ]);
+                }
 
-        $invoice->update([
-            'amount_paid' => $paid / 100,
-            'amount_due' => $due / 100,
-            'fully_paid_at' => $due <= 0 ? Carbon::now() : null,
-        ]);
+                // In cents throughout, so a run of part payments adds up exactly.
+                $paid = (int) $invoice->getRawOriginal('amount_paid') + $amount;
+                $due = (int) $invoice->getRawOriginal('total') - $paid;
+
+                $invoice->update([
+                    'amount_paid' => $paid / 100,
+                    'amount_due' => $due / 100,
+                    'fully_paid_at' => $due <= 0 ? Carbon::now() : null,
+                ]);
+
+                return [$invoice, $paid, $due];
+            });
+        } catch (ValidationException $e) {
+            // The drawer's balance is out of date, so bring it up to what
+            // the lock read before the user tries again.
+            $this->amount_due = $this->outstandingCents() / 100;
+            $this->error(collect($e->errors())->flatten()->first());
+
+            return;
+        }
 
         $this->invoice = $invoice;
         $this->amount_paid = $paid / 100;

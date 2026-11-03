@@ -64,3 +64,35 @@ test('running it twice changes nothing more', function () {
 
     expect(invoiceBalance($id))->toEqual([22000, 0]);
 });
+
+/*
+ * settle_legacy_paid_invoices - an invoice "paid" through the old drawer,
+ * which only took 0, is recorded as paid in full.
+ */
+
+function runSettleLegacyPaid(): void
+{
+    $migration = require __DIR__.'/../../database/updates/2026_11_01_000002_settle_legacy_paid_invoices_on_laravel_crm_invoices_table.php';
+
+    $migration->up();
+}
+
+test('an invoice marked paid with nothing recorded is recorded as paid in full', function () {
+    $legacy = invoiceRow(['total' => 22000, 'amount_due' => 0, 'amount_paid' => 0, 'fully_paid_at' => now()]);
+    $unpaid = invoiceRow(['total' => 22000, 'amount_due' => 22000, 'amount_paid' => 0]);
+    $paid = invoiceRow(['total' => 22000, 'amount_due' => 0, 'amount_paid' => 22000, 'fully_paid_at' => now()]);
+
+    runSettleLegacyPaid();
+
+    expect(invoiceBalance($legacy))->toEqual([0, 22000])
+        ->and(invoiceBalance($unpaid))->toEqual([22000, 0])
+        ->and(invoiceBalance($paid))->toEqual([0, 22000]);
+});
+
+test('a balance below zero is brought up to zero', function () {
+    $id = invoiceRow(['total' => -5000, 'amount_due' => -5000, 'amount_paid' => 0]);
+
+    runSettleLegacyPaid();
+
+    expect(invoiceBalance($id))->toEqual([0, 0]);
+});

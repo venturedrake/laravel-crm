@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Services;
 use Carbon\Carbon;
 use Dcblogdev\Xero\Facades\Xero;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
@@ -117,6 +118,16 @@ class InvoiceService
     public function update($request, Invoice $invoice, $person = null, $organization = null)
     {
         return DB::transaction(function () use ($request, $invoice, $person, $organization) {
+            // A caller that opened its own transaction takes this first; the
+            // API's is the outermost, so it is taken here. Taking it again
+            // inside the same transaction is free.
+            $this->lockForEdit($invoice);
+
+            // What the lines came to before this edit - not the stored
+            // header, which an older invoice can hold out of step with them.
+            $linesBefore = DocumentTotals::fromLines($invoice->invoiceLines()->get());
+            $settled = $this->isSettled($invoice);
+
             $invoice->update([
                 'person_id' => $person->id ?? null,
                 'organization_id' => $organization->id ?? null,
@@ -125,9 +136,8 @@ class InvoiceService
                 'due_date' => $request->due_date,
                 'currency' => $request->currency,
                 'terms' => $request->terms,
-                'subtotal' => $request->sub_total,
-                'tax' => $request->tax,
-                'total' => $request->total,
+                // subtotal, tax and total: syncTotals() sets them from the
+                // lines, or leaves them be on a paid invoice.
                 'pdf_template' => PdfTemplateRegistry::resolveUpdate($request->pdf_template ?? null, $invoice->pdf_template),
                 'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
             ]);
@@ -139,7 +149,10 @@ class InvoiceService
                 foreach ($request->products as $line) {
                     $invoiceLineOrder++;
 
-                    if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
+                    // This invoice's line only: a line id from elsewhere is
+                    // treated as a new line here, not an edit of another
+                    // invoice's.
+                    if (isset($line['invoice_line_id']) && $invoiceLine = $invoice->invoiceLines()->whereKey($line['invoice_line_id'])->first()) {
                         if (! isset($line['id']) || Quantity::isZero($line['quantity'])) {
                             $invoiceLine->delete();
                         } else {
@@ -163,13 +176,23 @@ class InvoiceService
                                     }
                                 }
 
+                                // On a paid invoice a line re-sent at its saved price and
+                                // quantity keeps its saved amount and tax. Repricing it
+                                // would tax it at the product's current rate, and the
+                                // form re-sends every line - so a rate change since the
+                                // invoice was paid would have the lock refuse an edit to
+                                // the terms. A line that did change is priced afresh, and
+                                // the lock judges the result.
+                                $pricing = $settled && $this->lineUnchanged($line, $invoiceLine)
+                                    ? []
+                                    : [...$this->lineValues($line, $taxRate), 'tax_rate' => $taxRate ?? 0];
+
                                 $invoiceLine->update([
                                     'product_id' => $line['id'],
                                     'product_variation_id' => $this->variationIdFor($line['id'], $line['product_variation_id'] ?? null, $invoiceLine->product_variation_id),
                                     'quantity' => $line['quantity'],
                                     'price' => $line['unit_price'],
-                                    ...$this->lineValues($line, $taxRate),
-                                    'tax_rate' => $taxRate ?? 0,
+                                    ...$pricing,
                                     'currency' => $request->currency,
                                     'comments' => $line['comments'],
                                     'order' => $invoiceLineOrder,
@@ -222,7 +245,7 @@ class InvoiceService
                 }
             }
 
-            $this->syncTotals($invoice);
+            $this->syncTotals($invoice, $settled ? $linesBefore : null);
 
             return $invoice;
         });
@@ -281,18 +304,94 @@ class InvoiceService
      * totals are only what the form last summed, and can count a row the
      * loop above dropped. Amount due follows the total, less what has been
      * paid.
+     *
+     * Once a payment is recorded the total is fixed, as the form already has
+     * it (Edit is hidden once anything is paid) - for the API and anything
+     * else that edits by URL. Moving the total under a payment would leave
+     * the invoice part-paid with no way to close it, or reopen a paid one and
+     * lose the date it was paid on, which the dashboard reports from. An edit
+     * that would move the subtotal or the tax - not only their sum, or the
+     * header could carry tax no line does - is refused whole. One that
+     * leaves them saves, and leaves the stored totals as they were too: an
+     * older invoice's header can disagree with its lines by a cent of tax,
+     * and a paid balance is not the place to correct that.
+     *
+     * @param  array{subtotal: int, tax: int}|null  $linesBefore  what the lines came to before the edit of a paid invoice; null otherwise
      */
-    protected function syncTotals(Invoice $invoice): void
+    protected function syncTotals(Invoice $invoice, ?array $linesBefore = null): void
     {
         $totals = DocumentTotals::fromLines($invoice->invoiceLines()->get());
         $total = $totals['subtotal'] + $totals['tax'];
+        $paid = (int) $invoice->getRawOriginal('amount_paid');
+
+        if ($linesBefore !== null) {
+            if ($totals !== $linesBefore) {
+                throw ValidationException::withMessages([
+                    'line_items' => ucfirst(__('laravel-crm::lang.invoice_total_locked_after_payment')),
+                ]);
+            }
+
+            return;
+        }
 
         $invoice->update([
             'subtotal' => $totals['subtotal'] / 100,
             'tax' => $totals['tax'] / 100,
             'total' => $total / 100,
-            'amount_due' => ($total - (int) $invoice->getRawOriginal('amount_paid')) / 100,
+            // A paid invoice owes nothing, whatever it recorded as paid. The
+            // balance never goes below zero: the model's accessor reads a
+            // negative one as the whole total still due.
+            'amount_due' => ($invoice->fully_paid_at ? 0 : max(0, $total - $paid)) / 100,
         ]);
+    }
+
+    /**
+     * Hold the invoice's row for the rest of the open transaction, and load
+     * the row as the lock read it into $invoice.
+     *
+     * Call it as the first statement of the outermost transaction, before
+     * any plain read. On MySQL/InnoDB a transaction's snapshot is fixed by
+     * its first plain SELECT: a later SELECT ... FOR UPDATE reads the newest
+     * row, but plain reads after it still see the snapshot. So the locked
+     * row's own attributes are used - re-reading it would see the balance
+     * from before a payment that landed while this waited - and anything
+     * read after the lock sees that payment too.
+     *
+     * Without global scopes, as the model was loaded: the lock is about
+     * concurrency, not tenancy, and a user who switched team in another tab
+     * should not find the invoice they have open vanish mid-save.
+     */
+    public function lockForEdit(Invoice $invoice): Invoice
+    {
+        $locked = Invoice::withoutGlobalScopes()
+            ->whereKey($invoice->getKey())
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        $invoice->setRawAttributes($locked->getAttributes(), true);
+        $invoice->unsetRelation('invoiceLines');
+
+        return $invoice;
+    }
+
+    /**
+     * Whether anything has been paid against the invoice, or it is marked
+     * paid - the point from which its total is fixed.
+     */
+    protected function isSettled(Invoice $invoice): bool
+    {
+        return (int) $invoice->getRawOriginal('amount_paid') > 0 || $invoice->fully_paid_at !== null;
+    }
+
+    /**
+     * Whether a line was re-sent at the product, price and quantity it was
+     * saved with, so its saved amount and tax still stand.
+     */
+    protected function lineUnchanged(array $line, InvoiceLine $invoiceLine): bool
+    {
+        return (string) $line['id'] === (string) $invoiceLine->product_id
+            && Money::toInteger($line['unit_price'] ?? null) === (int) $invoiceLine->getRawOriginal('price')
+            && Quantity::equals($line['quantity'], $invoiceLine->quantity);
     }
 
     /**
@@ -323,7 +422,8 @@ class InvoiceService
         ]);
 
         $newProduct->productPrices()->create([
-            'unit_price' => $product['price'],
+            // The form sends unit_price; the older callers sent price.
+            'unit_price' => $product['unit_price'] ?? $product['price'] ?? null,
             'currency' => $request->currency,
         ]);
 

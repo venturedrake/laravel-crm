@@ -14,6 +14,7 @@ use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\OrderRepository;
 use VentureDrake\LaravelCrm\Support\DocumentTotals;
 use VentureDrake\LaravelCrm\Support\FormOptions;
+use VentureDrake\LaravelCrm\Support\LineAmount;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
@@ -101,7 +102,7 @@ class OrderService
                             'price' => $product['unit_price'],
                             'amount' => $product['amount'],
                             'tax_rate' => $taxRate ?? 0,
-                            'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
+                            'tax_amount' => LineAmount::taxCents(Money::toInteger($product['amount']) ?? 0, $taxRate ?? 0),
                             'currency' => $request->currency,
                             'comments' => $product['comments'],
                             'quote_product_id' => $product['quote_product_id'] ?? null,
@@ -204,7 +205,7 @@ class OrderService
                                     'price' => $product['unit_price'],
                                     'amount' => $product['amount'],
                                     'tax_rate' => $taxRate ?? 0,
-                                    'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
+                                    'tax_amount' => LineAmount::taxCents(Money::toInteger($product['amount']) ?? 0, $taxRate ?? 0),
                                     'currency' => $request->currency,
                                     'comments' => $product['comments'],
                                     'order' => $orderProductOrder,
@@ -240,7 +241,7 @@ class OrderService
                                 'price' => $product['unit_price'],
                                 'amount' => $product['amount'],
                                 'tax_rate' => $taxRate ?? 0,
-                                'tax_amount' => (Money::toFloat($product['amount']) * 100) * ($taxRate / 100),
+                                'tax_amount' => LineAmount::taxCents(Money::toInteger($product['amount']) ?? 0, $taxRate ?? 0),
                                 'currency' => $request->currency,
                                 'comments' => $product['comments'],
                                 'order' => $orderProductOrder,

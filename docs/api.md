@@ -215,6 +215,18 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   rejects negatives) but no longer changes the stored document, the same way the
   form-posted totals no longer do. Previously the posted `tax` was stored as sent and could
   disagree with the lines.
+- **Invoice line `amount` is derived from `unit_price × quantity`.** *(Changed after 2.6.0 —
+  unreleased.)* `line_items.*.amount` is still required on invoice writes, but the stored line
+  amount (and its tax) is now worked out from the line's `unit_price` and `quantity`, rounded
+  to the cent. A posted amount that differs — e.g. a discounted line — is ignored; send the
+  reduced `unit_price` instead. Quote and order lines still store the posted `amount`.
+- **A paid invoice's totals are locked.** *(Changed after 2.6.0 — unreleased.)* Once an invoice
+  has any `amount_paid` or a `fully_paid_at`, a `PUT` whose `line_items` would change its
+  subtotal or tax is rejected with a `422` on `line_items` and nothing is saved. A line re-sent
+  with its `id` and the `product_id`, `unit_price` and `quantity` it was saved with keeps its saved
+  amount and tax, so re-sending the lines unchanged saves; a line that differs (or arrives without
+  its `id`, which replaces it) is repriced, and the result is judged. Omitting `line_items` always saves the other fields. In every saving case the stored
+  totals and balance are left untouched.
 
 ### Product variations
 
@@ -295,6 +307,8 @@ The `line_items` array is accepted on `POST` and `PUT`. Each item has the follow
 - **Update in place:** include the existing line's `id` (UUID). The line is updated.
 - **Replace lines:** omit `id` on every line in a `PUT`. Existing lines not matched in the
   payload are deleted.
+- **Invoice line amounts are computed.** On invoices the stored `amount` is
+  `unit_price × quantity`; the posted `amount` is validated but not stored.
 
 #### `product_variation_id` (optional)
 

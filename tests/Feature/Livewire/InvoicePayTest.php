@@ -131,3 +131,65 @@ test('the Pay button shows on an open invoice and goes once it is paid', functio
     Livewire::test(InvoicePay::class, ['invoice' => $invoice->fresh()])
         ->assertDontSee('wire:submit="pay"', false);
 });
+
+/*
+ * Two payments at once. validate() checks the amount against the balance
+ * read before the row lock, so two tabs paying the last 100.00 both passed
+ * it, and the second wrote an overpayment - a negative balance, which the
+ * model then reads as the whole total still due. The amount is checked
+ * again against the locked row.
+ */
+
+/**
+ * The Pay drawer as a second tab sees it: validation works from the balance
+ * it loaded, before another tab's payment landed.
+ */
+class StaleInvoicePay extends InvoicePay
+{
+    public int $staleOutstanding = 0;
+
+    protected function rules()
+    {
+        return ['amount' => 'required|numeric|gt:0|lte:'.($this->staleOutstanding / 100)];
+    }
+}
+
+test('a payment that another payment beat to the balance is refused', function () {
+    $invoice = payableInvoice();
+
+    $component = Livewire::test(StaleInvoicePay::class, ['invoice' => $invoice])
+        ->set('staleOutstanding', 22000)
+        ->set('amount', '220.00');
+
+    // The other tab pays in full first.
+    $invoice->update(['amount_paid' => 220, 'amount_due' => 0, 'fully_paid_at' => now()->subMinute()]);
+    $paidAt = $invoice->fresh()->fully_paid_at;
+
+    $component->call('pay');
+
+    $invoice->refresh();
+
+    expect((int) $invoice->getRawOriginal('amount_paid'))->toBe(22000)
+        ->and((int) $invoice->getRawOriginal('amount_due'))->toBe(0)
+        ->and($invoice->fully_paid_at->equalTo($paidAt))->toBeTrue()
+        ->and(json_encode($component->effects['xjs'] ?? []))->toContain('left to pay');
+
+    $component->assertSet('amount_due', 0);
+});
+
+test('a part payment that still fits after another payment goes through', function () {
+    $invoice = payableInvoice();
+
+    $component = Livewire::test(StaleInvoicePay::class, ['invoice' => $invoice])
+        ->set('staleOutstanding', 22000)
+        ->set('amount', '20.00');
+
+    $invoice->update(['amount_paid' => 200, 'amount_due' => 20]);
+
+    $component->call('pay');
+
+    $invoice->refresh();
+
+    expect((int) $invoice->getRawOriginal('amount_paid'))->toBe(22000)
+        ->and($invoice->fully_paid_at)->not->toBeNull();
+});

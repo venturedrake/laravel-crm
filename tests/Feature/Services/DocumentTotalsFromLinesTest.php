@@ -75,11 +75,34 @@ test('update stores the header totals of the lines it saved', function (string $
         ->and((int) $document->getRawOriginal('total'))->toBe(22000);
 })->with('documents');
 
-test('updating an invoice keeps amount due in step with the derived total', function () {
-    $invoice = Invoice::create(['currency' => 'USD', 'amount_paid' => 50]);
+test('line tax on the half cent rounds up, as the form shows it', function (string $service) {
+    // $0.35 at 10% is exactly 3.5 cents. Taxed in float dollars it came out
+    // 0.034999..., which the PO line's mutator stored as 3 while the form
+    // showed 4.
+    $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
+    $product = Product::create(['name' => 'Half cent', 'tax_rate_id' => $gst->id]);
+
+    $document = app($service)->create(new Request([
+        'title' => 'Half cent', 'currency' => 'USD', 'delivery_type' => 'pickup',
+        'products' => [
+            ['id' => $product->id, 'quantity' => 1, 'unit_price' => 0.35, 'amount' => 0.35, 'comments' => null],
+        ],
+    ]))->fresh();
+
+    expect((int) $document->getRawOriginal('tax'))->toBe(4)
+        ->and((int) $document->getRawOriginal('total'))->toBe(39);
+})->with([
+    'quote' => QuoteService::class,
+    'order' => OrderService::class,
+    'invoice' => InvoiceService::class,
+    'purchase order' => PurchaseOrderService::class,
+]);
+
+test('updating an unpaid invoice keeps amount due in step with the derived total', function () {
+    // A stale balance from before the header was derived from the lines.
+    $invoice = Invoice::create(['currency' => 'USD', 'amount_due' => 1]);
 
     app(InvoiceService::class)->update(inflatedTotalsRequest(), $invoice);
 
-    // 220.00 total less 50.00 already paid.
-    expect((int) $invoice->fresh()->getRawOriginal('amount_due'))->toBe(17000);
+    expect((int) $invoice->fresh()->getRawOriginal('amount_due'))->toBe(22000);
 });

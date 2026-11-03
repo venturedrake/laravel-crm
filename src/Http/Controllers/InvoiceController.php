@@ -6,6 +6,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use VentureDrake\LaravelCrm\Http\Controllers\Concerns\ServesPdfDocuments;
@@ -156,19 +157,27 @@ class InvoiceController extends Controller
      */
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
-        if ($request->person_name && ! $request->person_id) {
-            $person = $this->personService->createFromRelated($request);
-        } elseif ($request->person_id) {
-            $person = Person::find($request->person_id);
-        }
+        // One transaction: the service refuses an edit that moves a paid
+        // invoice's total, and a contact made for it should not stay behind.
+        $invoice = DB::transaction(function () use ($request, $invoice) {
+            // First, before any plain read fixes this transaction's
+            // snapshot - see InvoiceService::lockForEdit().
+            $this->invoiceService->lockForEdit($invoice);
 
-        if ($request->organization_name && ! $request->organization_id) {
-            $organization = $this->organizationService->createFromRelated($request);
-        } elseif ($request->organization_id) {
-            $organization = Organization::find($request->organization_id);
-        }
+            if ($request->person_name && ! $request->person_id) {
+                $person = $this->personService->createFromRelated($request);
+            } elseif ($request->person_id) {
+                $person = Person::find($request->person_id);
+            }
 
-        $invoice = $this->invoiceService->update($request, $invoice, $person ?? null, $organization ?? null);
+            if ($request->organization_name && ! $request->organization_id) {
+                $organization = $this->organizationService->createFromRelated($request);
+            } elseif ($request->organization_id) {
+                $organization = Organization::find($request->organization_id);
+            }
+
+            return $this->invoiceService->update($request, $invoice, $person ?? null, $organization ?? null);
+        });
 
         flash()->success(ucfirst(trans('laravel-crm::lang.invoice_updated')));
 

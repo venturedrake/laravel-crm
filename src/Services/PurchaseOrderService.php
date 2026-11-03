@@ -15,6 +15,7 @@ use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Repositories\PurchaseOrderRepository;
 use VentureDrake\LaravelCrm\Support\DocumentTotals;
+use VentureDrake\LaravelCrm\Support\LineAmount;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
@@ -63,15 +64,11 @@ class PurchaseOrderService
             // The form validates the address; a caller that skips it (the legacy
             // controller) gets a PO with no address rather than a 500 on null.
             $address = ($request->delivery_type == 'deliver' && $request->delivery_address)
-                ? Address::find($request->delivery_address)
+                ? $this->teamDeliveryAddress($request->delivery_address)
                 : null;
 
             if ($address) {
-                $deliveryAddress = $address->replicate();
-                $deliveryAddress->external_id = Uuid::uuid4()->toString();
-                $deliveryAddress->created_at = now();
-                $deliveryAddress->updated_at = now();
-                $purchaseOrder->address()->save($deliveryAddress);
+                $this->copyDeliveryAddress($purchaseOrder, $address);
             }
 
             if (isset($request->products)) {
@@ -106,7 +103,7 @@ class PurchaseOrderService
                             'price' => $purchaseOrderLine['unit_price'],
                             'amount' => $purchaseOrderLine['amount'],
                             'tax_rate' => $taxRate ?? 0,
-                            'tax_amount' => Money::toFloat($purchaseOrderLine['amount']) * ($taxRate / 100),
+                            'tax_amount' => LineAmount::taxCents(Money::toInteger($purchaseOrderLine['amount']) ?? 0, $taxRate ?? 0) / 100,
                             'currency' => $request->currency,
                             'order_product_id' => $purchaseOrderLine['order_product_id'] ?? null,
                             'comments' => $purchaseOrderLine['comments'] ?? null,
@@ -148,7 +145,12 @@ class PurchaseOrderService
                 'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
             ]);
 
-            if ($request->delivery_type == 'deliver') {
+            if ($request->delivery_type == 'deliver' && $request->has('delivery_address')) {
+                // The Livewire form sends the id of the address picked, as
+                // create() takes it - never the address_* fields below, which
+                // it used to wipe the PO's address with on every save.
+                $this->syncDeliveryAddress($purchaseOrder, $request->delivery_address);
+            } elseif ($request->delivery_type == 'deliver') {
                 if (! $purchaseOrder->address) {
                     $purchaseOrder->address()->create([
                         'external_id' => Uuid::uuid4()->toString(),
@@ -218,7 +220,7 @@ class PurchaseOrderService
                         'price' => $line['unit_price'] ?? null,
                         'amount' => $line['amount'] ?? null,
                         'tax_rate' => $taxRate,
-                        'tax_amount' => Money::toFloat($line['amount'] ?? 0) * ($taxRate / 100),
+                        'tax_amount' => LineAmount::taxCents(Money::toInteger($line['amount'] ?? null) ?? 0, $taxRate ?? 0) / 100,
                         'currency' => $request->currency,
                         'comments' => $line['comments'] ?? null,
                         'order' => $purchaseOrderLineOrder,
@@ -295,6 +297,52 @@ class PurchaseOrderService
                 //
             }
         }
+    }
+
+    /**
+     * Point the PO at the address picked on the edit form. The PO holds its
+     * own copy, so the edit form starts on that copy's id: left there, the
+     * address is untouched. A different pick replaces the copy with a fresh
+     * one. No pick, or an id that is not one of the team's addresses, keeps
+     * what the PO has.
+     */
+    protected function syncDeliveryAddress(PurchaseOrder $purchaseOrder, $addressId): void
+    {
+        if (! $addressId || $purchaseOrder->address?->id == $addressId) {
+            return;
+        }
+
+        if (! $address = $this->teamDeliveryAddress($addressId)) {
+            return;
+        }
+
+        $purchaseOrder->address?->delete();
+
+        $this->copyDeliveryAddress($purchaseOrder, $address);
+    }
+
+    /**
+     * One of the team's own delivery addresses - the only ones a PO can be
+     * delivered to. The Livewire form validates this too; the legacy
+     * controller does not, so the service checks for every caller.
+     */
+    protected function teamDeliveryAddress($addressId): ?Address
+    {
+        return app('laravel-crm.settings')->first('team')?->addresses()->find($addressId);
+    }
+
+    /**
+     * Give the PO its own copy of an address, so a later edit to the team's
+     * address does not rewrite where past orders were delivered.
+     */
+    protected function copyDeliveryAddress(PurchaseOrder $purchaseOrder, Address $address): void
+    {
+        $deliveryAddress = $address->replicate();
+        $deliveryAddress->external_id = Uuid::uuid4()->toString();
+        $deliveryAddress->created_at = now();
+        $deliveryAddress->updated_at = now();
+        $purchaseOrder->address()->save($deliveryAddress);
+        $purchaseOrder->unsetRelation('address');
     }
 
     /**
