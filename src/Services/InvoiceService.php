@@ -88,12 +88,18 @@ class InvoiceService
                             }
                         }
 
+                        // Priced against the order line only when it is a
+                        // line of the order this invoice is made from.
+                        $orderProduct = $invoice->order_id && ! empty($invoiceLine['order_product_id'])
+                            ? OrderProduct::where('order_id', $invoice->order_id)->find($invoiceLine['order_product_id'])
+                            : null;
+
                         $invoice->invoiceLines()->create([
                             'product_id' => $invoiceLine['id'],
                             'product_variation_id' => $this->variationIdFor($invoiceLine['id'], $invoiceLine['product_variation_id'] ?? null, $this->sourceVariationId(OrderProduct::class, $invoiceLine['order_product_id'] ?? null)),
                             'quantity' => $invoiceLine['quantity'],
                             'price' => $invoiceLine['unit_price'],
-                            ...$this->lineValues($invoiceLine, $taxRate),
+                            ...$this->lineValues($invoiceLine, $taxRate, $orderProduct, $invoice->id),
                             'tax_rate' => $taxRate ?? 0,
                             'currency' => $request->currency,
                             'order_product_id' => $invoiceLine['order_product_id'] ?? null,
@@ -183,9 +189,11 @@ class InvoiceService
                                 // invoice was paid would have the lock refuse an edit to
                                 // the terms. A line that did change is priced afresh, and
                                 // the lock judges the result.
+                                // The order line is the one the line was saved
+                                // against, never one the request names.
                                 $pricing = $settled && $this->lineUnchanged($line, $invoiceLine)
                                     ? []
-                                    : [...$this->lineValues($line, $taxRate), 'tax_rate' => $taxRate ?? 0];
+                                    : [...$this->lineValues($line, $taxRate, $invoiceLine->orderProduct, $invoice->id), 'tax_rate' => $taxRate ?? 0];
 
                                 $invoiceLine->update([
                                     'product_id' => $line['id'],
@@ -404,13 +412,22 @@ class InvoiceService
      *
      * @return array{amount: float, tax_amount: float}
      */
-    private function lineValues(array $line, $taxRate): array
+    private function lineValues(array $line, $taxRate, ?OrderProduct $orderProduct = null, ?int $exceptInvoiceId = null): array
     {
-        $amount = LineAmount::amountCents(Money::toInteger($line['unit_price'] ?? null) ?? 0, $line['quantity']);
+        $priceCents = Money::toInteger($line['unit_price'] ?? null) ?? 0;
+
+        // A line drawing down an order line bills the exact remainder when
+        // it takes the last of it - see OrderProduct::invoiceLineCents().
+        if ($orderProduct) {
+            $cents = $orderProduct->invoiceLineCents($line['quantity'], $priceCents, $taxRate ?? 0, $exceptInvoiceId);
+        } else {
+            $amount = LineAmount::amountCents($priceCents, $line['quantity']);
+            $cents = ['amount' => $amount, 'tax' => LineAmount::taxCents($amount, $taxRate ?? 0)];
+        }
 
         return [
-            'amount' => $amount / 100,
-            'tax_amount' => LineAmount::taxCents($amount, $taxRate ?? 0) / 100,
+            'amount' => $cents['amount'] / 100,
+            'tax_amount' => $cents['tax'] / 100,
         ];
     }
 

@@ -742,3 +742,77 @@ test('the saved product picked again on a paid invoice line keeps its saved pric
         ->assertSet('products.0.tax_rate', 10.0)
         ->assertSet('total', 220.0);
 });
+
+/**
+ * ORD-2071's line - 2.5 x 333.33, GST 10%: 833.33 and 83.33 tax - with 1.25
+ * of it invoiced at 416.66 and 41.67 tax.
+ *
+ * @return array{0: Order, 1: Invoice}
+ */
+function orderLineHalfInvoiced(): array
+{
+    $gst = TaxRate::create(['name' => 'GST', 'rate' => 10, 'default' => false]);
+    $product = Product::create(['name' => 'Panel', 'tax_rate_id' => $gst->id]);
+
+    $order = Order::create(['currency' => 'USD']);
+    $orderProduct = $order->orderProducts()->create([
+        'product_id' => $product->id, 'quantity' => 2.5, 'price' => 333.33,
+        'tax_rate' => 10, 'tax_amount' => 8333, 'amount' => 833.33,
+    ]);
+
+    $invoice = Invoice::create(['order_id' => $order->id, 'currency' => 'USD']);
+    $invoice->invoiceLines()->create([
+        'product_id' => $product->id, 'order_product_id' => $orderProduct->id,
+        'quantity' => 1.25, 'price' => 333.33, 'tax_rate' => 10, 'amount' => 416.66, 'tax_amount' => 41.67,
+    ]);
+
+    return [$order->fresh(), $invoice];
+}
+
+test('invoicing the rest of an order line bills exactly what is left of it', function () {
+    $this->actingAsUser();
+
+    [$order] = orderLineHalfInvoiced();
+
+    // 1.25 x 333.33 alone is 416.66 and 41.67 tax, a cent short of the
+    // order line once added to the first invoice.
+    $component = Livewire::test(ModelProducts::class, [
+        'model' => $order, 'creating' => 'Invoice', 'from' => 'Order',
+    ]);
+
+    $component->assertSet('products.0.quantity', 1.25)
+        ->assertSet('products.0.amount', 416.67)
+        ->assertSet('products.0.tax_amount', 41.66)
+        ->assertSet('sub_total', 416.67)
+        ->assertSet('tax', 41.66);
+
+    // Less than the rest is priced on its own; the rest again is the remainder.
+    $component->set('products.0.quantity', 1);
+    $component->assertSet('products.0.amount', 333.33);
+
+    $component->set('products.0.quantity', 1.25);
+    $component->assertSet('products.0.amount', 416.67)
+        ->assertSet('products.0.tax_amount', 41.66);
+});
+
+test('editing the invoice that took the rest of an order line keeps it at the remainder', function () {
+    $this->actingAsUser();
+
+    [$order, $first] = orderLineHalfInvoiced();
+
+    $second = Invoice::create(['order_id' => $order->id, 'currency' => 'USD']);
+    $second->invoiceLines()->create([
+        'product_id' => $first->invoiceLines()->first()->product_id,
+        'order_product_id' => $order->orderProducts()->first()->id,
+        'quantity' => 1.25, 'price' => 333.33, 'tax_rate' => 10, 'amount' => 416.67, 'tax_amount' => 41.66,
+    ]);
+
+    Livewire::test(ModelProducts::class, ['model' => $second->fresh(), 'creating' => 'Invoice'])
+        ->assertSet('products.0.amount', 416.67)
+        ->assertSet('products.0.tax_amount', 41.66);
+
+    // The first invoice is not the one that took the rest.
+    Livewire::test(ModelProducts::class, ['model' => $first->fresh(), 'creating' => 'Invoice'])
+        ->assertSet('products.0.amount', 416.66)
+        ->assertSet('products.0.tax_amount', 41.67);
+});

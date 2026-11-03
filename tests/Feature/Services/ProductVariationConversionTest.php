@@ -151,12 +151,13 @@ test('a converted line keeps a variation deleted after the source line was creat
     $order = orderFromQuote($quote, $this->user);
     expect($order->orderProducts()->sole()->product_variation_id)->toBe($this->large->id);
 
+    // The read-only rows still name it. Read before the order is invoiced:
+    // once it is, in full, there is no row left to invoice.
+    $rows = conversionRows(['model' => $order->fresh(), 'from' => 'Order', 'creating' => 'Invoice']);
+    expect($rows[0]['name'])->toBe('Widget — Large');
+
     expect(invoiceFromOrder($order)->invoiceLines()->sole()->product_variation_id)->toBe($this->large->id)
         ->and(purchaseOrderFromOrder($order)->purchaseOrderLines()->sole()->product_variation_id)->toBe($this->large->id);
-
-    // The read-only rows still name it.
-    $rows = conversionRows(['model' => $order, 'from' => 'Order', 'creating' => 'Invoice']);
-    expect($rows[0]['name'])->toBe('Widget — Large');
 });
 
 test('a product line with no variation converts exactly as before', function () {

@@ -10,6 +10,8 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasProductSearch;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasVariationOptions;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
+use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Support\LineAmount;
@@ -100,13 +102,7 @@ class ModelProducts extends Component
                         $quantityRemaining = null;
 
                         if ($this->creating == 'Invoice' && $this->from == 'Order') {
-                            $quantityRemaining = Quantity::toFloat($orderProduct->quantity);
-
-                            foreach ($this->model->invoices as $invoice) {
-                                if ($invoiceProduct = $invoice->invoiceLines()->where('order_product_id', $orderProduct->id)->first()) {
-                                    $quantityRemaining -= Quantity::toFloat($invoiceProduct->quantity);
-                                }
-                            }
+                            $quantityRemaining = $orderProduct->invoiceRemainder()['quantity'];
                         } elseif ($this->creating == 'Delivery' && $this->from == 'Order') {
                             $quantityRemaining = Quantity::toFloat($orderProduct->quantity);
 
@@ -402,6 +398,28 @@ class ModelProducts extends Component
     }
 
     /**
+     * The order line an invoice row draws down, taken the way InvoiceService
+     * takes it: on a new invoice, the row's line of the order it is made
+     * from; on an edit, the line the invoice line was saved against.
+     */
+    protected function invoicedOrderProduct($index): ?OrderProduct
+    {
+        if ($this->creating !== 'Invoice') {
+            return null;
+        }
+
+        if ($this->model instanceof Invoice) {
+            return $this->savedLine($index)?->orderProduct;
+        }
+
+        if ($this->model instanceof Order && ! empty($this->products[$index]['order_product_id'])) {
+            return $this->model->orderProducts()->find($this->products[$index]['order_product_id']);
+        }
+
+        return null;
+    }
+
+    /**
      * The form is editing an invoice with a payment recorded, whose lines
      * and totals InvoiceService::isSettled() fixes.
      */
@@ -590,6 +608,15 @@ class ModelProducts extends Component
         if ($keepAmount) {
             $amount = Money::toInteger($this->products[$index]['amount'] ?? 0) ?? 0;
             $line = ['amount' => $amount, 'tax' => LineAmount::taxCents($amount, $taxRate)];
+        } elseif ($orderProduct = $this->invoicedOrderProduct($index)) {
+            // An invoice line taking the last of an order line bills exactly
+            // what is left of it, as InvoiceService does.
+            $line = $orderProduct->invoiceLineCents(
+                $this->products[$index]['quantity'] ?? 1,
+                Money::toInteger($this->products[$index]['unit_price'] ?? 0) ?? 0,
+                $taxRate,
+                $this->model instanceof Invoice ? $this->model->id : null,
+            );
         } else {
             // In cents, the same way the CheckAmount helpers price the saved
             // line, so the two cannot disagree on a half-cent boundary.

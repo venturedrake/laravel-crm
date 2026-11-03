@@ -2,6 +2,7 @@
 
 namespace VentureDrake\LaravelCrm\Http\Helpers\CheckAmount;
 
+use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Support\LineAmount;
 
 /**
@@ -78,7 +79,20 @@ function lineAmount($item): bool
         return false;
     }
 
-    return matches(lineTotal($item), $item->amount);
+    if (matches(lineTotal($item), $item->amount)) {
+        return true;
+    }
+
+    // The invoice line that took the last of an order line bills exactly
+    // what was left of it, which can be a cent off its own price x quantity.
+    if ($item instanceof InvoiceLine && $item->order_product_id && $orderProduct = $item->orderProduct) {
+        return matches(
+            $orderProduct->invoiceLineCents($item->quantity, (int) $item->price, $item->tax_rate, $item->invoice_id)['amount'],
+            $item->amount
+        );
+    }
+
+    return false;
 }
 
 /**
