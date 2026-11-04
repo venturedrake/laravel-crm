@@ -29,9 +29,11 @@ class PurchaseOrderShow extends Component
     protected $listeners = [
         'refreshPurchaseOrder' => '$refresh',
         // The Sent badge here goes stale the moment the layout's get-link
-        // modal ticks "mark as sent" -- that write runs in a different
-        // Livewire root, so nothing re-renders this page on its own.
+        // modal ticks "mark as sent", or the Send drawer mails the document
+        // -- those writes run in a different Livewire root, so nothing
+        // re-renders this page on its own.
         'crm-get-link-sent' => '$refresh',
+        'crm-document-sent' => '$refresh',
     ];
 
     public function mount(PurchaseOrder $purchaseOrder)

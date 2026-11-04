@@ -17,11 +17,13 @@ class PurchaseOrderRelatedIndex extends Component
 
     /**
      * The Sent badge on these rows goes stale the moment the layout's
-     * get-link modal ticks "mark as sent" -- that write runs in a
-     * different Livewire root, so nothing re-renders this table.
+     * get-link modal ticks "mark as sent", or a Send drawer mails the
+     * document -- those writes run in a different Livewire root, so
+     * nothing re-renders this table.
      */
     protected $listeners = [
         'crm-get-link-sent' => '$refresh',
+        'crm-document-sent' => '$refresh',
     ];
 
     public Model $model;

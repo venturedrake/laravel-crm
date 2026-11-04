@@ -107,6 +107,11 @@ class InvoiceSend extends Component
             'pdf' => $this->pdf,
         ]));
 
+        // The Sent badge reads this flag, and nothing else sets it on a send.
+        $this->invoice->update(['sent' => 1]);
+
+        $this->dispatch('crm-document-sent');
+
         $this->success(
             ucfirst(trans('laravel-crm::lang.invoice_sent'))
         );

@@ -106,6 +106,11 @@ class PurchaseOrderSend extends Component
             'pdf' => $this->pdf,
         ]));
 
+        // The Sent badge reads this flag, and nothing else sets it on a send.
+        $this->purchaseOrder->update(['sent' => 1]);
+
+        $this->dispatch('crm-document-sent');
+
         $this->success(
             ucfirst(trans('laravel-crm::lang.purchase_order_sent'))
         );

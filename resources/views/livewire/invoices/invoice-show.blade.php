@@ -3,7 +3,7 @@
     <x-crm-header class="mb-5" progress-indicator >
         <x-slot:title>
             {{ $invoice->title }}
-            @if($invoice->sent != 1)
+            @if($invoice->sent == 1)
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.sent')) }}" class="badge badge-sm badge-success text-white" />
             @endif
             @if($invoice->fully_paid_at)

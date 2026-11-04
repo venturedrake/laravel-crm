@@ -42,7 +42,7 @@
                 @endif
             @endscope
             @scope('cell_sent', $invoice)
-                @if($invoice->sent != 1)
+                @if($invoice->sent == 1)
                     <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.sent')) }}" class="badge badge-success text-white" />
                 @endif
             @endscope
