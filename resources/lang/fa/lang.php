@@ -715,6 +715,8 @@ return [
     'send_me_a_copy' => 'یک کپی برای من ارسال کن',
     'quote_sent_successfully' => 'پیش‌فاکتور با موفقیت ارسال شد',
     'invoice_sent' => 'فاکتور ارسال شد',
+    'invalid_email_address' => ':address یک آدرس ایمیل معتبر نیست',
+    'email_could_not_be_sent' => 'ایمیل ارسال نشد: :reason',
     'purchase_order_sent' => 'سفارش خرید ارسال شد',
     'create' => 'ایجاد',
     'product_created' => 'محصول ایجاد شد',

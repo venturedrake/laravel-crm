@@ -5,10 +5,15 @@ namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Exception\ExceptionInterface as MimeExceptionInterface;
+use VentureDrake\LaravelCrm\Http\Rules\EmailAddressList;
 use VentureDrake\LaravelCrm\Mail\SendQuote;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
@@ -45,7 +50,7 @@ class QuoteSend extends Component
     protected function rules()
     {
         return [
-            'to' => 'required|string',
+            'to' => ['required', new EmailAddressList],
             'subject' => 'required|string',
             'message' => 'required|string',
         ];
@@ -106,14 +111,29 @@ class QuoteSend extends Component
                 'logo' => PdfLogo::fromSettings(),
             ])->save(storage_path($this->pdf));
 
-        Mail::send(new SendQuote([
-            'to' => $this->to,
-            'subject' => $this->subject,
-            'message' => $this->message,
-            'cc' => $this->cc,
-            'onlineQuoteLink' => $this->signedUrl,
-            'pdf' => $this->pdf,
-        ]));
+        // A refused connection or a rejected address surfaces here. Keep the
+        // drawer open with what was typed rather than letting it become a 500.
+        try {
+            Mail::send(new SendQuote([
+                'to' => EmailAddressList::parse($this->to),
+                'subject' => $this->subject,
+                'message' => $this->message,
+                'cc' => $this->cc,
+                'onlineQuoteLink' => $this->signedUrl,
+                'pdf' => $this->pdf,
+            ]));
+        } catch (TransportExceptionInterface|MimeExceptionInterface $e) {
+            Log::error('[laravel-crm] quote send failed', [
+                'exception' => $e,
+                'quote_id' => $this->quote->id,
+            ]);
+
+            $this->error(ucfirst(__('laravel-crm::lang.email_could_not_be_sent', [
+                'reason' => Str::limit($e->getMessage(), 150),
+            ])));
+
+            return;
+        }
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.quote_sent_successfully'))

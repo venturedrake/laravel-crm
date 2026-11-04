@@ -766,6 +766,8 @@ return [
     'send_me_a_copy' => 'send me a copy',
     'quote_sent_successfully' => 'quote sent successfully',
     'invoice_sent' => 'invoice sent',
+    'invalid_email_address' => ":address isn't a valid email address",
+    'email_could_not_be_sent' => 'the email could not be sent: :reason',
     'purchase_order_sent' => 'purchase order sent',
     'create' => 'create',
     'product_created' => 'product created',

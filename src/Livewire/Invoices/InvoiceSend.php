@@ -5,9 +5,14 @@ namespace VentureDrake\LaravelCrm\Livewire\Invoices;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Exception\ExceptionInterface as MimeExceptionInterface;
+use VentureDrake\LaravelCrm\Http\Rules\EmailAddressList;
 use VentureDrake\LaravelCrm\Mail\SendInvoice;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
@@ -43,7 +48,7 @@ class InvoiceSend extends Component
     protected function rules()
     {
         return [
-            'to' => 'required|string',
+            'to' => ['required', new EmailAddressList],
             'subject' => 'required|string',
             'message' => 'required|string',
         ];
@@ -98,14 +103,29 @@ class InvoiceSend extends Component
                 'logo' => PdfLogo::fromSettings(),
             ])->save(storage_path($this->pdf));
 
-        Mail::send(new SendInvoice([
-            'to' => $this->to,
-            'subject' => $this->subject,
-            'message' => $this->message,
-            'cc' => $this->cc,
-            'onlineInvoiceLink' => $this->signedUrl,
-            'pdf' => $this->pdf,
-        ]));
+        // A refused connection or a rejected address surfaces here. Keep the
+        // drawer open with what was typed rather than letting it become a 500.
+        try {
+            Mail::send(new SendInvoice([
+                'to' => EmailAddressList::parse($this->to),
+                'subject' => $this->subject,
+                'message' => $this->message,
+                'cc' => $this->cc,
+                'onlineInvoiceLink' => $this->signedUrl,
+                'pdf' => $this->pdf,
+            ]));
+        } catch (TransportExceptionInterface|MimeExceptionInterface $e) {
+            Log::error('[laravel-crm] invoice send failed', [
+                'exception' => $e,
+                'invoice_id' => $this->invoice->id,
+            ]);
+
+            $this->error(ucfirst(__('laravel-crm::lang.email_could_not_be_sent', [
+                'reason' => Str::limit($e->getMessage(), 150),
+            ])));
+
+            return;
+        }
 
         // The Sent badge reads this flag, and nothing else sets it on a send.
         $this->invoice->update(['sent' => 1]);
