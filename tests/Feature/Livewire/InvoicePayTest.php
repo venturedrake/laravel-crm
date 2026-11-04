@@ -226,3 +226,63 @@ test('a part payment that still fits after another payment goes through', functi
     expect((int) $invoice->getRawOriginal('amount_paid'))->toBe(22000)
         ->and($invoice->fully_paid_at)->not->toBeNull();
 });
+
+/*
+ * After a part payment, opening the Pay drawer again showed an empty amount:
+ * pay() cleared the field and only mount() filled it. And the show page's
+ * header was never told, so the Paid badge waited for a reload.
+ */
+
+test('the drawer offers what is still due after a part payment, and a second payment cannot overpay', function () {
+    $invoice = payableInvoice();
+
+    $component = Livewire::test(InvoicePay::class, ['invoice' => $invoice])
+        ->set('amount', '100.00')
+        ->call('pay')
+        ->assertHasNoErrors()
+        ->assertSet('amount', 120)
+        ->assertSet('amount_due', 120)
+        ->assertSet('amount_paid', 100)
+        ->assertDispatched('refreshInvoice');
+
+    $component
+        ->set('amount', '150.00')
+        ->call('pay')
+        ->assertHasErrors('amount');
+
+    expect((int) $invoice->fresh()->getRawOriginal('amount_paid'))->toBe(10000);
+
+    $component
+        ->set('amount', '120.00')
+        ->call('pay')
+        ->assertHasNoErrors()
+        ->assertSet('amount', null)
+        ->assertSet('amount_due', 0)
+        ->assertDispatched('refreshInvoice');
+
+    expect($invoice->fresh()->fully_paid_at)->not->toBeNull()
+        ->and((int) $invoice->fresh()->getRawOriginal('amount_paid'))->toBe(22000);
+});
+
+test('opening the drawer fills in the balance as it is now', function () {
+    $invoice = payableInvoice();
+
+    $component = Livewire::test(InvoicePay::class, ['invoice' => $invoice])
+        ->assertSet('amount', 220);
+
+    // Paid in part somewhere else while this page was open.
+    $invoice->update(['amount_paid' => 200, 'amount_due' => 20]);
+
+    $component
+        ->set('amount', '')
+        ->call('openPay')
+        ->assertSet('showPayInvoice', true)
+        ->assertSet('amount', 20)
+        ->assertSet('amount_due', 20)
+        ->assertSet('amount_paid', 200);
+});
+
+test('the Pay button opens the drawer through openPay', function () {
+    Livewire::test(InvoicePay::class, ['invoice' => payableInvoice()])
+        ->assertSee('wire:click="openPay"', false);
+});

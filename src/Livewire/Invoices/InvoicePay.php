@@ -34,6 +34,9 @@ class InvoicePay extends Component
      * refused anything but the exact balance, and the balance itself was
      * never set on a new invoice.
      *
+     * The limit is read from the database, not from this component, so a
+     * drawer left open while another payment landed cannot overpay.
+     *
      * @return array
      */
     protected function rules()
@@ -53,6 +56,19 @@ class InvoicePay extends Component
         if ($this->amount_due > 0) {
             $this->amount = $this->amount_due;
         }
+    }
+
+    /**
+     * Opens the drawer with the balance as it is now, however long the page
+     * has been open and whatever was paid since.
+     */
+    public function openPay(): void
+    {
+        $this->syncBalance();
+
+        $this->resetValidation();
+
+        $this->showPayInvoice = true;
     }
 
     public function pay()
@@ -101,7 +117,7 @@ class InvoicePay extends Component
         } catch (ValidationException $e) {
             // The drawer's balance is out of date, so bring it up to what
             // the lock read before the user tries again.
-            $this->amount_due = $this->outstandingCents() / 100;
+            $this->syncBalance();
             $this->error(collect($e->errors())->flatten()->first());
 
             return;
@@ -122,9 +138,15 @@ class InvoicePay extends Component
             $this->success(ucfirst(trans('laravel-crm::lang.invoice_paid')));
         }
 
-        $this->resetFields();
+        // Ready for the next part payment: emptying the field here left the
+        // drawer blank when it was opened again.
+        $this->amount = $due > 0 ? $due / 100 : null;
 
         $this->showPayInvoice = false;
+
+        // The show page's header (Paid badge, Pay button) is another
+        // component and would otherwise wait for a reload.
+        $this->dispatch('refreshInvoice');
     }
 
     /**
@@ -139,9 +161,19 @@ class InvoicePay extends Component
         return max(0, (int) $invoice->getRawOriginal('total') - (int) $invoice->getRawOriginal('amount_paid'));
     }
 
-    private function resetFields()
+    /**
+     * Reloads the invoice and sets the paid and due figures from it, with
+     * the amount field filled in with what is still due.
+     */
+    private function syncBalance(): void
     {
-        $this->reset('amount');
+        $this->invoice = $this->invoice->fresh() ?? $this->invoice;
+
+        $due = $this->outstandingCents();
+
+        $this->amount_due = $due / 100;
+        $this->amount_paid = ((int) $this->invoice->getRawOriginal('amount_paid')) / 100;
+        $this->amount = $due > 0 ? $due / 100 : null;
     }
 
     public function render()
