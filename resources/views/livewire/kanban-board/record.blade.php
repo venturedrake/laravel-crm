@@ -103,8 +103,10 @@
                                 @elsecan('update', $quote)
                                     <x-mary-menu-item icon="o-lock-closed" title="{{ $quote->lockReason() }}" disabled />
                                 @endcan
-                                @can('delete crm quotes')
+                                @can('delete', $quote)
                                     <x-mary-menu-item onclick="modalDeleteQuote{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
+                                @elsecan('delete crm quotes')
+                                    <x-mary-menu-item icon="o-trash" :title="$quote->deleteBlockedReason()" disabled />
                                 @endcan
                             </x-mary-dropdown>
                             @if(! $quote->order && !$quoteError)

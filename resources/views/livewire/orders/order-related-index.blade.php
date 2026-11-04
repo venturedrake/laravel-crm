@@ -13,7 +13,11 @@
             @endscope
             @scope('cell_quote', $order)
                 @if($order->quote)
-                    <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}" class="link link-hover link-primary">{{ $order->quote->quote_id }}</a>
+                    @if($order->quote->trashed())
+                        {{ $order->quote->quote_id }} <x-mary-badge :value="__('laravel-crm::lang.deleted')" class="badge-ghost badge-sm" />
+                    @else
+                        <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}" class="link link-hover link-primary">{{ $order->quote->quote_id }}</a>
+                    @endif
                 @endif
             @endscope
             @scope('cell_subtotal', $order)

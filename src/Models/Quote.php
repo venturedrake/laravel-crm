@@ -217,6 +217,27 @@ class Quote extends Model
         return null;
     }
 
+    /**
+     * Whether the quote can be deleted. Once an order has been made from it,
+     * the order still points at the quote, so it has to stay.
+     */
+    public function canBeDeleted(): bool
+    {
+        return ! $this->hasOrders();
+    }
+
+    /**
+     * Why the quote cannot be deleted, or null when it can.
+     */
+    public function deleteBlockedReason(): ?string
+    {
+        if (! $this->canBeDeleted()) {
+            return ucfirst(__('laravel-crm::lang.quote_delete_ordered'));
+        }
+
+        return null;
+    }
+
     public function orderComplete()
     {
         foreach ($this->quoteProducts as $quoteProduct) {

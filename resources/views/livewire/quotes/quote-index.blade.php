@@ -80,9 +80,13 @@
                             <x-mary-button icon="o-lock-closed" class="btn-sm btn-square btn-outline" disabled />
                         </span>
                     @endcan
-                    @can('delete crm quotes')
+                    @can('delete', $quote)
                         <x-mary-button onclick="modalDeleteQuote{{ $quote->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
                         <x-crm-delete-confirm model="quote" id="{{ $quote->id }}" />
+                    @elsecan('delete crm quotes')
+                        <span class="tooltip tooltip-left" data-tip="{{ $quote->deleteBlockedReason() }}">
+                            <x-mary-button icon="o-trash" class="btn-sm btn-square btn-error text-white" disabled />
+                        </span>
                     @endcan
                 </div>
             @endscope

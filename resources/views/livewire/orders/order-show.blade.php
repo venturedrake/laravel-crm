@@ -79,7 +79,11 @@
                         <div class="flex flex-row gap-5">
                             <strong>{{ ucfirst(__('laravel-crm::lang.quote')) }}</strong>
                             <span>
-                                <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}" class="link link-hover link-primary">{{ $order->quote->quote_id }}</a>
+                                @if($order->quote->trashed())
+                                    {{ $order->quote->quote_id }} <x-mary-badge :value="__('laravel-crm::lang.deleted')" class="badge-ghost badge-sm" />
+                                @else
+                                    <a href="{{ route('laravel-crm.quotes.show', $order->quote) }}" class="link link-hover link-primary">{{ $order->quote->quote_id }}</a>
+                                @endif
                             </span>
                         </div>
                     @endif

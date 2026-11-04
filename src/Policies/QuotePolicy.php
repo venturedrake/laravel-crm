@@ -79,12 +79,19 @@ class QuotePolicy
     /**
      * Determine whether the user can delete the quote.
      *
+     * A quote with an order cannot be deleted: the order would lose its
+     * link back to the quote it came from.
+     *
      * @param  \App\Quote  $quote
      * @return mixed
      */
     public function delete(User $user, Quote $quote)
     {
         if ($this->isEnabled() && $user->hasPermissionTo('delete crm quotes')) {
+            if (! $quote->canBeDeleted()) {
+                return $this->deny($quote->deleteBlockedReason());
+            }
+
             return true;
         }
     }

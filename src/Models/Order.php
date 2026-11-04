@@ -122,9 +122,12 @@ class Order extends Model
         return $this->belongsTo(Deal::class);
     }
 
+    /**
+     * Includes a soft-deleted quote: the order was still made from it.
+     */
     public function quote()
     {
-        return $this->belongsTo(Quote::class);
+        return $this->belongsTo(Quote::class)->withTrashed();
     }
 
     /**

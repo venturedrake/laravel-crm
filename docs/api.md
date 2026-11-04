@@ -231,6 +231,10 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   to a quote that has been accepted, or that has an order made from it, is rejected with a `422`
   on `quote` and nothing is saved — header fields included. Unaccept the quote in the app first;
   once it has an order it cannot be unaccepted.
+- **A quote with an order cannot be deleted.** *(Changed after 2.6.0 — unreleased.)* A `DELETE`
+  to a quote that has an order made from it is refused with a `403` and
+  `{ "message": "This quote has an order and can't be deleted" }`, and the quote is kept. A
+  soft-deleted order does not count.
 
 ### Product variations
 

@@ -165,6 +165,14 @@ class QuoteBoard extends KanbanBoard
     public function delete($id)
     {
         if ($quote = Quote::find($id)) {
+            // Before authorize(), which denies this too, so the user sees why
+            // rather than a 403.
+            if (! $quote->canBeDeleted()) {
+                $this->error($quote->deleteBlockedReason());
+
+                return;
+            }
+
             $this->authorize('delete', $quote);
 
             $quote->delete();
