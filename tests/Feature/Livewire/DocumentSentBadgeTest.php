@@ -174,6 +174,7 @@ it('marks an invoice as sent when the Send drawer mails it', function () {
     expect((bool) $invoice->sent)->toBeFalse();
 
     Livewire::test(SentBadgeInvoiceSend::class, ['invoice' => $invoice])
+        ->call('open')
         ->set('to', 'buyer@example.com')
         ->call('send')
         ->assertHasNoErrors()

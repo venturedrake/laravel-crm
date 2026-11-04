@@ -1,5 +1,7 @@
 <div class="text-left">
-    <x-mary-button @click="$wire.showSendInvoice = true" class="btn-sm btn-outline"  label="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
+    @if($type == 'button')
+    <x-mary-button wire:click="open" spinner="open" class="btn-sm btn-outline"  label="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
+    @endif
 
     <x-mary-drawer
             wire:model="showSendInvoice"

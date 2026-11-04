@@ -96,12 +96,9 @@ class QuoteIndex extends Component
         // been fully ordered. quoteProducts and orders.orderProducts are loaded
         // here so those checks read collections instead of issuing four or more
         // queries per row.
-        // person.primaryEmail is for the per-row <livewire:crm-quote-send>,
-        // whose mount() pre-fills the To field from the contact's primary
-        // email.
         return Quote::with([
             'labels',
-            'person.primaryEmail',
+            'person',
             'organization',
             'ownerUser',
             'pipelineStage',

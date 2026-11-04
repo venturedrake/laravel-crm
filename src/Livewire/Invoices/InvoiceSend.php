@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -40,6 +42,11 @@ class InvoiceSend extends Component
 
     public $signedUrl;
 
+    public $type = 'button';
+
+    #[Locked]
+    public bool $shared = false;
+
     /**
      * Returns validation rules.
      *
@@ -54,16 +61,45 @@ class InvoiceSend extends Component
         ];
     }
 
-    public function mount(Invoice $invoice)
+    /**
+     * With no invoice this is the one instance an index page shares across its rows,
+     * opened for a row by the invoice-send event. Pre-filling waits for open(), because
+     * rendering the templates here costs every row whether it is sent or not.
+     */
+    public function mount($invoice = null)
     {
         $this->invoice = $invoice;
+        $this->shared = $invoice === null;
+    }
+
+    #[On('invoice-send')]
+    public function open(?int $id = null): void
+    {
+        if (! $this->shared && $id !== null && $id !== $this->invoice->id) {
+            return;
+        }
+
+        if (! $invoice = $this->shared ? Invoice::find($id) : $this->invoice) {
+            return;
+        }
+
+        $this->authorize('view', $invoice);
+
+        $this->resetValidation();
+        $this->reset('cc');
+
+        $this->invoice = $invoice;
         $this->to = ($invoice->person) ? ($invoice->person->getPrimaryEmail()->address ?? null) : null;
-        $this->subject = view('laravel-crm::mail.templates.send-invoice.subject', ['invoice' => $this->invoice])->render();
-        $this->message = view('laravel-crm::mail.templates.send-invoice.message', ['invoice' => $this->invoice])->render();
+        $this->subject = view('laravel-crm::mail.templates.send-invoice.subject', ['invoice' => $invoice])->render();
+        $this->message = view('laravel-crm::mail.templates.send-invoice.message', ['invoice' => $invoice])->render();
+
+        $this->showSendInvoice = true;
     }
 
     public function send()
     {
+        abort_unless($this->invoice, 404);
+
         $this->authorize('update', $this->invoice);
 
         $this->validate();

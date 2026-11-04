@@ -5,6 +5,7 @@ use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteBoard;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteCreate;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteIndex;
 use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteShow;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
 
 /**
@@ -122,9 +123,11 @@ it('allows reordering the quote board with the edit permission', function () {
     $this->actingAsUserWithPermissions(['view crm quotes', 'edit crm quotes']);
     $record = Quote::create(['title' => 'Authz quote']);
 
+    $stage = Pipeline::where('model', Quote::class)->first()->pipelineStages()->first();
+
     Livewire::test(AuthzQuoteBoard::class)
-        ->call('onStageChanged', $record->id, 1, [], [])
+        ->call('onStageChanged', $record->id, $stage->id, [], [])
         ->assertOk();
 
-    expect($record->fresh()->pipeline_stage_id)->toBe(1);
+    expect($record->fresh()->pipeline_stage_id)->toBe($stage->id);
 });

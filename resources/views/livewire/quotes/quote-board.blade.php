@@ -30,6 +30,10 @@
         @endforeach
     </div>
 
+    <livewire:crm-quote-send type="menu-item" />
+
+    @include('laravel-crm::livewire.kanban-board.scripts')
+
     <div wire:ignore>
         @includeWhen($sortable, 'laravel-crm::livewire.kanban-board.sortable', [
             'sortable' => $sortable,

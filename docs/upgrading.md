@@ -169,6 +169,23 @@ changed); an edit that changes a line is repriced and then judged. Previously su
 leave a part-paid invoice with no way to close it, or reopen a paid one and lose the date it was
 paid on.
 
+### Boards load one page per column
+
+The leads, deals and quotes boards now render 20 cards per column with a **Load more** button,
+and each column header shows its full count with the value of the whole column beneath it. Set
+`LARAVEL_CRM_BOARD_PER_COLUMN` to change the page size. Search by contact name on the boards now
+works with `LARAVEL_CRM_ENCRYPT_DB_FIELDS=true`.
+
+The quote and invoice lists and the quote board share one Send drawer per page, filled when it
+opens. If you have published the package's views, republish or update these:
+
+| File | What goes wrong otherwise |
+|---|---|
+| `livewire/kanban-board/stage.blade.php`, `record.blade.php`, `sortable.blade.php` and the new `records.blade.php`, `scripts.blade.php` | No paging controls, and the board's Send item calls a method that no longer exists |
+| `livewire/leads/lead-board.blade.php`, `livewire/deals/deal-board.blade.php`, `livewire/quotes/quote-board.blade.php` | Load more does nothing |
+| `livewire/quotes/quote-send.blade.php`, `livewire/invoices/invoice-send.blade.php` | The Send drawer opens with empty fields |
+| `livewire/quotes/quote-index.blade.php`, `livewire/invoices/invoice-index.blade.php` | Row Send buttons do nothing |
+
 ## 2.6.0
 
 This minor release adds three groups of configuration keys: order form options, delivery options

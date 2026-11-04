@@ -5,7 +5,6 @@ use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceEdit;
 use VentureDrake\LaravelCrm\Livewire\Invoices\InvoiceIndex;
 use VentureDrake\LaravelCrm\Models\Invoice;
-use VentureDrake\LaravelCrm\Models\Setting;
 
 /*
  * Regression cover for the null-due-date fatal on the invoices index:
@@ -21,11 +20,6 @@ use VentureDrake\LaravelCrm\Models\Setting;
  */
 
 beforeEach(function () {
-    // The index row actions mount `crm-invoice-send`, whose subject blade reads
-    // Setting::where('name', 'organization_name')->first()->value unguarded.
-    // Seed it so an unrelated missing setting can't masquerade as a date crash.
-    Setting::updateOrCreate(['name' => 'organization_name'], ['value' => 'Test Organization']);
-
     $this->actingAsUserWithPermissions([
         'view crm invoices',
         'create crm invoices',

@@ -48,7 +48,7 @@
             @endscope
             @scope('actions', $invoice)
                 <div class="flex gap-1 justify-end">
-                    <livewire:crm-invoice-send :key="'invoice-send-'.$invoice->id" :$invoice />
+                    <x-mary-button wire:click="$dispatch('invoice-send', { id: {{ $invoice->id }} })" class="btn-sm btn-outline" label="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
                     @if(! $invoice->xeroInvoice)
                         @if(! $invoice->fully_paid_at)
                             <livewire:crm-invoice-pay :key="'invoice-pay-'.$invoice->id" :$invoice />
@@ -78,6 +78,8 @@
             @endscope
         </x-mary-table>
     </x-mary-card>
+
+    <livewire:crm-invoice-send type="menu-item" />
 
     {{-- FILTERS --}}
     <x-mary-drawer wire:model="showFilters" title="Filters" class="lg:w-1/3" right separator with-close-button>

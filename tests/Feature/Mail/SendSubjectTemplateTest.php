@@ -32,12 +32,13 @@ use VentureDrake\LaravelCrm\Models\Setting;
  * page's render, so the markers land in the subject and message fields as
  * literal text. Neither rendering the view on its own nor Livewire::test()
  * on the Send component reproduces that, so the last tests below mount each
- * component inside a host component's render.
+ * component inside a host component's render. The quote and invoice components
+ * fill the fields when the drawer opens instead, so they are opened directly.
  */
 
 // The components' blades reach for tables the minimal TestSchema does not
 // ship, so each is mounted through a render-stub subclass (as in PdfSendTest)
-// that records the fields mount() pre-filled.
+// that records the fields the legacy and purchase order mount() pre-fills.
 trait CapturesSendFields
 {
     public static array $captured = [];
@@ -196,9 +197,7 @@ it('falls back to the prefix and number when a quote has no stored quote id', fu
 });
 
 dataset('send components', [
-    'quote' => [SendSubjectQuoteSend::class, 'quote', fn ($person) => Quote::create(['title' => 'Q', 'currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
     'legacy quote' => [SendSubjectLegacySendQuote::class, 'quote', fn ($person) => Quote::create(['title' => 'Q', 'currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
-    'invoice' => [SendSubjectInvoiceSend::class, 'invoice', fn ($person) => Invoice::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
     'legacy invoice' => [SendSubjectLegacySendInvoice::class, 'invoice', fn ($person) => Invoice::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
     'purchase order' => [SendSubjectPurchaseOrderSend::class, 'purchaseOrder', fn ($person) => PurchaseOrder::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
     'legacy purchase order' => [SendSubjectLegacySendPurchaseOrder::class, 'purchaseOrder', fn ($person) => PurchaseOrder::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
@@ -218,3 +217,21 @@ it('pre-fills a marker-free subject and message in the Send component', function
 
     expect($component::$captured['message'])->not->toContain('<!--');
 })->with('send components');
+
+it('fills a marker-free subject and message when the Send drawer opens', function (string $component, string $parameter, Closure $record) {
+    $this->actingAsUser(['crm_access' => 1]);
+    Gate::before(fn () => true);
+
+    $model = $record(Person::create(['first_name' => 'Jane', 'last_name' => 'Smith']));
+
+    $test = Livewire::test($component, [$parameter => $model])->call('open');
+
+    expect($test->get('subject'))
+        ->toEndWith(str_contains($component, 'Quote') ? ' for Jane Smith.' : ' for Jane Smith')
+        ->not->toContain('<!--');
+
+    expect($test->get('message'))->not->toContain('<!--');
+})->with([
+    'quote' => [SendSubjectQuoteSend::class, 'quote', fn ($person) => Quote::create(['title' => 'Q', 'currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+    'invoice' => [SendSubjectInvoiceSend::class, 'invoice', fn ($person) => Invoice::create(['currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
+]);

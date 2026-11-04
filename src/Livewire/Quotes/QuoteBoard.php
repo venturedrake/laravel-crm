@@ -4,22 +4,12 @@ namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Mary\Traits\Toast;
-use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
-use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
-use VentureDrake\LaravelCrm\Models\Label;
-use VentureDrake\LaravelCrm\Models\Pipeline;
+use VentureDrake\LaravelCrm\Livewire\PipelineBoard;
 use VentureDrake\LaravelCrm\Models\Quote;
 
-class QuoteBoard extends KanbanBoard
+class QuoteBoard extends PipelineBoard
 {
-    use AuthorizesRequests, HasUserOwnerFilter, Toast;
-
-    public $layout = 'board';
-
     public $model = 'quote';
 
     #[Url]
@@ -33,133 +23,46 @@ class QuoteBoard extends KanbanBoard
 
     public bool $showFilters = false;
 
-    public ?Pipeline $pipeline = null;
-
-    public function filterCount(): int
+    protected function boardModel(): string
     {
-        return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
+        return Quote::class;
     }
 
-    public function labels(): Collection
+    protected function amountColumn(): string
     {
-        return Label::select('id', 'name')->get();
+        return 'total';
     }
 
-    public function stages(): Collection
+    protected function cardColumns(): array
     {
-        if ($pipeline = Pipeline::where('model', get_class(new Quote))->first()) {
-            return $pipeline->pipelineStages()
-                ->orderBy('order')
-                ->orderBy('id')
-                ->get();
-        }
-    }
-
-    public function onStageSorted($orderedIds)
-    {
-        $records = $this->resolve($orderedIds);
-
-        foreach ($records as $record) {
-            $this->authorize('update', $record);
-        }
-
-        DB::transaction(function () use ($records) {
-            $this->reorder($records);
-        });
-    }
-
-    public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
-    {
-        if (! $record = Quote::find($recordId)) {
-            return;
-        }
-
-        $from = $this->resolve($fromOrderedIds);
-        $to = $this->resolve($toOrderedIds);
-
-        foreach ($from->merge($to)->concat([$record]) as $authorizable) {
-            $this->authorize('update', $authorizable);
-        }
-
-        DB::transaction(function () use ($record, $stageId, $from, $to) {
-            $record->update([
-                'pipeline_stage_id' => $stageId,
-            ]);
-
-            $this->reorder($from);
-            $this->reorder($to);
-        });
+        return [
+            'id', 'quote_id', 'number', 'title', 'currency', 'accepted_at', 'rejected_at',
+            'subtotal', 'discount', 'tax', 'adjustments', 'total',
+        ];
     }
 
     /**
-     * Resolve the ids the board sent us, dropping anything that is not a quote.
-     *
-     * A stage container holds more than the record cards -- each card is followed by its
-     * delete-confirm dialog, and a quote card may add a send component -- so a host still
-     * serving a stale published copy of kanban-board/sortable.blade.php harvests ids like
-     * 'modalDeleteQuote4' alongside the real ones. Those have to be skipped rather than
-     * dereferenced, and they must not consume an order number either.
+     * A card checks its amounts against its lines.
      */
-    private function resolve(array $orderedIds): Collection
+    protected function eagerLoads(): array
     {
-        return collect($orderedIds)
-            ->map(fn ($quoteId) => Quote::find($quoteId))
-            ->filter()
-            ->values();
+        return [...parent::eagerLoads(), 'quoteProducts:id,quote_id,product_id,price,quantity'];
+    }
+
+    protected function cardQuery(): Builder
+    {
+        return parent::cardQuery()->withExists('orders');
     }
 
     /**
-     * Renumber a stage contiguously from 1. Callers authorize the whole batch first, so a
-     * denial cannot leave the stage half renumbered.
+     * Only a quote that was accepted and ordered asks orderComplete(), so the order
+     * lines are loaded for those cards rather than for the whole page.
      */
-    private function reorder(Collection $records): void
+    protected function prepareCards(Collection $records): void
     {
-        $records->each(fn (Quote $record, int $index) => $record->update([
-            'pipeline_stage_order' => $index + 1,
-        ]));
-    }
-
-    public function records(): Collection
-    {
-        $quotes = Quote::select(
-            config('laravel-crm.db_table_prefix').'quotes.*',
-            config('laravel-crm.db_table_prefix').'people.first_name',
-            config('laravel-crm.db_table_prefix').'people.last_name',
-            config('laravel-crm.db_table_prefix').'organizations.name'
-        )
-            ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'quotes.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
-            ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'quotes.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
-            ->when($this->search, function (Builder $q) {
-                $q->where(function ($q) {
-                    $q->orWhere(config('laravel-crm.db_table_prefix').'quotes.title', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'organizations.name', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'people.first_name', 'like', "%$this->search%")
-                        ->orWhere(config('laravel-crm.db_table_prefix').'people.last_name', 'like', "%$this->search%")
-                        ->orWhereRaw('CONCAT('.config('laravel-crm.db_table_prefix')."people.first_name, ' ', ".config('laravel-crm.db_table_prefix').'people.last_name) like ?', ["%$this->search%"]);
-                });
-            })
-            ->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'quotes.user_owner_id', $this->user_id))
-            ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
-            ->orderBy('pipeline_stage_order')
-            ->oldest()
-            ->get();
-
-        return $quotes->map(function (Quote $quote) {
-            return [
-                'id' => $quote->id,
-                'title' => $quote->title,
-                'labels' => $quote->labels,
-                'stage' => $quote->pipelineStage->id ?? $this->firstStageId(),
-                'number' => $quote->quote_id,
-                'amount' => $quote->total,
-                'currency' => $quote->currency,
-            ];
-        });
-    }
-
-    public function updatedSearch()
-    {
-        $this->render();
+        $records
+            ->filter(fn (Quote $quote) => $quote->accepted_at && $quote->hasOrders())
+            ->load('orders.orderProducts');
     }
 
     public function delete($id)
@@ -188,7 +91,7 @@ class QuoteBoard extends KanbanBoard
 
             $quote->update([
                 'accepted_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Accepted')->first()->id ?? null,
+                'pipeline_stage_id' => $this->stageIdNamed('Accepted'),
             ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_accepted')));
@@ -202,7 +105,7 @@ class QuoteBoard extends KanbanBoard
 
             $quote->update([
                 'rejected_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Rejected')->first()->id ?? null,
+                'pipeline_stage_id' => $this->stageIdNamed('Rejected'),
             ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_rejected')));
@@ -223,7 +126,7 @@ class QuoteBoard extends KanbanBoard
 
             $quote->update([
                 'accepted_at' => null,
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
+                'pipeline_stage_id' => $this->stageIdNamed('Draft'),
             ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unaccepted')));
@@ -237,49 +140,10 @@ class QuoteBoard extends KanbanBoard
 
             $quote->update([
                 'rejected_at' => null,
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
+                'pipeline_stage_id' => $this->stageIdNamed('Draft'),
             ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unrejected')));
         }
-    }
-
-    public function send($id): void
-    {
-        if ($quote = Quote::find($id)) {
-            $this->dispatch('quote-send', $quote->id);
-        }
-
-    }
-
-    public function render()
-    {
-        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
-
-        $stages = $this->stages();
-
-        $records = $this->records();
-
-        $stages = $stages
-            ->map(function ($stage) use ($records) {
-                $stage['group'] = $this->id();
-                $stage['stageRecordsId'] = "{$this->id()}-{$stage['id']}";
-                $stage['records'] = $records
-                    ->filter(function ($record) use ($stage) {
-                        return $this->isRecordInStage($record, $stage);
-                    });
-
-                return $stage;
-            });
-
-        $this->dispatch('board-loaded');
-
-        return view('laravel-crm::livewire.quotes.quote-board', [
-            'users' => $this->users,
-            'labels' => $this->labels(),
-            'filterCount' => $this->filterCount(),
-            'records' => $records,
-            'stages' => $stages,
-        ]);
     }
 }

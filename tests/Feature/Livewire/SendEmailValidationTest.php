@@ -125,7 +125,7 @@ it('sends to a single valid recipient', function (string $component, string $par
     Mail::fake();
 
     Livewire::test($component, [$parameter => $record()])
-        ->set('to', 'buyer@example.com')
+        ->set(['to' => 'buyer@example.com', 'subject' => 'S', 'message' => 'M'])
         ->call('send')
         ->assertHasNoErrors();
 
@@ -136,7 +136,7 @@ it('sends one mail to every address in a comma or semicolon list', function (str
     Mail::fake();
 
     Livewire::test($component, [$parameter => $record()])
-        ->set('to', 'a@example.com, b@example.com;')
+        ->set(['to' => 'a@example.com, b@example.com;', 'subject' => 'S', 'message' => 'M'])
         ->call('send')
         ->assertHasNoErrors();
 
@@ -151,7 +151,7 @@ it('keeps the drawer open with an error toast when the mail server refuses', fun
 
     $test = Livewire::test($component, [$parameter => $model])
         ->set($drawer, true)
-        ->set('to', 'buyer@example.com')
+        ->set(['to' => 'buyer@example.com', 'subject' => 'S', 'message' => 'M'])
         ->call('send')
         ->assertHasNoErrors()
         ->assertSet($drawer, true)

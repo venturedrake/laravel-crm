@@ -202,7 +202,6 @@ dataset('indexComponents', [
         function ($row) {
             $row->pipelineStage?->name;
             $row->labels->count();
-            $row->person?->getPrimaryEmail();
             $row->orders->count();
             $row->orderComplete();
             VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($row);

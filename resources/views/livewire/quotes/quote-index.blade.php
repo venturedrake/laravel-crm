@@ -41,7 +41,7 @@
                 @endphp
                 <div class="flex gap-1 justify-end">
                     @if(! $quote->order && !$quoteError)
-                        <livewire:crm-quote-send :key="'quote-send-'.$quote->id" :$quote />
+                        <x-mary-button wire:click="$dispatch('quote-send', { id: {{ $quote->id }} })" class="btn-sm btn-outline" label="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
                     @endif
                     @can('edit crm quotes')
                         @if($quoteError && ! $quote->isLocked())
@@ -92,6 +92,8 @@
             @endscope
         </x-mary-table>
     </x-mary-card>
+
+    <livewire:crm-quote-send type="menu-item" />
 
     {{-- FILTERS --}}
     <x-mary-drawer wire:model="showFilters" title="Filters" class="lg:w-1/3" right separator with-close-button>

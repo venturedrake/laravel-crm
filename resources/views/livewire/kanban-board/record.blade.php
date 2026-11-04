@@ -1,4 +1,4 @@
-<div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}" data-record-id="{{ $record['id'] }}">
+<div class="card bg-base-100 rounded-lg p-5 mb-3 cursor-grab" id="{{ $record['id'] }}" data-record-id="{{ $record['id'] }}" wire:key="record-{{ $record['id'] }}">
     <div class="grow-1 null">
         <div class="flex justify-between">
             <div>
@@ -43,7 +43,7 @@
                         @canany(['view crm deals', 'edit crm deals', 'delete crm deals'])
                             <x-mary-dropdown class="btn-xs btn-square" right>
                                 @can('edit crm deals')
-                                    @if(!\VentureDrake\LaravelCrm\Models\Deal::find($record['id'])->closed_at)
+                                    @if(! $record['model']->closed_at)
                                         <x-mary-menu-item  wire:click="won({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.won')) }}" />
                                         <x-mary-menu-item  wire:click="lost({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.lost')) }}" />
                                     @else
@@ -67,11 +67,11 @@
                         @canany(['view crm quotes', 'edit crm quotes', 'delete crm quotes'])
                             <x-mary-dropdown class="btn-xs btn-square" right>
                                 @php 
-                                    $quote = \VentureDrake\LaravelCrm\Models\Quote::find($record['id']);
+                                    $quote = $record['model'];
                                     (!\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote)) ? $quoteError = true : $quoteError = false;
                                 @endphp
                                 @if(! $quote->order && !$quoteError)
-                                    <x-mary-menu-item wire:click="send({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
+                                    <x-mary-menu-item wire:click="$dispatch('quote-send', { id: {{ $record['id'] }} })" title="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
                                 @endif
                                 @can('edit crm quotes')
                                     @if(! $quoteError)
@@ -109,9 +109,6 @@
                                     <x-mary-menu-item icon="o-trash" :title="$quote->deleteBlockedReason()" disabled />
                                 @endcan
                             </x-mary-dropdown>
-                            @if(! $quote->order && !$quoteError)
-                                <livewire:crm-quote-send :key="'quote-send-'.$quote->id" :$quote type="menu-item" />
-                            @endif
                         @endcanany
                         @break
                 @endswitch

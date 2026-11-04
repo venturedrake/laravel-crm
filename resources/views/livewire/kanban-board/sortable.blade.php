@@ -1,8 +1,17 @@
 @script
 <script>
     $wire.on('board-loaded', () => {
+        // board-loaded fires on every render, and a second instance would double the drag.
+        const create = (id, options) => {
+            const el = document.getElementById(id);
+
+            if (el && ! Sortable.get(el)) {
+                Sortable.create(el, options);
+            }
+        };
+
         @php foreach($stages as $stage){ @endphp
-        Sortable.create(document.getElementById('{{ $stage['stageRecordsId'] }}'), {
+        create('{{ $stage['stageRecordsId'] }}', {
             group: '{{ $sortableBetweenStages ? $stage['group'] : $stage['id'] }}',
             draggable: '[data-record-id]',
             animation: 0,
@@ -22,8 +31,8 @@
 
                 const recordId = evt.item.id;
 
-                // Stage containers also hold non-record siblings (delete dialogs, quote send
-                // components), so only collect the ids of the record cards themselves.
+                // Stage containers also hold non-record siblings (delete dialogs), so only
+                // collect the ids of the record cards themselves.
                 const orderedIds = el => [].slice.call(el.children)
                     .filter(child => child.dataset.recordId)
                     .map(child => child.dataset.recordId);

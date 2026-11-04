@@ -270,6 +270,7 @@ return [
     'users_imported_successfully' => 'users imported successfully',
     'rows_skipped' => 'rows skipped',
     'import_more' => 'import more',
+    'load_more' => 'load more',
     'view_users' => 'view users',
     'imported' => 'imported',
     'skipped' => 'skipped',

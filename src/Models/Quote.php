@@ -189,6 +189,11 @@ class Quote extends Model
             return $this->orders->isNotEmpty();
         }
 
+        // Set by withExists('orders'), so a board page asks once rather than per card.
+        if (array_key_exists('orders_exists', $this->attributes)) {
+            return (bool) $this->attributes['orders_exists'];
+        }
+
         return $this->orders()->exists();
     }
 

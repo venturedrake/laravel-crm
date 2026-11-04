@@ -1,6 +1,6 @@
 <div class="text-left">
     @if($type == 'button')
-    <x-mary-button @click="$wire.showSendQuote = true" class="btn-sm btn-outline"  label="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
+    <x-mary-button wire:click="open" spinner="open" class="btn-sm btn-outline"  label="{{ ucfirst(__('laravel-crm::lang.send')) }}" />
     @endif
 
     <x-mary-drawer

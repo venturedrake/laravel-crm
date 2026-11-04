@@ -43,7 +43,9 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Auth components** (v2, in `src/Livewire/Auth/`): `Login`, `ForgotPassword`, `ResetPassword` — CRM-specific authentication flows.
 
-**KanbanBoard**: Reusable `src/Livewire/KanbanBoard.php` component with views in `resources/views/livewire/kanban-board/` — used by leads, deals, and quotes board views. Each entity's board component (`Leads/LeadBoard`, `Deals/DealBoard`, `Quotes/QuoteBoard`) wraps `KanbanBoard` with pipeline-specific logic.
+**KanbanBoard**: Reusable `src/Livewire/KanbanBoard.php` component with views in `resources/views/livewire/kanban-board/`. `src/Livewire/PipelineBoard.php` extends it for boards whose columns are pipeline stages: `Leads/LeadBoard`, `Deals/DealBoard` and `Quotes/QuoteBoard` declare their model, card columns and stage actions, and it owns the paging. Each column renders `laravel-crm.board.per_column` cards (env `LARAVEL_CRM_BOARD_PER_COLUMN`, default 20) and `loadMore()` appends the rest without a full render; headers come from one `GROUP BY` over the whole filtered set. `pipeline_stage_order` is usually `NULL` and `NULL` sorts first, so `reorder()` pushes unloaded cards behind the loaded ones after a drag. Keep a card's queries on the page, not per card: a render's query count must depend on the number of stages, not records. `Features/FeatureBoard` extends `KanbanBoard` directly and is not paged.
+
+**Shared Send drawers**: `QuoteSend` and `InvoiceSend` fill their fields in `open()`, not `mount()`. Boards and index pages mount one instance with no record (`type="menu-item"` hides its button) and rows dispatch `quote-send` / `invoice-send` with an `id`; `open()` resolves that through the team scope and authorizes it. Show and related-index pages keep an instance bound to their record, which ignores events for any other.
 
 **Activity sub-components** (v2, in `src/Livewire/Activities/`): `ActivityFeed`, `ActivityIndex` — used on entity show pages and the standalone activity view.
 

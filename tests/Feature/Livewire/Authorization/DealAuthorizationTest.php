@@ -6,6 +6,7 @@ use VentureDrake\LaravelCrm\Livewire\Deals\DealCreate;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealIndex;
 use VentureDrake\LaravelCrm\Livewire\Deals\DealShow;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 
 /**
  * Render-stub subclasses.
@@ -122,9 +123,11 @@ it('allows reordering the deal board with the edit permission', function () {
     $this->actingAsUserWithPermissions(['view crm deals', 'edit crm deals']);
     $record = Deal::create(['title' => 'Authz deal']);
 
+    $stage = Pipeline::where('model', Deal::class)->first()->pipelineStages()->first();
+
     Livewire::test(AuthzDealBoard::class)
-        ->call('onStageChanged', $record->id, 1, [], [])
+        ->call('onStageChanged', $record->id, $stage->id, [], [])
         ->assertOk();
 
-    expect($record->fresh()->pipeline_stage_id)->toBe(1);
+    expect($record->fresh()->pipeline_stage_id)->toBe($stage->id);
 });

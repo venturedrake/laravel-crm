@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -15,6 +16,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Exception\ExceptionInterface as MimeExceptionInterface;
 use VentureDrake\LaravelCrm\Http\Rules\EmailAddressList;
 use VentureDrake\LaravelCrm\Mail\SendQuote;
+use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
@@ -42,6 +44,9 @@ class QuoteSend extends Component
 
     public $type = 'button';
 
+    #[Locked]
+    public bool $shared = false;
+
     /**
      * Returns validation rules.
      *
@@ -56,24 +61,45 @@ class QuoteSend extends Component
         ];
     }
 
-    public function mount($quote)
+    /**
+     * With no quote this is the one instance a board or index page shares across its
+     * rows, opened for a row by the quote-send event. Pre-filling waits for open(),
+     * because rendering the templates here costs every row whether it is sent or not.
+     */
+    public function mount($quote = null)
     {
         $this->quote = $quote;
-        $this->to = ($quote->person) ? ($quote->person->getPrimaryEmail()->address ?? null) : null;
-        $this->subject = view('laravel-crm::mail.templates.send-quote.subject', ['quote' => $this->quote])->render();
-        $this->message = view('laravel-crm::mail.templates.send-quote.message', ['quote' => $this->quote])->render();
+        $this->shared = $quote === null;
     }
 
     #[On('quote-send')]
-    public function toggle($id)
+    public function open(?int $id = null): void
     {
-        if ($this->quote->id === $id) {
-            $this->showSendQuote = ! $this->showSendQuote;
+        if (! $this->shared && $id !== null && $id !== $this->quote->id) {
+            return;
         }
+
+        if (! $quote = $this->shared ? Quote::find($id) : $this->quote) {
+            return;
+        }
+
+        $this->authorize('view', $quote);
+
+        $this->resetValidation();
+        $this->reset('cc');
+
+        $this->quote = $quote;
+        $this->to = ($quote->person) ? ($quote->person->getPrimaryEmail()->address ?? null) : null;
+        $this->subject = view('laravel-crm::mail.templates.send-quote.subject', ['quote' => $quote])->render();
+        $this->message = view('laravel-crm::mail.templates.send-quote.message', ['quote' => $quote])->render();
+
+        $this->showSendQuote = true;
     }
 
     public function send()
     {
+        abort_unless($this->quote, 404);
+
         $this->authorize('update', $this->quote);
 
         $this->validate();

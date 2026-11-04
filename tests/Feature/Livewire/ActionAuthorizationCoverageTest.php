@@ -120,7 +120,6 @@ const SAFE_METHODS = [
     'RelatedDeals::add', 'RelatedDeals::remove',
 
     // In-memory UI state toggles / draft rows on individual components.
-    'QuoteSend::toggle',
     'SettingEdit::addPhone', 'SettingEdit::deletePhone',
 
     // In-memory draft rows contributed by the shared Has*Common traits.
@@ -176,8 +175,11 @@ const SAFE_METHOD_DELEGATES = ['ProductCreate::createProduct'];
  * non-mutating method has to be pinned here rather than silently going uncovered.
  */
 const GUARDED_WITHOUT_PERSISTENCE_SIGNAL = [
+    'InvoiceSend::open',
     'OrganizationImport::startImport',
     'PersonImport::startImport',
+    'PipelineBoard::loadMore',
+    'QuoteSend::open',
     'TemplateSettings::save',
     'UserImport::startImport',
 ];

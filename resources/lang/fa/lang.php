@@ -216,6 +216,7 @@ return [
     'send_invite' => 'ارسال دعوت‌نامه',
     'create_user' => 'ایجاد کاربر',
     'import_users' => 'وارد کردن کاربران',
+    'load_more' => 'بارگذاری بیشتر',
     'import_people' => 'وارد کردن اشخاص',
     'import_organizations' => 'وارد کردن سازمان‌ها',
     'back_to_people' => 'بازگشت به اشخاص',
