@@ -34,6 +34,26 @@ test('portal quote show renders 200 for a valid signed link', function () {
     $response->assertDontSee('card shadow-sm');
 });
 
+test('portal quote subtitle shows the number from the email, not the reference', function (?string $reference) {
+    $quote = Quote::create([
+        'title' => 'Sample quote',
+        'reference' => $reference,
+        'currency' => 'USD',
+    ]);
+
+    $response = $this->get(URL::temporarySignedRoute(
+        'laravel-crm.portal.quotes.show',
+        now()->addDays(7),
+        ['quote' => $quote->external_id]
+    ));
+
+    $response->assertOk();
+    $response->assertSee('Quote · '.$quote->quote_id, false);
+})->with([
+    'with a reference' => ['REF-3D00A599'],
+    'without a reference' => [null],
+]);
+
 test('portal quote show rejects an unsigned link', function () {
     $quote = Quote::create([
         'title' => 'Unsigned',

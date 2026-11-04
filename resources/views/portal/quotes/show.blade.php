@@ -30,7 +30,7 @@
 
     <x-mary-header
         :title="money($quote->total, $quote->currency).' '.$quote->currency"
-        :subtitle="ucfirst(__('laravel-crm::lang.quote')).($quote->reference ? ' · '.$quote->reference : '')"
+        :subtitle="ucfirst(__('laravel-crm::lang.quote')).' · '.$quote->quote_id"
     >
         <x-slot:actions>
             <x-mary-badge :value="$statusLabel" class="{{ $statusClass }}" />

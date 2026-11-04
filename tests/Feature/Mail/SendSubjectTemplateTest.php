@@ -119,8 +119,8 @@ function renderSendSubject(string $view, string $variable, $model, ?string $orga
 dataset('send subjects', [
     'quote' => [
         'send-quote', 'quote',
-        fn () => new Quote(['reference' => 'REF-3D00A599']),
-        'Quote REF-3D00A599 from Venture Drake',
+        fn () => new Quote(['quote_id' => 'QU-3002']),
+        'Quote QU-3002 from Venture Drake',
         '.',
     ],
     'invoice' => [
@@ -152,6 +152,48 @@ it('drops the recipient clause when there is neither', function (string $view, s
         ->toBe($prefix.$suffix)
         ->not->toContain(' for');
 })->with('send subjects');
+
+/*
+ * The quote email used to print `reference`, which is optional and blank on most
+ * quotes, so the subject read "Quote  from ..." and the message "Here's quote  for ...".
+ * The number is what the customer sees on the quote itself, reference or not.
+ */
+dataset('quote references', [
+    'with a reference' => ['REF-3D00A599'],
+    'without a reference' => [null],
+]);
+
+it('names the quote by its number in the subject', function (?string $reference) {
+    $quote = new Quote(['quote_id' => 'QU-3002', 'reference' => $reference]);
+
+    $subject = renderSendSubject('send-quote', 'quote', $quote, 'CedarPoint Financial', null);
+
+    expect($subject)->toBe('Quote QU-3002 from Venture Drake for CedarPoint Financial.')
+        ->not->toContain('  ');
+})->with('quote references');
+
+it('names the quote by its number in the message', function (?string $reference) {
+    $quote = new Quote(['quote_id' => 'QU-3002', 'reference' => $reference, 'total' => 110, 'currency' => 'USD']);
+
+    $message = view('laravel-crm::mail.templates.send-quote.message', ['quote' => $quote])->render();
+
+    expect($message)
+        ->toStartWith("Hi,\n\nHere's quote QU-3002 for ")
+        ->toContain("Thanks,\nVenture Drake")
+        ->not->toContain('REF-3D00A599')
+        ->not->toContain('quote  for');
+})->with('quote references');
+
+it('falls back to the prefix and number when a quote has no stored quote id', function () {
+    app('laravel-crm.settings')->set('quote_prefix', 'QU-');
+    app('laravel-crm.settings')->forgetCache();
+
+    $quote = new Quote;
+    $quote->number = 3002;
+
+    expect(renderSendSubject('send-quote', 'quote', $quote, 'CedarPoint Financial', null))
+        ->toBe('Quote QU-3002 from Venture Drake for CedarPoint Financial.');
+});
 
 dataset('send components', [
     'quote' => [SendSubjectQuoteSend::class, 'quote', fn ($person) => Quote::create(['title' => 'Q', 'currency' => 'USD', 'total' => 110, 'person_id' => $person->id])],
