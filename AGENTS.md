@@ -73,7 +73,7 @@ Traits in `src/Traits/` are shared across Livewire components and models:
 - `NotifyToast` — toast notification helper (used alongside `Mary\Traits\Toast`)
 - `SearchFilters` — reusable search/filter logic for index components
 - `ResetsPaginationWhenPropsChanges` — auto-reset pagination when filter properties change
-- `ClearsProperties` — bulk-clear component properties
+- `ClearsProperties` — the `clear()` behind every filter drawer's Reset button. It resets every public property unless `clearableProperties()` narrows it; boards do, because they also keep `$sortable` and `$renderCount`. `tests/Feature/Livewire/FilterDrawerContractTest.php` fails the build if a component's drawer calls something the component doesn't have
 - `HasCrmFields` / `HasCustomFormFields` — attach user-defined custom fields to models / render them in Livewire forms (seeded via `laravelcrm:fields`)
 
 **User model traits** in `src/Traits/` (add to host app `App\Models\User`):

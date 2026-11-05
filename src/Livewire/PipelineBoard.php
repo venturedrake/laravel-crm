@@ -15,6 +15,7 @@ use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 
 /**
  * A board whose columns are the stages of a pipeline, paged per column.
@@ -23,11 +24,12 @@ use VentureDrake\LaravelCrm\Models\PipelineStage;
  * its first `laravel-crm.board.per_column` cards and fetches the rest on demand.
  * The query count of a render depends on the number of stages, not of records.
  *
- * Expects the using component to declare `$search`, `$user_id` and `$label_id`.
+ * Expects the using component to declare `$search`, `$user_id`, `$label_id` and
+ * `$showFilters`.
  */
 abstract class PipelineBoard extends KanbanBoard
 {
-    use AuthorizesRequests, HasUserOwnerFilter, SearchesEncryptableContacts, Toast;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, SearchesEncryptableContacts, Toast;
 
     public $layout = 'board';
 
@@ -347,11 +349,31 @@ abstract class PipelineBoard extends KanbanBoard
         return $summaries;
     }
 
+    /**
+     * What decides which cards the board shows.
+     *
+     * @return array<int, string>
+     */
+    protected function filterProperties(): array
+    {
+        return ['search', 'user_id', 'label_id'];
+    }
+
     public function updated($property): void
     {
-        if (in_array(Str::before($property, '.'), ['search', 'user_id', 'label_id'], true)) {
+        if (in_array(Str::before($property, '.'), $this->filterProperties(), true)) {
             $this->stageLimits = [];
         }
+    }
+
+    /**
+     * Not everything: a board also keeps what mount() was given and the render count
+     * a drag is checked against, and losing those would break dragging. Emptying
+     * stageLimits sends every column back to its first page.
+     */
+    protected function clearableProperties(): array
+    {
+        return [...$this->filterProperties(), 'userSearch', 'showFilters', 'stageLimits'];
     }
 
     /**

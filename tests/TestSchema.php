@@ -54,7 +54,6 @@ class TestSchema
                 // the BelongsToTeams global scope on Team requires it.
                 $table->unsignedBigInteger('team_id')->nullable();
                 $table->unsignedBigInteger('user_id');
-                $table->unsignedBigInteger('team_owner_id')->nullable();
                 $table->string('name');
                 $table->timestamps();
                 $table->softDeletes();

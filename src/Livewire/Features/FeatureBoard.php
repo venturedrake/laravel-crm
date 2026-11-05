@@ -9,10 +9,11 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\KanbanBoard;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureStatus;
+use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 
 class FeatureBoard extends KanbanBoard
 {
-    use AuthorizesRequests, Toast;
+    use AuthorizesRequests, ClearsProperties, Toast;
 
     public $layout = 'board';
 
@@ -53,6 +54,14 @@ class FeatureBoard extends KanbanBoard
         $this->authorize('update', $feature);
 
         $feature->update(['feature_status_id' => $stageId]);
+    }
+
+    /**
+     * Not everything: resetting what mount() was given would break dragging.
+     */
+    protected function clearableProperties(): array
+    {
+        return ['search'];
     }
 
     public function updatedSearch()

@@ -1184,3 +1184,102 @@ it('leaves converted leads off the board and out of the counts', function () {
     expect(boardCardIds($board, $first->id))->toBe([$open])
         ->and(boardColumn($board, $first->id)['count'])->toBe(1);
 });
+
+it('resets a filtered board to every card', function (string $component, string $model, string $permission, string $amount) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $label = Label::create(['name' => 'Hot', 'hex' => 'ff0000']);
+    $owned = boardSeed($model, $first->id, 2, ['title' => 'Needle', 'user_owner_id' => auth()->id(), $amount => 100, 'currency' => 'USD']);
+    boardSeed($model, $first->id, 1, ['title' => 'Other', $amount => 200, 'currency' => 'USD']);
+    boardSeed($model, $second->id, 3, ['title' => 'Other', $amount => 300, 'currency' => 'USD']);
+
+    foreach ($owned as $id) {
+        $model::find($id)->labels()->attach($label);
+    }
+
+    $unfiltered = collect(Livewire::test($component)->viewData('stages'))
+        ->map(fn (array $stage) => [$stage['count'], $stage['totals']])
+        ->all();
+
+    $board = Livewire::test($component)
+        ->set('search', 'Needle')
+        ->set('user_id', [auth()->id()])
+        ->set('label_id', [$label->id])
+        ->set('userSearch', 'someone')
+        ->set('showFilters', true);
+
+    expect(boardColumn($board, $first->id)['count'])->toBe(2)
+        ->and(boardColumn($board, $second->id)['count'])->toBe(0)
+        ->and($board->viewData('filterCount'))->toBe(2);
+
+    $board->call('clear')
+        ->assertOk()
+        ->assertSet('search', '')
+        ->assertSet('user_id', [])
+        ->assertSet('label_id', [])
+        ->assertSet('userSearch', '')
+        ->assertSet('showFilters', false);
+
+    expect(collect($board->viewData('stages'))->map(fn (array $stage) => [$stage['count'], $stage['totals']])->all())->toBe($unfiltered)
+        ->and(boardColumn($board, $first->id)['count'])->toBe(3)
+        ->and(boardColumn($board, $second->id)['count'])->toBe(3)
+        ->and($board->viewData('filterCount'))->toBe(0);
+})->with('boards');
+
+it('sends every column back to its first page on reset', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $inFirst = boardSeed($model, $first->id, BOARD_PAGE * 2);
+    $inSecond = boardSeed($model, $second->id, BOARD_PAGE * 2);
+
+    $board = Livewire::test($component)->set('search', 'Card');
+
+    boardLoadMore($board, $first->id);
+    boardLoadMore($board, $second->id);
+
+    expect($board->get('stageLimits'))->toMatchArray([
+        $first->id => BOARD_PAGE * 2,
+        $second->id => BOARD_PAGE * 2,
+    ]);
+
+    $board->call('clear');
+
+    expect($board->get('stageLimits'))->toMatchArray([
+        $first->id => BOARD_PAGE,
+        $second->id => BOARD_PAGE,
+    ])
+        ->and(boardCardIds($board, $first->id))->toBe(array_slice($inFirst, 0, BOARD_PAGE))
+        ->and(boardCardIds($board, $second->id))->toBe(array_slice($inSecond, 0, BOARD_PAGE))
+        ->and(boardColumn($board, $first->id)['hasMore'])->toBeTrue()
+        ->and(boardColumn($board, $first->id)['count'])->toBe(BOARD_PAGE * 2);
+
+    // The next page follows the first, rather than repeating what was loaded before.
+    expect(boardLoadMore($board, $first->id))->toBe(array_slice($inFirst, BOARD_PAGE));
+})->with('boards');
+
+it('leaves a reset board able to drag', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $card = boardSeed($model, $first->id, 1)[0];
+
+    $board = Livewire::test($component, ['sortable' => true, 'sortableBetweenStages' => false])
+        ->set('search', 'Card');
+
+    $renders = $board->get('renderCount');
+
+    $board->call('clear')
+        ->assertSet('sortable', true)
+        ->assertSet('sortableBetweenStages', false)
+        ->assertSet('layout', 'board');
+
+    // The count a drag is checked against only ever goes up, so a client that picked a
+    // card up before the reset can't be mistaken for one that saw the latest render.
+    expect($board->get('renderCount'))->toBe($renders + 1);
+
+    $board->call('onStageChanged', $card, $second->id, [], [$card], $first->id, $board->get('renderCount'));
+
+    expect($model::find($card)->pipeline_stage_id)->toBe($second->id);
+})->with('boards');
