@@ -387,6 +387,8 @@ return [
     'mark_as_rejected' => 'علامت‌گذاری به عنوان رد شده',
     'quote_accepted' => 'پیش‌فاکتور پذیرفته شد',
     'quote_rejected' => 'پیش‌فاکتور رد شد',
+    'invalid_contact_email' => 'یک آدرس ایمیل معتبر وارد کنید، مانند name@example.com',
+    'invalid_phone_number' => 'یک شماره تلفن معتبر وارد کنید، مانند ‎+61 2 9999 9999',
     'quote_already_accepted' => 'این پیش‌فاکتور قبلاً پذیرفته شده است',
     'quote_already_rejected' => 'این پیش‌فاکتور قبلاً رد شده است',
     'quote_already_ordered' => 'برای این پیش‌فاکتور قبلاً سفارش ثبت شده است',

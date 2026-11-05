@@ -89,6 +89,7 @@ Traits in `src/Traits/` are shared across Livewire components and models:
 - `SendsCrmPasswordReset` — CRM-branded password reset emails
 
 Form-specific traits live in `src/Livewire/Traits/`:
+- Contact emails and phones are validated with `Http/Rules/ContactEmail` (`email:rfc`, never DNS) and `Http/Rules/PhoneNumber` (lenient, in one place), each with its own field message. They apply to the `emails.*.address` / `phones.*.number` lists on people and organizations and the inline `email` / `phone` on lead, deal, quote and order forms; API requests take them from `Api/V2/Concerns/ValidatesContactDetails`
 - `HasPersonSuggest`, `HasOrganizationSuggest` — typeahead/autocomplete suggestions used by lead/deal/quote create+edit forms
 - `SearchesEncryptableContacts` — enables free-text search over encrypted name/email/phone fields in index components
 

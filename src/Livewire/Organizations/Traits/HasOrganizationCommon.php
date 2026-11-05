@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Livewire\Organizations\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
+use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Industry;
 use VentureDrake\LaravelCrm\Models\Organization;
@@ -91,6 +93,8 @@ trait HasOrganizationCommon
             'name' => 'required|max:255',
             'phones.*.type' => 'required_with:phones.*.number',
             'emails.*.type' => 'required_with:emails.*.address',
+            'phones.*.number' => ['nullable', new PhoneNumber],
+            'emails.*.address' => ['nullable', new ContactEmail],
         ], $this->customFieldRules());
     }
 

@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
+use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
 
 class UpdateOrganizationRequest extends FormRequest
 {
@@ -27,6 +29,8 @@ class UpdateOrganizationRequest extends FormRequest
             'name' => 'required|max:255',
             'phones.*.type' => 'required_with:phones.*.number',
             'emails.*.type' => 'required_with:emails.*.address',
+            'phones.*.number' => ['nullable', new PhoneNumber],
+            'emails.*.address' => ['nullable', new ContactEmail],
         ];
     }
 

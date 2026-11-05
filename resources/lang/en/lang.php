@@ -429,6 +429,8 @@ return [
     'quote_locked_accepted' => 'this quote has been accepted - unaccept it before editing',
     'quote_locked_ordered' => 'this quote has an order, so it can no longer be edited or unaccepted',
     'quote_delete_ordered' => "this quote has an order and can't be deleted",
+    'invalid_contact_email' => 'enter a valid email address, like name@example.com',
+    'invalid_phone_number' => 'enter a valid phone number, like +61 2 9999 9999',
     'quote_already_accepted' => 'this quote has already been accepted',
     'quote_already_rejected' => 'this quote has already been rejected',
     'quote_already_ordered' => 'this quote has already been ordered',

@@ -3,11 +3,14 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Requests\Api\V2\Concerns\ValidatesContactDetails;
 use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 use VentureDrake\LaravelCrm\Http\Rules\Api\V2\ScopedExists;
 
 class UpdateLeadRequest extends FormRequest
 {
+    use ValidatesContactDetails;
+
     public function authorize(): bool
     {
         return true;
@@ -17,7 +20,7 @@ class UpdateLeadRequest extends FormRequest
     {
         $prefix = config('laravel-crm.db_table_prefix');
 
-        return [
+        return array_merge([
             'title' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'amount' => ['nullable', 'numeric', 'min:0'],
@@ -30,6 +33,6 @@ class UpdateLeadRequest extends FormRequest
             'user_owner_id' => ['nullable', 'integer', 'exists:users,id', new OwnerInCurrentTeam],
             'labels' => ['nullable', 'array'],
             'labels.*' => ['string', 'uuid', ScopedExists::for($prefix.'labels', 'external_id')],
-        ];
+        ], $this->contactDetailRules());
     }
 }

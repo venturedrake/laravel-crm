@@ -3,10 +3,13 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Requests\Api\V2\Concerns\ValidatesContactDetails;
 use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 
 class UpdateOrganizationRequest extends FormRequest
 {
+    use ValidatesContactDetails;
+
     public function authorize(): bool
     {
         return true;
@@ -14,7 +17,7 @@ class UpdateOrganizationRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return array_merge([
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'vat_number' => ['nullable', 'string', 'max:255'],
@@ -26,6 +29,6 @@ class UpdateOrganizationRequest extends FormRequest
             'industry_id' => ['nullable', 'integer'],
             'timezone_id' => ['nullable', 'integer'],
             'user_owner_id' => ['nullable', 'integer', 'exists:users,id', new OwnerInCurrentTeam],
-        ];
+        ], $this->contactDetailRules());
     }
 }

@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
+use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -28,6 +30,8 @@ class StoreOrderRequest extends FormRequest
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
+            'phone' => ['nullable', new PhoneNumber],
+            'email' => ['nullable', new ContactEmail],
         ];
     }
 

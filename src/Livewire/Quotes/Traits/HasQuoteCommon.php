@@ -3,6 +3,8 @@
 namespace VentureDrake\LaravelCrm\Livewire\Quotes\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
+use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -108,6 +110,8 @@ trait HasQuoteCommon
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
+            'phone' => ['nullable', new PhoneNumber],
+            'email' => ['nullable', new ContactEmail],
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
         ], $this->lineItemQuantityRules(), $this->pdfTemplateRules(), $this->customFieldRules());

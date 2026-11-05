@@ -4,6 +4,8 @@ namespace VentureDrake\LaravelCrm\Livewire\People\Traits;
 
 use Carbon\Carbon;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
+use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\PersonService;
@@ -79,6 +81,8 @@ trait HasPersonCommon
             'first_name' => 'required|max:255',
             'phones.*.type' => 'required_with:phones.*.number',
             'emails.*.type' => 'required_with:emails.*.address',
+            'phones.*.number' => ['nullable', new PhoneNumber],
+            'emails.*.address' => ['nullable', new ContactEmail],
         ], $this->customFieldRules());
     }
 
