@@ -5,12 +5,13 @@ namespace VentureDrake\LaravelCrm\Livewire\Lunches;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
 use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class LunchItem extends Component
 {
-    use AuthorizesRequests, Toast;
+    use AuthorizesRequests, HasGuestSearch, Toast;
 
     public Lunch $lunch;
 
@@ -64,6 +65,8 @@ class LunchItem extends Component
 
     public function edit(): void
     {
+        $this->loadSelectedGuests();
+
         $this->editing = true;
     }
 
@@ -124,6 +127,11 @@ class LunchItem extends Component
         $this->dispatch('activity-logged');
     }
 
+    protected function authorizeGuestSearch(): void
+    {
+        $this->authorize('update', $this->lunch);
+    }
+
     private function normalizeDatetime(?string $value): ?string
     {
         return $value ? str_replace('T', ' ', $value) : null;
@@ -131,8 +139,6 @@ class LunchItem extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.lunches.lunch-item', [
-            'persons' => Person::get()->map(fn ($p) => ['id' => $p->id, 'name' => $p->name]),
-        ]);
+        return view('laravel-crm::livewire.lunches.lunch-item');
     }
 }

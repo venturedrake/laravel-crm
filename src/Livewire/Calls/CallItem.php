@@ -5,12 +5,13 @@ namespace VentureDrake\LaravelCrm\Livewire\Calls;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class CallItem extends Component
 {
-    use AuthorizesRequests, Toast;
+    use AuthorizesRequests, HasGuestSearch, Toast;
 
     public Call $call;
 
@@ -64,6 +65,8 @@ class CallItem extends Component
 
     public function edit(): void
     {
+        $this->loadSelectedGuests();
+
         $this->editing = true;
     }
 
@@ -124,6 +127,11 @@ class CallItem extends Component
         $this->dispatch('activity-logged');
     }
 
+    protected function authorizeGuestSearch(): void
+    {
+        $this->authorize('update', $this->call);
+    }
+
     private function normalizeDatetime(?string $value): ?string
     {
         return $value ? str_replace('T', ' ', $value) : null;
@@ -131,8 +139,6 @@ class CallItem extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.calls.call-item', [
-            'persons' => Person::get()->map(fn ($p) => ['id' => $p->id, 'name' => $p->name]),
-        ]);
+        return view('laravel-crm::livewire.calls.call-item');
     }
 }

@@ -51,7 +51,7 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Activity sub-components** (v2, in `src/Livewire/Activities/`): `ActivityFeed`, `ActivityIndex` — used on entity show pages and the standalone activity view.
 
-**Inline activity sub-components** (v2): Each activity type has `*Item` (single record row) and `*Related` (list embedded in a show page) components in their own namespace — `Calls/`, `Files/`, `Lunches/`, `Meetings/`, `Notes/`, `Tasks/`. These are v2 replacements for the legacy `Http/Livewire/Live*` components.
+**Inline activity sub-components** (v2): Each activity type has `*Item` (single record row) and `*Related` (list embedded in a show page) components in their own namespace — `Calls/`, `Files/`, `Lunches/`, `Meetings/`, `Notes/`, `Tasks/`. These are v2 replacements for the legacy `Http/Livewire/Live*` components. `ActivityTabs` mounts every panel except the Activity tab and the pinned notes as a `lazy` component, so a record page loads a panel only when its tab comes into view. Never put a people list in a panel's `render()`: one activity row per timeline entry renders too. The call, meeting and lunch Guests picker is `HasGuestSearch`: `searchGuests()` returns nothing for an empty term and at most `GUEST_SEARCH_LIMIT` matches, plus the guests already chosen, which Mary's picker needs in its options.
 
 **Related index sub-components**: `Deliveries/DeliveryRelatedIndex`, `Invoices/InvoiceRelatedIndex`, `Orders/OrderRelatedIndex`, `PurchaseOrders/PurchaseOrderRelatedIndex` — embedded lists of related records on entity show pages.
 

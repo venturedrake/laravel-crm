@@ -59,7 +59,7 @@
                         <x-mary-datetime wire:model="start_at" label="{{ ucfirst(__('laravel-crm::lang.start_at')) }}" type="datetime-local" x-on:change="snap15($event.target)" />
                         <x-mary-datetime wire:model="finish_at" label="{{ ucfirst(__('laravel-crm::lang.finish_at')) }}" type="datetime-local" x-on:change="snap15($event.target)" />
                     </div>
-                    <x-mary-choices-offline wire:model="guests" label="{{ ucfirst(__('laravel-crm::lang.guests')) }}" :options="$persons" placeholder="Search ..." searchable />
+                    <x-mary-choices wire:model="guests" label="{{ ucfirst(__('laravel-crm::lang.guests')) }}" :options="$guestOptions" search-function="searchGuests" :min-chars="1" placeholder="Search ..." searchable />
                     <x-mary-input wire:model="location" label="{{ ucfirst(__('laravel-crm::lang.location')) }}" />
                     <x-mary-textarea wire:model="description" label="{{ ucfirst(__('laravel-crm::lang.description')) }}" rows="5" />
                 </div>

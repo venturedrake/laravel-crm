@@ -25,3 +25,24 @@ test('encryption enabled stores encrypted values', function () {
     expect($person->fresh()->first_name)->toBe('Jane');
     expect($person->fresh()->last_name)->toBe('Doe');
 });
+
+test('reading a null encrypted field raises no deprecation', function () {
+    config()->set('laravel-crm.encrypt_db_fields', true);
+
+    $person = Person::create(['first_name' => 'Jane'])->fresh();
+
+    $deprecations = [];
+    set_error_handler(function (int $level, string $message) use (&$deprecations) {
+        $deprecations[] = $message;
+
+        return true;
+    }, E_DEPRECATED);
+
+    try {
+        expect($person->last_name)->toBeNull();
+    } finally {
+        restore_error_handler();
+    }
+
+    expect($deprecations)->toBeEmpty();
+});

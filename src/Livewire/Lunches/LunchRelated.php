@@ -6,12 +6,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
 use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Person;
 
 class LunchRelated extends Component
 {
-    use AuthorizesRequests, Toast;
+    use AuthorizesRequests, HasGuestSearch, Toast;
 
     public $model = null;
 
@@ -143,6 +144,11 @@ class LunchRelated extends Component
         }
     }
 
+    protected function authorizeGuestSearch(): void
+    {
+        $this->authorize('create', Lunch::class);
+    }
+
     private function normalizeDatetime(?string $value): ?string
     {
         return $value ? str_replace('T', ' ', $value) : null;
@@ -150,7 +156,7 @@ class LunchRelated extends Component
 
     private function resetFields(): void
     {
-        $this->reset('name', 'description', 'start_at', 'finish_at', 'location', 'guests');
+        $this->reset('name', 'description', 'start_at', 'finish_at', 'location', 'guests', 'guestOptions');
         $this->user_owner_id = auth()->user()->id;
         $this->user_assigned_id = auth()->user()->id;
     }
@@ -159,9 +165,6 @@ class LunchRelated extends Component
     {
         $this->getLunches();
 
-        return view('laravel-crm::livewire.lunches.lunch-related', [
-            'users' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false),
-            'persons' => Person::get()->map(fn ($p) => ['id' => $p->id, 'name' => $p->name]),
-        ]);
+        return view('laravel-crm::livewire.lunches.lunch-related');
     }
 }

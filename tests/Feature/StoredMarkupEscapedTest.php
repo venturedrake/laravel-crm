@@ -88,7 +88,8 @@ test('the classic invoice PDF shows its terms and payment instructions as text',
 test('a note on a person page is shown as text', function () {
     Gate::before(fn () => true);
 
-    $this->person->notes()->create(['content' => XSS_PAYLOAD, 'user_created_id' => auth()->id()]);
+    // Pinned, because the Notes tab only loads once it is opened.
+    $this->person->notes()->create(['content' => XSS_PAYLOAD, 'pinned' => 1, 'user_created_id' => auth()->id()]);
 
     $this->get(route('laravel-crm.people.show', $this->person))
         ->assertOk()
