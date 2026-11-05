@@ -448,6 +448,7 @@ use VentureDrake\LaravelCrm\Support\Modules;
 use VentureDrake\LaravelCrm\Support\RouteDomain;
 use VentureDrake\LaravelCrm\Support\XeroIntegration;
 use VentureDrake\LaravelCrm\View\Components\Addresses;
+use VentureDrake\LaravelCrm\View\Components\BoardCardMenu;
 use VentureDrake\LaravelCrm\View\Components\CustomFields;
 use VentureDrake\LaravelCrm\View\Components\CustomFieldValues;
 use VentureDrake\LaravelCrm\View\Components\DeleteConfirm;
@@ -922,6 +923,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::componentNamespace('VentureDrake\\LaravelCrm\\View\\Components', 'crm');
         Blade::component('crm-index-toggle', IndexToggle::class);
         Blade::component('crm-delete-confirm', DeleteConfirm::class);
+        Blade::component('crm-board-card-menu', BoardCardMenu::class);
         Blade::component('crm-header', Header::class);
         Blade::component('crm-phones', Phones::class);
         Blade::component('crm-emails', Emails::class);

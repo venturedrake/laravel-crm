@@ -122,7 +122,7 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 - **Icons**: ForkAwesome (`<x-forkawesome-*>`), Boxicons (`<x-bx-*>`), FontAwesome (`<x-far-*>` / `<x-fas-*>`)
 - **JS globals**: `sortablejs` (kanban drag-and-drop), `vanilla-picker` (color picker), `Chart.js` (dashboard charts) on `window`
 - **Rich text**: TinyMCE 7 for email template and campaign editors
-- **Blade components** with `crm-` prefix: `crm-header`, `crm-delete-confirm`, `crm-index-toggle`, `crm-phones`, `crm-emails`, `crm-addresses`, `crm-custom-fields`, `crm-note`, `crm-timeline-item`
+- **Blade components** with `crm-` prefix: `crm-header`, `crm-delete-confirm`, `crm-board-card-menu`, `crm-index-toggle`, `crm-phones`, `crm-emails`, `crm-addresses`, `crm-custom-fields`, `crm-note`, `crm-timeline-item`
 - All translatable strings: `ucfirst(__('laravel-crm::lang.key'))` — add keys to `resources/lang/`
 - Theme: two DaisyUI themes (`light` / `dark`); primary `#05b3a9`, secondary `#6505B3`, accent `#B34105`
 

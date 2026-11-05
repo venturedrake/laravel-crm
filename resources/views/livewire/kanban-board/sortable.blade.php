@@ -52,6 +52,8 @@
         create('{{ $stage['stageRecordsId'] }}', {
             group: '{{ $sortableBetweenStages ? $stage['group'] : $stage['id'] }}',
             draggable: '[data-record-id]',
+            filter: '[data-board-menu]',
+            preventOnFilter: false,
             animation: 0,
             ghostClass: 'bg-primary',
 

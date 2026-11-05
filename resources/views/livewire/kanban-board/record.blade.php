@@ -18,7 +18,7 @@
                 @switch($model)
                     @case('lead')
                         @canany(['view crm leads', 'edit crm leads', 'delete crm leads'])
-                            <x-mary-dropdown class="btn-xs btn-square" right>
+                            <x-crm-board-card-menu>
                                 @can('edit crm leads')
                                     <li>
                                         <a class="my-0.5 py-1.5 px-4 hover:text-inherit whitespace-nowrap" href="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $record['id']]) }}" wire:navigate draggable="false">
@@ -35,13 +35,13 @@
                                 @can('delete crm leads')
                                     <x-mary-menu-item onclick="modalDeleteLead{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
                                 @endcan
-                            </x-mary-dropdown>
+                            </x-crm-board-card-menu>
                         @endcanany
                     @break
 
                     @case('deal')
                         @canany(['view crm deals', 'edit crm deals', 'delete crm deals'])
-                            <x-mary-dropdown class="btn-xs btn-square" right>
+                            <x-crm-board-card-menu>
                                 @can('edit crm deals')
                                     @if(! ($record['model'] ?? \VentureDrake\LaravelCrm\Models\Deal::find($record['id']))->closed_at)
                                         <x-mary-menu-item  wire:click="won({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.won')) }}" />
@@ -59,13 +59,13 @@
                                 @can('delete crm deals')
                                     <x-mary-menu-item onclick="modalDeleteDeal{{ $record['id'] }}.showModal()" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
                                 @endcan
-                            </x-mary-dropdown>
+                            </x-crm-board-card-menu>
                         @endcanany
                         @break
 
                     @case('quote')
                         @canany(['view crm quotes', 'edit crm quotes', 'delete crm quotes'])
-                            <x-mary-dropdown class="btn-xs btn-square" right>
+                            <x-crm-board-card-menu>
                                 @php 
                                     $quote = $record['model'] ?? \VentureDrake\LaravelCrm\Models\Quote::find($record['id']);
                                     (!\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote)) ? $quoteError = true : $quoteError = false;
@@ -108,7 +108,7 @@
                                 @elsecan('delete crm quotes')
                                     <x-mary-menu-item icon="o-trash" :title="$quote->deleteBlockedReason()" disabled />
                                 @endcan
-                            </x-mary-dropdown>
+                            </x-crm-board-card-menu>
                         @endcanany
                         @break
                 @endswitch

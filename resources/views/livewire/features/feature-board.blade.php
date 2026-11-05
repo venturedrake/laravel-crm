@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="ml-2">
                                         @canany(['view crm features', 'edit crm features', 'delete crm features'])
-                                            <x-mary-dropdown class="btn-xs btn-square" right>
+                                            <x-crm-board-card-menu>
                                                 @can('view crm features')
                                                     <x-mary-menu-item link="{{ route('laravel-crm.features.show', ['feature' => $record['id']]) }}" title="{{ ucfirst(__('laravel-crm::lang.view')) }}" />
                                                 @endcan
@@ -43,7 +43,7 @@
                                                 @can('delete crm features')
                                                     <x-mary-menu-item wire:click="delete({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.delete')) }}" />
                                                 @endcan
-                                            </x-mary-dropdown>
+                                            </x-crm-board-card-menu>
                                         @endcanany
                                     </div>
                                 </div>
