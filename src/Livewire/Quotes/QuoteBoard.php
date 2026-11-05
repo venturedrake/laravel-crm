@@ -2,11 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use VentureDrake\LaravelCrm\Livewire\PipelineBoard;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\QuoteStateService;
 
 class QuoteBoard extends PipelineBoard
 {
@@ -22,6 +22,10 @@ class QuoteBoard extends PipelineBoard
     public ?array $label_id = [];
 
     public bool $showFilters = false;
+
+    protected $listeners = [
+        'refreshQuote' => '$refresh',
+    ];
 
     protected function boardModel(): string
     {
@@ -89,10 +93,7 @@ class QuoteBoard extends PipelineBoard
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'accepted_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->stageIdNamed('Accepted'),
-            ]);
+            app(QuoteStateService::class)->accept($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_accepted')));
         }
@@ -103,10 +104,7 @@ class QuoteBoard extends PipelineBoard
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'rejected_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->stageIdNamed('Rejected'),
-            ]);
+            app(QuoteStateService::class)->reject($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_rejected')));
         }
@@ -118,16 +116,11 @@ class QuoteBoard extends PipelineBoard
             $this->authorize('update', $quote);
 
             // An order was made from what was accepted.
-            if ($quote->hasOrders()) {
+            if (! app(QuoteStateService::class)->unaccept($quote)) {
                 $this->error(ucfirst(trans('laravel-crm::lang.quote_locked_ordered')));
 
                 return;
             }
-
-            $quote->update([
-                'accepted_at' => null,
-                'pipeline_stage_id' => $this->stageIdNamed('Draft'),
-            ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unaccepted')));
         }
@@ -138,10 +131,7 @@ class QuoteBoard extends PipelineBoard
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'rejected_at' => null,
-                'pipeline_stage_id' => $this->stageIdNamed('Draft'),
-            ]);
+            app(QuoteStateService::class)->unreject($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unrejected')));
         }

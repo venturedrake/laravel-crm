@@ -3,11 +3,11 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers\Portal;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\QuoteStateService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
@@ -22,7 +22,7 @@ class QuoteController extends Controller
      */
     private $settingService;
 
-    public function __construct(SettingService $settingService)
+    public function __construct(SettingService $settingService, private QuoteStateService $quoteState)
     {
         $this->settingService = $settingService;
     }
@@ -119,18 +119,26 @@ class QuoteController extends Controller
 
         switch ($request->action) {
             case 'accept':
-                $quote->update([
-                    'accepted_at' => Carbon::now(),
-                ]);
+                if ($reason = $quote->acceptBlockedReason()) {
+                    flash()->warning($reason);
+
+                    break;
+                }
+
+                $this->quoteState->accept($quote);
 
                 flash()->success(ucfirst(trans('laravel-crm::lang.quote_accepted')));
 
                 break;
 
             case 'reject':
-                $quote->update([
-                    'rejected_at' => Carbon::now(),
-                ]);
+                if ($reason = $quote->responseBlockedReason()) {
+                    flash()->warning($reason);
+
+                    break;
+                }
+
+                $this->quoteState->reject($quote);
 
                 flash()->success(ucfirst(trans('laravel-crm::lang.quote_rejected')));
 

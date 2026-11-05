@@ -2,7 +2,6 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,8 +13,8 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\QuoteStateService;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
@@ -39,12 +38,9 @@ class QuoteIndex extends Component
 
     public bool $showFilters = false;
 
-    public ?Pipeline $pipeline = null;
-
-    public function mount()
-    {
-        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
-    }
+    protected $listeners = [
+        'refreshQuote' => '$refresh',
+    ];
 
     public function filterCount(): int
     {
@@ -165,10 +161,7 @@ class QuoteIndex extends Component
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'accepted_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Accepted')->first()->id ?? null,
-            ]);
+            app(QuoteStateService::class)->accept($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_accepted')));
         }
@@ -179,10 +172,7 @@ class QuoteIndex extends Component
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'rejected_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Rejected')->first()->id ?? null,
-            ]);
+            app(QuoteStateService::class)->reject($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_rejected')));
         }
@@ -194,16 +184,11 @@ class QuoteIndex extends Component
             $this->authorize('update', $quote);
 
             // An order was made from what was accepted.
-            if ($quote->hasOrders()) {
+            if (! app(QuoteStateService::class)->unaccept($quote)) {
                 $this->error(ucfirst(trans('laravel-crm::lang.quote_locked_ordered')));
 
                 return;
             }
-
-            $quote->update([
-                'accepted_at' => null,
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
-            ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unaccepted')));
         }
@@ -214,10 +199,7 @@ class QuoteIndex extends Component
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'rejected_at' => null,
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
-            ]);
+            app(QuoteStateService::class)->unreject($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unrejected')));
         }

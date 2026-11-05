@@ -223,6 +223,44 @@ class Quote extends Model
     }
 
     /**
+     * Whether the quote's expiry date has passed. The form captures a date
+     * with no time, so a quote is still good on the day it expires.
+     */
+    public function isExpired(): bool
+    {
+        return $this->expire_at !== null && $this->expire_at->copy()->endOfDay()->isPast();
+    }
+
+    /**
+     * Why the customer can't respond to the quote any more, or null when they can.
+     */
+    public function responseBlockedReason(): ?string
+    {
+        if ($this->hasOrders()) {
+            return ucfirst(__('laravel-crm::lang.quote_already_ordered'));
+        }
+
+        if ($this->accepted_at !== null) {
+            return ucfirst(__('laravel-crm::lang.quote_already_accepted'));
+        }
+
+        if ($this->rejected_at !== null) {
+            return ucfirst(__('laravel-crm::lang.quote_already_rejected'));
+        }
+
+        return null;
+    }
+
+    /**
+     * Why the customer can't accept the quote, or null when they can.
+     */
+    public function acceptBlockedReason(): ?string
+    {
+        return $this->responseBlockedReason()
+            ?? ($this->isExpired() ? ucfirst(__('laravel-crm::lang.quote_has_expired')) : null);
+    }
+
+    /**
      * Whether the quote can be deleted. Once an order has been made from it,
      * the order still points at the quote, so it has to stay.
      */

@@ -2,12 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 
-use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\QuoteStateService;
 
 class QuoteShow extends Component
 {
@@ -22,8 +21,6 @@ class QuoteShow extends Component
     public $address;
 
     public $taxName;
-
-    public ?Pipeline $pipeline = null;
 
     protected $listeners = [
         'refreshQuote' => '$refresh',
@@ -42,7 +39,6 @@ class QuoteShow extends Component
             $this->address = $quote->organization->getPrimaryAddress();
         }
 
-        $this->pipeline = Pipeline::where('model', get_class(new Quote))->first();
         $this->taxName = app('laravel-crm.settings')->get('tax_name', 'Tax');
     }
 
@@ -70,10 +66,7 @@ class QuoteShow extends Component
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'accepted_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Accepted')->first()->id ?? null,
-            ]);
+            app(QuoteStateService::class)->accept($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_accepted')));
             $this->dispatch('refreshQuote');
@@ -85,10 +78,7 @@ class QuoteShow extends Component
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'rejected_at' => Carbon::now(),
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Rejected')->first()->id ?? null,
-            ]);
+            app(QuoteStateService::class)->reject($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_rejected')));
             $this->dispatch('refreshQuote');
@@ -101,16 +91,11 @@ class QuoteShow extends Component
             $this->authorize('update', $quote);
 
             // An order was made from what was accepted.
-            if ($quote->hasOrders()) {
+            if (! app(QuoteStateService::class)->unaccept($quote)) {
                 $this->error(ucfirst(trans('laravel-crm::lang.quote_locked_ordered')));
 
                 return;
             }
-
-            $quote->update([
-                'accepted_at' => null,
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
-            ]);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unaccepted')));
             $this->dispatch('refreshQuote');
@@ -122,10 +107,7 @@ class QuoteShow extends Component
         if ($quote = Quote::find($id)) {
             $this->authorize('update', $quote);
 
-            $quote->update([
-                'rejected_at' => null,
-                'pipeline_stage_id' => $this->pipeline->pipelineStages()->where('name', 'Draft')->first()->id ?? null,
-            ]);
+            app(QuoteStateService::class)->unreject($quote);
 
             $this->success(ucfirst(trans('laravel-crm::lang.quote_unrejected')));
             $this->dispatch('refreshQuote');

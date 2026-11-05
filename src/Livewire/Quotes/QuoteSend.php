@@ -17,6 +17,7 @@ use Symfony\Component\Mime\Exception\ExceptionInterface as MimeExceptionInterfac
 use VentureDrake\LaravelCrm\Http\Rules\EmailAddressList;
 use VentureDrake\LaravelCrm\Mail\SendQuote;
 use VentureDrake\LaravelCrm\Models\Quote;
+use VentureDrake\LaravelCrm\Services\QuoteStateService;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
@@ -160,6 +161,10 @@ class QuoteSend extends Component
 
             return;
         }
+
+        app(QuoteStateService::class)->markSent($this->quote);
+
+        $this->dispatch('refreshQuote');
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.quote_sent_successfully'))

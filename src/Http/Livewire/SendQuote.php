@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use VentureDrake\LaravelCrm\Services\QuoteStateService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 use VentureDrake\LaravelCrm\Support\PdfLogo;
@@ -112,6 +113,8 @@ class SendQuote extends Component
             'onlineQuoteLink' => $this->signedUrl,
             'pdf' => $this->pdf,
         ]));
+
+        app(QuoteStateService::class)->markSent($this->quote);
 
         $this->notify(
             'Quote sent',

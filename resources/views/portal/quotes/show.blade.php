@@ -4,8 +4,9 @@
     $signedAction = url()->current().'?signature='.request()->input('signature').'&expires='.request()->input('expires');
     $isAccepted = (bool) $quote->accepted_at;
     $isRejected = (bool) $quote->rejected_at;
-    $isExpired = $quote->expire_at && \Carbon\Carbon::now() > $quote->expire_at;
-    $isPending = ! $isAccepted && ! $isRejected && ! $isExpired;
+    $isOrdered = $quote->hasOrders();
+    $isExpired = $quote->isExpired();
+    $isPending = ! $isAccepted && ! $isRejected && ! $isOrdered && ! $isExpired;
 
     if ($isAccepted) {
         $statusLabel = ucfirst(__('laravel-crm::lang.accepted'));
@@ -13,6 +14,9 @@
     } elseif ($isRejected) {
         $statusLabel = ucfirst(__('laravel-crm::lang.rejected'));
         $statusClass = 'badge-error';
+    } elseif ($isOrdered) {
+        $statusLabel = ucfirst(__('laravel-crm::lang.ordered'));
+        $statusClass = 'badge-success';
     } elseif ($isExpired) {
         $statusLabel = ucfirst(__('laravel-crm::lang.quote_expired'));
         $statusClass = 'badge-error';

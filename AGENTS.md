@@ -47,6 +47,8 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 
 **Shared Send drawers**: `QuoteSend` and `InvoiceSend` fill their fields in `open()`, not `mount()`. Boards and index pages mount one instance with no record (`type="menu-item"` hides its button) and rows dispatch `quote-send` / `invoice-send` with an `id`; `open()` resolves that through the team scope and authorizes it. Show and related-index pages keep an instance bound to their record, which ignores events for any other.
 
+**Quote transitions**: `Services/QuoteStateService` (`markSent()`, `accept()`, `reject()`, `unaccept()`, `unreject()`) is the one place a quote's timestamp and pipeline stage change together; the show, index, board and send components and the portal all call it. `markSent()` only moves a Draft (or stageless) quote that isn't accepted, rejected or ordered. A pipeline without the named stage keeps the current stage rather than clearing it. The portal refuses a response through `Quote::responseBlockedReason()` / `acceptBlockedReason()`; `Quote::isExpired()` treats the expiry day itself as still valid.
+
 **Activity sub-components** (v2, in `src/Livewire/Activities/`): `ActivityFeed`, `ActivityIndex` — used on entity show pages and the standalone activity view.
 
 **Inline activity sub-components** (v2): Each activity type has `*Item` (single record row) and `*Related` (list embedded in a show page) components in their own namespace — `Calls/`, `Files/`, `Lunches/`, `Meetings/`, `Notes/`, `Tasks/`. These are v2 replacements for the legacy `Http/Livewire/Live*` components.
