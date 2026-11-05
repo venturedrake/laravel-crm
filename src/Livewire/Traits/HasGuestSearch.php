@@ -2,9 +2,11 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Support\RecordSearch;
 
 /**
  * The Guests picker on calls, meetings and lunches.
@@ -56,14 +58,15 @@ trait HasGuestSearch
             return $this->guestOptionsFor($this->matchingPersonIds($term)->take(self::GUEST_SEARCH_LIMIT)->all());
         }
 
-        // Spaces match anything, so a first and last name find the full name.
-        $like = '%'.str_replace(' ', '%', $term).'%';
+        $grammar = Person::query()->getQuery()->getGrammar();
+        $fullName = new Expression('CONCAT('.$grammar->wrap('first_name').", ' ', ".$grammar->wrap('last_name').')');
 
         return Person::query()
-            ->where(fn ($query) => $query
-                ->where(DB::raw("CONCAT(COALESCE(first_name,''),' ',COALESCE(last_name,''))"), 'like', $like)
-                ->orWhere('first_name', 'like', $like)
-                ->orWhere('last_name', 'like', $like))
+            ->where(function (Builder $query) use ($fullName, $term) {
+                RecordSearch::orLike($query, 'first_name', $term);
+                RecordSearch::orLike($query, 'last_name', $term);
+                RecordSearch::orLike($query, $fullName, $term);
+            })
             ->orderBy('first_name')
             ->limit(self::GUEST_SEARCH_LIMIT)
             ->get(['id', 'first_name', 'last_name'])

@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
-use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesRecords;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
@@ -29,7 +29,7 @@ use VentureDrake\LaravelCrm\Traits\ClearsProperties;
  */
 abstract class PipelineBoard extends KanbanBoard
 {
-    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, SearchesEncryptableContacts, Toast;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, SearchesRecords, Toast;
 
     public $layout = 'board';
 
@@ -51,8 +51,6 @@ abstract class PipelineBoard extends KanbanBoard
     protected ?Pipeline $boardPipeline = null;
 
     protected ?Collection $boardStages = null;
-
-    protected ?array $contactMatches = null;
 
     /**
      * Whether a call named a card the board can no longer show.
@@ -202,48 +200,24 @@ abstract class PipelineBoard extends KanbanBoard
     }
 
     /**
-     * With encryption on, names are ciphertext in the database, so a LIKE on them
-     * can only ever match nothing. The ids are matched in PHP instead, once per
-     * request because every column query comes through here.
+     * The record columns a search looks in, alongside its number and contact.
      */
+    protected function searchColumns(): array
+    {
+        return ['title'];
+    }
+
     protected function applySearch(Builder $query): void
     {
-        $term = $this->search;
+        if (! $this->encryptionEnabled()) {
+            $prefix = config('laravel-crm.db_table_prefix');
 
-        if ($this->encryptionEnabled()) {
-            $this->contactMatches ??= [
-                'person_id' => $this->matchingPersonIds($term),
-                'organization_id' => $this->matchingOrganizationIds($term),
-            ];
-
-            $query->where(function (Builder $query) use ($term) {
-                $query->where($this->column('title'), 'like', "%$term%");
-
-                foreach ($this->contactMatches as $column => $ids) {
-                    if ($ids->isNotEmpty()) {
-                        $query->orWhereIntegerInRaw($this->column($column), $ids);
-                    }
-                }
-            });
-
-            return;
+            $query
+                ->leftJoin($prefix.'people', $this->column('person_id'), '=', $prefix.'people.id')
+                ->leftJoin($prefix.'organizations', $this->column('organization_id'), '=', $prefix.'organizations.id');
         }
 
-        $prefix = config('laravel-crm.db_table_prefix');
-
-        $query
-            ->leftJoin($prefix.'people', $this->column('person_id'), '=', $prefix.'people.id')
-            ->leftJoin($prefix.'organizations', $this->column('organization_id'), '=', $prefix.'organizations.id')
-            ->where(function (Builder $query) use ($prefix, $term) {
-                $query->where($this->column('title'), 'like', "%$term%")
-                    ->orWhere($prefix.'organizations.name', 'like', "%$term%")
-                    ->orWhere($prefix.'people.first_name', 'like', "%$term%")
-                    ->orWhere($prefix.'people.last_name', 'like', "%$term%")
-                    ->orWhereRaw(
-                        'CONCAT('.$this->rawColumn($prefix.'people.first_name').", ' ', ".$this->rawColumn($prefix.'people.last_name').') like ?',
-                        ["%$term%"],
-                    );
-            });
+        $this->searchRecords($query, $this->search, $this->searchColumns());
     }
 
     /**

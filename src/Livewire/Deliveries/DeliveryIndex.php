@@ -15,6 +15,7 @@ use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Support\DeliveryOptions;
+use VentureDrake\LaravelCrm\Support\RecordSearch;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
@@ -111,6 +112,14 @@ class DeliveryIndex extends Component
         // three extra queries per row. addresses feeds the shipping address
         // cell and ownerUser the dotted `ownerUser.name` header key.
         return Delivery::with(['order.client', 'order.organization', 'ownerUser', 'addresses'])
+            ->when($this->search, fn (Builder $q) => $q->where(function (Builder $q) {
+                RecordSearch::orNumber($q, $this->search);
+
+                // Deliveries have no reference of their own.
+                $q->orWhereHas('order', fn (Builder $order) => $order->where(
+                    fn (Builder $order) => RecordSearch::orLike($order, $order->getModel()->qualifyColumn('reference'), $this->search)
+                ));
+            }))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))

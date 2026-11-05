@@ -11,7 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
-use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesRecords;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\QuoteStateService;
@@ -20,7 +20,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class QuoteIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesRecords, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -109,28 +109,7 @@ class QuoteIndex extends Component
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'quotes.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organizations', config('laravel-crm.db_table_prefix').'quotes.organization_id', '=', config('laravel-crm.db_table_prefix').'organizations.id')
-            ->when($this->search, function (Builder $q) {
-                $prefix = config('laravel-crm.db_table_prefix');
-                $term = $this->search;
-
-                $q->where(function ($q) use ($prefix, $term) {
-                    $q->orWhere($prefix.'quotes.title', 'like', "%$term%");
-
-                    if ($this->encryptionEnabled()) {
-                        if (($personIds = $this->matchingPersonIds($term))->isNotEmpty()) {
-                            $q->orWhereIn($prefix.'quotes.person_id', $personIds);
-                        }
-                        if (($organizationIds = $this->matchingOrganizationIds($term))->isNotEmpty()) {
-                            $q->orWhereIn($prefix.'quotes.organization_id', $organizationIds);
-                        }
-                    } else {
-                        $q->orWhere($prefix.'organizations.name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.first_name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.last_name', 'like', "%$term%")
-                            ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
-                    }
-                });
-            })
+            ->when($this->search, fn (Builder $q) => $this->searchRecords($q, $this->search, ['title', 'reference']))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'quotes.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy($sortColumn, $sortDirection)

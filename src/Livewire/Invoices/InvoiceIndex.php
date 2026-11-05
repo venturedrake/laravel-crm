@@ -10,7 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
-use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesRecords;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -19,7 +19,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class InvoiceIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesRecords, Toast, WithPagination;
 
     /**
      * The Sent badge on these rows goes stale the moment the layout's
@@ -117,29 +117,7 @@ class InvoiceIndex extends Component
             // order backs the order-number cell and xeroInvoice the Xero action
             // buttons.
             ->with(['organization', 'person', 'order', 'xeroInvoice'])
-            ->when($this->search, function (Builder $q) {
-                $prefix = config('laravel-crm.db_table_prefix');
-                $term = $this->search;
-
-                $q->where(function ($q) use ($prefix, $term) {
-                    $q->orWhere($prefix.'invoices.invoice_id', 'like', "%$term%")
-                        ->orWhere($prefix.'invoices.reference', 'like', "%$term%");
-
-                    if ($this->encryptionEnabled()) {
-                        if (($personIds = $this->matchingPersonIds($term))->isNotEmpty()) {
-                            $q->orWhereIntegerInRaw($prefix.'invoices.person_id', $personIds);
-                        }
-                        if (($organizationIds = $this->matchingOrganizationIds($term))->isNotEmpty()) {
-                            $q->orWhereIntegerInRaw($prefix.'invoices.organization_id', $organizationIds);
-                        }
-                    } else {
-                        $q->orWhere($prefix.'organizations.name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.first_name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.last_name', 'like', "%$term%")
-                            ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
-                    }
-                });
-            })
+            ->when($this->search, fn (Builder $q) => $this->searchRecords($q, $this->search, ['reference']))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'invoices.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))

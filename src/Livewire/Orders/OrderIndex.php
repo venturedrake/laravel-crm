@@ -10,7 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
-use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesRecords;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -19,7 +19,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class OrderIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesRecords, Toast, WithPagination;
 
     public $layout = 'index';
 
@@ -115,26 +115,7 @@ class OrderIndex extends Component
                 'invoices.invoiceLines',
                 'deliveries.deliveryProducts',
             ])
-            ->when($this->search, function (Builder $q) {
-                $prefix = config('laravel-crm.db_table_prefix');
-                $term = $this->search;
-
-                $q->where(function ($q) use ($prefix, $term) {
-                    if ($this->encryptionEnabled()) {
-                        $personIds = $this->matchingPersonIds($term);
-                        $organizationIds = $this->matchingOrganizationIds($term);
-
-                        // Force an empty result when neither matches.
-                        $q->whereIn($prefix.'orders.person_id', $personIds->isEmpty() ? [0] : $personIds)
-                            ->orWhereIn($prefix.'orders.organization_id', $organizationIds->isEmpty() ? [0] : $organizationIds);
-                    } else {
-                        $q->orWhere($prefix.'organizations.name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.first_name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.last_name', 'like', "%$term%")
-                            ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
-                    }
-                });
-            })->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'orders.user_owner_id', $this->user_id))
+            ->when($this->search, fn (Builder $q) => $this->searchRecords($q, $this->search, ['reference']))->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'orders.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(25);

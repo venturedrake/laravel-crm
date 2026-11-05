@@ -10,7 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
-use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesRecords;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -19,7 +19,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class PurchaseOrderIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesRecords, Toast, WithPagination;
 
     /**
      * The Sent badge on these rows goes stale the moment the layout's
@@ -113,25 +113,7 @@ class PurchaseOrderIndex extends Component
             // <livewire:crm-purchase-order-send>, whose mount() pre-fills the
             // To field.
             ->with(['organization', 'person.primaryEmail', 'order', 'xeroPurchaseOrder'])
-            ->when($this->search, function (Builder $q) {
-                $prefix = config('laravel-crm.db_table_prefix');
-                $term = $this->search;
-
-                $q->where(function ($q) use ($prefix, $term) {
-                    if ($this->encryptionEnabled()) {
-                        $personIds = $this->matchingPersonIds($term);
-                        $organizationIds = $this->matchingOrganizationIds($term);
-
-                        $q->whereIn($prefix.'purchase_orders.person_id', $personIds->isEmpty() ? [0] : $personIds)
-                            ->orWhereIn($prefix.'purchase_orders.organization_id', $organizationIds->isEmpty() ? [0] : $organizationIds);
-                    } else {
-                        $q->orWhere($prefix.'organizations.name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.first_name', 'like', "%$term%")
-                            ->orWhere($prefix.'people.last_name', 'like', "%$term%")
-                            ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
-                    }
-                });
-            })
+            ->when($this->search, fn (Builder $q) => $this->searchRecords($q, $this->search, ['reference']))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'purchase_orders.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...array_values($this->sortBy))

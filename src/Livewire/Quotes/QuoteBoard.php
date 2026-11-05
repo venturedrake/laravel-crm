@@ -37,6 +37,11 @@ class QuoteBoard extends PipelineBoard
         return 'total';
     }
 
+    protected function searchColumns(): array
+    {
+        return ['title', 'reference'];
+    }
+
     protected function cardColumns(): array
     {
         return [
