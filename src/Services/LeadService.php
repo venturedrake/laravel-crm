@@ -2,13 +2,20 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Lead;
+use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Repositories\LeadRepository;
 
 class LeadService
 {
+    /**
+     * The stage names a converted lead moves to, for pipelines that have one.
+     */
+    private const CONVERTED_STAGES = ['Converted', 'Closed Won', 'Won'];
+
     /**
      * @var LeadRepository
      */
@@ -43,6 +50,20 @@ class LeadService
         $lead->labels()->sync($request->labels ?? []);
 
         return $lead;
+    }
+
+    /**
+     * A pipeline without a converted or won stage keeps the lead where it is.
+     */
+    public function markConverted(Lead $lead): void
+    {
+        $pipeline = $lead->pipeline ?? Pipeline::where('model', Lead::class)->first();
+        $stageId = $pipeline?->pipelineStages()->whereIn('name', self::CONVERTED_STAGES)->value('id');
+
+        $lead->update(array_filter([
+            'converted_at' => Carbon::now(),
+            'pipeline_stage_id' => $stageId,
+        ]));
     }
 
     public function update($request, Lead $lead, $person = null, $organization = null, $client = null)

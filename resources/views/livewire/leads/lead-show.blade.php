@@ -6,15 +6,26 @@
             @if($lead->pipelineStage)
                 <x-mary-badge :value="$lead->pipelineStage->name" class="badge badge-neutral text-white" />
             @endif
+            @if($lead->isConverted())
+                <x-mary-badge :value="ucfirst(__('laravel-crm::lang.converted')).' '.$lead->converted_at->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d'))" class="badge badge-success text-white" />
+            @endif
         </x-slot:badges>
             
         {{-- ACTIONS --}}
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_leads')) }}" link="{{ url(route('laravel-crm.leads.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive />
             @hasdealsenabled
-            @can('edit crm leads')
-                | <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" link="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $lead->id]) }}" class="btn-sm btn-success text-white" responsive  />
-            @endcan
+            @if($lead->isConverted())
+                @if($lead->deal)
+                    @can('view', $lead->deal)
+                        | <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.deal')) }} {{ $lead->deal->deal_id }}" link="{{ route('laravel-crm.deals.show', $lead->deal) }}" class="btn-sm btn-outline" />
+                    @endcan
+                @endif
+            @else
+                @can('edit crm leads')
+                    | <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.convert')) }}" link="{{ route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $lead->id]) }}" class="btn-sm btn-success text-white" responsive  />
+                @endcan
+            @endif
             @endhasdealsenabled
             | <livewire:crm-activity-menu /> |
             @can('edit crm leads')

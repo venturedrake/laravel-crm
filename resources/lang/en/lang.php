@@ -59,6 +59,7 @@ return [
     'lead_updated' => 'lead updated',
     'lead_deleted' => 'lead deleted',
     'lead_converted_to_deal' => 'lead converted to deal',
+    'lead_already_converted' => 'this lead has already been converted to a deal',
     'organization' => 'organization',
     'organizations' => 'organizations',
     'create_organization' => 'create organization',

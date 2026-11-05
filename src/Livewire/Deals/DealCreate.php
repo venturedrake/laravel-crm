@@ -2,8 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Livewire\Deals;
 
-use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Deals\Traits\HasDealCommon;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
@@ -14,6 +14,7 @@ use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Services\LeadService;
 
 class DealCreate extends Component
 {
@@ -21,12 +22,16 @@ class DealCreate extends Component
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
+    #[Locked]
     public $fromModelType;
 
+    #[Locked]
     public $fromModelId;
 
+    #[Locked]
     public $fromModel;
 
+    #[Locked]
     public $lead_id;
 
     public function mount()
@@ -39,6 +44,12 @@ class DealCreate extends Component
         switch ($this->fromModelType) {
             case 'lead':
                 if ($lead = Lead::find($this->fromModelId)) {
+                    if ($lead->isConverted()) {
+                        $this->refuseConvertedLead($lead);
+
+                        return;
+                    }
+
                     $this->fromModel = $lead;
                     $this->lead_id = $lead->id;
                     $this->organization_id = $lead->organization ? $lead->organization->id : null;
@@ -97,6 +108,14 @@ class DealCreate extends Component
     {
         $this->authorize('create', Deal::class);
 
+        // Before anything is created: the form may have been open since the
+        // lead was converted somewhere else.
+        if ($lead = Lead::whereNotNull('converted_at')->find($this->lead_id)) {
+            $this->refuseConvertedLead($lead);
+
+            return;
+        }
+
         $this->validate();
 
         // Create a request object to pass to services
@@ -122,9 +141,7 @@ class DealCreate extends Component
 
         switch ($this->fromModelType) {
             case 'lead':
-                $this->fromModel->update([
-                    'converted_at' => Carbon::now(),
-                ]);
+                app(LeadService::class)->markConverted($this->fromModel);
 
                 $this->success(
                     ucfirst(trans('laravel-crm::lang.lead_converted_to_deal')),
@@ -137,6 +154,14 @@ class DealCreate extends Component
             ucfirst(trans('laravel-crm::lang.deal_created_successfully')),
             redirectTo: route('laravel-crm.deals.index')
         );
+    }
+
+    private function refuseConvertedLead(Lead $lead): void
+    {
+        flash()->error(ucfirst(trans('laravel-crm::lang.lead_already_converted')));
+
+        $this->redirect(route('laravel-crm.leads.show', $lead));
+        $this->skipRender();
     }
 
     public function render()

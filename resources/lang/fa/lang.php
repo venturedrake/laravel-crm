@@ -59,6 +59,7 @@ return [
     'lead_updated' => 'سرنخ به‌روز شد',
     'lead_deleted' => 'سرنخ حذف شد',
     'lead_converted_to_deal' => 'سرنخ به معامله تبدیل شد',
+    'lead_already_converted' => 'این سرنخ قبلاً به معامله تبدیل شده است',
     'organization' => 'سازمان',
     'organizations' => 'سازمان‌ها',
     'create_organization' => 'ایجاد سازمان',

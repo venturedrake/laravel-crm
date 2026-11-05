@@ -128,6 +128,24 @@ class Lead extends Model
         return $this->primaryContactDetail('primaryAddress', 'addresses');
     }
 
+    public function isConverted(): bool
+    {
+        return $this->converted_at !== null;
+    }
+
+    public function deals()
+    {
+        return $this->hasMany(Deal::class);
+    }
+
+    /**
+     * The deal the lead became.
+     */
+    public function deal()
+    {
+        return $this->hasOne(Deal::class)->latestOfMany();
+    }
+
     public function leadStatus()
     {
         return $this->belongsTo(LeadStatus::class, 'lead_status_id');

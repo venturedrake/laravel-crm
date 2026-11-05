@@ -2,8 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
+use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Repositories\DealRepository;
 use VentureDrake\LaravelCrm\Traits\ResolvesProductVariation;
@@ -27,6 +29,14 @@ class DealService
 
     public function create($request, $person = null, $organization = null, $client = null)
     {
+        // A converted lead already has its deal. Checked here so the form, the
+        // API and any other caller are all held to it.
+        if (Lead::whereKey($request->lead_id ?? null)->whereNotNull('converted_at')->exists()) {
+            throw ValidationException::withMessages([
+                'lead_id' => ucfirst(__('laravel-crm::lang.lead_already_converted')),
+            ]);
+        }
+
         $deal = Deal::create([
             'external_id' => Uuid::uuid4()->toString(),
             'lead_id' => $request->lead_id ?? null,
