@@ -112,6 +112,15 @@ it('closes on an outside click, escape, scroll, resize and drag', function (stri
         ->and($list->getAttribute('x-on:scroll.window.capture'))->toBe('if ($event.target.contains($refs.trigger)) open = false');
 })->with('board card menus');
 
+it('takes the teleport template out of the page before Back or Forward saves it', function (string $component, string $model, string $permission) {
+    $list = cardMenuList(cardMenuBoardHtml($component, $model, $permission));
+
+    // Only removing the template helps: setting open alone reaches x-if after the page
+    // is saved, and the restored list would be one nothing can close.
+    expect($list->parentNode->getAttribute('x-ref'))->toBe('teleport')
+        ->and($list->getAttribute('x-on:livewire:navigating.window'))->toBe('$refs.teleport.remove(); open = false');
+})->with('board card menus');
+
 it('gives a card from load more the same menu', function (string $component, string $model, string $permission) {
     config()->set('laravel-crm.board.per_column', 1);
 
