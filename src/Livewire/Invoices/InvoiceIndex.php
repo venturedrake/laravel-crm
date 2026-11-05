@@ -10,6 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
+use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -18,7 +19,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class InvoiceIndex extends Component
 {
-    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesEncryptableContacts, Toast, WithPagination;
 
     /**
      * The Sent badge on these rows goes stale the moment the layout's
@@ -121,12 +122,16 @@ class InvoiceIndex extends Component
                 $term = $this->search;
 
                 $q->where(function ($q) use ($prefix, $term) {
-                    if ($this->encryptionEnabled()) {
-                        $personIds = $this->matchingPersonIds($term);
-                        $organizationIds = $this->matchingOrganizationIds($term);
+                    $q->orWhere($prefix.'invoices.invoice_id', 'like', "%$term%")
+                        ->orWhere($prefix.'invoices.reference', 'like', "%$term%");
 
-                        $q->whereIn($prefix.'invoices.person_id', $personIds->isEmpty() ? [0] : $personIds)
-                            ->orWhereIn($prefix.'invoices.organization_id', $organizationIds->isEmpty() ? [0] : $organizationIds);
+                    if ($this->encryptionEnabled()) {
+                        if (($personIds = $this->matchingPersonIds($term))->isNotEmpty()) {
+                            $q->orWhereIntegerInRaw($prefix.'invoices.person_id', $personIds);
+                        }
+                        if (($organizationIds = $this->matchingOrganizationIds($term))->isNotEmpty()) {
+                            $q->orWhereIntegerInRaw($prefix.'invoices.organization_id', $organizationIds);
+                        }
                     } else {
                         $q->orWhere($prefix.'organizations.name', 'like', "%$term%")
                             ->orWhere($prefix.'people.first_name', 'like', "%$term%")

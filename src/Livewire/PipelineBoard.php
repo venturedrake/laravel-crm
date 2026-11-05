@@ -32,17 +32,30 @@ abstract class PipelineBoard extends KanbanBoard
     public $layout = 'board';
 
     /**
-     * Cards rendered so far per stage id, which is also the offset of the next page.
-     * A stage without an entry shows the default page size.
+     * Cards on screen per stage id, which is also the offset of the next page. Every
+     * render rewrites this with what it fetched, and a page or a drag adjusts it after.
      */
     #[Locked]
     public array $stageLimits = [];
+
+    /**
+     * Bumped by every render. A drag sends back the value it was picked up under, which
+     * is how the server knows a render landed during the drag or before it was handled.
+     * After a failed drag the client sends a value this can't match, to force a render.
+     */
+    #[Locked]
+    public int $renderCount = 0;
 
     protected ?Pipeline $boardPipeline = null;
 
     protected ?Collection $boardStages = null;
 
     protected ?array $contactMatches = null;
+
+    /**
+     * Whether a call named a card the board can no longer show.
+     */
+    protected bool $staleCards = false;
 
     /**
      * The model class the board shows.
@@ -147,6 +160,15 @@ abstract class PipelineBoard extends KanbanBoard
         return $this->table().'.'.$column;
     }
 
+    /**
+     * A qualified column for raw SQL. The query builder adds the connection's table
+     * prefix to the names it is given, but raw SQL only gets what it is written with.
+     */
+    protected function rawColumn(string $column): string
+    {
+        return $this->boardModel()::query()->getQuery()->getGrammar()->wrap($column);
+    }
+
     protected function perColumn(): int
     {
         return max(1, (int) config('laravel-crm.board.per_column', 20));
@@ -197,7 +219,7 @@ abstract class PipelineBoard extends KanbanBoard
 
                 foreach ($this->contactMatches as $column => $ids) {
                     if ($ids->isNotEmpty()) {
-                        $query->orWhereIn($this->column($column), $ids);
+                        $query->orWhereIntegerInRaw($this->column($column), $ids);
                     }
                 }
             });
@@ -215,7 +237,10 @@ abstract class PipelineBoard extends KanbanBoard
                     ->orWhere($prefix.'organizations.name', 'like', "%$term%")
                     ->orWhere($prefix.'people.first_name', 'like', "%$term%")
                     ->orWhere($prefix.'people.last_name', 'like', "%$term%")
-                    ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
+                    ->orWhereRaw(
+                        'CONCAT('.$this->rawColumn($prefix.'people.first_name').", ' ', ".$this->rawColumn($prefix.'people.last_name').') like ?',
+                        ["%$term%"],
+                    );
             });
     }
 
@@ -282,9 +307,9 @@ abstract class PipelineBoard extends KanbanBoard
             ->toBase()
             ->selectRaw(sprintf(
                 '%1$s as stage_id, %2$s as currency, COUNT(*) as records, SUM(%3$s) as total',
-                $this->column('pipeline_stage_id'),
-                $this->column('currency'),
-                $this->column($this->amountColumn()),
+                $this->rawColumn($this->column('pipeline_stage_id')),
+                $this->rawColumn($this->column('currency')),
+                $this->rawColumn($this->column($this->amountColumn())),
             ))
             ->groupBy($this->column('pipeline_stage_id'), $this->column('currency'))
             ->get();
@@ -330,6 +355,33 @@ abstract class PipelineBoard extends KanbanBoard
     }
 
     /**
+     * Whether a card call can answer for itself and spare resending the board.
+     *
+     * It can't if the client's board was out of date, because nothing else would correct
+     * the screen: the save would land on a board showing something else. Nor can it share
+     * a request, because skipRender() covers the whole request and not the call that
+     * asked for it, so a filter or a Won in there would never reach the screen.
+     */
+    protected function canSkipRender($lastRender = null): bool
+    {
+        return ! $this->staleCards
+            && ($lastRender === null || (int) $lastRender === $this->renderCount)
+            && $this->aloneInRequest();
+    }
+
+    /**
+     * Read from the payload, because at the time of a call Livewire has no word on what
+     * comes after it. Anything unexpected here means a render, which is only wasteful.
+     */
+    protected function aloneInRequest(): bool
+    {
+        $payload = collect(request()->input('components', []))
+            ->first(fn (array $component) => data_get(json_decode($component['snapshot'], true), 'memo.id') === $this->getId());
+
+        return $payload && empty($payload['updates']) && count($payload['calls']) === 1;
+    }
+
+    /**
      * Fetch the next page of a column. The cards go straight to the client, which
      * appends them: a full render would resend every column for one page.
      */
@@ -339,8 +391,6 @@ abstract class PipelineBoard extends KanbanBoard
 
         abort_unless($stage = $this->stages()->firstWhere('id', $stageId), 404);
 
-        $this->skipRender();
-
         $offset = $this->stageLimit($stage->id);
         $size = $this->perColumn();
 
@@ -349,6 +399,13 @@ abstract class PipelineBoard extends KanbanBoard
         $page = array_slice($ids, 0, $size);
 
         $this->stageLimits[$stage->id] = $offset + count($page);
+
+        // The render shows these cards, so there is nothing to send them for.
+        if (! $this->canSkipRender()) {
+            return;
+        }
+
+        $this->skipRender();
 
         $cards = $this->cards($page);
 
@@ -363,29 +420,27 @@ abstract class PipelineBoard extends KanbanBoard
         );
     }
 
-    public function onStageSorted($orderedIds)
+    public function onStageSorted($orderedIds, $stageId = null, $lastRender = null)
     {
-        $this->skipRender();
-
         $records = $this->resolve($orderedIds);
 
         foreach ($records as $record) {
             $this->authorize('update', $record);
         }
 
-        if ($records->isEmpty()) {
-            return;
+        if ($records->isNotEmpty()) {
+            DB::transaction(function () use ($records, $stageId) {
+                $this->reorder($records, $this->sourceColumn($stageId, $records), $records);
+            });
         }
 
-        DB::transaction(function () use ($records) {
-            $this->reorder($records, $this->columnOf($records->first()), $records);
-        });
+        if ($this->canSkipRender($lastRender)) {
+            $this->skipRender();
+        }
     }
 
-    public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds)
+    public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds, $fromStage = null, $lastRender = null)
     {
-        $this->skipRender();
-
         if (! $record = $this->resolve([$recordId])->first()) {
             return;
         }
@@ -397,10 +452,9 @@ abstract class PipelineBoard extends KanbanBoard
             $this->authorize('update', $authorizable);
         }
 
-        abort_unless($this->stages()->contains('id', $stageId), 404);
+        abort_unless($stageId = $this->boardStageId($stageId), 404);
 
-        $stageId = (int) $stageId;
-        $fromStageId = $this->columnOf($record);
+        $fromStageId = $this->sourceColumn($fromStage, $from) ?? $this->columnOf($record);
 
         DB::transaction(function () use ($record, $stageId, $fromStageId, $from, $to) {
             $record->update([
@@ -415,11 +469,19 @@ abstract class PipelineBoard extends KanbanBoard
             $this->reorder($to, $stageId, $placed);
         });
 
+        // The lists can't size these. They were read at the drop, so a page that landed
+        // while this call waited its turn is on screen but not in them.
         $this->stageLimits[$stageId] = $this->stageLimit($stageId) + 1;
 
         if ($fromStageId !== null) {
             $this->stageLimits[$fromStageId] = max(0, $this->stageLimit($fromStageId) - 1);
         }
+
+        if (! $this->canSkipRender($lastRender)) {
+            return;
+        }
+
+        $this->skipRender();
 
         $summaries = $this->columnSummaries();
 
@@ -439,6 +501,9 @@ abstract class PipelineBoard extends KanbanBoard
      * kanban-board/sortable.blade.php harvests ids like 'modalDeleteLead4' alongside the
      * real ones. Those have to be skipped rather than dereferenced, and they must not
      * consume an order number either.
+     *
+     * A real id that comes back empty is different: the card was deleted or left the board
+     * after the client rendered it, so the client is showing something that isn't there.
      */
     protected function resolve(array $orderedIds): Collection
     {
@@ -447,9 +512,33 @@ abstract class PipelineBoard extends KanbanBoard
             ->filter()
             ->values();
 
-        $records = $this->boardModel()::query()->whereIn('id', $ids)->get()->keyBy('id');
+        $records = $this->boardQuery()->whereIn($this->column('id'), $ids)->get()->keyBy('id');
+
+        if ($records->count() < $ids->unique()->count()) {
+            $this->staleCards = true;
+        }
 
         return $ids->map(fn (int $id) => $records->get($id))->filter()->values();
+    }
+
+    protected function boardStageId($value): ?int
+    {
+        $stageId = filter_var($value, FILTER_VALIDATE_INT);
+
+        return $stageId !== false && $this->stages()->contains('id', $stageId) ? $stageId : null;
+    }
+
+    /**
+     * The column a list of cards was dragged in, as the client saw it. A card's own stage
+     * can't say, because it may have moved since the board rendered, and renumbering the
+     * column it moved to would leave the one on screen unnumbered. A stale published
+     * sortable.blade.php sends no stage, so most of the cards left in the list decide.
+     */
+    protected function sourceColumn($claimed, Collection $listed): ?int
+    {
+        return $this->boardStageId($claimed)
+            ?? $listed->map(fn (Model $card) => $this->columnOf($card))->filter()->mode()[0]
+            ?? null;
     }
 
     /**
@@ -494,18 +583,23 @@ abstract class PipelineBoard extends KanbanBoard
 
         if ($inTheWay) {
             $peers()->toBase()->update([
-                'pipeline_stage_order' => DB::raw('COALESCE('.$order.', 0) + '.($count + 1)),
+                'pipeline_stage_order' => DB::raw('COALESCE('.$this->rawColumn($order).', 0) + '.($count + 1)),
             ]);
         }
     }
 
     public function render()
     {
-        $summaries = $this->columnSummaries();
+        $this->renderCount++;
 
+        // Never less than a page, so a short column has room for a card that lands in it.
         $pages = $this->stages()
-            ->mapWithKeys(fn ($stage) => [$stage->id => $this->pageIds($stage->id, 0, $this->stageLimit($stage->id))])
+            ->mapWithKeys(fn ($stage) => [$stage->id => $this->pageIds($stage->id, 0, max($this->stageLimit($stage->id), $this->perColumn()))])
             ->toBase();
+
+        $this->stageLimits = $pages->map(fn (array $ids) => count($ids))->all();
+
+        $summaries = $this->columnSummaries();
 
         $cards = $this->cards($pages->flatten()->all());
 

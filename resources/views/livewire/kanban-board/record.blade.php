@@ -43,7 +43,7 @@
                         @canany(['view crm deals', 'edit crm deals', 'delete crm deals'])
                             <x-mary-dropdown class="btn-xs btn-square" right>
                                 @can('edit crm deals')
-                                    @if(! $record['model']->closed_at)
+                                    @if(! ($record['model'] ?? \VentureDrake\LaravelCrm\Models\Deal::find($record['id']))->closed_at)
                                         <x-mary-menu-item  wire:click="won({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.won')) }}" />
                                         <x-mary-menu-item  wire:click="lost({{ $record['id'] }})" title="{{ ucfirst(__('laravel-crm::lang.lost')) }}" />
                                     @else
@@ -67,7 +67,7 @@
                         @canany(['view crm quotes', 'edit crm quotes', 'delete crm quotes'])
                             <x-mary-dropdown class="btn-xs btn-square" right>
                                 @php 
-                                    $quote = $record['model'];
+                                    $quote = $record['model'] ?? \VentureDrake\LaravelCrm\Models\Quote::find($record['id']);
                                     (!\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\subTotal($quote) || ! \VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\total($quote)) ? $quoteError = true : $quoteError = false;
                                 @endphp
                                 @if(! $quote->order && !$quoteError)

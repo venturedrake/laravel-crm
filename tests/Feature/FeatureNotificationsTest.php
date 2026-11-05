@@ -312,8 +312,10 @@ test('FeatureBoard onStageChanged drag fires the status-change notification', fu
 
     Notification::fake();
 
+    // The source stage and render count are what the shared sortable sends, which this board
+    // has no use for.
     Livewire::test(FeatureBoard::class)
-        ->call('onStageChanged', $feature->id, $this->plannedStatus->id, [], [$feature->id]);
+        ->call('onStageChanged', $feature->id, $this->plannedStatus->id, [], [$feature->id], $feature->feature_status_id, null);
 
     Notification::assertSentTo($submitter, FeatureStatusChangedNotification::class);
     Notification::assertSentTo($voter, FeatureStatusChangedNotification::class);

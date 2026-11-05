@@ -3,11 +3,12 @@
     <div class="card-header bg-light mb-4">
         <h3 class="card-title h5">
             {{-- One element: card-title is a flex container, so loose text and a span would space apart. --}}
-            <span>{{ $stage['name'] }} (<span data-board-count>{{ $stage['count'] }}</span>)</span>
+            <span>{{ $stage['name'] }} (<span data-board-count>{{ $stage['count'] ?? count($stage['records']) }}</span>)</span>
         </h3>
-        {{-- wire:replace here and below: the client changes both, so there is nothing for a morph to line up with. --}}
+        {{-- A board that isn't paged, like a host's, supplies neither these nor the count above. --}}
+        {{-- wire:replace here and below: the client changes both, so a render replaces them rather than morphing around those changes. --}}
         <div class="text-sm text-base-content/60" data-board-totals wire:replace>
-            @foreach($stage['totals'] as $total)
+            @foreach($stage['totals'] ?? [] as $total)
                 <div>{{ $total }}</div>
             @endforeach
         </div>
@@ -19,15 +20,12 @@
             ])
         </span>
         {{-- Outside the sortable container, so it is never dragged or counted as a card. --}}
-        <button type="button"
-                class="btn btn-sm btn-ghost btn-block mb-3 {{ $stage['hasMore'] ? '' : 'hidden' }}"
-                data-board-more
-                wire:click="loadMore({{ $stage['id'] }})"
-                wire:loading.attr="disabled"
-                wire:target="loadMore({{ $stage['id'] }})">
-            <span wire:loading wire:target="loadMore({{ $stage['id'] }})" class="loading loading-spinner loading-xs"></span>
-            {{ ucfirst(__('laravel-crm::lang.load_more')) }}
-        </button>
+        {{-- A named spinner target, because a bare spinner gives every column the same wire:key. --}}
+        <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.load_more')) }}"
+                       class="btn-sm btn-ghost btn-block mb-3 {{ ($stage['hasMore'] ?? false) ? '' : 'hidden' }}"
+                       data-board-more
+                       wire:click="loadMore({{ $stage['id'] }})"
+                       spinner="loadMore({{ $stage['id'] }})" />
         @can('create crm '.\Illuminate\Support\Str::plural($model))
             <div class="card-footer">
                  <a href="{{ url(route('laravel-crm.'.\Illuminate\Support\Str::plural($model).'.create', ['stage' => $stage['id']])) }}" class="btn btn-primary btn-block text-white">Add

@@ -161,6 +161,21 @@ function boardQueryCount(Closure $callback): int
     return $count - $before;
 }
 
+/**
+ * Put the database behind a connection prefix the way a host's config would. Testbench
+ * builds the schema before a test can change the config, so the tables are renamed.
+ */
+function boardPrefixTables(string $prefix): void
+{
+    $connection = DB::connection();
+
+    foreach ($connection->select("select name from sqlite_master where type = 'table' and name not like 'sqlite_%'") as $table) {
+        $connection->statement("alter table \"{$table->name}\" rename to \"{$prefix}{$table->name}\"");
+    }
+
+    $connection->setTablePrefix($prefix);
+}
+
 it('renders one page per column and says when more remain', function (string $component, string $model, string $permission) {
     boardUser($permission);
     [$first, $second, $third] = boardStages($model);
@@ -338,6 +353,466 @@ it('keeps the unloaded order of the column a card left', function (string $compo
         ->and(boardDispatch($board, 'board-column-loaded')['hasMore'])->toBeFalse();
 })->with('boards');
 
+// A short column's limit used to be the page size, not the cards it showed, so counting
+// from the limit skipped as many cards as the column was short of a page.
+it('starts the next page after the cards on screen when a card lands in a column that grew unseen', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $moved = boardSeed($model, $first->id, 1)[0];
+    $shown = boardSeed($model, $second->id, 2);
+
+    $board = Livewire::test($component);
+
+    $unseen = boardSeed($model, $second->id, BOARD_PAGE + 3);
+
+    $board->call('onStageChanged', $moved, $second->id, [], [$moved, ...$shown]);
+
+    expect($board->get('stageLimits')[$second->id])->toBe(3)
+        ->and(boardLoadMore($board, $second->id))->toBe(array_slice($unseen, 0, BOARD_PAGE));
+})->with('boards');
+
+it('starts the next page after the cards on screen when a card leaves a column that grew unseen', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$moved, $stayed, $alsoStayed] = boardSeed($model, $first->id, 3);
+
+    $board = Livewire::test($component);
+
+    $unseen = boardSeed($model, $first->id, BOARD_PAGE + 3);
+
+    $board->call('onStageChanged', $moved, $second->id, [$stayed, $alsoStayed], [$moved]);
+
+    expect($board->get('stageLimits')[$first->id])->toBe(2)
+        ->and(boardLoadMore($board, $first->id))->toBe(array_slice($unseen, 0, BOARD_PAGE));
+})->with('boards');
+
+it('offers load more when a column grew unseen by less than the page it had room for', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $moved = boardSeed($model, $first->id, 1)[0];
+    $shown = boardSeed($model, $second->id, 1);
+
+    $board = Livewire::test($component);
+
+    boardSeed($model, $second->id, 1);
+
+    $board->call('onStageChanged', $moved, $second->id, [], [$moved, ...$shown]);
+
+    $column = collect(boardDispatch($board, 'board-columns-updated')['columns'])->firstWhere('stage', $second->id);
+
+    expect($column['count'])->toBe(3)
+        ->and($column['hasMore'])->toBeTrue();
+})->with('boards');
+
+// The lists are read at the drop, and the call waits behind a Load more already in flight.
+it('counts the page that landed while a drag was waiting its turn', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $ids = boardSeed($model, $first->id, BOARD_PAGE * 3 + 1);
+    [$kept, $moved] = $ids;
+    $listedAtTheDrop = [$kept, ...array_slice($ids, 2, BOARD_PAGE - 2)];
+
+    $board = Livewire::test($component);
+    boardLoadMore($board, $first->id);
+
+    $board->call('onStageChanged', $moved, $second->id, $listedAtTheDrop, [$moved]);
+
+    expect($board->get('stageLimits')[$first->id])->toBe(BOARD_PAGE * 2 - 1)
+        ->and(boardLoadMore($board, $first->id))->toBe(array_slice($ids, BOARD_PAGE * 2, BOARD_PAGE));
+})->with('boards');
+
+it('shows a card that lands in a column a drag emptied', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $only = boardSeed($model, $first->id, 1)[0];
+
+    $board = Livewire::test($component)->call('onStageChanged', $only, $second->id, [], [$only]);
+
+    $landed = boardSeed($model, $first->id, 1)[0];
+
+    expect(boardCardIds($board->call('$refresh'), $first->id))->toBe([$landed])
+        ->and(boardColumn($board, $first->id)['hasMore'])->toBeFalse();
+})->with('boards');
+
+it('keeps showing every card of a short column a drag touched', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    $moved = boardSeed($model, $first->id, 1)[0];
+    $resident = boardSeed($model, $second->id, 1)[0];
+
+    $board = Livewire::test($component)->call('onStageChanged', $moved, $second->id, [], [$moved, $resident]);
+
+    $landed = boardSeed($model, $second->id, 1)[0];
+
+    expect(boardCardIds($board->call('$refresh'), $second->id))->toEqualCanonicalizing([$moved, $resident, $landed]);
+})->with('boards');
+
+it('shows the deal a menu action sends to a column a drag emptied', function () {
+    boardUser('crm deals');
+    $pipeline = Pipeline::where('model', Deal::class)->first();
+    $won = $pipeline->pipelineStages()->create(['external_id' => Str::uuid()->toString(), 'name' => 'Closed Won', 'order' => 9]);
+    $first = boardStages(Deal::class)->first();
+
+    $dragged = boardSeed(Deal::class, $won->id, 1)[0];
+    $open = boardSeed(Deal::class, $first->id, 1)[0];
+
+    $board = Livewire::test(DealBoard::class)
+        ->call('onStageChanged', $dragged, $first->id, [], [$dragged, $open])
+        ->call('won', $open);
+
+    expect(boardCardIds($board, $won->id))->toBe([$open]);
+});
+
+it('numbers the column a card was dragged from when it had already moved elsewhere', function (string $component, string $model, string $permission, string $amount, Closure $source) {
+    boardUser($permission);
+    [$first, $second, $third] = boardStages($model);
+
+    $ids = boardSeed($model, $first->id, BOARD_PAGE + 3);
+    $moved = $ids[0];
+    $left = array_slice($ids, 1, BOARD_PAGE - 1);
+    $unloaded = array_slice($ids, BOARD_PAGE);
+
+    $board = Livewire::test($component);
+
+    // Another session, through something that isn't the board.
+    DB::table((new $model)->getTable())->where('id', $moved)->update(['pipeline_stage_id' => $third->id]);
+
+    $board->call('onStageChanged', $moved, $second->id, $left, [$moved], ...$source($first->id));
+
+    expect(boardDispatch($board, 'board-columns-updated')['columns'])->toContain(
+        ['stage' => $first->id, 'count' => count($left) + count($unloaded), 'totals' => [], 'hasMore' => true],
+    )
+        ->and($board->get('stageLimits')[$third->id])->toBe(0)
+        ->and(boardLoadMore($board, $first->id))->toBe($unloaded)
+        ->and(boardWalk(Livewire::test($component), $first->id))->toBe([...$left, ...$unloaded]);
+})->with('boards')->with([
+    'sent by the client' => fn (int $stage) => [$stage],
+    'sent as a string' => fn (int $stage) => [(string) $stage],
+    'not sent, from a stale published view' => fn (int $stage) => [],
+    'not a stage' => fn (int $stage) => ['nonsense'],
+    'null' => fn (int $stage) => [null],
+    'on another board' => fn (int $stage) => [999999],
+]);
+
+it('numbers the column being sorted when its first card had already moved elsewhere', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, , $third] = boardStages($model);
+
+    $ids = boardSeed($model, $first->id, BOARD_PAGE + 2);
+    $stale = $ids[0];
+    $loaded = array_slice($ids, 1, BOARD_PAGE - 1);
+    $unloaded = array_slice($ids, BOARD_PAGE);
+
+    $board = Livewire::test($component);
+
+    DB::table((new $model)->getTable())->where('id', $stale)->update(['pipeline_stage_id' => $third->id]);
+
+    $reversed = array_reverse($loaded);
+
+    $board->call('onStageSorted', [$stale, ...$reversed], $first->id);
+
+    expect(boardWalk(Livewire::test($component), $first->id))->toBe([...$reversed, ...$unloaded]);
+})->with('boards');
+
+it('refuses a stage that only matches the board by loose comparison', function () {
+    boardUser('crm deals');
+
+    // Stage 1 is on the lead pipeline, and every id on this board == true.
+    $record = boardSeed(Deal::class, boardStages(Deal::class)->first()->id, 1)[0];
+
+    Livewire::test(DealBoard::class)
+        ->call('onStageChanged', $record, true, [], [$record])
+        ->assertNotFound();
+
+    expect(Deal::find($record)->pipeline_stage_id)->toBe(boardStages(Deal::class)->first()->id);
+});
+
+it('resends the board when another call shares the request', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    boardSeed($model, $first->id, BOARD_PAGE + 1);
+    $needle = boardSeed($model, $second->id, BOARD_PAGE + 1, ['title' => 'Needle'])[0];
+
+    $call = fn (int $stageId) => ['method' => 'loadMore', 'params' => [$stageId], 'path' => ''];
+
+    $board = Livewire::test($component)->update(calls: [$call($first->id), $call($second->id)]);
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(collect($board->effects['dispatches'] ?? [])->pluck('name'))->not->toContain('board-column-loaded')
+        ->and(boardCardIds($board, $first->id))->toHaveCount(BOARD_PAGE + 1)
+        ->and(boardCardIds($board, $second->id))->toContain($needle)->toHaveCount(BOARD_PAGE + 1);
+})->with('boards');
+
+it('resends the board when a filter shares the request with load more', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    boardSeed($model, $first->id, BOARD_PAGE * 2);
+    $hit = boardSeed($model, $second->id, 1, ['title' => 'Needle'])[0];
+
+    $board = Livewire::test($component)->update(
+        calls: [['method' => 'loadMore', 'params' => [$first->id], 'path' => '']],
+        updates: ['search' => 'Needle'],
+    );
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $first->id))->toBeEmpty()
+        ->and(boardCardIds($board, $second->id))->toBe([$hit])
+        ->and($board->get('stageLimits')[$first->id])->toBe(0);
+})->with('boards');
+
+it('shows a won deal when load more shares the request', function () {
+    boardUser('crm deals');
+    $pipeline = Pipeline::where('model', Deal::class)->first();
+    $won = $pipeline->pipelineStages()->create(['external_id' => Str::uuid()->toString(), 'name' => 'Closed Won', 'order' => 9]);
+    $first = boardStages(Deal::class)->first();
+
+    $open = boardSeed(Deal::class, $first->id, BOARD_PAGE + 1)[0];
+
+    $board = Livewire::test(DealBoard::class)->update(calls: [
+        ['method' => 'loadMore', 'params' => [$first->id], 'path' => ''],
+        ['method' => 'won', 'params' => [$open], 'path' => ''],
+    ]);
+
+    expect(boardCardIds($board, $won->id))->toBe([$open])
+        ->and(boardCardIds($board, $first->id))->not->toContain($open)->toHaveCount(BOARD_PAGE)
+        ->and(collect($board->effects['dispatches'] ?? [])->pluck('name'))->not->toContain('board-column-loaded');
+});
+
+it('resends the board when a render landed after the card was picked up', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$moved, $stayed] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component);
+    $pickedUp = $board->get('renderCount');
+
+    $board->call('$refresh');
+
+    expect($board->get('renderCount'))->toBeGreaterThan($pickedUp);
+
+    $board->call('onStageChanged', $moved, $second->id, [$stayed], [$moved], $first->id, $pickedUp);
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $second->id))->toBe([$moved])
+        ->and(boardCardIds($board, $first->id))->toBe([$stayed])
+        ->and(collect($board->effects['dispatches'] ?? [])->pluck('name'))->not->toContain('board-columns-updated');
+})->with('boards');
+
+// What the client sends after a failed drag, when no render corrected the screen.
+it('resends the board for the drag after a failed one', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$moved, $stayed] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component)
+        ->call('onStageChanged', $moved, $second->id, [$stayed], [$moved], $first->id, -1);
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $second->id))->toBe([$moved]);
+})->with('boards');
+
+// On Livewire 3 a failed drag's refresh shares a request with whatever was queued behind it.
+it('resends the board for a refresh that shares a request with a card call', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$moved, $stayed] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component)->update(calls: [
+        ['method' => 'onStageChanged', 'params' => [$moved, $second->id, [$stayed], [$moved], $first->id, null], 'path' => ''],
+        ['method' => 'refreshBoard', 'params' => [], 'path' => ''],
+    ]);
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $second->id))->toBe([$moved]);
+})->with('boards');
+
+it('resends the board for a refresh on its own', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    $first = boardStages($model)->first();
+
+    $board = Livewire::test($component);
+
+    $card = boardSeed($model, $first->id, 1)[0];
+
+    $board->call('refreshBoard');
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $first->id))->toBe([$card]);
+})->with('boards');
+
+it('watches for a failed drag only where cards can be dragged', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+
+    Livewire::test($component)->assertSeeHtml('$wire.$hook(');
+    Livewire::test($component, ['sortable' => false])->assertDontSeeHtml('$wire.$hook(');
+})->with('boards');
+
+it('resends the board when a render landed during a sort', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    $first = boardStages($model)->first();
+
+    [$one, $two] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component);
+    $pickedUp = $board->get('renderCount');
+
+    $board->call('$refresh')->call('onStageSorted', [$two, $one], $first->id, $pickedUp);
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $first->id))->toBe([$two, $one]);
+})->with('boards');
+
+it('skips the render when no render landed since the card was picked up', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$moved, $stayed] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component);
+
+    $board->call('onStageChanged', $moved, $second->id, [$stayed], [$moved], $first->id, (string) $board->get('renderCount'));
+
+    expect($board->effects['html'] ?? null)->toBeNull();
+
+    $board->call('onStageSorted', [$stayed], $first->id, $board->get('renderCount'));
+
+    expect($board->effects['html'] ?? null)->toBeNull();
+})->with('boards');
+
+it('takes a deleted card off the board when it is dragged', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$deleted, $kept] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component);
+
+    $model::find($deleted)->delete();
+
+    $board->call('onStageChanged', $deleted, $second->id, [$kept], [$deleted], $first->id);
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $second->id))->toBeEmpty()
+        ->and(boardColumn($board, $first->id)['count'])->toBe(1);
+})->with('boards');
+
+it('saves a drag and clears the deleted cards listed with it', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$moved, $deleted, $kept] = boardSeed($model, $first->id, 3);
+
+    $board = Livewire::test($component);
+
+    $model::find($deleted)->delete();
+
+    $board->call('onStageChanged', $moved, $second->id, [$deleted, $kept], [$moved], $first->id);
+
+    expect($model::find($moved)->pipeline_stage_id)->toBe($second->id)
+        ->and($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $first->id))->toBe([$kept])
+        ->and(boardCardIds($board, $second->id))->toBe([$moved]);
+})->with('boards');
+
+it('takes a deleted card off the board when its column is sorted', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    $first = boardStages($model)->first();
+
+    [$deleted, $kept] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component);
+
+    $model::find($deleted)->delete();
+
+    $board->call('onStageSorted', [$kept, $deleted], $first->id);
+
+    expect($board->effects['html'] ?? null)->not->toBeNull()
+        ->and(boardCardIds($board, $first->id))->toBe([$kept]);
+})->with('boards');
+
+it('leaves a lead converted elsewhere where it is and takes it off the board', function () {
+    boardUser('crm leads');
+    [$first, $second] = boardStages(Lead::class);
+
+    $lead = boardSeed(Lead::class, $first->id, 1)[0];
+
+    $board = Livewire::test(LeadBoard::class);
+
+    DB::table((new Lead)->getTable())->where('id', $lead)->update(['converted_at' => now()]);
+
+    $board->call('onStageChanged', $lead, $second->id, [], [$lead], $first->id);
+
+    expect(Lead::find($lead)->pipeline_stage_id)->toBe($first->id)
+        ->and(boardCardIds($board, $second->id))->toBeEmpty();
+});
+
+it('does not resend the board for the ids a stale published view harvests', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    [$first, $second] = boardStages($model);
+
+    [$moved, $stayed] = boardSeed($model, $first->id, 2);
+
+    $board = Livewire::test($component)
+        ->call('onStageChanged', $moved, $second->id, ['modalDelete'.$stayed, $stayed], ['modalDelete'.$moved, $moved]);
+
+    expect($board->effects['html'] ?? null)->toBeNull();
+})->with('boards');
+
+// A bound parameter per id runs into MySQL's limit of 65,535 a statement.
+it('does not bind the ids of matching contacts', function (string $component, string $model, string $permission) {
+    config()->set('laravel-crm.encrypt_db_fields', true);
+
+    boardUser($permission);
+    $first = boardStages($model)->first();
+
+    $person = Person::create(['first_name' => 'Jane', 'last_name' => 'Smith']);
+    $hit = boardSeed($model, $first->id, 1, ['person_id' => $person->id])[0];
+
+    $queries = [];
+    DB::listen(function ($query) use (&$queries) {
+        $queries[] = $query->sql;
+    });
+
+    $board = Livewire::test($component)->set('search', 'Jane');
+
+    $inlined = sprintf('"%s"."person_id" in (%d)', (new $model)->getTable(), $person->id);
+
+    expect(boardCardIds($board, $first->id))->toBe([$hit])
+        ->and(collect($queries)->contains(fn ($sql) => str_contains($sql, $inlined)))->toBeTrue();
+})->with('boards');
+
+it('works on a connection with a table prefix', function (string $component, string $model, string $permission) {
+    boardUser($permission);
+    $first = boardStages($model)->first();
+
+    $person = Person::create(['first_name' => 'Jane', 'last_name' => 'Smith']);
+    $ids = boardSeed($model, $first->id, BOARD_PAGE + 1);
+    $hit = boardSeed($model, $first->id, 1, ['person_id' => $person->id])[0];
+
+    boardPrefixTables('app_');
+
+    $board = Livewire::test($component);
+
+    expect(boardColumn($board, $first->id)['count'])->toBe(BOARD_PAGE + 2);
+
+    // The peers still in the way are what reaches the raw push-back.
+    $board->call('onStageSorted', array_reverse(array_slice($ids, 0, BOARD_PAGE)));
+
+    expect($model::find($hit)->pipeline_stage_order)->not->toBeNull()
+        ->and(boardCardIds($board->set('search', 'Jane Smith'), $first->id))->toBe([$hit]);
+})->with('boards');
+
 it('reorders within a partly loaded column without disturbing the rest', function (string $component, string $model, string $permission) {
     boardUser($permission);
     $first = boardStages($model)->first();
@@ -439,11 +914,11 @@ it('searches across columns and starts every column again', function (string $co
     $board = Livewire::test($component);
     boardLoadMore($board, $first->id);
 
-    expect($board->get('stageLimits'))->not->toBeEmpty();
+    expect($board->get('stageLimits')[$first->id])->toBe(BOARD_PAGE * 2);
 
     $board->set('search', 'Needle');
 
-    expect($board->get('stageLimits'))->toBe([])
+    expect($board->get('stageLimits')[$first->id])->toBe(0)
         ->and(boardCardIds($board, $first->id))->toBeEmpty()
         ->and(boardColumn($board, $first->id)['count'])->toBe(0)
         ->and(boardCardIds($board, $second->id))->toBe([$hit]);
@@ -465,7 +940,7 @@ it('filters by owner and label across columns and starts every column again', fu
 
     $board->set('user_id', [2]);
 
-    expect($board->get('stageLimits'))->toBe([])
+    expect($board->get('stageLimits')[$first->id])->toBe(0)
         ->and(boardCardIds($board, $first->id))->toBeEmpty()
         ->and(boardCardIds($board, $second->id))->toBe([$owned]);
 
@@ -573,6 +1048,7 @@ it('wires load more without the sortable script', function (string $component, s
 
     Livewire::test($component, ['sortable' => false])
         ->assertSeeHtml('data-board-more')
+        ->assertSeeHtml('wire:target="loadMore('.$first->id.')"')
         ->assertSeeHtml('board-column-loaded')
         ->assertDontSeeHtml('Sortable.get');
 })->with('boards');

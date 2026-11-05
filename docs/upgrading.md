@@ -181,10 +181,30 @@ opens. If you have published the package's views, republish or update these:
 
 | File | What goes wrong otherwise |
 |---|---|
-| `livewire/kanban-board/stage.blade.php`, `record.blade.php`, `sortable.blade.php` and the new `records.blade.php`, `scripts.blade.php` | No paging controls, and the board's Send item calls a method that no longer exists |
-| `livewire/leads/lead-board.blade.php`, `livewire/deals/deal-board.blade.php`, `livewire/quotes/quote-board.blade.php` | Load more does nothing |
+| `livewire/kanban-board/stage.blade.php`, `record.blade.php` | No paging controls, and the board's Send item calls a method that no longer exists |
+| `livewire/kanban-board/sortable.blade.php` | Drags still save, but a failed drag or one that overlaps another update leaves the board out of date until the next full render, and card order can go wrong if another session moved a card |
+| `livewire/leads/lead-board.blade.php`, `livewire/deals/deal-board.blade.php` | Load more does nothing |
+| `livewire/quotes/quote-board.blade.php` | Load more and the board's Send item do nothing |
 | `livewire/quotes/quote-send.blade.php`, `livewire/invoices/invoice-send.blade.php` | The Send drawer opens with empty fields |
-| `livewire/quotes/quote-index.blade.php`, `livewire/invoices/invoice-index.blade.php` | Row Send buttons do nothing |
+| `livewire/quotes/quote-index.blade.php`, `livewire/invoices/invoice-index.blade.php` | Each row keeps its own Send component, so the lists are heavier than they need to be |
+
+If you extend `LeadBoard`, `DealBoard` or `QuoteBoard`, they now extend `PipelineBoard`, which pages
+its own queries:
+
+- `records()` is no longer called, and returns nothing if you call it through `parent`, so the cards
+  a subclass filtered out come back. Move that filter to `boardScope()`, calling the parent first,
+  and qualify its columns with `$this->column('title')`. A search joins the people and organizations
+  tables, which share columns such as `title`, `user_owner_id` and `team_id`, so a bare column name
+  fails as ambiguous as soon as someone searches.
+- `onStageSorted()` and `onStageChanged()` take new optional arguments. An override with the old
+  signature is a fatal error, so add `$stageId = null, $lastRender = null` and
+  `$fromStage = null, $lastRender = null` respectively.
+
+Boards that extend `KanbanBoard` directly are not paged. One thing changes for a quote board: a
+card's Send item now dispatches `quote-send` to a shared drawer, instead of calling the board's
+`send()` method and mounting a drawer per card. `livewire/kanban-board/board.blade.php` mounts that
+drawer for a quote board, so republish it if you published the views. A board with its own view
+needs `<livewire:crm-quote-send type="menu-item" />` in it once, or Send does nothing.
 
 ## 2.6.0
 

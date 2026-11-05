@@ -46,6 +46,15 @@ class KanbanBoard extends Component
         //
     }
 
+    /**
+     * Re-render after a failed drag. Not $refresh: on Livewire 3 that adds no call to a
+     * request already queued, so the call in there could still skip the render.
+     */
+    public function refreshBoard(): void
+    {
+        //
+    }
+
     public function firstStageId()
     {
         $first = $this->stages()->first();

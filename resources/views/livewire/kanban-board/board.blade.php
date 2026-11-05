@@ -15,4 +15,9 @@
             'sortableBetweenStages' => $sortableBetweenStages,
         ])
     </div>
+
+    {{-- A quote card's Send item talks to this one shared drawer. --}}
+    @if($model === 'quote')
+        <livewire:crm-quote-send type="menu-item" />
+    @endif
 </div>

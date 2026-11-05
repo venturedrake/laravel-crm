@@ -1,6 +1,7 @@
+{{-- Separate from sortable.blade.php, which only loads for users who can edit. --}}
+{{-- Not a comment in the script: Livewire 3 and early 4 can't evaluate a body that opens with one. --}}
 @script
 <script>
-    // Separate from sortable.blade.php, which only loads for users who can edit.
     const column = stage => $wire.$el.querySelector(`[data-board-stage="${stage}"]`);
 
     $wire.on('board-column-loaded', ({ stage, html, hasMore }) => {
