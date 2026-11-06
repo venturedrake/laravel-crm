@@ -18,14 +18,24 @@ class RecordSearch
     private const ESCAPE = '!';
 
     /**
+     * The `number` column is a 32-bit integer on most tables.
+     */
+    private const MAX_NUMBER = 2147483647;
+
+    /**
      * Add `or column contains term`. Lower-cased on both sides, as only some
-     * database collations ignore case.
+     * database collations ignore case. The term is also matched as typed, as
+     * SQLite and C-locale Postgres only lower-case ASCII in the database, so
+     * lower(`Élodie`) there would never equal the `élodie` PHP makes of the term.
      */
     public static function orLike(Builder $query, string|Expression $column, string $term): void
     {
+        $wrapped = $query->getQuery()->getGrammar()->wrap($column);
+        $escape = ' escape \''.self::ESCAPE.'\'';
+
         $query->orWhereRaw(
-            'lower('.$query->getQuery()->getGrammar()->wrap($column).') like ? escape \''.self::ESCAPE.'\'',
-            ['%'.self::escape(Str::lower($term)).'%'],
+            '(lower('.$wrapped.') like ?'.$escape.' or '.$wrapped.' like ?'.$escape.')',
+            ['%'.self::escape(Str::lower($term)).'%', '%'.self::escape($term).'%'],
         );
     }
 
@@ -45,8 +55,13 @@ class RecordSearch
 
         self::orLike($query, $model->qualifyColumn($key.'_id'), $term);
 
-        // Long enough to overflow the column, so it can't be a number.
-        if (! preg_match('/^(.*?)(\d{1,18})$/', trim($term), $matches)) {
+        // The lookbehind keeps a long run of digits from being retried at every
+        // position, as nothing limits the length of a search term.
+        //
+        // Too big for the column, so it can't be a number: Postgres raises an error
+        // for the comparison rather than finding nothing. The few bigint numbers
+        // beyond this still match through `{model}_id` above.
+        if (! preg_match('/^(.*?)(?<!\d)(\d+)$/', trim($term), $matches) || (float) $matches[2] > self::MAX_NUMBER) {
             return;
         }
 

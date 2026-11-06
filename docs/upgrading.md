@@ -206,6 +206,39 @@ card's Send item now dispatches `quote-send` to a shared drawer, instead of call
 drawer for a quote board, so republish it if you published the views. A board with its own view
 needs `<livewire:crm-quote-send type="menu-item" />` in it once, or Send does nothing.
 
+### Leads whose deal was deleted are reopened
+
+A converted lead can no longer be converted again, and deleting its last deal now clears
+`converted_at` so that it can. `2026_11_06_000001_reopen_leads_whose_deals_were_deleted_on_laravel_crm_leads_table`
+does the same for deals deleted before this release. Those leads would otherwise show as converted
+with no deal, no **Convert** button, and no place on the list or board.
+
+It clears `converted_at` on every lead that has a deleted deal and no remaining deal. Leads with no
+deals at all, leads with a deal left, and deleted leads are left alone. Expect the following after
+it runs:
+
+- The reopened leads reappear on the lead list and board, and count as open again.
+- Dashboard conversion figures drop by the same leads.
+- Each lead keeps its current stage, such as **Converted** or **Won**, because nothing records the
+  stage before it. Move them by hand.
+- A lead is reopened even if you replaced its deal with a new one that isn't linked to it, or
+  deleted the deal on purpose, because a deleted deal doesn't say why it went. Delete the lead, or
+  convert it again, if it shouldn't be open.
+
+**This migration is lossy.** `down()` does nothing, because the cleared dates can't be recovered.
+Take a database backup first. To see which leads it will reopen before you upgrade:
+
+```sql
+SELECT l.id, l.title, l.converted_at
+FROM crm_leads l
+WHERE l.converted_at IS NOT NULL
+  AND l.deleted_at IS NULL
+  AND EXISTS (SELECT 1 FROM crm_deals d WHERE d.lead_id = l.id AND d.deleted_at IS NOT NULL)
+  AND NOT EXISTS (SELECT 1 FROM crm_deals d WHERE d.lead_id = l.id AND d.deleted_at IS NULL);
+```
+
+Use your own table prefix if `db_table_prefix` isn't the default `crm_`.
+
 ## 2.6.0
 
 This minor release adds three groups of configuration keys: order form options, delivery options

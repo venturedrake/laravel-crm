@@ -20,8 +20,8 @@
     } elseif ($isExpired) {
         $statusLabel = ucfirst(__('laravel-crm::lang.quote_expired'));
         $statusClass = 'badge-error';
-    } elseif ($quote->expire_at) {
-        $statusLabel = ucfirst(__('laravel-crm::lang.expires_in')).' '.$quote->expire_at->diffForHumans();
+    } elseif ($validUntil = $quote->validUntil()) {
+        $statusLabel = ucfirst(__('laravel-crm::lang.expires_in')).' '.$validUntil->longAbsoluteDiffForHumans();
         $statusClass = 'badge-neutral';
     } else {
         $statusLabel = ucfirst(__('laravel-crm::lang.pending'));

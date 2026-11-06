@@ -80,6 +80,16 @@ class PersonEdit extends Component
         $this->loadCustomFields($this->person);
     }
 
+    protected function savedPhones(): array
+    {
+        return $this->person->phones->pluck('number')->all();
+    }
+
+    protected function savedEmails(): array
+    {
+        return $this->person->emails->pluck('address')->all();
+    }
+
     public function save()
     {
         $this->authorize('update', $this->person);

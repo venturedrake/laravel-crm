@@ -311,6 +311,69 @@ describe('the customer portal', function () {
         expect($quote->fresh()->accepted_at)->not->toBeNull();
     });
 
+    it('counts down to the end of the day on a date-only expiry', function () {
+        $this->travelTo('2026-11-06 10:00:00');
+        $quote = quoteInStage('Sent', ['expire_at' => '2026-11-06 00:00:00']);
+
+        $this->get(URL::temporarySignedRoute(
+            'laravel-crm.portal.quotes.show',
+            now()->addDays(7),
+            ['quote' => $quote->external_id]
+        ))->assertOk()->assertSee('Expires in 13 hours')->assertDontSee('hours ago');
+    });
+
+    it('gives a date-only expiry the whole day where midnight does not exist', function () {
+        $timezone = date_default_timezone_get();
+        date_default_timezone_set('Asia/Beirut');
+
+        try {
+            $quote = quoteInStage('Sent', ['expire_at' => '2027-03-28']);
+            $this->travelTo($quote->fresh()->expire_at->copy()->setTime(10, 0));
+
+            expect($quote->fresh()->expire_at->format('H:i'))->toBe('01:00')
+                ->and($quote->fresh()->isExpired())->toBeFalse();
+        } finally {
+            date_default_timezone_set($timezone);
+        }
+    });
+
+    it('treats an older blank expiry as no expiry', function (string $blank) {
+        $quote = quoteInStage('Sent');
+        Quote::whereKey($quote->id)->toBase()->update(['expire_at' => $blank]);
+
+        expect($quote->fresh()->validUntil())->toBeNull()
+            ->and($quote->fresh()->isExpired())->toBeFalse();
+
+        $this->get(URL::temporarySignedRoute(
+            'laravel-crm.portal.quotes.show',
+            now()->addDays(7),
+            ['quote' => $quote->external_id]
+        ))->assertOk()->assertSee(ucfirst(__('laravel-crm::lang.pending')))->assertSee('value="accept"', false);
+
+        portalProcess($quote, 'accept');
+
+        expect($quote->fresh()->accepted_at)->not->toBeNull();
+    })->with(['an empty string' => '', 'a zero date' => '0000-00-00 00:00:00']);
+
+    it('keeps to a time of day set on the expiry', function () {
+        $this->travelTo('2026-11-06 15:00:00');
+        $quote = quoteInStage('Sent', ['expire_at' => '2026-11-06 09:00:00']);
+
+        portalProcess($quote, 'accept')->assertRedirect();
+
+        expect($quote->fresh()->accepted_at)->toBeNull()
+            ->and(portalFlash())->toContain('This quote has expired');
+    });
+
+    it('accepts a quote before the time of day set on its expiry', function () {
+        $this->travelTo('2026-11-06 08:00:00');
+        $quote = quoteInStage('Sent', ['expire_at' => '2026-11-06 09:00:00']);
+
+        portalProcess($quote, 'accept');
+
+        expect($quote->fresh()->accepted_at)->not->toBeNull();
+    });
+
     it('refuses to accept or reject a quote that has been decided', function (string $action, array $attributes, string $message) {
         $quote = quoteInStage('Sent', $attributes);
         $before = $quote->fresh()->only(['accepted_at', 'rejected_at', 'pipeline_stage_id']);
@@ -365,6 +428,242 @@ describe('the customer portal', function () {
             now()->addDays(7),
             ['quote' => $quote->external_id]
         ))->assertOk()->assertDontSee('value="accept"', false)->assertDontSee('value="reject"', false);
+    });
+});
+
+describe('dragging on the board', function () {
+    beforeEach(function () {
+        $this->actingAsUserWithPermissions(['view crm quotes', 'edit crm quotes']);
+    });
+
+    function dragQuote(Quote $quote, string $from, string $to)
+    {
+        return Livewire::test(StateQuoteBoard::class)->call(
+            'onStageChanged', $quote->id, test()->stages[$to]->id, [], [$quote->id], test()->stages[$from]->id,
+        );
+    }
+
+    it('records a response when a quote enters its stage', function (string $to, string $set, string $clear) {
+        $quote = quoteInStage('Sent');
+
+        dragQuote($quote, 'Sent', $to)->assertOk();
+
+        expect($quote->fresh()->{$set})->not->toBeNull()
+            ->and($quote->fresh()->{$clear})->toBeNull()
+            ->and($quote->fresh()->pipelineStage->name)->toBe($to);
+    })->with([
+        'accepted' => ['Accepted', 'accepted_at', 'rejected_at'],
+        'rejected' => ['Rejected', 'rejected_at', 'accepted_at'],
+    ]);
+
+    it('stops the customer answering a quote dragged to a response', function () {
+        $quote = quoteInStage('Sent');
+
+        dragQuote($quote, 'Sent', 'Accepted');
+
+        $this->get(URL::temporarySignedRoute(
+            'laravel-crm.portal.quotes.show',
+            now()->addDays(7),
+            ['quote' => $quote->external_id]
+        ))->assertOk()->assertDontSee('value="accept"', false);
+    });
+
+    it('refuses a drag that would remove or swap a response', function (string $from, string $column, string $other, string $to) {
+        $quote = quoteInStage($from, [$column => '2026-01-02 03:04:05']);
+
+        $board = dragQuote($quote, $from, $to)->assertOk();
+
+        expect($quote->fresh()->{$column}->format('Y-m-d H:i:s'))->toBe('2026-01-02 03:04:05')
+            ->and($quote->fresh()->{$other})->toBeNull()
+            ->and($quote->fresh()->pipelineStage->name)->toBe($from)
+            ->and($board->effects['html'] ?? null)->not->toBeNull();
+    })->with([
+        'accepted to draft' => ['Accepted', 'accepted_at', 'rejected_at', 'Draft'],
+        'accepted to sent' => ['Accepted', 'accepted_at', 'rejected_at', 'Sent'],
+        'accepted to rejected' => ['Accepted', 'accepted_at', 'rejected_at', 'Rejected'],
+        'rejected to draft' => ['Rejected', 'rejected_at', 'accepted_at', 'Draft'],
+        'rejected to sent' => ['Rejected', 'rejected_at', 'accepted_at', 'Sent'],
+        'rejected to accepted' => ['Rejected', 'rejected_at', 'accepted_at', 'Accepted'],
+    ]);
+
+    it('leaves Unaccept as the way back', function () {
+        $quote = quoteInStage('Accepted', ['accepted_at' => now()]);
+
+        dragQuote($quote, 'Accepted', 'Draft');
+        expect($quote->fresh()->accepted_at)->not->toBeNull();
+
+        $this->service->unaccept($quote->fresh());
+
+        expect($quote->fresh()->accepted_at)->toBeNull()
+            ->and($quote->fresh()->pipelineStage->name)->toBe('Draft');
+    });
+
+    it('keeps the date of a response the quote already has', function () {
+        $quote = quoteInStage('Sent', ['accepted_at' => '2026-01-02 03:04:05']);
+
+        dragQuote($quote, 'Sent', 'Accepted');
+
+        expect($quote->fresh()->accepted_at->format('Y-m-d H:i:s'))->toBe('2026-01-02 03:04:05');
+    });
+
+    it('only changes the column of a quote with an order', function () {
+        $quote = quoteInStage('Accepted', ['accepted_at' => '2026-01-02 03:04:05']);
+        orderFrom($quote);
+
+        dragQuote($quote, 'Accepted', 'Rejected')->assertOk();
+
+        expect($quote->fresh()->pipelineStage->name)->toBe('Rejected')
+            ->and($quote->fresh()->accepted_at)->not->toBeNull()
+            ->and($quote->fresh()->rejected_at)->toBeNull();
+    });
+
+    it('keeps the response through the stages that follow it', function () {
+        $this->stages['Won'] = $this->pipeline->pipelineStages()->create([
+            'external_id' => Str::uuid()->toString(),
+            'name' => 'Won',
+            'order' => 9,
+        ]);
+
+        foreach (['Ordered', 'Won'] as $stage) {
+            $quote = quoteInStage('Accepted', ['accepted_at' => now()]);
+
+            dragQuote($quote, 'Accepted', $stage)->assertOk();
+
+            expect($quote->fresh()->accepted_at)->not->toBeNull()
+                ->and($quote->fresh()->isLocked())->toBeTrue()
+                ->and($quote->fresh()->pipeline_stage_id)->toBe($this->stages[$stage]->id);
+        }
+    });
+
+    it('follows a quote along the seeded pipeline, and not back', function () {
+        $quote = quoteInStage('Draft');
+
+        dragQuote($quote, 'Draft', 'Sent');
+        expect($quote->fresh()->accepted_at)->toBeNull();
+
+        dragQuote($quote, 'Sent', 'Accepted');
+        expect($quote->fresh()->accepted_at)->not->toBeNull();
+
+        dragQuote($quote, 'Accepted', 'Ordered');
+        expect($quote->fresh()->pipelineStage->name)->toBe('Ordered')
+            ->and($quote->fresh()->accepted_at)->not->toBeNull();
+
+        dragQuote($quote, 'Ordered', 'Draft');
+        expect($quote->fresh()->pipelineStage->name)->toBe('Ordered')
+            ->and($quote->fresh()->accepted_at)->not->toBeNull();
+    });
+
+    it('gives the same answer whatever route the quote took', function () {
+        $this->stages['Won'] = $this->pipeline->pipelineStages()->create([
+            'external_id' => Str::uuid()->toString(),
+            'name' => 'Won',
+            'order' => 9,
+        ]);
+        $quote = quoteInStage('Accepted', ['accepted_at' => now()]);
+
+        dragQuote($quote, 'Accepted', 'Won');
+        dragQuote($quote, 'Won', 'Draft');
+
+        expect($quote->fresh()->pipelineStage->name)->toBe('Won')
+            ->and($quote->fresh()->accepted_at)->not->toBeNull();
+    });
+
+    it('protects a response the board has not shown yet', function () {
+        $quote = quoteInStage('Sent');
+        $this->service->accept($quote);
+
+        dragQuote($quote, 'Sent', 'Draft')->assertOk();
+
+        expect($quote->fresh()->accepted_at)->not->toBeNull()
+            ->and($quote->fresh()->pipelineStage->name)->toBe('Accepted');
+    });
+
+    it('protects a response on a quote already parked in its stage', function () {
+        $quote = quoteInStage('Accepted');
+        $board = Livewire::test(StateQuoteBoard::class);
+
+        $this->service->accept($quote);
+
+        $board->call('onStageChanged', $quote->id, $this->stages['Draft']->id, [], [$quote->id], $this->stages['Accepted']->id)
+            ->assertOk();
+
+        expect($quote->fresh()->accepted_at)->not->toBeNull()
+            ->and($quote->fresh()->pipelineStage->name)->toBe('Accepted');
+    });
+
+    it('moves a parked quote with no response, changing nothing else', function () {
+        $quote = quoteInStage('Accepted');
+
+        $board = dragQuote($quote, 'Accepted', 'Draft')->assertOk();
+
+        expect($quote->fresh()->pipelineStage->name)->toBe('Draft')
+            ->and($quote->fresh()->accepted_at)->toBeNull()
+            ->and($board->effects['html'] ?? null)->toBeNull();
+    });
+
+    it('still moves a card from an old column with no response', function () {
+        $quote = quoteInStage('Sent');
+
+        dragQuote($quote, 'Draft', 'Rejected')->assertOk();
+
+        expect($quote->fresh()->pipelineStage->name)->toBe('Rejected');
+    });
+
+    it('protects the response on a quote with no stage', function () {
+        $quote = Quote::create([
+            'title' => 'Stageless',
+            'currency' => 'USD',
+            'pipeline_id' => $this->pipeline->id,
+            'rejected_at' => '2026-01-02 03:04:05',
+        ]);
+
+        dragQuote($quote, 'Draft', 'Sent')->assertOk();
+
+        expect($quote->fresh()->rejected_at)->not->toBeNull()
+            ->and($quote->fresh()->pipeline_stage_id)->toBeNull();
+    });
+
+    it('refuses a response when the amounts are wrong', function (string $to, string $column) {
+        $quote = quoteInStage('Sent', ['subtotal' => 500, 'total' => 500]);
+
+        $board = dragQuote($quote, 'Sent', $to)->assertOk();
+
+        expect($quote->fresh()->{$column})->toBeNull()
+            ->and($quote->fresh()->pipelineStage->name)->toBe('Sent')
+            ->and($board->effects['html'] ?? null)->not->toBeNull();
+    })->with([
+        'accepted' => ['Accepted', 'accepted_at'],
+        'rejected' => ['Rejected', 'rejected_at'],
+    ]);
+
+    it('names a step the quote can really take', function (array $attributes, string $to, string $key) {
+        $quote = quoteInStage('Sent', $attributes);
+
+        expect($this->service->moveBlockedReason($quote, $to))->toBe(ucfirst(__('laravel-crm::lang.'.$key)));
+    })->with([
+        'rejected' => [['rejected_at' => '2026-01-02'], 'Draft', 'quote_move_rejected'],
+        'rejected with wrong amounts' => [['rejected_at' => '2026-01-02', 'subtotal' => 500, 'total' => 500], 'Draft', 'quote_move_amounts'],
+        'accepted with wrong amounts' => [['accepted_at' => '2026-01-02', 'subtotal' => 500, 'total' => 500], 'Draft', 'quote_move_accepted'],
+        'both, heading for accepted' => [['accepted_at' => '2026-01-02', 'rejected_at' => '2026-01-02'], 'Accepted', 'quote_move_accepted'],
+        'both, heading for rejected' => [['accepted_at' => '2026-01-02', 'rejected_at' => '2026-01-02'], 'Rejected', 'quote_move_accepted'],
+    ]);
+
+    it('moves a quote with wrong amounts between other stages', function () {
+        $quote = quoteInStage('Sent', ['subtotal' => 500, 'total' => 500]);
+
+        dragQuote($quote, 'Sent', 'Draft')->assertOk();
+
+        expect($quote->fresh()->pipelineStage->name)->toBe('Draft');
+    });
+
+    it('redraws the board only when the response changes, for the card menu', function () {
+        $board = dragQuote(quoteInStage('Sent'), 'Sent', 'Accepted');
+
+        expect($board->effects['html'] ?? null)->not->toBeNull();
+
+        $board = dragQuote(quoteInStage('Draft'), 'Draft', 'Sent');
+
+        expect($board->effects['html'] ?? null)->toBeNull();
     });
 });
 

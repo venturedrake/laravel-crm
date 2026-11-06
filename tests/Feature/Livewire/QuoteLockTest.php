@@ -244,6 +244,100 @@ test('an unaccepted quote with no order can still be edited', function () {
         ->and((int) $quote->fresh()->getRawOriginal('total'))->toBe(50000);
 });
 
+describe('a time of day set on the expiry', function () {
+    function saveTitle(Quote $quote, $test, ?string $expiry = null): void
+    {
+        $component = Livewire::test(LockQuoteEdit::class, ['quote' => $quote])
+            ->set('title', 'Changed')
+            ->set('products', [[
+                'quote_product_id' => $quote->quoteProducts->first()->id,
+                'id' => $test->product->id,
+                'quantity' => 5,
+                'unit_price' => 100,
+                'amount' => 500,
+                'comments' => null,
+            ]]);
+
+        if ($expiry) {
+            $component->set('expire_at', $expiry);
+        }
+
+        $component->call('save')->assertHasNoErrors();
+    }
+
+    it('survives a save that leaves the date alone', function () {
+        $this->travelTo('2026-11-06 10:00:00');
+        $quote = lockTestQuote($this->product, ['expire_at' => '2026-11-06 09:00:00']);
+
+        saveTitle($quote, $this);
+
+        expect($quote->fresh()->title)->toBe('Changed')
+            ->and($quote->fresh()->expire_at->format('H:i'))->toBe('09:00')
+            ->and($quote->fresh()->isExpired())->toBeTrue();
+    });
+
+    it('gives way to a new date', function () {
+        $this->travelTo('2026-11-06 10:00:00');
+        $quote = lockTestQuote($this->product, ['expire_at' => '2026-11-06 09:00:00']);
+
+        saveTitle($quote, $this, '2026-11-20');
+
+        expect($quote->fresh()->expire_at->format('Y-m-d H:i'))->toBe('2026-11-20 00:00')
+            ->and($quote->fresh()->isExpired())->toBeFalse();
+    });
+});
+
+describe('clearing a date', function () {
+    function editProducts(Quote $quote, $test): array
+    {
+        return [[
+            'quote_product_id' => $quote->quoteProducts->first()->id,
+            'id' => $test->product->id,
+            'quantity' => 5,
+            'unit_price' => 100,
+            'amount' => 500,
+            'comments' => null,
+        ]];
+    }
+
+    it('stores nothing, which every database accepts', function (string $field) {
+        $quote = lockTestQuote($this->product, ['issue_at' => '2026-11-01', 'expire_at' => '2026-11-20']);
+
+        Livewire::test(LockQuoteEdit::class, ['quote' => $quote])
+            ->set('products', editProducts($quote, $this))
+            ->set($field, '')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        expect($quote->fresh()->getRawOriginal($field))->toBeNull();
+    })->with(['issue_at', 'expire_at']);
+
+    it('stores nothing for a blank date on a new quote', function () {
+        $quote = app(QuoteService::class)->create(new Request([
+            'title' => 'Fit-out',
+            'currency' => 'USD',
+            'issue_at' => '',
+            'expire_at' => '',
+        ]), null, Organization::create(['name' => 'Customer Co']));
+
+        expect($quote->fresh()->getRawOriginal('issue_at'))->toBeNull()
+            ->and($quote->fresh()->getRawOriginal('expire_at'))->toBeNull();
+    });
+
+    it('repairs an older blank when the form is saved', function (string $field, string $blank) {
+        $quote = lockTestQuote($this->product);
+        Quote::whereKey($quote->id)->toBase()->update([$field => $blank]);
+
+        Livewire::test(LockQuoteEdit::class, ['quote' => $quote->fresh()])
+            ->assertSet($field, null)
+            ->set('products', editProducts($quote, $this))
+            ->call('save')
+            ->assertHasNoErrors();
+
+        expect($quote->fresh()->getRawOriginal($field))->toBeNull();
+    })->with(['expire_at', 'issue_at'])->with(['an empty string' => '', 'a zero date' => '0000-00-00 00:00:00']);
+});
+
 test('the edit form saves an unaccepted quote with no order', function () {
     $quote = lockTestQuote($this->product);
 

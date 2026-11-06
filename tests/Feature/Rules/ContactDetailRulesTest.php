@@ -48,6 +48,38 @@ test('a blank phone is left alone', function (?string $value) {
     expect(phonePasses($value))->toBeTrue();
 })->with([null, '']);
 
+test('a phone sent as a whole number is checked like any other', function () {
+    expect(phonePasses(61299999999))->toBeTrue()
+        ->and(phonePasses(12345))->toBeFalse();
+});
+
+test('a very long value is refused without backtracking', function (string $value) {
+    $start = microtime(true);
+
+    expect(phonePasses($value))->toBeFalse()
+        ->and(microtime(true) - $start)->toBeLessThan(1.0);
+})->with([
+    'spaces' => ['1'.str_repeat(' ', 300_000).'a'],
+    'digits' => [str_repeat('1', 300_000).'a'],
+]);
+
+test('a saved value passes as it is, and nothing else does', function () {
+    $phone = fn (string $value) => Validator::make(
+        ['phone' => $value],
+        ['phone' => [new PhoneNumber(['1300 FLOWERS'])]],
+    )->passes();
+
+    $email = fn (string $value) => Validator::make(
+        ['email' => $value],
+        ['email' => [new ContactEmail(['N/A'])]],
+    )->passes();
+
+    expect($phone('1300 FLOWERS'))->toBeTrue()
+        ->and($phone('1300 ROSES'))->toBeFalse()
+        ->and($email('N/A'))->toBeTrue()
+        ->and($email('n/a'))->toBeFalse();
+});
+
 test('a well-formed email passes without a DNS lookup', function (string $email) {
     expect(emailPasses($email))->toBeTrue();
 })->with(['pat@example.com', 'pat.o+crm@sub.example.co.uk', 'pat@no-such-domain.invalid']);

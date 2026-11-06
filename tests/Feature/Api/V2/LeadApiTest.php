@@ -235,6 +235,14 @@ test('POST /leads accepts a valid ISO-8601 expected_close', function () {
     expect($response->json('data.expected_close'))->toMatch('/^2026-07-15T10:00:00/');
 });
 
+test('POST /leads stores expected_close in the form every database accepts', function (string $sent) {
+    $this->withHeaders(leadApiHeaders(leadApiUser()))
+        ->postJson('/crm/api/v2/leads', ['title' => 'With date', 'expected_close' => $sent])
+        ->assertStatus(201);
+
+    expect(Lead::firstOrFail()->getRawOriginal('expected_close'))->toBe('2026-07-15 10:00:00');
+})->with(['2026-07-15T10:00:00Z', '2026-07-15T10:00:00+10:00']);
+
 test('POST /leads returns 403 when policy denies create', function () {
     $user = leadApiUser(['crm_permissions' => json_encode([])]);
 

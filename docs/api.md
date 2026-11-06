@@ -191,7 +191,10 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   returned as decimal dollars (e.g. `1500.50`). The package's model mutators multiply by 100 on
   write.
 - **Timestamps are ISO-8601** with timezone offset, e.g. `2026-07-15T10:00:00+00:00` (`Z` UTC
-  suffix is also accepted on input).
+  suffix is also accepted on input). A quote's `expire_at` is the moment it stops being valid, so
+  its offset is applied and the value converted to the app's timezone; midnight in that timezone
+  means the whole day. Other date fields act as calendar dates, so their offset isn't applied.
+  Some keep only the date: `birthday`, and an invoice's `issue_date` and `due_date`.
 - **Pagination:** `?per_page=N` (1–100, default 25). Responses use Laravel's standard pagination
   envelope (`data`, `meta`, `links`).
 - **Sorting:** `?sort=field` ascending; `?sort=-field` descending. Unknown columns are silently

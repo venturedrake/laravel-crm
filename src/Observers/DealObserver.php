@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Deal;
+use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\NumberGeneratorService;
 use VentureDrake\LaravelCrm\Services\SettingService;
 
@@ -91,7 +92,9 @@ class DealObserver
      */
     public function deleted(Deal $deal)
     {
-        //
+        if ($deal->lead) {
+            app(LeadService::class)->undoConversionWithoutDeals($deal->lead);
+        }
     }
 
     /**

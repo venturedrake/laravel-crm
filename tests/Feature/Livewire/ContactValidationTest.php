@@ -231,6 +231,99 @@ it('leaves both optional', function (array $form) {
         ->assertHasNoErrors(['email', 'phone']);
 })->with('inline forms');
 
+describe('a contact saved before these rules applied', function () {
+    dataset('records with saved contacts', [
+        'person' => fn () => [ContactPersonEdit::class, 'person', Person::create(['first_name' => 'Pat'])],
+        'organization' => fn () => [ContactOrganizationEdit::class, 'organization', Organization::create(['name' => 'Acme'])],
+    ]);
+
+    dataset('encryption', ['off' => [false], 'on' => [true]]);
+
+    function withSavedContacts(mixed $record): mixed
+    {
+        $record->phones()->create(['number' => '1300 FLOWERS', 'type' => 'work', 'primary' => 1]);
+        $record->emails()->create(['address' => 'N/A', 'type' => 'work', 'primary' => 1]);
+
+        return $record;
+    }
+
+    it('does not stop an unrelated edit', function (array $form, bool $encrypted) {
+        config()->set('laravel-crm.encrypt_db_fields', $encrypted);
+        [$component, $param, $record] = $form;
+
+        Livewire::test($component, [$param => withSavedContacts($record)])
+            ->set('description', 'Changed')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        expect($record->fresh()->description)->toBe('Changed')
+            ->and($record->phones()->first()->number)->toBe('1300 FLOWERS')
+            ->and($record->emails()->first()->address)->toBe('N/A');
+    })->with('records with saved contacts')->with('encryption');
+
+    it('still refuses a new value', function (array $form) {
+        [$component, $param, $record] = $form;
+
+        Livewire::test($component, [$param => withSavedContacts($record)])
+            ->set('phones.0.number', '1300 ROSES')
+            ->set('emails.0.address', 'n/a')
+            ->call('save')
+            ->assertHasErrors(['phones.0.number', 'emails.0.address']);
+    })->with('records with saved contacts');
+
+    it('does not stop an unrelated edit on a lead', function (array $attributes) {
+        $lead = Lead::create(['title' => 'A lead', 'currency' => 'USD', ...$attributes]);
+        withSavedContacts($lead->person ?? $lead);
+
+        Livewire::test(ContactLeadEdit::class, ['lead' => $lead])
+            ->set('description', 'Changed')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        expect($lead->fresh()->description)->toBe('Changed');
+    })->with([
+        'on the lead' => fn () => ['organization_id' => Organization::create(['name' => 'Acme'])->id],
+        'on its person' => fn () => ['person_id' => Person::create(['first_name' => 'Pat'])->id],
+    ]);
+
+    it('checks the values a lead would copy onto a new person', function () {
+        $person = withSavedContacts(Person::create(['first_name' => 'Pat']));
+        $lead = Lead::create(['title' => 'A lead', 'currency' => 'USD', 'person_id' => $person->id]);
+
+        Livewire::test(ContactLeadEdit::class, ['lead' => $lead])
+            ->set('person_id', null)
+            ->set('person_name', 'Someone New')
+            ->call('save')
+            ->assertHasErrors(['phone', 'email']);
+
+        expect(Person::count())->toBe(1);
+    });
+
+    it('lets a lead move to another existing person', function () {
+        $person = withSavedContacts(Person::create(['first_name' => 'Pat']));
+        $other = Person::create(['first_name' => 'Quinn']);
+        $lead = Lead::create(['title' => 'A lead', 'currency' => 'USD', 'person_id' => $person->id]);
+
+        Livewire::test(ContactLeadEdit::class, ['lead' => $lead])
+            ->set('person_id', $other->id)
+            ->set('person_name', $other->name)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        expect($lead->fresh()->person_id)->toBe($other->id);
+    });
+
+    it('still refuses a new value on a lead', function () {
+        $lead = withSavedContacts(Lead::create(['title' => 'A lead', 'currency' => 'USD']));
+
+        Livewire::test(ContactLeadEdit::class, ['lead' => $lead])
+            ->set('phone', '1300 ROSES')
+            ->set('email', 'n/a')
+            ->call('save')
+            ->assertHasErrors(['phone', 'email']);
+    });
+});
+
 it('saves nothing when a new person is invalid', function () {
     Livewire::test(ContactPersonCreate::class)
         ->set('first_name', 'Pat')
@@ -306,6 +399,11 @@ describe('the REST API', function () {
         $this->patchJson(apiPath($resource, $id), ['email' => 'pat@@invalid', 'phone' => 'zzz'])
             ->assertStatus(422)
             ->assertJsonValidationErrors(['email', 'phone']);
+    })->with('endpoints');
+
+    it('accepts a phone sent as a JSON number', function (string $resource, array $body) {
+        $this->postJson(apiPath($resource), [...$body, 'phone' => 61299999999])
+            ->assertCreated();
     })->with('endpoints');
 
     it('accepts a valid email and phone', function (string $resource, array $body, string $phone) {

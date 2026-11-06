@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Organizations\Traits;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
 use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasSavedContactDetails;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Industry;
 use VentureDrake\LaravelCrm\Models\Organization;
@@ -16,6 +17,7 @@ use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 trait HasOrganizationCommon
 {
     use HasCustomFormFields;
+    use HasSavedContactDetails;
     use Toast;
 
     protected OrganizationService $organizationService;
@@ -93,8 +95,8 @@ trait HasOrganizationCommon
             'name' => 'required|max:255',
             'phones.*.type' => 'required_with:phones.*.number',
             'emails.*.type' => 'required_with:emails.*.address',
-            'phones.*.number' => ['nullable', new PhoneNumber],
-            'emails.*.address' => ['nullable', new ContactEmail],
+            'phones.*.number' => ['nullable', new PhoneNumber($this->savedPhones())],
+            'emails.*.address' => ['nullable', new ContactEmail($this->savedEmails())],
         ], $this->customFieldRules());
     }
 

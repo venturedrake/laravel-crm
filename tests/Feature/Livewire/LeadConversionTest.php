@@ -108,7 +108,7 @@ describe('the lead show page', function () {
         $lead = newLead(['converted_at' => now()]);
 
         Livewire::test(LeadShow::class, ['lead' => $lead])
-            ->assertDontSee(route('laravel-crm.deals.create', ['model' => 'lead', 'id' => $lead->id]), false)
+            ->assertDontSee('model=lead', false)
             ->assertSee(ucfirst(__('laravel-crm::lang.converted')));
     });
 
@@ -236,6 +236,43 @@ describe('saving a deal', function () {
             ->assertHasNoErrors();
 
         expect(Deal::count())->toBe(1);
+    });
+});
+
+describe('deleting the deal a lead became', function () {
+    it('lets the lead convert again', function () {
+        $lead = newLead();
+        convertLead($lead);
+
+        Deal::firstOrFail()->delete();
+
+        expect($lead->fresh()->isConverted())->toBeFalse();
+
+        Livewire::test(LeadShow::class, ['lead' => $lead->fresh()])
+            ->assertSee('model=lead', false);
+
+        convertLead($lead->fresh())->assertHasNoErrors();
+
+        expect($lead->fresh()->isConverted())->toBeTrue()
+            ->and($lead->fresh()->deal->id)->toBe(Deal::firstOrFail()->id);
+    });
+
+    it('keeps the lead converted while it has another deal', function () {
+        $lead = newLead(['converted_at' => now()]);
+        $deal = Deal::create(['title' => 'First', 'lead_id' => $lead->id, 'currency' => 'USD']);
+        Deal::create(['title' => 'Second', 'lead_id' => $lead->id, 'currency' => 'USD']);
+
+        $deal->delete();
+
+        expect($lead->fresh()->isConverted())->toBeTrue();
+    });
+
+    it('leaves a deal with no lead to delete as before', function () {
+        $deal = Deal::create(['title' => 'Standalone', 'currency' => 'USD']);
+
+        $deal->delete();
+
+        expect(Deal::count())->toBe(0);
     });
 });
 

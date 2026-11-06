@@ -2,6 +2,8 @@
 
 namespace VentureDrake\LaravelCrm\Http\Controllers\Api\V2;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use VentureDrake\LaravelCrm\Http\Requests\Api\V2\StoreQuoteRequest;
@@ -132,8 +134,8 @@ class QuoteController extends ApiController
             'description' => $request->input('description', $existing?->description),
             'reference' => $request->input('reference', $existing?->reference),
             'currency' => $request->input('currency', $existing?->currency) ?: 'USD',
-            'issue_at' => $request->input('issue_at', $existing?->issue_at?->toIso8601String()),
-            'expire_at' => $request->input('expire_at', $existing?->expire_at?->toIso8601String()),
+            'issue_at' => $request->input('issue_at', $existing?->hasStoredDate('issue_at') ? $existing->issue_at->toIso8601String() : null),
+            'expire_at' => $this->expiryFrom($request, $existing),
             'terms' => $request->input('terms', $existing?->terms),
             'sub_total' => $subTotal,
             'discount' => $discount,
@@ -148,6 +150,25 @@ class QuoteController extends ApiController
         ];
 
         return [$payload, $person, $organization];
+    }
+
+    /**
+     * The expiry is enforced to the moment, and Eloquent keeps a timestamp's
+     * clock time but drops its offset, so it is converted to the app's timezone
+     * first. The other dates work as calendar dates, and converting those would
+     * move them to a different day. It is PHP's timezone rather than the config
+     * value because that is what Eloquent reads the stored time back in, and it
+     * stops at the end of 9999, which a "never expires" value could otherwise pass.
+     */
+    private function expiryFrom(FormRequest $request, ?Quote $existing): ?CarbonInterface
+    {
+        if (! $request->has('expire_at')) {
+            return $existing?->validUntil() ? $existing->expire_at : null;
+        }
+
+        return $request->filled('expire_at')
+            ? Carbon::parse($request->input('expire_at'))->setTimezone(date_default_timezone_get())->min('9999-12-31 23:59:59')
+            : null;
     }
 
     private function buildProducts(array $lineItems, ?Quote $existing): ?array

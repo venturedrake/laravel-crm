@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Quotes;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use VentureDrake\LaravelCrm\Livewire\PipelineBoard;
 use VentureDrake\LaravelCrm\Models\Quote;
@@ -22,6 +23,8 @@ class QuoteBoard extends PipelineBoard
     public ?array $label_id = [];
 
     public bool $showFilters = false;
+
+    protected bool $responseChanged = false;
 
     protected $listeners = [
         'refreshQuote' => '$refresh',
@@ -72,6 +75,36 @@ class QuoteBoard extends PipelineBoard
         $records
             ->filter(fn (Quote $quote) => $quote->accepted_at && $quote->hasOrders())
             ->load('orders.orderProducts');
+    }
+
+    protected function stageChanged(Model $record, int $stageId): void
+    {
+        $this->responseChanged = app(QuoteStateService::class)->moved($record, $this->stageName($stageId));
+    }
+
+    protected function refusesMove(Model $record, int $stageId): bool
+    {
+        $reason = app(QuoteStateService::class)->moveBlockedReason($record, $this->stageName($stageId));
+
+        if ($reason) {
+            $this->error($reason);
+        }
+
+        return $reason !== null;
+    }
+
+    private function stageName(int $stageId): ?string
+    {
+        return $this->stages()->firstWhere('id', $stageId)?->name;
+    }
+
+    /**
+     * A card's menu offers Accept or Unaccept, so a drag that changes which has to
+     * redraw it.
+     */
+    protected function canSkipRender($lastRender = null): bool
+    {
+        return ! $this->responseChanged && parent::canSkipRender($lastRender);
     }
 
     public function delete($id)

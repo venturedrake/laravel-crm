@@ -66,6 +66,17 @@ class LeadService
         ]));
     }
 
+    /**
+     * A lead whose deals have all gone can be converted again. Its stage stays
+     * as it is, because nothing records where the lead was before converting.
+     */
+    public function undoConversionWithoutDeals(Lead $lead): void
+    {
+        if ($lead->isConverted() && ! $lead->deals()->exists()) {
+            $lead->update(['converted_at' => null]);
+        }
+    }
+
     public function update($request, Lead $lead, $person = null, $organization = null, $client = null)
     {
         $lead->update([

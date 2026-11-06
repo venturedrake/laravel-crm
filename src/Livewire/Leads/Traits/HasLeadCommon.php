@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Leads\Traits;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
 use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
+use VentureDrake\LaravelCrm\Livewire\Traits\HasSavedContactDetails;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
@@ -14,6 +15,7 @@ use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 trait HasLeadCommon
 {
     use HasCustomFormFields;
+    use HasSavedContactDetails;
     use Toast;
 
     protected LeadService $leadService;
@@ -82,8 +84,8 @@ trait HasLeadCommon
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
-            'phone' => ['nullable', new PhoneNumber],
-            'email' => ['nullable', new ContactEmail],
+            'phone' => ['nullable', new PhoneNumber($this->savedPhones())],
+            'email' => ['nullable', new ContactEmail($this->savedEmails())],
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
         ], $this->customFieldRules());

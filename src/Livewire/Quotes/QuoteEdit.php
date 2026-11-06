@@ -53,8 +53,8 @@ class QuoteEdit extends Component
         $this->description = $quote->description;
         $this->reference = $quote->reference;
         $this->currency = $quote->currency;
-        $this->issue_at = $quote->issue_at?->format('Y-m-d');
-        $this->expire_at = $quote->expire_at?->format('Y-m-d');
+        $this->issue_at = $quote->hasStoredDate('issue_at') ? $quote->issue_at->format('Y-m-d') : null;
+        $this->expire_at = $quote->validUntil()?->format('Y-m-d');
         $this->terms = $quote->terms;
         $this->pipeline_stage_id = $quote->pipelineStage->id ?? null;
         $this->labels = $quote->labels->pluck('id')->toArray();

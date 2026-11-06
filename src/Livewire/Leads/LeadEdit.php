@@ -61,6 +61,24 @@ class LeadEdit extends Component
         $this->loadCustomFields($lead);
     }
 
+    protected function savedPhones(): array
+    {
+        return $this->isCreatingPerson() ? [] : [$this->lead->getPrimaryPhone()?->number];
+    }
+
+    protected function savedEmails(): array
+    {
+        return $this->isCreatingPerson() ? [] : [$this->lead->getPrimaryEmail()?->address];
+    }
+
+    /**
+     * A new person takes the form's phone and email, so for them those are new.
+     */
+    private function isCreatingPerson(): bool
+    {
+        return $this->person_name && ! $this->person_id;
+    }
+
     public function save()
     {
         $this->authorize('update', $this->lead);

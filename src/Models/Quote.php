@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Models;
 
 use App\User;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\Quantity;
@@ -223,12 +224,37 @@ class Quote extends Model
     }
 
     /**
-     * Whether the quote's expiry date has passed. The form captures a date
-     * with no time, so a quote is still good on the day it expires.
+     * When the quote stops being valid. The form captures a date with no time,
+     * so a quote is still good on the day it expires; any other time is exact.
+     * Compared with the start of the day rather than with 00:00, because that
+     * is 01:00 where the clocks go forward at midnight.
      */
+    public function validUntil(): ?CarbonInterface
+    {
+        if (! $this->hasStoredDate('expire_at')) {
+            return null;
+        }
+
+        return $this->expire_at->eq($this->expire_at->copy()->startOfDay())
+            ? $this->expire_at->copy()->endOfDay()
+            : $this->expire_at;
+    }
+
+    /**
+     * Whether a date is stored. A cleared date used to be saved as '' or, on
+     * MySQL outside strict mode, as a zero date. The cast reads those as the
+     * current time and a date in the past, so it can't be asked.
+     */
+    public function hasStoredDate(string $attribute): bool
+    {
+        $stored = (string) ($this->getAttributes()[$attribute] ?? '');
+
+        return $stored !== '' && ! str_starts_with($stored, '0000-00-00');
+    }
+
     public function isExpired(): bool
     {
-        return $this->expire_at !== null && $this->expire_at->copy()->endOfDay()->isPast();
+        return $this->validUntil()?->isPast() ?? false;
     }
 
     /**

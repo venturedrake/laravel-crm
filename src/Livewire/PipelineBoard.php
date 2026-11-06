@@ -435,6 +435,24 @@ abstract class PipelineBoard extends KanbanBoard
         }
     }
 
+    /**
+     * For a board whose stages mean more than a column. Runs in the drag's transaction.
+     */
+    protected function stageChanged(Model $record, int $stageId): void
+    {
+        //
+    }
+
+    /**
+     * For a board where a stage can't always take a record. It goes by the record as
+     * stored, not the column the client saw. Nothing is saved, and the render that
+     * follows puts the card back where it belongs.
+     */
+    protected function refusesMove(Model $record, int $stageId): bool
+    {
+        return false;
+    }
+
     public function onStageChanged($recordId, $stageId, $fromOrderedIds, $toOrderedIds, $fromStage = null, $lastRender = null)
     {
         if (! $record = $this->resolve([$recordId])->first()) {
@@ -452,10 +470,16 @@ abstract class PipelineBoard extends KanbanBoard
 
         $fromStageId = $this->sourceColumn($fromStage, $from) ?? $this->columnOf($record);
 
+        if ($this->refusesMove($record, $stageId)) {
+            return;
+        }
+
         DB::transaction(function () use ($record, $stageId, $fromStageId, $from, $to) {
             $record->update([
                 'pipeline_stage_id' => $stageId,
             ]);
+
+            $this->stageChanged($record, $stageId);
 
             // Both lists, because a record with no stage already shows in the first
             // column, so dropping it there makes them the same column.

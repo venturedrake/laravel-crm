@@ -24,6 +24,7 @@ class Lead extends Model
 
     protected $casts = [
         'converted_at' => 'datetime',
+        'expected_close' => 'datetime',
     ];
 
     protected $searchable = [

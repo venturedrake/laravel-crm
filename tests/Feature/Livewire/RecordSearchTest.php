@@ -37,6 +37,7 @@ use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Support\RecordSearch;
 
 beforeEach(function () {
     foreach ([
@@ -245,6 +246,44 @@ it('still finds a literal percent sign', function () {
     Quote::create(['title' => 'A 500 deposit']);
 
     expect(listSearch(QuoteIndex::class, 'quotes', '50%'))->toBe([$target->id]);
+});
+
+it('compares a number only when the column can hold it', function (string $term, int $bindings) {
+    $query = Lead::query()->where(fn ($query) => RecordSearch::orNumber($query, $term));
+
+    expect($query->getBindings())->toHaveCount($bindings);
+})->with([
+    'the largest it can hold' => ['2147483647', 4],
+    'one too many' => ['2147483648', 2],
+    'a phone number' => ['61412345678', 2],
+    'a prefixed number' => ['LD-61412345678', 2],
+    'more digits than a bigint' => ['12345678901234567890123', 2],
+]);
+
+it('does not spend longer on a very long term', function (string $term) {
+    $start = microtime(true);
+
+    RecordSearch::orNumber(Lead::query(), $term);
+
+    expect(microtime(true) - $start)->toBeLessThan(1.0);
+})->with([
+    'digits then a letter' => [str_repeat('1', 300_000).'a'],
+    'only digits' => [str_repeat('1', 300_000)],
+]);
+
+it('still finds a number too big to compare by its stored form', function () {
+    $target = Invoice::create([]);
+    $target->forceFill(['number' => 3000000000, 'invoice_id' => 'INV-3000000000'])->saveQuietly();
+    Invoice::create([]);
+
+    expect(listSearch(InvoiceIndex::class, 'invoices', '3000000000'))->toBe([$target->id]);
+});
+
+it('finds text outside ASCII as typed, on any database', function () {
+    $target = Quote::create(['title' => 'Élodie Durand']);
+    Quote::create(['title' => 'Someone else']);
+
+    expect(listSearch(QuoteIndex::class, 'quotes', 'Élodie'))->toBe([$target->id]);
 });
 
 it('treats a wildcard as text in the guest picker', function () {

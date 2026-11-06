@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Product;
@@ -307,4 +308,132 @@ test('POST /quotes returns 422 for a zero quantity', function () {
         ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['line_items.0.quantity']);
+});
+
+function apiQuote(array $attributes = []): Quote
+{
+    return Quote::create(['title' => 'Sample', 'currency' => 'USD', ...$attributes]);
+}
+
+function storedDate(Quote $quote, string $column): ?string
+{
+    return $quote->fresh()->getRawOriginal($column);
+}
+
+describe('the expiry', function () {
+    beforeEach(function () {
+        $this->withHeaders(quoteApiHeaders(quoteApiUser()));
+    });
+
+    it('applies the offset it is sent with', function (string $sent, string $stored) {
+        $quote = apiQuote();
+
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => $sent])
+            ->assertOk()
+            ->assertJsonPath('data.expire_at', Carbon::parse($stored)->toIso8601String());
+
+        expect(storedDate($quote, 'expire_at'))->toBe($stored);
+    })->with([
+        'behind UTC' => ['2026-11-06T20:00:00-05:00', '2026-11-07 01:00:00'],
+        'ahead of UTC' => ['2026-11-20T00:00:00+10:00', '2026-11-19 14:00:00'],
+        'in UTC' => ['2026-11-20T09:00:00Z', '2026-11-20 09:00:00'],
+    ]);
+
+    it('enforces that moment rather than the clock time as sent', function () {
+        $quote = apiQuote();
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => '2026-11-06T20:00:00-05:00'])->assertOk();
+
+        $this->travelTo('2026-11-07 00:59:00');
+        expect($quote->fresh()->isExpired())->toBeFalse();
+
+        $this->travelTo('2026-11-07 01:01:00');
+        expect($quote->fresh()->isExpired())->toBeTrue();
+    });
+
+    it('takes midnight in the app timezone as the whole day', function () {
+        $quote = apiQuote();
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => '2026-11-20T00:00:00+00:00'])->assertOk();
+
+        $this->travelTo('2026-11-20 23:00:00');
+
+        expect($quote->fresh()->isExpired())->toBeFalse();
+    });
+
+    it('converts to the app timezone rather than UTC', function () {
+        $timezone = date_default_timezone_get();
+        config()->set('app.timezone', 'Australia/Sydney');
+        date_default_timezone_set('Australia/Sydney');
+
+        try {
+            $quote = apiQuote();
+
+            $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => '2026-11-20T09:00:00+00:00'])->assertOk();
+
+            expect(storedDate($quote, 'expire_at'))->toBe('2026-11-20 20:00:00');
+        } finally {
+            config()->set('app.timezone', $timezone);
+            date_default_timezone_set($timezone);
+        }
+    });
+
+    it('reads back correctly when the config and PHP timezones differ', function () {
+        config()->set('app.timezone', 'Australia/Sydney');
+        $quote = apiQuote();
+
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => '2026-11-20T09:00:00+11:00'])->assertOk();
+
+        expect(storedDate($quote, 'expire_at'))->toBe('2026-11-19 22:00:00');
+    });
+
+    it('takes a value past the end of 9999 as the end of 9999', function () {
+        $quote = apiQuote();
+
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => '9999-12-31T23:59:59-05:00'])->assertOk();
+
+        expect(storedDate($quote, 'expire_at'))->toBe('9999-12-31 23:59:59')
+            ->and($quote->fresh()->isExpired())->toBeFalse();
+    });
+
+    it('applies the offset on a new quote too', function () {
+        $this->postJson('/crm/api/v2/quotes', [
+            'title' => 'Sample',
+            'organization_id' => Organization::create(['name' => 'Acme Co'])->external_id,
+            'expire_at' => '2026-11-06T20:00:00-05:00',
+        ])->assertCreated();
+
+        expect(Quote::first()->expire_at->format('Y-m-d H:i:s'))->toBe('2026-11-07 01:00:00');
+    });
+
+    it('is left alone by an update that omits it', function (string $stored) {
+        $quote = apiQuote(['expire_at' => $stored]);
+
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['title' => 'Changed'])->assertOk();
+
+        expect(storedDate($quote, 'expire_at'))->toBe($stored)
+            ->and($quote->fresh()->title)->toBe('Changed');
+    })->with(['date-only' => '2026-11-20 00:00:00', 'timed' => '2026-11-20 09:00:00']);
+
+    it('is cleared by an explicit null', function () {
+        $quote = apiQuote(['expire_at' => '2026-11-20 09:00:00']);
+
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => null])->assertOk();
+
+        expect(storedDate($quote, 'expire_at'))->toBeNull();
+    });
+});
+
+describe('an older blank date', function () {
+    beforeEach(function () {
+        $this->withHeaders(quoteApiHeaders(quoteApiUser()));
+    });
+
+    it('is not turned into a real date by an update that omits it', function (string $column, string $blank) {
+        $quote = apiQuote();
+        Quote::whereKey($quote->id)->toBase()->update([$column => $blank]);
+
+        $this->patchJson('/crm/api/v2/quotes/'.$quote->external_id, ['title' => 'Changed'])->assertOk();
+
+        expect(storedDate($quote, $column))->toBeNull()
+            ->and($quote->fresh()->isExpired())->toBeFalse();
+    })->with(['expire_at', 'issue_at'])->with(['an empty string' => '', 'a zero date' => '0000-00-00 00:00:00']);
 });

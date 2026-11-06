@@ -82,6 +82,16 @@ class OrganizationEdit extends Component
         $this->loadCustomFields($this->organization);
     }
 
+    protected function savedPhones(): array
+    {
+        return $this->organization->phones->pluck('number')->all();
+    }
+
+    protected function savedEmails(): array
+    {
+        return $this->organization->emails->pluck('address')->all();
+    }
+
     public function save()
     {
         $this->authorize('update', $this->organization);

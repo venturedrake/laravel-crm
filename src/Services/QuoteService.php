@@ -48,8 +48,8 @@ class QuoteService
                 'description' => $request->description,
                 'reference' => $request->reference,
                 'currency' => $request->currency,
-                'issue_at' => $request->issue_at,
-                'expire_at' => $request->expire_at,
+                'issue_at' => $request->issue_at ?: null,
+                'expire_at' => $request->expire_at ?: null,
                 'terms' => $request->terms,
                 'subtotal' => $request->sub_total,
                 'discount' => $request->discount,
@@ -102,6 +102,18 @@ class QuoteService
         });
     }
 
+    /**
+     * The form shows the expiry as a date, so saving that date unchanged keeps
+     * any time of day set through the API. Otherwise the quote's expiry would
+     * move to the end of the day and an expired quote could be accepted again.
+     */
+    private function expiryFor($expireAt, Quote $quote)
+    {
+        return $expireAt !== null && $expireAt === $quote->validUntil()?->format('Y-m-d')
+            ? $quote->expire_at
+            : $expireAt;
+    }
+
     public function update($request, Quote $quote, $person = null, $organization = null, $client = null)
     {
         return DB::transaction(function () use ($request, $quote, $person, $organization, $client) {
@@ -122,8 +134,8 @@ class QuoteService
                 'description' => $request->description,
                 'reference' => $request->reference,
                 'currency' => $request->currency,
-                'issue_at' => $request->issue_at,
-                'expire_at' => $request->expire_at,
+                'issue_at' => $request->issue_at ?: null,
+                'expire_at' => $this->expiryFor($request->expire_at ?: null, $quote),
                 'terms' => $request->terms,
                 'subtotal' => $request->sub_total,
                 'discount' => $request->discount,
