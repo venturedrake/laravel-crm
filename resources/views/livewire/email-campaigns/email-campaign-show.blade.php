@@ -1,5 +1,5 @@
 <div class="crm-content">
-    <x-mary-header title="{{ $campaign->name }}" subtitle="{{ $campaign->campaign_id }} — {{ ucfirst($campaign->status) }}">
+    <x-mary-header :title="$campaign->name" subtitle="{{ $campaign->campaign_id }} — {{ ucfirst($campaign->status) }}">
         <x-slot:actions>
             @if($campaign->isCancellable())
                 @can('edit crm email-campaigns')

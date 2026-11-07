@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-crm-header title="{{ $quote->title }}" class="mb-5" progress-indicator >
+    <x-crm-header :title="$quote->title" class="mb-5" progress-indicator >
         <x-slot:badges>
             @if($quote->pipelineStage)
                 <x-mary-badge :value="$quote->pipelineStage->name" class="badge badge-neutral text-white" />

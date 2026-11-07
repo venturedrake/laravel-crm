@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -15,6 +16,7 @@ class CustomFieldGroupIndex extends Component
 {
     use AuthorizesRequests;
     use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -26,13 +28,13 @@ class CustomFieldGroupIndex extends Component
         return [
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
             ['key' => 'system', 'label' => ucfirst(__('laravel-crm::lang.system')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
-            ['key' => 'fields', 'label' => ucfirst(__('laravel-crm::lang.fields')), 'format' => fn ($row, $field) => count($field)],
+            ['key' => 'fields', 'label' => ucfirst(__('laravel-crm::lang.fields')), 'format' => fn ($row, $field) => count($field), 'sortable' => false],
         ];
     }
 
     public function fieldGroups(): LengthAwarePaginator
     {
-        return FieldGroup::orderBy(...array_values($this->sortBy))
+        return FieldGroup::orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\ProductCategory;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -15,6 +16,7 @@ class ProductCategoryIndex extends Component
 {
     use AuthorizesRequests;
     use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -30,7 +32,7 @@ class ProductCategoryIndex extends Component
     {
         return [
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'products', 'label' => ucfirst(__('laravel-crm::lang.products')), 'format' => fn ($row, $field) => count($field)],
+            ['key' => 'products', 'label' => ucfirst(__('laravel-crm::lang.products')), 'format' => fn ($row, $field) => count($field), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->format($this->dateFormat)],
             ['key' => 'updated_at', 'label' => ucfirst(__('laravel-crm::lang.updated')), 'format' => fn ($row, $field) => $field->format($this->dateFormat)],
         ];
@@ -38,7 +40,7 @@ class ProductCategoryIndex extends Component
 
     public function productCategories(): LengthAwarePaginator
     {
-        return ProductCategory::orderBy(...array_values($this->sortBy))
+        return ProductCategory::orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

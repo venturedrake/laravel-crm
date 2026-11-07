@@ -39,7 +39,7 @@ class AuthzDeliveryEdit extends DeliveryEdit
 
 it('forbids deleting a delivery without the delete permission and leaves the record intact', function () {
     $this->actingAsUserWithPermissions(['view crm deliveries']);
-    $record = Delivery::create(['reference' => 'Authz delivery', 'delivery_expected' => now(), 'delivered_on' => now()]);
+    $record = Delivery::create(['delivery_expected' => now(), 'delivered_on' => now()]);
 
     Livewire::test(AuthzDeliveryIndex::class)
         ->call('delete', $record->id)
@@ -50,7 +50,7 @@ it('forbids deleting a delivery without the delete permission and leaves the rec
 
 it('allows deleting a delivery with the delete permission', function () {
     $this->actingAsUserWithPermissions(['view crm deliveries', 'delete crm deliveries']);
-    $record = Delivery::create(['reference' => 'Authz delivery', 'delivery_expected' => now(), 'delivered_on' => now()]);
+    $record = Delivery::create(['delivery_expected' => now(), 'delivered_on' => now()]);
 
     Livewire::test(AuthzDeliveryIndex::class)
         ->call('delete', $record->id)
@@ -79,7 +79,7 @@ it('allows a user holding the create permission past the delivery create guard',
 
 it('forbids saving a delivery edit without the edit permission', function () {
     $this->actingAsUserWithPermissions(['view crm deliveries']);
-    $record = Delivery::create(['reference' => 'Authz delivery', 'delivery_expected' => now(), 'delivered_on' => now()]);
+    $record = Delivery::create(['delivery_expected' => now(), 'delivered_on' => now()]);
 
     Livewire::test(AuthzDeliveryEdit::class, ['delivery' => $record])
         ->call('save')
@@ -88,7 +88,7 @@ it('forbids saving a delivery edit without the edit permission', function () {
 
 it('allows saving a delivery edit with the edit permission', function () {
     $this->actingAsUserWithPermissions(['view crm deliveries', 'edit crm deliveries']);
-    $record = Delivery::create(['reference' => 'Authz delivery', 'delivery_expected' => now(), 'delivered_on' => now()]);
+    $record = Delivery::create(['delivery_expected' => now(), 'delivered_on' => now()]);
 
     Livewire::test(AuthzDeliveryEdit::class, ['delivery' => $record])
         ->call('save')

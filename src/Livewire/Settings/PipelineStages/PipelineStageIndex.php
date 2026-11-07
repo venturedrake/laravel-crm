@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -15,6 +16,7 @@ class PipelineStageIndex extends Component
 {
     use AuthorizesRequests;
     use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -25,13 +27,13 @@ class PipelineStageIndex extends Component
     {
         return [
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'pipeline.name', 'label' => ucfirst(__('laravel-crm::lang.attached_to')), 'relation' => 'pipeline'],
+            ['key' => 'pipeline.name', 'label' => ucfirst(__('laravel-crm::lang.attached_to')), 'relation' => 'pipeline', 'sortable' => false],
         ];
     }
 
     public function pipelineStages(): LengthAwarePaginator
     {
-        return PipelineStage::orderBy(...array_values($this->sortBy))
+        return PipelineStage::orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

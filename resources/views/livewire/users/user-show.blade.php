@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-crm-header title="{{ $user->name }}" class="mb-5" progress-indicator>
+    <x-crm-header :title="$user->name" class="mb-5" progress-indicator>
         {{-- ACTIONS --}}
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_users')) }}" link="{{ url(route('laravel-crm.users.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive /> | 

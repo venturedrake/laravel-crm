@@ -1,5 +1,5 @@
 <div class="crm-content">
-    <x-mary-header title="{{ $widget->name }}" subtitle="{{ ucfirst(__('laravel-crm::lang.chat_widget')) }}" progress-indicator>
+    <x-mary-header :title="$widget->name" subtitle="{{ ucfirst(__('laravel-crm::lang.chat_widget')) }}" progress-indicator>
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back')) }}" link="{{ url(route('laravel-crm.chat-widgets.index')) }}" icon="fas.angle-double-left" />
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.edit')) }}" link="{{ url(route('laravel-crm.chat-widgets.edit', $widget)) }}" icon="o-pencil-square" class="btn-primary text-white" />

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Quotes\Traits\HasQuoteCommon;
+use VentureDrake\LaravelCrm\Livewire\Traits\GeneratesContactTitle;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -17,6 +18,7 @@ use VentureDrake\LaravelCrm\Models\Quote;
 class QuoteCreate extends Component
 {
     use AuthorizesRequests, HasOrganizationSuggest;
+    use GeneratesContactTitle;
     use HasPersonSuggest;
     use HasQuoteCommon;
 
@@ -110,7 +112,7 @@ class QuoteCreate extends Component
 
     protected function generateTitleString($value)
     {
-        $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.quote'));
+        $this->updateGeneratedTitle($value, 'quote');
     }
 
     public function save()

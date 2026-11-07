@@ -11,6 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
@@ -19,6 +20,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 class ProductIndex extends Component
 {
     use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -67,11 +69,11 @@ class ProductIndex extends Component
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
             ['key' => 'xeroItem', 'label' => '', 'sortable' => false],
             ['key' => 'code', 'label' => strtoupper(__('laravel-crm::lang.sku'))],
-            ['key' => 'productCategory.name', 'label' => ucfirst(__('laravel-crm::lang.category'))],
+            ['key' => 'productCategory.name', 'label' => ucfirst(__('laravel-crm::lang.category')), 'sortable' => false],
             ['key' => 'unit', 'label' => ucfirst(__('laravel-crm::lang.unit'))],
-            ['key' => 'price', 'label' => ucfirst(__('laravel-crm::lang.price')).' ('.$this->currency.')'],
-            ['key' => 'taxRate.name', 'label' => ucfirst(__('laravel-crm::lang.tax'))],
-            ['key' => 'taxRate.rate', 'label' => ucfirst(__('laravel-crm::lang.tax_rate')), 'format' => fn ($row, $field) => $field.'%'],
+            ['key' => 'price', 'label' => ucfirst(__('laravel-crm::lang.price')).' ('.$this->currency.')', 'sortable' => false],
+            ['key' => 'taxRate.name', 'label' => ucfirst(__('laravel-crm::lang.tax')), 'sortable' => false],
+            ['key' => 'taxRate.rate', 'label' => ucfirst(__('laravel-crm::lang.tax_rate')), 'format' => fn ($row, $field) => $field.'%', 'sortable' => false],
             ['key' => 'active', 'label' => ucfirst(__('laravel-crm::lang.active')), 'format' => fn ($row, $field) => $field ? ucfirst(__('laravel-crm::lang.yes')) : ucfirst(__('laravel-crm::lang.no'))],
             ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
@@ -90,7 +92,7 @@ class ProductIndex extends Component
             })
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))
+            ->orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

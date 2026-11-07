@@ -49,8 +49,8 @@ class CallRelated extends Component
         $this->validate([
             'name' => 'required|max:255',
             'description' => 'nullable',
-            'start_at' => 'required',
-            'finish_at' => 'required',
+            'start_at' => 'required|date',
+            'finish_at' => 'required|date|after_or_equal:start_at',
             'location' => 'nullable',
             'user_owner_id' => 'nullable',
             'user_assigned_id' => 'nullable',

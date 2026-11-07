@@ -82,8 +82,8 @@ class CallItem extends Component
 
         $this->validate([
             'name' => 'required|max:255',
-            'start_at' => 'required',
-            'finish_at' => 'required',
+            'start_at' => 'required|date',
+            'finish_at' => 'required|date|after_or_equal:start_at',
         ]);
 
         $this->call->update([

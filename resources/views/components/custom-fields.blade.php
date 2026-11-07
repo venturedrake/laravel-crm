@@ -34,7 +34,7 @@
         @php
             $groupName = $groupFields->first()->field->fieldGroup->name ?? '';
         @endphp
-        <x-mary-card title="{{ $groupName }}" class="mt-5" separator>
+        <x-mary-card :title="$groupName" class="mt-5" separator>
             <div class="grid gap-3" wire:key="custom-field-group-{{ $groupId }}">
                 @foreach($groupFields as $fieldValueOrModel)
                     @if($fieldValueOrModel->field)

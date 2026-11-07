@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-crm-header title="{{ $team->name }}" class="mb-5" progress-indicator>
+    <x-crm-header :title="$team->name" class="mb-5" progress-indicator>
         {{-- ACTIONS --}}
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_teams')) }}" link="{{ url(route('laravel-crm.teams.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive /> |

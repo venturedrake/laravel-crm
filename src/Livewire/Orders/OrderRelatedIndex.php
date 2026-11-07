@@ -31,7 +31,7 @@ class OrderRelatedIndex extends Component
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
             ['key' => 'order_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
             ['key' => 'reference', 'label' => ucfirst(__('laravel-crm::lang.reference'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
+            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
             ['key' => 'subtotal', 'label' => ucfirst(__('laravel-crm::lang.sub_total')), 'format' => fn ($row, $field) => money($field, $row->currency)],
             ['key' => 'discount', 'label' => ucfirst(__('laravel-crm::lang.discount')), 'format' => fn ($row, $field) => money($field, $row->currency)],
             ['key' => 'tax', 'label' => ucfirst(__('laravel-crm::lang.tax')), 'format' => fn ($row, $field) => money($field, $row->currency)],

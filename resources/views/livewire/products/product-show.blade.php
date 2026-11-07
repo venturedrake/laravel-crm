@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-crm-header title="{{ $product->name }}" class="mb-5" progress-indicator >
+    <x-crm-header :title="$product->name" class="mb-5" progress-indicator >
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.back_to_products')) }}" link="{{ url(route('laravel-crm.products.index')) }}" icon="fas.angle-double-left" class="btn-sm btn-outline" responsive />
             |

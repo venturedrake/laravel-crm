@@ -31,7 +31,7 @@ class DeliveryRelatedIndex extends Component
         $headers = [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
             ['key' => 'delivery_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'reference', 'label' => ucfirst(__('laravel-crm::lang.reference'))],
+            ['key' => 'order.reference', 'sortable' => false, 'label' => ucfirst(__('laravel-crm::lang.reference'))],
             ['key' => 'address', 'label' => ucfirst(__('laravel-crm::lang.shipping_address')), 'sortable' => false],
             ['key' => 'delivery_expected', 'label' => ucwords(DeliveryOptions::expectedLabel()), 'format' => fn ($row, $field) => $field?->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d'))],
         ];
@@ -51,7 +51,7 @@ class DeliveryRelatedIndex extends Component
         // Deliveries read their contact details through the parent order, so
         // the preview button's `$delivery->title` costs three queries a row
         // without these.
-        return $this->model->deliveries()->with(['order.client', 'order.organization'])->latest()->get();
+        return $this->model->deliveries()->with(['order.client', 'order.person', 'order.organization'])->latest()->get();
     }
 
     public function delete($id): void

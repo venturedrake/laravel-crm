@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Deals\Traits\HasDealCommon;
+use VentureDrake\LaravelCrm\Livewire\Traits\GeneratesContactTitle;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Deal;
@@ -19,6 +20,7 @@ use VentureDrake\LaravelCrm\Services\LeadService;
 class DealCreate extends Component
 {
     use AuthorizesRequests, HasDealCommon;
+    use GeneratesContactTitle;
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
@@ -101,7 +103,7 @@ class DealCreate extends Component
 
     protected function generateTitleString($value)
     {
-        $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.deal'));
+        $this->updateGeneratedTitle($value, 'deal');
     }
 
     public function save()

@@ -11,6 +11,7 @@ use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Livewire\Traits\SearchesRecords;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -20,6 +21,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 class OrderIndex extends Component
 {
     use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, SearchesRecords, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -64,12 +66,12 @@ class OrderIndex extends Component
 
         if (auth()->user()->can('view crm quotes')) {
             $headers = array_merge($headers, [
-                ['key' => 'quote', 'label' => ucfirst(__('laravel-crm::lang.quote')), 'disableLink' => true],
+                ['key' => 'quote', 'label' => ucfirst(__('laravel-crm::lang.quote')), 'disableLink' => true, 'sortable' => false],
             ]);
         }
 
         $headers = array_merge($headers, [
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field],
+            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
             ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
             ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
             /* ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))], */
@@ -117,7 +119,7 @@ class OrderIndex extends Component
             ])
             ->when($this->search, fn (Builder $q) => $this->searchRecords($q, $this->search, ['reference']))->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'orders.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))
+            ->orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

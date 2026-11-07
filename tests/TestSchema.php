@@ -776,7 +776,6 @@ class TestSchema
             $table->string('delivery_id')->nullable();
             $table->string('prefix')->nullable();
             $table->integer('number')->nullable();
-            $table->string('reference')->nullable();
             $table->string('pdf_template')->nullable();
             $table->datetime('delivery_initiated')->nullable();
             $table->datetime('delivery_shipped')->nullable();

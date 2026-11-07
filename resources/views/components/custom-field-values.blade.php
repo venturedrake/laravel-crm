@@ -31,7 +31,7 @@
             @php
                 $groupName = $groupValues->first()->field->fieldGroup->name ?? '';
             @endphp
-            <x-mary-card title="{{ $groupName }}" shadow separator>
+            <x-mary-card :title="$groupName" shadow separator>
                 <div class="grid gap-y-3">
                     @foreach($groupValues as $fieldValue)
                         @include('laravel-crm::components.custom-field-values._row', ['fieldValue' => $fieldValue])

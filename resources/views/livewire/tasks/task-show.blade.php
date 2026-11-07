@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-crm-header title="{{ $task->name }}" class="mb-5" progress-indicator>
+    <x-crm-header :title="$task->name" class="mb-5" progress-indicator>
         {{-- BADGES --}}
         <x-slot:badges>
             @if($task->completed_at)

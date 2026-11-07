@@ -1,5 +1,5 @@
 <div class="crm-content">
-    <x-mary-header title="{{ $template->name }}" subtitle="{{ $template->is_system ? 'System template' : 'Custom template' }}">
+    <x-mary-header :title="$template->name" subtitle="{{ $template->is_system ? 'System template' : 'Custom template' }}">
         <x-slot:actions>
             @can('create crm email-templates')
                 <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.clone')) }}" link="{{ route('laravel-crm.email-templates.create', ['clone_from' => $template->id]) }}" icon="o-document-duplicate" />

@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -15,6 +16,7 @@ class TaxRateIndex extends Component
 {
     use AuthorizesRequests;
     use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -35,7 +37,7 @@ class TaxRateIndex extends Component
             ['key' => 'rate', 'label' => ucfirst(__('laravel-crm::lang.rate'))],
             ['key' => 'default', 'label' => ucfirst(__('laravel-crm::lang.default')), 'format' => fn ($row, $field) => $field ? 'YES' : 'NO'],
             ['key' => 'tax_type', 'label' => ucfirst(__('laravel-crm::lang.tax_type'))],
-            ['key' => 'products', 'label' => ucfirst(__('laravel-crm::lang.products')), 'format' => fn ($row, $field) => count($field)],
+            ['key' => 'products', 'label' => ucfirst(__('laravel-crm::lang.products')), 'format' => fn ($row, $field) => count($field), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->format($this->dateFormat)],
             ['key' => 'updated_at', 'label' => ucfirst(__('laravel-crm::lang.updated')), 'format' => fn ($row, $field) => $field->format($this->dateFormat)],
         ];
@@ -43,7 +45,7 @@ class TaxRateIndex extends Component
 
     public function taxRates(): LengthAwarePaginator
     {
-        return TaxRate::orderBy(...array_values($this->sortBy))
+        return TaxRate::orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

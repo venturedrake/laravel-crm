@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Leads;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Leads\Traits\HasLeadCommon;
+use VentureDrake\LaravelCrm\Livewire\Traits\GeneratesContactTitle;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasOrganizationSuggest;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Lead;
@@ -16,6 +17,7 @@ use VentureDrake\LaravelCrm\Models\Setting;
 class LeadCreate extends Component
 {
     use AuthorizesRequests, HasLeadCommon;
+    use GeneratesContactTitle;
     use HasOrganizationSuggest;
     use HasPersonSuggest;
 
@@ -69,7 +71,7 @@ class LeadCreate extends Component
 
     protected function generateTitleString($value)
     {
-        $this->title = trim($value).' '.ucfirst(trans('laravel-crm::lang.lead'));
+        $this->updateGeneratedTitle($value, 'lead');
     }
 
     public function save()

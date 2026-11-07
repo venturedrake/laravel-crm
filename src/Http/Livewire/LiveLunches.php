@@ -61,8 +61,8 @@ class LiveLunches extends Component
         $data = $this->validate([
             'name' => 'required',
             'description' => 'nullable',
-            'start_at' => 'required',
-            'finish_at' => 'required',
+            'start_at' => 'required|date',
+            'finish_at' => 'required|date|after_or_equal:start_at',
             'guests' => 'nullable',
             'location' => 'nullable',
         ]);

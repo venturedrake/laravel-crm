@@ -12,6 +12,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Team;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
@@ -20,6 +21,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 class TeamIndex extends Component
 {
     use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -56,7 +58,7 @@ class TeamIndex extends Component
     {
         return [
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'users', 'label' => ucfirst(__('laravel-crm::lang.users')), 'format' => fn ($row, $field) => count($field)],
+            ['key' => 'users', 'label' => ucfirst(__('laravel-crm::lang.users')), 'format' => fn ($row, $field) => count($field), 'sortable' => false],
             ['key' => 'userCreated.name', 'label' => ucfirst(__('laravel-crm::lang.created_by')), 'format' => fn ($row, $field) => $field ?? null, 'sortable' => false],
             ['key' => 'ownerUser.name', 'label' => ucfirst(__('laravel-crm::lang.owner')), 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
@@ -75,7 +77,7 @@ class TeamIndex extends Component
             })
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))
+            ->orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

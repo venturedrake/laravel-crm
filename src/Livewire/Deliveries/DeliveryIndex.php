@@ -11,6 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -22,6 +23,7 @@ use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 class DeliveryIndex extends Component
 {
     use AuthorizesRequests, ClearsProperties, HasUserOwnerFilter, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -66,18 +68,18 @@ class DeliveryIndex extends Component
         $headers = [
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
             ['key' => 'delivery_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'reference', 'label' => ucfirst(__('laravel-crm::lang.reference'))],
+            ['key' => 'order.reference', 'sortable' => false, 'label' => ucfirst(__('laravel-crm::lang.reference'))],
         ];
 
         if (auth()->user()->can('view crm orders')) {
             $headers = array_merge($headers, [
-                ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order')), 'disableLink' => true],
+                ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order')), 'disableLink' => true, 'sortable' => false],
             ]);
         }
 
         $headers = array_merge($headers, [
-            ['key' => 'person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
+            ['key' => 'order.person.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
+            ['key' => 'order.organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
             /* ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage'))], */
             ['key' => 'address', 'label' => ucfirst(__('laravel-crm::lang.shipping_address')), 'sortable' => false],
             ['key' => 'delivery_expected', 'label' => ucwords(DeliveryOptions::expectedLabel()), 'format' => fn ($row, $field) => ($field) ? $field->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null],
@@ -91,18 +93,6 @@ class DeliveryIndex extends Component
         $headers[] = ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false];
 
         return $headers;
-
-        return [
-            ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->diffForHumans()],
-            /* ['key' => 'lead_id', 'label' => ucfirst(__('laravel-crm::lang.number'))],
-            ['key' => 'title', 'label' => ucfirst(__('laravel-crm::lang.title'))],
-            ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
-            ['key' => 'amount', 'label' => ucfirst(__('laravel-crm::lang.value')), 'format' => fn ($row, $field) => money($field, $row->currency)],
-            ['key' => 'delivery.name', 'label' => ucfirst(__('laravel-crm::lang.contact')), 'sortable' => false],
-            ['key' => 'organization.name', 'label' => ucfirst(__('laravel-crm::lang.organization')), 'sortable' => false],
-            ['key' => 'pipeline_stage', 'label' => ucfirst(__('laravel-crm::lang.stage')), 'sortable' => false],*/
-            ['key' => 'ownerUser.name', 'label' => 'Owner', 'format' => fn ($row, $field) => $field ?? ucfirst(__('laravel-crm::lang.unallocated')), 'sortable' => false],
-        ];
     }
 
     public function deliveries(): LengthAwarePaginator
@@ -111,7 +101,7 @@ class DeliveryIndex extends Component
         // read through the parent order, so without these the table costs
         // three extra queries per row. addresses feeds the shipping address
         // cell and ownerUser the dotted `ownerUser.name` header key.
-        return Delivery::with(['order.client', 'order.organization', 'ownerUser', 'addresses'])
+        return Delivery::with(['order.client', 'order.person', 'order.organization', 'ownerUser', 'addresses'])
             ->when($this->search, fn (Builder $q) => $q->where(function (Builder $q) {
                 RecordSearch::orNumber($q, $this->search);
 
@@ -122,7 +112,7 @@ class DeliveryIndex extends Component
             }))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))
+            ->orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

@@ -9,9 +9,8 @@
  * row. All of it now goes through RecordSearch.
  *
  * The real blades render here, because the search query is what is under test.
- * Only quotes, orders, invoices and purchase orders have a reference column: the
- * test schema also gives deliveries one, but the real table has none, so a delivery
- * is found by its order's reference.
+ * Only quotes, orders, invoices and purchase orders have a reference column: a delivery
+ * is found by its order's reference in both the test and host schemas.
  */
 
 use Illuminate\Support\Str;

@@ -11,6 +11,7 @@ use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Livewire\Traits\SearchesRecords;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -31,6 +32,8 @@ class PurchaseOrderIndex extends Component
         'crm-get-link-sent' => '$refresh',
         'crm-document-sent' => '$refresh',
     ];
+
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -75,7 +78,7 @@ class PurchaseOrderIndex extends Component
 
         if (auth()->user()->can('view crm orders')) {
             $headers = array_merge($headers, [
-                ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order')), 'disableLink' => true],
+                ['key' => 'order', 'label' => ucfirst(__('laravel-crm::lang.order')), 'disableLink' => true, 'sortable' => false],
             ]);
         }
 
@@ -116,7 +119,7 @@ class PurchaseOrderIndex extends Component
             ->when($this->search, fn (Builder $q) => $this->searchRecords($q, $this->search, ['reference']))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'purchase_orders.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
-            ->orderBy(...array_values($this->sortBy))
+            ->orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

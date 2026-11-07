@@ -8,6 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use Spatie\Permission\Models\Permission;
+use VentureDrake\LaravelCrm\Livewire\Traits\SortsTable;
 use VentureDrake\LaravelCrm\Models\Role;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
@@ -16,6 +17,7 @@ class RoleIndex extends Component
 {
     use AuthorizesRequests;
     use ClearsProperties, ResetsPaginationWhenPropsChanges, Toast, WithPagination;
+    use SortsTable;
 
     public $layout = 'index';
 
@@ -33,7 +35,7 @@ class RoleIndex extends Component
     {
         return [
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
-            ['key' => 'users', 'label' => ucfirst(__('laravel-crm::lang.users')), 'format' => fn ($row, $field) => count($field)],
+            ['key' => 'users', 'label' => ucfirst(__('laravel-crm::lang.users')), 'format' => fn ($row, $field) => count($field), 'sortable' => false],
             ['key' => 'created_at', 'label' => ucfirst(__('laravel-crm::lang.created')), 'format' => fn ($row, $field) => $field->format($this->dateFormat)],
             ['key' => 'updated_at', 'label' => ucfirst(__('laravel-crm::lang.updated')), 'format' => fn ($row, $field) => $field->format($this->dateFormat)],
         ];
@@ -44,7 +46,7 @@ class RoleIndex extends Component
         return Role::crm()
             ->when(config('laravel-crm.teams'), function ($query) {
                 return $query->where('team_id', auth()->user()->currentTeam->id);
-            })->orderBy(...array_values($this->sortBy))
+            })->orderBy(...$this->tableSort())
             ->paginate(25);
     }
 

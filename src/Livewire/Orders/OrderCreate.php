@@ -63,11 +63,11 @@ class OrderCreate extends Component
                     $this->amount = $quote->amount / 100;
                     $this->currency = $quote->currency;
 
-                    if ($address = $quote->organization->getBillingAddress()) {
+                    if ($address = $quote->organization?->getBillingAddress()) {
                         $addressIds[] = $address->id;
                     }
 
-                    if ($address = $quote->organization->getShippingAddress()) {
+                    if ($address = $quote->organization?->getShippingAddress()) {
                         $addressIds[] = $address->id;
                     }
                 }

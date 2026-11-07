@@ -1,6 +1,6 @@
 <div class="crm-content">
     {{-- HEADER --}}
-    <x-crm-header title="{{ $organization->name }}" class="mb-5" progress-indicator >
+    <x-crm-header :title="$organization->name" class="mb-5" progress-indicator >
             
         {{-- ACTIONS --}}
         <x-slot:actions>
