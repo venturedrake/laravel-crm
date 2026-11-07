@@ -156,9 +156,12 @@ trait HasCustomFormFields
     protected function initCustomFieldDefaults(): void
     {
         foreach ($this->customFields() as $field) {
-            if ($field->type === 'checkbox_multiple' && ! isset($this->fields[$field->id])) {
-                $this->fields[$field->id] = [];
+            if (array_key_exists($field->id, $this->fields)) {
+                continue;
             }
+
+            // Entangled controls need the key to exist in the initial Livewire state.
+            $this->fields[$field->id] = $this->customFieldFormValue($field, $field->default);
         }
     }
 
@@ -179,20 +182,26 @@ trait HasCustomFormFields
                 continue;
             }
 
-            $value = $fieldValue->value;
-
-            if (in_array($fieldValue->field->type, ['checkbox_multiple'], true)) {
-                $decoded = is_string($value) ? json_decode($value, true) : $value;
-                $value = is_array($decoded) ? $decoded : [];
-                $value = array_map(fn ($v) => $this->customFieldOptionId($fieldValue->field, $v), $value);
-            } elseif (in_array($fieldValue->field->type, ['select', 'radio'], true)) {
-                $value = $this->customFieldOptionId($fieldValue->field, $value);
-            } elseif ($fieldValue->field->type === 'checkbox') {
-                $value = (bool) $value;
-            }
-
-            $this->fields[$fieldValue->field_id] = $value;
+            $this->fields[$fieldValue->field_id] = $this->customFieldFormValue($fieldValue->field, $fieldValue->value);
         }
+    }
+
+    /**
+     * Convert configured defaults and saved values to the same form state.
+     */
+    protected function customFieldFormValue($field, $value)
+    {
+        if ($field->type === 'checkbox_multiple') {
+            $decoded = is_string($value) ? json_decode($value, true) : $value;
+
+            return array_map(fn ($v) => $this->customFieldOptionId($field, $v), is_array($decoded) ? $decoded : []);
+        }
+
+        if (in_array($field->type, ['select', 'radio'], true)) {
+            return $this->customFieldOptionId($field, $value);
+        }
+
+        return $field->type === 'checkbox' ? (bool) $value : $value;
     }
 
     /**
