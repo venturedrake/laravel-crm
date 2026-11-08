@@ -34,7 +34,7 @@ class UpdateInvoiceRequest extends FormRequest
             'phone' => ['nullable', new PhoneNumber],
             'email' => ['nullable', new ContactEmail],
             'issue_date' => 'required|date_format:"'.$this->dateFormat().'"',
-            'due_date' => 'required|date_format:"'.$this->dateFormat().'"',
+            'due_date' => 'required|date_format:"'.$this->dateFormat().'"|after_or_equal:issue_date',
             'currency' => 'required',
         ];
 

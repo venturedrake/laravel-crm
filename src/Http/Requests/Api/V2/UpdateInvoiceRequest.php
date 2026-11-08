@@ -3,13 +3,18 @@
 namespace VentureDrake\LaravelCrm\Http\Requests\Api\V2;
 
 use Illuminate\Foundation\Http\FormRequest;
+use VentureDrake\LaravelCrm\Http\Requests\Api\V2\Concerns\ValidatesDateOrder;
 use VentureDrake\LaravelCrm\Http\Requests\Api\V2\Concerns\ValidatesLineItemVariations;
 use VentureDrake\LaravelCrm\Http\Rules\Api\V2\OwnerInCurrentTeam;
 use VentureDrake\LaravelCrm\Http\Rules\Api\V2\ScopedExists;
+use VentureDrake\LaravelCrm\Models\Invoice;
 
 class UpdateInvoiceRequest extends FormRequest
 {
-    use ValidatesLineItemVariations;
+    use ValidatesDateOrder;
+    use ValidatesLineItemVariations {
+        after as lineItemVariationChecks;
+    }
 
     public function authorize(): bool
     {
@@ -55,6 +60,17 @@ class UpdateInvoiceRequest extends FormRequest
         return [
             'subtotal.prohibited' => 'The subtotal is calculated from line_items and can no longer be set on the request. Remove it from the payload.',
             'total.prohibited' => 'The total is calculated from line_items and can no longer be set on the request. Remove it from the payload.',
+        ];
+    }
+
+    public function after(): array
+    {
+        $invoice = $this->route('invoice');
+        $invoice = $invoice instanceof Invoice ? $invoice : null;
+
+        return [
+            ...$this->lineItemVariationChecks(),
+            $this->dateOrderCheck('issue_date', 'due_date', $invoice?->issue_date, $invoice?->due_date),
         ];
     }
 }

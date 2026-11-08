@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire\PurchaseOrders\Traits;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Http\Rules\NotBeforeDate;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -103,6 +104,8 @@ trait HasPurchaseOrderCommon
             // The service used to call ->replicate() on whatever id came in,
             // so a missing or foreign one was a 500 after the PO was saved.
             'delivery_address' => ['nullable', 'required_if:delivery_type,deliver', Rule::in($this->allowedDeliveryAddressIds())],
+            'issue_date' => ['nullable', 'date'],
+            'delivery_date' => ['nullable', 'date', new NotBeforeDate($this->issue_date, __('laravel-crm::lang.issue_date'))],
         ], $this->lineItemQuantityRules(), $this->pdfTemplateRules(), $this->customFieldRules());
     }
 
@@ -137,7 +140,10 @@ trait HasPurchaseOrderCommon
 
     protected function validationAttributes()
     {
-        return $this->customFieldValidationAttributes();
+        return array_merge([
+            'issue_date' => __('laravel-crm::lang.issue_date'),
+            'delivery_date' => __('laravel-crm::lang.delivery_date'),
+        ], $this->customFieldValidationAttributes());
     }
 
     public function boot(PurchaseOrderService $purchaseOrderService, PersonService $personService, OrganizationService $organizationService): void

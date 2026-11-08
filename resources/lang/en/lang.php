@@ -694,6 +694,7 @@ return [
     'payment_exceeds_amount_due' => 'this invoice now has only :due left to pay - another payment or an edit landed first',
     'invoice_total_locked_after_payment' => 'a payment has been recorded against this invoice, so its total can no longer change',
     'delivery_address_required' => 'choose one of your delivery addresses, or set the type to pickup',
+    'date_not_before' => ':Attribute can\'t be before the :date',
     'edit_purchase_order' => 'edit purchase order',
     'delivery_details' => 'delivery details',
     'purchase_order_terms' => 'purchase order terms',

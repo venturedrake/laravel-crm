@@ -28,7 +28,7 @@ class StorePurchaseOrderRequest extends FormRequest
     {
         $rules = [
             'issue_date' => 'required|date_format:"'.$this->dateFormat().'"',
-            'delivery_date' => 'nullable|date_format:"'.$this->dateFormat().'"',
+            'delivery_date' => 'nullable|date_format:"'.$this->dateFormat().'"|after_or_equal:issue_date',
             'currency' => 'required',
         ];
 

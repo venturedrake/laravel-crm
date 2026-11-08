@@ -234,6 +234,15 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   to a quote that has been accepted, or that has an order made from it, is rejected with a `422`
   on `quote` and nothing is saved — header fields included. Unaccept the quote in the app first;
   once it has an order it cannot be unaccepted.
+- **End dates can't be before start dates.** *(Changed after 2.6.0 — unreleased.)* An invoice
+  whose `due_date` falls on an earlier day than its `issue_date`, or a quote whose `expire_at`
+  falls on an earlier day than its `issue_at`, is rejected with a `422` and nothing is saved.
+  Days are compared, not times, so the same day is fine whatever the time of day; `expire_at`
+  is compared after its conversion to the app's timezone. On a `PUT`, a date left out of the
+  request counts at its stored value, and the error goes on the end date if it was sent, or on
+  the start date if only that was sent. A `PUT` that sends neither date is not checked, so a
+  record already stored with its dates out of order still takes other updates. A blank date on
+  either side is not checked.
 - **A quote with an order cannot be deleted.** *(Changed after 2.6.0 — unreleased.)* A `DELETE`
   to a quote that has an order made from it is refused with a `403` and
   `{ "message": "This quote has an order and can't be deleted" }`, and the quote is kept. A

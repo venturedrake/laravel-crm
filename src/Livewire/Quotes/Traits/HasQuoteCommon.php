@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Quotes\Traits;
 
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Http\Rules\ContactEmail;
+use VentureDrake\LaravelCrm\Http\Rules\NotBeforeDate;
 use VentureDrake\LaravelCrm\Http\Rules\PhoneNumber;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
@@ -114,6 +115,8 @@ trait HasQuoteCommon
             'email' => ['nullable', new ContactEmail],
             'title' => 'required|max:255',
             'amount' => 'nullable|numeric',
+            'issue_at' => ['nullable', 'date'],
+            'expire_at' => ['nullable', 'date', new NotBeforeDate($this->issue_at, __('laravel-crm::lang.issue_date'))],
         ], $this->lineItemQuantityRules(), $this->pdfTemplateRules(), $this->customFieldRules());
     }
 
@@ -129,7 +132,10 @@ trait HasQuoteCommon
 
     protected function validationAttributes()
     {
-        return $this->customFieldValidationAttributes();
+        return array_merge([
+            'issue_at' => __('laravel-crm::lang.issue_date'),
+            'expire_at' => __('laravel-crm::lang.expiry_date'),
+        ], $this->customFieldValidationAttributes());
     }
 
     public function boot(QuoteService $quoteService, PersonService $personService, OrganizationService $organizationService): void

@@ -239,3 +239,79 @@ test('POST /invoices returns 422 for a zero quantity', function () {
         ->assertStatus(422)
         ->assertJsonValidationErrors(['line_items.0.quantity']);
 });
+
+describe('the due date', function () {
+    beforeEach(function () {
+        $this->withHeaders(invoiceApiHeaders(invoiceApiUser()));
+        $this->organization = Organization::create(['name' => 'Acme Co']);
+    });
+
+    it('is rejected on a day before the issue date', function () {
+        $this->postJson('/crm/api/v2/invoices', [
+            'currency' => 'USD',
+            'organization_id' => $this->organization->external_id,
+            'issue_date' => '2026-11-08T00:00:00Z',
+            'due_date' => '2026-11-01T00:00:00Z',
+        ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['due_date'])
+            ->assertJsonMissingValidationErrors(['issue_date']);
+
+        expect(Invoice::count())->toBe(0);
+    });
+
+    it('is accepted on the same day at an earlier time', function () {
+        $this->postJson('/crm/api/v2/invoices', [
+            'currency' => 'USD',
+            'organization_id' => $this->organization->external_id,
+            'issue_date' => '2026-11-08T14:23:00Z',
+            'due_date' => '2026-11-08T00:00:00Z',
+        ])->assertCreated();
+    });
+
+    it('is checked against the stored issue date when sent alone', function () {
+        $invoice = Invoice::create(['currency' => 'USD', 'issue_date' => '2026-11-08', 'due_date' => '2026-11-30']);
+
+        $this->putJson('/crm/api/v2/invoices/'.$invoice->external_id, ['due_date' => '2026-11-01T00:00:00Z'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['due_date']);
+
+        expect($invoice->fresh()->due_date->toDateString())->toBe('2026-11-30');
+    });
+
+    it('puts the error on the issue date when only that is sent', function () {
+        $invoice = Invoice::create(['currency' => 'USD', 'issue_date' => '2026-11-01', 'due_date' => '2026-11-08']);
+
+        $this->putJson('/crm/api/v2/invoices/'.$invoice->external_id, ['issue_date' => '2026-11-09T00:00:00Z'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['issue_date'])
+            ->assertJsonMissingValidationErrors(['due_date']);
+
+        expect($invoice->fresh()->issue_date->toDateString())->toBe('2026-11-01');
+    });
+
+    it('does not stop an unrelated update to an invoice with no dates', function () {
+        $invoice = Invoice::create(['currency' => 'USD', 'issue_date' => null, 'due_date' => null]);
+
+        $this->putJson('/crm/api/v2/invoices/'.$invoice->external_id, ['reference' => 'Changed'])
+            ->assertOk();
+
+        expect($invoice->fresh()->reference)->toBe('Changed');
+    });
+
+    it('does not stop an unrelated update to an invoice already stored out of order', function () {
+        $invoice = Invoice::create(['currency' => 'USD', 'issue_date' => '2026-11-08', 'due_date' => '2026-11-01']);
+
+        $this->putJson('/crm/api/v2/invoices/'.$invoice->external_id, ['reference' => 'Changed'])
+            ->assertOk();
+
+        expect($invoice->fresh()->reference)->toBe('Changed');
+    });
+
+    it('can be cleared whatever the issue date', function () {
+        $invoice = Invoice::create(['currency' => 'USD', 'issue_date' => '2026-11-08', 'due_date' => '2026-11-30']);
+
+        $this->putJson('/crm/api/v2/invoices/'.$invoice->external_id, ['due_date' => null])
+            ->assertOk();
+    });
+});

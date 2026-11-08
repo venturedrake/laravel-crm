@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Invoices\Traits;
 
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Http\Rules\NotBeforeDate;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
 use VentureDrake\LaravelCrm\Models\Invoice;
@@ -101,6 +102,8 @@ trait HasInvoiceCommon
             'person_id' => 'required_without_all:organization_name,organization_id,person_name|max:255',
             'organization_name' => 'required_without_all:person_name,person_id|max:255',
             'organization_id' => 'required_without_all:person_name,person_id,organization_name|max:255',
+            'issue_date' => ['nullable', 'date'],
+            'due_date' => ['nullable', 'date', new NotBeforeDate($this->issue_date, __('laravel-crm::lang.issue_date'))],
         ], $this->lineItemQuantityRules(), $this->pdfTemplateRules(), $this->customFieldRules());
     }
 
@@ -116,7 +119,10 @@ trait HasInvoiceCommon
 
     protected function validationAttributes()
     {
-        return $this->customFieldValidationAttributes();
+        return array_merge([
+            'issue_date' => __('laravel-crm::lang.issue_date'),
+            'due_date' => __('laravel-crm::lang.due_date'),
+        ], $this->customFieldValidationAttributes());
     }
 
     public function boot(InvoiceService $invoiceService, PersonService $personService, OrganizationService $organizationService): void

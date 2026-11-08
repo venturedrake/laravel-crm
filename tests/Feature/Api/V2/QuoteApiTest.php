@@ -437,3 +437,82 @@ describe('an older blank date', function () {
             ->and($quote->fresh()->isExpired())->toBeFalse();
     })->with(['expire_at', 'issue_at'])->with(['an empty string' => '', 'a zero date' => '0000-00-00 00:00:00']);
 });
+
+describe('the expiry and issue date order', function () {
+    beforeEach(function () {
+        $this->withHeaders(quoteApiHeaders(quoteApiUser()));
+        $this->organization = Organization::create(['name' => 'Acme Co']);
+    });
+
+    it('rejects an expiry on a day before the issue date', function () {
+        $this->postJson('/crm/api/v2/quotes', [
+            'title' => 'Sample',
+            'organization_id' => $this->organization->external_id,
+            'issue_at' => '2026-11-08T00:00:00Z',
+            'expire_at' => '2026-11-01T00:00:00Z',
+        ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['expire_at'])
+            ->assertJsonMissingValidationErrors(['issue_at']);
+
+        expect(Quote::count())->toBe(0);
+    });
+
+    it('accepts an expiry on the same day at an earlier time', function () {
+        $this->postJson('/crm/api/v2/quotes', [
+            'title' => 'Sample',
+            'organization_id' => $this->organization->external_id,
+            'issue_at' => '2026-11-08T14:23:00Z',
+            'expire_at' => '2026-11-08T00:00:00Z',
+        ])->assertCreated();
+    });
+
+    it('compares the expiry on the day it will be stored', function () {
+        // 02:00 at +05:00 is 21:00 the day before in UTC, the app timezone.
+        $this->postJson('/crm/api/v2/quotes', [
+            'title' => 'Sample',
+            'organization_id' => $this->organization->external_id,
+            'issue_at' => '2026-11-08T00:00:00Z',
+            'expire_at' => '2026-11-08T02:00:00+05:00',
+        ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['expire_at']);
+    });
+
+    it('puts the error on the issue date when only that is sent', function () {
+        $quote = apiQuote(['issue_at' => '2026-11-01 00:00:00', 'expire_at' => '2026-11-08 00:00:00']);
+
+        $this->putJson('/crm/api/v2/quotes/'.$quote->external_id, ['issue_at' => '2026-11-09T00:00:00Z'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['issue_at'])
+            ->assertJsonMissingValidationErrors(['expire_at']);
+
+        expect(storedDate($quote, 'issue_at'))->toBe('2026-11-01 00:00:00');
+    });
+
+    it('checks an expiry sent alone against the stored issue date', function () {
+        $quote = apiQuote(['issue_at' => '2026-11-08 00:00:00', 'expire_at' => '2026-11-30 00:00:00']);
+
+        $this->putJson('/crm/api/v2/quotes/'.$quote->external_id, ['expire_at' => '2026-11-01T00:00:00Z'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['expire_at']);
+    });
+
+    it('does not stop an unrelated update to a quote already stored out of order', function () {
+        $quote = apiQuote(['issue_at' => '2026-11-08 00:00:00', 'expire_at' => '2026-11-01 00:00:00']);
+
+        $this->putJson('/crm/api/v2/quotes/'.$quote->external_id, ['title' => 'Changed'])
+            ->assertOk();
+
+        expect($quote->fresh()->title)->toBe('Changed');
+    });
+
+    it('does not stop an unrelated update to a quote with no dates', function () {
+        $quote = apiQuote();
+
+        $this->putJson('/crm/api/v2/quotes/'.$quote->external_id, ['title' => 'Changed'])
+            ->assertOk();
+
+        expect($quote->fresh()->title)->toBe('Changed');
+    });
+});

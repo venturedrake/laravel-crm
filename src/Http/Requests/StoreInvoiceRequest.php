@@ -30,7 +30,7 @@ class StoreInvoiceRequest extends FormRequest
             'person_name' => 'required_without:organization_name|max:255',
             'organization_name' => 'required_without:person_name|max:255',
             'issue_date' => 'required|date_format:"'.$this->dateFormat().'"',
-            'due_date' => 'required|date_format:"'.$this->dateFormat().'"',
+            'due_date' => 'required|date_format:"'.$this->dateFormat().'"|after_or_equal:issue_date',
             'currency' => 'required',
         ];
 
