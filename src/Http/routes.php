@@ -1323,14 +1323,6 @@ Route::group(['prefix' => 'pipelines', 'middleware' => 'auth.laravel-crm'], func
         ->name('laravel-crm.pipelines.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Pipeline']);
 
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@create')
-        ->name('laravel-crm.pipelines.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Pipeline']);
-
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@store')
-        ->name('laravel-crm.pipelines.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Pipeline']);
-
     Route::get('{pipeline}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@show')
         ->name('laravel-crm.pipelines.show')
         ->middleware(['can:view,pipeline']);
@@ -1353,14 +1345,6 @@ Route::group(['prefix' => 'pipeline-stages', 'middleware' => 'auth.laravel-crm']
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@index')
         ->name('laravel-crm.pipeline-stages.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PipelineStage']);
-
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@create')
-        ->name('laravel-crm.pipeline-stages.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PipelineStage']);
-
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@store')
-        ->name('laravel-crm.pipeline-stages.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PipelineStage']);
 
     Route::get('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@show')
         ->name('laravel-crm.pipeline-stages.show')

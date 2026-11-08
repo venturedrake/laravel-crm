@@ -4,8 +4,6 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Ramsey\Uuid\Uuid;
-use VentureDrake\LaravelCrm\Http\Requests\StorePipelineRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePipelineRequest;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 
@@ -27,34 +25,6 @@ class PipelineController extends Controller
         return view('laravel-crm::settings.pipelines.index', [
             'pipelines' => $pipelines,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        return view('laravel-crm::pipelines.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function store(StorePipelineRequest $request)
-    {
-        Pipeline::create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'name' => $request->name,
-        ]);
-
-        flash()->success(ucfirst(trans('laravel-crm::lang.pipeline_stored')));
-
-        return redirect(route('laravel-crm.pipelines.index'));
     }
 
     /**
