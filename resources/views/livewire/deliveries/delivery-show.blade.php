@@ -65,7 +65,11 @@
                         <div class="flex flex-row gap-5">
                             <strong>{{ ucfirst(__('laravel-crm::lang.order')) }}</strong>
                             <span>
-                                <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}" class="link link-hover link-primary">{{ $delivery->order->order_id }}</a>
+                                @if($delivery->order->trashed())
+                                    {{ $delivery->order->order_id }} <x-mary-badge :value="__('laravel-crm::lang.deleted')" class="badge-ghost badge-sm" />
+                                @else
+                                    <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}" class="link link-hover link-primary">{{ $delivery->order->order_id }}</a>
+                                @endif
                             </span>
                         </div>
                     @endif

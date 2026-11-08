@@ -75,7 +75,7 @@
                 @endcan
                 @can('delete crm people')
                     <x-mary-button onclick="modalDeletePerson{{ $person->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-                    <x-crm-delete-confirm model="person" id="{{ $person->id }}" />
+                    <x-crm-delete-confirm model="person" id="{{ $person->id }}" :warning="$person->deleteWarning()" />
                 @endcan
             @endscope
         </x-mary-table>

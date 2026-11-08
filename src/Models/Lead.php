@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasPrimaryContactDetails;
+use VentureDrake\LaravelCrm\Traits\HasTrashedContacts;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Lead extends Model
@@ -17,6 +18,7 @@ class Lead extends Model
     use HasCrmActivities;
     use HasCrmFields;
     use HasPrimaryContactDetails;
+    use HasTrashedContacts;
     use SearchFilters;
     use SoftDeletes;
 

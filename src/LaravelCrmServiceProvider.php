@@ -459,6 +459,7 @@ use VentureDrake\LaravelCrm\View\Components\IndexToggle;
 use VentureDrake\LaravelCrm\View\Components\PdfPreview;
 use VentureDrake\LaravelCrm\View\Components\PdfPreviewButton;
 use VentureDrake\LaravelCrm\View\Components\Phones;
+use VentureDrake\LaravelCrm\View\Components\RecordLink;
 use VentureDrake\LaravelCrm\View\Components\TimelineItem;
 use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
 
@@ -934,6 +935,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::component('crm-pdf-preview', PdfPreview::class);
         Blade::component('crm-pdf-preview-button', PdfPreviewButton::class);
         Blade::component('crm-get-link-button', GetLinkButton::class);
+        Blade::component('crm-record-link', RecordLink::class);
 
         // Livewire components
         Livewire::component('phone-edit', LivePhoneEdit::class);

@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
+use VentureDrake\LaravelCrm\Traits\HasTrashedContacts;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Deal extends Model
@@ -17,6 +18,7 @@ class Deal extends Model
     use HasCrmActivities;
     use HasCrmFields;
     use HasGlobalSettings;
+    use HasTrashedContacts;
     use SearchFilters;
     use SoftDeletes;
 

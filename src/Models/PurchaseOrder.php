@@ -9,6 +9,7 @@ use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
+use VentureDrake\LaravelCrm\Traits\HasTrashedContacts;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class PurchaseOrder extends Model
@@ -17,6 +18,7 @@ class PurchaseOrder extends Model
     use HasCrmActivities;
     use HasCrmFields;
     use HasGlobalSettings;
+    use HasTrashedContacts;
     use SearchFilters;
     use SoftDeletes;
 
@@ -103,9 +105,12 @@ class PurchaseOrder extends Model
         return $this->belongsTo(Organization::class);
     }
 
+    /**
+     * Includes a soft-deleted order: the document was still made from it.
+     */
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class)->withTrashed();
     }
 
     public function purchaseOrderLines()

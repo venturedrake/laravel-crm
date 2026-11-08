@@ -33,7 +33,11 @@
             @endscope
             @scope('cell_order', $invoice)
                 @if($invoice->order)
-                    <a href="{{ route('laravel-crm.orders.show', $invoice->order) }}" class="link link-hover link-primary">{{ $invoice->order->order_id }}</a>
+                    @if($invoice->order->trashed())
+                        {{ $invoice->order->order_id }} <x-mary-badge :value="__('laravel-crm::lang.deleted')" class="badge-ghost badge-sm" />
+                    @else
+                        <a href="{{ route('laravel-crm.orders.show', $invoice->order) }}" class="link link-hover link-primary">{{ $invoice->order->order_id }}</a>
+                    @endif
                 @endif
             @endscope
             @scope('cell_overdue_by', $invoice)

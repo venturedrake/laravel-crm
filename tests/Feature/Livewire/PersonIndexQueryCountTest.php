@@ -123,3 +123,25 @@ it('still resolves the primary email when nothing eager loaded it', function () 
         ->and($person->getPrimaryEmail()->address)->toBe('person0@example.com')
         ->and($person->getPrimaryPhone()->number)->toBe('555000');
 });
+
+it('shows each row\'s delete warning without a query per row', function () {
+    // Delete permission renders the delete dialog, and with it each row's
+    // deleteWarning(), which reads the withCount() aggregates.
+    $this->actingAsUserWithPermissions(['view crm people', 'delete crm people']);
+
+    seedPeopleForIndex(5);
+    personIndexQueryCount();
+
+    $fiveRows = personIndexQueryCount();
+
+    seedPeopleForIndex(20);
+    $twentyFiveRows = personIndexQueryCount();
+
+    expect($twentyFiveRows)->toBe($fiveRows);
+
+    expect(Livewire::test(PersonIndex::class)->html())
+        ->toContain(e(ucfirst(__('laravel-crm::lang.delete_linked_records_warning', [
+            'model' => __('laravel-crm::lang.person'),
+            'records' => '3 deals',
+        ]))));
+});

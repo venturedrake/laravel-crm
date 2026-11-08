@@ -109,9 +109,13 @@
                     @can('edit crm orders')
                         <x-mary-button icon="o-pencil-square" link="{{ url(route('laravel-crm.orders.edit', $order)) }}" class="btn-sm btn-square btn-outline" />
                     @endcan
-                    @can('delete crm orders')
+                    @can('delete', $order)
                         <x-mary-button onclick="modalDeleteOrder{{ $order->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
                         <x-crm-delete-confirm model="order" id="{{ $order->id }}" />
+                    @elsecan('delete crm orders')
+                        <span class="tooltip tooltip-left" data-tip="{{ $order->deleteBlockedReason() }}">
+                            <x-mary-button icon="o-trash" class="btn-sm btn-square btn-error text-white" disabled />
+                        </span>
                     @endcan
                 </div>
             @endscope

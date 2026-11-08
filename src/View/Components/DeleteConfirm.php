@@ -14,6 +14,9 @@ class DeleteConfirm extends Component
     public function __construct(
         public string $model,
         public string $id,
+        // Shown above the "cannot be reversed" line, e.g. the records still
+        // linked to a contact about to be deleted.
+        public ?string $warning = null,
     ) {}
 
     /**

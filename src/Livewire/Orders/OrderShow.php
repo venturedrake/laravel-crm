@@ -48,6 +48,14 @@ class OrderShow extends Component
     public function delete($id)
     {
         if ($order = Order::find($id)) {
+            // Before authorize(), which denies this too, so the user sees why
+            // rather than a 403.
+            if (! $order->canBeDeleted()) {
+                $this->error($order->deleteBlockedReason());
+
+                return;
+            }
+
             $this->authorize('delete', $order);
 
             $order->delete();

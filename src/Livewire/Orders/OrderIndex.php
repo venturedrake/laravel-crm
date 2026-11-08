@@ -117,6 +117,9 @@ class OrderIndex extends Component
                 'invoices.invoiceLines',
                 'deliveries.deliveryProducts',
             ])
+            // Backs canBeDeleted() for the delete button; invoices and
+            // deliveries are already loaded above.
+            ->withExists('purchaseOrders')
             ->when($this->search, fn (Builder $q) => $this->searchRecords($q, $this->search, ['reference']))->when($this->user_id, fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'orders.user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy(...$this->tableSort())
@@ -126,6 +129,14 @@ class OrderIndex extends Component
     public function delete($id)
     {
         if ($order = Order::find($id)) {
+            // Before authorize(), which denies this too, so the user sees why
+            // rather than a 403.
+            if (! $order->canBeDeleted()) {
+                $this->error($order->deleteBlockedReason());
+
+                return;
+            }
+
             $this->authorize('delete', $order);
 
             $order->delete();

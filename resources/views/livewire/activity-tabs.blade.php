@@ -6,28 +6,28 @@
                 <livewire:crm-activity-index :$model />
             </div>
         </x-mary-tab>
-        @if(method_exists($model, 'orders'))
+        @if($this->hasRelatedTab('orders'))
             <x-mary-tab name="orders" label="{{ ucfirst(__('laravel-crm::lang.orders')) }}">
                 <div>
                     <livewire:crm-order-related-index :$model lazy />
                 </div>
             </x-mary-tab>
         @endif
-        @if(method_exists($model, 'invoices'))
+        @if($this->hasRelatedTab('invoices'))
             <x-mary-tab name="invoices" label="{{ ucfirst(__('laravel-crm::lang.invoices')) }}">
                 <div>
                     <livewire:crm-invoice-related-index :$model lazy />
                 </div>
             </x-mary-tab>
         @endif
-        @if(method_exists($model, 'deliveries'))
+        @if($this->hasRelatedTab('deliveries'))
             <x-mary-tab name="deliveries" label="{{ ucfirst(__('laravel-crm::lang.deliveries')) }}">
                 <div>
                     <livewire:crm-delivery-related-index :$model lazy />
                 </div>
             </x-mary-tab>
         @endif
-        @if(method_exists($model, 'purchaseOrders'))
+        @if($this->hasRelatedTab('purchaseOrders'))
             <x-mary-tab name="purchase-order" label="{{ ucwords(__('laravel-crm::lang.purchase_orders')) }}">
                 <div>
                     <livewire:crm-purchase-order-related-index :$model lazy />

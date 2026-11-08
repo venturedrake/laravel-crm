@@ -238,6 +238,11 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   to a quote that has an order made from it is refused with a `403` and
   `{ "message": "This quote has an order and can't be deleted" }`, and the quote is kept. A
   soft-deleted order does not count.
+- **An order with invoices, deliveries or purchase orders cannot be deleted.** *(Changed after
+  2.6.0 — unreleased.)* A `DELETE` to such an order is refused with a `403` and a message naming
+  the first match, checked in the order invoices, purchase orders, deliveries — e.g.
+  `{ "message": "This order has invoices and can't be deleted" }` — and the order is kept.
+  Soft-deleted invoices, deliveries and purchase orders do not count.
 
 ### Product variations
 

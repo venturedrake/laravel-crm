@@ -46,13 +46,26 @@ class OrderRelatedIndex extends Component
     #[Computed]
     public function orders(): Collection
     {
-        // organization/person back the preview button's `$order->title`.
-        return $this->model->orders()->with(['organization', 'person'])->latest()->get();
+        // organization/person back the preview button's `$order->title`;
+        // the exists flags back canBeDeleted() for the delete button.
+        return $this->model->orders()
+            ->with(['organization', 'person'])
+            ->withExists(['invoices', 'deliveries', 'purchaseOrders'])
+            ->latest()
+            ->get();
     }
 
     public function delete($id): void
     {
         if ($order = Order::find($id)) {
+            // Before authorize(), which denies this too, so the user sees why
+            // rather than a 403.
+            if (! $order->canBeDeleted()) {
+                $this->error($order->deleteBlockedReason());
+
+                return;
+            }
+
             $this->authorize('delete', $order);
 
             $order->delete();

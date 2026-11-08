@@ -33,7 +33,11 @@
             @endscope
             @scope('cell_order', $purchaseOrder)
                 @if($purchaseOrder->order)
-                    <a href="{{ route('laravel-crm.orders.show', $purchaseOrder->order) }}" class="link link-hover link-primary">{{ $purchaseOrder->order->order_id }}</a>
+                    @if($purchaseOrder->order->trashed())
+                        {{ $purchaseOrder->order->order_id }} <x-mary-badge :value="__('laravel-crm::lang.deleted')" class="badge-ghost badge-sm" />
+                    @else
+                        <a href="{{ route('laravel-crm.orders.show', $purchaseOrder->order) }}" class="link link-hover link-primary">{{ $purchaseOrder->order->order_id }}</a>
+                    @endif
                 @endif
             @endscope
             @scope('cell_sent', $purchaseOrder)

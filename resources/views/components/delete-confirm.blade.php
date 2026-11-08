@@ -3,6 +3,9 @@
 <dialog id="modal{{ ($name) ? $name : 'Delete'.ucfirst($model).$id }}" class="modal">
     <div class="modal-box text-left">
         <h3 class="text-lg font-bold">Delete {{ $deleting ?? $model }}?</h3>
+        @if($warning)
+            <x-mary-alert :title="$warning" icon="o-exclamation-triangle" class="alert-warning mt-4" />
+        @endif
         <p class="py-4">You're about to delete this {{ $deleting ?? $model }}. This action cannot be reversed.</p>
         <div class="modal-action">
             <form method="dialog">

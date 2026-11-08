@@ -4,11 +4,13 @@ namespace VentureDrake\LaravelCrm\Models;
 
 use App\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Support\Money;
 use VentureDrake\LaravelCrm\Support\Quantity;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
+use VentureDrake\LaravelCrm\Traits\HasTrashedContacts;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
 class Order extends Model
@@ -16,6 +18,7 @@ class Order extends Model
     use BelongsToTeams;
     use HasCrmActivities;
     use HasCrmFields;
+    use HasTrashedContacts;
     use SearchFilters;
     use SoftDeletes;
 
@@ -189,6 +192,79 @@ class Order extends Model
     public function deliveries()
     {
         return $this->hasMany(Delivery::class);
+    }
+
+    /**
+     * Whether the order has invoices. A soft-deleted invoice does not count.
+     */
+    public function hasInvoices(): bool
+    {
+        return $this->hasRelatedRecords('invoices');
+    }
+
+    /**
+     * Whether the order has deliveries. A soft-deleted delivery does not count.
+     */
+    public function hasDeliveries(): bool
+    {
+        return $this->hasRelatedRecords('deliveries');
+    }
+
+    /**
+     * Whether the order has purchase orders. A soft-deleted purchase order
+     * does not count.
+     */
+    public function hasPurchaseOrders(): bool
+    {
+        return $this->hasRelatedRecords('purchaseOrders');
+    }
+
+    /**
+     * Reads the loaded relation, then a withExists() attribute, so an index
+     * page asks once rather than per row; otherwise queries.
+     */
+    protected function hasRelatedRecords(string $relation): bool
+    {
+        if ($this->relationLoaded($relation)) {
+            return $this->getRelation($relation)->isNotEmpty();
+        }
+
+        $attribute = Str::snake($relation).'_exists';
+
+        if (array_key_exists($attribute, $this->attributes)) {
+            return (bool) $this->attributes[$attribute];
+        }
+
+        return $this->{$relation}()->exists();
+    }
+
+    /**
+     * Whether the order can be deleted. Its invoices, deliveries and purchase
+     * orders still point at it, so once it has any it has to stay.
+     */
+    public function canBeDeleted(): bool
+    {
+        return $this->deleteBlockedReason() === null;
+    }
+
+    /**
+     * Why the order cannot be deleted, or null when it can.
+     */
+    public function deleteBlockedReason(): ?string
+    {
+        if ($this->hasInvoices()) {
+            return ucfirst(__('laravel-crm::lang.order_delete_invoiced'));
+        }
+
+        if ($this->hasPurchaseOrders()) {
+            return ucfirst(__('laravel-crm::lang.order_delete_purchase_ordered'));
+        }
+
+        if ($this->hasDeliveries()) {
+            return ucfirst(__('laravel-crm::lang.order_delete_delivered'));
+        }
+
+        return null;
     }
 
     public function addresses()
