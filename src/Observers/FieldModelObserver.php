@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\FieldModel;
+use VentureDrake\LaravelCrm\Models\FieldValue;
 
 class FieldModelObserver
 {
@@ -55,16 +56,18 @@ class FieldModelObserver
     /**
      * Handle the fieldModel "deleting" event.
      *
-     * @param  \VentureDrake\LaravelCrm\FieldModel  $fieldModel
+     * Remove the field's values from that model, one at a time so
+     * FieldValueObserver still runs.
+     *
      * @return void
      */
     public function deleting(FieldModel $fieldModel)
     {
-        foreach ($fieldModel->model::all() as $model) {
-            if ($field = $model->fields()->where('field_id', $fieldModel->field_id)->first()) {
-                $field->delete();
-            }
-        }
+        FieldValue::where('field_id', $fieldModel->field_id)
+            ->where('field_valueable_type', (new $fieldModel->model)->getMorphClass())
+            ->get()
+            ->each
+            ->delete();
     }
 
     /**

@@ -56,7 +56,8 @@ class LaravelCrmFields extends Command
     {
         $this->info('Updating Laravel CRM custom fields...');
 
-        foreach (FieldModel::all() as $fieldModel) {
+        // Skip links whose field is gone - they have no name or default to give.
+        foreach (FieldModel::with('field')->whereHas('field')->get() as $fieldModel) {
             $this->line('Updating field: '.$fieldModel->field->name);
 
             foreach ($fieldModel->model::all() as $model) {

@@ -112,10 +112,7 @@ class FieldController extends Controller
      */
     public function destroy(Field $field)
     {
-        foreach (FieldModel::where('field_id', $field->id)->get() as $fieldModel) {
-            $fieldModel->delete();
-        }
-
+        // FieldObserver removes the field's model links and values.
         $field->delete();
 
         flash()->success(ucfirst(trans('laravel-crm::lang.field_deleted')));

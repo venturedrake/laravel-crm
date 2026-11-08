@@ -50,12 +50,15 @@ class FieldObserver
     /**
      * Handle the field "deleting" event.
      *
-     * @param  \VentureDrake\LaravelCrm\Field  $field
+     * Detach the field from every model it was attached to, one link at a time
+     * so FieldModelObserver also removes the values. A link left pointing at a
+     * deleted field breaks creating a record of that model.
+     *
      * @return void
      */
     public function deleting(Field $field)
     {
-        //
+        $field->fieldModels()->get()->each->delete();
     }
 
     /**

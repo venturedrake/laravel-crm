@@ -15,7 +15,17 @@ trait HasCrmFields
     protected static function booted()
     {
         static::created(function ($model) {
-            foreach (FieldModel::where('model', get_class($model))->get() as $fieldModel) {
+            // Skip links whose field is gone - they have no default to give.
+            $fieldModels = FieldModel::with('field')
+                ->whereHas('field')
+                ->where('model', get_class($model))
+                ->get();
+
+            foreach ($fieldModels as $fieldModel) {
+                if (! $fieldModel->field) {
+                    continue;
+                }
+
                 $model->fields()->create([
                     'field_id' => $fieldModel->field_id,
                     'value' => $fieldModel->field->default,
