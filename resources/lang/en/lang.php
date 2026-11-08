@@ -645,6 +645,7 @@ return [
     'tax_rate_stored' => 'tax rate stored',
     'tax_rate_updated' => 'tax rate updated',
     'tax_rate_deleted' => 'tax rate deleted',
+    'cannot_delete_tax_rate_in_use' => 'cannot delete this tax rate because :count product(s) use it. Change their tax rate first',
     'rate' => 'rate',
     'add_tax_rate' => 'add tax rate',
     'back_to_tax_rates' => 'back to tax rates',

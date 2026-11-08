@@ -54,6 +54,12 @@ class TaxRateIndex extends Component
         if ($taxRate = TaxRate::find($id)) {
             $this->authorize('delete', $taxRate);
 
+            if (($count = $taxRate->productsCount()) > 0) {
+                $this->error(ucfirst(__('laravel-crm::lang.cannot_delete_tax_rate_in_use', ['count' => $count])));
+
+                return;
+            }
+
             $taxRate->delete();
 
             $this->success(ucfirst(trans('laravel-crm::lang.tax_rate_deleted')));

@@ -123,6 +123,12 @@ class TaxRateController extends Controller
      */
     public function destroy(TaxRate $taxRate)
     {
+        if (($count = $taxRate->productsCount()) > 0) {
+            flash()->error(ucfirst(__('laravel-crm::lang.cannot_delete_tax_rate_in_use', ['count' => $count])));
+
+            return back();
+        }
+
         $taxRate->delete();
 
         flash()->success(ucfirst(trans('laravel-crm::lang.tax_rate_deleted')));
