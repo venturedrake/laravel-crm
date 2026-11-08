@@ -25,4 +25,14 @@ class TaxRate extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    /**
+     * Products that still point at this rate. A rate in use cannot be deleted:
+     * once soft-deleted, `$product->taxRate` resolves to null while the product
+     * keeps charging its stored `tax_rate` copy.
+     */
+    public function productsCount(): int
+    {
+        return $this->products()->count();
+    }
 }
