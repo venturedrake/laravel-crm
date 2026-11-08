@@ -92,7 +92,7 @@
                             <x-mary-select wire:model="dateFormat" label="{{ ucfirst(__('laravel-crm::lang.date_format')) }}" :options="$dateFormats" required />
                             <x-mary-select wire:model="timeFormat" label="{{ ucfirst(__('laravel-crm::lang.time_format')) }}" :options="$timeFormats" required />
                             <x-mary-input wire:model="taxName" label="{{ ucfirst(__('laravel-crm::lang.default_tax_name')) }}" />
-                            <x-mary-input wire:model="taxRate" label="{{ ucfirst(__('laravel-crm::lang.default_tax_rate')) }}" suffix="%" />
+                            <x-mary-input wire:model="taxRate" label="{{ ucfirst(__('laravel-crm::lang.default_tax_rate')) }}" suffix="%" type="number" step="0.01" min="0" max="100" inputmode="decimal" />
                             {{-- Carries no module directive on purpose: this block prints on
                                  quote, order and delivery PDFs as well as invoices, so gating
                                  it on invoices being enabled would leave quote/order/delivery-only

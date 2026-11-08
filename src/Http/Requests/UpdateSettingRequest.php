@@ -31,6 +31,7 @@ class UpdateSettingRequest extends FormRequest
             'timezone' => 'required',
             'date_format' => 'required',
             'time_format' => 'required',
+            'tax_rate' => 'nullable|numeric|min:0|max:100',
         ];
     }
 }
