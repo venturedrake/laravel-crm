@@ -70,7 +70,7 @@ class DeliveryEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.delivery_updated')),
-            redirectTo: route('laravel-crm.deliveries.index')
+            redirectTo: route('laravel-crm.deliveries.show', $this->delivery)
         );
     }
 

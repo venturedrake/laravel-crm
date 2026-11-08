@@ -352,7 +352,7 @@ test('the edit form saves an unaccepted quote with no order', function () {
             'comments' => null,
         ]])
         ->call('save')
-        ->assertRedirect(route('laravel-crm.quotes.index'));
+        ->assertRedirect(route('laravel-crm.quotes.show', $quote));
 
     expect($quote->fresh()->title)->toBe('Changed')
         ->and((int) $quote->fresh()->getRawOriginal('total'))->toBe(50000);

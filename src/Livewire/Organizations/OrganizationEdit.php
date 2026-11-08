@@ -109,7 +109,7 @@ class OrganizationEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.organization_updated')),
-            redirectTo: route('laravel-crm.organizations.index')
+            redirectTo: route('laravel-crm.organizations.show', $this->organization)
         );
     }
 

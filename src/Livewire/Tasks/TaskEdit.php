@@ -40,7 +40,7 @@ class TaskEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.task_updated')),
-            redirectTo: route('laravel-crm.tasks.index')
+            redirectTo: route('laravel-crm.tasks.show', $this->task)
         );
     }
 

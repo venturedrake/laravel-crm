@@ -36,7 +36,7 @@ class PipelineStageEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.pipeline_stage_updated')),
-            redirectTo: route('laravel-crm.pipeline-stages.index')
+            redirectTo: route('laravel-crm.pipeline-stages.show', $this->pipelineStage)
         );
     }
 

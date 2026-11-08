@@ -107,7 +107,7 @@ class PersonEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.person_updated')),
-            redirectTo: route('laravel-crm.people.index')
+            redirectTo: route('laravel-crm.people.show', $this->person)
         );
     }
 

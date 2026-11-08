@@ -62,7 +62,7 @@ class CustomFieldEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.custom_field_updated')),
-            redirectTo: route('laravel-crm.fields.index')
+            redirectTo: route('laravel-crm.fields.show', $this->field)
         );
     }
 

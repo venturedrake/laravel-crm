@@ -31,7 +31,7 @@ class CustomFieldGroupEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.custom_field_group_updated')),
-            redirectTo: route('laravel-crm.field-groups.index')
+            redirectTo: route('laravel-crm.field-groups.show', $this->fieldGroup)
         );
     }
 

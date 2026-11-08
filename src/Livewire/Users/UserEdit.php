@@ -123,7 +123,7 @@ class UserEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.user_updated')),
-            redirectTo: route('laravel-crm.users.index')
+            redirectTo: route('laravel-crm.users.show', $this->user)
         );
     }
 

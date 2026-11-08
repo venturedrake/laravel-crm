@@ -132,7 +132,7 @@ class OrderEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.order_updated')),
-            redirectTo: route('laravel-crm.orders.index')
+            redirectTo: route('laravel-crm.orders.show', $this->order)
         );
     }
 
