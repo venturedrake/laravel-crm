@@ -1,5 +1,9 @@
 @props([
     'model',
+    // Forms include this component twice: once without `group` inside the main
+    // card (ungrouped fields only), and once with `group` below it (one card per
+    // field group). Each mode renders only its own fields, so every field — and
+    // its validation error — appears exactly once.
     'group' => false,
 ])
 @php
@@ -10,26 +14,13 @@
     }
 
     if ($group) {
-        $ungrouped = $fields->filter(fn($f) => !$f->field || !$f->field->field_group_id);
-        $grouped   = $fields->filter(fn($f) => $f->field && $f->field->field_group_id)
-                            ->groupBy(fn($f) => $f->field->field_group_id);
+        $grouped = $fields->filter(fn($f) => $f->field && $f->field->field_group_id)
+                          ->groupBy(fn($f) => $f->field->field_group_id);
     }
 @endphp
 
 @if($group)
-    {{-- Ungrouped fields --}}
-    @foreach($ungrouped as $fieldValueOrModel)
-        @if($fieldValueOrModel->field)
-            @php
-                $field = $fieldValueOrModel->field;
-                $key   = 'fields.'.$field->id;
-                $label = ucfirst(__($field->name));
-            @endphp
-            @include('laravel-crm::components.custom-fields._field', compact('field', 'key', 'label'))
-        @endif
-    @endforeach
-
-    {{-- Grouped fields --}}
+    {{-- Grouped fields only — one card per field group --}}
     @foreach($grouped as $groupId => $groupFields)
         @php
             $groupName = $groupFields->first()->field->fieldGroup->name ?? '';
@@ -60,4 +51,3 @@
         @include('laravel-crm::components.custom-fields._field', compact('field', 'key', 'label'))
     @endforeach
 @endif
-

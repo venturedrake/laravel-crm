@@ -90,7 +90,7 @@ class InvoiceEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.invoice_updated')),
-            redirectTo: route('laravel-crm.invoices.index')
+            redirectTo: route('laravel-crm.invoices.show', $this->invoice)
         );
     }
 

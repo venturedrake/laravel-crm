@@ -100,7 +100,7 @@ class DealEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.deal_updated')),
-            redirectTo: route('laravel-crm.deals.index')
+            redirectTo: route('laravel-crm.deals.show', $this->deal)
         );
     }
 

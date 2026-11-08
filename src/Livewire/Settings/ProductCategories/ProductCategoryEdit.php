@@ -33,7 +33,7 @@ class ProductCategoryEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.product_category_updated')),
-            redirectTo: route('laravel-crm.product-categories.index')
+            redirectTo: route('laravel-crm.product-categories.show', $this->productCategory)
         );
     }
 

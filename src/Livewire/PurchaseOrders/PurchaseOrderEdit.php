@@ -85,7 +85,7 @@ class PurchaseOrderEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.purchase_order_updated')),
-            redirectTo: route('laravel-crm.purchase-orders.index')
+            redirectTo: route('laravel-crm.purchase-orders.show', $this->purchaseOrder)
         );
     }
 

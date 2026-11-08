@@ -119,7 +119,7 @@ class QuoteEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.quote_updated_successfully')),
-            redirectTo: route('laravel-crm.quotes.index')
+            redirectTo: route('laravel-crm.quotes.show', $this->quote)
         );
     }
 

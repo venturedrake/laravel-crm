@@ -39,7 +39,7 @@ class TaxRateEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.tax_rate_updated')),
-            redirectTo: route('laravel-crm.tax-rates.index')
+            redirectTo: route('laravel-crm.tax-rates.show', $this->taxRate)
         );
     }
 

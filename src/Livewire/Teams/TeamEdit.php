@@ -42,7 +42,7 @@ class TeamEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.team_updated')),
-            redirectTo: route('laravel-crm.teams.index')
+            redirectTo: route('laravel-crm.teams.show', $this->team)
         );
     }
 

@@ -46,7 +46,7 @@ class RoleEdit extends Component
 
             $this->success(
                 ucfirst(trans('laravel-crm::lang.role_updated')),
-                redirectTo: route('laravel-crm.roles.index')
+                redirectTo: route('laravel-crm.roles.show', $this->role)
             );
         } else {
             $this->error(

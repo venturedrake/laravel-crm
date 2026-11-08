@@ -33,7 +33,7 @@ class LeadSourceEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.lead_source_updated')),
-            redirectTo: route('laravel-crm.lead-sources.index')
+            redirectTo: route('laravel-crm.lead-sources.show', $this->leadSource)
         );
     }
 

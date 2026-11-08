@@ -47,9 +47,15 @@ class TeamCreate extends Component
         $user->unsetRelation('currentTeam');
         app('laravel-crm.settings')->forgetCache();
 
+        // In teams mode the switch above changes the tenant the next request is
+        // scoped to: the new team's row still carries the previous tenant's
+        // team_id, and the user holds no roles under the new one, so its show
+        // page would 404 or 403. Land on the dashboard instead.
         $this->success(
             ucfirst(trans('laravel-crm::lang.team_created')),
-            redirectTo: route('laravel-crm.dashboard')
+            redirectTo: config('laravel-crm.teams')
+                ? route('laravel-crm.dashboard')
+                : route('laravel-crm.teams.show', $team)
         );
     }
 

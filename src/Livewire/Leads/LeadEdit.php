@@ -108,7 +108,7 @@ class LeadEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.lead_updated_successfully')),
-            redirectTo: route('laravel-crm.leads.index')
+            redirectTo: route('laravel-crm.leads.show', $this->lead)
         );
     }
 

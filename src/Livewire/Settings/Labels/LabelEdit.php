@@ -35,7 +35,7 @@ class LabelEdit extends Component
 
         $this->success(
             ucfirst(trans('laravel-crm::lang.label_updated')),
-            redirectTo: route('laravel-crm.labels.index')
+            redirectTo: route('laravel-crm.labels.show', $this->label)
         );
     }
 
