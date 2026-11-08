@@ -196,6 +196,7 @@ class SettingEdit extends Component
             'timezone' => 'required',
             'dateFormat' => 'required',
             'timeFormat' => 'required',
+            'taxRate' => 'nullable|numeric|min:0|max:100',
             'logoFile' => 'nullable|image|max:1024',
         ];
     }
@@ -366,7 +367,8 @@ class SettingEdit extends Component
             app('laravel-crm.settings')->set('tax_name', $this->taxName);
         }
 
-        if ($this->taxRate) {
+        // filled(), not truthiness: a 0% default rate is valid and must be saved.
+        if (filled($this->taxRate)) {
             app('laravel-crm.settings')->set('tax_rate', $this->taxRate);
         }
 

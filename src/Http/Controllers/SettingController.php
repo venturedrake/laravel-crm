@@ -59,7 +59,7 @@ class SettingController extends Controller
             $this->settingService->set('tax_name', $request->tax_name);
         }
 
-        if ($request->tax_rate) {
+        if (filled($request->tax_rate)) {
             $this->settingService->set('tax_rate', $request->tax_rate);
         }
 

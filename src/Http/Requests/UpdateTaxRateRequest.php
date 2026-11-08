@@ -25,7 +25,7 @@ class UpdateTaxRateRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'rate' => 'required',
+            'rate' => 'required|numeric|min:0|max:100',
         ];
     }
 }
