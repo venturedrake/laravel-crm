@@ -8,7 +8,11 @@
             @endscope
             @scope('cell_order', $delivery)
                 @if($delivery->order)
-                    <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}" class="link link-hover link-primary">{{ $delivery->order->order_id }}</a>
+                    @if($delivery->order->trashed())
+                        {{ $delivery->order->order_id }} <x-mary-badge :value="__('laravel-crm::lang.deleted')" class="badge-ghost badge-sm" />
+                    @else
+                        <a href="{{ route('laravel-crm.orders.show', $delivery->order) }}" class="link link-hover link-primary">{{ $delivery->order->order_id }}</a>
+                    @endif
                 @endif
             @endscope
             @scope('cell_address', $delivery)

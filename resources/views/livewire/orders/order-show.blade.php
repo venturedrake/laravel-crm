@@ -46,9 +46,13 @@
             @can('edit crm orders')
                 <x-mary-button link="{{ url(route('laravel-crm.orders.edit', $order)) }}" icon="o-pencil-square" class="btn-sm btn-square btn-outline" responsive />
             @endcan
-            @can('delete crm orders')
+            @can('delete', $order)
                 <x-mary-button onclick="modalDeleteOrder{{ $order->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-                <x-crm-delete-confirm model="order" id="{{ $order->id }}" />           
+                <x-crm-delete-confirm model="order" id="{{ $order->id }}" />
+            @elsecan('delete crm orders')
+                <span class="tooltip tooltip-left" data-tip="{{ $order->deleteBlockedReason() }}">
+                    <x-mary-button icon="o-trash" class="btn-sm btn-square btn-error text-white" disabled />
+                </span>
             @endcan
         </x-slot:actions>
     </x-crm-header>
@@ -125,7 +129,7 @@
                     <div class="flex flex-row gap-5">
                         <x-mary-icon name="fas.user-circle" />
                         <span>
-                            @if($order->person)<a href="{{ route('laravel-crm.people.show',$order->person) }}" class="link link-hover link-primary">{{ $order->person->name }}</a>@endif
+                            <x-crm-record-link :record="$order->personWithTrashed" route="laravel-crm.people.show" :label="$order->personWithTrashed?->name" class="link link-hover link-primary" />
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
@@ -151,7 +155,7 @@
                     <div class="flex flex-row gap-5">
                         <x-mary-icon name="fas.building" />
                         <span>
-                            @if($order->organization)<a href="{{ route('laravel-crm.organizations.show',$order->organization) }}">{{ $order->organization->name }}</a>@endif
+                            <x-crm-record-link :record="$order->organizationWithTrashed" route="laravel-crm.organizations.show" :label="$order->organizationWithTrashed?->name" />
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">

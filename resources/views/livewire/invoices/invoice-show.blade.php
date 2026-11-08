@@ -139,7 +139,7 @@
                     <div class="flex flex-row gap-5">
                         <x-mary-icon name="fas.user-circle" />
                         <span>
-                            @if($invoice->person)<a href="{{ route('laravel-crm.people.show',$invoice->person) }}" class="link link-hover link-primary">{{ $invoice->person->name }}</a>@endif
+                            <x-crm-record-link :record="$invoice->personWithTrashed" route="laravel-crm.people.show" :label="$invoice->personWithTrashed?->name" class="link link-hover link-primary" />
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
@@ -165,7 +165,7 @@
                     <div class="flex flex-row gap-5">
                         <x-mary-icon name="fas.building" />
                         <span>
-                            @if($invoice->organization)<a href="{{ route('laravel-crm.organizations.show',$invoice->organization) }}">{{ $invoice->organization->name }}</a>@endif
+                            <x-crm-record-link :record="$invoice->organizationWithTrashed" route="laravel-crm.organizations.show" :label="$invoice->organizationWithTrashed?->name" />
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">

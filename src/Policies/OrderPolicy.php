@@ -63,12 +63,19 @@ class OrderPolicy
     /**
      * Determine whether the user can delete the order.
      *
+     * An order with invoices, deliveries or purchase orders cannot be
+     * deleted: those documents would be left pointing at nothing.
+     *
      * @param  \App\Order  $order
      * @return mixed
      */
     public function delete(User $user, Order $order)
     {
         if ($this->isEnabled() && $user->hasPermissionTo('delete crm orders')) {
+            if (! $order->canBeDeleted()) {
+                return $this->deny($order->deleteBlockedReason());
+            }
+
             return true;
         }
     }

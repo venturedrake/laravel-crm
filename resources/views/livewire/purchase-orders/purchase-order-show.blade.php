@@ -64,7 +64,11 @@
                             <div class="flex flex-row gap-5">
                                 <strong>{{ ucfirst(__('laravel-crm::lang.order')) }}</strong>
                                 <span>
-                                    <a href="{{ route('laravel-crm.orders.show', $purchaseOrder->order) }}" class="link link-hover link-primary">{{ $purchaseOrder->order->order_id }}</a>
+                                    @if($purchaseOrder->order->trashed())
+                                        {{ $purchaseOrder->order->order_id }} <x-mary-badge :value="__('laravel-crm::lang.deleted')" class="badge-ghost badge-sm" />
+                                    @else
+                                        <a href="{{ route('laravel-crm.orders.show', $purchaseOrder->order) }}" class="link link-hover link-primary">{{ $purchaseOrder->order->order_id }}</a>
+                                    @endif
                                 </span>
                             </div>
                         @endif
@@ -127,7 +131,7 @@
                     <div class="flex flex-row gap-5">
                         <x-mary-icon name="fas.user-circle" />
                         <span>
-                            @if($purchaseOrder->person)<a href="{{ route('laravel-crm.people.show', $purchaseOrder->person) }}" class="link link-hover link-primary">{{ $purchaseOrder->person->name }}</a>@endif
+                            <x-crm-record-link :record="$purchaseOrder->personWithTrashed" route="laravel-crm.people.show" :label="$purchaseOrder->personWithTrashed?->name" class="link link-hover link-primary" />
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
@@ -153,7 +157,7 @@
                     <div class="flex flex-row gap-5">
                         <x-mary-icon name="fas.building" />
                         <span>
-                            @if($purchaseOrder->organization)<a href="{{ route('laravel-crm.organizations.show', $purchaseOrder->organization) }}">{{ $purchaseOrder->organization->name }}</a>@endif
+                            <x-crm-record-link :record="$purchaseOrder->organizationWithTrashed" route="laravel-crm.organizations.show" :label="$purchaseOrder->organizationWithTrashed?->name" />
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">

@@ -11,7 +11,7 @@
             @endcan
             @can('delete crm people')
                 <x-mary-button onclick="modalDeletePerson{{ $person->id }}.showModal()" icon="o-trash" class="btn-sm btn-square btn-error text-white" spinner />
-                <x-crm-delete-confirm model="person" id="{{ $person->id }}" />            @endcan
+                <x-crm-delete-confirm model="person" id="{{ $person->id }}" :warning="$person->deleteWarning()" />            @endcan
         </x-slot:actions>
     </x-crm-header>
     <div class="grid lg:grid-cols-2 gap-5 items-start">

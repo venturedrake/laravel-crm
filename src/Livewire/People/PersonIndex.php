@@ -90,6 +90,8 @@ class PersonIndex extends Component
                 'deals as open_deals_count' => fn ($q) => $q->whereNull('closed_at'),
                 'deals as lost_deals_count' => fn ($q) => $q->where('closed_status', 'lost'),
                 'deals as won_deals_count' => fn ($q) => $q->where('closed_status', 'won'),
+                // Back deleteWarning() in each row's delete dialog.
+                'leads', 'deals', 'quotes', 'orders', 'invoices', 'purchaseOrders',
             ])
             ->when($this->search, function (Builder $q) {
                 $prefix = config('laravel-crm.db_table_prefix');

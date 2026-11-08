@@ -10,6 +10,7 @@ use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasEncryptableFields;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
+use VentureDrake\LaravelCrm\Traits\HasLinkedRecordsWarning;
 use VentureDrake\LaravelCrm\Traits\HasPrimaryContactDetails;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
 
@@ -20,6 +21,7 @@ class Person extends Model
     use HasCrmFields;
     use HasEncryptableFields;
     use HasGlobalSettings;
+    use HasLinkedRecordsWarning;
     use HasPrimaryContactDetails;
     use SearchFilters;
     use SoftDeletes;
@@ -113,9 +115,43 @@ class Person extends Model
         return $this->belongsTo(Organization::class);
     }
 
+    public function leads()
+    {
+        return $this->hasMany(Lead::class);
+    }
+
     public function deals()
     {
         return $this->hasMany(Deal::class);
+    }
+
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function purchaseOrders()
+    {
+        return $this->hasMany(PurchaseOrder::class);
+    }
+
+    /**
+     * The records that point at this person, listed in the delete
+     * dialog. They keep the reference once it is deleted.
+     */
+    public function linkedRecordRelations(): array
+    {
+        return ['leads', 'deals', 'quotes', 'orders', 'invoices', 'purchaseOrders'];
     }
 
     public function createdByUser()

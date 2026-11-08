@@ -56,9 +56,12 @@ class Delivery extends Model
         }
     }
 
+    /**
+     * Includes a soft-deleted order: the document was still made from it.
+     */
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class)->withTrashed();
     }
 
     public function deliveryProducts()
