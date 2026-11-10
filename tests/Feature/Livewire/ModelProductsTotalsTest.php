@@ -188,6 +188,22 @@ test('it clamps a quantity typed above what is outstanding', function () {
     $component->assertHasErrors('products.0.quantity');
 });
 
+test('the over-quantity nudge is worded like the submit-time rule', function () {
+    $this->actingAsUser();
+
+    // The same sentence comes from two places: QuantityWithinRemaining wraps it
+    // in ucfirst(), the live nudge in the component did not, so the inline
+    // message started lower-case while every other validation message did not.
+    $component = Livewire::test(ModelProducts::class, [
+        'model' => orderPartlyInvoiced(), 'creating' => 'Invoice', 'from' => 'Order',
+    ]);
+
+    $component->set('products.0.quantity', 4);
+
+    expect($component->errors()->get('products.0.quantity')[0])
+        ->toBe('Quantity cannot be more than the 2.5 remaining');
+});
+
 test('it leaves a quantity within what is outstanding alone', function () {
     $this->actingAsUser();
 

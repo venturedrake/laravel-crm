@@ -581,9 +581,9 @@ class ModelProducts extends Component
         if ($max !== null && Quantity::greaterThan($quantity, $max)) {
             $quantity = Quantity::round($max);
 
-            $this->addError("products.$index.quantity", __('laravel-crm::lang.quantity_exceeds_remaining', [
+            $this->addError("products.$index.quantity", ucfirst(__('laravel-crm::lang.quantity_exceeds_remaining', [
                 'remaining' => Quantity::format($max),
-            ]));
+            ])));
         }
 
         $this->products[$index]['quantity'] = $quantity;
