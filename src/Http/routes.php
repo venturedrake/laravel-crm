@@ -1346,6 +1346,10 @@ Route::group(['prefix' => 'pipeline-stages', 'middleware' => 'auth.laravel-crm']
         ->name('laravel-crm.pipeline-stages.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PipelineStage']);
 
+    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@create')
+        ->name('laravel-crm.pipeline-stages.create')
+        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PipelineStage']);
+
     Route::get('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@show')
         ->name('laravel-crm.pipeline-stages.show')
         ->middleware(['can:view,pipelineStage']);

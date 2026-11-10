@@ -237,6 +237,7 @@ use VentureDrake\LaravelCrm\Livewire\Settings\Permissions\RoleShow;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\Pipelines\PipelineShow;
+use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\PipelineStageCreate;
 use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\PipelineStageEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\PipelineStageIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\PipelineStageShow;
@@ -1142,6 +1143,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-settings-pipeline-edit', PipelineEdit::class);
         Livewire::component('crm-settings-pipeline-show', PipelineShow::class);
 
+        Livewire::component('crm-settings-pipeline-stage-create', PipelineStageCreate::class);
         Livewire::component('crm-settings-pipeline-stage-index', PipelineStageIndex::class);
         Livewire::component('crm-settings-pipeline-stage-edit', PipelineStageEdit::class);
         Livewire::component('crm-settings-pipeline-stage-show', PipelineStageShow::class);
