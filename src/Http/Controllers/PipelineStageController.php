@@ -20,6 +20,16 @@ class PipelineStageController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        return view('laravel-crm::settings.pipeline-stages.create');
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
