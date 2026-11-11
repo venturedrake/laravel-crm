@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 use VentureDrake\LaravelCrm\Http\Controllers\PipelineController;
 use VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController;
 
-test('no pipeline create or store route is registered, and the pipeline stage create page exists without a store route', function () {
+test('no pipeline create or store route, and the stage create page exists without a store route', function () {
     expect(Route::has('laravel-crm.pipelines.create'))->toBeFalse()
         ->and(Route::has('laravel-crm.pipelines.store'))->toBeFalse()
         ->and(Route::has('laravel-crm.pipeline-stages.create'))->toBeTrue()
