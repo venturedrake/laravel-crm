@@ -54,6 +54,14 @@ class DeliveryEdit extends Component
                 ];
             }
         }
+
+        // A delivery can be saved without an address. Give the empty slot a
+        // type and the default country, as the create form does, so one
+        // filled in here is saved complete.
+        if (empty($this->addresses['shipping']['id'])) {
+            $this->addresses['shipping']['address_type_id'] = $shippingAddressTypeId;
+            $this->addresses['shipping']['country'] = app('laravel-crm.settings')->get('country', 'United States');
+        }
     }
 
     public function save()

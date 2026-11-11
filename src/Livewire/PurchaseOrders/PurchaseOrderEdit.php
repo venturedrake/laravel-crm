@@ -11,6 +11,7 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasPersonSuggest;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
+use VentureDrake\LaravelCrm\Support\AddressContent;
 
 class PurchaseOrderEdit extends Component
 {
@@ -45,7 +46,9 @@ class PurchaseOrderEdit extends Component
         $this->delivery_type = $purchaseOrder->delivery_type ?? 'deliver';
         $this->delivery_instructions = $purchaseOrder->delivery_instructions ?? null;
 
-        if ($purchaseOrder->address) {
+        // A copy that cannot be delivered to is not offered, so it is not
+        // preselected either: a delivered PO has to be given a real address.
+        if ($purchaseOrder->address && AddressContent::isDeliverable($purchaseOrder->address)) {
             $this->delivery_address = $purchaseOrder->address->id;
         }
 

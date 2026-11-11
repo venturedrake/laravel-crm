@@ -12,6 +12,7 @@ use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\OrderRepository;
+use VentureDrake\LaravelCrm\Support\AddressContent;
 use VentureDrake\LaravelCrm\Support\DocumentTotals;
 use VentureDrake\LaravelCrm\Support\FormOptions;
 use VentureDrake\LaravelCrm\Support\LineAmount;
@@ -114,6 +115,12 @@ class OrderService
 
             if ($request->addresses) {
                 foreach ($request->addresses as $addressRequest) {
+                    // An address left blank on the form still carries the
+                    // prefilled country - it is not an address.
+                    if (AddressContent::isBlank($addressRequest)) {
+                        continue;
+                    }
+
                     $address = $order->addresses()->create([
                         'external_id' => Uuid::uuid4()->toString(),
                         'address_type_id' => $addressRequest['address_type_id'] ?? null,
@@ -286,7 +293,8 @@ class OrderService
 
     /**
      * Addresses of a type in $keepTypeIds are never deleted: the form hides
-     * that type, so it was not submitted rather than removed.
+     * that type, so it was not submitted rather than removed. An address
+     * submitted blank is deleted.
      */
     protected function updateOrderAddresses($order, $addresses, array $keepTypeIds = [])
     {
@@ -298,7 +306,13 @@ class OrderService
 
         if ($addresses) {
             foreach ($addresses as $addressRequest) {
-                if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
+                // A blank address is not saved. One that was saved before is
+                // left out of $addressIds, so the loop below deletes it.
+                if (AddressContent::isBlank($addressRequest)) {
+                    continue;
+                }
+
+                if (($addressRequest['id'] ?? null) && $address = Address::find($addressRequest['id'])) {
                     $address->update([
                         'address_type_id' => $addressRequest['address_type_id'] ?? null,
                         'address' => $addressRequest['address'] ?? null,

@@ -8,11 +8,13 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Http\Rules\NotBeforeDate;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
+use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Services\OrganizationService;
 use VentureDrake\LaravelCrm\Services\PersonService;
 use VentureDrake\LaravelCrm\Services\PurchaseOrderService;
+use VentureDrake\LaravelCrm\Support\AddressContent;
 use VentureDrake\LaravelCrm\Traits\HasCustomFormFields;
 
 trait HasPurchaseOrderCommon
@@ -111,19 +113,36 @@ trait HasPurchaseOrderCommon
 
     /**
      * The team's delivery addresses, plus - when editing - the PO's own copy
-     * of the one it was saved with, which the edit form starts on.
+     * of the one it was saved with, which the edit form starts on. Only ones
+     * that can be delivered to: an address that is just a country is not.
      */
     protected function allowedDeliveryAddressIds(): array
     {
-        $team = app('laravel-crm.settings')->first('team');
+        $ids = array_column($this->teamDeliveryAddresses(), 'id');
 
-        $ids = $team ? $team->addresses()->pluck('id')->all() : [];
-
-        if (isset($this->purchaseOrder) && $this->purchaseOrder->address) {
-            $ids[] = $this->purchaseOrder->address->id;
+        if (isset($this->purchaseOrder)
+            && ($current = $this->purchaseOrder->address)
+            && AddressContent::isDeliverable($current)) {
+            $ids[] = $current->id;
         }
 
         return $ids;
+    }
+
+    /**
+     * The team's addresses a PO can be delivered to. Filtered here rather
+     * than in SQL, as the fields may be encrypted.
+     *
+     * @return Address[]
+     */
+    protected function teamDeliveryAddresses(): array
+    {
+        $addresses = app('laravel-crm.settings')->first('team')?->addresses ?? [];
+
+        return collect($addresses)
+            ->filter(fn (Address $address) => AddressContent::isDeliverable($address))
+            ->values()
+            ->all();
     }
 
     protected function messages()
@@ -160,7 +179,9 @@ trait HasPurchaseOrderCommon
 
         // On edit the form starts on the PO's own copy of its address, which
         // is not one of the team's - list it first, so the select shows it.
-        if ($current = $purchaseOrder?->address) {
+        // A copy that cannot be delivered to is not offered: the PO must be
+        // given a real address.
+        if (($current = $purchaseOrder?->address) && AddressContent::isDeliverable($current)) {
             // The accessor builds a label from the parts when there is none,
             // which for an empty address is only separators.
             $label = trim((string) $current->address, " ,\t\n");
@@ -171,9 +192,7 @@ trait HasPurchaseOrderCommon
             ];
         }
 
-        $related = app('laravel-crm.settings')->first('team');
-
-        foreach ($related->addresses as $address) {
+        foreach ($this->teamDeliveryAddresses() as $address) {
             $this->deliveryAddresses[] = [
                 'id' => $address->id,
                 'name' => $address->address,

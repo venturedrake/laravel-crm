@@ -14,6 +14,7 @@ use VentureDrake\LaravelCrm\Models\Setting;
 use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Repositories\PurchaseOrderRepository;
+use VentureDrake\LaravelCrm\Support\AddressContent;
 use VentureDrake\LaravelCrm\Support\DocumentTotals;
 use VentureDrake\LaravelCrm\Support\LineAmount;
 use VentureDrake\LaravelCrm\Support\Money;
@@ -324,11 +325,14 @@ class PurchaseOrderService
     /**
      * One of the team's own delivery addresses - the only ones a PO can be
      * delivered to. The Livewire form validates this too; the legacy
-     * controller does not, so the service checks for every caller.
+     * controller does not, so the service checks for every caller. One that
+     * is only a country is not somewhere to deliver to.
      */
     protected function teamDeliveryAddress($addressId): ?Address
     {
-        return app('laravel-crm.settings')->first('team')?->addresses()->find($addressId);
+        $address = app('laravel-crm.settings')->first('team')?->addresses()->find($addressId);
+
+        return $address && AddressContent::isDeliverable($address) ? $address : null;
     }
 
     /**

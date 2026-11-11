@@ -250,14 +250,96 @@ test('the edit form offers the address the purchase order has now', function () 
         ->and(array_column($options, 'id'))->toContain($this->teamAddress->id);
 });
 
-test('an empty current address is offered without a stray label', function () {
+test('a current address with no label is offered without stray separators', function () {
     $purchaseOrder = PurchaseOrder::create(['currency' => 'USD', 'delivery_type' => 'deliver']);
-    $copy = $purchaseOrder->address()->create(['external_id' => Str::uuid()->toString()]);
+    $copy = $purchaseOrder->address()->create(['external_id' => Str::uuid()->toString(), 'line1' => '5 Quay St']);
 
     $options = Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
         ->get('deliveryAddresses');
 
-    expect($options[0])->toBe(['id' => $copy->id, 'name' => 'Current delivery address']);
+    expect($options[0])->toBe(['id' => $copy->id, 'name' => 'Current delivery address: 5 Quay St']);
+});
+
+test('a team address that is only a country is not offered or accepted', function () {
+    // Issue #115: ", , United States" is not somewhere to deliver to.
+    $countryOnly = Setting::where('name', 'team')->first()->addresses()->create([
+        'external_id' => Str::uuid()->toString(), 'country' => 'United States',
+    ]);
+
+    $component = Livewire::test(AtomicPurchaseOrderCreate::class);
+
+    expect(array_column($component->get('deliveryAddresses'), 'id'))
+        ->toContain($this->teamAddress->id)
+        ->not->toContain($countryOnly->id);
+
+    $component
+        ->set('organization_id', $this->supplier->id)
+        ->set('organization_name', $this->supplier->name)
+        ->set('delivery_type', 'deliver')
+        ->set('delivery_address', $countryOnly->id)
+        ->call('save')
+        ->assertHasErrors(['delivery_address' => 'in']);
+
+    expect(PurchaseOrder::count())->toBe(0);
+});
+
+test('a team address with only a city can be delivered to', function () {
+    $cityOnly = Setting::where('name', 'team')->first()->addresses()->create([
+        'external_id' => Str::uuid()->toString(), 'city' => 'Springfield', 'country' => 'United States',
+    ]);
+
+    Livewire::test(AtomicPurchaseOrderCreate::class)
+        ->set('organization_id', $this->supplier->id)
+        ->set('organization_name', $this->supplier->name)
+        ->set('delivery_type', 'deliver')
+        ->set('delivery_address', $cityOnly->id)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(PurchaseOrder::sole()->address->city)->toBe('Springfield');
+});
+
+test('the service does not copy a team address that is only a country', function () {
+    $countryOnly = Setting::where('name', 'team')->first()->addresses()->create([
+        'external_id' => Str::uuid()->toString(), 'country' => 'United States',
+    ]);
+
+    $purchaseOrder = app(PurchaseOrderService::class)->create(new Request([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'delivery_address' => $countryOnly->id,
+    ]));
+
+    expect($purchaseOrder->fresh()->address)->toBeNull();
+});
+
+test('a purchase order saved with a country-only address must be given a real one', function () {
+    $purchaseOrder = PurchaseOrder::create([
+        'currency' => 'USD', 'delivery_type' => 'deliver', 'organization_id' => $this->supplier->id,
+    ]);
+    $copy = $purchaseOrder->address()->create(['external_id' => Str::uuid()->toString(), 'country' => 'United States']);
+
+    $component = Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->assertSet('delivery_address', null);
+
+    expect(array_column($component->get('deliveryAddresses'), 'id'))->not->toContain($copy->id);
+
+    $component->call('save')->assertHasErrors(['delivery_address' => 'required_if']);
+
+    $component->set('delivery_address', $copy->id)->call('save')->assertHasErrors(['delivery_address' => 'in']);
+
+    $component->set('delivery_address', $this->teamAddress->id)->call('save')->assertHasNoErrors();
+
+    expect($purchaseOrder->fresh()->address->line1)->toBe('1 Dock Road');
+});
+
+test('a pickup purchase order with a country-only address still saves', function () {
+    $purchaseOrder = PurchaseOrder::create(['currency' => 'USD', 'delivery_type' => 'pickup']);
+    $purchaseOrder->address()->create(['external_id' => Str::uuid()->toString(), 'country' => 'United States']);
+
+    Livewire::test(AtomicPurchaseOrderEdit::class, ['purchaseOrder' => $purchaseOrder->fresh()])
+        ->set('organization_id', $this->supplier->id)
+        ->set('organization_name', $this->supplier->name)
+        ->call('save')
+        ->assertHasNoErrors();
 });
 
 test('the offered delivery addresses cannot be changed from the browser', function () {

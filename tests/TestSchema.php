@@ -162,6 +162,8 @@ class TestSchema
             $table->bigIncrements('id');
             $table->string('external_id')->nullable();
             $table->string('name')->nullable();
+            $table->string('contact')->nullable();
+            $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('line')->nullable();
             $table->string('line1')->nullable();

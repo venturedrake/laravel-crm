@@ -86,6 +86,16 @@ class OrderEdit extends Component
             }
         }
 
+        // An order can be saved without an address. Give its empty slots a
+        // type and the default country, as the create form does, so one
+        // filled in here is saved complete.
+        foreach (['billing' => $billingAddressTypeId, 'shipping' => $shippingAddressTypeId] as $slot => $typeId) {
+            if (empty($this->addresses[$slot]['id'])) {
+                $this->addresses[$slot]['address_type_id'] = $typeId;
+                $this->addresses[$slot]['country'] = app('laravel-crm.settings')->get('country', 'United States');
+            }
+        }
+
         $this->sub_total = $order->subtotal / 100;
         $this->tax = $order->tax / 100;
         $this->total = $order->total / 100;

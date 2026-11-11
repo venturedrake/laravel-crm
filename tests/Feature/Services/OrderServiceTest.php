@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
@@ -47,4 +48,69 @@ test('service updates an order', function () {
     expect($fresh->description)->toBe('New');
     expect($fresh->reference)->toBe('R-1');
     expect($fresh->currency)->toBe('EUR');
+});
+
+/*
+ * Issue #115: the order form prefills the country, so an address left blank
+ * used to be saved as one that was only a country.
+ */
+function orderAddresses(array $billing = [], array $shipping = [], array $ids = []): array
+{
+    $blank = fn (string $type, array $fields) => $fields + [
+        'id' => $ids[$type] ?? null,
+        'address_type_id' => AddressType::firstOrCreate(['name' => ucfirst($type)])->id,
+        'contact' => null, 'phone' => null, 'line1' => null, 'line2' => null, 'line3' => null,
+        'city' => null, 'state' => null, 'code' => null, 'country' => 'United States', 'primary' => 1,
+    ];
+
+    return ['billing' => $blank('billing', $billing), 'shipping' => $blank('shipping', $shipping)];
+}
+
+test('an order saved with blank addresses gets none', function () {
+    $order = app(OrderService::class)->create(new Request([
+        'currency' => 'USD', 'addresses' => orderAddresses(),
+    ]));
+
+    expect($order->addresses()->count())->toBe(0);
+});
+
+test('an order saves only the addresses that were filled in', function () {
+    $order = app(OrderService::class)->create(new Request([
+        'currency' => 'USD', 'addresses' => orderAddresses(shipping: ['line1' => '1 Dock Road']),
+    ]));
+
+    expect($order->addresses()->sole())
+        ->line1->toBe('1 Dock Road')
+        ->addressType->name->toBe('Shipping');
+});
+
+test('blanking an order address on edit removes it', function () {
+    $order = app(OrderService::class)->create(new Request([
+        'currency' => 'USD', 'addresses' => orderAddresses(['line1' => '1 Bill St'], ['line1' => '1 Ship St']),
+    ]));
+    $billing = $order->addresses()->whereHas('addressType', fn ($q) => $q->where('name', 'Billing'))->sole();
+    $shipping = $order->addresses()->whereHas('addressType', fn ($q) => $q->where('name', 'Shipping'))->sole();
+
+    app(OrderService::class)->update(new Request([
+        'currency' => 'USD',
+        // As the edit form sends it: the accessor-built label is still there.
+        'addresses' => orderAddresses(
+            ['address' => '1 Bill St,   , United States', 'line1' => '1 Bill St'],
+            ['address' => '1 Ship St,   , United States'],
+            ['billing' => $billing->id, 'shipping' => $shipping->id],
+        ),
+    ]), $order->fresh());
+
+    expect($order->addresses()->sole()->id)->toBe($billing->id)
+        ->and($shipping->fresh()->trashed())->toBeTrue();
+});
+
+test('an order saved without addresses can be given one on edit', function () {
+    $order = Order::create(['currency' => 'USD']);
+
+    app(OrderService::class)->update(new Request([
+        'currency' => 'USD', 'addresses' => orderAddresses(billing: ['city' => 'Springfield']),
+    ]), $order);
+
+    expect($order->addresses()->sole()->city)->toBe('Springfield');
 });
