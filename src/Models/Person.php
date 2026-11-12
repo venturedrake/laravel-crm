@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Models;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use VentureDrake\LaravelCrm\Support\Modules;
 use VentureDrake\LaravelCrm\Traits\BelongsToTeams;
 use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
@@ -152,6 +153,35 @@ class Person extends Model
     public function linkedRecordRelations(): array
     {
         return ['leads', 'deals', 'quotes', 'orders', 'invoices', 'purchaseOrders'];
+    }
+
+    /**
+     * Every position the person holds or has held, newest first.
+     */
+    public function positions()
+    {
+        return $this->hasMany(Position::class)->orderByDesc('start_date')->orderByDesc('id');
+    }
+
+    /**
+     * The positions the person holds today.
+     */
+    public function currentPositions()
+    {
+        return $this->positions()->current();
+    }
+
+    /**
+     * The person's current position titles as one string ("CFO, Director"),
+     * or null when they hold none or the positions module is disabled.
+     */
+    public function getCurrentPositionTitleAttribute(): ?string
+    {
+        if (! Modules::enabled('positions')) {
+            return null;
+        }
+
+        return $this->currentPositions->pluck('title')->unique()->implode(', ') ?: null;
     }
 
     public function createdByUser()

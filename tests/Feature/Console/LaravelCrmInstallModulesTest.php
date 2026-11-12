@@ -80,6 +80,7 @@ test('install --modules=all writes all 13 known module keys to config', function
         'sms-marketing',
         'features',
         'monitoring',
+        'positions',
     ]);
 });
 

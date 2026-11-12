@@ -66,6 +66,22 @@ class Organization extends Model
     }
 
     /**
+     * Every position held at the organisation, past and current, newest first.
+     */
+    public function positions()
+    {
+        return $this->hasMany(Position::class)->orderByDesc('start_date')->orderByDesc('id');
+    }
+
+    /**
+     * The positions held at the organisation today.
+     */
+    public function currentPositions()
+    {
+        return $this->positions()->current();
+    }
+
+    /**
      * Get all of the organization emails.
      */
     public function emails()

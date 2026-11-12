@@ -118,6 +118,11 @@
                 </div>
             </x-mary-card>
             <x-crm-custom-field-values :model="$organization" :group="true" />
+            @haspositionsenabled
+                @can('viewAny', \VentureDrake\LaravelCrm\Models\Position::class)
+                    <livewire:crm-related-positions :model="$organization" />
+                @endcan
+            @endhaspositionsenabled
             <livewire:crm-related-people :model="$organization" />
             <livewire:crm-related-organizations :model="$organization" />
             {{--<livewire:crm-related-deals :model="$organization" />--}}

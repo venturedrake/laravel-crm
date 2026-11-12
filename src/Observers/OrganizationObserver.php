@@ -4,6 +4,8 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Organization;
+use VentureDrake\LaravelCrm\Services\PositionService;
+use VentureDrake\LaravelCrm\Support\Modules;
 
 class OrganizationObserver
 {
@@ -79,7 +81,10 @@ class OrganizationObserver
      */
     public function deleted(Organization $organization)
     {
-        //
+        // A deleted organisation's positions go with it.
+        if (Modules::enabled('positions')) {
+            app(PositionService::class)->deleteFor($organization);
+        }
     }
 
     /**
@@ -104,6 +109,8 @@ class OrganizationObserver
      */
     public function forceDeleted(Organization $organization)
     {
-        //
+        if (Modules::enabled('positions')) {
+            app(PositionService::class)->deleteFor($organization, true);
+        }
     }
 }

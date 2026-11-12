@@ -19,7 +19,8 @@ test('default modules array includes all features', function () {
         ->toContain('invoices')
         ->toContain('deliveries')
         ->toContain('purchase-orders')
-        ->toContain('teams');
+        ->toContain('teams')
+        ->toContain('positions');
 });
 
 test('model with global includes settings', function () {

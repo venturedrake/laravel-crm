@@ -797,6 +797,7 @@ class LaravelCrmInstall extends Command
             'sms-marketing' => 'SMS marketing',
             'features' => 'Features',
             'monitoring' => 'Monitoring (uptime / SSL)',
+            'positions' => 'Positions (the jobs people hold at organizations)',
         ];
 
         $allKeys = array_keys($available);

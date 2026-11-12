@@ -163,6 +163,8 @@ All components are manually registered in `LaravelCrmServiceProvider` (not auto-
 The package ships a Sanctum-authenticated JSON REST API mounted at `/crm/api/v2` (under `laravel-crm.route_prefix`). It exposes 8
 resourceful entities (`leads`, `products`, `organizations`, `people`, `deals`, `quotes`, `orders`,
 `invoices`) with full CRUD, a `products/{product}/variations` sub-resource,
+`people/{person}/positions` and `organizations/{organization}/positions` sub-resources
+(403 while the `positions` module is disabled),
 plus 3 auth routes (`POST auth/token`, `GET auth/me`,
 `DELETE auth/token`).
 

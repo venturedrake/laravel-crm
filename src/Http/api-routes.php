@@ -7,7 +7,9 @@ use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\InvoiceController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\LeadController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrderController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrganizationController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\OrganizationPositionController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\PersonController;
+use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\PersonPositionController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\ProductController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\ProductVariationController;
 use VentureDrake\LaravelCrm\Http\Controllers\Api\V2\QuoteController;
@@ -55,6 +57,19 @@ Route::middleware(['auth:sanctum', 'crm-api', 'laravel-crm.api.team'])->group(fu
         ->parameters(['people' => 'person'])
         ->names('laravel-crm.api.v2.people')
         ->scoped(['person' => 'external_id']);
+
+    // The position resolves through the parent's positions(), so a position
+    // of another person or organisation, or a deleted one, is a 404. The
+    // routes are always registered; PositionPolicy answers 403 while the
+    // `positions` module is disabled.
+    Route::apiResource('people.positions', PersonPositionController::class)
+        ->parameters(['people' => 'person'])
+        ->names('laravel-crm.api.v2.people.positions')
+        ->scoped(['person' => 'external_id', 'position' => 'external_id']);
+
+    Route::apiResource('organizations.positions', OrganizationPositionController::class)
+        ->names('laravel-crm.api.v2.organizations.positions')
+        ->scoped(['organization' => 'external_id', 'position' => 'external_id']);
 
     Route::apiResource('deals', DealController::class)
         ->names('laravel-crm.api.v2.deals')

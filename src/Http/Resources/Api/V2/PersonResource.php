@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use VentureDrake\LaravelCrm\Http\Resources\Api\V2\Related\LabelBriefResource;
 use VentureDrake\LaravelCrm\Http\Resources\Api\V2\Related\OrganizationBriefResource;
 use VentureDrake\LaravelCrm\Http\Resources\Api\V2\Related\UserBriefResource;
+use VentureDrake\LaravelCrm\Support\Modules;
 
 class PersonResource extends JsonResource
 {
@@ -27,6 +28,11 @@ class PersonResource extends JsonResource
             'owner' => $this->whenLoaded('ownerUser', fn () => $this->ownerUser ? new UserBriefResource($this->ownerUser) : null),
             'organization' => $this->whenLoaded('organization', fn () => $this->organization ? new OrganizationBriefResource($this->organization) : null),
             'labels' => LabelBriefResource::collection($this->whenLoaded('labels')),
+            // Left out altogether while the positions module is disabled.
+            'current_positions' => $this->when(
+                Modules::enabled('positions') && $this->relationLoaded('currentPositions'),
+                fn () => PositionResource::collection($this->currentPositions)
+            ),
         ];
     }
 }

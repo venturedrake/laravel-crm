@@ -11,6 +11,8 @@ use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\PersonService;
+use VentureDrake\LaravelCrm\Services\PositionService;
+use VentureDrake\LaravelCrm\Support\Modules;
 
 class PersonController extends ApiController
 {
@@ -20,7 +22,7 @@ class PersonController extends ApiController
     {
         $this->authorize('viewAny', Person::class);
 
-        $query = Person::query()->with(['ownerUser', 'organization', 'labels']);
+        $query = Person::query()->with($this->relations());
 
         if ($request->filled('user_owner_id')) {
             $query->where('user_owner_id', $request->input('user_owner_id'));
@@ -42,7 +44,7 @@ class PersonController extends ApiController
     {
         $this->authorize('view', $person);
 
-        $person->load(['ownerUser', 'organization', 'labels']);
+        $person->load($this->relations());
 
         return new PersonResource($person);
     }
@@ -57,7 +59,7 @@ class PersonController extends ApiController
 
         $this->applyDirectFields($person, $request);
 
-        $person->refresh()->load(['ownerUser', 'organization', 'labels']);
+        $person->refresh()->load($this->relations());
 
         return (new PersonResource($person))->response()->setStatusCode(201);
     }
@@ -72,7 +74,7 @@ class PersonController extends ApiController
 
         $this->applyDirectFields($person, $request);
 
-        $person->refresh()->load(['ownerUser', 'organization', 'labels']);
+        $person->refresh()->load($this->relations());
 
         return new PersonResource($person);
     }
@@ -84,6 +86,20 @@ class PersonController extends ApiController
         $person->delete();
 
         return response()->noContent();
+    }
+
+    /**
+     * The relations every person response carries. Current positions are
+     * only loaded while the positions module is enabled.
+     *
+     * @return array<int, string>
+     */
+    private function relations(): array
+    {
+        return array_merge(
+            ['ownerUser', 'organization', 'labels'],
+            Modules::enabled('positions') ? ['currentPositions.organization'] : []
+        );
     }
 
     private function buildPayload(FormRequest $request, ?Person $existing = null): object
@@ -106,17 +122,27 @@ class PersonController extends ApiController
     private function applyDirectFields(Person $person, FormRequest $request): void
     {
         $touched = false;
+        $previousOrganizationId = null;
 
         if ($request->has('organization_id')) {
             $organization = $request->filled('organization_id')
                 ? Organization::where('external_id', $request->input('organization_id'))->first()
                 : null;
+            $previousOrganizationId = $person->organization_id;
             $person->organization_id = $organization?->id;
             $touched = true;
         }
 
         if ($touched) {
             $person->saveQuietly();
+
+            // saveQuietly() skips PersonObserver, which is what ends a
+            // person's positions when they leave an organisation.
+            if ($previousOrganizationId
+                && (int) $previousOrganizationId !== (int) $person->organization_id
+                && Modules::enabled('positions')) {
+                app(PositionService::class)->endForPerson($person->id, (int) $previousOrganizationId);
+            }
         }
 
         if ($request->has('labels')) {

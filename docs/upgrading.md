@@ -239,6 +239,38 @@ WHERE l.converted_at IS NOT NULL
 
 Use your own table prefix if `db_table_prefix` isn't the default `crm_`.
 
+### Positions is a new module, and it is off on installs with a published config
+
+Positions records the jobs people hold at organisations (CEO, CFO, …) with a start and an end
+date, so a person can be found by position from the organisation page or the people search.
+
+It is switched by `'positions'` in `config('laravel-crm.modules')`, like every other module:
+
+- **You have a published `config/laravel-crm.php` with a `modules` array.** Your array does not
+  contain `positions`, so the module is **off** after upgrading and nothing changes. Add the line
+  to turn it on:
+
+  ```php
+  'modules' => [
+      // ...
+      'positions',
+  ],
+  ```
+
+- **You have not published the config, or `modules` is empty or unset.** Every module is on,
+  including this one. Person and organisation pages gain a Positions panel, and the people index
+  gains a Position column and filter. To keep it off, list the modules you do want.
+
+The `crm_positions` table is created by `php artisan migrate` (or `laravelcrm:update`) whether the
+module is on or off. `down()` drops the table and the positions in it.
+
+There are no new permissions. Viewing positions needs `view crm people`; adding, editing, ending
+and deleting them needs `edit crm people`.
+
+Switching the module off later hides positions and keeps the records. They are not maintained
+while it is off: a person who leaves an organisation in that time still has a current position
+there when the module is switched back on, until someone ends it.
+
 ## 2.6.0
 
 This minor release adds three groups of configuration keys: order form options, delivery options
