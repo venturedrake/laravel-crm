@@ -152,6 +152,23 @@ test('an overpayment is refused', function () {
     expect((int) $invoice->fresh()->getRawOriginal('amount_paid'))->toBe(0);
 });
 
+/*
+ * Issue #127: an overpayment showed Laravel's default text with the balance
+ * as a bare number - "The amount field must be less than or equal to 6349.54."
+ */
+test('an overpayment says how much is still due, formatted as money', function () {
+    $invoice = payableInvoice();
+
+    $component = Livewire::test(InvoicePay::class, ['invoice' => $invoice])
+        ->set('amount', '220.01')
+        ->call('pay')
+        ->assertHasErrors(['amount' => 'lte']);
+
+    expect($component->errors()->first('amount'))
+        ->toBe('The payment can be no more than the $220.00 still due')
+        ->not->toContain('less than or equal');
+});
+
 test('the Pay button shows on an open invoice and goes once it is paid', function () {
     $invoice = payableInvoice();
 

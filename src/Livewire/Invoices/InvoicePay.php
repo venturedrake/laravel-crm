@@ -46,6 +46,19 @@ class InvoicePay extends Component
         ];
     }
 
+    /**
+     * Without this, an overpayment showed Laravel's own text with the bare
+     * number: "The amount field must be less than or equal to 6349.54."
+     */
+    protected function messages()
+    {
+        return [
+            'amount.lte' => ucfirst(__('laravel-crm::lang.payment_more_than_amount_due', [
+                'due' => money($this->outstandingCents(), $this->invoice->currency),
+            ])),
+        ];
+    }
+
     public function mount(Invoice $invoice)
     {
         $this->invoice = $invoice;
