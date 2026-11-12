@@ -25,6 +25,16 @@ trait HasPipelineStageCommon
         ];
     }
 
+    /**
+     * Names pipeline_id as the form's label does, rather than "pipeline id".
+     */
+    protected function validationAttributes()
+    {
+        return [
+            'pipeline_id' => __('laravel-crm::lang.pipeline'),
+        ];
+    }
+
     public function mountCommon()
     {
         $this->pipelines = Pipeline::all();

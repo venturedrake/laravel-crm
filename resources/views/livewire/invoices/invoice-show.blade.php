@@ -146,7 +146,7 @@
                         <x-mary-icon name="fas.envelope" />
                         <span>
                         @if($email)
-                            <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})
+                            <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst((string) $email->type) }})
                         @endif
                         </span>
                     </div>
@@ -154,7 +154,7 @@
                         <x-mary-icon name="fas.phone" />
                         <span>
                         @if($phone)
-                            <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst($phone->type) }})
+                            <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> ({{ ucfirst((string) $phone->type) }})
                         @endif
                         </span>
                     </div>

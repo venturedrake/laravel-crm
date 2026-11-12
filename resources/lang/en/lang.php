@@ -706,6 +706,7 @@ return [
     'delivery_address' => 'delivery address',
     'current_delivery_address' => 'current delivery address',
     'payment_exceeds_amount_due' => 'this invoice now has only :due left to pay - another payment or an edit landed first',
+    'payment_more_than_amount_due' => 'the payment can be no more than the :due still due',
     'invoice_total_locked_after_payment' => 'a payment has been recorded against this invoice, so its total can no longer change',
     'delivery_address_required' => 'choose one of your delivery addresses, or set the type to pickup',
     'date_not_before' => ':Attribute can\'t be before the :date',

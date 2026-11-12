@@ -39,13 +39,13 @@
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.gender')) }}</strong>
                         <span>
-                        {{ ucfirst($person->gender) }}
+                        {{ ucfirst((string) $person->gender) }}
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.birthday')) }}</strong>
                         <span>
-                        {{ ucfirst($person->birthday) }}
+                        {{ $person->birthday ? $person->birthday->format(app('laravel-crm.settings')->get('date_format', 'Y-m-d')) : null }}
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
@@ -56,7 +56,7 @@
                     </div>
                     @foreach($person->phones as $phone)
                         <div class="flex flex-row gap-5">
-                            <strong>{{ ucfirst($phone->type) }} {{ ucfirst(__('laravel-crm::lang.phone')) }}</strong>
+                            <strong>{{ ucfirst((string) $phone->type) }} {{ ucfirst(__('laravel-crm::lang.phone')) }}</strong>
                             <span>
                                 <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> {{ ($phone->primary) ? '(Primary)' : null }}
                             </span>
@@ -64,7 +64,7 @@
                     @endforeach
                     @foreach($person->emails as $email)
                         <div class="flex flex-row gap-5">
-                            <strong>{{ ucfirst($email->type) }} {{ ucfirst(__('laravel-crm::lang.email')) }}</strong>
+                            <strong>{{ ucfirst((string) $email->type) }} {{ ucfirst(__('laravel-crm::lang.email')) }}</strong>
                             <span>
                                 <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> {{ ($email->primary) ? '(Primary)' : null }}
                             </span>
