@@ -26,7 +26,14 @@ class CallRelated extends Component
 
     public $finish_at;
 
+    public string $direction = Call::OUTBOUND;
+
     public array $guests = [];
+
+    /**
+     * Ids of the CRM users who were on the call.
+     */
+    public array $team_members = [];
 
     public $location;
 
@@ -40,6 +47,25 @@ class CallRelated extends Component
     {
         $this->user_owner_id = auth()->user()->id;
         $this->user_assigned_id = auth()->user()->id;
+
+        $this->prefillParticipants();
+    }
+
+    /**
+     * A new call starts with the person it is about as a guest, and with the
+     * user logging it as the team member on it. Either can be removed, so a
+     * call can be logged for a colleague.
+     */
+    private function prefillParticipants(): void
+    {
+        $person = $this->model instanceof Person
+            ? $this->model
+            : (is_object($this->model) && method_exists($this->model, 'person') ? $this->model->person : null);
+
+        $this->guests = $person ? [$person->id] : [];
+        $this->team_members = [auth()->user()->id];
+
+        $this->loadSelectedGuests();
     }
 
     public function save(): void
@@ -54,6 +80,8 @@ class CallRelated extends Component
             'location' => 'nullable',
             'user_owner_id' => 'nullable',
             'user_assigned_id' => 'nullable',
+            'team_members' => 'array',
+            'direction' => 'required|in:'.Call::OUTBOUND.','.Call::INBOUND,
         ]);
 
         $call = $this->model->calls()->create([
@@ -62,18 +90,13 @@ class CallRelated extends Component
             'start_at' => $this->normalizeDatetime($this->start_at),
             'finish_at' => $this->normalizeDatetime($this->finish_at),
             'location' => $this->location,
+            'direction' => $this->direction,
             'user_owner_id' => auth()->user()->id,
             'user_assigned_id' => auth()->user()->id,
         ]);
 
-        foreach ($this->guests as $personId) {
-            if ($person = Person::find($personId)) {
-                $call->contacts()->create([
-                    'entityable_type' => $person->getMorphClass(),
-                    'entityable_id' => $person->id,
-                ]);
-            }
-        }
+        $call->syncGuests($this->guests);
+        $call->syncTeamMembers($this->team_members);
 
         $this->model->activities()->create([
             'causeable_type' => auth()->user()->getMorphClass(),
@@ -155,15 +178,19 @@ class CallRelated extends Component
 
     private function resetFields(): void
     {
-        $this->reset('name', 'description', 'start_at', 'finish_at', 'location', 'guests', 'guestOptions');
+        $this->reset('name', 'description', 'start_at', 'finish_at', 'location', 'direction', 'guests', 'guestOptions');
         $this->user_owner_id = auth()->user()->id;
         $this->user_assigned_id = auth()->user()->id;
+
+        $this->prefillParticipants();
     }
 
     public function render()
     {
         $this->getCalls();
 
-        return view('laravel-crm::livewire.calls.call-related');
+        return view('laravel-crm::livewire.calls.call-related', [
+            'users' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false, false),
+        ]);
     }
 }

@@ -8,7 +8,6 @@ use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
 use VentureDrake\LaravelCrm\Models\Call;
-use VentureDrake\LaravelCrm\Models\Person;
 
 class CallItem extends Component
 {
@@ -34,7 +33,11 @@ class CallItem extends Component
 
     public ?string $finish_at = null;
 
+    public string $direction = Call::OUTBOUND;
+
     public array $guests = [];
+
+    public array $team_members = [];
 
     public ?string $location = null;
 
@@ -65,9 +68,11 @@ class CallItem extends Component
         $this->start_at = $this->call->start_at?->format('Y-m-d\TH:i');
         $this->finish_at = $this->call->finish_at?->format('Y-m-d\TH:i');
         $this->location = $this->call->location;
+        $this->direction = $this->call->isOutbound() ? Call::OUTBOUND : Call::INBOUND;
         $this->user_owner_id = $this->call->user_owner_id;
         $this->user_assigned_id = $this->call->user_assigned_id;
-        $this->guests = $this->call->contacts()->pluck('entityable_id')->toArray();
+        $this->guests = $this->call->guests()->pluck('entityable_id')->toArray();
+        $this->team_members = $this->call->teamMembers()->pluck('entityable_id')->toArray();
     }
 
     public function edit(): void
@@ -106,6 +111,7 @@ class CallItem extends Component
             'name' => 'required|max:255',
             'start_at' => 'required|date',
             'finish_at' => 'required|date|after_or_equal:start_at',
+            'direction' => 'required|in:'.Call::OUTBOUND.','.Call::INBOUND,
         ]);
 
         $this->call->update([
@@ -114,20 +120,13 @@ class CallItem extends Component
             'start_at' => $this->normalizeDatetime($this->start_at),
             'finish_at' => $this->normalizeDatetime($this->finish_at),
             'location' => $this->location,
+            'direction' => $this->direction,
             'user_owner_id' => $this->user_owner_id,
             'user_assigned_id' => $this->user_assigned_id,
         ]);
 
-        $this->call->contacts()->whereNotIn('entityable_id', $this->guests)->delete();
-
-        foreach ($this->guests as $personId) {
-            if ($person = Person::find($personId)) {
-                $this->call->contacts()->firstOrCreate([
-                    'entityable_type' => $person->getMorphClass(),
-                    'entityable_id' => $person->id,
-                ]);
-            }
-        }
+        $this->call->syncGuests($this->guests);
+        $this->call->syncTeamMembers($this->team_members);
 
         $this->dispatch('call-updated');
         $this->dispatch('call-updated.'.$this->call->id);
@@ -162,6 +161,9 @@ class CallItem extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.calls.call-item');
+        return view('laravel-crm::livewire.calls.call-item', [
+            // Only needed by the edit form, so the list is not built per row.
+            'users' => $this->editing ? \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\usersOptions(false, false) : [],
+        ]);
     }
 }
