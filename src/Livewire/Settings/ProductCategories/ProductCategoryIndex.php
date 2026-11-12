@@ -20,6 +20,8 @@ class ProductCategoryIndex extends Component
 
     public $layout = 'index';
 
+    public $dateFormat;
+
     #[Url]
     public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
 
