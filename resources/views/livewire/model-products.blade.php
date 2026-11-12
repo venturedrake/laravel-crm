@@ -1,7 +1,7 @@
 {{-- A deal only seeds the lines of a new quote, so it needs no update right of its own. --}}
 @php($canManageProducts = ! $model || $model instanceof \VentureDrake\LaravelCrm\Models\Deal || (auth()->user()?->can('update', $model) ?? false))
 <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }}" separator>
-    @if($canManageProducts && ! $from && class_basename($model) != 'Delivery')
+    @if($canManageProducts && ! $from && $this->modelType != 'Delivery')
         <x-slot:menu>
             <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
         </x-slot:menu>
@@ -14,7 +14,7 @@
                     <tr wire:key="product-row-{{ $product['row_key'] ?? $index }}" class="hover:bg-base-300">
                         <td class="px-3 relative" colspan="2">
                             <div class="space-y-3">
-                                @if(in_array($from, ['Quote', 'Order']) || class_basename($model) == 'Delivery')
+                                @if(in_array($from, ['Quote', 'Order']) || $this->modelType == 'Delivery')
                                     <x-mary-input wire:model="products.{{ $index }}.name" readonly />
                                 @else
                                     {{-- Searched on the server and capped, rather than every product
@@ -99,7 +99,7 @@
                 </tbody>
                 @if($creating != 'Delivery')
                     <tfoot id="quoteProductsTotals">
-                    @if($canManageProducts && ! $from && class_basename($model) != 'Delivery')
+                    @if($canManageProducts && ! $from && $this->modelType != 'Delivery')
                         <tr>
                             <td class="text-right px-0 py-3 border-y border-base-content/10" colspan="2">
                                 <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
@@ -155,7 +155,7 @@
     </div>
 </x-mary-card>
 
-@if($canManageProducts && ! $from && class_basename($model) != 'Delivery')
+@if($canManageProducts && ! $from && $this->modelType != 'Delivery')
     @script
     <script>
         Sortable.create($wire.$el.querySelector('.model-products-rows'), {

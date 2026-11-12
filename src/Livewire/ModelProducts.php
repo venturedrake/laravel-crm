@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasProductSearch;
@@ -778,6 +779,19 @@ class ModelProducts extends Component
         $this->recalculateTotals();
 
         $this->dispatchProductsUpdated();
+    }
+
+    /**
+     * The short class name of the document the lines belong to, or null on a
+     * create form, where there is no document yet. The view compares against
+     * this instead of calling class_basename($model) itself: passing the
+     * null model of a create form to class_basename() raises a deprecation
+     * on PHP 8.1+ and becomes a TypeError in PHP 9.
+     */
+    #[Computed]
+    public function modelType(): ?string
+    {
+        return $this->model ? class_basename($this->model) : null;
     }
 
     public function render()
