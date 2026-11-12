@@ -515,6 +515,11 @@ class LaravelCrmTablesSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit crm calls', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'delete crm calls', 'crm_permission' => 1]);
 
+        Permission::firstOrCreate(['name' => 'create crm emails', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'view crm emails', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'edit crm emails', 'crm_permission' => 1]);
+        Permission::firstOrCreate(['name' => 'delete crm emails', 'crm_permission' => 1]);
+
         Permission::firstOrCreate(['name' => 'create crm meetings', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'view crm meetings', 'crm_permission' => 1]);
         Permission::firstOrCreate(['name' => 'edit crm meetings', 'crm_permission' => 1]);
@@ -625,6 +630,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm calls',
                 'edit crm calls',
                 'delete crm calls',
+                'create crm emails',
+                'view crm emails',
+                'edit crm emails',
+                'delete crm emails',
                 'create crm meetings',
                 'view crm meetings',
                 'edit crm meetings',
@@ -732,6 +741,10 @@ class LaravelCrmTablesSeeder extends Seeder
                 'view crm calls',
                 'edit crm calls',
                 'delete crm calls',
+                'create crm emails',
+                'view crm emails',
+                'edit crm emails',
+                'delete crm emails',
                 'create crm meetings',
                 'view crm meetings',
                 'edit crm meetings',

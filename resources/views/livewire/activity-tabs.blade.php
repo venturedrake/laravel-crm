@@ -49,6 +49,13 @@
                 <livewire:crm-call-related :$model lazy />
             </div>
         </x-mary-tab>
+        @can('view crm emails')
+            <x-mary-tab name="emails" label="{{ ucfirst(__('laravel-crm::lang.emails')) }}">
+                <div>
+                    <livewire:crm-email-message-related :$model lazy />
+                </div>
+            </x-mary-tab>
+        @endcan
         <x-mary-tab name="meetings" label="{{ ucfirst(__('laravel-crm::lang.meetings')) }}">
             <div>
                 <livewire:crm-meeting-related :$model lazy />

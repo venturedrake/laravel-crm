@@ -15,7 +15,7 @@
     </x-mary-header>
 
     <x-mary-tabs wire:model.live="tab">
-        @foreach(['all' => 'all', 'notes' => 'notes', 'tasks' => 'tasks', 'calls' => 'calls', 'meetings' => 'meetings', 'lunches' => 'lunches', 'files' => 'files'] as $tabName => $langKey)
+        @foreach($this->tabs() as $tabName => $langKey)
             <x-mary-tab name="{{ $tabName }}" label="{{ ucfirst(__('laravel-crm::lang.' . $langKey)) }}">
                 @if($tab === $tabName)
                     <x-mary-card>
@@ -26,8 +26,8 @@
                             @endphp
 
                             <x-crm-timeline-item
-                                :title="($userName ? $userName . ' created a ' : 'Created a ') . ($activityType ?? 'activity')"
-                                :subtitle="$activity->created_at->format('m/d/Y h:i A')"
+                                :title="method_exists($activity->recordable, 'timelineTitle') ? ucfirst($activity->recordable->timelineTitle($userName)) : (($userName ? $userName . ' created a ' : 'Created a ') . ($activityType ?? 'activity'))"
+                                :subtitle="(method_exists($activity->recordable, 'timelineDate') ? $activity->recordable->timelineDate() : $activity->created_at)->format('m/d/Y h:i A')"
                                 :activity="$activity"
                                 :activityType="$activityType"
                                 :first="$loop->first"

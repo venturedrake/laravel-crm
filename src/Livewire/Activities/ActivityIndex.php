@@ -7,6 +7,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Activity;
+use VentureDrake\LaravelCrm\Models\EmailMessage;
 
 class ActivityIndex extends Component
 {
@@ -37,6 +38,12 @@ class ActivityIndex extends Component
             // lazy morph loads per activity without these.
             return Activity::with(['causeable', 'recordable'])
                 ->whereIn('id', $activityIds)
+                // Email entries carry correspondence: hide them from a user
+                // without the permission to view emails.
+                ->when(! auth()->user()?->can('viewAny', EmailMessage::class), fn ($query) => $query
+                    ->where(fn ($query) => $query
+                        ->whereNull('recordable_type')
+                        ->orWhere('recordable_type', '!=', (new EmailMessage)->getMorphClass())))
                 ->latest()
                 ->get();
         }

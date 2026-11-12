@@ -125,6 +125,8 @@ use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignCreate;
 use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignEdit;
 use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignIndex;
 use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\EmailCampaignShow;
+use VentureDrake\LaravelCrm\Livewire\EmailMessages\EmailMessageItem;
+use VentureDrake\LaravelCrm\Livewire\EmailMessages\EmailMessageRelated;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateCreate;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateEdit;
 use VentureDrake\LaravelCrm\Livewire\EmailTemplates\EmailTemplateIndex;
@@ -290,6 +292,7 @@ use VentureDrake\LaravelCrm\Models\DeliveryProduct;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\EmailCampaign;
 use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
+use VentureDrake\LaravelCrm\Models\EmailMessage;
 use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Models\Feature;
 use VentureDrake\LaravelCrm\Models\FeatureComment;
@@ -350,6 +353,7 @@ use VentureDrake\LaravelCrm\Observers\DeliveryObserver;
 use VentureDrake\LaravelCrm\Observers\DeliveryProductObserver;
 use VentureDrake\LaravelCrm\Observers\EmailCampaignObserver;
 use VentureDrake\LaravelCrm\Observers\EmailCampaignRecipientObserver;
+use VentureDrake\LaravelCrm\Observers\EmailMessageObserver;
 use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\EmailTemplateObserver;
 use VentureDrake\LaravelCrm\Observers\FeatureCommentObserver;
@@ -410,6 +414,7 @@ use VentureDrake\LaravelCrm\Policies\CustomerPolicy;
 use VentureDrake\LaravelCrm\Policies\DealPolicy;
 use VentureDrake\LaravelCrm\Policies\DeliveryPolicy;
 use VentureDrake\LaravelCrm\Policies\EmailCampaignPolicy;
+use VentureDrake\LaravelCrm\Policies\EmailMessagePolicy;
 use VentureDrake\LaravelCrm\Policies\EmailTemplatePolicy;
 use VentureDrake\LaravelCrm\Policies\FeaturePolicy;
 use VentureDrake\LaravelCrm\Policies\FieldGroupPolicy;
@@ -497,6 +502,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Note' => NotePolicy::class,
         'VentureDrake\LaravelCrm\Models\Activity' => ActivityPolicy::class,
         'VentureDrake\LaravelCrm\Models\Call' => CallPolicy::class,
+        'VentureDrake\LaravelCrm\Models\EmailMessage' => EmailMessagePolicy::class,
         'VentureDrake\LaravelCrm\Models\Meeting' => MeetingPolicy::class,
         'VentureDrake\LaravelCrm\Models\Lunch' => LunchPolicy::class,
         'VentureDrake\LaravelCrm\Models\File' => FilePolicy::class,
@@ -639,6 +645,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
             XeroToken::observe(XeroTokenObserver::class);
         }
         Call::observe(CallObserver::class);
+        EmailMessage::observe(EmailMessageObserver::class);
         Meeting::observe(MeetingObserver::class);
         Monitor::observe(MonitorObserver::class);
         MonitorCheck::observe(MonitorCheckObserver::class);
@@ -1110,6 +1117,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-note-related', NoteRelated::class);
         Livewire::component('crm-call-item', CallItem::class);
         Livewire::component('crm-call-related', CallRelated::class);
+        // The timeline mounts `crm-{lower-cased class name}-item`, hence no
+        // hyphen between "email" and "message" in the item's name.
+        Livewire::component('crm-emailmessage-item', EmailMessageItem::class);
+        Livewire::component('crm-email-message-related', EmailMessageRelated::class);
         Livewire::component('crm-meeting-item', MeetingItem::class);
         Livewire::component('crm-meeting-related', MeetingRelated::class);
         Livewire::component('crm-lunch-item', LunchItem::class);

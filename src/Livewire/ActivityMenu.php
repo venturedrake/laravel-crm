@@ -21,6 +21,11 @@ class ActivityMenu extends Component
         $this->dispatch('select-activity-tab', 'calls');
     }
 
+    public function addEmail()
+    {
+        $this->dispatch('select-activity-tab', 'emails');
+    }
+
     public function addMeeting()
     {
         $this->dispatch('select-activity-tab', 'meetings');

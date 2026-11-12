@@ -151,11 +151,15 @@ dataset('gated_blade_controls', [
     'lunch edit' => ['livewire/lunches/lunch-item.blade.php', "@can('edit crm lunches')", 'wire:click="edit"'],
     'lunch delete' => ['livewire/lunches/lunch-item.blade.php', "@can('delete crm lunches')", 'modalDeleteLunchItem'],
     'file delete' => ['livewire/files/file-item.blade.php', "@can('delete crm files')", 'modalDeleteFileItem'],
+    'email edit' => ['livewire/email-messages/email-message-item.blade.php', "@can('edit crm emails')", 'wire:click="edit"'],
+    'email delete' => ['livewire/email-messages/email-message-item.blade.php', "@can('delete crm emails')", 'modalDeleteEmailMessageItem'],
+    'email log button' => ['livewire/activity-menu.blade.php', "@can('create crm emails')", 'addEmail()'],
 
     // Sub-item inline edit form save buttons.
     'note save' => ['livewire/notes/note-item.blade.php', "@can('edit crm notes')", 'spinner="update"'],
     'task save' => ['livewire/tasks/task-item.blade.php', "@can('edit crm tasks')", 'spinner="update"'],
     'call save' => ['livewire/calls/call-item.blade.php', "@can('edit crm calls')", 'spinner="update"'],
+    'email save' => ['livewire/email-messages/email-message-item.blade.php', "@can('edit crm emails')", 'spinner="update"'],
     'meeting save' => ['livewire/meetings/meeting-item.blade.php', "@can('edit crm meetings')", 'spinner="update"'],
     'lunch save' => ['livewire/lunches/lunch-item.blade.php', "@can('edit crm lunches')", 'spinner="update"'],
 
@@ -163,6 +167,7 @@ dataset('gated_blade_controls', [
     'note related save' => ['livewire/notes/note-related.blade.php', "@can('create crm notes')", 'wire:submit="save"'],
     'task related save' => ['livewire/tasks/task-related.blade.php', "@can('create crm tasks')", 'wire:submit="save"'],
     'call related save' => ['livewire/calls/call-related.blade.php', "@can('create crm calls')", 'wire:submit="save"'],
+    'email related save' => ['livewire/email-messages/email-message-related.blade.php', "@can('create crm emails')", 'wire:submit="save"'],
     'meeting related save' => ['livewire/meetings/meeting-related.blade.php', "@can('create crm meetings')", 'wire:submit="save"'],
     'lunch related save' => ['livewire/lunches/lunch-related.blade.php', "@can('create crm lunches')", 'wire:submit="save"'],
     'file related upload' => ['livewire/files/file-related.blade.php', "@can('create crm files')", '@click="submit()"'],

@@ -386,6 +386,30 @@ class TestSchema
             $table->timestamps();
             $table->softDeletes();
         });
+        Schema::create($prefix.'email_messages', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id');
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->nullableMorphs('emailable');
+            $table->string('direction', 10)->default('outbound');
+            $table->string('source', 30)->default('manual');
+            $table->text('from_address')->nullable();
+            $table->text('from_name')->nullable();
+            $table->text('to')->nullable();
+            $table->text('cc')->nullable();
+            $table->text('subject')->nullable();
+            $table->longText('body_html')->nullable();
+            $table->longText('body_text')->nullable();
+            $table->text('attachment_names')->nullable();
+            $table->dateTime('sent_at')->nullable();
+            $table->unsignedBigInteger('user_owner_id')->nullable();
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
         Schema::create($prefix.'calls', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id')->nullable();

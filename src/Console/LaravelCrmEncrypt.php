@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Email;
+use VentureDrake\LaravelCrm\Models\EmailMessage;
 use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
@@ -66,6 +67,7 @@ class LaravelCrmEncrypt extends Command
             Phone::class,
             Address::class,
             Organization::class,
+            EmailMessage::class,
         ];
 
         foreach ($models as $model) {
