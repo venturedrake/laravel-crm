@@ -72,7 +72,7 @@
                     </div>
                     @foreach($organization->phones as $phone)
                         <div class="flex flex-row gap-5">
-                            <strong>{{ ucfirst($phone->type) }} {{ ucfirst(__('laravel-crm::lang.phone')) }}</strong>
+                            <strong>{{ ucfirst((string) $phone->type) }} {{ ucfirst(__('laravel-crm::lang.phone')) }}</strong>
                             <span>
                                 <a href="tel:{{ $phone->number }}">{{ $phone->number }}</a> {{ ($phone->primary) ? '(Primary)' : null }}
                             </span>
@@ -80,7 +80,7 @@
                     @endforeach
                     @foreach($organization->emails as $email)
                         <div class="flex flex-row gap-5">
-                            <strong>{{ ucfirst($email->type) }} {{ ucfirst(__('laravel-crm::lang.email')) }}</strong>
+                            <strong>{{ ucfirst((string) $email->type) }} {{ ucfirst(__('laravel-crm::lang.email')) }}</strong>
                             <span>
                                 <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> {{ ($email->primary) ? '(Primary)' : null }}
                             </span>
