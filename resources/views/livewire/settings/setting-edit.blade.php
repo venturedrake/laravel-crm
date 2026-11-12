@@ -125,6 +125,14 @@
                                     </x-slot:label>
                                 </x-mary-toggle>
                             </div>
+                            <x-mary-select
+                                wire:model="activityOrder"
+                                label="{{ ucfirst(__('laravel-crm::lang.list_activities_by')) }}"
+                                :hint="ucfirst(__('laravel-crm::lang.list_activities_by_hint'))"
+                                :options="[
+                                    ['id' => 'logged', 'name' => ucfirst(__('laravel-crm::lang.activity_order_logged'))],
+                                    ['id' => 'occurred', 'name' => ucfirst(__('laravel-crm::lang.activity_order_occurred'))],
+                                ]" />
                         </div>
                         <div>
                             <x-crm-phones :$phones :$phoneTypes />

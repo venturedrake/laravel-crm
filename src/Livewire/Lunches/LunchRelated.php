@@ -9,6 +9,7 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
 use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 
 class LunchRelated extends Component
 {
@@ -132,7 +133,7 @@ class LunchRelated extends Component
         }
 
         if (count($lunchIds) > 0) {
-            $this->lunches = Lunch::whereIn('id', $lunchIds)->latest()->get();
+            $this->lunches = ActivityOrder::applyToRecords(Lunch::whereIn('id', $lunchIds))->get();
         } else {
             $this->lunches = collect();
         }

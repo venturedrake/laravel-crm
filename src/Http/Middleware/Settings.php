@@ -201,6 +201,12 @@ class Settings
                 'value' => '0',
             ]);
 
+            Setting::firstOrCreate([
+                'name' => 'activity_order',
+            ], [
+                'value' => 'logged',
+            ]);
+
             // Seed a pending flag for every db_update the installed version has
             // reached. SystemCheckService::DB_UPDATES is the single source of
             // truth for the flag list and its version thresholds, so adding a

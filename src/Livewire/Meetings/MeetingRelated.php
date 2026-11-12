@@ -9,6 +9,7 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
 use VentureDrake\LaravelCrm\Models\Meeting;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 
 class MeetingRelated extends Component
 {
@@ -132,7 +133,7 @@ class MeetingRelated extends Component
         }
 
         if (count($meetingIds) > 0) {
-            $this->meetings = Meeting::whereIn('id', $meetingIds)->latest()->get();
+            $this->meetings = ActivityOrder::applyToRecords(Meeting::whereIn('id', $meetingIds))->get();
         } else {
             $this->meetings = collect();
         }
