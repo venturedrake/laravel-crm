@@ -6,7 +6,12 @@
                 $activityType = $activity->recordable_type ? strtolower(class_basename($activity->recordable_type)) : null;
             @endphp
 
-            <x-crm-timeline-item :title="($userName ? $userName . ' created a ' : 'Created a ') . ($activityType ?? 'activity')" :subtitle="$activity->created_at->format('m/d/Y h:i A')" :activity="$activity" :activityType="$activityType"  :first="$loop->first" :last="$loop->last" />
+            {{-- An activity type may word its own entry (timelineTitle) and say
+                 when it happened rather than when it was entered (timelineDate). --}}
+            <x-crm-timeline-item
+                :title="method_exists($activity->recordable, 'timelineTitle') ? ucfirst($activity->recordable->timelineTitle($userName)) : (($userName ? $userName . ' created a ' : 'Created a ') . ($activityType ?? 'activity'))"
+                :subtitle="(method_exists($activity->recordable, 'timelineDate') ? $activity->recordable->timelineDate() : $activity->created_at)->format('m/d/Y h:i A')"
+                :activity="$activity" :activityType="$activityType"  :first="$loop->first" :last="$loop->last" />
             
         @endforeach
     </x-mary-card>

@@ -239,6 +239,24 @@ WHERE l.converted_at IS NOT NULL
 
 Use your own table prefix if `db_table_prefix` isn't the default `crm_`.
 
+### Log email adds a table and four permissions
+
+Records get a **Log email** button (the envelope in the activity menu) and an **Emails** tab. It
+records emails a user types or pastes in; it sends and receives nothing.
+
+- **One new table**, `crm_email_messages`, created by `php artisan migrate` (or `laravelcrm:update`).
+  `down()` drops the table and the emails in it. No existing table changes.
+- **Four new permissions**: `create`, `view`, `edit` and `delete crm emails`. `laravelcrm:update`
+  seeds them and grants them to the default roles that hold the call permissions. With teams on,
+  it also runs `laravelcrm:permissions`. Until then nobody but an owner or admin sees the button
+  or the tab. Custom roles need the permissions added in Settings → Roles.
+- **Field encryption**: addresses, subject and body are encrypted when
+  `laravel-crm.encrypt_db_fields` is on. `laravelcrm:encrypt` and `laravelcrm:decrypt` now include
+  logged emails.
+- **Published views**: `activity-menu`, `activity-tabs`, `activities/activity-index` and
+  `activities/activity-feed` changed. A host with published copies of these will not show the
+  button or the tab until it re-publishes them.
+
 ## 2.6.0
 
 This minor release adds three groups of configuration keys: order form options, delivery options

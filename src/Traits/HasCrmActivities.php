@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Traits;
 
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
+use VentureDrake\LaravelCrm\Models\EmailMessage;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Meeting;
@@ -25,6 +26,15 @@ trait HasCrmActivities
     public function calls()
     {
         return $this->morphMany(Call::class, 'callable');
+    }
+
+    /**
+     * Emails logged against the record. Not emails(), which on a person or
+     * an organisation is the list of their email addresses.
+     */
+    public function emailMessages()
+    {
+        return $this->morphMany(EmailMessage::class, 'emailable');
     }
 
     public function meetings()
