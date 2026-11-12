@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Livewire\Meetings;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
@@ -18,6 +19,12 @@ class MeetingItem extends Component
     public bool $related = false;
 
     public bool $editing = false;
+
+    /**
+     * Whether the item is opened to its full details. Bound to the collapse
+     * widget, so it survives the list around the item being refreshed.
+     */
+    public bool $expanded = false;
 
     public string $name = '';
 
@@ -68,12 +75,27 @@ class MeetingItem extends Component
         $this->loadSelectedGuests();
 
         $this->editing = true;
+        $this->expanded = true;
     }
 
     public function cancel(): void
     {
         $this->hydrateFromRecord();
         $this->editing = false;
+    }
+
+    /**
+     * Another copy of this meeting on the page was changed (the same meeting is
+     * shown in its own tab and on the timeline): show what was saved. The
+     * record itself is re-read on every request; only the form fields need
+     * filling again, and not while they are being edited here.
+     */
+    #[On('meeting-updated.{meeting.id}')]
+    public function refreshFromRecord(): void
+    {
+        if (! $this->editing) {
+            $this->hydrateFromRecord();
+        }
     }
 
     public function update(): void
@@ -108,6 +130,7 @@ class MeetingItem extends Component
         }
 
         $this->dispatch('meeting-updated');
+        $this->dispatch('meeting-updated.'.$this->meeting->id);
         $this->dispatch('activity-logged');
 
         $this->success(ucfirst(trans('laravel-crm::lang.meeting_updated')));
