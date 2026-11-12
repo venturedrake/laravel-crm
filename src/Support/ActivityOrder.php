@@ -111,7 +111,7 @@ class ActivityOrder
         if (self::byOccurrence() && $activity->recordable) {
             foreach (self::OCCURRED_COLUMNS[get_class($activity->recordable)] ?? [] as $column) {
                 if ($activity->recordable->{$column}) {
-                    return Carbon::parse($activity->recordable->{$column});
+                    return $activity->recordable->{$column};
                 }
             }
         }
