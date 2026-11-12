@@ -22,6 +22,7 @@ use VentureDrake\LaravelCrm\Livewire\Meetings\MeetingRelated;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Meeting;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
@@ -77,7 +78,7 @@ it('returns at most the limit of matching people for a search', function (string
     seedPeople(CallRelated::GUEST_SEARCH_LIMIT + 5, 'Rosalind');
     Person::create(['first_name' => 'Someone', 'last_name' => 'Else']);
 
-    $options = Livewire::test($related, ['model' => Person::create(['first_name' => 'Parent'])])
+    $options = Livewire::test($related, ['model' => Organization::create(['name' => 'Parent'])])
         ->call('searchGuests', 'rosal')
         ->get('guestOptions');
 
@@ -92,7 +93,7 @@ it('matches a first and last name together', function (bool $encrypted) {
     $person = Person::create(['first_name' => 'Rosalind', 'last_name' => 'Franklin']);
     Person::create(['first_name' => 'Rosalind', 'last_name' => 'Other']);
 
-    Livewire::test(CallRelated::class, ['model' => Person::create(['first_name' => 'Parent'])])
+    Livewire::test(CallRelated::class, ['model' => Organization::create(['name' => 'Parent'])])
         ->call('searchGuests', 'rosalind fran')
         ->assertSet('guestOptions', [['id' => $person->id, 'name' => 'Rosalind Franklin']]);
 })->with('encryption');
@@ -101,7 +102,7 @@ it('returns nobody until something is typed', function (string $related, string 
     $this->actingAsUserWithPermissions(["create crm {$relation}"]);
     seedPeople(3);
 
-    Livewire::test($related, ['model' => Person::create(['first_name' => 'Parent'])])
+    Livewire::test($related, ['model' => Organization::create(['name' => 'Parent'])])
         ->assertSet('guestOptions', [])
         ->call('searchGuests', '')
         ->assertSet('guestOptions', [])
@@ -149,7 +150,7 @@ it('shows existing guests when editing and keeps them through a search', functio
 it('attaches a guest picked from a search', function (string $related, string $item, string $model, string $morph, string $relation) {
     $this->actingAsUserWithPermissions(["create crm {$relation}"]);
 
-    $parent = Person::create(['first_name' => 'Parent']);
+    $parent = Organization::create(['name' => 'Parent']);
     $guest = Person::create(['first_name' => 'Rosalind', 'last_name' => 'Franklin']);
 
     Livewire::test($related, ['model' => $parent])
@@ -163,7 +164,8 @@ it('attaches a guest picked from a search', function (string $related, string $i
         ->assertSet('guests', [])
         ->assertSet('guestOptions', []);
 
-    expect($parent->{$relation}()->first()->contacts()->pluck('entityable_id')->all())->toBe([$guest->id]);
+    // A call also links the team members on it, so look at the people only.
+    expect($parent->{$relation}()->first()->contacts()->where('entityable_type', $guest->getMorphClass())->pluck('entityable_id')->all())->toBe([$guest->id]);
 })->with('pickers');
 
 it('refuses a search from someone who could not open the form', function (string $related, string $item, string $model, string $morph, string $relation) {

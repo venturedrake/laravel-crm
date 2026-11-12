@@ -31,6 +31,7 @@ use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\Organization;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -289,7 +290,9 @@ it('treats a wildcard as text in the guest picker', function () {
     $this->actingAsUserWithPermissions(['create crm calls']);
     Person::create(['first_name' => 'Rosalind']);
 
-    Livewire::test(CallRelated::class, ['model' => Person::create(['first_name' => 'Parent'])])
+    // An organisation, because a call on a person page starts with that
+    // person as a guest and so always has one option.
+    Livewire::test(CallRelated::class, ['model' => Organization::create(['name' => 'Parent'])])
         ->call('searchGuests', '%')
         ->assertSet('guestOptions', []);
 });

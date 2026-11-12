@@ -395,6 +395,7 @@ class TestSchema
             $table->datetime('start_at')->nullable();
             $table->datetime('finish_at')->nullable();
             $table->string('location')->nullable();
+            $table->string('direction', 10)->default('outbound');
             $table->boolean('reminder_email')->default(false);
             $table->boolean('reminder_sms')->default(false);
             $table->nullableMorphs('callable');

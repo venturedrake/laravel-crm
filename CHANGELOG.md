@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Call direction and duration.** A call is logged as Called or Received, chosen on the call form and shown as a badge on the call. It is stored in a new `direction` column on the calls table (`outbound` / `inbound`); calls logged before this default to `outbound`. The call summary shows the start time without a label and the duration (minutes, or hours and minutes from an hour up) in place of the finish time. Requires `php artisan migrate`
+- **Team members on a call.** The call form has a Team members field beside Guests, listing CRM users and starting with the user logging the call, so a call can be logged for a colleague by swapping the names. Team members are shown on the call under the guests. They are stored like guests, as contact links on the call that point at a user, so no table or column is added; `Call::guests()`, `Call::teamMembers()`, `Call::syncGuests()` and `Call::syncTeamMembers()` keep the two kinds apart. Calls logged before this have no team members and display as before. Covered by `tests/Feature/Livewire/CallParticipantsTest.php`
+
+### Changed
+- **Add call starts with the person as a guest.** On a person page, and on a record with a linked person (lead, deal, quote, …), the Guests field is prefilled with that person, so the call says who it was with wherever it is shown, including the organisation's activity when "Show related contact activity" is on. The guest can be removed before saving. On an organisation page the field still starts empty
+
+### Fixed
+- Editing a call removed every participant link whose id was not among the chosen guests, whatever it pointed at. Guests are now matched on being people
+### Changed
+- **Activities are listed collapsed.** A note, task, call, meeting or lunch now shows a summary (subject, times, who it relates to; the first line for a note) in Mary's `x-mary-collapse` and opens to its details when clicked, in its own tab and on the timeline. The open state is a property of the item component, so an item stays open when the list around it refreshes, and the details are only rendered once it is opened. Editing an item opens it. Files are unchanged
+- **Delete moved to the edit form, behind a typed confirmation.** Delete is no longer in an activity's three-dot menu; it is a button on the edit form, to the left of Cancel. The confirmation dialog (`livewire/partials/activity-delete-confirm`) keeps its Delete button disabled until the word "confirm" is typed. `delete()` authorizes as before. A user who may delete but not edit an activity type can no longer reach Delete from the list
+- **A copy of an activity follows an edit made elsewhere on the page.** The same record is shown in its tab and on the timeline as two components, and the second kept showing the old values until reload. Saving now also dispatches `{type}-updated.{id}`, and each item listens under its own record's id, so only copies of that record refresh. Covered by `tests/Feature/Livewire/ActivityItemCollapseTest.php`
+
 - Documents
 - Calendar
 - Payments
