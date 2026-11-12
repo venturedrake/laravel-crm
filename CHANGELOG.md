@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Activities are listed collapsed.** A note, task, call, meeting or lunch now shows a summary (subject, times, who it relates to; the first line for a note) in Mary's `x-mary-collapse` and opens to its details when clicked, in its own tab and on the timeline. The open state is a property of the item component, so an item stays open when the list around it refreshes, and the details are only rendered once it is opened. Editing an item opens it. Files are unchanged
+- **Delete moved to the edit form, behind a typed confirmation.** Delete is no longer in an activity's three-dot menu; it is a button on the edit form, to the left of Cancel. The confirmation dialog (`livewire/partials/activity-delete-confirm`) keeps its Delete button disabled until the word "confirm" is typed. `delete()` authorizes as before. A user who may delete but not edit an activity type can no longer reach Delete from the list
+- **A copy of an activity follows an edit made elsewhere on the page.** The same record is shown in its tab and on the timeline as two components, and the second kept showing the old values until reload. Saving now also dispatches `{type}-updated.{id}`, and each item listens under its own record's id, so only copies of that record refresh. Covered by `tests/Feature/Livewire/ActivityItemCollapseTest.php`
+
 - Documents
 - Calendar
 - Payments

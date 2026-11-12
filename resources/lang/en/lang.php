@@ -540,6 +540,7 @@ return [
     'meetings' => 'meetings',
     'lunches' => 'lunches',
     'guests' => 'guests',
+    'type_confirm_to_delete' => 'type the word confirm to enable delete',
     'location' => 'location',
     'call_created' => 'call created',
     'call_updated' => 'call updated',
