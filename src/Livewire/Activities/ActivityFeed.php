@@ -13,6 +13,7 @@ use VentureDrake\LaravelCrm\Models\Lunch;
 use VentureDrake\LaravelCrm\Models\Meeting;
 use VentureDrake\LaravelCrm\Models\Note;
 use VentureDrake\LaravelCrm\Models\Task;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
 class ActivityFeed extends Component
@@ -47,7 +48,7 @@ class ActivityFeed extends Component
 
     protected function scopedQuery()
     {
-        $query = Activity::latest();
+        $query = ActivityOrder::applyToActivities(Activity::query());
 
         if ($this->scope === 'mine') {
             $query->where('causeable_id', auth()->id())

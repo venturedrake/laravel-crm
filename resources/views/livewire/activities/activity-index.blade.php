@@ -6,7 +6,7 @@
                 $activityType = $activity->recordable_type ? strtolower(class_basename($activity->recordable_type)) : null;
             @endphp
 
-            <x-crm-timeline-item :title="($userName ? $userName . ' created a ' : 'Created a ') . ($activityType ?? 'activity')" :subtitle="$activity->created_at->format('m/d/Y h:i A')" :activity="$activity" :activityType="$activityType"  :first="$loop->first" :last="$loop->last" />
+            <x-crm-timeline-item :title="($userName ? $userName . ' created a ' : 'Created a ') . ($activityType ?? 'activity')" :subtitle="\VentureDrake\LaravelCrm\Support\ActivityOrder::dateFor($activity)->format('m/d/Y h:i A')" :activity="$activity" :activityType="$activityType"  :first="$loop->first" :last="$loop->last" />
             
         @endforeach
     </x-mary-card>
