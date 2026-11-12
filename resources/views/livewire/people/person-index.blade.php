@@ -86,6 +86,9 @@
         <div class="grid gap-5" @keydown.enter="$wire.showFilters = false">
             <x-mary-choices label="Owner" wire:model.live="user_id" :options="$users" icon="o-user" inline searchable search-function="searchUsers" clearable />
             <x-mary-choices label="Label" wire:model.live="label_id" :options="$labels" icon="o-tag" inline allow-all />
+            @if($positionsEnabled)
+                <x-mary-input label="{{ ucwords(__('laravel-crm::lang.position_title')) }}" wire:model.live.debounce="position_title" icon="fas.briefcase" inline clearable />
+            @endif
         </div>
 
         {{-- ACTIONS --}}

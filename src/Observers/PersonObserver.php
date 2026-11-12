@@ -4,6 +4,8 @@ namespace VentureDrake\LaravelCrm\Observers;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Services\PositionService;
+use VentureDrake\LaravelCrm\Support\Modules;
 
 class PersonObserver
 {
@@ -54,7 +56,10 @@ class PersonObserver
      */
     public function updated(Person $person)
     {
-        //
+        // Leaving an organisation ends the positions held there.
+        if (Modules::enabled('positions') && $person->wasChanged('organization_id') && $person->getOriginal('organization_id')) {
+            app(PositionService::class)->endForPerson($person->id, (int) $person->getOriginal('organization_id'));
+        }
     }
 
     /**
@@ -79,7 +84,10 @@ class PersonObserver
      */
     public function deleted(Person $person)
     {
-        //
+        // A deleted person's positions go with them.
+        if (Modules::enabled('positions')) {
+            app(PositionService::class)->deleteFor($person);
+        }
     }
 
     /**
@@ -112,6 +120,8 @@ class PersonObserver
      */
     public function forceDeleted(Person $person)
     {
-        //
+        if (Modules::enabled('positions')) {
+            app(PositionService::class)->deleteFor($person, true);
+        }
     }
 }

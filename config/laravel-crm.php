@@ -221,6 +221,7 @@ return [
         'sms-marketing',
         'features',
         'monitoring',
+        'positions',
     ],
 
     /*

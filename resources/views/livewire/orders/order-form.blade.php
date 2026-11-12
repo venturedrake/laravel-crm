@@ -37,6 +37,11 @@
                                     <x-slot:value>
                                         {{ $person->name }}
                                     </x-slot:value>
+                                    @if($person->current_position_title)
+                                        <x-slot:sub-value>
+                                            {{ $person->current_position_title }}
+                                        </x-slot:sub-value>
+                                    @endif
                                 </x-mary-list-item>
                             @endforeach
                         </div>

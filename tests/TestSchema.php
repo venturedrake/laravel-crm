@@ -386,6 +386,24 @@ class TestSchema
             $table->timestamps();
             $table->softDeletes();
         });
+        Schema::create($prefix.'positions', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('external_id')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('person_id');
+            $table->unsignedBigInteger('organization_id');
+            $table->string('title');
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->text('description')->nullable();
+            $table->unsignedBigInteger('user_created_id')->nullable();
+            $table->unsignedBigInteger('user_updated_id')->nullable();
+            $table->unsignedBigInteger('user_deleted_id')->nullable();
+            $table->unsignedBigInteger('user_restored_id')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create($prefix.'calls', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id')->nullable();

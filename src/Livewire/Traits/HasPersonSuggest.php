@@ -4,6 +4,7 @@ namespace VentureDrake\LaravelCrm\Livewire\Traits;
 
 use Illuminate\Support\Facades\DB;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Support\Modules;
 
 trait HasPersonSuggest
 {
@@ -39,6 +40,11 @@ trait HasPersonSuggest
                     })
                     ->limit(10)
                     ->get();
+            }
+
+            // The pickers show each person's current position under their name.
+            if (Modules::enabled('positions')) {
+                $this->people->load('currentPositions');
             }
 
             $this->showPeople = $this->people->isNotEmpty();

@@ -40,7 +40,9 @@ The API ships with the package; you only need to wire Sanctum into the host appl
 
    You should see 8 resourceful entities (`leads`, `products`, `organizations`, `people`, `deals`,
    `quotes`, `orders`, `invoices`) × 5 verbs each, the 5 nested
-   [product variation](#product-variations) routes (`products/{product}/variations`), plus 3
+   [product variation](#product-variations) routes (`products/{product}/variations`), the 10
+   nested [position](#positions) routes (`people/{person}/positions` and
+   `organizations/{organization}/positions`), plus 3
    auth routes (`POST auth/token`, `GET auth/me`, `DELETE auth/token`).
 
 4. **Issue a token via the ops command** (no controller round-trip required):
@@ -173,7 +175,7 @@ The `{uuid}` in URIs is the entity's `external_id` (UUID), exposed as `id` in JS
 | Lead | `/crm/api/v2/leads` | `title`, `description`, `amount`, `currency`, `expected_close`, `person_id`, `organization_id`, `lead_source_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
 | Product | `/crm/api/v2/products` | `name`, `code`, `description`, `unit_price`, `currency`, `tax_rate`, `tax_rate_id`, `product_category_id`, `active`, `user_owner_id`; responses also carry `variations[]` (read-only here — see [Product variations](#product-variations)) |
 | Organization | `/crm/api/v2/organizations` | `name`, `website`, `email`, `phone`, `annual_revenue`, `total_money_raised`, `number_of_employees`, `industry_id`, `organization_type_id`, `timezone_id`, `labels[]`, `user_owner_id` |
-| Person | `/crm/api/v2/people` | `first_name`, `last_name`, `gender`, `birthday`, `description`, `organization_id`, `labels[]`, `user_owner_id` |
+| Person | `/crm/api/v2/people` | `first_name`, `last_name`, `gender`, `birthday`, `description`, `organization_id`, `labels[]`, `user_owner_id`; responses also carry `current_positions[]` when the positions module is enabled (read-only here — see [Positions](#positions)) |
 | Deal | `/crm/api/v2/deals` | `title`, `description`, `amount`, `currency`, `expected_close`, `lead_id`, `person_id`, `organization_id`, `pipeline_stage_id`, `labels[]`, `user_owner_id` |
 | Quote | `/crm/api/v2/quotes` | `title`, `description`, `reference`, `issue_at`, `expire_at`, `currency`, `terms`, `discount`, `tax`, `adjustments`, `person_id`, `organization_id`, `lead_id`, `pipeline_stage_id`, `labels[]`, `line_items[]` |
 | Order | `/crm/api/v2/orders` | `reference`, `description`, `currency`, `terms`, `discount`, `tax`, `adjustments`, `person_id`, `organization_id`, `labels[]`, `line_items[]` |
@@ -311,6 +313,84 @@ product price.
 
 **Product writes leave variations alone.** `POST` / `PUT` on `/products` neither accepts nor
 changes variations; use the sub-resource above.
+
+### Positions
+
+A position is a job a person holds at an organisation: a title, a start date and an end date
+(empty while the position is current). Positions are a sub-resource of both the person and
+the organisation. `{parent}` below is `people/{person}` or `organizations/{organization}`;
+the two expose the same records.
+
+| Method | Path | Permission | Notes |
+|---|---|---|---|
+| `GET` | `/crm/api/v2/{parent}/positions` | `view crm people` | Current and past positions, newest first. Not paginated. `?current=1` returns current ones only, `?current=0` past ones only. |
+| `POST` | `/crm/api/v2/{parent}/positions` | `edit crm people` | Create. `201`. |
+| `GET` | `/crm/api/v2/{parent}/positions/{position}` | `view crm people` | Show. |
+| `PUT` / `PATCH` | `/crm/api/v2/{parent}/positions/{position}` | `edit crm people` | Update. Only the fields sent change. |
+| `DELETE` | `/crm/api/v2/{parent}/positions/{position}` | `edit crm people` | Soft-delete. `204`. |
+
+There are no position permissions: positions use the people permissions above, and every
+request also needs `view` on the parent in the URL (`view crm organizations` under an
+organisation). All ids are UUIDs. The position is looked up **within** the URL's parent, so
+a position of another person or organisation — or a deleted one — is a `404`.
+
+**Optional module.** Positions is the `positions` entry in `config('laravel-crm.modules')`.
+While it is disabled every route above answers `403`, `current_positions` is left out of
+person responses, and no request changes a position.
+
+**Fields:**
+
+| Field | Rules | Notes |
+|---|---|---|
+| `title` | required on `POST`; string, max 255 | Trimmed. Stored unencrypted. |
+| `start_date` | nullable date | Defaults to today on `POST`. |
+| `end_date` | nullable date, not before `start_date` | Empty while current. On `PUT`, sending `null` makes the position current again. |
+| `description` | nullable string | |
+| `organization_id` | UUID; `POST` under a person only | Defaults to the person's own organisation; required when they have none. Any organisation is accepted. |
+| `person_id` | UUID, required; `POST` under an organisation only | Must be an existing person. |
+| `end_conflicting` | boolean; `POST` only | Defaults to `true`. See below. |
+
+A position stays with its person and organisation: `person_id` and `organization_id` are
+rejected on `PUT`.
+
+**Linking the person and the organisation.** Creating a current position links the two, as
+the Related organisations and Related people panels do, unless they are linked already. It
+also sets the person's `organization_id` when they have none; a person who already belongs to
+another organisation keeps it. Ending or deleting a position removes no link, and a position
+created already ended adds none.
+
+**Automatic end dates.** Creating a position ends, with the new position's `start_date`:
+
+- the same person's other current positions at that organisation (they changed position), and
+- current positions at that organisation with the same title, ignoring case and surrounding
+  spaces, held by someone else (the position changed hands).
+
+Send `"end_conflicting": false` to keep them all open — for a title several people hold, or a
+second position for the same person. To end only some, send `false` and then set `end_date`
+on the others. Changing a person's `organization_id` through `PUT /people/{uuid}` ends their
+current positions at the organisation they left.
+
+**Response:**
+
+```json
+{
+  "data": {
+    "id": "c41d...position-uuid",
+    "title": "CFO",
+    "start_date": "2026-11-10",
+    "end_date": null,
+    "current": true,
+    "description": null,
+    "person": { "id": "9f2a...person-uuid", "first_name": "Casey", "last_name": "Nguyen" },
+    "organization": { "id": "3e7b...organization-uuid", "name": "JumpSkipAreo" },
+    "created_at": "2026-11-10T09:00:00+00:00",
+    "updated_at": "2026-11-10T09:00:00+00:00"
+  }
+}
+```
+
+`GET /people` and `GET /people/{uuid}` return the person's current positions in the same
+shape, without `person`, in a `current_positions` array.
 
 ### Nested line items (Quote / Order / Invoice)
 

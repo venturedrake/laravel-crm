@@ -207,6 +207,7 @@ use VentureDrake\LaravelCrm\Livewire\Quotes\QuoteShow;
 use VentureDrake\LaravelCrm\Livewire\RelatedDeals;
 use VentureDrake\LaravelCrm\Livewire\RelatedOrganizations;
 use VentureDrake\LaravelCrm\Livewire\RelatedPeople;
+use VentureDrake\LaravelCrm\Livewire\RelatedPositions;
 use VentureDrake\LaravelCrm\Livewire\Settings\ChatWidgets\ChatWidgetEdit;
 use VentureDrake\LaravelCrm\Livewire\Settings\ChatWidgets\ChatWidgetIndex;
 use VentureDrake\LaravelCrm\Livewire\Settings\ChatWidgets\ChatWidgetShow;
@@ -319,6 +320,7 @@ use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Models\PipelineStageProbability;
+use VentureDrake\LaravelCrm\Models\Position;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductPrice;
 use VentureDrake\LaravelCrm\Models\ProductVariation;
@@ -380,6 +382,7 @@ use VentureDrake\LaravelCrm\Observers\PhoneObserver;
 use VentureDrake\LaravelCrm\Observers\PipelineObserver;
 use VentureDrake\LaravelCrm\Observers\PipelineStageObserver;
 use VentureDrake\LaravelCrm\Observers\PipelineStageProbabilityObserver;
+use VentureDrake\LaravelCrm\Observers\PositionObserver;
 use VentureDrake\LaravelCrm\Observers\ProductObserver;
 use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
 use VentureDrake\LaravelCrm\Observers\ProductVariationObserver;
@@ -431,6 +434,7 @@ use VentureDrake\LaravelCrm\Policies\PermissionPolicy;
 use VentureDrake\LaravelCrm\Policies\PersonPolicy;
 use VentureDrake\LaravelCrm\Policies\PipelinePolicy;
 use VentureDrake\LaravelCrm\Policies\PipelineStagePolicy;
+use VentureDrake\LaravelCrm\Policies\PositionPolicy;
 use VentureDrake\LaravelCrm\Policies\ProductCategoryPolicy;
 use VentureDrake\LaravelCrm\Policies\ProductPolicy;
 use VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy;
@@ -487,6 +491,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\Person' => PersonPolicy::class,
         'VentureDrake\LaravelCrm\Models\Organization' => OrganizationPolicy::class,
         'VentureDrake\LaravelCrm\Models\Contact' => ContactPolicy::class,
+        'VentureDrake\LaravelCrm\Models\Position' => PositionPolicy::class,
         'VentureDrake\LaravelCrm\Models\Product' => ProductPolicy::class,
         'VentureDrake\LaravelCrm\Models\ProductCategory' => ProductCategoryPolicy::class,
         'VentureDrake\LaravelCrm\Models\TaxRate' => TaxRatePolicy::class,
@@ -628,6 +633,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Note::observe(NoteObserver::class);
         File::observe(FileObserver::class);
         Contact::observe(ContactObserver::class);
+        Position::observe(PositionObserver::class);
         XeroItem::observe(XeroItemObserver::class);
         XeroContact::observe(XeroContactObserver::class);
         XeroPerson::observe(XeroPersonObserver::class);
@@ -1122,6 +1128,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('crm-model-addresses', ModelAddresses::class);
         Livewire::component('crm-model-products', ModelProducts::class);
         Livewire::component('crm-related-people', RelatedPeople::class);
+        Livewire::component('crm-related-positions', RelatedPositions::class);
         Livewire::component('crm-related-organizations', RelatedOrganizations::class);
         Livewire::component('crm-related-deals', RelatedDeals::class);
 
@@ -1256,6 +1263,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Blade::if('hassmsmarketingenabled', fn () => Modules::enabled('sms-marketing'));
 
         Blade::if('hasmonitoringenabled', fn () => Modules::enabled('monitoring'));
+
+        Blade::if('haspositionsenabled', fn () => Modules::enabled('positions'));
     }
 
     /**

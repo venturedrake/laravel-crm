@@ -14,6 +14,7 @@ use VentureDrake\LaravelCrm\Livewire\Traits\HasUserOwnerFilter;
 use VentureDrake\LaravelCrm\Livewire\Traits\SearchesEncryptableContacts;
 use VentureDrake\LaravelCrm\Models\Label;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Support\Modules;
 use VentureDrake\LaravelCrm\Traits\ClearsProperties;
 use VentureDrake\LaravelCrm\Traits\ResetsPaginationWhenPropsChanges;
 
@@ -32,6 +33,10 @@ class PersonIndex extends Component
     #[Url]
     public ?array $label_id = [];
 
+    /** Filter: people whose current position title contains this text. */
+    #[Url]
+    public string $position_title = '';
+
     #[Url]
     public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
 
@@ -39,7 +44,7 @@ class PersonIndex extends Component
 
     public function filterCount(): int
     {
-        return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0);
+        return (count($this->user_id) > 0 ? 1 : 0) + ($this->label_id ? 1 : 0) + ($this->positionsEnabled() && trim($this->position_title) !== '' ? 1 : 0);
     }
 
     /**
@@ -55,10 +60,16 @@ class PersonIndex extends Component
         return Label::select('id', 'name')->get();
     }
 
+    public function positionsEnabled(): bool
+    {
+        return Modules::enabled('positions');
+    }
+
     public function headers()
     {
         return [
             ['key' => 'name', 'label' => ucfirst(__('laravel-crm::lang.name'))],
+            ...($this->positionsEnabled() ? [['key' => 'current_position_title', 'label' => ucfirst(__('laravel-crm::lang.position')), 'sortable' => false]] : []),
             ['key' => 'labels', 'label' => ucfirst(__('laravel-crm::lang.labels')), 'format' => fn ($row, $field) => $field, 'sortable' => false],
             ['key' => 'email', 'label' => ucfirst(__('laravel-crm::lang.email')), 'sortable' => false],
             ['key' => 'phone', 'label' => ucfirst(__('laravel-crm::lang.phone')), 'sortable' => false],
@@ -85,7 +96,10 @@ class PersonIndex extends Component
         // the ID resolution SearchesEncryptableContacts does — that one walks
         // the whole people table to decrypt names, and relations on it would be
         // loaded for every row in the database rather than for the 25 shown.
-        return Person::with(['labels', 'ownerUser', 'primaryEmail', 'primaryPhone'])
+        $positions = $this->positionsEnabled();
+        $positionTitle = $positions ? trim($this->position_title) : '';
+
+        return Person::with(['labels', 'ownerUser', 'primaryEmail', 'primaryPhone', ...($positions ? ['currentPositions'] : [])])
             ->withCount([
                 'deals as open_deals_count' => fn ($q) => $q->whereNull('closed_at'),
                 'deals as lost_deals_count' => fn ($q) => $q->where('closed_status', 'lost'),
@@ -93,22 +107,38 @@ class PersonIndex extends Component
                 // Back deleteWarning() in each row's delete dialog.
                 'leads', 'deals', 'quotes', 'orders', 'invoices', 'purchaseOrders',
             ])
-            ->when($this->search, function (Builder $q) {
+            ->when($this->search, function (Builder $q) use ($positions) {
                 $prefix = config('laravel-crm.db_table_prefix');
                 $term = $this->search;
+
+                // A current position title also matches, so "CFO" finds the
+                // person without knowing their name. Titles are never
+                // encrypted, so this half is plain SQL either way.
+                $byPosition = fn (Builder $q) => $q->where('title', 'like', "%$term%");
 
                 if ($this->encryptionEnabled()) {
                     // Names are stored encrypted; resolve matching IDs in PHP.
                     $ids = $this->matchingPersonIds($term);
-                    $q->whereIn($prefix.'people.id', $ids->isEmpty() ? [0] : $ids);
+                    $q->where(function ($q) use ($prefix, $ids, $positions, $byPosition) {
+                        $q->whereIn($prefix.'people.id', $ids->isEmpty() ? [0] : $ids);
+
+                        if ($positions) {
+                            $q->orWhereHas('currentPositions', $byPosition);
+                        }
+                    });
                 } else {
-                    $q->where(function ($q) use ($prefix, $term) {
+                    $q->where(function ($q) use ($prefix, $term, $positions, $byPosition) {
                         $q->orWhere($prefix.'people.first_name', 'like', "%$term%")
                             ->orWhere($prefix.'people.last_name', 'like', "%$term%")
                             ->orWhereRaw('CONCAT('.$prefix."people.first_name, ' ', ".$prefix.'people.last_name) like ?', ["%$term%"]);
+
+                        if ($positions) {
+                            $q->orWhereHas('currentPositions', $byPosition);
+                        }
                     });
                 }
             })
+            ->when($positionTitle !== '', fn (Builder $q) => $q->whereHas('currentPositions', fn (Builder $q) => $q->where('title', 'like', "%$positionTitle%")))
             ->when($this->user_id, fn (Builder $q) => $q->whereIn('user_owner_id', $this->user_id))
             ->when($this->label_id, fn (Builder $q) => $q->whereHas('labels', fn (Builder $q) => $q->whereIn(config('laravel-crm.db_table_prefix').'labels.id', $this->label_id)))
             ->orderBy($sortColumn, $sortDirection)
@@ -134,6 +164,7 @@ class PersonIndex extends Component
             'filterCount' => $this->filterCount(),
             'headers' => $this->headers(),
             'people' => $this->people(),
+            'positionsEnabled' => $this->positionsEnabled(),
         ]);
     }
 }
