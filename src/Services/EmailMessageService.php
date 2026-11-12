@@ -107,13 +107,7 @@ class EmailMessageService
      */
     protected function attributes(array $data): array
     {
-        $attributes = [];
-
-        foreach (['from_address', 'from_name', 'to', 'cc', 'subject', 'attachment_names'] as $key) {
-            if (array_key_exists($key, $data)) {
-                $attributes[$key] = trim((string) $data[$key]) !== '' ? trim((string) $data[$key]) : null;
-            }
-        }
+        $attributes = $this->textAttributes($data);
 
         if (array_key_exists('direction', $data)) {
             $attributes['direction'] = $data['direction'] === EmailMessage::INBOUND ? EmailMessage::INBOUND : EmailMessage::OUTBOUND;
@@ -128,6 +122,26 @@ class EmailMessageService
 
         if (array_key_exists('sent_at', $data)) {
             $attributes['sent_at'] = $data['sent_at'] ? Carbon::parse(str_replace('T', ' ', (string) $data['sent_at'])) : now();
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * The plain text fields that were given, trimmed, with an empty one as null.
+     *
+     * @return array<string, ?string>
+     */
+    protected function textAttributes(array $data): array
+    {
+        $attributes = [];
+
+        foreach (['from_address', 'from_name', 'to', 'cc', 'subject', 'attachment_names'] as $key) {
+            if (array_key_exists($key, $data)) {
+                $value = trim((string) $data[$key]);
+
+                $attributes[$key] = $value !== '' ? $value : null;
+            }
         }
 
         return $attributes;

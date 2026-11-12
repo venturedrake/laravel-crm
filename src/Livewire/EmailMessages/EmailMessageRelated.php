@@ -154,43 +154,14 @@ class EmailMessageRelated extends Component
             return;
         }
 
-        $ids = $this->model->emailMessages()->pluck('id')->all();
+        $ids = $this->ownEmailIds();
         $relatedIds = [];
 
-        // Emails logged elsewhere that name this record among the people involved.
-        if (method_exists($this->model, 'getMorphClass')) {
-            $linked = EmailMessage::whereHas('contacts', fn ($query) => $query
-                ->where('entityable_type', $this->model->getMorphClass())
-                ->where('entityable_id', $this->model->getKey()))->pluck('id')->all();
+        foreach ($this->relatedRecords() as $record) {
+            $new = array_diff($record->emailMessages()->pluck('id')->all(), $ids);
 
-            $ids = array_merge($ids, $linked);
-        }
-
-        if (app('laravel-crm.settings')->get('show_related_activity') == 1) {
-            $related = [];
-
-            if (method_exists($this->model, 'contacts')) {
-                foreach ($this->model->contacts as $contact) {
-                    if ($contact->entityable && method_exists($contact->entityable, 'emailMessages')) {
-                        $related[] = $contact->entityable;
-                    }
-                }
-            }
-
-            foreach (['organization', 'person'] as $relation) {
-                if (method_exists($this->model, $relation) && $this->model->{$relation}) {
-                    $related[] = $this->model->{$relation};
-                }
-            }
-
-            foreach ($related as $record) {
-                foreach ($record->emailMessages()->pluck('id') as $id) {
-                    if (! in_array($id, $ids)) {
-                        $ids[] = $id;
-                        $relatedIds[] = $id;
-                    }
-                }
-            }
+            $ids = array_merge($ids, $new);
+            $relatedIds = array_merge($relatedIds, $new);
         }
 
         if ($ids === []) {
@@ -209,6 +180,58 @@ class EmailMessageRelated extends Component
                     || (int) $emailMessage->emailable_id !== (int) $this->model->getKey(),
             ];
         }
+    }
+
+    /**
+     * Emails logged against this record, and emails logged elsewhere that
+     * name this record among the people involved.
+     *
+     * @return array<int, int>
+     */
+    protected function ownEmailIds(): array
+    {
+        $ids = $this->model->emailMessages()->pluck('id')->all();
+
+        if (! method_exists($this->model, 'getMorphClass')) {
+            return $ids;
+        }
+
+        $linked = EmailMessage::whereHas('contacts', fn ($query) => $query
+            ->where('entityable_type', $this->model->getMorphClass())
+            ->where('entityable_id', $this->model->getKey()))->pluck('id')->all();
+
+        return array_merge($ids, $linked);
+    }
+
+    /**
+     * The records whose emails are shown here as related activity: this
+     * record's contacts, organisation and person. None when the setting is off.
+     *
+     * @return array<int, object>
+     */
+    protected function relatedRecords(): array
+    {
+        if (app('laravel-crm.settings')->get('show_related_activity') != 1) {
+            return [];
+        }
+
+        $related = [];
+
+        if (method_exists($this->model, 'contacts')) {
+            foreach ($this->model->contacts as $contact) {
+                if ($contact->entityable && method_exists($contact->entityable, 'emailMessages')) {
+                    $related[] = $contact->entityable;
+                }
+            }
+        }
+
+        foreach (['organization', 'person'] as $relation) {
+            if (method_exists($this->model, $relation) && $this->model->{$relation}) {
+                $related[] = $this->model->{$relation};
+            }
+        }
+
+        return $related;
     }
 
     /**

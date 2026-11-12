@@ -60,12 +60,6 @@ it('words the timeline entry by direction and dates it when the email was sent',
         ->and($sent->timelineDate()->format('Y-m-d H:i'))->toBe('2026-11-10 10:15');
 });
 
-it('names the other party by direction', function () {
-    expect(logEmail(['to' => 'Sam Lee <sam@example.org>, pat@example.org'])->otherParty())->toBe('Sam Lee <sam@example.org>, pat@example.org')
-        ->and(logEmail(['direction' => 'inbound', 'from_address' => 'sam@example.org', 'from_name' => 'Sam Lee'])->otherParty())->toBe('Sam Lee <sam@example.org>')
-        ->and(logEmail(['direction' => 'inbound', 'from_address' => 'sam@example.org'])->otherParty())->toBe('sam@example.org');
-});
-
 it('links other people involved and shows the email on their timelines', function () {
     $pat = Person::create(['first_name' => 'Pat']);
     $kim = Person::create(['first_name' => 'Kim']);

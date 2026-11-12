@@ -149,16 +149,9 @@ class EmailHtmlSanitizer
                 continue;
             }
 
-            if (! $child instanceof DOMElement) {
-                // Comments, processing instructions, CDATA.
-                $node->removeChild($child);
-
-                continue;
-            }
-
-            $tag = strtolower($child->nodeName);
-
-            if (in_array($tag, self::DROPPED, true)) {
+            // Comments, processing instructions, CDATA - and tags that are
+            // dropped along with everything inside them.
+            if (! $child instanceof DOMElement || in_array(strtolower($child->nodeName), self::DROPPED, true)) {
                 $node->removeChild($child);
 
                 continue;
@@ -166,28 +159,45 @@ class EmailHtmlSanitizer
 
             $this->cleanChildren($child);
 
-            if (! in_array($tag, self::ALLOWED, true)) {
-                // Unknown wrapper: keep what is inside it, drop the tag.
-                while ($child->firstChild) {
-                    $node->insertBefore($child->firstChild, $child);
-                }
-
-                $node->removeChild($child);
+            if (in_array(strtolower($child->nodeName), self::ALLOWED, true)) {
+                $this->resetAttributes($child);
 
                 continue;
             }
 
-            $href = $tag === 'a' ? trim($child->getAttribute('href')) : '';
+            $this->unwrap($child);
+        }
+    }
 
-            foreach (iterator_to_array($child->attributes) as $attribute) {
-                $child->removeAttribute($attribute->nodeName);
-            }
+    /**
+     * Unknown wrapper: keep what is inside it, drop the tag.
+     */
+    protected function unwrap(DOMElement $element): void
+    {
+        while ($element->firstChild) {
+            $element->parentNode->insertBefore($element->firstChild, $element);
+        }
 
-            if ($tag === 'a' && preg_match('/^(https?:|mailto:)/i', $href)) {
-                $child->setAttribute('href', $href);
-                $child->setAttribute('target', '_blank');
-                $child->setAttribute('rel', 'noopener noreferrer nofollow');
-            }
+        $element->parentNode->removeChild($element);
+    }
+
+    /**
+     * Strip every attribute. A link keeps a safe address and is made to open
+     * in a new tab without passing the page along.
+     */
+    protected function resetAttributes(DOMElement $element): void
+    {
+        $isLink = strtolower($element->nodeName) === 'a';
+        $href = $isLink ? trim($element->getAttribute('href')) : '';
+
+        foreach (iterator_to_array($element->attributes) as $attribute) {
+            $element->removeAttribute($attribute->nodeName);
+        }
+
+        if ($isLink && preg_match('/^(https?:|mailto:)/i', $href)) {
+            $element->setAttribute('href', $href);
+            $element->setAttribute('target', '_blank');
+            $element->setAttribute('rel', 'noopener noreferrer nofollow');
         }
     }
 }

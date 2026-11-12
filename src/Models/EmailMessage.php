@@ -78,23 +78,6 @@ class EmailMessage extends Model
     }
 
     /**
-     * Who the email was exchanged with: the recipients of a sent email, the
-     * sender of a received one.
-     */
-    public function otherParty(): ?string
-    {
-        if ($this->isOutbound()) {
-            return $this->to ?: null;
-        }
-
-        if ($this->from_name && $this->from_address) {
-            return $this->from_name.' <'.$this->from_address.'>';
-        }
-
-        return ($this->from_name ?: $this->from_address) ?: null;
-    }
-
-    /**
      * The timeline title, in place of the generic "{user} created a {type}".
      */
     public function timelineTitle(?string $userName = null): string

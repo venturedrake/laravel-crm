@@ -39,55 +39,7 @@ class PastedEmailParser
     {
         $lines = preg_split('/\R/u', str_replace("\u{00A0}", ' ', (string) $text));
 
-        $fields = [];
-        $current = null;
-        $bodyStart = null;
-
-        foreach ($lines as $index => $line) {
-            $trimmed = trim($line);
-
-            // Skip blank lines and the "-----Original Message-----" style
-            // rule before the block starts.
-            if ($fields === [] && ($trimmed === '' || preg_match('/^[-_=]{3,}.*$/', $trimmed))) {
-                continue;
-            }
-
-            if (preg_match('/^(from|sent|date|to|cc|subject|attachments)\s*:\s*(.*)$/i', $trimmed, $match)) {
-                $current = self::LABELS[strtolower($match[1])];
-                $fields[$current] ??= trim($match[2]);
-
-                continue;
-            }
-
-            // A blank line ends the block, unless another header follows it:
-            // the block Outlook puts above a reply has each header in its
-            // own paragraph, which pastes with a blank line between them.
-            if ($trimmed === '') {
-                if ($this->headerFollows($lines, $index + 1)) {
-                    continue;
-                }
-
-                $bodyStart = $index + 1;
-
-                break;
-            }
-
-            // A wrapped header value continues on the next line.
-            if ($current !== null && $fields !== [] && preg_match('/^\s+\S/', $line)) {
-                $fields[$current] = trim($fields[$current].' '.$trimmed);
-
-                continue;
-            }
-
-            // Anything else before a header was found means there is no block.
-            if ($fields === []) {
-                return null;
-            }
-
-            $bodyStart = $index;
-
-            break;
-        }
+        [$fields, $bodyStart] = $this->readHeaderBlock($lines);
 
         // A block needs a sender and at least one of the other headers,
         // otherwise a body that happens to start with "To: …" would match.
@@ -107,6 +59,67 @@ class PastedEmailParser
             'attachment_names' => $this->addressList($fields['attachment_names'] ?? null),
             'body' => trim(implode("\n", $bodyStart === null ? [] : array_slice($lines, $bodyStart))),
         ];
+    }
+
+    /**
+     * Read the headers from the top of the text.
+     *
+     * @param  array<int, string>  $lines
+     * @return array{0: array<string, string>, 1: ?int} the headers found, and the line the body starts on
+     */
+    protected function readHeaderBlock(array $lines): array
+    {
+        $fields = [];
+        $current = null;
+
+        foreach ($lines as $index => $line) {
+            $trimmed = trim($line);
+
+            if (preg_match('/^(from|sent|date|to|cc|subject|attachments)\s*:\s*(.*)$/i', $trimmed, $match)) {
+                $current = self::LABELS[strtolower($match[1])];
+                $fields[$current] ??= trim($match[2]);
+
+                continue;
+            }
+
+            if ($fields === []) {
+                // Blank lines and the "-----Original Message-----" style
+                // rule may come before the block. Anything else before a
+                // header was found means there is no block.
+                if ($this->isPreamble($trimmed)) {
+                    continue;
+                }
+
+                return [[], null];
+            }
+
+            // A blank line ends the block, unless another header follows it:
+            // the block Outlook puts above a reply has each header in its
+            // own paragraph, which pastes with a blank line between them.
+            if ($trimmed === '') {
+                if ($this->headerFollows($lines, $index + 1)) {
+                    continue;
+                }
+
+                return [$fields, $index + 1];
+            }
+
+            // A wrapped header value continues on the next line.
+            if (preg_match('/^\s+\S/', $line)) {
+                $fields[$current] = trim($fields[$current].' '.$trimmed);
+
+                continue;
+            }
+
+            return [$fields, $index];
+        }
+
+        return [$fields, null];
+    }
+
+    protected function isPreamble(string $trimmed): bool
+    {
+        return $trimmed === '' || (bool) preg_match('/^[-_=]{3,}.*$/', $trimmed);
     }
 
     /**
