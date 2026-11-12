@@ -62,15 +62,7 @@ abstract class PositionController extends ApiController
         $this->authorize('view', $parent);
         $this->authorize('create', Position::class);
 
-        if ($parent instanceof Person) {
-            $personId = $parent->id;
-            $organizationId = $request->filled('organization_id')
-                ? Organization::where('external_id', $request->input('organization_id'))->firstOrFail()->id
-                : $parent->organization_id;
-        } else {
-            $personId = Person::where('external_id', $request->input('person_id'))->firstOrFail()->id;
-            $organizationId = $parent->id;
-        }
+        [$personId, $organizationId] = $this->partyIds($request, $parent);
 
         $this->assertEndsAfterStart($request->input('start_date') ?: now(), $request->input('end_date'));
 
@@ -126,6 +118,27 @@ abstract class PositionController extends ApiController
         $this->positionService->delete($position);
 
         return response()->noContent();
+    }
+
+    /**
+     * The person and organisation of a new position: the parent in the URL
+     * is one, the request body names the other. Under a person the
+     * organisation defaults to the person's own.
+     *
+     * @param  Person|Organization  $parent
+     * @return array{0: int, 1: ?int}
+     */
+    private function partyIds(StorePositionRequest $request, $parent): array
+    {
+        if ($parent instanceof Organization) {
+            return [Person::where('external_id', $request->input('person_id'))->firstOrFail()->id, $parent->id];
+        }
+
+        $organizationId = $request->filled('organization_id')
+            ? Organization::where('external_id', $request->input('organization_id'))->firstOrFail()->id
+            : $parent->organization_id;
+
+        return [$parent->id, $organizationId];
     }
 
     /**

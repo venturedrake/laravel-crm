@@ -62,33 +62,9 @@ class RelatedPositions extends Component
      */
     public array $keepOpen = [];
 
-    public function forPerson(): bool
+    public function isForPerson(): bool
     {
         return $this->model instanceof Person;
-    }
-
-    /**
-     * The positions listed in the panel: current ones, plus past ones when
-     * asked for, narrowed by the search box. Filtering happens in PHP because
-     * person and organisation names may be stored encrypted.
-     *
-     * @return Collection<int, Position>
-     */
-    protected function positions(): Collection
-    {
-        $needle = Str::lower(trim($this->search));
-
-        return $this->model->positions()
-            ->with(['person', 'organization'])
-            ->when(! $this->showPast, fn ($query) => $query->current())
-            ->get()
-            ->when($needle !== '', fn (Collection $positions) => $positions->filter(
-                fn (Position $position) => Str::contains(Str::lower($position->title), $needle)
-                    || Str::contains(Str::lower((string) $position->person?->name), $needle)
-                    || Str::contains(Str::lower((string) $position->organization?->name), $needle)
-            ))
-            ->sortBy(fn (Position $position) => $position->isCurrent() ? 0 : 1)
-            ->values();
     }
 
     /**
@@ -110,41 +86,35 @@ class RelatedPositions extends Component
         );
     }
 
-    public function toggleKeepOpen($id): void
+    public function toggleKeepOpen($positionId): void
     {
-        $id = (int) $id;
+        $positionId = (int) $positionId;
 
-        $this->keepOpen = in_array($id, $this->keepOpen, true)
-            ? array_values(array_diff($this->keepOpen, [$id]))
-            : [...$this->keepOpen, $id];
+        $this->keepOpen = in_array($positionId, $this->keepOpen, true)
+            ? array_values(array_diff($this->keepOpen, [$positionId]))
+            : [...$this->keepOpen, $positionId];
     }
 
-    public function add(): void
+    /**
+     * Open the form: on a position to edit it, or empty to add one.
+     */
+    public function openForm($positionId = null): void
     {
-        $this->resetForm();
+        $position = $positionId ? $this->model->positions()->find($positionId) : null;
 
-        $this->start_date = now()->toDateString();
-
-        if ($this->forPerson()) {
-            $this->person_id = $this->model->id;
-            $this->person_name = $this->model->name;
-            $this->organization_id = $this->model->organization_id;
-            $this->organization_name = $this->model->organization?->name;
-        } else {
-            $this->organization_id = $this->model->id;
-            $this->organization_name = $this->model->name;
-        }
-
-        $this->showPositionForm = true;
-    }
-
-    public function edit($id): void
-    {
-        if (! $position = $this->model->positions()->find($id)) {
+        if ($positionId && ! $position) {
             return;
         }
 
         $this->resetForm();
+
+        // A new position starts today, for the person or organisation the
+        // panel is on; on a person it suggests their own organisation.
+        $position ??= new Position([
+            'start_date' => now()->toDateString(),
+            'person_id' => $this->isForPerson() ? $this->model->id : null,
+            'organization_id' => $this->isForPerson() ? $this->model->organization_id : $this->model->id,
+        ]);
 
         $this->positionId = $position->id;
         $this->person_id = $position->person_id;
@@ -172,8 +142,8 @@ class RelatedPositions extends Component
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string|max:65535',
-            'person_name' => $position || $this->forPerson() ? 'nullable' : 'required|string|max:255',
-            'organization_name' => $position || ! $this->forPerson() ? 'nullable' : 'required|string|max:255',
+            'person_name' => $position || $this->isForPerson() ? 'nullable' : 'required|string|max:255',
+            'organization_name' => $position || ! $this->isForPerson() ? 'nullable' : 'required|string|max:255',
         ], [], [
             'title' => __('laravel-crm::lang.position_title'),
             'start_date' => __('laravel-crm::lang.start_date'),
@@ -189,13 +159,11 @@ class RelatedPositions extends Component
             'description' => $this->description,
         ];
 
-        if ($position) {
-            $positionService->update($position, $fields);
+        $position
+            ? $positionService->update($position, $fields)
+            : $this->createPosition($positionService, $fields);
 
-            $this->success(ucfirst(trans('laravel-crm::lang.position_updated')));
-        } else {
-            $this->createPosition($positionService, $fields);
-        }
+        $this->success(ucfirst(trans('laravel-crm::lang.'.($position ? 'position_updated' : 'position_added'))));
 
         $this->showPositionForm = false;
         $this->resetForm();
@@ -210,14 +178,12 @@ class RelatedPositions extends Component
         // so the list matches what the form showed.
         $end = $this->conflicts()->pluck('id')->diff($this->keepOpen)->values()->all();
 
-        $organization = $this->resolveOrganization();
+        [$person, $organization] = $this->resolveParties();
 
         $positionService->create([
-            'person_id' => $this->resolvePerson($organization)->id,
+            'person_id' => $person->id,
             'organization_id' => $organization->id,
         ] + $fields, $end);
-
-        $this->success(ucfirst(trans('laravel-crm::lang.position_added')));
 
         // The new position may have linked the person and organisation;
         // refresh the Related organisations / Related people panels.
@@ -227,9 +193,9 @@ class RelatedPositions extends Component
     /**
      * End a position today.
      */
-    public function end($id, PositionService $positionService): void
+    public function end($positionId, PositionService $positionService): void
     {
-        if ($position = $this->model->positions()->find($id)) {
+        if ($position = $this->model->positions()->find($positionId)) {
             $this->authorize('update', $position);
 
             $positionService->end($position);
@@ -238,9 +204,9 @@ class RelatedPositions extends Component
         }
     }
 
-    public function delete($id, PositionService $positionService): void
+    public function delete($positionId, PositionService $positionService): void
     {
-        if ($position = $this->model->positions()->find($id)) {
+        if ($position = $this->model->positions()->find($positionId)) {
             $this->authorize('delete', $position);
 
             $positionService->delete($position);
@@ -249,44 +215,46 @@ class RelatedPositions extends Component
         }
     }
 
-    protected function resolveOrganization(): Organization
+    /**
+     * The person and the organisation of a new position. The panel's own
+     * record is one of them; the other is the one picked in the form, or is
+     * created from the name typed there.
+     *
+     * @return array{0: Person, 1: Organization}
+     */
+    protected function resolveParties(): array
     {
-        if (! $this->forPerson()) {
-            return $this->model;
+        if ($this->isForPerson()) {
+            $organization = $this->organization_id ? Organization::find($this->organization_id) : null;
+
+            if (! $organization) {
+                $this->authorize('create', Organization::class);
+
+                $organization = Organization::create([
+                    'name' => trim($this->organization_name),
+                    'user_owner_id' => auth()->user()->id,
+                ]);
+            }
+
+            return [$this->model, $organization];
         }
 
-        if ($this->organization_id && $organization = Organization::find($this->organization_id)) {
-            return $organization;
+        $person = $this->person_id ? Person::find($this->person_id) : null;
+
+        if (! $person) {
+            $this->authorize('create', Person::class);
+
+            $name = \VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstLastFromName($this->person_name);
+
+            $person = Person::create([
+                'first_name' => $name['first_name'],
+                'last_name' => $name['last_name'] ?? null,
+                'organization_id' => $this->model->id,
+                'user_owner_id' => auth()->user()->id,
+            ]);
         }
 
-        $this->authorize('create', Organization::class);
-
-        return Organization::create([
-            'name' => trim($this->organization_name),
-            'user_owner_id' => auth()->user()->id,
-        ]);
-    }
-
-    protected function resolvePerson(Organization $organization): Person
-    {
-        if ($this->forPerson()) {
-            return $this->model;
-        }
-
-        if ($this->person_id && $person = Person::find($this->person_id)) {
-            return $person;
-        }
-
-        $this->authorize('create', Person::class);
-
-        $name = \VentureDrake\LaravelCrm\Http\Helpers\PersonName\firstLastFromName($this->person_name);
-
-        return Person::create([
-            'first_name' => $name['first_name'],
-            'last_name' => $name['last_name'] ?? null,
-            'organization_id' => $organization->id,
-            'user_owner_id' => auth()->user()->id,
-        ]);
+        return [$person, $this->model];
     }
 
     protected function resetForm(): void
@@ -302,8 +270,25 @@ class RelatedPositions extends Component
 
     public function render()
     {
+        $needle = Str::lower(trim($this->search));
+
+        // Current positions, plus past ones when asked for, narrowed by the
+        // search box. Filtering happens in PHP because person and
+        // organisation names may be stored encrypted.
+        $positions = $this->model->positions()
+            ->with(['person', 'organization'])
+            ->when(! $this->showPast, fn ($query) => $query->current())
+            ->get()
+            ->when($needle !== '', fn (Collection $positions) => $positions->filter(
+                fn (Position $position) => Str::contains(Str::lower($position->title), $needle)
+                    || Str::contains(Str::lower((string) $position->person?->name), $needle)
+                    || Str::contains(Str::lower((string) $position->organization?->name), $needle)
+            ))
+            ->sortBy(fn (Position $position) => $position->isCurrent() ? 0 : 1)
+            ->values();
+
         return view('laravel-crm::livewire.related-positions', [
-            'positions' => $this->positions(),
+            'positions' => $positions,
             'conflicts' => $this->conflicts(),
             'titleSuggestions' => $this->showPositionForm ? app(PositionService::class)->titleSuggestions() : collect(),
             'dateFormat' => app('laravel-crm.settings')->get('date_format', 'Y-m-d'),

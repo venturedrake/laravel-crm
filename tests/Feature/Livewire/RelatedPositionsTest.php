@@ -41,7 +41,7 @@ function hold(Person $person, Organization $org, string $title, array $extra = [
 
 it('opens the form on a person page with today and the person\'s organisation', function () {
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')
+        ->call('openForm')
         ->assertSet('showPositionForm', true)
         ->assertSet('start_date', '2026-11-10')
         ->assertSet('organization_id', $this->org->id)
@@ -51,7 +51,7 @@ it('opens the form on a person page with today and the person\'s organisation', 
 
 it('adds a position from a person page', function () {
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')
+        ->call('openForm')
         ->set('title', 'CFO')
         ->call('save')
         ->assertHasNoErrors()
@@ -71,7 +71,7 @@ it('adds a position at another organisation without changing the main one', func
     $other = Organization::create(['name' => 'Other Co']);
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')
+        ->call('openForm')
         ->call('linkOrganization', $other->id)
         ->set('title', 'Director')
         ->call('save')
@@ -83,7 +83,7 @@ it('adds a position at another organisation without changing the main one', func
 
 it('adds a position for an existing person from an organisation page', function () {
     Livewire::test(RelatedPositions::class, ['model' => $this->org])
-        ->call('add')
+        ->call('openForm')
         ->assertSet('organization_id', $this->org->id)
         ->call('linkPerson', $this->casey->id)
         ->set('title', 'CEO')
@@ -100,7 +100,7 @@ it('adds a position for an existing person from an organisation page', function 
 
 it('creates the person when a new name is typed on an organisation page', function () {
     Livewire::test(RelatedPositions::class, ['model' => $this->org])
-        ->call('add')
+        ->call('openForm')
         ->set('person_name', 'Gia Em')
         ->set('title', 'GM')
         ->call('save')
@@ -115,7 +115,7 @@ it('creates the person when a new name is typed on an organisation page', functi
 
 it('requires a title, a person and a valid date range', function () {
     Livewire::test(RelatedPositions::class, ['model' => $this->org])
-        ->call('add')
+        ->call('openForm')
         ->set('start_date', '2026-05-01')
         ->set('end_date', '2026-04-01')
         ->call('save')
@@ -133,7 +133,7 @@ it('lists the positions a new one will end and ends them by default', function (
     $cfo = hold($this->casey, $this->org, 'CFO', ['start_date' => '2023-01-01']);
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')
+        ->call('openForm')
         ->set('title', 'cfo')
         ->assertSee(ucfirst(__('laravel-crm::lang.positions_to_end')))
         ->assertSee('Financial Controller')
@@ -150,7 +150,7 @@ it('keeps open a position the user unticked', function () {
     $gm = hold($this->casey, $this->org, 'GM');
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')
+        ->call('openForm')
         ->set('title', 'GM')
         ->call('toggleKeepOpen', $gm->id)
         ->assertSet('keepOpen', [$gm->id])
@@ -165,7 +165,7 @@ it('shows no list when nothing would be ended', function () {
     hold($this->casey, $this->org, 'CEO');
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')
+        ->call('openForm')
         ->set('title', 'CFO')
         ->assertDontSee(ucfirst(__('laravel-crm::lang.positions_to_end')));
 });
@@ -202,7 +202,7 @@ it('edits a position', function () {
     $position = hold($this->fran, $this->org, 'CFO');
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('edit', $position->id)
+        ->call('openForm', $position->id)
         ->assertSet('title', 'CFO')
         ->set('title', 'Chief Financial Officer')
         ->set('end_date', '2026-12-31')
@@ -218,7 +218,7 @@ it('rejects an end date before the start date when editing', function () {
     $position = hold($this->fran, $this->org, 'CFO', ['start_date' => '2026-01-01']);
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('edit', $position->id)
+        ->call('openForm', $position->id)
         ->set('end_date', '2025-12-31')
         ->call('save')
         ->assertHasErrors(['end_date']);
@@ -258,7 +258,7 @@ it('forbids adding, ending and deleting without the edit people permission', fun
     $this->actingAsUserWithPermissions(['view crm people']);
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')->set('title', 'CEO')->call('save')->assertForbidden();
+        ->call('openForm')->set('title', 'CEO')->call('save')->assertForbidden();
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
         ->call('end', $position->id)->assertForbidden();
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
@@ -274,7 +274,7 @@ it('forbids every write while the module is off', function () {
     $this->actingAsUserWithPermissions(['view crm people', 'edit crm people']);
 
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
-        ->call('add')->set('title', 'CEO')->call('save')->assertForbidden();
+        ->call('openForm')->set('title', 'CEO')->call('save')->assertForbidden();
     Livewire::test(RelatedPositions::class, ['model' => $this->fran])
         ->call('end', $position->id)->assertForbidden();
 

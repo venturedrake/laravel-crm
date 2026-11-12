@@ -122,13 +122,13 @@ class PersonController extends ApiController
     private function applyDirectFields(Person $person, FormRequest $request): void
     {
         $touched = false;
-        $previousOrganizationId = null;
+        $prevOrgId = null;
 
         if ($request->has('organization_id')) {
             $organization = $request->filled('organization_id')
                 ? Organization::where('external_id', $request->input('organization_id'))->first()
                 : null;
-            $previousOrganizationId = $person->organization_id;
+            $prevOrgId = $person->organization_id;
             $person->organization_id = $organization?->id;
             $touched = true;
         }
@@ -138,10 +138,10 @@ class PersonController extends ApiController
 
             // saveQuietly() skips PersonObserver, which is what ends a
             // person's positions when they leave an organisation.
-            if ($previousOrganizationId
-                && (int) $previousOrganizationId !== (int) $person->organization_id
+            if ($prevOrgId
+                && (int) $prevOrgId !== (int) $person->organization_id
                 && Modules::enabled('positions')) {
-                app(PositionService::class)->endForPerson($person->id, (int) $previousOrganizationId);
+                app(PositionService::class)->endForPerson($person->id, (int) $prevOrgId);
             }
         }
 

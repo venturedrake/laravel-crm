@@ -1,5 +1,5 @@
 {{-- "Position" on a person, "Positions" on an organisation. --}}
-<x-mary-card title="{{ ucfirst(__('laravel-crm::lang.'.($this->forPerson() ? 'position' : 'positions'))) }}" shadow separator>
+<x-mary-card title="{{ ucfirst(__('laravel-crm::lang.'.($this->isForPerson() ? 'position' : 'positions'))) }}" shadow separator>
     <x-slot:menu>
         <x-mary-button
             wire:click="$toggle('showPast')"
@@ -9,7 +9,7 @@
             tooltip-left="{{ ucfirst(__('laravel-crm::lang.'.($showPast ? 'hide_past_positions' : 'show_past_positions'))) }}"
         />
         @can('create', \VentureDrake\LaravelCrm\Models\Position::class)
-            <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" spinner="add" />
+            <x-mary-button wire:click="openForm" class="btn-sm btn-square" type="button" icon="fas.plus" spinner="openForm" />
         @endcan
     </x-slot:menu>
 
@@ -26,7 +26,7 @@
             <div class="space-y-3">
                 @if($positionId)
                     <x-mary-input value="{{ $person_name }}" label="{{ ucfirst(__('laravel-crm::lang.person')) }}" icon="fas.user" readonly disabled />
-                @elseif(! $this->forPerson())
+                @elseif(! $this->isForPerson())
                     <div
                         class="autocomplete-input relative z-50"
                         x-data="{ open: false }"
@@ -77,7 +77,7 @@
 
                 @if($positionId)
                     <x-mary-input value="{{ $organization_name }}" label="{{ ucfirst(__('laravel-crm::lang.organization')) }}" icon="fas.building" readonly disabled />
-                @elseif($this->forPerson())
+                @elseif($this->isForPerson())
                     <div
                         class="autocomplete-input relative z-40"
                         x-data="{ open: false }"
@@ -173,7 +173,7 @@
         </x-mary-form>
     </x-mary-drawer>
 
-    @if(! $this->forPerson())
+    @if(! $this->isForPerson())
         <x-mary-input
             wire:model.live.debounce.300ms="search"
             placeholder="{{ ucfirst(__('laravel-crm::lang.search_positions')) }}..."
@@ -183,7 +183,7 @@
         />
     @endif
 
-    <div class="grid gap-y-3 {{ $this->forPerson() ? '' : 'mt-4' }}">
+    <div class="grid gap-y-3 {{ $this->isForPerson() ? '' : 'mt-4' }}">
         @forelse($positions as $position)
             <div class="flex flex-row justify-between items-start gap-3 {{ $position->isCurrent() ? '' : 'opacity-60' }}" wire:key="position-{{ $position->id }}">
                 <div class="flex flex-row items-start gap-2">
@@ -191,8 +191,8 @@
                     <div>
                         <div class="font-semibold">{{ $position->title }}</div>
                         <div>
-                            @php($other = $this->forPerson() ? $position->organization : $position->person)
-                            <x-crm-record-link :record="$other" :route="$this->forPerson() ? 'laravel-crm.organizations.show' : 'laravel-crm.people.show'" :label="$other?->name" class="link link-hover link-primary" />
+                            @php($other = $this->isForPerson() ? $position->organization : $position->person)
+                            <x-crm-record-link :record="$other" :route="$this->isForPerson() ? 'laravel-crm.organizations.show' : 'laravel-crm.people.show'" :label="$other?->name" class="link link-hover link-primary" />
                         </div>
                         <div class="text-sm opacity-70">
                             @if($position->end_date)
@@ -218,7 +218,7 @@
                                 tooltip-left="{{ ucfirst(__('laravel-crm::lang.end_position')) }}"
                             />
                         @endif
-                        <x-mary-button wire:click="edit({{ $position->id }})" class="btn-xs btn-square btn-outline" type="button" icon="o-pencil-square" />
+                        <x-mary-button wire:click="openForm({{ $position->id }})" class="btn-xs btn-square btn-outline" type="button" icon="o-pencil-square" />
                     @endcan
                     @can('delete', $position)
                         <x-mary-button

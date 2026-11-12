@@ -176,13 +176,14 @@ class PositionService
      */
     public function endForPerson(int $personId, ?int $organizationId = null, $date = null): int
     {
-        return $this->endAll(
-            Position::current()
-                ->where('person_id', $personId)
-                ->when($organizationId, fn ($query) => $query->where('organization_id', $organizationId))
-                ->get(),
-            $date
-        );
+        $positions = Position::current()
+            ->where('person_id', $personId)
+            ->when($organizationId, fn ($query) => $query->where('organization_id', $organizationId))
+            ->get();
+
+        $positions->each(fn (Position $position) => $this->end($position, $date));
+
+        return $positions->count();
     }
 
     /**
@@ -218,18 +219,6 @@ class PositionService
             ->orderBy('title')
             ->limit($limit)
             ->pluck('title');
-    }
-
-    /**
-     * @param  Collection<int, Position>  $positions
-     */
-    protected function endAll(Collection $positions, $date = null): int
-    {
-        foreach ($positions as $position) {
-            $this->end($position, $date);
-        }
-
-        return $positions->count();
     }
 
     protected function date($value): ?Carbon
