@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire\EmailCampaigns;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\Traits\HasEmailCampaignAudience;
 use VentureDrake\LaravelCrm\Mail\EmailCampaignMessage;
 use VentureDrake\LaravelCrm\Models\EmailCampaign;
 use VentureDrake\LaravelCrm\Models\EmailTemplate;
@@ -12,7 +13,7 @@ use VentureDrake\LaravelCrm\Services\EmailCampaignService;
 
 class EmailCampaignCreate extends Component
 {
-    use AuthorizesRequests, Toast;
+    use AuthorizesRequests, HasEmailCampaignAudience, Toast;
 
     public ?string $name = null;
 
@@ -23,10 +24,6 @@ class EmailCampaignCreate extends Component
     public ?string $preview_text = null;
 
     public ?string $body = null;
-
-    public string $send_mode = 'now';
-
-    public ?string $scheduled_at = null;
 
     public bool $showPreview = false;
 
@@ -39,9 +36,13 @@ class EmailCampaignCreate extends Component
             'subject' => 'required|string|max:255',
             'preview_text' => 'nullable|string|max:255',
             'body' => 'required|string',
-            'send_mode' => 'required|in:now,schedule',
-            'scheduled_at' => 'required_if:send_mode,schedule|nullable|date|after:now',
+            ...$this->audienceRules(),
         ];
+    }
+
+    protected function authorizeAudienceRead(): void
+    {
+        $this->authorize('create', EmailCampaign::class);
     }
 
     public function templates()
@@ -64,11 +65,19 @@ class EmailCampaignCreate extends Component
         }
     }
 
-    public function save(EmailCampaignService $service)
+    public function save(bool $confirmed = false)
     {
         $this->authorize('create', EmailCampaign::class);
 
         $this->validate();
+
+        // Nothing is created until the send can go ahead, so an unconfirmed
+        // "Send now" does not leave an orphan draft behind.
+        if (! $this->readyToSave($confirmed)) {
+            return;
+        }
+
+        $service = app(EmailCampaignService::class);
 
         $campaign = $service->create([
             'name' => $this->name,
@@ -76,12 +85,15 @@ class EmailCampaignCreate extends Component
             'preview_text' => $this->preview_text,
             'body' => $this->body,
             'email_template_id' => $this->email_template_id,
+            ...$this->audienceData(),
         ]);
 
-        $service->schedule($campaign, $this->send_mode === 'schedule' ? $this->scheduled_at : null);
+        if (($sendAt = $this->sendAt()) !== false) {
+            $service->schedule($campaign, $sendAt);
+        }
 
         $this->success(
-            ucfirst(__('laravel-crm::lang.campaign_stored')),
+            $this->savedMessage(),
             redirectTo: route('laravel-crm.email-campaigns.show', $campaign)
         );
     }
@@ -100,6 +112,7 @@ class EmailCampaignCreate extends Component
         return view('laravel-crm::livewire.email-campaigns.email-campaign-create', [
             'templates' => $this->templates(),
             'placeholders' => EmailCampaignMessage::availablePlaceholders(),
+            ...$this->audienceViewData(),
         ]);
     }
 }

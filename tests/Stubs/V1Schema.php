@@ -160,6 +160,11 @@ class V1Schema
             Schema::drop($prefix.$table);
         }
 
+        // add_subscribed_to_laravel_crm_emails_table is v2-only and runs during the upgrade.
+        Schema::table($prefix.'emails', function (Blueprint $table) {
+            $table->dropColumn(['subscribed', 'unsubscribed_at']);
+        });
+
         // ---------- v1 names ----------
         Schema::rename($prefix.'organizations', $prefix.'organisations');
         Schema::rename($prefix.'organization_types', $prefix.'organisation_types');

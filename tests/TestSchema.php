@@ -131,6 +131,8 @@ class TestSchema
             $table->string('external_id')->nullable();
             $table->string('address');
             $table->boolean('primary')->default(false);
+            $table->boolean('subscribed')->default(true);
+            $table->timestamp('unsubscribed_at')->nullable();
             $table->string('type')->default('work')->nullable();
             $table->morphs('emailable');
             $table->unsignedBigInteger('user_created_id')->nullable();
@@ -1098,6 +1100,8 @@ class TestSchema
             $table->string('preview_text')->nullable();
             $table->longText('body')->nullable();
             $table->unsignedBigInteger('email_template_id')->nullable();
+            $table->string('audience_type', 32)->default('all');
+            $table->json('audience_ids')->nullable();
             $table->string('status')->default('draft');
             $table->timestamp('scheduled_at')->nullable();
             $table->string('timezone')->nullable();

@@ -6,6 +6,8 @@
             @include('laravel-crm::livewire.email-campaigns.email-campaign-form')
         </x-mary-card>
 
+        @include('laravel-crm::livewire.email-campaigns._audience-send')
+
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" link="{{ route('laravel-crm.email-campaigns.show', $campaign) }}" />
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.preview')) }}" wire:click="openPreview" spinner="openPreview" />
@@ -14,4 +16,5 @@
     </x-mary-form>
 
     @include('laravel-crm::livewire.email-campaigns._preview-drawer')
+    @include('laravel-crm::livewire.email-campaigns._confirm-send')
 </div>

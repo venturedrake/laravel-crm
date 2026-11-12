@@ -6,21 +6,7 @@
             @include('laravel-crm::livewire.email-campaigns.email-campaign-form')
         </x-mary-card>
 
-        <x-mary-card shadow class="mt-5" title="{{ ucfirst(__('laravel-crm::lang.send')) }}">
-            <div class="grid lg:grid-cols-2 gap-5">
-                <x-mary-radio
-                    wire:model.live="send_mode"
-                    :options="[
-                        ['id' => 'now', 'name' => ucfirst(__('laravel-crm::lang.send_now'))],
-                        ['id' => 'schedule', 'name' => ucfirst(__('laravel-crm::lang.schedule_send'))],
-                    ]"
-                    label="{{ ucfirst(__('laravel-crm::lang.send')) }}"
-                />
-                @if($send_mode === 'schedule')
-                    <x-mary-input wire:model="scheduled_at" type="datetime-local" label="{{ ucfirst(__('laravel-crm::lang.scheduled_at')) }}" />
-                @endif
-            </div>
-        </x-mary-card>
+        @include('laravel-crm::livewire.email-campaigns._audience-send')
 
         <x-slot:actions>
             <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.cancel')) }}" link="{{ route('laravel-crm.email-campaigns.index') }}" />
@@ -30,4 +16,5 @@
     </x-mary-form>
 
     @include('laravel-crm::livewire.email-campaigns._preview-drawer')
+    @include('laravel-crm::livewire.email-campaigns._confirm-send')
 </div>

@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Livewire\EmailCampaigns;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use VentureDrake\LaravelCrm\Livewire\EmailCampaigns\Traits\HasEmailCampaignAudience;
 use VentureDrake\LaravelCrm\Mail\EmailCampaignMessage;
 use VentureDrake\LaravelCrm\Models\EmailCampaign;
 use VentureDrake\LaravelCrm\Models\EmailTemplate;
@@ -12,7 +13,7 @@ use VentureDrake\LaravelCrm\Services\EmailCampaignService;
 
 class EmailCampaignEdit extends Component
 {
-    use AuthorizesRequests, Toast;
+    use AuthorizesRequests, HasEmailCampaignAudience, Toast;
 
     public EmailCampaign $campaign;
 
@@ -44,6 +45,14 @@ class EmailCampaignEdit extends Component
         $this->subject = $campaign->subject;
         $this->preview_text = $campaign->preview_text;
         $this->body = $campaign->body;
+        $this->audience_type = $campaign->audience_type ?: EmailCampaign::AUDIENCE_ALL;
+        $this->audience_ids = array_values(array_map('intval', $campaign->audience_ids ?? []));
+        $this->loadAudienceOptions();
+    }
+
+    protected function authorizeAudienceRead(): void
+    {
+        $this->authorize('update', $this->campaign);
     }
 
     protected function rules(): array
@@ -53,6 +62,7 @@ class EmailCampaignEdit extends Component
             'subject' => 'required|string|max:255',
             'preview_text' => 'nullable|string|max:255',
             'body' => 'required|string',
+            ...$this->audienceRules(),
         ];
     }
 
@@ -76,11 +86,17 @@ class EmailCampaignEdit extends Component
         }
     }
 
-    public function save(EmailCampaignService $service)
+    public function save(bool $confirmed = false)
     {
         $this->authorize('update', $this->campaign);
 
         $this->validate();
+
+        if (! $this->readyToSave($confirmed)) {
+            return;
+        }
+
+        $service = app(EmailCampaignService::class);
 
         $service->update([
             'name' => $this->name,
@@ -88,10 +104,15 @@ class EmailCampaignEdit extends Component
             'preview_text' => $this->preview_text,
             'body' => $this->body,
             'email_template_id' => $this->email_template_id,
+            ...$this->audienceData(),
         ], $this->campaign);
 
+        if (($sendAt = $this->sendAt()) !== false) {
+            $service->schedule($this->campaign, $sendAt);
+        }
+
         $this->success(
-            ucfirst(__('laravel-crm::lang.campaign_stored')),
+            $this->savedMessage(),
             redirectTo: route('laravel-crm.email-campaigns.show', $this->campaign)
         );
     }
@@ -111,6 +132,7 @@ class EmailCampaignEdit extends Component
         return view('laravel-crm::livewire.email-campaigns.email-campaign-edit', [
             'templates' => $this->templates(),
             'placeholders' => EmailCampaignMessage::availablePlaceholders(),
+            ...$this->audienceViewData(),
         ]);
     }
 }

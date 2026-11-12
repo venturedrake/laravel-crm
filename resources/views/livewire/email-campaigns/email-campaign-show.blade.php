@@ -57,6 +57,10 @@
                 <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.email_template')) }}</div>
                 <div>{{ $campaign->template?->name ?? '—' }}</div>
             </div>
+            <div>
+                <div class="text-xs text-base-content/60">{{ ucfirst(__('laravel-crm::lang.audience')) }}</div>
+                <div>{{ \VentureDrake\LaravelCrm\Support\EmailCampaignAudience::describe($campaign) }}</div>
+            </div>
         </div>
     </x-mary-card>
 

@@ -13,11 +13,30 @@ class EmailCampaign extends Model
     use SearchFilters;
     use SoftDeletes;
 
+    public const AUDIENCE_ALL = 'all';
+
+    public const AUDIENCE_LABELS = 'labels';
+
+    public const AUDIENCE_ORGANIZATIONS = 'organizations';
+
+    public const AUDIENCE_PIPELINE_STAGES = 'pipeline_stages';
+
+    public const AUDIENCE_PEOPLE = 'people';
+
+    public const AUDIENCE_TYPES = [
+        self::AUDIENCE_ALL,
+        self::AUDIENCE_LABELS,
+        self::AUDIENCE_ORGANIZATIONS,
+        self::AUDIENCE_PIPELINE_STAGES,
+        self::AUDIENCE_PEOPLE,
+    ];
+
     protected $guarded = ['id'];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
         'sent_at' => 'datetime',
+        'audience_ids' => 'array',
     ];
 
     protected $searchable = [
