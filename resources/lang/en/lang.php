@@ -954,6 +954,7 @@ return [
     'disconnect' => 'disconnect',
     'connection_failed' => 'connection failed',
     'balance' => 'balance',
+    'balance_due' => 'balance due',
 
     // Portal auth
     'already_have_account' => 'already have an account?',

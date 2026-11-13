@@ -127,6 +127,81 @@ test('portal invoice show renders paid badge when fully_paid_at is set', functio
     $response->assertSee('badge-success', false);
 });
 
+test('portal invoice show lists paid and balance due after a part-payment', function () {
+    $invoice = Invoice::create([
+        'invoice_id' => 'INV1007',
+        'subtotal' => 1045.35,
+        'tax' => 104.54,
+        'total' => 1149.89,
+        'amount_paid' => 100,
+        'currency' => 'USD',
+    ]);
+
+    $url = URL::temporarySignedRoute(
+        'laravel-crm.portal.invoices.show',
+        now()->addDays(7),
+        ['invoice' => $invoice->external_id]
+    );
+
+    $response = $this->get($url);
+
+    $response->assertStatus(200);
+    $response->assertSee('Balance due', false);
+    $response->assertSee('$100.00', false);
+    $response->assertSee('$1,049.89', false);
+    // A part-payment leaves the invoice unpaid. Check the badge class rather
+    // than the absence of `badge-success`: the inlined document.css contains
+    // that class name on every page.
+    $response->assertSee('Unpaid', false);
+    $response->assertSee('badge-neutral', false);
+});
+
+test('portal invoice show shows a zero balance due once fully paid', function () {
+    $invoice = Invoice::create([
+        'invoice_id' => 'INV1008',
+        'subtotal' => 100,
+        'tax' => 10,
+        'total' => 110,
+        'amount_paid' => 110,
+        'currency' => 'USD',
+        'fully_paid_at' => now(),
+    ]);
+
+    $url = URL::temporarySignedRoute(
+        'laravel-crm.portal.invoices.show',
+        now()->addDays(7),
+        ['invoice' => $invoice->external_id]
+    );
+
+    $response = $this->get($url);
+
+    $response->assertStatus(200);
+    $response->assertSee('Balance due', false);
+    $response->assertSee('$0.00', false);
+    $response->assertSee('badge-success', false);
+});
+
+test('portal invoice show hides the balance row when nothing has been paid', function () {
+    $invoice = Invoice::create([
+        'invoice_id' => 'INV1009',
+        'subtotal' => 100,
+        'tax' => 10,
+        'total' => 110,
+        'currency' => 'USD',
+    ]);
+
+    $url = URL::temporarySignedRoute(
+        'laravel-crm.portal.invoices.show',
+        now()->addDays(7),
+        ['invoice' => $invoice->external_id]
+    );
+
+    $response = $this->get($url);
+
+    $response->assertStatus(200);
+    $response->assertDontSee('Balance due', false);
+});
+
 test('portal invoice show rejects an unsigned link', function () {
     $invoice = Invoice::create([
         'invoice_id' => 'INV1003',

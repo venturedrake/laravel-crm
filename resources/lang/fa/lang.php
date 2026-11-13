@@ -896,6 +896,7 @@ return [
     'disconnect' => 'قطع اتصال',
     'connection_failed' => 'اتصال شکست خورد',
     'balance' => 'موجودی',
+    'balance_due' => 'مانده قابل پرداخت',
     'already_have_account' => 'از قبل حساب دارید؟',
     'dont_have_account' => 'حساب ندارید؟',
     'feature' => 'ویژگی',
