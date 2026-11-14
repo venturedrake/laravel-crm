@@ -27,8 +27,7 @@ beforeEach(function () {
 test('moves Negotiation before closed stages and persists after a reload', function () {
     Livewire::test(PipelineShow::class, ['pipeline' => $this->pipeline])
         ->assertSeeInOrder(['Closed Won', 'Closed Lost', 'Negotiation'])
-        ->assertSee('x-bind:disabled="busy || true"', false)
-        ->assertDontSee('@js($loop', false)
+        ->assertSee('<span data-stage-handle', false)
         ->call('reorderStages', $this->proposed)
         ->assertHasNoErrors()
         ->assertSeeInOrder(['Negotiation', 'Closed Won', 'Closed Lost']);
@@ -59,7 +58,6 @@ test('view only users see the list without controls and direct writes are forbid
     $this->actingAsUserWithPermissions(['view crm pipelines']);
     Livewire::test(PipelineShow::class, ['pipeline' => $this->pipeline])
         ->assertSee('Negotiation')->assertDontSee('<span data-stage-handle', false)
-        ->assertDontSee('Move up')
         ->call('reorderStages', $this->proposed)->assertForbidden();
     expect($this->stages->map(fn ($stage) => $stage->fresh()->order)->all())->toBe([1, 2, 3]);
 });
@@ -88,13 +86,13 @@ test('a stage specific denial hides controls and prevents a direct action', func
     $denied = $this->stages[1];
     Gate::before(fn ($user, $ability, $args) => $ability === 'update' && ($args[0] ?? null) instanceof PipelineStage && $args[0]->is($denied) ? false : null);
     Livewire::test(PipelineShow::class, ['pipeline' => $this->pipeline])
-        ->assertDontSee('Move up')->call('reorderStages', $this->proposed)->assertForbidden();
+        ->assertDontSee('<span data-stage-handle', false)->call('reorderStages', $this->proposed)->assertForbidden();
 });
 
 test('empty and single stage lists render without movement controls', function ($count) {
     $this->stages->slice($count)->each->delete();
     Livewire::test(PipelineShow::class, ['pipeline' => $this->pipeline])
-        ->assertOk()->assertDontSee('Move up')->assertDontSee('<span data-stage-handle', false);
+        ->assertOk()->assertDontSee('<span data-stage-handle', false);
 })->with([0, 1]);
 
 test('all board types load the saved stage column order', function ($model, $board) {

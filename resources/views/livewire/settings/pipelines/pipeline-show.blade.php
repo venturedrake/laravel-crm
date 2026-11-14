@@ -46,14 +46,6 @@
                             });
                         },
                         ids() { return [...this.$refs.stages.children].map(row => row.dataset.stageId); },
-                        move(id, offset) {
-                            const ids = this.ids();
-                            const from = ids.indexOf(String(id));
-                            const to = from + offset;
-                            if (from < 0 || to < 0 || to >= ids.length) return;
-                            [ids[from], ids[to]] = [ids[to], ids[from]];
-                            this.save(ids);
-                        },
                         async save(ids) {
                             if (this.busy) return;
                             this.busy = true;
@@ -78,13 +70,9 @@
                         @foreach($stages as $stage)
                             <div wire:key="pipeline-stage-{{ $stage->id }}" data-stage-id="{{ $stage->id }}" class="flex items-center gap-3">
                                 @if($canReorder && $stages->count() > 1)
-                                    <span data-stage-handle aria-hidden="true" class="btn btn-sm btn-ghost cursor-grab" title="{{ ucfirst(__('laravel-crm::lang.drag_stage', ['stage' => $stage->name])) }}">⠿</span>
+                                    <span data-stage-handle class="cursor-grab" title="{{ ucfirst(__('laravel-crm::lang.drag_stage', ['stage' => $stage->name])) }}"><x-mary-icon name="fas.arrows-alt-v" /></span>
                                 @endif
                                 <span class="flex-1">{{ $stage->name }}</span>
-                                @if($canReorder && $stages->count() > 1)
-                                    <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.move_up')) }}" class="btn-sm btn-ghost" x-on:click="move({{ $stage->id }}, -1)" x-bind:disabled="busy || {{ $loop->first ? 'true' : 'false' }}" aria-label="{{ ucfirst(__('laravel-crm::lang.move_stage_up', ['stage' => $stage->name])) }}" />
-                                    <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.move_down')) }}" class="btn-sm btn-ghost" x-on:click="move({{ $stage->id }}, 1)" x-bind:disabled="busy || {{ $loop->last ? 'true' : 'false' }}" aria-label="{{ ucfirst(__('laravel-crm::lang.move_stage_down', ['stage' => $stage->name])) }}" />
-                                @endif
                             </div>
                         @endforeach
                     </div>
