@@ -21,7 +21,10 @@ trait HasLineItemQuantityRules
      * line. Only the invoice and delivery forms do; everywhere else the
      * remaining-quantity rule is a no-op.
      *
-     * @return array{model: class-string, relation: string, key: string|null}|null
+     * `owner` is the parent column and id of the document being edited, so a
+     * line left at or below its saved quantity is not re-capped.
+     *
+     * @return array{model: class-string, relation: string, key: string|null, owner?: array<string, int>|null}|null
      */
     protected function lineItemDrawdown(): ?array
     {
@@ -46,6 +49,7 @@ trait HasLineItemQuantityRules
                     $drawdown['model'] ?? null,
                     $drawdown['relation'] ?? null,
                     $drawdown['key'] ?? null,
+                    $drawdown['owner'] ?? null,
                 ),
             ],
         ];

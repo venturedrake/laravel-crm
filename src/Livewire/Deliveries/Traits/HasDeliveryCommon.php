@@ -81,13 +81,20 @@ trait HasDeliveryCommon
      * Delivery lines draw down the order line they were built from, so the
      * remaining quantity is recomputed against the deliveries already
      * raised rather than trusted from the submitted row.
+     *
+     * On edit the owner is the delivery itself: a line it already has is
+     * only capped when raised, matching DeliveryService, so a delivery whose
+     * order line was since reduced can still be saved.
      */
     protected function lineItemDrawdown(): ?array
     {
+        $delivery = $this->delivery ?? null;
+
         return [
             'model' => DeliveryProduct::class,
             'relation' => 'delivery',
             'key' => 'delivery_product_id',
+            'owner' => $delivery?->exists ? ['delivery_id' => $delivery->id] : null,
         ];
     }
 

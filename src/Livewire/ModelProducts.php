@@ -194,6 +194,20 @@ class ModelProducts extends Component
                             'product_variation_id' => $deliveryProduct->orderProduct->product_variation_id,
                             'name' => $deliveryProduct->displayName(),
                             'quantity' => $deliveryProduct->quantity,
+                            // The most this delivery can hold: what the order
+                            // line has left once the other deliveries are counted,
+                            // or the line's saved quantity if that is more - an
+                            // unraised line is not re-capped on save, so a line
+                            // over-delivered since its order was reduced can be
+                            // lowered to anything up to what it already holds.
+                            'order_product_id' => $deliveryProduct->order_product_id,
+                            'quantity_max' => $deliveryProduct->orderProduct
+                                ? max(
+                                    0.0,
+                                    $deliveryProduct->orderProduct->deliveryRemainder($this->model->id),
+                                    Quantity::round($deliveryProduct->quantity),
+                                )
+                                : null,
                         ];
                     }
 

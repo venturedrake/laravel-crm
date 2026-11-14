@@ -3,8 +3,10 @@
 namespace VentureDrake\LaravelCrm\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Delivery;
+use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Repositories\DeliveryRepository;
 use VentureDrake\LaravelCrm\Support\AddressContent;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
@@ -111,8 +113,74 @@ class DeliveryService
                 }
             }
 
+            if (isset($request->products)) {
+                $this->updateLineQuantities($delivery, $request->products);
+            }
+
             return $delivery;
         });
+    }
+
+    /**
+     * Write the edited quantities back to the delivery's lines.
+     *
+     * Delivery edit has no add-row UI, so this only ever changes or removes
+     * lines the delivery already has - a row whose delivery_product_id is
+     * missing or belongs to another delivery is ignored.
+     *
+     * A line raised past what its order line has left is rejected here
+     * rather than trusted from the form: the order line comes from the
+     * stored delivery line, not the request, so neither a forged
+     * order_product_id nor a raised quantity_max lifts the cap, and the
+     * legacy PUT route is held to it too. Only raised lines are checked, so
+     * a delivery whose order was later reduced can still be saved.
+     */
+    protected function updateLineQuantities(Delivery $delivery, $rows): void
+    {
+        $raised = [];
+
+        foreach ($rows as $index => $row) {
+            if (! is_array($row) || empty($row['delivery_product_id'])) {
+                continue;
+            }
+
+            $quantity = $row['quantity'] ?? null;
+
+            // A blank quantity is not a quantity of zero - leave the line be.
+            if ($quantity === null || $quantity === '' || ! is_numeric($quantity)) {
+                continue;
+            }
+
+            if (! $deliveryProduct = $delivery->deliveryProducts()->whereKey($row['delivery_product_id'])->first()) {
+                continue;
+            }
+
+            if (! Quantity::isPositive($quantity)) {
+                $deliveryProduct->delete();
+
+                continue;
+            }
+
+            $before = $deliveryProduct->quantity;
+
+            $deliveryProduct->update(['quantity' => $quantity]);
+
+            if (Quantity::greaterThan($quantity, $before)) {
+                $raised[$deliveryProduct->order_product_id] ??= $index;
+            }
+        }
+
+        foreach ($raised as $orderProductId => $index) {
+            $orderProduct = OrderProduct::withTrashed()->find($orderProductId);
+
+            if ($orderProduct && Quantity::greaterThan(0, $orderProduct->deliveryRemainder())) {
+                throw ValidationException::withMessages([
+                    "products.$index.quantity" => ucfirst(__('laravel-crm::lang.quantity_exceeds_remaining', [
+                        'remaining' => Quantity::format(max(0.0, $orderProduct->deliveryRemainder($delivery->id))),
+                    ])),
+                ]);
+            }
+        }
     }
 
     protected function addressAttributes(array $addressRequest): array
