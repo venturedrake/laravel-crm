@@ -15,6 +15,9 @@ class PipelineStageCreate extends Component
     public function mount()
     {
         $this->mountCommon();
+
+        // Match the option the select displays first, so an untouched form saves (#138).
+        $this->pipeline_id ??= $this->pipelines->first()?->id;
     }
 
     public function save()
