@@ -98,10 +98,26 @@
     <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.delivery_details')) }}" separator>
         <div class="grid gap-3" wire:key="delivery">
             <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.type')) }}" wire:model.live="delivery_type" :options="$deliveryTypes" />
+            @if(empty($deliveryAddresses))
+                <p class="text-sm">
+                    {{ ucfirst(__('laravel-crm::lang.no_delivery_addresses')) }}
+                    @can('update', \VentureDrake\LaravelCrm\Models\Setting::class)
+                        {{ ucfirst(__('laravel-crm::lang.delivery_address_add_in')) }}
+                        <a class="link link-primary" href="{{ route('laravel-crm.settings.edit', ['tab' => 'general']).'#addresses' }}">{{ __('laravel-crm::lang.delivery_address_settings_link') }}</a>{{ __('laravel-crm::lang.delivery_address_or_pickup') }}
+                    @else
+                        {{ ucfirst(__('laravel-crm::lang.delivery_address_ask_administrator')) }}
+                    @endcan
+                </p>
+                @error('delivery_address')
+                    <p class="text-error text-sm" role="alert">{{ $message }}</p>
+                @enderror
+            @endif
             @if($delivery_type == 'deliver')
-                <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.delivery_address')) }}" wire:model="delivery_address" :options="$deliveryAddresses" placeholder="Select address" single />
+                @if(!empty($deliveryAddresses))
+                    <x-mary-select label="{{ ucfirst(__('laravel-crm::lang.delivery_address')) }}" wire:model="delivery_address" :options="$deliveryAddresses" placeholder="Select address" single />
+                @endif
                 <x-mary-textarea wire:model="delivery_instructions" label="{{ ucfirst(__('laravel-crm::lang.delivery_instructions')) }}" rows="5" />
-            @endif    
+            @endif
         </div>
     </x-mary-card>
 </div>

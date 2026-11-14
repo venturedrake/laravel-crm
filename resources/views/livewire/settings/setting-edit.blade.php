@@ -129,7 +129,9 @@
                         <div>
                             <x-crm-phones :$phones :$phoneTypes />
                             <x-crm-emails :$emails :$emailTypes />
-                            <x-crm-addresses :$addresses :$addressTypes :$countries />
+                            <div id="addresses">
+                                <x-crm-addresses :$addresses :$addressTypes :$countries />
+                            </div>
                         </div>
                     </div>
                 </div>

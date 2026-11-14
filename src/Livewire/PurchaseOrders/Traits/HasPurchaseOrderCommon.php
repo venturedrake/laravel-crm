@@ -147,13 +147,17 @@ trait HasPurchaseOrderCommon
 
     protected function messages()
     {
+        $deliveryAddressMessage = ucfirst(__($this->allowedDeliveryAddressIds() === []
+            ? 'laravel-crm::lang.delivery_address_unavailable'
+            : 'laravel-crm::lang.delivery_address_required'));
+
         return array_merge([
             'person_name.required_without_all' => 'The contact person field is required if no organization.',
             'organization_name.required_without_all' => 'The organization field is required if no contact person.',
             'person_id.required_without_all' => 'The contact person field is required if no organization.',
             'organization_id.required_without_all' => 'The organization field is required of no contact person.',
-            'delivery_address.required_if' => ucfirst(__('laravel-crm::lang.delivery_address_required')),
-            'delivery_address.in' => ucfirst(__('laravel-crm::lang.delivery_address_required')),
+            'delivery_address.required_if' => $deliveryAddressMessage,
+            'delivery_address.in' => $deliveryAddressMessage,
         ], $this->lineItemQuantityMessages(), $this->customFieldMessages());
     }
 
@@ -177,6 +181,12 @@ trait HasPurchaseOrderCommon
         $this->pipeline = Pipeline::where('model', get_class(new PurchaseOrder))->first();
         $this->mountPdfTemplate($purchaseOrder);
 
+        $teamAddresses = $this->teamDeliveryAddresses();
+
+        if (! $purchaseOrder && $teamAddresses === []) {
+            $this->delivery_type = 'pickup';
+        }
+
         // On edit the form starts on the PO's own copy of its address, which
         // is not one of the team's - list it first, so the select shows it.
         // A copy that cannot be delivered to is not offered: the PO must be
@@ -192,7 +202,7 @@ trait HasPurchaseOrderCommon
             ];
         }
 
-        foreach ($this->teamDeliveryAddresses() as $address) {
+        foreach ($teamAddresses as $address) {
             $this->deliveryAddresses[] = [
                 'id' => $address->id,
                 'name' => $address->address,
