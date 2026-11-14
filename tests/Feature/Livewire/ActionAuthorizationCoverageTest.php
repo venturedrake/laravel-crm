@@ -144,6 +144,8 @@ const SAFE_METHODS = [
 
     // Delegates to an already-guarded method on the same component.
     'ProductCreate::createProduct',
+    // Applies the captured editor payload, then calls the owning form's guarded save().
+    'SavesWithModelProducts::saveWithProducts',
 ];
 
 /**
@@ -151,7 +153,7 @@ const SAFE_METHODS = [
  * delegate to a guarded method, and so are exempt from the "stay free of persistence"
  * assertion.
  */
-const SAFE_METHOD_DELEGATES = ['ProductCreate::createProduct'];
+const SAFE_METHOD_DELEGATES = ['ProductCreate::createProduct', 'SavesWithModelProducts::saveWithProducts'];
 
 /**
  * Guarded methods whose body contains no PERSISTENCE_SIGNALS entry.

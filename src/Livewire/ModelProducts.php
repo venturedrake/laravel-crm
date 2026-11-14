@@ -481,27 +481,74 @@ class ModelProducts extends Component
             // amount (an API-discounted quote line is not price x quantity),
             // but its tax is still taken at the product's rate, as the
             // services will save it.
-            foreach (array_keys($this->products) as $index) {
-                $this->clampQuantity($index);
-
-                $before = $this->rowBefore($index);
-                $row = $this->products[$index];
-
-                if ($before && (string) ($row['id'] ?? '') !== $before['id']) {
-                    $this->pickProduct($index, $row['id'] ?? null);
-                } elseif ($before && (string) ($row['product_variation_id'] ?? '') !== $before['variation']) {
-                    $this->pickVariation($index, $row['product_variation_id'] ?? null);
-                } elseif ($this->keepsSavedPricing($index)) {
-                    $this->restoreSavedPricing($index);
-                } else {
-                    $this->recalculateRow($index, keepAmount: $this->keepsAmount($index));
-                }
-            }
+            $this->prepareRows();
         }
 
         $this->recalculateTotals();
 
         $this->dispatchProductsUpdated();
+    }
+
+    /**
+     * Prepare the values captured by Save, independently of preview events.
+     * Keep invalid quantities intact so the parent's validation can reject them.
+     */
+    public function prepareForSave(array $rows): array
+    {
+        validator(['products' => $rows], [
+            'products' => 'present|array',
+            'products.*' => 'array',
+        ])->validate();
+
+        $this->updatingProducts($rows);
+        $current = collect($this->products)->keyBy('row_key');
+
+        foreach ($rows as &$row) {
+            $saved = $current->get($row['row_key'] ?? '');
+
+            // An earlier preview may have finished since the browser captured
+            // these rows. Its calculated amount is newer than the captured one.
+            if ($saved
+                && (string) ($saved['id'] ?? '') === (string) ($row['id'] ?? '')
+                && (string) ($saved['product_variation_id'] ?? '') === (string) ($row['product_variation_id'] ?? '')
+                && $this->priceSignature($saved) === $this->priceSignature($row)) {
+                $row['amount'] = $saved['amount'] ?? null;
+            }
+        }
+        unset($row);
+
+        $this->products = $rows;
+        $this->prepareRows(clamp: false);
+        $this->recalculateTotals();
+
+        return [
+            'products' => $this->products,
+            'sub_total' => $this->sub_total,
+            'tax' => $this->tax,
+            'total' => $this->total,
+        ];
+    }
+
+    protected function prepareRows(bool $clamp = true): void
+    {
+        foreach (array_keys($this->products) as $index) {
+            if ($clamp) {
+                $this->clampQuantity($index);
+            }
+
+            $before = $this->rowBefore($index);
+            $row = $this->products[$index];
+
+            if ($before && (string) ($row['id'] ?? '') !== $before['id']) {
+                $this->pickProduct($index, $row['id'] ?? null);
+            } elseif ($before && (string) ($row['product_variation_id'] ?? '') !== $before['variation']) {
+                $this->pickVariation($index, $row['product_variation_id'] ?? null);
+            } elseif ($this->keepsSavedPricing($index)) {
+                $this->restoreSavedPricing($index);
+            } else {
+                $this->recalculateRow($index, keepAmount: $this->keepsAmount($index));
+            }
+        }
     }
 
     /**

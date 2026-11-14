@@ -8,6 +8,7 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Http\Rules\NotBeforeDate;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
+use VentureDrake\LaravelCrm\Livewire\Traits\SavesWithModelProducts;
 use VentureDrake\LaravelCrm\Models\Address;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\PurchaseOrder;
@@ -22,6 +23,7 @@ trait HasPurchaseOrderCommon
     use HasCustomFormFields;
     use HasLineItemQuantityRules;
     use HasPdfTemplate;
+    use SavesWithModelProducts;
     use Toast;
 
     protected PurchaseOrderService $purchaseOrderService;

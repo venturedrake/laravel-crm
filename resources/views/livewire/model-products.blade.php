@@ -1,6 +1,6 @@
 {{-- A deal only seeds the lines of a new quote, so it needs no update right of its own. --}}
 @php($canManageProducts = ! $model || $model instanceof \VentureDrake\LaravelCrm\Models\Deal || (auth()->user()?->can('update', $model) ?? false))
-<x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }}" separator>
+<x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }}" separator data-crm-product-editor>
     @if($canManageProducts && ! $from && class_basename($model ?? '') != 'Delivery')
         <x-slot:menu>
             <x-mary-button wire:click="add" class="btn-sm btn-square" type="button" icon="fas.plus" />
@@ -85,10 +85,7 @@
                                     @if(in_array($from, ['Quote', 'Order']))
                                         <x-mary-input wire:model.blur="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" readonly />
                                     @else
-                                        {{-- Live, not .blur: on Livewire 4 .blur only updates the browser copy and
-                                             sends nothing, so the comment never reached the parent form's save.
-                                             Debounced rather than .live.blur, which would only send on the Save
-                                             click itself and lose the race to the save request. --}}
+                                        {{-- Live updates keep previews current; Save captures the editor separately. --}}
                                         <x-mary-input wire:model.live.debounce.500ms="products.{{ $index }}.comments" label="{{ ucfirst(__('laravel-crm::lang.comments')) }}" />
                                     @endif
                                 @endif    
