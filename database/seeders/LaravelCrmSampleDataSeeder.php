@@ -3827,33 +3827,33 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $templateDefinitions = [
             [
                 'name' => 'Monthly Newsletter',
-                'subject' => 'Your Monthly Update from {{company_name}}',
+                'subject' => 'Your Monthly Update from {company_name}',
                 'preview_text' => 'Catch up on the latest news and updates.',
-                'body' => '<h1>Monthly Newsletter</h1><p>Hello {{first_name}},</p><p>Here are the latest updates from our team this month. We hope you find this helpful.</p><p>Best regards,<br>The Team</p>',
+                'body' => '<h1>Monthly Newsletter</h1><p>Hello {first_name},</p><p>Here are the latest updates from our team this month. We hope you find this helpful.</p><p>Best regards,<br>The Team</p>',
             ],
             [
                 'name' => 'Product Launch Announcement',
-                'subject' => 'Introducing Our Newest Feature — {{product_name}}',
+                'subject' => 'Introducing Our Newest Feature',
                 'preview_text' => 'We\'re excited to announce something big.',
-                'body' => '<h1>New Feature Alert!</h1><p>Hi {{first_name}},</p><p>We\'re thrilled to announce the launch of {{product_name}}. This feature has been designed with you in mind.</p><p>Click below to learn more.</p>',
+                'body' => '<h1>New Feature Alert!</h1><p>Hi {first_name},</p><p>We\'re thrilled to announce the launch of our new reporting dashboard. This feature has been designed with you in mind.</p><p>Click below to learn more.</p>',
             ],
             [
                 'name' => 'Promotional Offer',
-                'subject' => 'Exclusive Offer Just for You — {{discount}}% Off',
+                'subject' => 'Exclusive Offer Just for You — 20% Off',
                 'preview_text' => 'A special deal we\'ve prepared just for our valued customers.',
-                'body' => '<h1>Special Offer</h1><p>Dear {{first_name}},</p><p>As a valued customer we\'d like to offer you {{discount}}% off your next purchase. Use code SAVE at checkout.</p>',
+                'body' => '<h1>Special Offer</h1><p>Dear {first_name},</p><p>As a valued customer we\'d like to offer you 20% off your next purchase. Use code SAVE at checkout.</p>',
             ],
             [
                 'name' => 'Re-engagement Campaign',
-                'subject' => 'We Miss You, {{first_name}}!',
+                'subject' => 'We Miss You, {first_name}!',
                 'preview_text' => 'It\'s been a while — here\'s what you\'ve been missing.',
-                'body' => '<h1>We\'d love to hear from you</h1><p>Hi {{first_name}},</p><p>We noticed it\'s been a while since your last visit. We\'ve made some great improvements and would love to show you.</p>',
+                'body' => '<h1>We\'d love to hear from you</h1><p>Hi {first_name},</p><p>We noticed it\'s been a while since your last visit. We\'ve made some great improvements and would love to show you.</p>',
             ],
             [
                 'name' => 'Customer Feedback Request',
                 'subject' => 'How Are We Doing? Share Your Feedback',
                 'preview_text' => 'Your opinion matters to us.',
-                'body' => '<h1>We Value Your Feedback</h1><p>Hi {{first_name}},</p><p>We\'re always looking to improve. Could you take 2 minutes to answer a short survey? Your input helps us serve you better.</p>',
+                'body' => '<h1>We Value Your Feedback</h1><p>Hi {first_name},</p><p>We\'re always looking to improve. Could you take 2 minutes to answer a short survey? Your input helps us serve you better.</p>',
             ],
         ];
 
@@ -3972,19 +3972,19 @@ class LaravelCrmSampleDataSeeder extends Seeder
         $templateDefinitions = [
             [
                 'name' => 'Appointment Reminder SMS',
-                'body' => 'Hi {{first_name}}, this is a reminder about your appointment tomorrow. Reply STOP to unsubscribe.',
+                'body' => 'Hi {first_name}, this is a reminder about your appointment tomorrow. Reply STOP to unsubscribe.',
             ],
             [
                 'name' => 'Flash Sale Alert',
-                'body' => '🔥 Flash Sale! {{discount}}% off today only. Visit our site now. Reply STOP to unsubscribe.',
+                'body' => '🔥 Flash Sale! 20% off today only. Visit our site now. Reply STOP to unsubscribe.',
             ],
             [
                 'name' => 'Delivery Notification',
-                'body' => 'Hi {{first_name}}, your order #{{order_id}} has been dispatched and is on its way. Reply STOP to unsubscribe.',
+                'body' => 'Hi {first_name}, your recent order has been dispatched and is on its way. Reply STOP to unsubscribe.',
             ],
             [
                 'name' => 'Re-engagement SMS',
-                'body' => 'Hi {{first_name}}, we haven\'t heard from you in a while. Come back and see what\'s new! Reply STOP to opt out.',
+                'body' => 'Hi {first_name}, we haven\'t heard from you in a while. Come back and see what\'s new! Reply STOP to opt out.',
             ],
         ];
 

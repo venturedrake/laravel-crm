@@ -23,6 +23,8 @@ class EmailCampaignShow extends Component
 
     public string $previewHtml = '';
 
+    public string $previewSubject = '';
+
     public function mount(EmailCampaign $campaign): void
     {
         $this->campaign = $campaign;
@@ -54,6 +56,7 @@ class EmailCampaignShow extends Component
             $this->campaign->preview_text ?? '',
             $this->campaign->team_id
         );
+        $this->previewSubject = EmailCampaignMessage::renderPreviewSubject($this->campaign->subject ?? '');
         $this->showPreview = true;
     }
 

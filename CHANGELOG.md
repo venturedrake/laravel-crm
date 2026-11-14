@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+### Fixed
+- **Seeded campaign templates left placeholder braces in the preview (#137).** The editor and both renderers use `{first_name}`, but `laravelcrm:sample-data` wrote `{{first_name}}`, so the preview showed "Hello {Jane},". The seeder now writes `{key}`, and placeholders that never existed (`{{product_name}}`, `{{discount}}`, `{{order_id}}`) are replaced with plain copy. The email and SMS renderers also accept `{{key}}` and replace it whole, so records already seeded that way render correctly without a data change. The unsupported placeholders in existing demo data still show literally until you run `php artisan laravelcrm:sample-data --fresh`. Covered by `tests/Feature/Mail/CampaignPlaceholderRenderingTest.php` and `tests/Feature/Seeders/SampleDataSeederTest.php`
+- **Email campaign subjects were sent with their placeholders unreplaced.** `EmailCampaignMessage::build()` now substitutes the subject. Like the preview text, it is not HTML-escaped. This also fixes preview text being escaped twice
+- **The email campaign and template preview showed no subject and did not substitute the preview text.** The preview drawer now shows the subject, filled in with the sample recipient
+
 ## 2.6.0 - 2026-10-29
 
 ### Changed

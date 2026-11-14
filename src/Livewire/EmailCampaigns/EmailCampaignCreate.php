@@ -29,6 +29,8 @@ class EmailCampaignCreate extends Component
 
     public string $previewHtml = '';
 
+    public string $previewSubject = '';
+
     protected function rules(): array
     {
         return [
@@ -104,6 +106,7 @@ class EmailCampaignCreate extends Component
             $this->body ?? '',
             $this->preview_text ?? ''
         );
+        $this->previewSubject = EmailCampaignMessage::renderPreviewSubject($this->subject ?? '');
         $this->showPreview = true;
     }
 

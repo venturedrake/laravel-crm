@@ -50,18 +50,16 @@ class EmailCampaignMessage extends Mailable
             'company_name' => config('app.name'),
         ];
 
-        $substitute = fn ($text) => preg_replace_callback('/\{(\w+)\}/', function ($m) use ($textData) {
-            return array_key_exists($m[1], $textData) ? e($textData[$m[1]]) : $m[0];
-        }, $text);
+        $bodyContent = $this->rewriteLinks(self::substitutePlaceholders($campaign->body ?? '', $textData));
 
-        $bodyContent = $this->rewriteLinks($substitute($campaign->body));
-
+        // Preview text is escaped by wrapInShell and the subject is a plain-text
+        // header, so neither is HTML-escaped here.
         $rendered = self::wrapInShell(
             $bodyContent,
             self::resolveLogoHtml(),
             self::resolveAddressLine($campaign->team_id),
             $unsubscribeUrl,
-            $substitute($campaign->preview_text ?? '')
+            self::substitutePlaceholders($campaign->preview_text ?? '', $textData, false)
         );
 
         $rendered = self::appendTrackingPixel($rendered, $trackingPixelUrl);
@@ -69,7 +67,7 @@ class EmailCampaignMessage extends Mailable
         $from = config('mail.from.address');
         $fromName = config('mail.from.name');
 
-        $mailable = $this->subject($campaign->subject)
+        $mailable = $this->subject(self::substitutePlaceholders($campaign->subject ?? '', $textData, false))
             ->to($this->recipient->address)
             ->html($rendered);
 
@@ -100,27 +98,56 @@ class EmailCampaignMessage extends Mailable
         }, $html);
     }
 
+    /**
+     * Replace `{key}` placeholders with values from $data. The Mustache-style
+     * `{{key}}` form is also accepted (and replaced whole, braces included) so
+     * templates written that way still render cleanly. Unknown keys are left
+     * untouched.
+     */
+    public static function substitutePlaceholders(string $text, array $data, bool $escape = true): string
+    {
+        return preg_replace_callback('/\{\{\s*(\w+)\s*\}\}|\{(\w+)\}/', function ($m) use ($data, $escape) {
+            $key = ($m[1] ?? '') !== '' ? $m[1] : $m[2];
+
+            if (! array_key_exists($key, $data)) {
+                return $m[0];
+            }
+
+            return $escape ? e($data[$key]) : (string) $data[$key];
+        }, $text);
+    }
+
     public static function renderPreview(string $body, string $previewText = '', ?int $teamId = null): string
     {
-        $sampleData = [
+        $sampleData = self::sampleData();
+
+        return self::wrapInShell(
+            self::substitutePlaceholders($body, $sampleData),
+            self::resolveLogoHtml(),
+            self::resolveAddressLine($teamId),
+            '#',
+            self::substitutePlaceholders($previewText, $sampleData, false)
+        );
+    }
+
+    /**
+     * The subject line as the preview recipient would see it. Not HTML-escaped;
+     * Blade escapes it on output.
+     */
+    public static function renderPreviewSubject(string $subject): string
+    {
+        return self::substitutePlaceholders($subject, self::sampleData(), false);
+    }
+
+    private static function sampleData(): array
+    {
+        return [
             'first_name' => 'Jane',
             'last_name' => 'Smith',
             'full_name' => 'Jane Smith',
             'email' => 'jane.smith@example.com',
             'company_name' => config('app.name'),
         ];
-
-        $bodyContent = preg_replace_callback('/\{(\w+)\}/', function ($m) use ($sampleData) {
-            return array_key_exists($m[1], $sampleData) ? e($sampleData[$m[1]]) : $m[0];
-        }, $body);
-
-        return self::wrapInShell(
-            $bodyContent,
-            self::resolveLogoHtml(),
-            self::resolveAddressLine($teamId),
-            '#',
-            $previewText
-        );
     }
 
     private static function wrapInShell(string $body, string $logoHtml, string $addressLine, string $unsubscribeUrl, string $previewText = ''): string
