@@ -100,8 +100,10 @@ class SmsCampaignMessage
 
     private static function substitute(string $text, array $data): string
     {
-        return preg_replace_callback('/\{(\w+)\}/', function ($m) use ($data) {
-            return array_key_exists($m[1], $data) ? $data[$m[1]] : $m[0];
+        return preg_replace_callback('/\{\{\s*(\w+)\s*\}\}|\{(\w+)\}/', function ($m) use ($data) {
+            $key = $m[1] !== '' ? $m[1] : $m[2];
+
+            return array_key_exists($key, $data) ? $data[$key] : $m[0];
         }, $text);
     }
 

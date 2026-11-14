@@ -50,9 +50,7 @@ class EmailCampaignMessage extends Mailable
             'company_name' => config('app.name'),
         ];
 
-        $substitute = fn ($text) => preg_replace_callback('/\{(\w+)\}/', function ($m) use ($textData) {
-            return array_key_exists($m[1], $textData) ? e($textData[$m[1]]) : $m[0];
-        }, $text);
+        $substitute = fn ($text) => self::substitutePlaceholders($text, $textData);
 
         $bodyContent = $this->rewriteLinks($substitute($campaign->body));
 
@@ -69,7 +67,7 @@ class EmailCampaignMessage extends Mailable
         $from = config('mail.from.address');
         $fromName = config('mail.from.name');
 
-        $mailable = $this->subject($campaign->subject)
+        $mailable = $this->subject(self::substitutePlaceholders($campaign->subject, $textData, false))
             ->to($this->recipient->address)
             ->html($rendered);
 
@@ -110,9 +108,7 @@ class EmailCampaignMessage extends Mailable
             'company_name' => config('app.name'),
         ];
 
-        $bodyContent = preg_replace_callback('/\{(\w+)\}/', function ($m) use ($sampleData) {
-            return array_key_exists($m[1], $sampleData) ? e($sampleData[$m[1]]) : $m[0];
-        }, $body);
+        $bodyContent = self::substitutePlaceholders($body, $sampleData);
 
         return self::wrapInShell(
             $bodyContent,
@@ -121,6 +117,23 @@ class EmailCampaignMessage extends Mailable
             '#',
             $previewText
         );
+    }
+
+    /**
+     * Replace {placeholder} tokens. {{placeholder}} is accepted as well, since
+     * the bundled sample templates were written with double braces.
+     */
+    public static function substitutePlaceholders(string $text, array $data, bool $escape = true): string
+    {
+        return preg_replace_callback('/\{\{\s*(\w+)\s*\}\}|\{(\w+)\}/', function ($m) use ($data, $escape) {
+            $key = $m[1] !== '' ? $m[1] : $m[2];
+
+            if (! array_key_exists($key, $data)) {
+                return $m[0];
+            }
+
+            return $escape ? e($data[$key]) : (string) $data[$key];
+        }, $text);
     }
 
     private static function wrapInShell(string $body, string $logoHtml, string $addressLine, string $unsubscribeUrl, string $previewText = ''): string
