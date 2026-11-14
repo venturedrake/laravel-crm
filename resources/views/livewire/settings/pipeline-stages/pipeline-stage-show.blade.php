@@ -27,7 +27,12 @@
         <div class="grid gap-y-5">
             <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.pipeline')) }}" shadow separator>
                 <div class="grid gap-y-3">
-                    {{ $pipelineStage->pipeline->name }}
+                    @if($pipelineStage->pipeline)
+                        <a class="link" href="{{ route('laravel-crm.pipelines.show', $pipelineStage->pipeline) }}" wire:navigate>{{ $pipelineStage->pipeline->name }}</a>
+                        @can('update', $pipelineStage)
+                            <x-mary-button label="{{ ucfirst(__('laravel-crm::lang.reorder_stages')) }}" link="{{ route('laravel-crm.pipelines.show', $pipelineStage->pipeline) }}" class="btn-sm btn-outline" />
+                        @endcan
+                    @endif
                 </div>
             </x-mary-card>
         </div>

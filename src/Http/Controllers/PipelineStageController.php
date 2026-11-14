@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use VentureDrake\LaravelCrm\Http\Requests\UpdatePipelineStageRequest;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Services\PipelineStageService;
 
 class PipelineStageController extends Controller
 {
@@ -64,7 +65,7 @@ class PipelineStageController extends Controller
      */
     public function update(UpdatePipelineStageRequest $request, PipelineStage $pipelineStage)
     {
-        $pipelineStage->update([
+        app(PipelineStageService::class)->update($pipelineStage, [
             'name' => $request->name,
             'description' => $request->description,
             'pipeline_id' => $request->pipeline_id,
