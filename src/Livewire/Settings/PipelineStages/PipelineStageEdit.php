@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\Traits\HasPipelineStageCommon;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Services\PipelineStageService;
 
 class PipelineStageEdit extends Component
 {
@@ -28,7 +29,7 @@ class PipelineStageEdit extends Component
 
         $this->validate();
 
-        $this->pipelineStage->update([
+        $this->pipelineStage = app(PipelineStageService::class)->update($this->pipelineStage, [
             'name' => $this->name,
             'description' => $this->description,
             'pipeline_id' => $this->pipeline_id,

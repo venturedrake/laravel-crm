@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Livewire\Settings\PipelineStages\Traits\HasPipelineStageCommon;
 use VentureDrake\LaravelCrm\Models\PipelineStage;
+use VentureDrake\LaravelCrm\Services\PipelineStageService;
 
 class PipelineStageCreate extends Component
 {
@@ -26,11 +27,10 @@ class PipelineStageCreate extends Component
 
         $this->validate();
 
-        $pipelineStage = PipelineStage::create([
+        $pipelineStage = app(PipelineStageService::class)->create([
             'name' => $this->name,
             'description' => $this->description,
             'pipeline_id' => $this->pipeline_id,
-            'order' => ((int) PipelineStage::where('pipeline_id', $this->pipeline_id)->max('order')) + 1,
         ]);
 
         $this->success(
