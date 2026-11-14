@@ -12,10 +12,13 @@
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryCreate;
+use VentureDrake\LaravelCrm\Livewire\Deliveries\DeliveryEdit;
+use VentureDrake\LaravelCrm\Livewire\ModelProducts;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\DeliveryProduct;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\Order;
+use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Setting;
@@ -214,4 +217,166 @@ test('a line on a deleted delivery gives its quantity back', function () {
     ]]);
 
     $component->call('save')->assertHasNoErrors();
+});
+
+/*
+ * Issue #135: the edit form showed the delivery's quantities but the save
+ * never wrote them back, and its rows carried no order line to cap against.
+ */
+
+class QtyDeliveryEdit extends DeliveryEdit
+{
+    public function render()
+    {
+        return '<div></div>';
+    }
+}
+
+function deliveryAgainst(Order $order, OrderProduct $orderProduct, float $quantity): array
+{
+    $delivery = Delivery::create(['order_id' => $order->id]);
+    $deliveryProduct = $delivery->deliveryProducts()->create([
+        'order_product_id' => $orderProduct->id,
+        'quantity' => $quantity,
+    ]);
+
+    return [$delivery, $deliveryProduct];
+}
+
+function editRow(DeliveryProduct $deliveryProduct, $quantity): array
+{
+    return [
+        'delivery_product_id' => $deliveryProduct->id,
+        'order_product_id' => $deliveryProduct->order_product_id,
+        'quantity' => $quantity,
+    ];
+}
+
+test('editing a delivery saves the changed quantity', function () {
+    [$order, $orderProduct] = orderReadyToDeliver();
+    [$delivery, $deliveryProduct] = deliveryAgainst($order, $orderProduct, 2.5);
+
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', [editRow($deliveryProduct, 1.25)])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($deliveryProduct->fresh()->quantity)->toBe(1.25)
+        ->and($orderProduct->deliveryRemainder())->toBe(2.25);
+});
+
+test('an edited delivery cannot exceed what the order line has left', function () {
+    [$order, $orderProduct] = orderReadyToDeliver();
+    deliveryAgainst($order, $orderProduct, 2);
+    [$delivery, $deliveryProduct] = deliveryAgainst($order, $orderProduct, 1);
+
+    // 1.5 is all this delivery can hold.
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', [editRow($deliveryProduct, 2) + ['quantity_max' => 9999]])
+        ->call('save')
+        ->assertHasErrors('products.0.quantity');
+
+    expect($deliveryProduct->fresh()->quantity)->toEqual(1);
+});
+
+test('an edited delivery does not count its own quantity against itself', function () {
+    [$order, $orderProduct] = orderReadyToDeliver();
+    [$delivery, $deliveryProduct] = deliveryAgainst($order, $orderProduct, 3);
+
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', [editRow($deliveryProduct, 3)])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', [editRow($deliveryProduct, 3.5)])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($deliveryProduct->fresh()->quantity)->toBe(3.5);
+});
+
+test('an unraised delivery line saves from the edit form after its order line was reduced', function () {
+    [$order, $orderProduct] = orderReadyToDeliver();
+    [$delivery, $deliveryProduct] = deliveryAgainst($order, $orderProduct, 3);
+
+    $orderProduct->update(['quantity' => 2]);
+
+    // The rows exactly as the edit form's line items hand them over.
+    $rows = Livewire::test(ModelProducts::class, [
+        'model' => $delivery, 'creating' => 'Delivery',
+    ])->get('products');
+
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', $rows)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', [editRow($deliveryProduct, 2.5)])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($deliveryProduct->fresh()->quantity)->toBe(2.5);
+
+    // Raising it is still capped.
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', [editRow($deliveryProduct, 3)])
+        ->call('save')
+        ->assertHasErrors('products.0.quantity');
+});
+
+test('lowering an over-delivered line on the edit form is not clamped to the order remainder', function () {
+    [$order, $orderProduct] = orderReadyToDeliver();
+    [$delivery] = deliveryAgainst($order, $orderProduct, 3);
+
+    $orderProduct->update(['quantity' => 2]);
+
+    $component = Livewire::test(ModelProducts::class, [
+        'model' => $delivery, 'creating' => 'Delivery',
+    ]);
+
+    // The line can hold what it already has, not just the order's 2.
+    expect($component->get('products')[0]['quantity_max'])->toEqual(3);
+
+    $component->set('products.0.quantity', 2.5)->assertHasNoErrors();
+    expect($component->get('products')[0]['quantity'])->toBe(2.5);
+
+    // Raising it past what it holds is still clamped.
+    $component->set('products.0.quantity', 3.5)->assertHasErrors('products.0.quantity');
+    expect($component->get('products')[0]['quantity'])->toEqual(3);
+});
+
+test('a delivery line id forged onto the create form is still capped', function () {
+    [$order, $orderProduct] = orderReadyToDeliver();
+    [, $deliveryProduct] = deliveryAgainst($order, $orderProduct, 3);
+
+    $orderProduct->update(['quantity' => 2]);
+
+    // 2.5 is within the forged line's saved 3, but a create form has no
+    // existing lines, so it is held to the order line's 2.
+    Livewire::test(QtyDeliveryCreate::class, [
+        'fromModelType' => 'order', 'fromModelId' => $order->id,
+    ])
+        ->set('products', [[
+            'order_product_id' => $orderProduct->id,
+            'delivery_product_id' => $deliveryProduct->id,
+            'quantity' => 2.5,
+        ]])
+        ->call('save')
+        ->assertHasErrors('products.0.quantity');
+});
+
+test('the delivery edit rows carry the order line and its remaining cap', function () {
+    [$order, $orderProduct] = orderReadyToDeliver();
+    deliveryAgainst($order, $orderProduct, 2);
+    [$delivery, $deliveryProduct] = deliveryAgainst($order, $orderProduct, 1);
+
+    $row = Livewire::test(ModelProducts::class, [
+        'model' => $delivery, 'creating' => 'Delivery',
+    ])->get('products')[0];
+
+    expect($row['delivery_product_id'])->toBe($deliveryProduct->id)
+        ->and($row['order_product_id'])->toBe($orderProduct->id)
+        ->and($row['quantity_max'])->toBe(1.5);
 });

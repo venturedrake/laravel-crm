@@ -22,6 +22,7 @@ function fails(array $products, ?array $drawdown = null): bool
         $drawdown['model'] ?? null,
         $drawdown['relation'] ?? null,
         $drawdown['key'] ?? null,
+        $drawdown['owner'] ?? null,
     );
 
     return Validator::make(
@@ -89,6 +90,30 @@ test('a row does not count its own line against itself', function () {
         'invoice_line_id' => $line->id,
         'quantity' => 3.5,
     ]], invoiceDrawdown()))->toBeFalse();
+});
+
+test('an existing line left at or below its saved quantity is not capped on edit', function () {
+    $orderProduct = orderLineOf(3.5);
+
+    $invoice = Invoice::create(['order_id' => $orderProduct->order_id]);
+    $line = $invoice->invoiceLines()->create(['order_product_id' => $orderProduct->id, 'quantity' => 3]);
+
+    $orderProduct->update(['quantity' => 2]);
+
+    $row = fn ($quantity) => [[
+        'order_product_id' => $orderProduct->id,
+        'invoice_line_id' => $line->id,
+        'quantity' => $quantity,
+    ]];
+    $owned = invoiceDrawdown() + ['owner' => ['invoice_id' => $invoice->id]];
+
+    expect(fails($row(3), $owned))->toBeFalse()
+        ->and(fails($row(2.5), $owned))->toBeFalse()
+        // Raised past what was saved: capped again.
+        ->and(fails($row(3.5), $owned))->toBeTrue()
+        // Not this document's line, or no document at all: no exemption.
+        ->and(fails($row(3), invoiceDrawdown() + ['owner' => ['invoice_id' => $invoice->id + 1]]))->toBeTrue()
+        ->and(fails($row(3), invoiceDrawdown()))->toBeTrue();
 });
 
 test('the remainder survives the float dust of a split drawdown', function () {

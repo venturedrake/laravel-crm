@@ -55,6 +55,30 @@ class OrderProduct extends Model
         return $this->hasMany(InvoiceLine::class);
     }
 
+    public function deliveryProducts()
+    {
+        return $this->hasMany(DeliveryProduct::class);
+    }
+
+    /**
+     * What is left of this line to deliver: its quantity less what
+     * deliveries already carry for it.
+     *
+     * A line on a soft-deleted delivery does not count, as in
+     * QuantityWithinRemaining. Not clamped at zero, so a negative remainder
+     * shows the line has been over-delivered.
+     */
+    public function deliveryRemainder(?int $exceptDeliveryId = null): float
+    {
+        $delivered = $this->deliveryProducts()
+            ->whereHas('delivery')
+            ->when($exceptDeliveryId, fn ($query, $deliveryId) => $query->where('delivery_id', '!=', $deliveryId))
+            ->get(['quantity'])
+            ->sum(fn ($line) => Quantity::toFloat($line->quantity));
+
+        return Quantity::round(Quantity::toFloat($this->quantity) - $delivered);
+    }
+
     /**
      * What is left of this line to invoice: its quantity, amount and tax
      * less what invoices already bill for it. Amount and tax in cents.

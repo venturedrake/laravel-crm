@@ -41,12 +41,19 @@ class QuantityWithinRemaining implements ValidationRule
      *                                         hostage
      * @param  string|null  $drawdownKey  the row key holding the id of the record being edited, whose
      *                                    own quantity must not count against itself
+     * @param  array<string, int>|null  $drawdownOwner  on an edit form, the parent column and id of the
+     *                                                  document being edited (e.g. ['delivery_id' => 7]).
+     *                                                  A line of that document left at or below its saved
+     *                                                  quantity is not checked, so a document whose order
+     *                                                  line was later reduced can still be saved. Null on a
+     *                                                  create form, where no row is an existing line.
      */
     public function __construct(
         protected array $products = [],
         protected ?string $drawdownModel = null,
         protected ?string $drawdownRelation = null,
         protected ?string $drawdownKey = null,
+        protected ?array $drawdownOwner = null,
     ) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
@@ -55,6 +62,10 @@ class QuantityWithinRemaining implements ValidationRule
         $row = $this->products[$index] ?? null;
 
         if (! is_array($row) || $value === null || $value === '') {
+            return;
+        }
+
+        if ($this->notRaised($row, $value)) {
             return;
         }
 
@@ -69,6 +80,30 @@ class QuantityWithinRemaining implements ValidationRule
                 'remaining' => Quantity::format($max),
             ])));
         }
+    }
+
+    /**
+     * Whether the row is an existing line of the document being edited, left
+     * at or below the quantity it was saved with.
+     *
+     * The saved line is looked up within the owning document and against the
+     * row's order line, so a row id forged onto another document's line, or
+     * a create form, gets no exemption.
+     */
+    protected function notRaised(array $row, mixed $value): bool
+    {
+        if ($this->drawdownModel === null || ! $this->drawdownKey || ! $this->drawdownOwner
+            || empty($row[$this->drawdownKey]) || empty($row['order_product_id'])) {
+            return false;
+        }
+
+        $saved = $this->drawdownModel::query()
+            ->whereKey($row[$this->drawdownKey])
+            ->where($this->drawdownOwner)
+            ->where('order_product_id', $row['order_product_id'])
+            ->first();
+
+        return $saved && ! Quantity::greaterThan($value, $saved->quantity);
     }
 
     /**
