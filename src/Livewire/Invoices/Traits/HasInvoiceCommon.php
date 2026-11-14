@@ -6,6 +6,7 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Http\Rules\NotBeforeDate;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasLineItemQuantityRules;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasPdfTemplate;
+use VentureDrake\LaravelCrm\Livewire\Traits\SavesWithModelProducts;
 use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\Pipeline;
@@ -19,6 +20,7 @@ trait HasInvoiceCommon
     use HasCustomFormFields;
     use HasLineItemQuantityRules;
     use HasPdfTemplate;
+    use SavesWithModelProducts;
     use Toast;
 
     protected InvoiceService $invoiceService;

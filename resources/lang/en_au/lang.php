@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'saving' => 'saving…',
+    'product_save_failed' => 'Unable to save. Your entries have been kept. Please try again.',
     'organization' => 'organization',
     'organizations' => 'organizations',
     'create_organization' => 'create organization',

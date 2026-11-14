@@ -380,3 +380,52 @@ test('the delivery edit rows carry the order line and its remaining cap', functi
         ->and($row['order_product_id'])->toBe($orderProduct->id)
         ->and($row['quantity_max'])->toBe(1.5);
 });
+
+test('saveWithProducts uses the captured fractional quantity instead of the parent preview', function () {
+    [$order, $line] = orderReadyToDeliver();
+    $line->update(['quantity' => 2.5]);
+    deliveryAgainst($order, $line, 1.25);
+
+    Livewire::test(QtyDeliveryCreate::class, ['fromModelType' => 'order', 'fromModelId' => $order->id])
+        ->set('products', [['order_product_id' => $line->id, 'quantity' => 1.25]])
+        ->call('saveWithProducts', ['products' => [['order_product_id' => $line->id, 'quantity' => '0.5']]])
+        ->assertHasNoErrors();
+
+    expect($line->deliveryProducts()->orderBy('id')->pluck('quantity')->all())->toBe([1.25, 0.5])
+        ->and($line->fresh()->deliveryRemainder())->toBe(0.75);
+});
+
+test('saveWithProducts validates the payload rather than a valid stale parent', function ($quantity) {
+    [$order, $line] = orderReadyToDeliver();
+
+    Livewire::test(QtyDeliveryCreate::class, ['fromModelType' => 'order', 'fromModelId' => $order->id])
+        ->set('products', [['order_product_id' => $line->id, 'quantity' => 1]])
+        ->call('saveWithProducts', ['products' => [['order_product_id' => $line->id, 'quantity' => $quantity, 'quantity_max' => 999]]])
+        ->assertHasErrors('products.0.quantity');
+
+    expect(Delivery::count())->toBe(0);
+})->with([-1, 1.2345, 99]);
+
+test('saveWithProducts preserves delivery edit line identity and updates its quantity', function () {
+    [$order, $line] = orderReadyToDeliver();
+    [$delivery, $deliveryLine] = deliveryAgainst($order, $line, 2.5);
+
+    Livewire::test(QtyDeliveryEdit::class, ['delivery' => $delivery])
+        ->set('products', [editRow($deliveryLine, 2.5)])
+        ->call('saveWithProducts', ['products' => [editRow($deliveryLine, '0.5')]])
+        ->assertHasNoErrors();
+
+    expect($deliveryLine->fresh()->quantity)->toBe(0.5)
+        ->and($delivery->deliveryProducts()->count())->toBe(1);
+});
+
+test('saveWithProducts still authorizes delivery creation', function () {
+    [$order, $line] = orderReadyToDeliver();
+    $this->actingAsUserWithPermissions(['view crm deliveries']);
+
+    Livewire::test(QtyDeliveryCreate::class, ['fromModelType' => 'order', 'fromModelId' => $order->id])
+        ->call('saveWithProducts', ['products' => [['order_product_id' => $line->id, 'quantity' => 0.5]]])
+        ->assertForbidden();
+
+    expect(Delivery::count())->toBe(0);
+});

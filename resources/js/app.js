@@ -1,4 +1,5 @@
 import './bootstrap';
+import './product-form-submit';
 import Sortable from 'sortablejs';
 import Chart from 'chart.js/auto';
 

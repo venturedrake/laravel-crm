@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'saving' => 'saving…',
+    'product_save_failed' => 'Unable to save. Your entries have been kept. Please try again.',
     'profile' => 'profile',
     'profile_subtitle' => 'Manage your account information, password and security settings.',
     'profile_information' => 'profile information',
