@@ -43,7 +43,7 @@
                     <div class="flex flex-row gap-5">
                         <strong>{{ ucfirst(__('laravel-crm::lang.reference')) }}</strong>
                         <span>
-                        {{ $delivery->reference }}
+                        {{ $delivery->order->reference ?? null }}
                         </span>
                     </div>
                     <div class="flex flex-row gap-5">
