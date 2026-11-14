@@ -57,6 +57,10 @@ class DealService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
+                if (empty($product['id'])) {
+                    continue;
+                }
+
                 $deal->dealProducts()->create([
                     'external_id' => Uuid::uuid4()->toString(),
                     'product_id' => $product['id'],
@@ -91,6 +95,14 @@ class DealService
 
         if (isset($request->products)) {
             foreach ($request->products as $product) {
+                if (empty($product['id'])) {
+                    if (isset($product['deal_product_id'])) {
+                        $deal->dealProducts()->whereKey($product['deal_product_id'])->delete();
+                    }
+
+                    continue;
+                }
+
                 if (isset($product['deal_product_id']) && $dealProduct = $deal->dealProducts()->where('id', $product['deal_product_id'])->first()) {
                     $dealProduct->update([
                         'product_id' => $product['id'],

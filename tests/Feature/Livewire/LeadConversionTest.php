@@ -164,7 +164,8 @@ describe('saving a deal', function () {
         expect(Deal::where('lead_id', $lead->id)->count())->toBe(1)
             ->and($lead->fresh()->converted_at)->not->toBeNull()
             ->and($lead->fresh()->pipelineStage->name)->toBe($stage)
-            ->and($lead->fresh()->deal->lead_id)->toBe($lead->id);
+            ->and($lead->fresh()->deal->lead_id)->toBe($lead->id)
+            ->and($lead->fresh()->deal->dealProducts()->withTrashed()->count())->toBe(0);
     })->with(['Closed Won', 'Won', 'Converted']);
 
     it('leaves the stage alone when the pipeline has no won stage', function () {
