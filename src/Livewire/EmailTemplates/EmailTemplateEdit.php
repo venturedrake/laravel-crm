@@ -28,6 +28,8 @@ class EmailTemplateEdit extends Component
 
     public string $previewHtml = '';
 
+    public string $previewSubject = '';
+
     public function mount(EmailTemplate $template): void
     {
         if ($template->is_system) {
@@ -78,6 +80,7 @@ class EmailTemplateEdit extends Component
             $this->body ?? '',
             $this->preview_text ?? ''
         );
+        $this->previewSubject = EmailCampaignMessage::renderPreviewSubject($this->subject ?? '');
         $this->showPreview = true;
     }
 

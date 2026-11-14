@@ -28,6 +28,8 @@ class EmailTemplateCreate extends Component
 
     public string $previewHtml = '';
 
+    public string $previewSubject = '';
+
     public function mount(): void
     {
         if (request()->has('clone_from')) {
@@ -78,6 +80,7 @@ class EmailTemplateCreate extends Component
             $this->body ?? '',
             $this->preview_text ?? ''
         );
+        $this->previewSubject = EmailCampaignMessage::renderPreviewSubject($this->subject ?? '');
         $this->showPreview = true;
     }
 

@@ -31,6 +31,8 @@ class EmailCampaignEdit extends Component
 
     public string $previewHtml = '';
 
+    public string $previewSubject = '';
+
     public function mount(EmailCampaign $campaign): void
     {
         if (! $campaign->isEditable()) {
@@ -124,6 +126,7 @@ class EmailCampaignEdit extends Component
             $this->preview_text ?? '',
             $this->campaign->team_id
         );
+        $this->previewSubject = EmailCampaignMessage::renderPreviewSubject($this->subject ?? '');
         $this->showPreview = true;
     }
 

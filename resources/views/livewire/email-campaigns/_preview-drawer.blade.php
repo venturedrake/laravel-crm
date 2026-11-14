@@ -21,6 +21,12 @@
                 </button>
             </div>
         </div>
+        @if(($previewSubject ?? '') !== '')
+            <div class="mb-3 text-sm">
+                <span class="font-semibold">{{ ucfirst(__('laravel-crm::lang.subject')) }}:</span>
+                <span>{{ $previewSubject }}</span>
+            </div>
+        @endif
         @if($previewHtml)
             <div class="mx-auto transition-all duration-300 overflow-hidden border border-base-300 rounded-lg"
                  :style="{ maxWidth: device === 'mobile' ? '375px' : device === 'tablet' ? '768px' : '100%' }">

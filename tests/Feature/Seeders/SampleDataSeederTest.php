@@ -9,11 +9,14 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmPipelineTablesSeeder;
 use VentureDrake\LaravelCrm\Database\Seeders\LaravelCrmSampleDataSeeder;
+use VentureDrake\LaravelCrm\Mail\EmailCampaignMessage;
 use VentureDrake\LaravelCrm\Models\Activity;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\DeliveryProduct;
+use VentureDrake\LaravelCrm\Models\EmailCampaign;
+use VentureDrake\LaravelCrm\Models\EmailTemplate;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\Invoice;
@@ -31,8 +34,11 @@ use VentureDrake\LaravelCrm\Models\PurchaseOrder;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\SmsCampaign;
+use VentureDrake\LaravelCrm\Models\SmsTemplate;
 use VentureDrake\LaravelCrm\Models\Task;
 use VentureDrake\LaravelCrm\Models\UserInvitation;
+use VentureDrake\LaravelCrm\Sms\SmsCampaignMessage;
 use VentureDrake\LaravelCrm\Support\PdfTemplateRegistry;
 use VentureDrake\LaravelCrm\Support\Quantity;
 
@@ -346,6 +352,53 @@ it('seeds a coherent 2.4.0 dataset', function () {
     expect($invitations->filter->isPending())->not->toBeEmpty();
     expect($invitations->filter->isExpired())->not->toBeEmpty();
     expect($invitations->whereNull('code'))->toBeEmpty();
+
+    // --- Campaign placeholders use the syntax the renderers support ------------
+
+    // Campaign bodies are rendered with `{key}`; seeded `{{key}}` used to
+    // preview as "Hello {Jane},", and keys outside the supported list are
+    // never substituted at all.
+    $placeholderChecks = [
+        [EmailTemplate::class, ['subject', 'preview_text', 'body'], EmailCampaignMessage::availablePlaceholders()],
+        [EmailCampaign::class, ['subject', 'preview_text', 'body'], EmailCampaignMessage::availablePlaceholders()],
+        [SmsTemplate::class, ['body'], SmsCampaignMessage::availablePlaceholders()],
+        [SmsCampaign::class, ['body'], SmsCampaignMessage::availablePlaceholders()],
+    ];
+
+    foreach ($placeholderChecks as [$model, $columns, $supported]) {
+        $label = class_basename($model);
+        $rows = $model::all();
+        expect($rows)->not->toBeEmpty("{$label} rows were seeded");
+
+        $placeholdersSeen = 0;
+
+        foreach ($rows as $row) {
+            foreach ($columns as $column) {
+                $text = (string) $row->{$column};
+
+                expect(str_contains($text, '{{'))
+                    ->toBeFalse("{$label} {$row->id} {$column} uses single-brace placeholders");
+
+                preg_match_all('/\{(\w+)\}/', $text, $matches);
+                $placeholdersSeen += count($matches[1]);
+
+                foreach ($matches[1] as $key) {
+                    expect(array_key_exists($key, $supported))
+                        ->toBeTrue("{$label} {$row->id} {$column} uses supported placeholder {{$key}}");
+                }
+            }
+        }
+
+        expect($placeholdersSeen)->toBeGreaterThan(0, "{$label} rows use placeholders");
+    }
+
+    $newsletter = EmailTemplate::where('name', 'Monthly Newsletter')->first();
+    expect($newsletter)->not->toBeNull();
+    expect(EmailCampaignMessage::renderPreview($newsletter->body, $newsletter->preview_text ?? ''))
+        ->toContain('Hello Jane,')
+        ->not->toContain('{Jane}');
+    expect(EmailCampaignMessage::renderPreviewSubject($newsletter->subject))
+        ->toBe('Your Monthly Update from '.config('app.name'));
 });
 
 it('replaces rather than accumulates on a second --fresh run', function () {
