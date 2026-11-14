@@ -20,10 +20,16 @@ class InvoiceRelatedIndex extends Component
      * get-link modal ticks "mark as sent", or a Send drawer mails the
      * document -- those writes run in a different Livewire root, so
      * nothing re-renders this table.
+     *
+     * A payment made in a row's Pay drawer has the same problem: the drawer
+     * is its own component, so the row's Paid date, Paid, Due and Overdue
+     * cells, and its Edit/Delete/Pay actions, kept their old values until
+     * the page was reloaded.
      */
     protected $listeners = [
         'crm-get-link-sent' => '$refresh',
         'crm-document-sent' => '$refresh',
+        'refreshInvoice' => '$refresh',
     ];
 
     public Model $model;

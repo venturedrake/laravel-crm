@@ -157,8 +157,9 @@ class InvoicePay extends Component
 
         $this->showPayInvoice = false;
 
-        // The show page's header (Paid badge, Pay button) is another
-        // component and would otherwise wait for a reload.
+        // The show page's header (Paid badge, Pay button) and the invoice
+        // lists' row (Paid, Due, actions) are other components and would
+        // otherwise wait for a reload.
         $this->dispatch('refreshInvoice');
     }
 

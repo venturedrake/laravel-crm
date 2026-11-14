@@ -1,5 +1,5 @@
 <div class="text-left">
-    {{-- Hidden once nothing is left to pay - the parent list does not re-render after a payment. --}}
+    {{-- Hidden once nothing is left to pay. The parent list also re-renders on refreshInvoice and drops this component, but hiding it here does not depend on that. --}}
     @if(! $invoice->fully_paid_at && $amount_due > 0)
     <x-mary-button wire:click="openPay" class="btn-sm btn-success text-white"  label="{{ ucfirst(__('laravel-crm::lang.pay')) }}" />
 
