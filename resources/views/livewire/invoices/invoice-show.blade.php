@@ -1,10 +1,18 @@
 <div class="crm-content">
+    @php
+        $paidCents = (int) $invoice->getRawOriginal('amount_paid');
+        // Older invoices can have a stale stored amount_due, so match the portal's balance.
+        $balanceDueCents = $invoice->fully_paid_at ? 0 : max(0, (int) $invoice->getRawOriginal('total') - $paidCents);
+    @endphp
     {{-- HEADER --}}
     <x-crm-header class="mb-5" progress-indicator >
         <x-slot:title>
             {{ $invoice->title }}
             @if($invoice->sent == 1)
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.sent')) }}" class="badge badge-sm badge-success text-white" />
+            @endif
+            @if($paidCents > 0 && ! $invoice->fully_paid_at)
+                <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.part_paid')) }}" class="badge badge-sm badge-info text-white" />
             @endif
             @if($invoice->fully_paid_at)
                 <x-mary-badge value="{{ ucfirst(__('laravel-crm::lang.paid')) }}" class="badge badge-sm badge-success text-white" />
@@ -247,6 +255,18 @@
                                 {{ money($invoice->total, $invoice->currency) }}
                             </td>
                         </tr>
+                        @if($paidCents > 0 || $invoice->fully_paid_at)
+                            <tr>
+                                <td colspan="3"></td>
+                                <td><strong>{{ ucfirst(__('laravel-crm::lang.amount_paid')) }}</strong></td>
+                                <td>{{ money($paidCents, $invoice->currency) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td><strong>{{ ucfirst(__('laravel-crm::lang.balance_due')) }}</strong></td>
+                                <td>{{ money($balanceDueCents, $invoice->currency) }}</td>
+                            </tr>
+                        @endif
                         </tfoot>
                     </table>
                 </div>

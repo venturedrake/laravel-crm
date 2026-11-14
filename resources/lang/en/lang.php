@@ -954,6 +954,8 @@ return [
     'disconnect' => 'disconnect',
     'connection_failed' => 'connection failed',
     'balance' => 'balance',
+    'amount_paid' => 'amount paid',
+    'part_paid' => 'part paid',
     'balance_due' => 'balance due',
 
     // Portal auth
