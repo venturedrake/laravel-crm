@@ -102,6 +102,11 @@ class DealShow extends Component
 
     public function render()
     {
-        return view('laravel-crm::livewire.deals.deal-show');
+        return view('laravel-crm::livewire.deals.deal-show', [
+            'dealProducts' => $this->deal->dealProducts()
+                ->with(['product', 'productVariation'])
+                ->whereNotNull('product_id')
+                ->get(),
+        ]);
     }
 }

@@ -124,7 +124,7 @@
                     </div>
                 </div>
             </x-mary-card>
-            <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }} ({{ $deal->dealProducts->count() }})" shadow separator>
+            <x-mary-card title="{{ ucfirst(__('laravel-crm::lang.products')) }} ({{ $dealProducts->count() }})" shadow separator>
                 <div class="grid gap-y-5">
                     <table class="table">
                         <thead>
@@ -136,7 +136,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($deal->dealProducts()->with(['product', 'productVariation'])->whereNotNull('product_id')->get() as $dealProduct)
+                            @foreach($dealProducts as $dealProduct)
                                 <tr> 
                                     <td class="px-0">{{ $dealProduct->displayName() }}</td>
                                     <td>{{ money($dealProduct->price ?? null, $dealProduct->currency) }}</td>

@@ -78,7 +78,7 @@ trait HasDealCommon
 
     public $user_owner_id;
 
-    public array $products;
+    public array $products = [];
 
     protected function customFieldsModel(): string
     {
