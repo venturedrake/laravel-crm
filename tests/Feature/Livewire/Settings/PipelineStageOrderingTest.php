@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
@@ -70,7 +69,10 @@ test('each request rechecks permissions and current team', function ($change) {
     $page = Livewire::test(PipelineShow::class, ['pipeline' => $this->pipeline]);
     if ($change === 'team') {
         $user->update(['current_team_id' => 2]);
-        expect(fn () => $page->call('reorderStages', $this->proposed))->toThrow(ModelNotFoundException::class);
+        // Livewire's test broker renders ModelNotFoundException as a 404,
+        // the same way it renders AuthorizationException as a 403.
+        $page->call('reorderStages', $this->proposed)->assertNotFound();
+        expect($this->stages->map(fn ($stage) => $stage->fresh()->order)->all())->toBe([1, 2, 3]);
     } else {
         $user->update(['crm_permissions' => json_encode(['view crm pipelines'])]);
         $page->call('reorderStages', $this->proposed)->assertForbidden();

@@ -6,7 +6,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
@@ -73,9 +72,9 @@ class SendPurchaseOrder extends Component
 
         $pdfLocation = 'laravel-crm/'.strtolower(class_basename($this->purchaseOrder)).'/'.$this->purchaseOrder->id.'/';
 
-        if (! File::exists($pdfLocation)) {
-            Storage::makeDirectory($pdfLocation);
-        }
+        // The PDF is written under storage_path('app/'), not the default disk
+        // root (storage/app/private on Laravel 11+), so create it there.
+        File::ensureDirectoryExists(storage_path('app/'.$pdfLocation));
 
         $this->pdf = 'app/'.$pdfLocation.'purchase-order-'.strtolower($this->purchaseOrder->xeroPurchaseOrder->number ?? $this->purchaseOrder->_id).'.pdf';
 
