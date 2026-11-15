@@ -6,6 +6,10 @@ use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Codeat3\BladeForkAwesome\BladeForkAwesomeServiceProvider;
 use Flasher\Laravel\FlasherServiceProvider;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +19,7 @@ use MallardDuck\BladeBoxicons\BladeBoxiconsServiceProvider;
 use Mary\MaryServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use OwenVoke\BladeFontAwesome\BladeFontAwesomeServiceProvider;
+use Psr\Http\Message\RequestInterface;
 use Spatie\Permission\PermissionServiceProvider;
 use VentureDrake\LaravelCrm\Facades\LaravelCrmFacade;
 use VentureDrake\LaravelCrm\LaravelCrmServiceProvider;
@@ -48,6 +53,20 @@ abstract class TestCase extends OrchestraTestCase
                 return null;
             }
         });
+
+        // The Settings middleware and UpdateController POST to api.laravelcrm.com
+        // whenever there is no install_id row, which is every HTTP test that does not
+        // seed one. Left live, each request waited ~1s on the network, registered a
+        // fake install on the production API, and could fail on a network blip.
+        // Bind a client that rejects every request the way an offline host would;
+        // both call sites already swallow transport failures.
+        $this->app->bind('laravel-crm.version-client', fn () => new Client([
+            'handler' => HandlerStack::create(
+                fn (RequestInterface $request) => Create::rejectionFor(
+                    new ConnectException('Outbound HTTP is disabled in tests.', $request)
+                )
+            ),
+        ]));
     }
 
     protected function getPackageProviders($app)

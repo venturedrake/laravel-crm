@@ -5,7 +5,6 @@ namespace VentureDrake\LaravelCrm\Http\Middleware;
 use App\User;
 use Carbon\Carbon;
 use Closure;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -257,7 +256,8 @@ class Settings
                 Cache::put('crm.version-check-attempted', true, self::VERSION_CHECK_BACKOFF);
 
                 try {
-                    $client = new Client;
+                    // Package-scoped binding (see LaravelCrmServiceProvider::register).
+                    $client = app('laravel-crm.version-client');
                     $url = 'https://api.laravelcrm.com/api/v2/public/version';
 
                     if (Schema::hasColumn('users', 'crm_access')) {

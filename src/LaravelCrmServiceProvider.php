@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm;
 use App\Team;
 use App\User;
 use Dcblogdev\Xero\Models\XeroToken;
+use GuzzleHttp\Client;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
@@ -1294,6 +1295,15 @@ class LaravelCrmServiceProvider extends ServiceProvider
         });
 
         $this->app->alias('laravel-crm.system-check', SystemCheckService::class);
+
+        // The client for the api.laravelcrm.com version check, under a key only
+        // this package uses so tests can bind an offline one. Deliberately not
+        // app(Client::class): a host app may have bound Guzzle's Client with its
+        // own default headers (auth tokens included), proxy or middleware, and
+        // none of that should ride along on our phone-home.
+        $this->app->bind('laravel-crm.version-client', function () {
+            return new Client;
+        });
 
         $this->app->register(LaravelCrmEventServiceProvider::class);
     }

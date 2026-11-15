@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use App\User;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Schema;
@@ -31,7 +30,8 @@ class UpdateController extends Controller
 
         if ($versionSetting && ($versionSetting->updated_at < Carbon::now()->subDays(3) || ! $installIdSetting)) {
             try {
-                $client = new Client;
+                // Package-scoped binding (see LaravelCrmServiceProvider::register).
+                $client = app('laravel-crm.version-client');
                 $url = 'https://api.laravelcrm.com/api/v2/public/version';
 
                 if (Schema::hasColumn('users', 'crm_access')) {
@@ -43,6 +43,9 @@ class UpdateController extends Controller
                 }
 
                 $response = $client->request('POST', $url, [
+                    // Guzzle defaults both to 0 ("wait forever"); match the Settings middleware.
+                    'connect_timeout' => 2,
+                    'timeout' => 3,
                     'json' => [
                         'id' => $installIdSetting->value ?? null,
                         'name' => config('app.name') ?? null,
