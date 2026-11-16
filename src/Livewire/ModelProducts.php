@@ -305,6 +305,7 @@ class ModelProducts extends Component
                     'id' => (string) ($row['id'] ?? ''),
                     'variation' => (string) ($row['product_variation_id'] ?? ''),
                     'price' => $this->priceSignature($row),
+                    'unit_price' => Money::toInteger($row['unit_price'] ?? null),
                 ];
             }
         }
@@ -326,7 +327,7 @@ class ModelProducts extends Component
      * The row as it stood before this request's updates, or null for a row
      * with no key or one the snapshot does not know (a new row).
      *
-     * @return array{id: string, variation: string, price: string}|null
+     * @return array{id: string, variation: string, price: string, unit_price: ?int}|null
      */
     protected function rowBefore($index): ?array
     {
@@ -344,6 +345,23 @@ class ModelProducts extends Component
         $before = $this->rowBefore($index);
 
         return $before !== null && $before['price'] === $this->priceSignature($this->products[$index]);
+    }
+
+    /**
+     * Whether this request (or Save's captured rows) brings a unit price of
+     * its own for the row: one that differs, in cents, from the price the
+     * row had before. The money mask reformatting the old price ("1,200.00"
+     * for 1200) is not a typed price, so a variation picked alongside it
+     * still takes the variation's price.
+     */
+    protected function priceTyped($index): bool
+    {
+        $before = $this->rowBefore($index);
+        $price = $this->products[$index]['unit_price'] ?? null;
+
+        return $before !== null
+            && $price !== null && $price !== ''
+            && Money::toInteger($price) !== $before['unit_price'];
     }
 
     /**
@@ -460,7 +478,10 @@ class ModelProducts extends Component
             if ($updating[1] == 'id') {
                 $this->pickProduct($index, $value);
             } elseif ($updating[1] == 'product_variation_id') {
-                $this->pickVariation($index, $value);
+                // Livewire sets every update in a request before any hook
+                // runs, so a price typed straight after the pick may already
+                // be on the row - and is the price the user wants.
+                $this->pickVariation($index, $value, keepPrice: $this->priceTyped($index));
             } else {
                 // Any other field - the mask reformatting the amount, a
                 // comment typed - leaves the amount alone unless it changed
@@ -542,7 +563,7 @@ class ModelProducts extends Component
             if ($before && (string) ($row['id'] ?? '') !== $before['id']) {
                 $this->pickProduct($index, $row['id'] ?? null);
             } elseif ($before && (string) ($row['product_variation_id'] ?? '') !== $before['variation']) {
-                $this->pickVariation($index, $row['product_variation_id'] ?? null);
+                $this->pickVariation($index, $row['product_variation_id'] ?? null, keepPrice: $this->priceTyped($index));
             } elseif ($this->keepsSavedPricing($index)) {
                 $this->restoreSavedPricing($index);
             } else {
@@ -578,9 +599,10 @@ class ModelProducts extends Component
     }
 
     /**
-     * A variation picked on a row: its price, or the product's.
+     * A variation picked on a row: its price, or the product's - unless
+     * $keepPrice, when a price typed alongside the pick stands.
      */
-    protected function pickVariation($index, $variationId): void
+    protected function pickVariation($index, $variationId, bool $keepPrice = false): void
     {
         // withTrashed, as in the services: a line kept on a since-deleted
         // product still lists its variations, so a pick must stick.
@@ -596,7 +618,9 @@ class ModelProducts extends Component
         if ($product) {
             // Falls back to the product price when the variation has
             // none in the document currency.
-            $this->products[$index]['unit_price'] = (($product->unitPriceFor($variation, $this->currency) ?? 0) / 100);
+            if (! $keepPrice) {
+                $this->products[$index]['unit_price'] = (($product->unitPriceFor($variation, $this->currency) ?? 0) / 100);
+            }
 
             // On a paid invoice a variation at the saved price changes
             // nothing the service reprices, so nothing the form does.

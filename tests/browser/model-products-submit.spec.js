@@ -269,6 +269,15 @@ async function savedVariationLine(page, family, fixture) {
     return result();
 }
 
+// Premium at the 17.50 typed for it: 2.5 x 17.50 = 43.75, plus 10% tax.
+async function expectTypedPrice(page, family, fixture) {
+    const saved = await savedVariationLine(page, family, fixture);
+    expect(saved.lines[0].price).toBe(1750);
+    expect(saved.lines[0].amount).toBe(4375);
+    expect(saved.lines[0].tax_amount).toBe(438);
+    expect(saved.document.subtotal).toBe(4375);
+}
+
 for (const family of ['quote', 'order', 'invoice', 'purchase-order']) {
     for (const edit of [false, true]) {
         test(`${family} ${edit ? 'edit' : 'create'} saves a variation picked just before Save at its own price`, async ({ page }) => {
@@ -303,21 +312,52 @@ for (const edit of [false, true]) {
         expect(saved.document.subtotal).toBe(4998);
     });
 
+    test(`quote ${edit ? 'edit' : 'create'} keeps a price typed after a settled variation pick`, async ({ page }) => {
+        const fixture = await start(page);
+        await readyVariationForm(page, 'quote', fixture, edit);
+        await page.locator(variationSelect).selectOption({ label: 'Premium' });
+        await expect(page.locator(field('unit_price'))).toHaveValue('19.99');
+        await page.locator(field('unit_price')).fill('17.50');
+        await page.getByRole('button', { name: /^Save/ }).click();
+        await expectTypedPrice(page, 'quote', fixture);
+    });
+
+    // Issue #146: a price typed straight after a variation pick, saved
+    // before the pick has settled, must not give way to the variation price.
     test(`quote ${edit ? 'edit' : 'create'} keeps a price typed while a variation pick is in flight`, async ({ page }) => {
         const fixture = await start(page);
         await readyVariationForm(page, 'quote', fixture, edit);
         const { sent, release } = await holdRowUpdate(page);
         await page.locator(variationSelect).selectOption({ label: 'Premium' });
         await sent;
-        await page.locator(field('unit_price')).fill('25.00');
+        await page.locator(field('unit_price')).fill('17.50');
         await page.getByRole('button', { name: /^Save/ }).click();
         await page.waitForTimeout(150);
         release();
-        const saved = await savedVariationLine(page, 'quote', fixture);
-        expect(saved.lines[0].price).toBe(2500);
-        expect(saved.lines[0].amount).toBe(6250);
-        expect(saved.document.subtotal).toBe(6250);
+        await expectTypedPrice(page, 'quote', fixture);
     });
+}
+
+// Issue #146 as seen on a host: an earlier row request still in flight
+// defers the variation pick, so the pick and the typed price reach the
+// server together, after the price's debounce and with Save.
+for (const family of ['quote', 'order', 'invoice', 'purchase-order']) {
+    for (const edit of [false, true]) {
+        test(`${family} ${edit ? 'edit' : 'create'} keeps a price typed with a deferred variation pick`, async ({ page }) => {
+            const fixture = await start(page);
+            await readyVariationForm(page, family, fixture, edit);
+            const { sent, release } = await holdRowUpdate(page);
+            await page.locator(field('comments')).fill('Earlier edit');
+            await sent;
+            await page.locator(variationSelect).selectOption({ label: 'Premium' });
+            await page.locator(field('unit_price')).fill('17.50');
+            await page.waitForTimeout(600);
+            await page.getByRole('button', { name: /^Save/ }).click();
+            await page.waitForTimeout(150);
+            release();
+            await expectTypedPrice(page, family, fixture);
+        });
+    }
 }
 
 test('a quantity put back while its change is in flight saves as put back', async ({ page }) => {

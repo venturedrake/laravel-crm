@@ -156,3 +156,70 @@ test('a price typed after a settled variation pick overrides the variation price
         ->assertSet('tax', 6.25)
         ->assertSet('total', 68.75);
 })->with(['new quote' => false, 'existing quote' => true]);
+
+/**
+ * #146: Premium picked and 17.50 typed straight after, at quantity 2.5 and 10% tax.
+ */
+function assertTypedPriceKept($editor, $premium): void
+{
+    $editor->assertSet('products.0.product_variation_id', $premium->id)
+        ->assertSet('products.0.unit_price', '17.50')
+        ->assertSet('sub_total', 43.75)
+        ->assertSet('tax', 4.38)
+        ->assertSet('total', 48.13);
+}
+
+test('a price sent in the same request as a variation pick is kept', function (bool $existing) {
+    [$editor, $premium] = variationRaceEditor($existing);
+
+    // Livewire sets both updates before running either "updated" hook.
+    $editor->update(updates: [
+        'products.0.product_variation_id' => $premium->id,
+        'products.0.unit_price' => '17.50',
+    ]);
+
+    assertTypedPriceKept($editor, $premium);
+})->with(['new quote' => false, 'existing quote' => true]);
+
+test('a price typed with a variation pick that reaches the server only with save is kept', function (bool $existing) {
+    [$editor, $premium] = variationRaceEditor($existing);
+    $rows = $editor->get('products');
+    $rows[0]['product_variation_id'] = $premium->id;
+    $rows[0]['unit_price'] = '17.50';
+
+    $editor->call('prepareForSave', $rows);
+
+    assertTypedPriceKept($editor, $premium);
+})->with(['new quote' => false, 'existing quote' => true]);
+
+test('a price typed with a variation pick bundled into the save request is kept', function (bool $existing) {
+    [$editor, $premium] = variationRaceEditor($existing);
+    $rows = $editor->get('products');
+    $rows[0]['product_variation_id'] = $premium->id;
+    $rows[0]['unit_price'] = '17.50';
+
+    // The deferred pick and price ride in the same request as Save's call.
+    $editor->update(
+        calls: [['method' => 'prepareForSave', 'params' => [$rows], 'path' => '']],
+        updates: [
+            'products.0.product_variation_id' => $premium->id,
+            'products.0.unit_price' => '17.50',
+        ],
+    );
+
+    assertTypedPriceKept($editor, $premium);
+})->with(['new quote' => false, 'existing quote' => true]);
+
+test('the money mask reformatting the old price with a variation pick is not a typed price', function (bool $existing) {
+    [$editor, $premium] = variationRaceEditor($existing);
+
+    $editor->update(updates: [
+        'products.0.product_variation_id' => $premium->id,
+        'products.0.unit_price' => '12.34',
+    ]);
+
+    $editor->assertSet('products.0.unit_price', 19.99)
+        ->assertSet('sub_total', 49.98)
+        ->assertSet('tax', 5.0)
+        ->assertSet('total', 54.98);
+})->with(['new quote' => false, 'existing quote' => true]);
