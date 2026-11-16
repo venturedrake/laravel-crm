@@ -140,7 +140,49 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
-## Unreleased (after 2.6.0)
+## 2.7.0
+
+This minor release adds email campaign audiences, part payments on invoices, pipeline stage
+ordering and paged boards, and fixes a stored XSS in notes, task descriptions and PDF free text.
+The upgrade is the usual
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+but **take a database backup first**: five of its six migrations change existing rows and have no
+`down()`. Three rewrite invoice and lead data (two of them lossily, see the table); the other
+two soft-delete rows. Only the email campaign audience migration can be rolled back. If you have published views, the XSS fix only reaches you once you re-publish the
+affected views (see [Views to re-publish](#views-to-re-publish)).
+
+If you are still on CRM 1.x, follow [Upgrading from v1](#upgrading-from-v1-go-straight-to-260)
+with `^2.7.0` in place of `^2.6.0`.
+
+### Six migrations
+
+All live in `database/updates/` and run with a plain `php artisan migrate` (or
+`laravelcrm:update`). Each is guarded, so running it again changes nothing.
+
+| Migration | What it does | Reversible |
+|---|---|---|
+| `2026_11_01_000001_backfill_amount_due_on_laravel_crm_invoices_table` | Gives every invoice with a `NULL` balance one | No (see below) |
+| `2026_11_01_000002_settle_legacy_paid_invoices_on_laravel_crm_invoices_table` | Records invoices marked paid as paid in full | **No, lossy** (see below) |
+| `2026_11_06_000001_reopen_leads_whose_deals_were_deleted_on_laravel_crm_leads_table` | Clears `converted_at` on leads whose only deals were deleted | **No, lossy** (see below) |
+| `2026_11_08_000001_remove_orphaned_custom_field_links_on_laravel_crm_field_models_table` | Soft-deletes custom field links and values whose field is gone | No |
+| `2026_11_11_000001_remove_country_only_addresses_on_laravel_crm_addresses_table` | Soft-deletes order and delivery addresses that hold only a country | No |
+| `2026_11_12_000001_add_audience_to_laravel_crm_email_campaigns_table` | Adds `audience_type` (default `all`) and `audience_ids` to `crm_email_campaigns` | Yes |
+
+### New config key
+
+```php
+'board' => [
+    'per_column' => env('LARAVEL_CRM_BOARD_PER_COLUMN', 20),
+],
+```
+
+It reaches an existing install through `mergeConfigFrom`, so you do not need to re-publish
+`config/laravel-crm.php`. See [Boards load one page per column](#boards-load-one-page-per-column).
 
 ### Two invoice balance migrations, neither reversible
 
@@ -238,6 +280,76 @@ WHERE l.converted_at IS NOT NULL
 ```
 
 Use your own table prefix if `db_table_prefix` isn't the default `crm_`.
+
+### Deleted custom fields stop breaking record creation
+
+Deleting a custom field used to leave its links to models live, so creating any record of a linked
+model failed. `FieldObserver` now removes a field's links and values on delete, and
+`2026_11_08_000001_remove_orphaned_custom_field_links_on_laravel_crm_field_models_table`
+soft-deletes the links and values left behind by earlier deletes. Nothing visible is lost: the
+field they belonged to is already gone.
+
+### Country-only order and delivery addresses are removed
+
+The order and delivery forms prefill the country, and an order or delivery saved with its address
+left blank got an address that was only a country. Those are no longer saved, and
+`2026_11_11_000001_remove_country_only_addresses_on_laravel_crm_addresses_table` soft-deletes the
+existing ones. Team (settings) addresses and purchase orders' copies of them are left alone. The
+purchase-order form no longer offers a team address that has no line 1 or city.
+
+### Email campaigns: existing campaigns target everyone, new ones save as drafts
+
+Existing campaigns get `audience_type = all`, so they keep sending to all subscribed contacts. A new
+campaign saves as a draft unless you choose **Send now** and confirm it, and a campaign with an
+empty audience can't be sent.
+
+### Quotes, orders and contacts are harder to delete or change
+
+- An accepted quote, or one with an order, is read-only, and a quote with an order can't be
+  deleted or unaccepted.
+- An order with invoices, deliveries or purchase orders can't be deleted.
+- A tax rate that products still use can't be deleted.
+- `/crm/pipelines/create` is a 404. The pipeline stage create page is back at
+  `/crm/pipeline-stages/create`.
+
+The REST API returns `422` or `403` for the same cases. See the 2.7.0 entries in
+[docs/api.md](api.md).
+
+### Stricter validation on contact details and dates
+
+Person, organization, lead, deal, quote and order forms reject badly formed email addresses and
+phone numbers, and invoices, quotes and purchase orders reject an end date before the start date.
+Stored values are not changed, so a person saved earlier with an invalid email has to be corrected
+the next time they are edited.
+
+### Views to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, the view finder uses your
+frozen copy instead of the package's. This release changes more than a hundred views. The ones that
+matter most:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| `livewire/notes/note-item.blade.php`, `livewire/tasks/task-item.blade.php` | **The XSS fix.** A frozen copy still runs script stored in a note or task description |
+| `quotes/pdf.blade.php`, `orders/pdf.blade.php`, `invoices/pdf.blade.php`, `purchase-orders/pdf.blade.php`, `deliveries/pdf.blade.php` and every file under `pdfs/` | **The XSS fix** for PDF free text, which the public portal also renders in a browser |
+| `livewire/model-products.blade.php`, and the quote, order, invoice, purchase-order and delivery `-create` / `-edit` views | The searchable product picker, and Save sending the current lines. **With a frozen copy, an edit made just before Save can still be lost** |
+| `livewire/invoices/invoice-pay.blade.php`, `invoice-show.blade.php`, `invoice-index.blade.php`, `invoice-related-index.blade.php`, `portal/invoices/show.blade.php` | Part payments, and the amount paid and balance due |
+| `livewire/kanban-board/*`, `livewire/leads/lead-board.blade.php`, `livewire/deals/deal-board.blade.php`, `livewire/quotes/quote-board.blade.php` | Board paging and the shared Send drawer (see the table under [Boards load one page per column](#boards-load-one-page-per-column)) |
+| `livewire/quotes/quote-show.blade.php`, `quote-index.blade.php`, `livewire/orders/order-show.blade.php`, `order-index.blade.php` | The disabled Edit and Delete buttons on locked quotes and orders, with the reason |
+| `livewire/email-campaigns/email-campaign-create.blade.php`, `email-campaign-edit.blade.php`, `email-campaign-show.blade.php` | Audience selection and draft-by-default sends |
+| `livewire/purchase-orders/purchase-order-form.blade.php` | The Pickup default when the team has no delivery address |
+| `livewire/settings/pipelines/pipeline-show.blade.php`, `livewire/settings/pipeline-stages/pipeline-stage-index.blade.php` | Stage ordering and the Create pipeline stage button |
+| `livewire/settings/integrations/xero/xero-connect.blade.php` | The fix for the jQuery error on the Xero page |
+| `livewire/monitors/_monitor-form.blade.php` | The scheme selector fix |
+| `mail/templates/send-quote/subject.blade.php`, `message.blade.php` | The quote number in the email instead of a blank reference |
+
+New views (`components/board-card-menu`, `components/record-link`,
+`livewire/email-campaigns/_audience-send`, `_confirm-send`, `livewire/kanban-board/records`,
+`scripts`, `livewire/settings/pipeline-stages/pipeline-stage-create`,
+`settings/pipeline-stages/create`) are read from the package unless you publish them. Run
+`git diff 2.6.0 2.7.0 --stat -- resources/views` in the package for the full list.
+
+If you publish lang files, many keys were added to `en` and `fa`.
 
 ## 2.6.0
 

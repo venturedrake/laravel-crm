@@ -212,29 +212,28 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
 - **`discount` and `tax` reject negatives.** *(Changed in 2.4.0.)* Both gained `min:0` on
   quote / order / invoice writes. A negative discount was a way to inflate a total; send an
   `adjustments` value instead.
-- **Header `tax` is derived from `line_items`.** *(Changed after 2.6.0 — unreleased.)* A
+- **Header `tax` is derived from `line_items`.** *(Changed in 2.7.0.)* A
   quote / order / invoice's `tax` is now the sum of the tax on the lines it saved, each
   line taxed at its product's rate. `tax` is still accepted on the request (and still
   rejects negatives) but no longer changes the stored document, the same way the
   form-posted totals no longer do. Previously the posted `tax` was stored as sent and could
   disagree with the lines.
-- **Invoice line `amount` is derived from `unit_price × quantity`.** *(Changed after 2.6.0 —
-  unreleased.)* `line_items.*.amount` is still required on invoice writes, but the stored line
-  amount (and its tax) is now worked out from the line's `unit_price` and `quantity`, rounded
+- **Invoice line `amount` is derived from `unit_price × quantity`.** *(Changed in 2.7.0.)*
+  `line_items.*.amount` is still required on invoice writes, but the stored line amount (and its tax) is now worked out from the line's `unit_price` and `quantity`, rounded
   to the cent. A posted amount that differs — e.g. a discounted line — is ignored; send the
   reduced `unit_price` instead. Quote and order lines still store the posted `amount`.
-- **A paid invoice's totals are locked.** *(Changed after 2.6.0 — unreleased.)* Once an invoice
+- **A paid invoice's totals are locked.** *(Changed in 2.7.0.)* Once an invoice
   has any `amount_paid` or a `fully_paid_at`, a `PUT` whose `line_items` would change its
   subtotal or tax is rejected with a `422` on `line_items` and nothing is saved. A line re-sent
   with its `id` and the `product_id`, `unit_price` and `quantity` it was saved with keeps its saved
   amount and tax, so re-sending the lines unchanged saves; a line that differs (or arrives without
   its `id`, which replaces it) is repriced, and the result is judged. Omitting `line_items` always saves the other fields. In every saving case the stored
   totals and balance are left untouched.
-- **An accepted or ordered quote is read-only.** *(Changed after 2.6.0 — unreleased.)* A `PUT`
+- **An accepted or ordered quote is read-only.** *(Changed in 2.7.0.)* A `PUT`
   to a quote that has been accepted, or that has an order made from it, is rejected with a `422`
   on `quote` and nothing is saved — header fields included. Unaccept the quote in the app first;
   once it has an order it cannot be unaccepted.
-- **End dates can't be before start dates.** *(Changed after 2.6.0 — unreleased.)* An invoice
+- **End dates can't be before start dates.** *(Changed in 2.7.0.)* An invoice
   whose `due_date` falls on an earlier day than its `issue_date`, or a quote whose `expire_at`
   falls on an earlier day than its `issue_at`, is rejected with a `422` and nothing is saved.
   Days are compared, not times, so the same day is fine whatever the time of day; `expire_at`
@@ -243,12 +242,12 @@ Quote / order / invoice responses additionally carry `subtotal` and `total` (and
   the start date if only that was sent. A `PUT` that sends neither date is not checked, so a
   record already stored with its dates out of order still takes other updates. A blank date on
   either side is not checked.
-- **A quote with an order cannot be deleted.** *(Changed after 2.6.0 — unreleased.)* A `DELETE`
+- **A quote with an order cannot be deleted.** *(Changed in 2.7.0.)* A `DELETE`
   to a quote that has an order made from it is refused with a `403` and
   `{ "message": "This quote has an order and can't be deleted" }`, and the quote is kept. A
   soft-deleted order does not count.
-- **An order with invoices, deliveries or purchase orders cannot be deleted.** *(Changed after
-  2.6.0 — unreleased.)* A `DELETE` to such an order is refused with a `403` and a message naming
+- **An order with invoices, deliveries or purchase orders cannot be deleted.** *(Changed in
+  2.7.0.)* A `DELETE` to such an order is refused with a `403` and a message naming
   the first match, checked in the order invoices, purchase orders, deliveries — e.g.
   `{ "message": "This order has invoices and can't be deleted" }` — and the order is kept.
   Soft-deleted invoices, deliveries and purchase orders do not count.
