@@ -33,7 +33,7 @@ class PersonEdit extends Component
             foreach ($this->person->phones as $phone) {
                 $this->phones[] = [
                     'id' => $phone->id,
-                    'type' => $phone->type,
+                    'type' => $phone->type ?: 'mobile',
                     'number' => $phone->number,
                     'primary' => $phone->primary,
                 ];
@@ -46,7 +46,7 @@ class PersonEdit extends Component
             foreach ($this->person->emails as $email) {
                 $this->emails[] = [
                     'id' => $email->id,
-                    'type' => $email->type,
+                    'type' => $email->type ?: 'work',
                     'address' => $email->address,
                     'primary' => $email->primary,
                     'subscribed' => $email->subscribed,

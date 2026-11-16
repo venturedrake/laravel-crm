@@ -35,7 +35,7 @@ class OrganizationEdit extends Component
             foreach ($this->organization->phones as $phone) {
                 $this->phones[] = [
                     'id' => $phone->id,
-                    'type' => $phone->type,
+                    'type' => $phone->type ?: 'mobile',
                     'number' => $phone->number,
                     'primary' => $phone->primary,
                 ];
@@ -48,7 +48,7 @@ class OrganizationEdit extends Component
             foreach ($this->organization->emails as $email) {
                 $this->emails[] = [
                     'id' => $email->id,
-                    'type' => $email->type,
+                    'type' => $email->type ?: 'work',
                     'address' => $email->address,
                     'primary' => $email->primary,
                     'subscribed' => $email->subscribed,

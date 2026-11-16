@@ -40,12 +40,12 @@ class LeadEdit extends Component
 
         if ($email = $lead->getPrimaryEmail()) {
             $this->email = $email->address;
-            $this->email_type = $email->type;
+            $this->email_type = $email->type ?: 'work';
         }
 
         if ($phone = $lead->getPrimaryPhone()) {
             $this->phone = $phone->number;
-            $this->phone_type = $phone->type;
+            $this->phone_type = $phone->type ?: 'mobile';
         }
 
         $this->title = $lead->title;

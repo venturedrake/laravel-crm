@@ -40,7 +40,7 @@ trait HasQuoteCommon
 
     public $email;
 
-    public $email_type;
+    public $email_type = 'work';
 
     public $organization_id;
 

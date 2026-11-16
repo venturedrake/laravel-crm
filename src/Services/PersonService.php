@@ -61,7 +61,7 @@ class PersonService
             $person->phones()->create([
                 'external_id' => Uuid::uuid4()->toString(),
                 'number' => $request->phone,
-                'type' => $request->phone_type,
+                'type' => $request->phone_type ?: 'mobile',
                 'primary' => (($request->phone_primary) ? 1 : 0),
             ]);
         }
@@ -70,7 +70,7 @@ class PersonService
             $person->emails()->create([
                 'external_id' => Uuid::uuid4()->toString(),
                 'address' => $request->email,
-                'type' => $request->email_type,
+                'type' => $request->email_type ?: 'work',
                 'primary' => (($request->email_primary) ? 1 : 0),
             ]);
         }
