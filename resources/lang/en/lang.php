@@ -1010,6 +1010,7 @@ return [
     'monitor_status_slow' => 'slow',
     'url' => 'url',
     'website_url' => 'website url',
+    'monitor_url_hint' => 'Hostname and optional path, e.g. example.com/health. The scheme comes from the selector.',
     'friendly_name' => 'friendly name',
     'friendly_name_hint' => 'If you specify a friendly name we’ll display this instead of the url.',
     'method_hint' => 'Which HTTP request method to use.',

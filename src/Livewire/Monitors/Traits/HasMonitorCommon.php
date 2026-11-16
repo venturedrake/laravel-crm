@@ -44,7 +44,7 @@ trait HasMonitorCommon
         return [
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'type' => 'required|string|in:http,https,tcp',
+            'type' => 'required|string|in:http,https',
             'url' => [
                 'required',
                 'string',
@@ -65,12 +65,50 @@ trait HasMonitorCommon
         ];
     }
 
+    /**
+     * The form splits the URL into a scheme selector ($type) and a hostname/path
+     * input ($url). If the user pastes a full http(s) URL into the input, move its
+     * scheme into the selector so the two never disagree. Any other scheme is left
+     * in place so MonitorUrlGuard rejects it.
+     */
+    protected function splitSchemeFromUrl(): void
+    {
+        if (! is_string($this->url)) {
+            return;
+        }
+
+        $this->url = trim($this->url);
+
+        if (preg_match('#^(https?)://#i', $this->url, $matches)) {
+            $this->type = strtolower($matches[1]);
+            $this->url = substr($this->url, strlen($matches[0]));
+        }
+    }
+
+    /**
+     * Validate (and hand to MonitorService) the full URL built from the scheme
+     * selector and the hostname input, so the SSRF guard sees the real target and
+     * the stored type always matches the stored URL's scheme.
+     */
+    protected function prepareForValidation($attributes)
+    {
+        $this->splitSchemeFromUrl();
+
+        $attributes['type'] = $this->type;
+        $attributes['url'] = $this->url;
+
+        if (is_string($this->url) && $this->url !== '' && ! preg_match('#^[a-zA-Z][a-zA-Z0-9+.\-]*://#', $this->url)) {
+            $attributes['url'] = $this->type.'://'.ltrim($this->url, '/');
+        }
+
+        return $attributes;
+    }
+
     public function typeOptions(): array
     {
         return [
-            ['id' => 'http', 'name' => 'HTTP'],
-            ['id' => 'https', 'name' => 'HTTPS'],
-            ['id' => 'tcp', 'name' => 'TCP'],
+            ['id' => 'https', 'name' => 'https'],
+            ['id' => 'http', 'name' => 'http'],
         ];
     }
 

@@ -18,8 +18,12 @@ class MonitorEdit extends Component
         $this->monitor = $monitor;
         $this->name = $monitor->name;
         $this->description = $monitor->description;
-        $this->type = $monitor->type ?? 'https';
+        $this->type = in_array($monitor->type, ['http', 'https'], true) ? $monitor->type : 'https';
         $this->url = $monitor->url;
+        // The form shows the scheme in the selector and only the hostname/path in
+        // the input. The stored URL's scheme wins over a disagreeing stored type,
+        // since that is the request the check actually makes.
+        $this->splitSchemeFromUrl();
         $this->method = $monitor->method ?? 'GET';
         $this->expected_status_code = $monitor->expected_status_code ?? 200;
         $this->interval = $monitor->interval ?? 5;

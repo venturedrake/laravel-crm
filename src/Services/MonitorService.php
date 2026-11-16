@@ -22,6 +22,7 @@ class MonitorService
         if (! empty($data['url'])) {
             $data['url'] = $this->normaliseUrl($data['url']);
             $data['host'] = parse_url($data['url'], PHP_URL_HOST);
+            $data = $this->syncTypeWithUrl($data);
         }
 
         if (! array_key_exists('user_owner_id', $data) || $data['user_owner_id'] === null) {
@@ -35,6 +36,7 @@ class MonitorService
     {
         if (! empty($data['url'])) {
             $data['url'] = $this->normaliseUrl($data['url']);
+            $data = $this->syncTypeWithUrl($data);
         }
 
         if (isset($data['url']) && $data['url'] !== $monitor->url) {
@@ -47,6 +49,21 @@ class MonitorService
         $monitor->update($data);
 
         return $monitor;
+    }
+
+    /**
+     * The URL's scheme is what the check actually requests, so the stored type
+     * must follow it rather than contradict it.
+     */
+    private function syncTypeWithUrl(array $data): array
+    {
+        $scheme = strtolower((string) parse_url($data['url'], PHP_URL_SCHEME));
+
+        if (in_array($scheme, ['http', 'https'], true)) {
+            $data['type'] = $scheme;
+        }
+
+        return $data;
     }
 
     private function normaliseUrl(string $url): string
