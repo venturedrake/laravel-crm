@@ -14,7 +14,7 @@ class XeroConnect extends Component
     use AuthorizesRequests;
     use Toast;
 
-    public $tennantName;
+    public $tenantName;
 
     /** Whether the suggested dcblogdev/laravel-xero package is present at all. */
     public $installed = false;
@@ -80,9 +80,7 @@ class XeroConnect extends Component
             'value' => $this->setting_invoices,
         ]);
 
-        $this->notify(
-            'Updated settings',
-        );
+        $this->success(ucfirst(__('laravel-crm::lang.settings_updated')));
     }
 
     protected function trueFalse($value)
