@@ -88,3 +88,71 @@ test('preparation keeps saved paid invoice pricing', function () {
 
     $editor->call('prepareForSave', $rows)->assertSet('sub_total', 15.0)->assertSet('tax', 1.5);
 });
+
+/**
+ * A $12.34 product taxed at 10% with a $19.99 Premium variation, on one row
+ * at quantity 2.5 - on a new quote, or on an existing quote line.
+ */
+function variationRaceEditor(bool $existing): array
+{
+    $rate = TaxRate::create(['name' => 'GST', 'rate' => 10]);
+    $product = Product::create(['name' => 'Variation product', 'tax_rate_id' => $rate->id]);
+    ProductPrice::create(['product_id' => $product->id, 'currency' => 'USD', 'unit_price' => 12.34]);
+    $premium = $product->productVariations()->create(['name' => 'Premium']);
+    ProductPrice::create(['product_id' => $product->id, 'product_variation_id' => $premium->id, 'currency' => 'USD', 'unit_price' => 19.99]);
+
+    if ($existing) {
+        $quote = Quote::create(['title' => 'Variation quote', 'currency' => 'USD']);
+        $quote->quoteProducts()->create([
+            'product_id' => $product->id, 'quantity' => 2.5, 'price' => 12.34,
+            'amount' => 30.85, 'tax_amount' => 3.09, 'tax_rate' => 10,
+        ]);
+        $editor = Livewire::test(ModelProducts::class, ['model' => $quote, 'currency' => 'USD']);
+    } else {
+        $editor = Livewire::test(ModelProducts::class, ['currency' => 'USD'])
+            ->set('products.0.id', $product->id)
+            ->set('products.0.quantity', 2.5);
+    }
+
+    $editor->assertSet('products.0.unit_price', 12.34);
+
+    return [$editor, $premium];
+}
+
+test('saving after a settled variation pick keeps the variation price', function (bool $existing) {
+    [$editor, $premium] = variationRaceEditor($existing);
+    $editor->set('products.0.product_variation_id', $premium->id);
+
+    $editor->call('prepareForSave', $editor->get('products'))
+        ->assertSet('products.0.product_variation_id', $premium->id)
+        ->assertSet('products.0.unit_price', 19.99)
+        ->assertSet('sub_total', 49.98)
+        ->assertSet('tax', 5.0)
+        ->assertSet('total', 54.98);
+})->with(['new quote' => false, 'existing quote' => true]);
+
+test('saving a variation pick sent with the save reprices the captured old price', function (bool $existing) {
+    [$editor, $premium] = variationRaceEditor($existing);
+    $rows = $editor->get('products');
+    $rows[0]['product_variation_id'] = $premium->id;
+
+    // The captured rows still carry the price from before the pick.
+    $editor->call('prepareForSave', $rows)
+        ->assertSet('products.0.unit_price', 19.99)
+        ->assertSet('sub_total', 49.98)
+        ->assertSet('tax', 5.0)
+        ->assertSet('total', 54.98);
+})->with(['new quote' => false, 'existing quote' => true]);
+
+test('a price typed after a settled variation pick overrides the variation price', function (bool $existing) {
+    [$editor, $premium] = variationRaceEditor($existing);
+    $editor->set('products.0.product_variation_id', $premium->id);
+    $rows = $editor->get('products');
+    $rows[0]['unit_price'] = '25.00';
+
+    $editor->call('prepareForSave', $rows)
+        ->assertSet('products.0.product_variation_id', $premium->id)
+        ->assertSet('sub_total', 62.5)
+        ->assertSet('tax', 6.25)
+        ->assertSet('total', 68.75);
+})->with(['new quote' => false, 'existing quote' => true]);
