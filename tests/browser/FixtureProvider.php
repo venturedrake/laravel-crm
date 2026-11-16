@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use VentureDrake\LaravelCrm\Models\Delivery;
+use VentureDrake\LaravelCrm\Models\Field;
+use VentureDrake\LaravelCrm\Models\FieldModel;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Product;
@@ -55,6 +57,10 @@ class FixtureProvider extends ServiceProvider
                     $pipeline->pipelineStages()->firstOrCreate(['name' => 'Draft'], ['order' => 0]);
                 }
                 app('laravel-crm.settings')->forgetCache();
+                // A Project Code text field on quotes, as in issue #147. Made
+                // before the quotes, so each one gets a value row for it.
+                $projectCode = Field::firstOrCreate(['name' => 'Project Code'], ['type' => 'text']);
+                FieldModel::firstOrCreate(['field_id' => $projectCode->id, 'model' => Quote::class]);
                 $product = Product::create(['name' => 'Fractional product']);
                 $order = Order::create(['currency' => 'USD']);
                 $line = $order->orderProducts()->create(['product_id' => $product->id, 'quantity' => 2.5, 'price' => 10, 'amount' => 25]);
@@ -91,9 +97,27 @@ class FixtureProvider extends ServiceProvider
                     $variationDocuments[$family] = $document->id;
                 }
 
+                // Issue #147: a quote with a Premium line at $19.99 and a
+                // Standard line at $12.34, holding 0.125 and 1000, and a quote
+                // with the Premium line alone. Their own product, so the
+                // fixture routes that find a document by product never
+                // return them.
+                $precision = Product::create(['name' => 'Precision product', 'tax_rate_id' => $rate->id]);
+                ProductPrice::create(['product_id' => $precision->id, 'currency' => 'USD', 'unit_price' => 12.34]);
+                $precisionPremium = $precision->productVariations()->create(['name' => 'Premium']);
+                ProductPrice::create(['product_id' => $precision->id, 'product_variation_id' => $precisionPremium->id, 'currency' => 'USD', 'unit_price' => 19.99]);
+                $twoLineQuote = Quote::create(['currency' => 'USD', 'user_owner_id' => $user->id, 'title' => 'Browser two-line quote']);
+                $twoLineQuote->quoteProducts()->create(['product_id' => $precision->id, 'product_variation_id' => $precisionPremium->id, 'quantity' => 0.125, 'price' => 19.99, 'amount' => 2.50, 'tax_amount' => 25, 'tax_rate' => 10, 'order' => 0]);
+                $twoLineQuote->quoteProducts()->create(['product_id' => $precision->id, 'quantity' => 1000, 'price' => 12.34, 'amount' => 12340, 'tax_amount' => 123400, 'tax_rate' => 10, 'order' => 1]);
+                $twoLineQuote->update(['subtotal' => 12342.50, 'tax' => 1234.25, 'total' => 13576.75]);
+                $oneLineQuote = Quote::create(['currency' => 'USD', 'user_owner_id' => $user->id, 'title' => 'Browser one-line quote']);
+                $oneLineQuote->quoteProducts()->create(['product_id' => $precision->id, 'product_variation_id' => $precisionPremium->id, 'quantity' => 0.125, 'price' => 19.99, 'amount' => 2.50, 'tax_amount' => 25, 'tax_rate' => 10, 'order' => 0]);
+                $oneLineQuote->update(['subtotal' => 2.50, 'tax' => 0.25, 'total' => 2.75]);
+
                 return [
                     'order' => $order->id, 'line' => $line->id, 'product' => $product->id, 'delivery' => $delivery->id, 'documents' => $documents,
                     'variationProduct' => $variationProduct->id, 'premium' => $premium->id, 'variationDocuments' => $variationDocuments,
+                    'projectCode' => $projectCode->id, 'twoLineQuote' => $twoLineQuote->id, 'oneLineQuote' => $oneLineQuote->id,
                 ];
             });
             Route::get('/fixture/delivery/{order}', function (Order $order) {
@@ -118,6 +142,17 @@ class FixtureProvider extends ServiceProvider
             });
             Route::get('/fixture/product-created/{name}', function ($name) {
                 return ['product' => Product::where('name', $name)->exists(), 'quotes' => Quote::count()];
+            });
+            Route::get('/fixture/quote-result/{quote}', function (Quote $quote) {
+                $lines = $quote->quoteProducts()->orderBy('order')->orderBy('id')->get();
+
+                return [
+                    'quantities' => $lines->map(fn ($line) => (float) $line->quantity),
+                    'amounts' => $lines->map(fn ($line) => $line->getRawOriginal('amount')),
+                    'subtotal' => $quote->getRawOriginal('subtotal'), 'tax' => $quote->getRawOriginal('tax'), 'total' => $quote->getRawOriginal('total'),
+                    'projectCode' => $quote->fields()->whereHas('field', fn ($query) => $query->where('name', 'Project Code'))->value('value'),
+                    'updated' => $quote->updated_at->getTimestamp(),
+                ];
             });
             Route::get('/fixture/result/{order}', function (Order $order) {
                 $line = $order->orderProducts()->first();

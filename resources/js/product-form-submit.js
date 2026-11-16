@@ -4,7 +4,182 @@ const requests = new Set();
 const submissions = new Set();
 const clone = value => JSON.parse(JSON.stringify(value));
 
+// The product editor's own component: the one whose root holds the editor.
+function isProductEditor(component) {
+    const el = component?.el;
+    const editor = el?.matches?.('[data-crm-product-editor]') ? el : el?.querySelector?.('[data-crm-product-editor]');
+    return Boolean(editor && editor.closest('[wire\\:id]') === el);
+}
+
+// Issue #147: a response must not undo what the user typed after its request
+// left. When a change replaces a whole array or object - every row changed,
+// which the money mask makes usual once a form has two lines - Livewire 4
+// keeps the update as a reference to the live data, not a copy. When the
+// response comes, it is diffed against that update to tell what the server
+// changed, and by then the update holds whatever was typed since, so the
+// server's older answer reads as a change and is put over it. The server
+// normalising a value ("2" comes back as 2) also reads as a change, and so
+// puts a half-typed quantity back over the rest of it. Livewire 3 goes
+// further: a response that changes any row replaces every row, and a
+// debounced input only reaches its row once the debounce has run.
+//
+// The requests the editor does not send itself make this likely: Livewire
+// bundles a copy of the editor into each of its parent's requests - one
+// carrying a custom field with a preview event, say - and these leave at any
+// moment and come back slowly. So each update is frozen as it was sent, and
+// once a response has been merged, every edit its request did not carry is
+// put back.
+
+// Fields edited in the product editor by component, row and field: `value`
+// is what the field must keep, `seq` tells a later edit of it apart.
+const edits = new Map();
+let editCount = 0;
+// The editor requests in flight, by component.
+const pending = new Map();
+
+function recordEdit(event) {
+    const input = event.target;
+    if (!(input instanceof HTMLElement) || input.readOnly || input.type === 'hidden') return;
+    const editor = input.closest('[data-crm-product-editor]');
+    const binding = editor && [...input.attributes].find(attribute => attribute.name.startsWith('wire:model'));
+    const match = binding?.value.match(/^products\.(\d+)\.([a-z_]+)$/);
+    const root = match && editor.closest('[wire\\:id]');
+    const child = root && window.Livewire.find(root.getAttribute('wire:id'));
+    const rowKey = child?.$get(`products.${match[1]}.row_key`);
+    if (rowKey === undefined || rowKey === null) return;
+    edits.set(`${child.$id}|${rowKey}|${match[2]}`, { id: child.$id, rowKey, field: match[2], value: input.value, seq: ++editCount });
+    keepTyping(input);
+}
+
+// Writing a value into the input being typed in resets its text, even an
+// equal value: a number input reads "2." as 2, so the server's 2 for it puts
+// the text back to "2", and the "5" typed next makes "52". While it has the
+// focus, an edited input skips a write of the value it already holds. The
+// money mask rewrites its input's text on every write anyway, so masked
+// inputs are left to it.
+function keepTyping(input) {
+    const update = input._x_forceModelUpdate;
+    if (typeof update !== 'function' || update.keepsTyping || [...input.attributes].some(attribute => attribute.name.startsWith('x-mask'))) return;
+    const guarded = value => {
+        if (document.activeElement === input && same(value, input.value)) return;
+        update(value);
+    };
+    guarded.keepsTyping = true;
+    input._x_forceModelUpdate = guarded;
+}
+
+// The row index of an edit, or -1 once its row has gone.
+function rowIndex(rows, edit) {
+    return Array.isArray(rows) ? rows.findIndex(row => row?.row_key === edit.rowKey) : -1;
+}
+
+// The value a request's updates give `path`, whether the update is the field
+// itself or a row or array holding it.
+function sentValue(updates, path) {
+    for (const [key, value] of Object.entries(updates ?? {})) {
+        if (key === path) return { value };
+        if (!path.startsWith(`${key}.`)) continue;
+        let node = value;
+        for (const part of path.slice(key.length + 1).split('.')) {
+            if (node === null || typeof node !== 'object') return null;
+            node = node[part];
+        }
+        return { value: node };
+    }
+    return null;
+}
+
+// Freeze the updates as they are sent - the body is built from the same
+// values, so what the server receives is unchanged - and note which edits
+// they carry.
+function sent(component, updates) {
+    for (const [key, value] of Object.entries(updates ?? {})) {
+        if (value !== null && typeof value === 'object') updates[key] = clone(value);
+    }
+    const rows = component.$wire.$get('products');
+    const carried = new Map();
+    for (const [key, edit] of edits) {
+        const index = edit.id === component.id ? rowIndex(rows, edit) : -1;
+        const value = index < 0 ? null : sentValue(updates, `products.${index}.${edit.field}`);
+        if (value && same(value.value, edit.value)) carried.set(key, edit.seq);
+    }
+    const request = { carried };
+    if (!pending.has(component.id)) pending.set(component.id, new Set());
+    pending.get(component.id).add(request);
+    return request;
+}
+
+// Once a request's response has been merged.
+function restoreEdits(component, request) {
+    const wire = component.$wire;
+    const rows = wire.$get('products');
+    for (const [key, edit] of edits) {
+        if (edit.id !== component.id) continue;
+        const index = rowIndex(rows, edit);
+        if (index < 0) {
+            edits.delete(key);
+            continue;
+        }
+        const path = `products.${index}.${edit.field}`;
+        const current = wire.$get(path);
+        if (same(current, edit.value)) continue;
+        if (request.carried.get(key) === edit.seq) {
+            // The server changed the edit it was sent - held it to a
+            // maximum, say. That answer is what an older response must not
+            // undo.
+            edit.value = clone(current ?? null);
+        } else {
+            // The server has not seen the edit. Put it back locally; the
+            // next request sends it.
+            wire.$set(path, edit.value, false);
+        }
+    }
+}
+
+// With nothing in flight, an edit the server already holds is done with.
+function settle(component, request) {
+    const requests = pending.get(component.id);
+    requests?.delete(request);
+    if (requests?.size) return;
+    const rows = component.$wire.$get('products');
+    const canonical = component.canonical?.products;
+    for (const [key, edit] of edits) {
+        if (edit.id !== component.id) continue;
+        const index = rowIndex(rows, edit);
+        const held = Array.isArray(canonical) ? canonical[index]?.[edit.field] : rows?.[index]?.[edit.field];
+        if (index < 0 || same(held, edit.value)) edits.delete(key);
+    }
+}
+
+function installEditGuard() {
+    document.addEventListener('input', recordEdit, true);
+    document.addEventListener('change', recordEdit, true);
+    if (typeof window.Livewire.interceptMessage === 'function') {
+        // Livewire 4: put edits back straight after the merge, before the
+        // morph. onFinish runs for every message, skipped or cancelled too.
+        window.Livewire.interceptMessage(({ message, onSuccess, onFinish }) => {
+            if (!isProductEditor(message.component)) return;
+            const request = sent(message.component, message.updates);
+            onSuccess(({ onSync }) => onSync(() => restoreEdits(message.component, request)));
+            onFinish(() => settle(message.component, request));
+        });
+        return;
+    }
+    // Livewire 3: the commit's updates are the ones its response is merged
+    // against, and succeed runs once it has been.
+    window.Livewire.hook('commit', ({ component, commit, succeed, fail }) => {
+        if (!isProductEditor(component)) return;
+        const request = sent(component, commit.updates);
+        succeed(() => {
+            restoreEdits(component, request);
+            settle(component, request);
+        });
+        fail(() => settle(component, request));
+    });
+}
+
 function installRequestHook() {
+    installEditGuard();
     window.Livewire.hook('request', ({ payload, succeed, fail }) => {
         const body = typeof payload === 'string' ? JSON.parse(payload) : payload;
         const components = body?.components ?? [];

@@ -380,3 +380,147 @@ test('a quantity put back while its change is in flight saves as put back', asyn
     expect(saved.lines[0].quantity).toBe(2.5);
     expect(saved.lines[0].amount).toBe(3085);
 });
+
+// Issue #147: on a two-line quote, a custom-field change followed by quick
+// quantity typing must not put the quantities back before Save. The field
+// goes to the server with the parent's next request, which also carries a
+// copy of the product editor holding every row; when that request answers
+// after newer quantities were typed, its older rows must not replace them.
+test.describe('issue #147: custom field and quantities on a quote', () => {
+    const quantity = index => `input[wire\\:model\\.live\\.debounce\\.500ms="products.${index}.quantity"]`;
+    const projectCode = fixture => `input[wire\\:model="fields.${fixture.projectCode}"]`;
+    const quoteResult = async (page, id) => (await page.request.get(`/fixture/quote-result/${id}`)).json();
+
+    // Every Livewire request and response, attached to the test's report.
+    function logLivewire(page) {
+        const log = [];
+        page.on('request', request => {
+            if (request.method() !== 'POST' || !request.url().includes('/livewire')) return;
+            log.push({ at: Date.now(), url: request.url(), request: request.postDataJSON() });
+        });
+        page.on('response', async response => {
+            if (response.request().method() !== 'POST' || !response.url().includes('/livewire')) return;
+            log.push({ at: Date.now(), url: response.url(), response: await response.json().catch(error => String(error)) });
+        });
+        return log;
+    }
+
+    // Hold the first request that carries a custom-field update until released.
+    async function holdFieldUpdate(page) {
+        let release;
+        const held = new Promise(resolve => { release = resolve; });
+        let started;
+        const sent = new Promise(resolve => { started = resolve; });
+        let holding = true;
+        await page.route('**/livewire*/**', async route => {
+            const body = route.request().method() === 'POST' ? route.request().postDataJSON() : null;
+            if (holding && body?.components?.some(c => Object.keys(c.updates ?? {}).some(key => key.startsWith('fields.')))) {
+                holding = false;
+                started(body);
+                await held;
+            }
+            await route.continue();
+        });
+        return { sent, release };
+    }
+
+    async function readyQuote(page, id) {
+        await page.goto(`/fixture/form/quote/${id}`);
+        await expect(page.locator('[data-crm-product-editor]')).toBeVisible();
+        await page.evaluate(async () => {
+            const form = document.querySelector('form[x-data="crmProductForm"]');
+            const parent = Livewire.find(form.closest('[wire\\:id]').getAttribute('wire:id'));
+            await parent.$set('organization_name', 'Browser customer', false);
+        });
+        await page.waitForTimeout(800);
+    }
+
+    async function settled(page) {
+        await page.waitForLoadState('networkidle');
+        await page.waitForTimeout(700);
+        await page.waitForLoadState('networkidle');
+    }
+
+    async function saved(page, id, before) {
+        await expect.poll(async () => (await quoteResult(page, id)).updated, { timeout: 10000 }).not.toBe(before.updated);
+        return quoteResult(page, id);
+    }
+
+    for (const timing of ['before', 'after']) {
+        test(`quantities typed while the custom-field request is pending survive its response arriving ${timing} Save`, async ({ page }, testInfo) => {
+            const fixture = await start(page);
+            const log = logLivewire(page);
+            try {
+                await readyQuote(page, fixture.twoLineQuote);
+                await expect(page.locator(quantity(0))).toHaveValue('0.125');
+                await expect(page.locator(quantity(1))).toHaveValue('1000');
+                const before = await quoteResult(page, fixture.twoLineQuote);
+                const { sent, release } = await holdFieldUpdate(page);
+                // Project Code, then 2.5 and 3: their preview event sends the
+                // field with the parent's request, which is held.
+                await page.locator(projectCode(fixture)).fill('RETEST-1611-B');
+                await page.locator(quantity(0)).fill('2.5');
+                await page.locator(quantity(1)).fill('3');
+                const field = await sent;
+                expect(field.components.map(c => JSON.parse(c.snapshot).memo.name)).toContain('crm-model-products');
+                // Typed while it is pending.
+                await page.locator(quantity(0)).fill('1.25');
+                await page.locator(quantity(1)).fill('2');
+                await page.waitForTimeout(700);
+                if (timing === 'before') {
+                    release();
+                    await settled(page);
+                    await expect(page.locator(quantity(0))).toHaveValue('1.25');
+                    await expect(page.locator(quantity(1))).toHaveValue('2');
+                    await page.getByRole('button', { name: /^Save/ }).click();
+                } else {
+                    await page.getByRole('button', { name: /^Save/ }).click();
+                    await page.waitForTimeout(150);
+                    release();
+                }
+                const result = await saved(page, fixture.twoLineQuote, before);
+                expect(result.projectCode).toBe('RETEST-1611-B');
+                expect(result.quantities).toEqual([1.25, 2]);
+                // 1.25 x 19.99 = 24.99 and 2 x 12.34 = 24.68; tax 2.50 + 2.47.
+                expect(result.amounts).toEqual([2499, 2468]);
+                expect([result.subtotal, result.tax, result.total]).toEqual([4967, 497, 5464]);
+            } finally {
+                await testInfo.attach('livewire-log', { body: JSON.stringify(log, null, 2), contentType: 'application/json' });
+            }
+        });
+    }
+
+    test('quantities alone on a two-line quote save as typed', async ({ page }) => {
+        const fixture = await start(page);
+        await readyQuote(page, fixture.twoLineQuote);
+        const before = await quoteResult(page, fixture.twoLineQuote);
+        await page.locator(quantity(0)).fill('2.5');
+        await page.locator(quantity(1)).fill('3');
+        await settled(page);
+        await expect(page.locator(quantity(0))).toHaveValue('2.5');
+        await expect(page.locator(quantity(1))).toHaveValue('3');
+        await page.getByRole('button', { name: /^Save/ }).click();
+        const result = await saved(page, fixture.twoLineQuote, before);
+        expect(result.quantities).toEqual([2.5, 3]);
+        // 2.5 x 19.99 = 49.98 and 3 x 12.34 = 37.02; tax 5.00 + 3.70.
+        expect(result.amounts).toEqual([4998, 3702]);
+        expect([result.subtotal, result.tax, result.total]).toEqual([8700, 870, 9570]);
+    });
+
+    test('a custom field and a quantity on a one-line quote save together', async ({ page }) => {
+        const fixture = await start(page);
+        await readyQuote(page, fixture.oneLineQuote);
+        const before = await quoteResult(page, fixture.oneLineQuote);
+        await page.locator(projectCode(fixture)).fill('RETEST-1611');
+        await page.locator(quantity(0)).fill('7.5');
+        await settled(page);
+        await expect(page.locator(quantity(0))).toHaveValue('7.5');
+        await page.getByRole('button', { name: /^Save/ }).click();
+        const result = await saved(page, fixture.oneLineQuote, before);
+        expect(result.projectCode).toBe('RETEST-1611');
+        expect(result.quantities).toEqual([7.5]);
+        // 7.5 x 19.99 = 149.93 (149.925, rounded half up), plus 10% tax.
+        expect(result.amounts).toEqual([14993]);
+        expect([result.subtotal, result.tax, result.total]).toEqual([14993, 1499, 16492]);
+    });
+});
