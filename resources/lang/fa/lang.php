@@ -938,6 +938,7 @@ return [
     'monitor_status_slow' => 'کند',
     'url' => 'آدرس URL',
     'website_url' => 'آدرس وب‌سایت',
+    'monitor_url_hint' => 'نام میزبان و مسیر اختیاری، مثلاً example.com/health. پروتکل از انتخابگر گرفته می‌شود.',
     'friendly_name' => 'نام مستعار',
     'friendly_name_hint' => 'اگر نام مستعار مشخص کنید، به جای URL نمایش می‌دهیم.',
     'method_hint' => 'از کدام متد درخواست HTTP استفاده شود.',

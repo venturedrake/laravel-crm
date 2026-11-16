@@ -1,7 +1,7 @@
 <div class="grid lg:grid-cols-2 gap-5">
-    <x-mary-input wire:model="url" label="{{ ucfirst(__('laravel-crm::lang.website_url')) }}" placeholder="example.com" class="lg:col-span-2">
+    <x-mary-input wire:model="url" label="{{ ucfirst(__('laravel-crm::lang.website_url')) }}" placeholder="example.com" hint="{{ __('laravel-crm::lang.monitor_url_hint') }}" class="lg:col-span-2">
         <x-slot:prepend>
-            <x-mary-select wire:model="type" :options="[['id' => 'https', 'name' => 'https'], ['id' => 'http', 'name' => 'http']]" class="join-item" />
+            <x-mary-select wire:model="type" :options="$this->typeOptions()" class="join-item" />
         </x-slot:prepend>
     </x-mary-input>
     <x-mary-input wire:model="name" label="{{ ucfirst(__('laravel-crm::lang.friendly_name')) }}" hint="{{ __('laravel-crm::lang.friendly_name_hint') }}" />
