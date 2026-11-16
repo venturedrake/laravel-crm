@@ -7,8 +7,10 @@ use VentureDrake\LaravelCrm\Models\Delivery;
 use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Product;
+use VentureDrake\LaravelCrm\Models\ProductPrice;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Tests\Stubs\User;
 
 class FixtureProvider extends ServiceProvider
@@ -70,7 +72,29 @@ class FixtureProvider extends ServiceProvider
                     $documents[$family] = $document->id;
                 }
 
-                return ['order' => $order->id, 'line' => $line->id, 'product' => $product->id, 'delivery' => $delivery->id, 'documents' => $documents];
+                // A $12.34 product taxed at 10% with a $19.99 Premium variation,
+                // and per family a document holding 2.5 of it at the product price.
+                $rate = TaxRate::firstOrCreate(['name' => 'GST'], ['rate' => 10]);
+                $variationProduct = Product::create(['name' => 'Variation product', 'tax_rate_id' => $rate->id]);
+                ProductPrice::create(['product_id' => $variationProduct->id, 'currency' => 'USD', 'unit_price' => 12.34]);
+                $premium = $variationProduct->productVariations()->create(['name' => 'Premium']);
+                ProductPrice::create(['product_id' => $variationProduct->id, 'product_variation_id' => $premium->id, 'currency' => 'USD', 'unit_price' => 19.99]);
+                $variationDocuments = [];
+                foreach (array_diff_key(self::families(), ['deal' => true]) as $family => [$type, $relation]) {
+                    $class = 'VentureDrake\\LaravelCrm\\Models\\'.$type;
+                    $attributes = ['currency' => 'USD', 'user_owner_id' => $user->id];
+                    if (in_array($type, ['Quote', 'Order'])) {
+                        $attributes['title'] = 'Browser variation document';
+                    }
+                    $document = $class::create($attributes);
+                    $document->$relation()->create(['product_id' => $variationProduct->id, 'quantity' => 2.5, 'price' => 12.34, 'amount' => 30.85, 'tax_amount' => 3.09, 'tax_rate' => 10]);
+                    $variationDocuments[$family] = $document->id;
+                }
+
+                return [
+                    'order' => $order->id, 'line' => $line->id, 'product' => $product->id, 'delivery' => $delivery->id, 'documents' => $documents,
+                    'variationProduct' => $variationProduct->id, 'premium' => $premium->id, 'variationDocuments' => $variationDocuments,
+                ];
             });
             Route::get('/fixture/delivery/{order}', function (Order $order) {
                 return view()->file(__DIR__.'/page.blade.php', ['component' => 'crm-delivery-create', 'parameters' => ['fromModelType' => 'order', 'fromModelId' => $order->id]]);
