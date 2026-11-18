@@ -17,6 +17,7 @@ use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Phone;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 use VentureDrake\LaravelCrm\Support\Modules;
 use VentureDrake\LaravelCrm\Support\PdfContactDetails;
 
@@ -65,7 +66,7 @@ class SettingEdit extends Component
         'general' => [
             'organizationName', 'vatNumber', 'logoFile', 'logo', 'country', 'language',
             'currency', 'timezone', 'dateFormat', 'timeFormat', 'taxName', 'taxRate',
-            'pdfContactDetails', 'showRelatedActivity', 'dynamicProducts',
+            'pdfContactDetails', 'showRelatedActivity', 'activityOrder', 'dynamicProducts',
             'phones', 'emails', 'addresses',
         ],
         'leads' => ['leadPrefix'],
@@ -161,6 +162,8 @@ class SettingEdit extends Component
 
     public $showRelatedActivity;
 
+    public $activityOrder = ActivityOrder::LOGGED;
+
     public $dynamicProducts;
 
     public $taxName;
@@ -196,6 +199,7 @@ class SettingEdit extends Component
             'timezone' => 'required',
             'dateFormat' => 'required',
             'timeFormat' => 'required',
+            'activityOrder' => 'required|in:'.ActivityOrder::LOGGED.','.ActivityOrder::OCCURRED,
             'taxRate' => 'nullable|numeric|min:0|max:100',
             'logoFile' => 'nullable|image|max:1024',
         ];
@@ -262,6 +266,7 @@ class SettingEdit extends Component
         $this->dateFormat = app('laravel-crm.settings')->get('date_format');
         $this->timeFormat = app('laravel-crm.settings')->get('time_format');
         $this->showRelatedActivity = (app('laravel-crm.settings')->get('show_related_activity')) ? true : false;
+        $this->activityOrder = ActivityOrder::setting();
         $this->dynamicProducts = (app('laravel-crm.settings')->get('dynamic_products')) ? true : false;
         $this->taxName = app('laravel-crm.settings')->get('tax_name');
         $this->taxRate = app('laravel-crm.settings')->get('tax_rate');
@@ -468,6 +473,7 @@ class SettingEdit extends Component
 
         app('laravel-crm.settings')->set('dynamic_products', $this->dynamicProducts);
         app('laravel-crm.settings')->set('show_related_activity', $this->showRelatedActivity);
+        app('laravel-crm.settings')->set('activity_order', $this->activityOrder);
 
         $related = app('laravel-crm.settings')->first('team');
 

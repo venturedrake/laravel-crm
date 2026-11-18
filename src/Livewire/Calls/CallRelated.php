@@ -9,6 +9,7 @@ use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Livewire\Traits\HasGuestSearch;
 use VentureDrake\LaravelCrm\Models\Call;
 use VentureDrake\LaravelCrm\Models\Person;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 
 class CallRelated extends Component
 {
@@ -131,7 +132,7 @@ class CallRelated extends Component
         }
 
         if (count($callIds) > 0) {
-            $this->calls = Call::whereIn('id', $callIds)->latest()->get();
+            $this->calls = ActivityOrder::applyToRecords(Call::whereIn('id', $callIds))->get();
         } else {
             $this->calls = collect();
         }

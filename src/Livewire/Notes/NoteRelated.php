@@ -8,6 +8,7 @@ use Livewire\Component;
 use Mary\Traits\Toast;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Note;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 
 class NoteRelated extends Component
 {
@@ -68,7 +69,7 @@ class NoteRelated extends Component
         $relatedIds = [];
 
         if ($this->pinned) {
-            $this->notes = $this->model->notes()->where('pinned', 1)->latest()->get();
+            $this->notes = ActivityOrder::applyToRecords($this->model->notes()->where('pinned', 1))->get();
         } else {
             $noteIds = [];
 
@@ -102,7 +103,7 @@ class NoteRelated extends Component
             }
 
             if (count($noteIds) > 0) {
-                $this->notes = Note::whereIn('id', $noteIds)->latest()->get();
+                $this->notes = ActivityOrder::applyToRecords(Note::whereIn('id', $noteIds))->get();
             }
         }
 
