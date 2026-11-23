@@ -31,6 +31,7 @@ class LeadService
 
     public function create($request, $person = null, $organization = null, $client = null)
     {
+        $user_owner_id = (int)$request->user_owner_id === 0 ? null : $request->user_owner_id;
         $lead = Lead::create([
             'external_id' => Uuid::uuid4()->toString(),
             'person_id' => $person->id ?? null,
@@ -42,7 +43,7 @@ class LeadService
             'currency' => $request->currency,
             'lead_status_id' => 1,
             'lead_source_id' => $request->lead_source_id ?? null,
-            'user_owner_id' => $request->user_owner_id,
+            'user_owner_id' => $user_owner_id,
             'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
@@ -79,6 +80,7 @@ class LeadService
 
     public function update($request, Lead $lead, $person = null, $organization = null, $client = null)
     {
+        $user_owner_id = (int)$request->user_owner_id === 0 ? null : $request->user_owner_id;
         $lead->update([
             'person_id' => $person->id ?? null,
             'organization_id' => $organization->id ?? null,
@@ -88,7 +90,7 @@ class LeadService
             'amount' => $request->amount,
             'currency' => $request->currency,
             'lead_source_id' => $request->lead_source_id ?? null,
-            'user_owner_id' => $request->user_owner_id,
+            'user_owner_id' => $user_owner_id,
             'pipeline_id' => optional(PipelineStage::find($request->pipeline_stage_id))->pipeline?->id,
             'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
