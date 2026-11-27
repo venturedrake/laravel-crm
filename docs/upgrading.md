@@ -12,6 +12,44 @@ Two things to read: **How to update** below, which is the same every release, an
 
 ---
 
+## Secure CRM attachment storage before upgrading
+
+Livewire stages files before the CRM validates an attachment. If the host has served its
+temporary upload directory publicly, block anonymous access to that directory at the web
+server, CDN or object store immediately. Preserve access logs and quarantine suspect files
+outside the web root before cleanup. A disk change affects future uploads only.
+
+1. **Set the temporary disk in the consuming application.** In the existing
+   `temporary_file_upload` section of `config/livewire.php`, set `'disk' => 'local'` or the
+   name of a private shared disk. If the config file is missing, publish it with
+   `php artisan livewire:publish --config`. This setting applies to every Livewire uploader
+   in the host. Check the resolved root in `config/filesystems.php` against the document
+   root, public symlinks and web-server aliases. For object storage, deny anonymous reads
+   to the temporary prefix through both the bucket and any CDN. [Livewire upload configuration](https://livewire.laravel.com/docs/3.x/uploads#configuration)
+2. **Choose the permanent disk before rollout.** New CRM attachments use
+   `laravel-crm.attachments.disk`. An unset or blank value uses `local`. Set
+   `LARAVEL_CRM_ATTACHMENTS_DISK` to another private disk if needed. On multi-node or
+   ephemeral hosts, select durable shared storage for attachments and make staged uploads
+   available to the node that saves them. Verify the permanent disk's access settings too.
+   Existing attachments download from their recorded disk. Review any formerly public
+   attachments and cached copies separately. Rebuild cached configuration on every node.
+3. **Update Livewire with the package.** The attachment policy uses file contents to
+   validate the MIME type and independently checks the submitted filename extension.
+   The package requires Livewire 3.8.6 or later on 3.x, or 4.4.8 or later on 4.x. Both
+   minimums detect the MIME type from the staged bytes, including on remote disks.
+   If Composer has locked an earlier release, include
+   `livewire/livewire` in the package update. [Laravel file validation](https://laravel.com/docs/12.x/validation#rule-mimes)
+4. **Verify the deployed paths.** Upload a uniquely named, harmless text document through
+   the CRM Files tab. In the browser debugger, pause at the upload success callback just
+   before `$wire.save()`. Locate the actual staged object on the private disk and verify
+   its contents. From a signed-out client, request the corresponding unsigned public URL
+   using the object's storage name. Check the old public temporary URL with a known,
+   harmless file present there as well. Both requests should deny access or return 404.
+   Resume the save, download the attachment from the CRM, and compare the downloaded
+   bytes with the original. Remove the test documents after verification.
+
+---
+
 ## How to update (local)
 
 ```bash

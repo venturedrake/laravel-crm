@@ -839,6 +839,7 @@ return [
     'add_meeting' => 'add meeting',
     'add_lunch' => 'add lunch',
     'file_uploaded' => 'file uploaded',
+    'file_upload_failed' => 'the file could not be saved. Please try again.',
     'file_deleted' => 'file deleted',
     'team_created' => 'team created',
 

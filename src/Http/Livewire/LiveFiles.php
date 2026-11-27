@@ -8,12 +8,11 @@ use Livewire\WithFileUploads;
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Services\SettingService;
-use VentureDrake\LaravelCrm\Traits\NotifyToast;
+use VentureDrake\LaravelCrm\Support\AttachmentUpload;
 
 class LiveFiles extends Component
 {
     use AuthorizesRequests;
-    use NotifyToast;
     use WithFileUploads;
 
     private $settingService;
@@ -52,34 +51,26 @@ class LiveFiles extends Component
     {
         $this->authorize('create', File::class);
 
-        $data = $this->validate([
-            'file' => 'required',
+        $this->validate([
+            'file' => AttachmentUpload::rules(),
         ]);
 
-        $file = $this->file->store('laravel-crm/'.strtolower(class_basename($this->model)).'/'.$this->model->id.'/files');
-
-        $fileModel = $this->model->files()->create([
-            'external_id' => Uuid::uuid4()->toString(),
-            'file' => $file,
-            'name' => $this->file->getClientOriginalName(),
-            'filesize' => $this->file->getSize(),
-            'mime' => $this->file->getMimeType(),
-        ]);
+        $attributes = AttachmentUpload::store($this->file, $this->model, 'file');
+        $attributes['external_id'] = Uuid::uuid4()->toString();
+        $fileModel = $this->model->files()->create($attributes);
 
         $this->model->activities()->create([
-            'causable_type' => auth()->user()->getMorphClass(),
-            'causable_id' => auth()->user()->id,
+            'causeable_type' => auth()->user()->getMorphClass(),
+            'causeable_id' => auth()->user()->id,
             'timelineable_type' => $this->model->getMorphClass(),
             'timelineable_id' => $this->model->id,
             'recordable_type' => $fileModel->getMorphClass(),
             'recordable_id' => $fileModel->id,
         ]);
 
-        $this->notify(
-            'File uploaded',
-        );
+        $this->dispatch('notifyToast', message: 'File uploaded', level: 'success');
 
-        $this->dispatchBrowserEvent('fileUploaded');
+        $this->dispatch('fileUploaded');
 
         $this->resetFields();
     }
@@ -92,7 +83,7 @@ class LiveFiles extends Component
             $fileIds[] = $file->id;
         }
 
-        if ($this->settingService->get('show_related_activity')->value == 1 && method_exists($this->model, 'contacts')) {
+        if ($this->settingService->get('show_related_activity') == 1 && method_exists($this->model, 'contacts')) {
             foreach ($this->model->contacts as $contact) {
                 foreach ($contact->entityable->files()->latest()->get() as $file) {
                     $fileIds[] = $file->id;
@@ -104,19 +95,19 @@ class LiveFiles extends Component
             $this->files = File::whereIn('id', $fileIds)->latest()->get();
         }
 
-        $this->emit('refreshActivities');
+        $this->dispatch('refreshActivities');
     }
 
     public function addFileToggle()
     {
         $this->showForm = ! $this->showForm;
-        $this->dispatchBrowserEvent('addFileToggled');
+        $this->dispatch('addFileToggled');
     }
 
     public function addFileOn()
     {
         $this->showForm = true;
-        $this->dispatchBrowserEvent('fileAddOn');
+        $this->dispatch('fileAddOn');
     }
 
     private function resetFields()

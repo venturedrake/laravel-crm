@@ -14,7 +14,7 @@
                 dragDepth: 0,
                 allowed: @js($allowedMimes),
                 maxKb: {{ $maxFileSizeKb }},
-                maxLabel: '{{ $this->maxFileSizeLabel }}',
+                maxLabel: '{{ $maxFileSizeLabel }}',
                 dropError: null,
                 select(event) {
                     const file = event.target.files[0] ?? null
@@ -97,7 +97,7 @@
                 <div x-show="!file" class="flex flex-col items-center gap-2">
                     <x-bx-cloud-upload class="w-10 h-10 text-base-content/60" />
                     <span class="text-sm">{{ ucfirst(__('laravel-crm::lang.drop_file_here')) }}</span>
-                    <p class="text-base-content/60 text-xs">{{ ucfirst(__('laravel-crm::lang.max_file_size')) }}: {{ $this->maxFileSizeLabel }} &middot; {{ ucfirst(__('laravel-crm::lang.allowed_file_types')) }}: {{ strtoupper(implode(', ', $allowedMimes)) }}</p>
+                    <p class="text-base-content/60 text-xs">{{ ucfirst(__('laravel-crm::lang.max_file_size')) }}: {{ $maxFileSizeLabel }} &middot; {{ ucfirst(__('laravel-crm::lang.allowed_file_types')) }}: {{ strtoupper(implode(', ', $allowedMimes)) }}</p>
                 </div>
                 <div x-show="file" class="flex flex-col items-center gap-2">
                     <span class="text-sm" x-text="file && file.name"></span>

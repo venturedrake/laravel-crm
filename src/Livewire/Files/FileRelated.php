@@ -8,6 +8,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\File;
+use VentureDrake\LaravelCrm\Support\AttachmentUpload;
 
 class FileRelated extends Component
 {
@@ -22,17 +23,9 @@ class FileRelated extends Component
 
     public $uploadedFile;
 
-    public int $maxFileSizeKb = 10240;
-
-    public array $allowedMimes = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'tsv', 'txt', 'zip'];
-
     public function getMaxFileSizeLabelProperty(): string
     {
-        if ($this->maxFileSizeKb >= 1024) {
-            return (int) ($this->maxFileSizeKb / 1024).' MB';
-        }
-
-        return $this->maxFileSizeKb.' KB';
+        return (AttachmentUpload::MAX_SIZE_KB / 1024).' MB';
     }
 
     public function save(): void
@@ -40,32 +33,11 @@ class FileRelated extends Component
         $this->authorize('create', File::class);
 
         $this->validate([
-            'uploadedFile' => [
-                'required',
-                'file',
-                'max:'.$this->maxFileSizeKb,
-                'mimes:'.implode(',', $this->allowedMimes),
-            ],
+            'uploadedFile' => AttachmentUpload::rules(),
         ]);
 
-        $disk = config('filesystems.default', 'local');
-
-        $originalName = $this->uploadedFile->getClientOriginalName();
-        $filesize = $this->uploadedFile->getSize();
-        $mime = $this->uploadedFile->getMimeType();
-
-        $path = $this->uploadedFile->store(
-            'laravel-crm/'.strtolower(class_basename($this->model)).'/'.$this->model->id.'/files',
-            $disk
-        );
-
-        $fileModel = $this->model->files()->create([
-            'file' => $path,
-            'name' => $originalName,
-            'filesize' => $filesize,
-            'mime' => $mime,
-            'disk' => $disk,
-        ]);
+        $attributes = AttachmentUpload::store($this->uploadedFile, $this->model, 'uploadedFile');
+        $fileModel = $this->model->files()->create($attributes);
 
         $this->model->activities()->create([
             'causeable_type' => auth()->user()->getMorphClass(),
@@ -139,6 +111,10 @@ class FileRelated extends Component
     {
         $this->getFiles();
 
-        return view('laravel-crm::livewire.files.file-related');
+        return view('laravel-crm::livewire.files.file-related', [
+            'allowedMimes' => AttachmentUpload::EXTENSIONS,
+            'maxFileSizeKb' => AttachmentUpload::MAX_SIZE_KB,
+            'maxFileSizeLabel' => $this->maxFileSizeLabel,
+        ]);
     }
 }

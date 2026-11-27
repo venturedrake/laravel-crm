@@ -178,6 +178,11 @@ return [
 
     'encrypt_db_fields' => env('LARAVEL_CRM_ENCRYPT_DB_FIELDS', false),
 
+    // Use a private disk shared by all application nodes for CRM attachments.
+    'attachments' => [
+        'disk' => env('LARAVEL_CRM_ATTACHMENTS_DISK') ?: 'local',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Front-end / User Interface

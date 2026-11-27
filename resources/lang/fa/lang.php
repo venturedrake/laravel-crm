@@ -779,6 +779,7 @@ return [
     'add_meeting' => 'افزودن جلسه',
     'add_lunch' => 'افزودن ناهار',
     'file_uploaded' => 'فایل آپلود شد',
+    'file_upload_failed' => 'فایل ذخیره نشد. لطفاً دوباره تلاش کنید.',
     'file_deleted' => 'فایل حذف شد',
     'team_created' => 'تیم ایجاد شد',
     'login' => 'ورود',
