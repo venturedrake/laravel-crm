@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.7.1 - 2026-11-27
+
+This is a security release. Read the [2.7.1 upgrade notes](docs/upgrading.md#271) and follow [Secure CRM attachment storage before upgrading](docs/upgrading.md#secure-crm-attachment-storage-before-upgrading) before deploying. In particular, set Livewire's temporary upload disk (`temporary_file_upload.disk` in `config/livewire.php`) to a private disk first.
+
+### Security
+- **Attachments could be stored on a public disk, and the legacy files component accepted any file type.** The Files tab (`Livewire\Files\FileRelated`) stored uploads on `filesystems.default`, which may be a public disk. The legacy `LiveFiles` component validated only `required`, so any file type was accepted. Both upload paths now go through `Support\AttachmentUpload`, which detects the MIME type from the file contents and checks the filename extension separately (pdf, jpg/jpeg/png/gif/webp, doc/docx, xls/xlsx, csv/tsv/txt and zip). It also limits files to 10 MB and stores them on a private disk (`laravel-crm.attachments.disk`, default `local`). If the write fails, the upload is refused with a validation error and no File row is left pointing at a missing file. Covered by `tests/Feature/Livewire/Files/FileRelatedTest.php` and `tests/Feature/Livewire/Files/LegacyFileUploadTest.php`
+
+### Changed
+- **Version bumped to `2.7.1`.** This is a patch release. The new config key below defaults to `local` and reaches existing installs through `mergeConfigFrom`, so nothing needs re-publishing
+- **Livewire minimum raised to `^3.8.6|^4.4.8`.** Both versions detect the MIME type from the staged bytes, including on remote disks, which the attachment rules depend on. If Composer has locked an earlier Livewire, include `livewire/livewire` in the update
+- **New config key `attachments.disk` (`LARAVEL_CRM_ATTACHMENTS_DISK`).** It names the disk for new CRM attachments. An unset or blank value means `local`. Existing attachments keep downloading from the disk recorded on each row
+
+### Fixed
+- **Legacy file uploads wrote their activity to the wrong columns.** `LiveFiles` wrote the upload activity to `causable_*`, columns that do not exist, instead of `causeable_*`. It also read the `show_related_activity` setting as an object when it is a plain value (so did `LiveFile`), and called the Livewire 2 APIs `emit`, `dispatchBrowserEvent` and `notify`, which Livewire 3 removed
+
 ## 2.7.0 - 2026-11-16
 
 Read the [2.7.0 upgrade notes](docs/upgrading.md#270) before deploying. Five of the six new migrations change existing rows and cannot be rolled back (three rewrite data, two soft-delete rows), and several published views need re-publishing.

@@ -178,6 +178,61 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.7.1
+
+This is a security patch release. CRM attachments could be stored on a public disk, and the legacy
+files component accepted any file type. **Before you deploy, follow
+[Secure CRM attachment storage before upgrading](#secure-crm-attachment-storage-before-upgrading)**,
+and set Livewire's temporary upload disk to a private disk first. The upgrade itself is the usual
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+If Composer has locked `livewire/livewire` below the new minimum (see
+[Livewire minimum raised](#livewire-minimum-raised)), add it to the update:
+
+```bash
+composer update venturedrake/laravel-crm livewire/livewire
+```
+
+### No migrations
+
+2.7.1 adds no tables or columns. Run `laravelcrm:update` anyway: it advances the `db_version`
+marker, and without it the system check reports the database as behind the code.
+
+### New config key
+
+```php
+'attachments' => [
+    'disk' => env('LARAVEL_CRM_ATTACHMENTS_DISK') ?: 'local',
+],
+```
+
+It reaches an existing install through `mergeConfigFrom`, so you do not need to re-publish
+`config/laravel-crm.php`. New attachments from the Files tab and from the legacy files component
+are stored on this disk. An unset or blank value means `local`. Existing files keep downloading from
+the disk recorded on each row, so changing this key does not move them.
+
+### Livewire minimum raised
+
+The package now requires `livewire/livewire` `^3.8.6|^4.4.8` (it was `^3.0|^4.0`). Both versions
+detect the MIME type from the staged bytes, including on remote disks, and the attachment rules rely
+on that. Composer refuses to install 2.7.1 alongside an older Livewire, so include
+`livewire/livewire` in the update if it is locked lower.
+
+### View to re-publish
+
+If you have published views into `resources/views/vendor/laravel-crm`, this release changes one:
+
+| View | What you miss if you keep the old copy |
+|---|---|
+| `livewire/files/file-related.blade.php` | Nothing functional. It now reads the size label from view data. The validation and private storage are PHP-only, so they apply even with a frozen copy |
+
+If you publish lang files, one key was added to `en` and `fa`: `file_upload_failed`, the message
+shown when an attachment cannot be written to the disk.
+
 ## 2.7.0
 
 This minor release adds email campaign audiences, part payments on invoices, pipeline stage
@@ -195,7 +250,7 @@ two soft-delete rows. Only the email campaign audience migration can be rolled b
 affected views (see [Views to re-publish](#views-to-re-publish)).
 
 If you are still on CRM 1.x, follow [Upgrading from v1](#upgrading-from-v1-go-straight-to-260)
-with `^2.7.0` in place of `^2.6.0`.
+with `^2.7.1` in place of `^2.6.0`.
 
 ### Six migrations
 
