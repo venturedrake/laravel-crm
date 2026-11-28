@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+## 2.7.2 - 2026-11-28
+
+Read the [2.7.2 upgrade notes](docs/upgrading.md#272) before deploying this security patch.
+
 ### Security
 
 - **Email and SMS campaigns now sign click links.** Each signature binds the recipient and destination to the campaign channel. Previously delivered unsigned click links return HTTP 403 after the upgrade. Restart the campaign queue workers when deploying the web update, then open a worker-generated link for each channel through the public HTTPS hostname and confirm it reaches the intended destination.

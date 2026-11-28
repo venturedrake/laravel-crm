@@ -178,6 +178,25 @@ exists and composer reports the script returned a non-zero exit code. Delete the
 
 ## Version-specific notes
 
+## 2.7.2
+
+**Previously delivered unsigned email and SMS campaign click links will return HTTP 403**
+as soon as the web application runs 2.7.2. It rejects those clicks before recording analytics.
+
+Run these commands in the host application when upgrading from 2.7.1.
+
+```bash
+composer update venturedrake/laravel-crm
+php artisan laravelcrm:update
+```
+
+This patch adds no migrations. The Artisan command advances the `db_version` marker to 2.7.2.
+
+Restart the campaign queue workers with the web deployment so newly sent messages contain
+signed links. After the restart, open one click link from a worker-generated email and one
+from a worker-generated SMS through the public HTTPS hostname. Confirm that each redirects
+to its intended destination.
+
 ## 2.7.1
 
 This is a security patch release. CRM attachments could be stored on a public disk, and the legacy
