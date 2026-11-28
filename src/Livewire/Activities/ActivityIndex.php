@@ -7,6 +7,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Activity;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 
 class ActivityIndex extends Component
 {
@@ -35,10 +36,9 @@ class ActivityIndex extends Component
             // Every row reads its causer's name and its subject, and the
             // timeline item then mounts a sub-component on the subject — two
             // lazy morph loads per activity without these.
-            return Activity::with(['causeable', 'recordable'])
-                ->whereIn('id', $activityIds)
-                ->latest()
-                ->get();
+            return ActivityOrder::applyToActivities(
+                Activity::with(['causeable', 'recordable'])->whereIn('id', $activityIds)
+            )->get();
         }
 
         return [];

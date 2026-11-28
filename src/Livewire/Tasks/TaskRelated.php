@@ -7,6 +7,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use VentureDrake\LaravelCrm\Models\Task;
+use VentureDrake\LaravelCrm\Support\ActivityOrder;
 
 class TaskRelated extends Component
 {
@@ -121,7 +122,7 @@ class TaskRelated extends Component
         }
 
         if (count($taskIds) > 0) {
-            $this->tasks = Task::whereIn('id', $taskIds)->latest()->get();
+            $this->tasks = ActivityOrder::applyToRecords(Task::whereIn('id', $taskIds))->get();
         } else {
             $this->tasks = collect();
         }
