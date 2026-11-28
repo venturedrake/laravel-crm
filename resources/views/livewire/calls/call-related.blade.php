@@ -8,12 +8,25 @@
                     <x-mary-datetime wire:model="start_at" label="{{ ucfirst(__('laravel-crm::lang.start_at')) }}" type="datetime-local" />
                     <x-mary-datetime wire:model="finish_at" label="{{ ucfirst(__('laravel-crm::lang.finish_at')) }}" type="datetime-local" />
                 </div>
+                <x-mary-select
+                    wire:model="direction"
+                    label="{{ ucfirst(__('laravel-crm::lang.call_direction')) }}"
+                    :options="[
+                        ['id' => 'outbound', 'name' => ucfirst(__('laravel-crm::lang.call_made'))],
+                        ['id' => 'inbound', 'name' => ucfirst(__('laravel-crm::lang.call_received'))],
+                    ]" />
                 <x-mary-choices
                         wire:model="guests"
                         label="{{ ucfirst(__('laravel-crm::lang.guests')) }}"
                         :options="$guestOptions"
                         search-function="searchGuests"
                         :min-chars="1"
+                        placeholder="Search ..."
+                        searchable />
+                <x-mary-choices-offline
+                        wire:model="team_members"
+                        label="{{ ucfirst(__('laravel-crm::lang.team_members')) }}"
+                        :options="$users"
                         placeholder="Search ..."
                         searchable />
                 <x-mary-input wire:model="location" label="{{ ucfirst(__('laravel-crm::lang.location')) }}" />
