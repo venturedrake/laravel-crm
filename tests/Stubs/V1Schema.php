@@ -152,8 +152,8 @@ class V1Schema
         // ---------- strip the schema only v2 creates ----------
         foreach ([
             'chat_messages', 'chat_conversations', 'chat_visitors', 'chat_widgets',
-            'email_campaign_recipients', 'email_campaigns', 'email_templates',
-            'sms_campaign_recipients', 'sms_campaigns', 'sms_templates',
+            'email_campaign_clicks', 'email_campaign_recipients', 'email_campaigns', 'email_templates',
+            'sms_campaign_clicks', 'sms_campaign_recipients', 'sms_campaigns', 'sms_templates',
             'feature_views', 'feature_votes', 'feature_comments', 'features', 'feature_statuses',
             'monitor_checks', 'monitors', 'user_invitations',
         ] as $table) {

@@ -3,6 +3,7 @@
 namespace VentureDrake\LaravelCrm\Sms;
 
 use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
+use VentureDrake\LaravelCrm\Support\CampaignClickLink;
 
 class SmsCampaignMessage
 {
@@ -114,14 +115,9 @@ class SmsCampaignMessage
             $url = rtrim($matches[0], ".,;:!?\"')]");
             $trailing = substr($matches[0], strlen($url));
 
-            $tracking = route('laravel-crm.sms-tracking.click', ['token' => $token]).'?u='.self::base64UrlEncode($url);
+            $tracking = CampaignClickLink::signedUrl('laravel-crm.sms-tracking.click', $token, $url);
 
             return $tracking.$trailing;
         }, $body);
-    }
-
-    private static function base64UrlEncode(string $value): string
-    {
-        return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
     }
 }

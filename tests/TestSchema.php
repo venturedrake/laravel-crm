@@ -1143,6 +1143,16 @@ class TestSchema
             $table->timestamps();
         });
 
+        Schema::create($prefix.'email_campaign_clicks', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('email_campaign_recipient_id')->index();
+            $table->text('original_url');
+            $table->timestamp('clicked_at');
+            $table->string('ip', 64)->nullable();
+            $table->string('user_agent', 512)->nullable();
+            $table->timestamps();
+        });
+
         Schema::create($prefix.'sms_templates', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id')->nullable();
@@ -1205,6 +1215,16 @@ class TestSchema
             $table->timestamp('unsubscribed_at')->nullable();
             $table->string('clicksend_message_id')->nullable();
             $table->text('error')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create($prefix.'sms_campaign_clicks', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('sms_campaign_recipient_id')->index();
+            $table->text('original_url');
+            $table->timestamp('clicked_at');
+            $table->string('ip', 64)->nullable();
+            $table->string('user_agent', 512)->nullable();
             $table->timestamps();
         });
 

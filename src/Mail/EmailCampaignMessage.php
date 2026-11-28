@@ -8,6 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use VentureDrake\LaravelCrm\Models\AddressType;
 use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
 use VentureDrake\LaravelCrm\Models\Setting;
+use VentureDrake\LaravelCrm\Support\CampaignClickLink;
 
 use function VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine;
 
@@ -85,16 +86,16 @@ class EmailCampaignMessage extends Mailable
         return preg_replace_callback('/<a\s+([^>]*?)(?<=\s)href=(["\'])(.*?)\2([^>]*)>/i', function ($matches) use ($token) {
             $before = $matches[1];
             $quote = $matches[2];
-            $url = $matches[3];
+            $url = html_entity_decode($matches[3], ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $after = $matches[4];
 
             if (str_starts_with($url, 'mailto:') || str_starts_with($url, '#')) {
                 return $matches[0];
             }
 
-            $trackingUrl = route('laravel-crm.email-tracking.click', ['token' => $token]).'?u='.self::base64UrlEncode($url);
+            $trackingUrl = CampaignClickLink::signedUrl('laravel-crm.email-tracking.click', $token, $url);
 
-            return '<a '.$before.'href='.$quote.$trackingUrl.$quote.$after.'>';
+            return '<a '.$before.'href='.$quote.e($trackingUrl).$quote.$after.'>';
         }, $html);
     }
 
@@ -233,11 +234,6 @@ HTML;
         }
 
         return $html.$pixel;
-    }
-
-    private static function base64UrlEncode(string $value): string
-    {
-        return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
     }
 
     private static function resolveLogoHtml(): string

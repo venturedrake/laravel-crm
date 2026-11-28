@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calendar
 - Payments
 
+### Security
+
+- **Email and SMS campaigns now sign click links.** Each signature binds the recipient and destination to the campaign channel. Previously delivered unsigned click links return HTTP 403 after the upgrade. Restart the campaign queue workers when deploying the web update, then open a worker-generated link for each channel through the public HTTPS hostname and confirm it reaches the intended destination.
+
 ## 2.7.1 - 2026-11-27
 
 This is a security release. Read the [2.7.1 upgrade notes](docs/upgrading.md#271) and follow [Secure CRM attachment storage before upgrading](docs/upgrading.md#secure-crm-attachment-storage-before-upgrading) before deploying. In particular, set Livewire's temporary upload disk (`temporary_file_upload.disk` in `config/livewire.php`) to a private disk first.

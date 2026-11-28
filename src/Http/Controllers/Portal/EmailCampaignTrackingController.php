@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use VentureDrake\LaravelCrm\Models\EmailCampaignClick;
 use VentureDrake\LaravelCrm\Models\EmailCampaignRecipient;
+use VentureDrake\LaravelCrm\Support\CampaignClickLink;
 
 class EmailCampaignTrackingController extends Controller
 {
@@ -44,46 +45,35 @@ class EmailCampaignTrackingController extends Controller
 
     public function click(string $token, Request $request)
     {
-        $recipient = EmailCampaignRecipient::where('tracking_token', $token)->first();
+        abort_unless($request->hasValidSignature(), 403);
 
-        $encoded = $request->query('u');
-        $url = $encoded ? $this->base64UrlDecode($encoded) : null;
+        $recipient = EmailCampaignRecipient::where('tracking_token', $token)->firstOrFail();
+        $url = CampaignClickLink::destination($request->query('u'));
+        abort_if($url === null, 404);
 
-        if (! $url || ! filter_var($url, FILTER_VALIDATE_URL)) {
-            return redirect('/');
-        }
+        $isFirstClick = $recipient->first_clicked_at === null;
 
-        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        $recipient->increment('clicks_count');
+        $recipient->updateQuietly([
+            'first_clicked_at' => $recipient->first_clicked_at ?? now(),
+            'last_clicked_at' => now(),
+        ]);
 
-        if (! in_array($scheme, ['http', 'https'], true)) {
-            return redirect('/');
-        }
+        EmailCampaignClick::create([
+            'email_campaign_recipient_id' => $recipient->id,
+            'original_url' => $url,
+            'clicked_at' => now(),
+            'ip' => $request->ip(),
+            'user_agent' => mb_substr((string) $request->userAgent(), 0, 500),
+        ]);
 
-        if ($recipient) {
-            $isFirstClick = $recipient->first_clicked_at === null;
+        $campaign = $recipient->campaign;
 
-            $recipient->increment('clicks_count');
-            $recipient->updateQuietly([
-                'first_clicked_at' => $recipient->first_clicked_at ?? now(),
-                'last_clicked_at' => now(),
-            ]);
+        if ($campaign) {
+            $campaign->increment('clicks_count');
 
-            EmailCampaignClick::create([
-                'email_campaign_recipient_id' => $recipient->id,
-                'original_url' => $url,
-                'clicked_at' => now(),
-                'ip' => $request->ip(),
-                'user_agent' => mb_substr((string) $request->userAgent(), 0, 500),
-            ]);
-
-            $campaign = $recipient->campaign;
-
-            if ($campaign) {
-                $campaign->increment('clicks_count');
-
-                if ($isFirstClick) {
-                    $campaign->increment('unique_clicks_count');
-                }
+            if ($isFirstClick) {
+                $campaign->increment('unique_clicks_count');
             }
         }
 
@@ -132,17 +122,5 @@ class EmailCampaignTrackingController extends Controller
     private function transparentGif(): string
     {
         return base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
-    }
-
-    private function base64UrlDecode(string $value): ?string
-    {
-        $remainder = strlen($value) % 4;
-        if ($remainder) {
-            $value .= str_repeat('=', 4 - $remainder);
-        }
-
-        $decoded = base64_decode(strtr($value, '-_', '+/'), true);
-
-        return $decoded === false ? null : $decoded;
     }
 }

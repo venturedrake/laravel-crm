@@ -7,29 +7,21 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use VentureDrake\LaravelCrm\Models\SmsCampaignClick;
 use VentureDrake\LaravelCrm\Models\SmsCampaignRecipient;
+use VentureDrake\LaravelCrm\Support\CampaignClickLink;
 
 class SmsCampaignTrackingController extends Controller
 {
     public function click(string $token, Request $request)
     {
-        $recipient = SmsCampaignRecipient::where('tracking_token', $token)->first();
+        abort_unless($request->hasValidSignature(), 403);
 
-        $encoded = $request->query('u');
-        $url = $encoded ? $this->base64UrlDecode($encoded) : null;
-
-        if (! $url || ! filter_var($url, FILTER_VALIDATE_URL)) {
-            return redirect('/');
-        }
-
-        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
-
-        if (! in_array($scheme, ['http', 'https'], true)) {
-            return redirect('/');
-        }
+        $recipient = SmsCampaignRecipient::where('tracking_token', $token)->firstOrFail();
+        $url = CampaignClickLink::destination($request->query('u'));
+        abort_if($url === null, 404);
 
         $userAgent = (string) $request->userAgent();
 
-        if ($recipient && ! $this->isBot($userAgent) && ! $this->isDuplicate($recipient->id, $request->ip(), $userAgent)) {
+        if (! $this->isBot($userAgent) && ! $this->isDuplicate($recipient->id, $request->ip(), $userAgent)) {
             $isFirstClick = $recipient->first_clicked_at === null;
 
             $recipient->increment('clicks_count');
@@ -128,17 +120,5 @@ class SmsCampaignTrackingController extends Controller
         return view('laravel-crm::portal.sms.unsubscribed', [
             'recipient' => $recipient,
         ]);
-    }
-
-    private function base64UrlDecode(string $value): ?string
-    {
-        $remainder = strlen($value) % 4;
-        if ($remainder) {
-            $value .= str_repeat('=', 4 - $remainder);
-        }
-
-        $decoded = base64_decode(strtr($value, '-_', '+/'), true);
-
-        return $decoded === false ? null : $decoded;
     }
 }
