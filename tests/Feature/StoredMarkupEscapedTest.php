@@ -31,7 +31,10 @@ test('a note is shown as text', function () {
     // The observer skips user_created_id in the console; the view names the author.
     $note = $this->person->notes()->create(['content' => XSS_PAYLOAD, 'user_created_id' => auth()->id()]);
 
+    // Collapsed, the note shows a one-line summary; opened, the whole text.
     Livewire::test(NoteItem::class, ['note' => $note])
+        ->assertDontSee('<img src=x', false)
+        ->set('expanded', true)
         ->assertSee('&lt;img src=x onerror=alert(1)&gt;<br />', false)
         ->assertDontSee('<img src=x', false);
 });
@@ -40,6 +43,7 @@ test('a task description is shown as text', function () {
     $task = $this->person->tasks()->create(['name' => 'Payload task', 'description' => XSS_PAYLOAD]);
 
     Livewire::test(TaskItem::class, ['task' => $task])
+        ->set('expanded', true)
         ->assertSee('&lt;img src=x onerror=alert(1)&gt;<br />', false)
         ->assertDontSee('<img src=x', false);
 });
